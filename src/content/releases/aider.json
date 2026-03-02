@@ -1,0 +1,260 @@
+{
+  "tool": {
+    "id": "aider",
+    "name": "Aider",
+    "repo": "Aider-AI/aider",
+    "description": "AI pair programming in your terminal. Aider lets you pair program with LLMs to edit code in your local git repo, supporting multi-file edits and automatic git commits.",
+    "category": "cli",
+    "website": "https://aider.chat",
+    "tags": [
+      "ai",
+      "pair-programming",
+      "cli",
+      "git",
+      "multi-model"
+    ]
+  },
+  "releases": [
+    {
+      "version": "v0.86.0",
+      "name": "Aider v0.86.0",
+      "body": "- Added support for all GPT-5 models.\r\n- Added support for Grok-4 via `xai/grok-4` and `openrouter/x-ai/grok-4` model names.\r\n- Added support for `gemini/gemini-2.5-flash-lite-preview-06-17` model, by Tamir Zahavi-Brunner.\r\n- `/clear` now prints “All chat history cleared.” so you know it worked, by Zexin Yuan.\r\n- `/undo` output now shows only the first line of each commit message, making it easier to read.\r\n- Added support for `openrouter/moonshotai/kimi-k2` model, by Jack Harrington.\r\n- Display model announcements with no-arg `/model` command.\r\n- Fixed an issue where new settings for an existing model didn't replace the old ones, by Andrew Grigorev.\r\n- Fixed analytics to support the latest PostHog SDK event-capture API.\r\n- Bumped dependencies to pick up latest litellm==1.75.0.\r\n\r\n- Aider wrote 88% of the code in this release.",
+      "date": "2025-08-09T17:42:19Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.86.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.85.0",
+      "name": "Aider v0.85.0",
+      "body": "#### New Models\r\n- Added support for new Gemini models including `gemini-2.5-pro`, `gemini-2.5-flash`, and `gemini-2.5-pro-preview-06-05` with thinking tokens support.\r\n- Updated model aliases: `flash` now points to `gemini-2.5-flash` and `gemini` now points to `gemini-2.5-pro`.\r\n- Support for Responses API models like o1-pro, o3-pro.\r\n- Added support for OpenAI o3-pro model across multiple providers.\r\n- Enhanced thinking tokens support: can now be disabled by setting to 0, and improved help text with examples.\r\n- Increased max tokens for Deepseek models to 65536 for better performance.\r\n- Updated pricing for o3.\r\n\r\n#### New Features & Enhancements\r\n- Added `--add-gitignore-files` flag to enable adding files listed in .gitignore to Aider's editing scope, by omarcinkonis.\r\n- Co-authored-by attribution is now enabled by default for commit messages.\r\n- Enhanced commit message generation to use system prompt prefixes, by Luke Reeves.\r\n- Added `--commit-language` option to specify the language for commit messages, by Kyosuke Takayama.\r\n- Skip expensive file tracking operations when `--skip-sanity-check-repo` is enabled for better performance, by Makar Ivashko.\r\n- Optimized chat history summarization performance, by jayeshthk.\r\n- Added custom PostHog analytics configuration options with `--analytics-posthog-host` and `--analytics-posthog-project-api-key` flags, by Vasil Markoukin.\r\n\r\n#### Repository Map\r\n- Added MATLAB language support for repository maps, by Matthew Tofano.\r\n- Added Clojure language support for repository maps, by Garrett Hopper.\r\n- Improved kebab-case identifier recognition in repository maps for better code analysis.\r\n\r\n#### Fixes & Small Improvements\r\n- Improved GitHub Copilot token handling with better validation and error messages, by Vincent Taverna and Sebastian Estrella.\r\n- Improved inline code rendering in Rich markdown output, by Vamsi Talupula.\r\n- Fixed Vertex AI model name prefixes in settings, by Wietse Venema.\r\n- Improved `/read-only` command to resolve literal paths correctly, by Matteo Landi.\r\n- Fixed encoding issues in git diff output and LLM history logging.\r\n- Fixed search block regex to accept optional closing tags when working with HTML content, by Mathis Beer.\r\n- Auto-create parent directories for chat history files to prevent startup errors, by contributor.\r\n- Ensure pip is available before package installation.\r\n\r\n- Aider wrote 21% of the code in this release.\r\n",
+      "date": "2025-06-27T23:47:09Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.85.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.84.0",
+      "name": "Aider v0.84.0",
+      "body": "## Model support & provider updates\r\n\r\n- Added support for new Claude models including the Sonnet 4 and Opus 4 series (e.g., `claude-sonnet-4-20250514`,\r\n`claude-opus-4-20250514`) across various providers. The default `sonnet` and `opus` aliases were updated to these newer\r\nversions.\r\n- Added support for the `vertex_ai/gemini-2.5-flash-preview-05-20` model.\r\n- Updated default OpenRouter models during onboarding to `deepseek/deepseek-r1:free` for the free tier and\r\n`anthropic/claude-sonnet-4` for paid tiers.\r\n- Automatically refresh GitHub Copilot tokens when used as OpenAI API keys, by Lih Chen.\r\n\r\n## Core functionality improvements\r\n\r\n- Fixed an issue where files explicitly added via the command line were not correctly ignored if listed in `.gitignore`.\r\n- Improved automatic commit messages by providing more context during their generation, by wangboxue.\r\n- Fixed OpenRouter token cost calculation for improved accuracy.\r\n\r\n## Quality of life improvements\r\n\r\n- Improved OpenRouter model metadata handling by introducing a local cache, increasing reliability and performance.\r\n- Added shell tab completion for file path arguments (by saviour) and for `--edit-format`/`--editor-edit-format` options.\r\n- The `/settings` command now displays detailed metadata for active main, editor, and weak models.\r\n- Improved user language detection by correctly normalizing hyphenated language codes (e.g., `en-US` to `en`) and enhancing the validation of locale results.\r\n- Prevented aider from instructing the LLM to reply in 'C' or 'POSIX' when these are detected as the system locale.\r\n- Displayed a spinner with the model name when generating commit messages.\r\n- Bumped configargparse to 1.7.1 as 1.7 was pulled.\r\n",
+      "date": "2025-05-30T23:28:11Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.84.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.83.0",
+      "name": "Aider v0.83.0",
+      "body": "- Added support for `gemini-2.5-pro-preview-05-06` models.\r\n- Added support for `qwen3-235b` models.\r\n- Added repo-map support for OCaml and OCaml interface files, by Andrey Popp.\r\n- Added a spinner animation while waiting for the LLM to start streaming its response.\r\n- Updated the spinner animation to a Knight Rider style.\r\n- Introduced `--attribute-co-authored-by` option to add co-author trailer to commit messages, by Andrew Grigorev.\r\n- Updated Gemini model aliases (e.g., `gemini`, `gemini-2.5-pro`) to point to the `05-06` preview versions.\r\n- Marked Gemini 2.5 Pro preview models as `overeager` by default.\r\n- Commit message prompt specifies the user's language.\r\n- Updated the default weak model for Gemini 2.5 Pro models to `gemini/gemini-2.5-flash-preview-04-17`.\r\n- Corrected `gemini-2.5-pro-exp-03-25` model settings to reflect its lack of support for `thinking_budget`.\r\n- Ensured model-specific system prompt prefixes are placed on a new line before the main system prompt.\r\n- Added tracking of total tokens sent and received, now included in benchmark statistics.\r\n- Automatically fetch model parameters (context window, pricing) for OpenRouter models directly from their website, by Stefan Hladnik.\r\n- Enabled support for `thinking_tokens` and `reasoning_effort` parameters for OpenRouter models.\r\n- Improved cost calculation using `litellm.completion_cost` where available.\r\n- Added model settings for `openrouter/google/gemini-2.5-pro-preview-03-25`.\r\n- Added `--disable-playwright` flag to prevent Playwright installation prompts and usage, by Andrew Grigorev.\r\n- The `aider scrape` command-line tool will now use Playwright for web scraping if it is available, by Jon Keys.\r\n- Fixed linter command execution on Windows by adopting `oslex` for argument quoting, by Titusz Pan.\r\n- Improved cross-platform display of shell commands by using `oslex` for robust argument quoting, by Titusz Pan.\r\n- Improved `/ask` mode to instruct the LLM to elide unchanging code in its responses.\r\n- Ensured web scraping in the GUI also respects Playwright availability and the `--disable-playwright` flag.\r\n- Improved display of filenames in the prompt header using rich Text formatting.\r\n- Enabled `reasoning_effort` for Gemini 2.5 Flash models.\r\n- Added a `--shell-completions` argument to generate shell completion scripts (e.g., for bash, zsh).\r\n- Explicit `--attribute-author` or `--attribute-committer` flags now override the default behavior when `--attribute-co-authored-by` is used, allowing finer control over commit attribution, by Andrew Grigorev.\r\n- Fixed an issue where read-only status of files might not be preserved correctly by some commands (e.g. `/drop` after adding a read-only file).\r\n- The `aider-args` utility (or `python -m aider.args`) now defaults to printing a sample YAML configuration if no arguments are provided.\r\n- Displayed token count progress and the name of the file or identifier being processed during repo map updates.\r\n- Extended the waiting spinner to also show for non-streaming responses and further enhanced its animation with console width clipping, cursor hiding, and a more continuous appearance.\r\n- Dropped support for Python 3.9.\r\n- Aider wrote 55% of the code in this release.\r\n\r\nFull release notes:\r\nhttps://aider.chat/HISTORY.html",
+      "date": "2025-05-09T22:46:05Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.83.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.82.0",
+      "name": "Aider v0.82.0",
+      "body": "\r\n- Support for GPT 4.1, mini and nano.\r\n- Improved support for using architect mode with Gemini 2.5 Pro.\r\n- Add support for `xai/grok-3-beta`, `xai/grok-3-mini-beta`, `openrouter/x-ai/grok-3-beta`,\r\n`openrouter/x-ai/grok-3-mini-beta`, and `openrouter/openrouter/optimus-alpha` models.\r\n- Added support for `grok-3-fast-beta` and `grok-3-mini-fast-beta` models.\r\n- Added new `patch` edit format for OpenAI's GPT-4.1 model.\r\n- Added new `editor-diff`, `editor-whole`, and `editor-diff-fenced` edit formats.\r\n- Bugfix for automatically selecting the best edit format to use in architect mode.\r\n- Add alias \"grok3\" for `xai/grok-3-beta`.\r\n- Add alias \"optimus\" for `openrouter/openrouter/optimus-alpha`.\r\n- Fix URL extraction from error messages.\r\n- Allow adding files by full path even if a file with the same basename is already in the chat.\r\n- Fix quoting of values containing '#' in the sample `aider.conf.yml`.\r\n- Add support for Fireworks AI model 'deepseek-v3-0324', by Felix Lisczyk.\r\n\r\n- Aider wrote 92% of the code in this release.\r\n\r\n<img width=\"730\" alt=\"2025-04-14_16-22-29\" src=\"https://github.com/user-attachments/assets/e4bd30b4-7fa4-4784-a10c-50315d7cbac6\" />\r\n",
+      "date": "2025-04-14T23:29:05Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.82.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.81.0",
+      "name": "Aider v0.81.0",
+      "body": "- Added support for the `openrouter/openrouter/quasar-alpha` model.\r\n  - Currently free on OpenRouter.\r\n  - Quasar scored 55% on the polyglot coding benchmark\r\n  - Run with `aider --model quasar`\r\n- Offer OpenRouter OAuth authentication if an OpenRouter model is specified but the API key is missing.\r\n- Prevent retrying API calls when the provider reports insufficient credits.\r\n- Improve URL detection to exclude trailing double quotes.\r\n- Bumped deps to pickup litellm change to properly display the root cause of OpenRouter \"choices\" errors.\r\n- Improve error message for OpenRouter API connection issues to mention potential rate limiting or upstream provider issues.\r\n- Configure weak models (`gemini/gemini-2.0-flash` and `openrouter/google/gemini-2.0-flash-exp:free`) for Gemini 2.5 Pro models.\r\n- Add model metadata for `openrouter/google/gemini-2.0-flash-exp:free`.\r\n- Updated deps for yanked fsspec and aiohttp packages #3699\r\n- Removed redundant dependency check during OpenRouter OAuth flow, by Claudia Pellegrino.\r\n\r\n- Aider wrote 86% of the code in this release.\r\n\r\nhttps://aider.chat/HISTORY.html\r\n\r\n<img width=\"826\" alt=\"2025-04-04_16-17-33\" src=\"https://github.com/user-attachments/assets/4b6c4c8f-6110-4c6c-8f27-03592e36c1d2\" />\r\n",
+      "date": "2025-04-04T09:06:20Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.81.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.80.0",
+      "name": "Aider v0.80.0",
+      "body": "\r\n- OpenRouter OAuth integration:\r\n  - Offer to OAuth against OpenRouter if no model and keys are provided.\r\n  - Select OpenRouter default model based on free/paid tier status if `OPENROUTER_API_KEY` is set and no model is specified.\r\n- Prioritize `gemini/gemini-2.5-pro-exp-03-25` if `GEMINI_API_KEY` is set, and `vertex_ai/gemini-2.5-pro-exp-03-25` if `VERTEXAI_PROJECT` is set, when no model is specified.\r\n- Validate user-configured color settings on startup and warn/disable invalid ones.\r\n- Warn at startup if `--stream` and `--cache-prompts` are used together, as cost estimates may be inaccurate.\r\n- Boost repomap ranking for files whose path components match identifiers mentioned in the chat.\r\n- Change web scraping timeout from an error to a warning, allowing scraping to continue with potentially incomplete content.\r\n- Left-align markdown headings in the terminal output, by Peter Schilling.\r\n- Update edit format to the new model's default when switching models with `/model`, if the user was using the old model's default format.\r\n- Add the `openrouter/deepseek-chat-v3-0324:free` model.\r\n- Add `Ctrl-X Ctrl-E` keybinding to edit the current input buffer in an external editor, by Matteo Landi.\r\n- Fix linting errors for filepaths containing shell metacharacters, by Mir Adnan ALI.\r\n- Add repomap support for the Scala language, by Vasil Markoukin.\r\n- Fixed bug in `/run` that was preventing auto-testing.\r\n- Fix bug preventing `UnboundLocalError` during git tree traversal.\r\n- Handle `GitCommandNotFound` error if git is not installed or not in PATH.\r\n- Handle `FileNotFoundError` if the current working directory is deleted while aider is running.\r\n- Fix completion menu current item color styling, by Andrey Ivanov.\r\n\r\n- Aider wrote 87% of the code in this release.\r\n\r\nFull change log:\r\nhttps://aider.chat/HISTORY.html",
+      "date": "2025-03-31T01:21:50Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.80.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.79.0",
+      "name": "Aider v0.79.0",
+      "body": "- Added support for SOTA Gemini 2.5 Pro.\r\n- Added support for DeepSeek V3 0324.\r\n- Added a new `/context` command that automatically identifies which files need to be edited for a given request.\r\n- Added `/edit` as an alias for the `/editor` command.\r\n- Added \"overeager\" mode for Claude 3.7 Sonnet models to try and keep it working within the requested scope.\r\n- Aider wrote 65% of the code in this release.\r\n\r\n<img width=\"939\" alt=\"2025-03-25_10-50-17\" src=\"https://github.com/user-attachments/assets/48795278-5693-441c-8744-653f5ade99a3\" />\r\n",
+      "date": "2025-03-25T21:16:38Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.79.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.78.0",
+      "name": "Aider v0.78.0",
+      "body": "\r\n- Added support for thinking tokens for OpenRouter Sonnet 3.7.\r\n- Added commands to switch between model types: `/editor-model` for Editor Model, and `/weak-model` for Weak Model, by csala.\r\n- Added model setting validation to ignore `--reasoning-effort` and `--thinking-tokens` if the model doesn't support them.\r\n- Added `--check-model-accepts-settings` flag (default: true) to force unsupported model settings.\r\n- Annotated which models support reasoning_effort and thinking_tokens settings in the model settings data.\r\n- Improved code block rendering in markdown output with better padding using NoInsetMarkdown.\r\n- Added `--git-commit-verify` flag (default: False) to control whether git commit hooks are bypassed.\r\n- Fixed autocompletion for `/ask`, `/code`, and `/architect` commands, by shladnik.\r\n- Added vi-like behavior when pressing enter in multiline-mode while in vi normal/navigation-mode, by Marco Mayer.\r\n- Added AWS_PROFILE support for Bedrock models, allowing use of AWS profiles instead of explicit credentials, by lentil32.\r\n- Enhanced `--aiderignore` argument to resolve both absolute and relative paths, by mopemope.\r\n- Improved platform information handling to gracefully handle retrieval errors.\r\n- Bumped dependencies to pickup litellm fix for Ollama.\r\n- Added support for `openrouter/google/gemma-3-27b-it` model.\r\n- Updated exclude patterns for help documentation.\r\n\r\n- Aider wrote 92% of the code in this release.\r\n\r\nFull release notes:\r\nhttps://aider.chat/HISTORY.html",
+      "date": "2025-03-21T18:59:35Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.78.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.77.0",
+      "name": "Aider v0.77.0",
+      "body": "- Big upgrade in [programming languages supported](https://aider.chat/docs/languages.html) by adopting [tree-sitter-language-pack](https://github.com/Goldziher/tree-sitter-language-pack/).\r\n  - 130 new languages with linter support.\r\n  - 20 new languages with repo-map support.\r\n- Added `/think-tokens` command to set thinking token budget with support for human-readable formats (8k, 10.5k, 0.5M).\r\n- Added `/reasoning-effort` command to control model reasoning level.\r\n- The `/think-tokens` and `/reasoning-effort` commands display current settings when called without arguments.\r\n- Display of thinking token budget and reasoning effort in model information.\r\n- Changed `--thinking-tokens` argument to accept string values with human-readable formats.\r\n- Added `--auto-accept-architect` flag (default: true) to automatically accept changes from architect coder format without confirmation.\r\n- Added support for `cohere_chat/command-a-03-2025` and `gemini/gemma-3-27b-it`\r\n- The bare `/drop` command now preserves original read-only files provided via args.read.\r\n- Fixed a bug where default model would be set by deprecated `--shortcut` switches even when already specified in the command line.\r\n- Improved AutoCompleter to require 3 characters for autocompletion to reduce noise.\r\n- Fixed handling of JSONDecodeError when loading model cache file.\r\n- Fixed handling of GitCommandError when retrieving git user configuration.\r\n- Added ignore_permission_denied option to file watcher to prevent errors when accessing restricted files, by Yutaka Matsubara.\r\n\r\n- Aider wrote 72% of the code in this release.",
+      "date": "2025-03-13T21:46:58Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.77.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.76.0",
+      "name": "Aider v0.76.0",
+      "body": "- Improved support for [thinking/reasoning models](https://aider.chat/docs/config/reasoning.html):\r\n  - Added `--thinking-tokens` CLI option to control token budget for models that support thinking.\r\n  - Display thinking/reasoning content from LLMs which return it.\r\n  - Enhanced handling of reasoning tags to better clean up model responses.\r\n  - Added deprecation warning for `remove_reasoning` setting, now replaced by `reasoning_tag`.\r\n\r\n- Aider will notify you when it's completed the last request and needs your input:\r\n  - Added [notifications when LLM responses are ready](https://aider.chat/docs/usage/notifications.html) with `--notifications` flag.\r\n  - Specify desktop notification command with `--notifications-command`.\r\n\r\n- Added/improved support for many models/providers:\r\n  - Added support for QWQ 32B.\r\n  - Support for DeepSeek V3 free on OpenRouter: `--model openrouter/deepseek/deepseek-chat:free`.\r\n  - Added support for Claude 3.7 Sonnet models on OpenRouter, Bedrock and Vertex AI.\r\n  - Updated default model to Claude 3.7 Sonnet on OpenRouter.\r\n  - Added support for GPT-4.5-preview model.\r\n  - Added support for Claude 3.7 Sonnet:beta on OpenRouter.\r\n  - Added support for `openrouter/anthropic/claude-3.7-sonnet`\r\n  - Fixed weak_model_name patterns to match main model name patterns for some models.\r\n\r\n- Switch to `tree-sitter-language-pack` for tree sitter support.\r\n- Improved error handling for EOF (Ctrl+D) in user input prompts.\r\n- Added helper function to ensure hex color values have a # prefix.\r\n- Fixed handling of Git errors when reading staged files.\r\n- Improved SSL verification control for model information requests.\r\n- Improved empty LLM response handling with clearer warning messages.\r\n- Fixed Git identity retrieval to respect global configuration, by Akira Komamura.\r\n- Offer to install dependencies for Bedrock and Vertex AI models.\r\n- Deprecated model shortcut args (like --4o, --opus) in favor of the --model flag.\r\n\r\n- Aider wrote 85% of the code in this release.\r\n\r\nhttps://aider.chat/HISTORY.html\r\n\r\n![image](https://github.com/user-attachments/assets/f773461e-e94c-47ed-b500-1933060aafa6)\r\n\r\n",
+      "date": "2025-03-10T16:00:08Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.76.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.75.0",
+      "name": "Aider v0.75.0",
+      "body": "\r\n- Basic support for Claude 3.7 Sonnet\r\n  - Use `--model sonnet` to use the new 3.7\r\n  - Thinking support coming soon.\r\n- Bugfix to `/editor` command.\r\n- Downgrade streamlit dependency to avoid threading bug.\r\n- Added support for tree-sitter language pack.\r\n- Added openrouter/o3-mini-high model configuration.\r\n- Added build.gradle.kts to special files for Kotlin project support, by Lucas Shadler.\r\n- Prevent more than one cache warming thread from becoming active.\r\n- Fixed continuation prompt \". \" for multiline input.\r\n- Added HCL (Terraform) syntax support, by Warren Krewenki.\r\n- Have o1 & o3-mini generate markdown by sending the magic \"Formatting re-enabled.\" string.\r\n- Bugfix for multi-line inputs, which should not include the \". \" continuation prompt.\r\n- Aider wrote 46% of the code in this release.\r\n",
+      "date": "2025-03-04T20:41:19Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.75.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.74.0",
+      "name": "Aider v0.74.0",
+      "body": "- Dynamically changes the Ollama context window to hold the current chat.\r\n- Better support for o3-mini, DeepSeek V3 & R1, o1-mini, o1 via secondary API providers.\r\n- Remove `<think>` tags from R1 responses for commit messages (and other weak model uses).\r\n- Can now specify `use_temperature: <float>` in model settings, not just true/false.\r\n- The full docker container now includes `boto3` for Bedrock.\r\n- Docker containers now set `HOME=/app` which is the normal project mount-point, to persist\r\n`~/.aider`.\r\n- Bugfix to prevent creating incorrect filenames like `python`, `php`, etc.\r\n- Bugfix for `--timeout`\r\n- Bugfix so that `/model` now correctly reports that the weak model is not changed.\r\n- Bugfix so that multi-line mode persists through ^C at confirmation prompts.\r\n- Watch files now fully ignores top-level directories named in ignore files, to reduce the\r\nchance of hitting OS watch limits. Helpful to ignore giant subtrees like `node_modules`.\r\n- Fast startup with more providers and when model metadata provided in local files.\r\n- Improved .gitignore handling:\r\n  - Honor ignores already in effect regardless of how they've been configured.\r\n  - Check for .env only when the file exists.\r\n- Yes/No prompts now accept All/Skip as alias for Y/N even when not processing a group of\r\nconfirmations.\r\n- Aider wrote 77% of the code in this release.\r\n\r\nhttps://aider.chat/HISTORY.html",
+      "date": "2025-02-06T22:43:06Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.74.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.73.0",
+      "name": "Aider v0.73.0",
+      "body": "- Full support for o3-mini: `aider --model o3-mini`\r\n- New `--reasoning-effort` argument: low, medium, high.\r\n- Improved handling of context window size limits, with better messaging and Ollama-specific guidance.\r\n- Added support for removing model-specific reasoning tags from responses with `remove_reasoning: tagname` model setting.\r\n- Auto-create parent directories when creating new files, by xqyz.\r\n- Support for R1 free on OpenRouter: `--model openrouter/deepseek/deepseek-r1:free`\r\n- Enforce user/assistant turn order to avoid R1 errors, by miradnanali.\r\n- Case-insensitive model name matching while preserving original case.\r\n- Harden against user/assistant turn order problems which cause R1 errors.\r\n- Fix model metadata for `openrouter/deepseek/deepseek-r1`\r\n- Aider wrote 69% of the code in this release.\r\n\r\nhttps://aider.chat/HISTORY.html\r\n\r\n<img width=\"984\" alt=\"2025-01-31_13-35-29\" src=\"https://github.com/user-attachments/assets/94b0824b-c222-4b1e-98ec-df5947b07f5b\" />\r\n",
+      "date": "2025-01-31T22:02:06Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.73.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.72.0",
+      "name": "Aider v0.72.0",
+      "body": "- Support for DeepSeek R1.\r\n  - Use shortcut: `--model r1`\r\n  - Also via OpenRouter: `--model openrouter/deepseek/deepseek-r1`\r\n- Added Kotlin syntax support to repo map, by Paul Walker.\r\n- Added `--line-endings` for file writing, by Titusz Pan.\r\n- Added examples_as_sys_msg=True for GPT-4o models, improves benchmark scores.\r\n- Bumped all dependencies, to pick up litellm support for o1 system messages.\r\n- Bugfix for turn taking when reflecting lint/test errors.\r\n- Fix permissions issue in Docker images.\r\n- Added read-only file announcements.\r\n- Bugfix: ASCII fallback for unicode errors.\r\n- Bugfix: integer indices for list slicing in repomap calculations.\r\n- Aider wrote 52% of the code in this release.\r\n\r\n<img width=\"898\" alt=\"2025-01-20_11-39-50\" src=\"https://github.com/user-attachments/assets/1de1f960-699b-444d-ba6c-28a3aedd0ea3\" />\r\n",
+      "date": "2025-01-20T22:26:59Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.72.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.71.0",
+      "name": "Aider v0.71.0",
+      "body": "\r\n- Prompts to help DeepSeek work better when alternating between `/ask` and `/code`.\r\n- Streaming pretty LLM responses is smoother and faster for long replies.\r\n- Streaming automatically turns of for model that don't support it\r\n  - Can now switch to/from `/model o1` and a streaming model\r\n- Pretty output remains enabled even when editing files with triple-backtick fences\r\n- Bare `/ask`, `/code` and `/architect` commands now switch the chat mode.\r\n- Increased default size of the repomap.\r\n- Increased max chat history tokens limit from 4k to 8k.\r\n- Turn off fancy input and watch files if terminal is dumb.\r\n- Added support for custom voice format and input device settings.\r\n- Disabled Streamlit email prompt, by apaz-cli.\r\n- Fixed lint command handling of nested spaced strings, by Aaron Weisberg.\r\n- Added token count feedback when adding command output to chat.\r\n- Improved error handling for large audio files with automatic format conversion.\r\n- Improved handling of git repo index errors, by Krazer.\r\n- Improved unicode handling in console output with ASCII fallback.\r\n- Added AssertionError to git error handling.\r\n- Fixed file export path in voice format conversion.\r\n- Added AttributeError to git error handling.\r\n- Improved markdown rendering performance with adaptive delay based on render time.\r\n- Fixed typo in model metadata variable name.\r\n- Aider wrote 60% of the code in this release.\r\n\r\nhttps://aider.chat/HISTORY.html",
+      "date": "2025-01-10T23:02:26Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.71.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.70.0",
+      "name": "Aider v0.70.0",
+      "body": "\r\n- Full support for o1 models.\r\n- Watch files now honors `--subtree-only`, and only watches that subtree.\r\n- Improved prompting for watch files, to work more reliably with more models.\r\n- New install methods via uv, including one-liners.\r\n- Support for openrouter/deepseek/deepseek-chat model.\r\n- Better error handling when interactive commands are attempted via `/load` or `--load`.\r\n- Display read-only files with abs path if its shorter than rel path.\r\n- Ask 10% of users to opt-in to analytics.\r\n- Bugfix for auto-suggest.\r\n- Gracefully handle unicode errors in git path names.\r\n- Fix for gemini model names in model metadata.\r\n- Show hints about AI! and AI? when user makes AI comments.\r\n- Support for running without git installed.\r\n- Improved environment variable setup messages on Windows.\r\n- Aider wrote 74% of the code in this release. \r\n\r\nhttps://aider.chat/HISTORY.html\r\n",
+      "date": "2024-12-26T23:22:53Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.70.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.69.0",
+      "name": "Aider v0.69.0",
+      "body": "- [Watch files](https://aider.chat/docs/usage/watch.html) improvements:\r\n  - Use `# ... AI?` comments to trigger aider and ask questions about your code.\r\n  - Now watches *all* files, not just certain source files.\r\n  - Use `# AI comments`, `// AI comments`, or `-- AI comments` to give aider instructions in any text file.\r\n- Full support for Gemini Flash 2.0 Exp:\r\n  - `aider --model flash` or `aider --model gemini/gemini-2.0-flash-exp`\r\n- [New `--multiline` flag and `/multiline-mode` command](https://aider.chat/docs/usage/commands.html#entering-multi-line-chat-messages) makes ENTER a soft newline and META-ENTER send the message, by @miradnanali.\r\n- `/copy-context <instructions>` now takes optional \"instructions\" when [copying code context to the clipboard](https://aider.chat/docs/usage/copypaste.html#copy-aiders-code-context-to-your-clipboard-paste-into-the-web-ui).\r\n- Improved clipboard error handling with helpful requirements install info.\r\n- Ask 5% of users if they want to opt-in to analytics.\r\n- `/voice` now lets you edit the transcribed text before sending.\r\n- Disabled auto-complete in Y/N prompts.\r\n- Aider wrote 68% of the code in this release.\r\n\r\n\r\nhttps://github.com/user-attachments/assets/528b6868-f6be-426c-a736-dbe1a208435d\r\n\r\n",
+      "date": "2024-12-13T19:45:41Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.69.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.68.0",
+      "name": "Aider v0.68.0",
+      "body": "- [Aider works with LLM web chat UIs](https://aider.chat/docs/usage/copypaste.html).\r\n  - New `--copy-paste` mode.\r\n  - New `/copy-context` command.\r\n- [Set API keys and other environment variables for all providers from command line or yaml conf file](https://aider.chat/docs/config/aider_conf.html#storing-llm-keys).\r\n  - New `--api-key provider=key` setting.\r\n  - New `--set-env VAR=value` setting.\r\n- Added bash and zsh support to `--watch-files`.\r\n- Better error messages when missing dependencies for Gemini and Bedrock models.\r\n- Control-D now properly exits the program.\r\n- Don't count token costs when API provider returns a hard error.\r\n- Bugfix so watch files works with files that don't have tree-sitter support.\r\n- Bugfix so o1 models can be used as weak model.\r\n- Updated shell command prompt.\r\n- Added docstrings for all Coders.\r\n- Reorganized command line arguments with improved help messages and grouping.\r\n- Use the exact `sys.python` for self-upgrades.\r\n- Added experimental Gemini models.\r\n- Aider wrote 71% of the code in this release.\r\n\r\nhttps://github.com/user-attachments/assets/a8dca5f6-a1f8-4282-9cbd-e8219f4a23b6\r\n\r\n",
+      "date": "2024-12-10T16:28:05Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.68.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.67.0",
+      "name": "Aider v0.67.0",
+      "body": "- [Use aider in your IDE or editor](https://aider.chat/docs/usage/watch.html).\r\n  - Run `aider --watch-files` and it will watch for instructions you add to your source files.\r\n  - One-liner `# ...` or `// ...` comments that start or end with \"AI\" are instructions to aider.\r\n  - When aider sees \"AI!\" it reads and follows all the instructions in AI comments.\r\n- Support for new Amazon Bedrock Nova models.\r\n- When `/run` or `/test` have non-zero exit codes, pre-fill \"Fix that\" into the next message prompt.\r\n- `/diff` now invokes `git diff` to use your preferred diff tool.\r\n- Added Ctrl-Z support for process suspension.\r\n- Spinner now falls back to ASCII art if fancy symbols throw unicode errors.\r\n- `--read` now expands `~` home dirs.\r\n- Enabled exception capture in analytics.\r\n- [Aider wrote 61% of the code in this release.](https://aider.chat/HISTORY.html)\r\n\r\nhttps://github.com/user-attachments/assets/bea76d8b-5c31-4913-9536-97b7e6c632b5\r\n\r\n",
+      "date": "2024-12-06T14:44:33Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.67.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.66.0",
+      "name": "Aider v0.66.0",
+      "body": "- PDF support for Sonnet and Gemini models.\r\n- Added `--voice-input-device` to select audio input device for voice recording, by @preynal.\r\n- Added `--timeout` option to configure API call timeouts.\r\n- Set cwd to repo root when running shell commands.\r\n- Added Ctrl-Up/Down keyboard shortcuts for per-message history navigation.\r\n- Improved error handling for failed .gitignore file operations.\r\n- Improved error handling for input history file permissions.\r\n- Improved error handling for analytics file access.\r\n- Removed spurious warning about disabling pretty in VSCode.\r\n- Removed broken support for Dart.\r\n- Bugfix when scraping URLs found in chat messages.\r\n- Better handling of __version__ import errors.\r\n- Improved `/drop` command to support substring matching for non-glob patterns.\r\n- Bugfix to `--alias`.\r\n- Aider wrote 82% of the code in this release.\r\n\r\nhttps://github.com/user-attachments/assets/4d9b5187-45e5-47c2-a8ff-1e00542c8b06\r\n\r\n",
+      "date": "2024-12-01T17:20:31Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.66.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.65.0",
+      "name": "Aider v0.65.0",
+      "body": "- Added `--alias` config to define [custom model aliases](https://aider.chat/docs/config/model-aliases.html).\r\n- Added `--[no-]detect-urls` flag to disable detecting and offering to scrape URLs found in the chat.\r\n- Ollama models now default to an 8k context window.\r\n- Added [RepoMap support for Dart language](https://aider.chat/docs/languages.html) by @malkoG.\r\n- Ask 2.5% of users if they want to opt-in to [analytics](https://aider.chat/docs/more/analytics.html).\r\n- Skip suggesting files that share names with files already in chat.\r\n- `/editor` returns and prefill the file content into the prompt, so you can use `/editor` to compose messages that start with `/commands`, etc.\r\n- Enhanced error handling for analytics.\r\n- Improved handling of UnknownEditFormat exceptions with helpful documentation links.\r\n- Bumped dependencies to pick up grep-ast 0.4.0 for Dart language support.\r\n- Aider wrote 81% of the code in this release.\r\n\r\n<img width=\"569\" alt=\"2024-11-26_08-59-06\" src=\"https://github.com/user-attachments/assets/ea13c0e7-a243-4798-96a8-eebb43fba794\">\r\n",
+      "date": "2024-11-26T22:07:50Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.65.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.64.0",
+      "name": "Aider v0.64.0",
+      "body": "- Added [`/editor` command](https://aider.chat/docs/usage/commands.html) to open system editor for writing prompts, by @thehunmonkgroup.\r\n- Full support for `gpt-4o-2024-11-20`.\r\n- Stream o1 models by default.\r\n- `/run` and suggested shell commands are less mysterious and now confirm that they \"Added XX lines of output to the chat.\"\r\n- Ask 1% of users if they want to opt-in to [analytics](https://aider.chat/docs/more/analytics.html).\r\n- Added support for [optional multiline input tags](https://aider.chat/docs/usage/commands.html#entering-multi-line-chat-messages) with matching closing tags.\r\n- Improved [model settings configuration](https://aider.chat/docs/config/adv-model-settings.html#global-extra-params) with support for global `extra_params` for `litellm.completion()`.\r\n- Architect mode now asks to add files suggested by the LLM.\r\n- Fixed bug in fuzzy model name matching.\r\n- Added Timeout exception to handle API provider timeouts.\r\n- Added `--show-release-notes` to control release notes display on first run of new version.\r\n- Save empty dict to cache file on model metadata download failure, to delay retry.\r\n- Improved error handling and code formatting.\r\n- Fixed bug in fuzzy model name matching when litellm provider info is missing.\r\n- Modified model metadata file loading to allow override of resource file.\r\n- Allow recursive loading of dirs using `--read`.\r\n- Updated dependency versions to pick up litellm fix for ollama models.\r\n- Added exponential backoff retry when writing files to handle editor file locks.\r\n- Updated Qwen 2.5 Coder 32B model configuration.\r\n- Fixed bug in git ignored file handling.\r\n- Improved error handling for git operations.\r\n- Aider wrote 74% of the code in this release. \r\n\r\n",
+      "date": "2024-11-21T20:47:03Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.64.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.63.0",
+      "name": "Aider v0.63.0",
+      "body": "- Support for Qwen 2.5 Coder 32B.\r\n- `/web` command just adds the page to the chat, without triggering an LLM response.\r\n- Improved prompting for the user's preferred chat language.\r\n- Improved handling of LiteLLM exceptions.\r\n- Bugfix for double-counting tokens when reporting cache stats.\r\n- Bugfix for the LLM creating new files.\r\n- Other small bug fixes.\r\n- Aider wrote 55% of the code in this release.",
+      "date": "2024-11-13T21:38:30Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.63.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.62.0",
+      "name": "Aider v0.62.0",
+      "body": "- Full support for Claude 3.5 Haiku\r\n  - Scored 75% on [aider's code editing leaderboard](https://aider.chat/docs/leaderboards/).\r\n  - Almost as good as Sonnet at much lower cost.\r\n  - Launch with `--haiku` to use it.\r\n- Easily apply file edits from ChatGPT, Claude or other web apps\r\n  - Chat with ChatGPT or Claude via their web app.\r\n  - Give it your source files and ask for the changes you want.\r\n  - Use the web app's \"copy response\" button to copy the entire reply from the LLM.\r\n  - Run `aider --apply-clipboard-edits file-to-edit.js`.\r\n  - Aider will edit your file with the LLM's changes.\r\n- Bugfix for creating new files.\r\n- Aider wrote 84% of the code in this release.\r\n<img width=\"1003\" alt=\"2024-11-04_12-11-03\" src=\"https://github.com/user-attachments/assets/ceab2c15-848c-419c-bed6-38cd2347539e\">\r\n",
+      "date": "2024-11-04T23:41:04Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.62.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.61.0",
+      "name": "Aider v0.61.0",
+      "body": "- Load and save aider slash-commands to files:\r\n  - `/save <fname>` command will make a file of `/add` and `/read-only` commands that recreate the current file context in the chat.\r\n  - `/load <fname>` will replay the commands in the file.\r\n  - You can use `/load` to run any arbitrary set of slash-commands, not just `/add` and `/read-only`.\r\n  - Use `--load <fname>` to run a list of commands on launch, before the interactive chat begins.\r\n- Anonymous, opt-in [analytics](https://aider.chat/docs/more/analytics.html) with no personal data sharing.\r\n- Aider follows litellm's `supports_vision` attribute to enable image support for models.\r\n- Bugfix for when diff mode flexibly handles the model using the wrong filename.\r\n- Displays filenames in sorted order for `/add` and `/read-only`.\r\n- New `--no-fancy-input` switch disables prompt toolkit input, now still available with `--no-pretty`.\r\n- Override browser config with `--no-browser` or `--no-gui`.\r\n- Offer to open documentation URLs when errors occur.\r\n- Properly support all o1 models, regardless of provider.\r\n- Improved layout of filenames above input prompt.\r\n- Better handle corrupted repomap tags cache.\r\n- Improved handling of API errors, especially when accessing the weak model.\r\n- Aider wrote 68% of the code in this release.",
+      "date": "2024-11-01T16:41:01Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.61.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.60.0",
+      "name": "v0.60.0",
+      "body": "- Full support for Sonnet 10/22, the new SOTA model on aider's code editing benchmark.\r\n  - Aider uses Sonnet 10/22 by default.\r\n- Improved formatting of added and read-only files above chat prompt, by @jbellis.\r\n- Improved support for o1 models by more flexibly parsing their nonconforming code edit replies.\r\n- Corrected diff edit format prompt that only the first match is replaced.\r\n- Stronger whole edit format prompt asking for clean file names.\r\n- Now offers to add `.env` to the `.gitignore` file.\r\n- Ships with a small model metadata json file to handle models not yet updated in litellm.\r\n- Model settings for o1 models on azure.\r\n- Bugfix to properly include URLs in `/help` RAG results.\r\n- Aider wrote 49% of the code in this release.\r\n\r\n<img width=\"1021\" alt=\"2024-10-22_11-25-54\" src=\"https://github.com/user-attachments/assets/335e8276-fa4a-4749-bb47-8f30e13351b2\">\r\n",
+      "date": "2024-10-22T21:21:03Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.60.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.59.0",
+      "name": "v0.59.0",
+      "body": "- Improvements to `/read-only`:\r\n  - Now supports shell-style auto-complete of the full file system.\r\n  - Still auto-completes the full paths of the repo files like `/add`.\r\n  - Now supports globs like `src/**/*.py`\r\n- Renamed `--yes` to `--yes-always`.\r\n  - Now uses `AIDER_YES_ALWAYS` env var and `yes-always:` yaml key.\r\n  - Existing YAML and .env files will need to be updated.\r\n  - Can still abbreviate to `--yes` on the command line.\r\n- Config file now uses standard YAML list syntax with `  - list entries`, one per line.\r\n- `/settings` now includes the same announcement lines that would print at launch.\r\n- Sanity checks the `--editor-model` on launch now, same as main and weak models.\r\n- Added `--skip-sanity-check-repo` switch to speedup launch in large repos.\r\n- Bugfix so architect mode handles Control-C properly.\r\n- Repo-map is deterministic now, with improved caching logic.\r\n- Improved commit message prompt.\r\n- Aider wrote 77% of the code in this release.",
+      "date": "2024-10-04T22:42:03Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.59.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.58.0",
+      "name": "Aider v0.58.0",
+      "body": "- [Use a pair of Architect/Editor models for improved coding](https://aider.chat/2024/09/26/architect.html)\r\n  - Use a strong reasoning model like o1-preview as your Architect.\r\n  - Use a cheaper, faster model like gpt-4o as your Editor.\r\n- New `--o1-preview` and `--o1-mini` shortcuts.\r\n- Support for new Gemini 002 models.\r\n- Better support for Qwen 2.5 models.\r\n- Many confirmation questions can be skipped for the rest of the session with \"(D)on't ask again\" response.\r\n- Autocomplete for `/read-only` supports the entire filesystem.\r\n- New settings for completion menu colors.\r\n- New `/copy` command to copy the last LLM response to the clipboard.\r\n- Renamed `/clipboard` to `/paste`.\r\n- Will now follow HTTP redirects when scraping urls.\r\n- New `--voice-format` switch to send voice audio as wav/mp3/webm, by @mbailey.\r\n- ModelSettings takes `extra_params` dict to specify any extras to pass to `litellm.completion()`.\r\n- Support for cursor shapes when in vim mode.\r\n- Numerous bug fixes.\r\n- Aider wrote 53% of the code in this release.\r\n\r\n<img width=\"832\" alt=\"2024-09-29_08-11-37\" src=\"https://github.com/user-attachments/assets/96b05440-e0f5-49fe-9390-adcbf7ad75d1\">\r\n",
+      "date": "2024-09-29T15:21:17Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.58.0",
+      "prerelease": false
+    },
+    {
+      "version": "v0.57.0",
+      "name": "Aider v0.57.0",
+      "body": "- Support for OpenAI o1 models:\r\n  - o1-preview now works well with diff edit format.\r\n  - o1-preview with diff now matches SOTA leaderboard result with whole edit format.\r\n  - `aider --model o1-mini`\r\n  - `aider --model o1-preview`\r\n- On Windows, `/run` correctly uses PowerShell or cmd.exe.\r\n- Support for new 08-2024 Cohere models, by @jalammar.\r\n- Can now recursively add directories with `/read-only`.\r\n- User input prompts now fall back to simple `input()` if `--no-pretty` or a Windows console is not available.\r\n- Improved sanity check of git repo on startup.\r\n- Improvements to prompt cache chunking strategy.\r\n- Removed \"No changes made to git tracked files\".\r\n- Numerous bug fixes for corner case crashes.\r\n- Updated all dependency versions.\r\n- Aider wrote 70% of the code in this release.",
+      "date": "2024-09-21T20:35:49Z",
+      "url": "https://github.com/Aider-AI/aider/releases/tag/v0.57.0",
+      "prerelease": false
+    }
+  ],
+  "lastUpdated": "2026-03-02T08:04:30.874Z"
+}

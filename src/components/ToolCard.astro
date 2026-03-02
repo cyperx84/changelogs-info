@@ -1,0 +1,46 @@
+---
+import type { Tool, Release } from "../lib/releases";
+import { formatDate, relativeTime, getCategoryLabel } from "../lib/releases";
+
+interface Props {
+  tool: Tool;
+  latestRelease?: Release;
+}
+
+const { tool, latestRelease } = Astro.props;
+---
+
+<a
+  href={`/tools/${tool.id}`}
+  class="group block rounded-xl border border-border bg-bg-card p-5 transition-all hover:border-border-hover hover:bg-bg-card-hover"
+>
+  <div class="mb-3 flex items-start justify-between">
+    <div>
+      <h3 class="text-lg font-semibold text-text-primary group-hover:text-accent transition-colors">
+        {tool.name}
+      </h3>
+      <p class="mt-0.5 font-mono text-xs text-text-muted">{tool.repo}</p>
+    </div>
+    <span class="rounded-full border border-border bg-bg-tertiary px-2.5 py-0.5 text-xs text-text-secondary">
+      {getCategoryLabel(tool.category)}
+    </span>
+  </div>
+
+  <p class="mb-4 text-sm leading-relaxed text-text-secondary line-clamp-2">
+    {tool.description}
+  </p>
+
+  {latestRelease ? (
+    <div class="flex items-center gap-3 rounded-lg bg-bg-tertiary px-3 py-2">
+      <span class="font-mono text-sm font-medium text-green">{latestRelease.version}</span>
+      <span class="text-xs text-text-muted">&middot;</span>
+      <span class="text-xs text-text-muted" title={formatDate(latestRelease.date)}>
+        {relativeTime(latestRelease.date)}
+      </span>
+    </div>
+  ) : (
+    <div class="flex items-center gap-3 rounded-lg bg-bg-tertiary px-3 py-2">
+      <span class="text-xs text-text-muted">Run scraper to load releases</span>
+    </div>
+  )}
+</a>
