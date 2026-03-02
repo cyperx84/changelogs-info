@@ -25,14 +25,14 @@ try {
 <BaseLayout title="changelogs.info — AI Coding Tool Release Tracker">
   <!-- Hero -->
   <section class="border-b border-border">
-    <div class="mx-auto max-w-6xl px-6 py-16 md:py-24">
+    <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 md:py-24">
       <div class="max-w-2xl">
-        <p class="mb-3 font-mono text-sm text-accent">&gt; tracking ai coding tools</p>
-        <h1 class="text-4xl font-bold tracking-tight md:text-5xl">
+        <p class="mb-3 font-mono text-xs text-accent sm:text-sm">&gt; tracking ai coding tools</p>
+        <h1 class="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
           Every release.<br />
           <span class="text-text-secondary">One place.</span>
         </h1>
-        <p class="mt-4 text-lg leading-relaxed text-text-secondary">
+        <p class="mt-4 text-base leading-relaxed text-text-secondary sm:text-lg">
           Stay up to date with changelogs from the most popular AI coding assistants.
           Never miss a feature, fix, or breaking change.
         </p>
@@ -41,13 +41,13 @@ try {
   </section>
 
   <!-- Tools grid -->
-  <section class="mx-auto max-w-6xl px-6 py-12">
-    <div class="mb-8 flex items-center justify-between">
-      <h2 class="text-xl font-semibold">Tracked Tools</h2>
-      <span class="text-sm text-text-muted">{tools.length} tools</span>
+  <section class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+    <div class="mb-6 flex items-center justify-between sm:mb-8">
+      <h2 class="text-lg font-semibold sm:text-xl">Tracked Tools</h2>
+      <span class="text-xs text-text-muted sm:text-sm">{tools.length} tools</span>
     </div>
 
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
       {tools.map((tool) => (
         <ToolCard tool={tool} latestRelease={releaseMap[tool.id]} />
       ))}
@@ -55,11 +55,11 @@ try {
   </section>
 
   <!-- Recent releases -->
-  <section class="mx-auto max-w-6xl px-6 pb-16">
-    <h2 class="mb-6 text-xl font-semibold">Recent Releases</h2>
+  <section class="mx-auto max-w-6xl px-4 pb-12 sm:px-6 sm:pb-16">
+    <h2 class="mb-4 text-lg font-semibold sm:mb-6 sm:text-xl">Recent Releases</h2>
 
     {Object.keys(releaseMap).length > 0 ? (
-      <div class="space-y-3">
+      <div class="space-y-2 sm:space-y-3">
         {Object.entries(releaseMap)
           .sort(([, a], [, b]) => new Date(b.date).getTime() - new Date(a.date).getTime())
           .slice(0, 10)
@@ -68,11 +68,11 @@ try {
             return tool ? (
               <a
                 href={`/tools/${toolId}`}
-                class="flex items-center gap-4 rounded-lg border border-border bg-bg-card p-4 transition-all hover:border-border-hover hover:bg-bg-card-hover"
+                class="release-card flex flex-wrap items-center gap-2 rounded-lg border border-border bg-bg-card p-3 transition-all hover:border-border-hover hover:bg-bg-card-hover sm:gap-4 sm:p-4"
               >
-                <span class="font-mono text-sm font-medium text-green">{release.version}</span>
-                <span class="text-sm font-medium text-text-primary">{tool.name}</span>
-                <span class="text-xs text-text-muted">{release.name !== release.version ? release.name : ""}</span>
+                <span class="font-mono text-xs font-medium text-green sm:text-sm">{release.version}</span>
+                <span class="text-xs font-medium text-text-primary sm:text-sm">{tool.name}</span>
+                <span class="hidden text-xs text-text-muted sm:inline">{release.name !== release.version ? release.name : ""}</span>
                 <span class="ml-auto text-xs text-text-muted">
                   {new Date(release.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                 </span>
@@ -81,25 +81,25 @@ try {
           })}
       </div>
     ) : (
-      <div class="rounded-xl border border-dashed border-border p-12 text-center">
-        <p class="mb-2 font-mono text-sm text-text-muted">&gt; no release data yet</p>
-        <p class="text-sm text-text-secondary">
+      <div class="rounded-xl border border-dashed border-border p-8 text-center sm:p-12">
+        <p class="mb-2 font-mono text-xs text-text-muted sm:text-sm">&gt; no release data yet</p>
+        <p class="text-xs text-text-secondary sm:text-sm">
           Run the scraper to fetch release data:
         </p>
-        <code class="mt-3 inline-block rounded-lg bg-bg-tertiary px-4 py-2 font-mono text-sm text-accent">
+        <code class="mt-3 inline-block rounded-lg bg-bg-tertiary px-3 py-2 font-mono text-xs text-accent sm:px-4 sm:text-sm">
           npx tsx scrapers/github-releases.ts
         </code>
       </div>
     )}
   </section>
 
-  <section class="mx-auto max-w-4xl px-6 pb-16">
-    <div class="rounded-xl border border-border bg-bg-card p-6">
-      <h3 class="text-xl font-semibold">Get weekly changelog digests</h3>
-      <p class="mt-1 text-sm text-text-secondary">One email with the most important CLI/tool updates.</p>
+  <section class="mx-auto max-w-4xl px-4 pb-12 sm:px-6 sm:pb-16">
+    <div class="rounded-xl border border-border bg-bg-card p-4 sm:p-6">
+      <h3 class="text-lg font-semibold sm:text-xl">Get weekly changelog digests</h3>
+      <p class="mt-1 text-xs text-text-secondary sm:text-sm">One email with the most important CLI/tool updates.</p>
       <form action="#" method="post" class="mt-4 flex flex-col gap-3 sm:flex-row">
-        <input type="email" required placeholder="you@company.com" class="w-full rounded-lg border border-border bg-bg-tertiary px-4 py-2 text-sm outline-none focus:border-accent" />
-        <button type="submit" class="rounded-lg bg-accent px-5 py-2 text-sm font-medium text-white hover:opacity-90">Subscribe</button>
+        <input type="email" required placeholder="you@company.com" class="w-full rounded-lg border border-border bg-bg-tertiary px-4 py-3 text-sm outline-none focus:border-accent" />
+        <button type="submit" class="email-submit-btn rounded-lg bg-accent px-5 py-3 text-sm font-medium text-white hover:opacity-90">Subscribe</button>
       </form>
     </div>
   </section>
