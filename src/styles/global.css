@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme {
+  /* Dark theme (default) */
   --color-bg-primary: #0a0a0f;
   --color-bg-secondary: #12121a;
   --color-bg-tertiary: #1a1a26;
@@ -22,10 +23,31 @@
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
+/* Light theme */
+[data-theme="light"] {
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f8f9fa;
+  --color-bg-tertiary: #f1f3f5;
+  --color-bg-card: #ffffff;
+  --color-bg-card-hover: #f8f9fa;
+  --color-border: #dee2e6;
+  --color-border-hover: #adb5bd;
+  --color-text-primary: #212529;
+  --color-text-secondary: #495057;
+  --color-text-muted: #6c757d;
+  --color-accent: #5b5fc7;
+  --color-accent-hover: #4c51bf;
+  --color-accent-dim: #6366f1;
+  --color-green: #10b981;
+  --color-amber: #f59e0b;
+  --color-red: #ef4444;
+}
+
 html {
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
   scroll-behavior: smooth;
+  transition: background-color 200ms ease-out, color 200ms ease-out;
 }
 
 body {
@@ -63,10 +85,45 @@ textarea {
 ::-webkit-scrollbar-thumb {
   background: var(--color-border);
   border-radius: 3px;
+  transition: background 200ms ease-out;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-border-hover);
+}
+
+/* Theme toggle button */
+.theme-toggle {
+  color: var(--color-text-secondary);
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  transition: all var(--transition-base);
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  color: var(--color-text-primary);
+  background: rgba(99, 102, 241, 0.1);
+  transform: rotate(180deg);
+}
+
+.theme-toggle svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  transition: transform var(--transition-base);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle:hover {
+    transform: none;
+  }
 }
 
 /* Markdown content in changelogs */

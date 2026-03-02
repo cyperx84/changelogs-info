@@ -40,10 +40,19 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         <!-- Desktop Navigation -->
         <div class="hidden items-center gap-4 md:flex">
           <a href="/" class="nav-link">Tools</a>
-          <a href="/compare" class="nav-link">Compare</a>
+          <a href="/cheatsheets" class="nav-link">Cheatsheets</a>
           <a href="/configs" class="nav-link">Configs</a>
+          <a href="/compare" class="nav-link">Compare</a>
           <a href="/feed/all.xml" class="nav-link">RSS</a>
           <Search />
+          <button id="theme-toggle-desktop" class="theme-toggle" aria-label="Toggle theme">
+            <svg id="sun-icon-desktop" class="hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            </svg>
+            <svg id="moon-icon-desktop" class="" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+            </svg>
+          </button>
         </div>
 
         <!-- Mobile Menu Button -->
@@ -59,9 +68,21 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       <div id="mobile-menu" class="mobile-menu hidden border-t border-border bg-bg-primary md:hidden">
         <div class="space-y-1 px-4 py-3">
           <a href="/" class="mobile-nav-link">Tools</a>
-          <a href="/compare" class="mobile-nav-link">Compare</a>
+          <a href="/cheatsheets" class="mobile-nav-link">Cheatsheets</a>
           <a href="/configs" class="mobile-nav-link">Configs</a>
+          <a href="/compare" class="mobile-nav-link">Compare</a>
           <a href="/feed/all.xml" class="mobile-nav-link">RSS</a>
+          <div class="pt-3 pb-2 flex items-center justify-between">
+            <span class="text-sm text-text-secondary">Theme</span>
+            <button id="theme-toggle-mobile" class="theme-toggle" aria-label="Toggle theme">
+              <svg id="sun-icon-mobile" class="hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+              </svg>
+              <svg id="moon-icon-mobile" class="" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+              </svg>
+            </button>
+          </div>
           <div class="pt-2">
             <Search />
           </div>
@@ -79,8 +100,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
           <p class="text-sm text-text-muted"><span class="text-accent">&gt;_</span> changelogs.info — made with ❤️ CyperX</p>
           <div class="flex flex-wrap items-center gap-3 text-sm sm:gap-4">
             <a href="/" class="footer-link">Tools</a>
-            <a href="/compare" class="footer-link">Compare</a>
+            <a href="/cheatsheets" class="footer-link">Cheatsheets</a>
             <a href="/configs" class="footer-link">Configs</a>
+            <a href="/compare" class="footer-link">Compare</a>
             <a href="/feed/all.xml" class="footer-link">RSS</a>
             <a href="https://github.com/cyperx84/changelogs-info" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
           </div>
@@ -89,7 +111,78 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       </div>
     </footer>
 
+    <script is:inline>
+      // Theme management - runs before page render to prevent flash
+      (function() {
+        const THEME_KEY = 'theme';
+
+        function getInitialTheme() {
+          const stored = localStorage.getItem(THEME_KEY);
+          if (stored) return stored;
+          return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+
+        function applyTheme(theme) {
+          if (theme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+          } else {
+            document.documentElement.removeAttribute('data-theme');
+          }
+        }
+
+        applyTheme(getInitialTheme());
+      })();
+    </script>
+
     <script>
+      // Theme toggle functionality
+      const THEME_KEY = 'theme';
+
+      function updateThemeIcons(theme) {
+        const sunDesktop = document.getElementById('sun-icon-desktop');
+        const moonDesktop = document.getElementById('moon-icon-desktop');
+        const sunMobile = document.getElementById('sun-icon-mobile');
+        const moonMobile = document.getElementById('moon-icon-mobile');
+
+        if (theme === 'light') {
+          sunDesktop?.classList.remove('hidden');
+          moonDesktop?.classList.add('hidden');
+          sunMobile?.classList.remove('hidden');
+          moonMobile?.classList.add('hidden');
+        } else {
+          sunDesktop?.classList.add('hidden');
+          moonDesktop?.classList.remove('hidden');
+          sunMobile?.classList.add('hidden');
+          moonMobile?.classList.remove('hidden');
+        }
+      }
+
+      function toggleTheme() {
+        const current = localStorage.getItem(THEME_KEY) || 'dark';
+        const next = current === 'dark' ? 'light' : 'dark';
+
+        if (next === 'light') {
+          document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+        }
+
+        localStorage.setItem(THEME_KEY, next);
+        updateThemeIcons(next);
+      }
+
+      // Initialize icons on page load
+      document.addEventListener('DOMContentLoaded', () => {
+        const current = localStorage.getItem(THEME_KEY) || 'dark';
+        updateThemeIcons(current);
+
+        const desktopToggle = document.getElementById('theme-toggle-desktop');
+        const mobileToggle = document.getElementById('theme-toggle-mobile');
+
+        desktopToggle?.addEventListener('click', toggleTheme);
+        mobileToggle?.addEventListener('click', toggleTheme);
+      });
+
       // Mobile menu toggle
       const menuBtn = document.getElementById('mobile-menu-btn');
       const mobileMenu = document.getElementById('mobile-menu');
