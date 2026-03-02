@@ -7,6 +7,7 @@ export interface Tool {
   description: string;
   category: string;
   website: string;
+  color?: string;
   tags: string[];
 }
 
@@ -87,6 +88,7 @@ export function relativeTime(dateStr: string): string {
 export function getCategoryLabel(category: string): string {
   const labels: Record<string, string> = {
     cli: "CLI Tool",
+    ide: "IDE",
     "ide-extension": "IDE Extension",
     library: "Library",
     harness: "Agent Harness",

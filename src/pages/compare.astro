@@ -1,0 +1,84 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getTools, getAllToolReleases, getCategoryLabel } from "../lib/releases";
+
+const tools = getTools();
+const all = await getAllToolReleases();
+
+const rows = tools.map((tool) => {
+  const data = all.find((x) => x.tool.id === tool.id);
+  const releases = data?.releases ?? [];
+  const latest = releases[0];
+  const diffs:number[] = [];
+  for (let i = 1; i < Math.min(releases.length, 8); i++) {
+    const a = new Date(releases[i - 1].date).getTime();
+    const b = new Date(releases[i].date).getTime();
+    diffs.push(Math.max(1, Math.round((a - b) / 86400000)));
+  }
+  const avgDays = diffs.length ? Math.round(diffs.reduce((x,y)=>x+y,0)/diffs.length) : null;
+  return { tool, latest, total: releases.length, avgDays };
+});
+---
+
+<BaseLayout title="Compare Tools — changelogs.info" description="Compare AI coding tools by release velocity and activity.">
+  <section class="mx-auto max-w-6xl px-6 py-12">
+    <h1 class="text-3xl font-bold">Compare AI Coding Tools</h1>
+    <p class="mt-2 text-text-secondary">Release activity, freshness, and category at a glance.</p>
+
+    <div class="mt-6 flex flex-wrap gap-2" id="filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="cli">CLI</button>
+      <button class="filter-btn" data-filter="ide">IDE</button>
+      <button class="filter-btn" data-filter="ide-extension">Extensions</button>
+      <button class="filter-btn" data-filter="harness">Harnesses</button>
+    </div>
+
+    <div class="mt-6 overflow-x-auto rounded-xl border border-border">
+      <table class="min-w-full text-sm" id="compare-table">
+        <thead class="bg-bg-card">
+          <tr>
+            <th class="px-4 py-3 text-left">Tool</th>
+            <th class="px-4 py-3 text-left">Category</th>
+            <th class="px-4 py-3 text-left">Latest</th>
+            <th class="px-4 py-3 text-left">Last Updated</th>
+            <th class="px-4 py-3 text-left">Releases</th>
+            <th class="px-4 py-3 text-left">Avg cadence</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr class="border-t border-border row" data-category={r.tool.category}>
+              <td class="px-4 py-3">
+                <a class="font-medium hover:text-accent" href={`/tools/${r.tool.id}`}>{r.tool.name}</a>
+              </td>
+              <td class="px-4 py-3 text-text-secondary">{getCategoryLabel(r.tool.category)}</td>
+              <td class="px-4 py-3 font-mono text-green">{r.latest?.version ?? "—"}</td>
+              <td class="px-4 py-3 text-text-secondary">{r.latest ? new Date(r.latest.date).toLocaleDateString() : "—"}</td>
+              <td class="px-4 py-3">{r.total}</td>
+              <td class="px-4 py-3 text-text-secondary">{r.avgDays ? `~${r.avgDays} days` : "—"}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <script>
+    const buttons = document.querySelectorAll('.filter-btn');
+    const rows = document.querySelectorAll('.row');
+    buttons.forEach((btn) => btn.addEventListener('click', () => {
+      buttons.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.getAttribute('data-filter');
+      rows.forEach((r) => {
+        const ok = f === 'all' || r.getAttribute('data-category') === f;
+        r.style.display = ok ? '' : 'none';
+      });
+    }));
+  </script>
+
+  <style>
+    .filter-btn { padding:.35rem .75rem; border:1px solid var(--color-border); border-radius:.5rem; color:var(--color-text-secondary); }
+    .filter-btn.active { border-color: var(--color-accent); color: var(--color-accent); background: rgba(59,130,246,.08); }
+  </style>
+</BaseLayout>
