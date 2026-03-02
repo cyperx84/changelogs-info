@@ -1,0 +1,300 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getTools, getAllToolReleases, getCategoryLabel } from "../lib/releases";
+import type { Tool, Release } from "../lib/releases";
+
+const tools = getTools();
+
+// Get release data for each tool
+let releaseMap: Record<string, Release> = {};
+try {
+  const allReleases = await getAllToolReleases();
+  for (const tr of allReleases) {
+    const stable = tr.releases.find((r) => !r.prerelease);
+    if (stable) {
+      releaseMap[tr.tool.id] = stable;
+    } else if (tr.releases.length > 0) {
+      releaseMap[tr.tool.id] = tr.releases[0];
+    }
+  }
+} catch {
+  // No release data yet
+}
+
+// Get unique categories
+const categories = [...new Set(tools.map((t) => t.category))];
+---
+
+<BaseLayout
+  title="Compare AI Coding Tools — changelogs.info"
+  description="Side-by-side comparison of AI coding assistants: features, categories, and latest releases."
+>
+  <section class="mx-auto max-w-7xl px-6 py-12">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold tracking-tight md:text-4xl">
+        Compare Tools
+      </h1>
+      <p class="mt-2 text-text-secondary">
+        Side-by-side comparison of AI coding assistants
+      </p>
+    </div>
+
+    <!-- Filters -->
+    <div class="mb-6 flex flex-wrap items-center gap-3">
+      <span class="text-sm font-medium text-text-secondary">Filter by category:</span>
+      <button
+        data-category="all"
+        class="category-filter active rounded-lg border border-border bg-bg-card px-3 py-1.5 text-sm font-medium transition-all hover:border-border-hover hover:bg-bg-card-hover"
+      >
+        All
+      </button>
+      {categories.map((category) => (
+        <button
+          data-category={category}
+          class="category-filter rounded-lg border border-border bg-bg-card px-3 py-1.5 text-sm font-medium transition-all hover:border-border-hover hover:bg-bg-card-hover"
+        >
+          {getCategoryLabel(category)}
+        </button>
+      ))}
+    </div>
+
+    <!-- Comparison Matrix -->
+    <div class="overflow-x-auto rounded-lg border border-border">
+      <table class="w-full">
+        <thead class="border-b border-border bg-bg-secondary">
+          <tr>
+            <th class="sortable px-6 py-4 text-left text-sm font-semibold" data-sort="name">
+              <button class="flex items-center gap-2 hover:text-accent">
+                <span>Tool</span>
+                <span class="sort-indicator opacity-50">↕</span>
+              </button>
+            </th>
+            <th class="sortable px-6 py-4 text-left text-sm font-semibold" data-sort="category">
+              <button class="flex items-center gap-2 hover:text-accent">
+                <span>Category</span>
+                <span class="sort-indicator opacity-50">↕</span>
+              </button>
+            </th>
+            <th class="px-6 py-4 text-left text-sm font-semibold">
+              Description
+            </th>
+            <th class="sortable px-6 py-4 text-left text-sm font-semibold" data-sort="version">
+              <button class="flex items-center gap-2 hover:text-accent">
+                <span>Latest Release</span>
+                <span class="sort-indicator opacity-50">↕</span>
+              </button>
+            </th>
+            <th class="sortable px-6 py-4 text-left text-sm font-semibold" data-sort="date">
+              <button class="flex items-center gap-2 hover:text-accent">
+                <span>Release Date</span>
+                <span class="sort-indicator opacity-50">↕</span>
+              </button>
+            </th>
+          </tr>
+        </thead>
+        <tbody id="comparison-table">
+          {tools.map((tool) => {
+            const release = releaseMap[tool.id];
+            return (
+              <tr
+                class="tool-row border-b border-border transition-colors hover:bg-bg-card-hover"
+                data-category={tool.category}
+                data-name={tool.name}
+                data-category-value={tool.category}
+                data-version={release?.version || ""}
+                data-date={release?.date || ""}
+              >
+                <td class="px-6 py-4">
+                  <a href={`/tools/${tool.id}`} class="flex items-center gap-2 font-medium text-text-primary hover:text-accent">
+                    <span class="text-accent">&gt;</span>
+                    {tool.name}
+                  </a>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="inline-block rounded-full border border-border bg-bg-tertiary px-2.5 py-0.5 text-xs font-medium">
+                    {getCategoryLabel(tool.category)}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-sm text-text-secondary">
+                  {tool.description}
+                </td>
+                <td class="px-6 py-4">
+                  {release ? (
+                    <a href={release.url} target="_blank" rel="noopener noreferrer" class="font-mono text-sm text-green hover:text-accent">
+                      {release.version}
+                    </a>
+                  ) : (
+                    <span class="text-sm text-text-muted">—</span>
+                  )}
+                </td>
+                <td class="px-6 py-4 text-sm text-text-muted">
+                  {release ? new Date(release.date).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric"
+                  }) : "—"}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Legend -->
+    <div class="mt-6 flex items-center gap-6 text-sm text-text-muted">
+      <p>
+        <span class="font-medium text-text-secondary">{tools.length}</span> tools tracked
+      </p>
+      <p>
+        Click column headers to sort
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // Filter functionality
+  const filterButtons = document.querySelectorAll('.category-filter');
+  const toolRows = document.querySelectorAll('.tool-row');
+
+  filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const category = button.getAttribute('data-category');
+
+      // Update active state
+      filterButtons.forEach(btn => btn.classList.remove('active', 'border-accent', 'bg-accent/10', 'text-accent'));
+      button.classList.add('active', 'border-accent', 'bg-accent/10', 'text-accent');
+
+      // Filter rows
+      toolRows.forEach(row => {
+        const rowCategory = row.getAttribute('data-category');
+        if (category === 'all' || rowCategory === category) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // Sorting functionality
+  let currentSort = { column: '', direction: 'asc' };
+
+  const sortableHeaders = document.querySelectorAll('.sortable');
+
+  sortableHeaders.forEach(header => {
+    const button = header.querySelector('button');
+    if (!button) return;
+
+    button.addEventListener('click', () => {
+      const sortKey = header.getAttribute('data-sort');
+      if (!sortKey) return;
+
+      // Toggle direction if same column, otherwise reset to asc
+      if (currentSort.column === sortKey) {
+        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentSort.column = sortKey;
+        currentSort.direction = 'asc';
+      }
+
+      // Update sort indicators
+      sortableHeaders.forEach(h => {
+        const indicator = h.querySelector('.sort-indicator');
+        if (indicator) {
+          if (h === header) {
+            indicator.textContent = currentSort.direction === 'asc' ? '↑' : '↓';
+            indicator.classList.remove('opacity-50');
+            indicator.classList.add('text-accent');
+          } else {
+            indicator.textContent = '↕';
+            indicator.classList.add('opacity-50');
+            indicator.classList.remove('text-accent');
+          }
+        }
+      });
+
+      // Sort rows
+      const tbody = document.getElementById('comparison-table');
+      if (!tbody) return;
+
+      const rows = Array.from(tbody.querySelectorAll('.tool-row'));
+
+      rows.sort((a, b) => {
+        let aVal = '';
+        let bVal = '';
+
+        switch (sortKey) {
+          case 'name':
+            aVal = a.getAttribute('data-name') || '';
+            bVal = b.getAttribute('data-name') || '';
+            break;
+          case 'category':
+            aVal = a.getAttribute('data-category-value') || '';
+            bVal = b.getAttribute('data-category-value') || '';
+            break;
+          case 'version':
+            aVal = a.getAttribute('data-version') || '';
+            bVal = b.getAttribute('data-version') || '';
+            break;
+          case 'date':
+            aVal = a.getAttribute('data-date') || '';
+            bVal = b.getAttribute('data-date') || '';
+            break;
+        }
+
+        // Handle date sorting
+        if (sortKey === 'date') {
+          const aDate = aVal ? new Date(aVal).getTime() : 0;
+          const bDate = bVal ? new Date(bVal).getTime() : 0;
+          return currentSort.direction === 'asc' ? aDate - bDate : bDate - aDate;
+        }
+
+        // Handle version sorting (simple string comparison for now)
+        if (sortKey === 'version') {
+          // Move empty values to the end
+          if (!aVal && bVal) return 1;
+          if (aVal && !bVal) return -1;
+          if (!aVal && !bVal) return 0;
+        }
+
+        // String comparison
+        const comparison = aVal.localeCompare(bVal);
+        return currentSort.direction === 'asc' ? comparison : -comparison;
+      });
+
+      // Reappend rows in sorted order
+      rows.forEach(row => tbody.appendChild(row));
+    });
+  });
+
+  // Set default active filter
+  const allFilter = document.querySelector('[data-category="all"]');
+  if (allFilter) {
+    allFilter.classList.add('border-accent', 'bg-accent/10', 'text-accent');
+  }
+</script>
+
+<style>
+  .category-filter.active {
+    border-color: var(--color-accent);
+    background-color: rgba(99, 102, 241, 0.1);
+    color: var(--color-accent);
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+
+  .sortable button {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .sort-indicator {
+    transition: all 0.2s;
+    font-size: 0.875rem;
+  }
+</style>
