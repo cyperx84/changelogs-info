@@ -92,4 +92,72 @@ try {
       </div>
     )}
   </section>
+
+  <!-- Newsletter signup -->
+  <section class="border-t border-border">
+    <div class="mx-auto max-w-6xl px-6 py-16">
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-2xl font-bold tracking-tight">Stay Updated</h2>
+        <p class="mt-3 text-text-secondary">
+          Get weekly digests of the latest AI coding tool releases delivered to your inbox.
+        </p>
+        <form class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center" id="newsletter-form">
+          <input
+            type="email"
+            name="email"
+            placeholder="your@email.com"
+            required
+            class="rounded-lg border border-border bg-bg-card px-4 py-3 text-sm transition-colors placeholder:text-text-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 sm:w-80"
+          />
+          <button
+            type="submit"
+            class="rounded-lg bg-accent px-6 py-3 text-sm font-medium text-bg-primary transition-all hover:bg-accent/90 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
+          >
+            Subscribe
+          </button>
+        </form>
+        <p class="mt-3 text-xs text-text-muted">
+          No spam. Unsubscribe anytime.
+        </p>
+        <div id="newsletter-message" class="mt-4 hidden rounded-lg p-3 text-sm"></div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const form = document.getElementById('newsletter-form') as HTMLFormElement;
+    const message = document.getElementById('newsletter-message') as HTMLDivElement;
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const email = formData.get('email') as string;
+
+      // Show loading state
+      const button = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+      const originalText = button.textContent;
+      button.textContent = 'Subscribing...';
+      button.disabled = true;
+
+      try {
+        // TODO: Replace with actual newsletter service endpoint
+        // For now, just show success message
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        message.textContent = '✓ Thanks for subscribing! Check your email to confirm.';
+        message.className = 'mt-4 rounded-lg bg-green/10 border border-green/20 p-3 text-sm text-green';
+        message.classList.remove('hidden');
+
+        form.reset();
+      } catch (error) {
+        message.textContent = '✗ Something went wrong. Please try again.';
+        message.className = 'mt-4 rounded-lg bg-red/10 border border-red/20 p-3 text-sm text-red';
+        message.classList.remove('hidden');
+      } finally {
+        button.textContent = originalText;
+        button.disabled = false;
+      }
+    });
+  </script>
 </BaseLayout>

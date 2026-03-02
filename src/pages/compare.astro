@@ -1,0 +1,194 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getTools, getCategoryLabel } from "../lib/releases";
+
+const tools = getTools();
+
+// Get unique categories
+const categories = [...new Set(tools.map(t => t.category))].sort();
+---
+
+<BaseLayout title="Compare AI Coding Tools — changelogs.info">
+  <section class="mx-auto max-w-7xl px-6 py-12">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold tracking-tight">Compare Tools</h1>
+      <p class="mt-2 text-text-secondary">Side-by-side comparison of all tracked AI coding tools</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="mb-6 flex flex-wrap gap-2">
+      <span class="text-sm text-text-muted">Filter by category:</span>
+      <button
+        class="category-filter rounded-lg border border-border bg-bg-card px-3 py-1 text-sm transition-all hover:border-border-hover hover:bg-bg-card-hover data-[active=true]:border-accent data-[active=true]:bg-accent/10"
+        data-category="all"
+        data-active="true"
+      >
+        All ({tools.length})
+      </button>
+      {categories.map(cat => {
+        const count = tools.filter(t => t.category === cat).length;
+        return (
+          <button
+            class="category-filter rounded-lg border border-border bg-bg-card px-3 py-1 text-sm transition-all hover:border-border-hover hover:bg-bg-card-hover data-[active=true]:border-accent data-[active=true]:bg-accent/10"
+            data-category={cat}
+            data-active="false"
+          >
+            {getCategoryLabel(cat)} ({count})
+          </button>
+        );
+      })}
+    </div>
+
+    <!-- Comparison Table -->
+    <div class="overflow-x-auto rounded-xl border border-border">
+      <table class="w-full">
+        <thead class="border-b border-border bg-bg-secondary">
+          <tr>
+            <th class="sortable cursor-pointer px-6 py-4 text-left text-sm font-semibold transition-colors hover:bg-bg-tertiary" data-sort="name">
+              <div class="flex items-center gap-2">
+                <span>Tool</span>
+                <span class="sort-indicator text-xs text-text-muted">↕</span>
+              </div>
+            </th>
+            <th class="sortable cursor-pointer px-6 py-4 text-left text-sm font-semibold transition-colors hover:bg-bg-tertiary" data-sort="category">
+              <div class="flex items-center gap-2">
+                <span>Category</span>
+                <span class="sort-indicator text-xs text-text-muted">↕</span>
+              </div>
+            </th>
+            <th class="px-6 py-4 text-left text-sm font-semibold">
+              Description
+            </th>
+            <th class="px-6 py-4 text-left text-sm font-semibold">
+              Links
+            </th>
+          </tr>
+        </thead>
+        <tbody id="tools-table-body">
+          {tools.map(tool => (
+            <tr
+              class="tool-row border-b border-border transition-colors hover:bg-bg-card-hover"
+              data-category={tool.category}
+            >
+              <td class="px-6 py-4">
+                <a
+                  href={`/tools/${tool.id}`}
+                  class="font-medium text-text-primary hover:text-accent"
+                >
+                  {tool.name}
+                </a>
+              </td>
+              <td class="px-6 py-4">
+                <span class="inline-flex rounded-md bg-bg-tertiary px-2 py-1 text-xs font-medium text-text-secondary">
+                  {getCategoryLabel(tool.category)}
+                </span>
+              </td>
+              <td class="px-6 py-4 text-sm text-text-secondary">
+                {tool.description}
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex gap-2">
+                  <a
+                    href={tool.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-xs text-accent hover:underline"
+                  >
+                    Website
+                  </a>
+                  <span class="text-text-muted">·</span>
+                  <a
+                    href={`https://github.com/${tool.repo}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-xs text-accent hover:underline"
+                  >
+                    GitHub
+                  </a>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <script>
+    // Category filtering
+    const categoryFilters = document.querySelectorAll('.category-filter');
+    const toolRows = document.querySelectorAll('.tool-row');
+
+    categoryFilters.forEach(filter => {
+      filter.addEventListener('click', () => {
+        const category = filter.getAttribute('data-category');
+
+        // Update active states
+        categoryFilters.forEach(f => f.setAttribute('data-active', 'false'));
+        filter.setAttribute('data-active', 'true');
+
+        // Filter rows
+        toolRows.forEach(row => {
+          if (category === 'all' || row.getAttribute('data-category') === category) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Table sorting
+    let currentSort = { column: null, direction: 'asc' };
+
+    const sortableHeaders = document.querySelectorAll('.sortable');
+    const tableBody = document.getElementById('tools-table-body');
+
+    sortableHeaders.forEach(header => {
+      header.addEventListener('click', () => {
+        const sortBy = header.getAttribute('data-sort');
+
+        // Toggle direction if clicking same column
+        if (currentSort.column === sortBy) {
+          currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+        } else {
+          currentSort.column = sortBy;
+          currentSort.direction = 'asc';
+        }
+
+        // Update sort indicators
+        sortableHeaders.forEach(h => {
+          const indicator = h.querySelector('.sort-indicator');
+          if (h === header) {
+            indicator.textContent = currentSort.direction === 'asc' ? '↑' : '↓';
+          } else {
+            indicator.textContent = '↕';
+          }
+        });
+
+        // Sort rows
+        const rows = Array.from(tableBody.querySelectorAll('.tool-row'));
+        rows.sort((a, b) => {
+          let aVal, bVal;
+
+          if (sortBy === 'name') {
+            aVal = a.querySelector('a').textContent.trim().toLowerCase();
+            bVal = b.querySelector('a').textContent.trim().toLowerCase();
+          } else if (sortBy === 'category') {
+            aVal = a.querySelector('span').textContent.trim().toLowerCase();
+            bVal = b.querySelector('span').textContent.trim().toLowerCase();
+          }
+
+          if (currentSort.direction === 'asc') {
+            return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+          } else {
+            return aVal > bVal ? -1 : aVal < bVal ? 1 : 0;
+          }
+        });
+
+        // Re-append rows in sorted order
+        rows.forEach(row => tableBody.appendChild(row));
+      });
+    });
+  </script>
+</BaseLayout>

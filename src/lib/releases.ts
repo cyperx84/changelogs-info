@@ -88,6 +88,9 @@ export function getCategoryLabel(category: string): string {
   const labels: Record<string, string> = {
     cli: "CLI Tool",
     "ide-extension": "IDE Extension",
+    ide: "IDE",
+    "web-platform": "Web Platform",
+    "autonomous-agent": "Autonomous Agent",
     library: "Library",
     harness: "Agent Harness",
   };

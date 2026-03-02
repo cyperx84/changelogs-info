@@ -1,0 +1,395 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const configs = [
+  {
+    id: "claude-code-settings",
+    title: "Claude Code Settings",
+    description: "Recommended settings.json for Claude Code",
+    language: "json",
+    filename: ".claude/settings.json",
+    code: `{
+  "permissions": {
+    "mode": "default",
+    "alwaysAllowedTools": ["Read", "Grep", "Glob"],
+    "alwaysAllowedBashPrefixes": ["git status", "git diff", "ls", "cat"]
+  },
+  "editor": {
+    "preferredExternalEditor": "cursor",
+    "autoOpen": false
+  },
+  "model": {
+    "default": "claude-sonnet-4-5"
+  },
+  "memory": {
+    "enabled": true,
+    "autoSave": true
+  },
+  "hooks": {
+    "PreToolUse": [],
+    "PostToolUse": [],
+    "Notification": [],
+    "Stop": []
+  }
+}`
+  },
+  {
+    id: "claude-code-claudemd",
+    title: "Claude Code CLAUDE.md",
+    description: "Project instructions template for Claude Code",
+    language: "markdown",
+    filename: "CLAUDE.md",
+    code: `# Project: [Project Name]
+
+## Overview
+Brief description of what this project does.
+
+## Architecture
+- Frontend: [Framework]
+- Backend: [Framework]
+- Database: [Database]
+- Deployment: [Platform]
+
+## Development Guidelines
+
+### Code Style
+- Use TypeScript for all new code
+- Follow ESLint configuration
+- Write tests for new features
+- Document complex logic
+
+### Git Workflow
+- Create feature branches from main
+- Use conventional commits (feat:, fix:, docs:, etc.)
+- Squash commits before merging
+- Request code review before merging
+
+### Testing
+- Run \`pnpm test\` before committing
+- Maintain >80% code coverage
+- Write integration tests for API endpoints
+
+## Important Notes
+- Never commit .env files
+- Always run migrations before schema changes
+- Check TypeScript types with \`pnpm typecheck\`
+
+## Useful Commands
+- \`pnpm dev\` - Start development server
+- \`pnpm build\` - Build for production
+- \`pnpm test\` - Run test suite
+- \`pnpm lint\` - Lint and format code`
+  },
+  {
+    id: "aider-config",
+    title: "Aider Configuration",
+    description: "Recommended .aider.conf.yml settings",
+    language: "yaml",
+    filename: ".aider.conf.yml",
+    code: `# Model Configuration
+model: claude-sonnet-4-5
+# Options: gpt-4-turbo, claude-opus-4, claude-sonnet-4-5, deepseek-coder
+
+# Edit Format
+edit-format: diff
+# Options: diff, whole, udiff
+
+# Git Integration
+auto-commits: true
+dirty-commits: false
+attribute-author: true
+attribute-committer: false
+
+# Context Management
+map-tokens: 1024
+read: []
+
+# Environment
+env-file: .env
+
+# Code Quality
+lint: true
+test: false
+
+# Performance
+cache-prompts: true
+stream: true`
+  },
+  {
+    id: "continue-config",
+    title: "Continue Configuration",
+    description: "config.json for Continue extension",
+    language: "json",
+    filename: ".continue/config.json",
+    code: `{
+  "models": [
+    {
+      "title": "Claude Sonnet",
+      "provider": "anthropic",
+      "model": "claude-sonnet-4-5",
+      "apiKey": ""
+    },
+    {
+      "title": "GPT-4 Turbo",
+      "provider": "openai",
+      "model": "gpt-4-turbo",
+      "apiKey": ""
+    }
+  ],
+  "tabAutocompleteModel": {
+    "title": "Codestral",
+    "provider": "mistral",
+    "model": "codestral-latest"
+  },
+  "embeddingsProvider": {
+    "provider": "openai",
+    "model": "text-embedding-3-small"
+  },
+  "contextProviders": [
+    {
+      "name": "code",
+      "params": {}
+    },
+    {
+      "name": "docs",
+      "params": {}
+    },
+    {
+      "name": "diff",
+      "params": {}
+    },
+    {
+      "name": "terminal",
+      "params": {}
+    },
+    {
+      "name": "problems",
+      "params": {}
+    },
+    {
+      "name": "codebase",
+      "params": {}
+    }
+  ],
+  "slashCommands": [
+    {
+      "name": "edit",
+      "description": "Edit selected code"
+    },
+    {
+      "name": "comment",
+      "description": "Write comments for the code"
+    },
+    {
+      "name": "share",
+      "description": "Export chat to markdown"
+    },
+    {
+      "name": "cmd",
+      "description": "Generate a shell command"
+    }
+  ]
+}`
+  },
+  {
+    id: "cline-settings",
+    title: "Cline VS Code Settings",
+    description: "VS Code settings.json for Cline",
+    language: "json",
+    filename: ".vscode/settings.json (Cline section)",
+    code: `{
+  "cline.apiProvider": "anthropic",
+  "cline.anthropicApiKey": "",
+  "cline.defaultModel": "claude-sonnet-4-5",
+  "cline.temperature": 0.7,
+  "cline.maxTokens": 8192,
+  "cline.alwaysApproveWrite": false,
+  "cline.alwaysApproveExecute": false,
+  "cline.browserEnabled": true,
+  "cline.autoSummarize": true,
+  "cline.gitAutoPush": false
+}`
+  },
+  {
+    id: "gitignore-ai",
+    title: ".gitignore for AI Tools",
+    description: "Common patterns to exclude from version control",
+    language: "text",
+    filename: ".gitignore",
+    code: `# AI Tool Directories
+.claude/
+.aider/
+.continue/
+.cline/
+
+# API Keys and Secrets
+.env
+.env.local
+*.key
+*-key.txt
+
+# AI Conversation History
+.aider.chat.history.md
+.claude-chat-history/
+conversation-*.json
+
+# Model Cache
+.model-cache/
+.embeddings/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Dependencies
+node_modules/
+venv/
+.venv/
+
+# Build Output
+dist/
+build/
+out/
+*.log`
+  },
+  {
+    id: "openclaw-config",
+    title: "OpenClaw Configuration",
+    description: "openclaw.config.yml template",
+    language: "yaml",
+    filename: "openclaw.config.yml",
+    code: `# Model Configuration
+models:
+  default: gpt-4-turbo
+  providers:
+    openai:
+      apiKey: \${OPENAI_API_KEY}
+    anthropic:
+      apiKey: \${ANTHROPIC_API_KEY}
+
+# Agents
+agents:
+  - name: coder
+    model: gpt-4-turbo
+    systemPrompt: "You are an expert programmer. Write clean, maintainable code."
+    tools: [file, shell, browser]
+    temperature: 0.7
+
+  - name: reviewer
+    model: claude-opus-4
+    systemPrompt: "You are a code reviewer. Focus on bugs, security, and best practices."
+    tools: [file-read, browser]
+    temperature: 0.3
+
+# Plugins
+plugins:
+  - name: "@openclaw/git"
+    enabled: true
+  - name: "@openclaw/docker"
+    enabled: false
+
+# Server
+server:
+  port: 3000
+  host: localhost
+  cors: true
+
+# Security
+security:
+  allowedTools: [file, shell, browser]
+  sandbox:
+    enabled: true
+    timeout: 30000`
+  },
+  {
+    id: "cursor-settings",
+    title: "Cursor Settings",
+    description: "Recommended Cursor IDE settings",
+    language: "json",
+    filename: ".cursor/settings.json",
+    code: `{
+  "cursor.ai.model": "claude-sonnet-4-5",
+  "cursor.ai.temperature": 0.7,
+  "cursor.ai.maxTokens": 4096,
+  "cursor.chat.enabled": true,
+  "cursor.composer.enabled": true,
+  "cursor.autoSave": "afterDelay",
+  "cursor.autoSaveDelay": 1000,
+  "cursor.telemetry.enabled": false,
+  "editor.inlineSuggest.enabled": true,
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": true,
+    "strings": true
+  }
+}`
+  }
+];
+---
+
+<BaseLayout title="Config Templates — changelogs.info">
+  <section class="mx-auto max-w-6xl px-6 py-12">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold tracking-tight">Config Templates</h1>
+      <p class="mt-2 text-text-secondary">
+        Copy-paste configuration templates for popular AI coding tools
+      </p>
+    </div>
+
+    <div class="space-y-6">
+      {configs.map((config) => (
+        <div class="rounded-xl border border-border bg-bg-card">
+          <div class="border-b border-border px-6 py-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-lg font-semibold">{config.title}</h2>
+                <p class="mt-1 text-sm text-text-secondary">{config.description}</p>
+              </div>
+              <button
+                class="copy-btn rounded-lg border border-border bg-bg-secondary px-4 py-2 text-sm font-medium transition-all hover:border-border-hover hover:bg-bg-tertiary"
+                data-code={config.code}
+              >
+                Copy
+              </button>
+            </div>
+            <p class="mt-2 font-mono text-xs text-text-muted">{config.filename}</p>
+          </div>
+          <div class="p-6">
+            <pre class="overflow-x-auto rounded-lg bg-bg-tertiary p-4"><code class={`language-${config.language} text-sm`}>{config.code}</code></pre>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <script>
+    const copyButtons = document.querySelectorAll('.copy-btn');
+
+    copyButtons.forEach(button => {
+      button.addEventListener('click', async () => {
+        const code = button.getAttribute('data-code');
+        if (!code) return;
+
+        try {
+          await navigator.clipboard.writeText(code);
+          const originalText = button.textContent;
+          button.textContent = 'Copied!';
+          button.classList.add('border-green', 'text-green');
+
+          setTimeout(() => {
+            button.textContent = originalText;
+            button.classList.remove('border-green', 'text-green');
+          }, 2000);
+        } catch (err) {
+          console.error('Failed to copy:', err);
+        }
+      });
+    });
+  </script>
+</BaseLayout>

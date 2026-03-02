@@ -27,6 +27,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL} />
+
+    <!-- Plausible Analytics -->
+    <script defer data-domain="changelogs.info" src="https://plausible.io/js/script.js"></script>
   </head>
   <body class="min-h-screen bg-bg-primary text-text-primary">
     <nav class="sticky top-0 z-50 border-b border-border bg-bg-primary/80 backdrop-blur-xl">
@@ -35,9 +38,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
           <span class="text-accent">&gt;_</span>
           <span>changelogs.info</span>
         </a>
-        <div class="flex items-center gap-4">
-          <a href="/" class="text-sm text-text-secondary transition-colors hover:text-text-primary">Tools</a>
-          <a href="/feed/all.xml" class="text-sm text-text-secondary transition-colors hover:text-text-primary">RSS</a>
+        <div class="flex items-center gap-6">
+          <a href="/" class="text-sm font-medium text-text-secondary transition-colors hover:text-text-primary">Tools</a>
+          <a href="/compare" class="text-sm font-medium text-text-secondary transition-colors hover:text-text-primary">Compare</a>
+          <a href="/configs" class="text-sm font-medium text-text-secondary transition-colors hover:text-text-primary">Configs</a>
+          <a href="/feed/all.xml" class="text-sm font-medium text-text-secondary transition-colors hover:text-text-primary">RSS</a>
           <Search />
         </div>
       </div>
@@ -47,14 +52,45 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       <slot />
     </main>
 
-    <footer class="border-t border-border">
-      <div class="mx-auto max-w-6xl px-6 py-8">
-        <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
+    <footer class="border-t border-border bg-bg-secondary">
+      <div class="mx-auto max-w-6xl px-6 py-12">
+        <div class="grid gap-8 md:grid-cols-3">
+          <!-- About -->
+          <div>
+            <div class="mb-3 flex items-center gap-2 font-bold">
+              <span class="text-accent">&gt;_</span>
+              <span>changelogs.info</span>
+            </div>
+            <p class="text-sm leading-relaxed text-text-muted">
+              Track changelogs and releases for the best AI coding tools. Stay updated with the latest features, fixes, and breaking changes.
+            </p>
+          </div>
+
+          <!-- Quick Links -->
+          <div>
+            <h3 class="mb-3 text-sm font-semibold">Quick Links</h3>
+            <ul class="space-y-2 text-sm">
+              <li><a href="/" class="text-text-muted transition-colors hover:text-text-primary">All Tools</a></li>
+              <li><a href="/compare" class="text-text-muted transition-colors hover:text-text-primary">Compare Tools</a></li>
+              <li><a href="/configs" class="text-text-muted transition-colors hover:text-text-primary">Config Templates</a></li>
+              <li><a href="/feed/all.xml" class="text-text-muted transition-colors hover:text-text-primary">RSS Feed</a></li>
+            </ul>
+          </div>
+
+          <!-- Resources -->
+          <div>
+            <h3 class="mb-3 text-sm font-semibold">Resources</h3>
+            <ul class="space-y-2 text-sm">
+              <li><a href="https://github.com" class="text-text-muted transition-colors hover:text-text-primary" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+              <li><span class="text-text-muted">Data sourced from GitHub Releases</span></li>
+              <li><span class="text-text-muted">Updated daily</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-8 border-t border-border pt-8 text-center">
           <p class="text-sm text-text-muted">
-            <span class="text-accent">&gt;_</span> changelogs.info — AI coding tool release tracker
-          </p>
-          <p class="text-sm text-text-muted">
-            Data sourced from GitHub Releases
+            © {new Date().getFullYear()} changelogs.info — All rights reserved
           </p>
         </div>
       </div>
