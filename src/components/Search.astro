@@ -3,35 +3,44 @@
 
 <button
   id="search-btn"
-  class="flex items-center gap-2 rounded-lg border border-border bg-bg-tertiary px-3 py-1.5 text-sm text-text-muted transition-colors hover:border-border-hover hover:text-text-secondary"
+  class="flex items-center gap-2 rounded border border-border bg-bg-tertiary px-3 py-1.5 font-mono text-sm text-text-muted transition-all hover:border-green hover:text-text-secondary"
   aria-label="Search"
 >
   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
     <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
   </svg>
-  <span class="hidden sm:inline">Search</span>
-  <kbd class="hidden rounded border border-border bg-bg-secondary px-1.5 py-0.5 font-mono text-xs sm:inline">&CtrlKey;K</kbd>
+  <span class="hidden sm:inline">search</span>
+  <kbd class="hidden rounded border border-border bg-bg-secondary px-1.5 py-0.5 font-mono text-xs text-green sm:inline">⌃K</kbd>
 </button>
 
 <div id="search-overlay" class="fixed inset-0 z-[100] hidden">
-  <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="search-backdrop"></div>
+  <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" id="search-backdrop"></div>
   <div class="relative mx-auto mt-[15vh] max-w-xl px-4">
-    <div class="rounded-xl border border-border bg-bg-primary shadow-2xl">
+    <div class="rounded-lg border border-green/30 bg-bg-primary shadow-2xl shadow-green/10">
+      <!-- Terminal title bar -->
+      <div class="border-b border-border px-3 py-2 font-mono text-xs text-text-muted">
+        <span class="text-green">●●●</span>
+        <span class="ml-2">search.sh</span>
+      </div>
+
+      <!-- Search input -->
       <div class="flex items-center gap-3 border-b border-border px-4 py-3">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
+        <span class="font-mono text-sm text-green">$</span>
         <input
           id="search-input"
           type="text"
-          placeholder="Search changelogs..."
-          class="flex-1 bg-transparent text-sm text-text-primary placeholder-text-muted outline-none"
+          placeholder="search changelogs..."
+          class="flex-1 bg-transparent font-mono text-sm text-text-primary placeholder-text-muted outline-none"
           autocomplete="off"
         />
         <kbd class="rounded border border-border bg-bg-secondary px-1.5 py-0.5 font-mono text-xs text-text-muted">ESC</kbd>
       </div>
+
+      <!-- Results -->
       <div id="search-results" class="max-h-[50vh] overflow-y-auto p-2">
-        <p class="px-3 py-6 text-center text-sm text-text-muted">Type to search...</p>
+        <p class="px-3 py-6 text-center font-mono text-sm text-text-muted">
+          <span class="text-green">#</span> type to search...
+        </p>
       </div>
     </div>
   </div>
@@ -65,7 +74,7 @@
       overlay.classList.remove("hidden");
       input.value = "";
       input.focus();
-      results.innerHTML = '<p class="px-3 py-6 text-center text-sm text-text-muted">Type to search...</p>';
+      results.innerHTML = '<p class="px-3 py-6 text-center font-mono text-sm text-text-muted"><span class="text-green">#</span> type to search...</p>';
       loadPagefind();
     }
 
@@ -91,19 +100,19 @@
       debounceTimer = setTimeout(async () => {
         const query = input.value.trim();
         if (!query) {
-          results.innerHTML = '<p class="px-3 py-6 text-center text-sm text-text-muted">Type to search...</p>';
+          results.innerHTML = '<p class="px-3 py-6 text-center font-mono text-sm text-text-muted"><span class="text-green">#</span> type to search...</p>';
           return;
         }
 
         const pf = await loadPagefind();
         if (!pf) {
-          results.innerHTML = '<p class="px-3 py-6 text-center text-sm text-text-muted">Search index not available. Run build first.</p>';
+          results.innerHTML = '<p class="px-3 py-6 text-center font-mono text-sm text-text-muted"><span class="text-red">ERROR:</span> search index not available</p>';
           return;
         }
 
         const search = await pf.search(query);
         if (search.results.length === 0) {
-          results.innerHTML = '<p class="px-3 py-6 text-center text-sm text-text-muted">No results found.</p>';
+          results.innerHTML = '<p class="px-3 py-6 text-center font-mono text-sm text-text-muted"><span class="text-amber">!</span> no results found</p>';
           return;
         }
 
@@ -111,9 +120,9 @@
         results.innerHTML = items
           .map(
             (item: any) => `
-            <a href="${item.url}" class="block rounded-lg px-3 py-2 transition-colors hover:bg-bg-tertiary">
-              <p class="text-sm font-medium text-text-primary">${item.meta?.title || item.url}</p>
-              <p class="mt-0.5 text-xs text-text-muted line-clamp-2">${item.excerpt}</p>
+            <a href="${item.url}" class="block rounded border border-transparent px-3 py-2 transition-all hover:border-green hover:bg-bg-tertiary/50">
+              <p class="font-mono text-sm font-medium text-green">${item.meta?.title || item.url}</p>
+              <p class="mt-1 font-sans text-xs text-text-muted line-clamp-2">${item.excerpt}</p>
             </a>
           `
           )

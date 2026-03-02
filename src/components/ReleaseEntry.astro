@@ -13,40 +13,45 @@ const versionSlug = encodeURIComponent(release.version.replace(/^v/, ""));
 const bodyHtml = release.body ? markdownToHtml(release.body) : "";
 ---
 
-<article class="relative border-l-2 border-border pl-6 pb-8 last:pb-0">
-  <!-- Timeline dot -->
-  <div class="absolute -left-[7px] top-0.5 h-3 w-3 rounded-full border-2 border-accent bg-bg-primary"></div>
+<article class="relative border-l-2 border-green/30 pl-6 pb-8 last:pb-0">
+  <!-- Terminal timeline marker -->
+  <div class="absolute -left-[5px] top-1 h-2 w-2 rounded-sm bg-green"></div>
 
-  <div class="mb-2 flex flex-wrap items-center gap-3">
-    <span class="font-mono text-base font-semibold text-green">{release.version}</span>
+  <div class="mb-3 flex flex-wrap items-center gap-3">
+    <span class="font-mono text-base font-bold text-green">{release.version}</span>
     {release.prerelease && (
-      <span class="rounded-full border border-amber/30 bg-amber/10 px-2 py-0.5 text-xs text-amber">
-        pre-release
+      <span class="rounded border border-amber bg-amber/10 px-2 py-0.5 font-mono text-xs text-amber">
+        pre
       </span>
     )}
-    <span class="text-xs text-text-muted" title={formatDate(release.date)}>
-      {formatDate(release.date)} ({relativeTime(release.date)})
+    <span class="font-mono text-xs text-text-muted" title={formatDate(release.date)}>
+      [{formatDate(release.date)}]
+    </span>
+    <span class="hidden font-mono text-xs text-text-muted sm:inline">
+      ({relativeTime(release.date)})
     </span>
     {toolId && (
       <a
         href={`/tools/${toolId}/changelog/${versionSlug}`}
-        class="text-xs text-text-muted transition-colors hover:text-accent"
+        class="font-mono text-xs text-cyan transition-colors hover:text-cyan/80"
       >
-        Details
+        details →
       </a>
     )}
     <a
       href={release.url}
       target="_blank"
       rel="noopener noreferrer"
-      class="ml-auto text-xs text-text-muted transition-colors hover:text-accent"
+      class="ml-auto font-mono text-xs text-accent transition-colors hover:text-accent-hover"
     >
-      View on GitHub &rarr;
+      github →
     </a>
   </div>
 
   {release.name && release.name !== release.version && (
-    <h3 class="mb-2 text-sm font-medium text-text-primary">{release.name}</h3>
+    <h3 class="mb-3 font-mono text-sm font-medium text-text-primary">
+      <span class="text-green">#</span> {release.name}
+    </h3>
   )}
 
   {bodyHtml && (

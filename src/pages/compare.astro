@@ -90,56 +90,66 @@ const rows: ToolMetrics[] = tools.map((tool) => {
 
 <BaseLayout title="Compare Tools — changelogs.info" description="Compare AI coding tools by release velocity, stability, and momentum.">
   <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
-    <h1 class="text-2xl font-bold sm:text-3xl">Compare AI Coding Tools</h1>
-    <p class="mt-2 text-sm text-text-secondary sm:text-base">Intelligent metrics: velocity, stability, and momentum analysis.</p>
+    <h1 class="font-mono text-xl font-bold text-green sm:text-2xl md:text-3xl">
+      <span class="text-green">/</span>compare
+    </h1>
+    <p class="mt-2 font-mono text-xs text-text-secondary sm:text-sm md:text-base">
+      <span class="text-green">#</span> intelligent metrics: velocity, stability, momentum
+    </p>
 
     <div class="mt-6 flex flex-wrap gap-2" id="filters">
-      <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="cli">CLI</button>
-      <button class="filter-btn" data-filter="ide">IDE</button>
-      <button class="filter-btn" data-filter="ide-extension">Extensions</button>
-      <button class="filter-btn" data-filter="harness">Harnesses</button>
+      <button class="filter-btn active" data-filter="all">all</button>
+      <button class="filter-btn" data-filter="cli">--cli</button>
+      <button class="filter-btn" data-filter="ide">--ide</button>
+      <button class="filter-btn" data-filter="ide-extension">--ext</button>
+      <button class="filter-btn" data-filter="harness">--harness</button>
     </div>
 
-    <div class="mt-6 overflow-x-auto rounded-xl border border-border">
-      <table class="min-w-full text-xs sm:text-sm" id="compare-table">
-        <thead class="bg-bg-card">
+    <div class="mt-6 overflow-x-auto rounded-lg border border-border bg-bg-card">
+      <!-- Terminal title bar -->
+      <div class="border-b border-border px-3 py-2 font-mono text-xs text-text-muted sm:px-4">
+        <span class="text-green">●●●</span>
+        <span class="ml-2">metrics.tbl</span>
+      </div>
+
+      <table class="min-w-full font-mono text-xs sm:text-sm" id="compare-table">
+        <thead class="border-b border-border bg-bg-secondary/50">
           <tr>
-            <th class="sortable px-2 py-2 text-left cursor-pointer select-none sm:px-4 sm:py-3" data-sort="rank">
+            <th class="sortable px-2 py-2 text-left cursor-pointer select-none sm:px-4 sm:py-3 text-green" data-sort="rank">
               <span class="flex items-center gap-1">
                 #<span class="sort-icon">↕</span>
               </span>
             </th>
-            <th class="sortable px-2 py-2 text-left cursor-pointer select-none sm:px-4 sm:py-3" data-sort="name">
+            <th class="sortable px-2 py-2 text-left cursor-pointer select-none sm:px-4 sm:py-3 text-green" data-sort="name">
               <span class="flex items-center gap-1">
-                Tool <span class="sort-icon">↕</span>
+                tool <span class="sort-icon">↕</span>
               </span>
             </th>
-            <th class="hidden px-4 py-3 text-left lg:table-cell">Category</th>
-            <th class="sortable px-2 py-2 text-left cursor-pointer select-none sm:px-4 sm:py-3" data-sort="overall">
+            <th class="hidden px-4 py-3 text-left text-green lg:table-cell">category</th>
+            <th class="sortable px-2 py-2 text-left cursor-pointer select-none sm:px-4 sm:py-3 text-green" data-sort="overall">
               <span class="flex items-center gap-1">
-                Score <span class="sort-icon">↕</span>
+                score <span class="sort-icon">↕</span>
               </span>
             </th>
-            <th class="sortable hidden px-4 py-3 text-left cursor-pointer select-none sm:table-cell" data-sort="velocity">
+            <th class="sortable hidden px-4 py-3 text-left cursor-pointer select-none sm:table-cell text-green" data-sort="velocity">
               <span class="flex items-center gap-1">
-                Velocity <span class="sort-icon">↕</span>
+                velocity <span class="sort-icon">↕</span>
               </span>
             </th>
-            <th class="sortable hidden px-4 py-3 text-left cursor-pointer select-none md:table-cell" data-sort="stability">
+            <th class="sortable hidden px-4 py-3 text-left cursor-pointer select-none md:table-cell text-green" data-sort="stability">
               <span class="flex items-center gap-1">
-                Stability <span class="sort-icon">↕</span>
+                stability <span class="sort-icon">↕</span>
               </span>
             </th>
-            <th class="sortable hidden px-4 py-3 text-left cursor-pointer select-none md:table-cell" data-sort="momentum">
+            <th class="sortable hidden px-4 py-3 text-left cursor-pointer select-none md:table-cell text-green" data-sort="momentum">
               <span class="flex items-center gap-1">
-                Momentum <span class="sort-icon">↕</span>
+                momentum <span class="sort-icon">↕</span>
               </span>
             </th>
-            <th class="hidden px-4 py-3 text-left sm:table-cell">Trend</th>
-            <th class="sortable px-2 py-2 text-left cursor-pointer select-none sm:px-4 sm:py-3" data-sort="total">
+            <th class="hidden px-4 py-3 text-left text-green sm:table-cell">trend</th>
+            <th class="sortable px-2 py-2 text-left cursor-pointer select-none sm:px-4 sm:py-3 text-green" data-sort="total">
               <span class="flex items-center gap-1">
-                Rel. <span class="sort-icon">↕</span>
+                rel <span class="sort-icon">↕</span>
               </span>
             </th>
           </tr>
@@ -147,7 +157,7 @@ const rows: ToolMetrics[] = tools.map((tool) => {
         <tbody id="table-body">
           {rows.map((r, idx) => (
             <tr
-              class="border-t border-border row"
+              class="border-t border-border/50 row transition-colors hover:bg-bg-secondary/30"
               data-category={r.tool.category}
               data-rank={idx + 1}
               data-name={r.tool.name}
@@ -162,9 +172,9 @@ const rows: ToolMetrics[] = tools.map((tool) => {
                 <span class="rank-badge">{idx + 1}</span>
               </td>
               <td class="px-2 py-2 sm:px-4 sm:py-3">
-                <a class="font-medium hover:text-accent" href={`/tools/${r.tool.id}`}>{r.tool.name}</a>
+                <a class="font-medium text-cyan transition-colors hover:text-cyan/80" href={`/tools/${r.tool.id}`}>{r.tool.name}</a>
               </td>
-              <td class="hidden px-4 py-3 text-text-secondary lg:table-cell">{getCategoryLabel(r.tool.category)}</td>
+              <td class="hidden px-4 py-3 text-text-secondary lg:table-cell">--{r.tool.category}</td>
               <td class="px-2 py-2 sm:px-4 sm:py-3">
                 <div class="flex items-center gap-2">
                   <span class="score-badge" data-score={r.overallScore}>{r.overallScore}</span>
@@ -195,24 +205,30 @@ const rows: ToolMetrics[] = tools.map((tool) => {
     <div class="mt-6 grid gap-3 sm:grid-cols-3 sm:gap-4">
       <div class="rounded-lg border border-border bg-bg-card p-3 sm:p-4">
         <div class="flex items-center gap-2">
-          <div class="h-3 w-3 rounded-full bg-green"></div>
-          <h3 class="text-sm font-medium sm:text-base">Velocity</h3>
+          <div class="h-2 w-2 rounded-sm bg-green"></div>
+          <h3 class="font-mono text-sm font-medium text-green sm:text-base">velocity</h3>
         </div>
-        <p class="mt-2 text-xs text-text-secondary sm:text-sm">Release frequency. Higher = more frequent releases.</p>
+        <p class="mt-2 font-mono text-xs text-text-secondary sm:text-sm">
+          <span class="text-green">//</span> release frequency
+        </p>
       </div>
       <div class="rounded-lg border border-border bg-bg-card p-3 sm:p-4">
         <div class="flex items-center gap-2">
-          <div class="h-3 w-3 rounded-full bg-accent"></div>
-          <h3 class="text-sm font-medium sm:text-base">Stability</h3>
+          <div class="h-2 w-2 rounded-sm bg-accent"></div>
+          <h3 class="font-mono text-sm font-medium text-accent sm:text-base">stability</h3>
         </div>
-        <p class="mt-2 text-xs text-text-secondary sm:text-sm">Consistent release cadence. Higher = more predictable.</p>
+        <p class="mt-2 font-mono text-xs text-text-secondary sm:text-sm">
+          <span class="text-green">//</span> consistent cadence
+        </p>
       </div>
       <div class="rounded-lg border border-border bg-bg-card p-3 sm:p-4">
         <div class="flex items-center gap-2">
-          <div class="h-3 w-3 rounded-full bg-amber"></div>
-          <h3 class="text-sm font-medium sm:text-base">Momentum</h3>
+          <div class="h-2 w-2 rounded-sm bg-amber"></div>
+          <h3 class="font-mono text-sm font-medium text-amber sm:text-base">momentum</h3>
         </div>
-        <p class="mt-2 text-xs text-text-secondary sm:text-sm">Recent acceleration. Higher = speeding up releases.</p>
+        <p class="mt-2 font-mono text-xs text-text-secondary sm:text-sm">
+          <span class="text-green">//</span> recent acceleration
+        </p>
       </div>
     </div>
   </section>
@@ -324,22 +340,23 @@ const rows: ToolMetrics[] = tools.map((tool) => {
     .filter-btn {
       padding: 0.5rem 0.75rem;
       border: 1px solid var(--color-border);
-      border-radius: 0.5rem;
+      border-radius: 0.25rem;
       color: var(--color-text-secondary);
       transition: all 0.2s;
+      font-family: var(--font-mono);
       font-size: 0.875rem;
-      min-height: 44px; /* Touch target size */
+      min-height: 44px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
     }
     .filter-btn.active {
-      border-color: var(--color-accent);
-      color: var(--color-accent);
-      background: rgba(99, 102, 241, 0.08);
+      border-color: var(--color-green);
+      color: var(--color-green);
+      background: rgba(51, 255, 51, 0.08);
     }
     .filter-btn:hover {
-      border-color: var(--color-border-hover);
+      border-color: var(--color-green);
     }
 
     @media (max-width: 640px) {
@@ -354,11 +371,11 @@ const rows: ToolMetrics[] = tools.map((tool) => {
     }
 
     .sortable:hover {
-      background: rgba(255, 255, 255, 0.02);
+      background: rgba(51, 255, 51, 0.05);
     }
 
     .sortable:active {
-      background: rgba(255, 255, 255, 0.04);
+      background: rgba(51, 255, 51, 0.1);
     }
 
     .sort-icon {
@@ -478,7 +495,7 @@ const rows: ToolMetrics[] = tools.map((tool) => {
 
     .score-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--color-accent), var(--color-green));
+      background: linear-gradient(90deg, var(--color-green), var(--color-cyan));
       transition: width 0.6s cubic-bezier(0.65, 0, 0.35, 1);
     }
 
