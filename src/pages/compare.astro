@@ -5,25 +5,98 @@ import { getTools, getAllToolReleases, getCategoryLabel } from "../lib/releases"
 const tools = getTools();
 const all = await getAllToolReleases();
 
-const rows = tools.map((tool) => {
-  const data = all.find((x) => x.tool.id === tool.id);
-  const releases = data?.releases ?? [];
-  const latest = releases[0];
-  const diffs:number[] = [];
-  for (let i = 1; i < Math.min(releases.length, 8); i++) {
+// Helper functions for intelligent metrics
+function calculateMetrics(releases: any[]) {
+  if (!releases || releases.length === 0) {
+    return {
+      velocityScore: 0,
+      stabilityScore: 0,
+      momentumScore: 0,
+      cadenceData: [],
+      stableCount: 0,
+      prereleaseCount: 0,
+    };
+  }
+
+  // Calculate release intervals for last 12 releases
+  const diffs: number[] = [];
+  const cadenceLimit = Math.min(releases.length, 12);
+  for (let i = 1; i < cadenceLimit; i++) {
     const a = new Date(releases[i - 1].date).getTime();
     const b = new Date(releases[i].date).getTime();
     diffs.push(Math.max(1, Math.round((a - b) / 86400000)));
   }
-  const avgDays = diffs.length ? Math.round(diffs.reduce((x,y)=>x+y,0)/diffs.length) : null;
-  return { tool, latest, total: releases.length, avgDays };
+
+  // Cadence data for sparkline (last 12 intervals)
+  const cadenceData = diffs.slice(0, 12);
+
+  // Stable vs prerelease counts
+  const stableCount = releases.filter((r) => !r.prerelease).length;
+  const prereleaseCount = releases.filter((r) => r.prerelease).length;
+
+  // Velocity Score (0-100): Based on release frequency
+  // Higher score = more frequent releases
+  const avgDays = diffs.length ? diffs.reduce((x, y) => x + y, 0) / diffs.length : 365;
+  const velocityScore = Math.min(100, Math.round((365 / Math.max(1, avgDays)) * 10));
+
+  // Stability Score (0-100): Based on stable release ratio and consistency
+  const stableRatio = releases.length > 0 ? stableCount / releases.length : 0;
+  const consistencyScore = diffs.length > 1
+    ? 100 - Math.min(100, (Math.max(...diffs) - Math.min(...diffs)) / 2)
+    : 50;
+  const stabilityScore = Math.round(stableRatio * 60 + consistencyScore * 0.4);
+
+  // Momentum Score (0-100): Based on recent vs past activity
+  const recentDiffs = diffs.slice(0, Math.min(4, diffs.length));
+  const olderDiffs = diffs.slice(Math.min(4, diffs.length));
+  const recentAvg = recentDiffs.length ? recentDiffs.reduce((x, y) => x + y, 0) / recentDiffs.length : avgDays;
+  const olderAvg = olderDiffs.length ? olderDiffs.reduce((x, y) => x + y, 0) / olderDiffs.length : avgDays;
+  const momentumScore = olderAvg > 0
+    ? Math.min(100, Math.max(0, Math.round(50 + ((olderAvg - recentAvg) / olderAvg) * 100)))
+    : 50;
+
+  return {
+    velocityScore,
+    stabilityScore,
+    momentumScore,
+    cadenceData,
+    stableCount,
+    prereleaseCount,
+    avgDays: diffs.length ? Math.round(avgDays) : null,
+  };
+}
+
+const rows = tools.map((tool) => {
+  const data = all.find((x) => x.tool.id === tool.id);
+  const releases = data?.releases ?? [];
+  const latest = releases[0];
+  const metrics = calculateMetrics(releases);
+
+  // Calculate weighted rank (higher is better)
+  const weightedRank =
+    metrics.velocityScore * 0.4 +
+    metrics.stabilityScore * 0.3 +
+    metrics.momentumScore * 0.3;
+
+  return {
+    tool,
+    latest,
+    total: releases.length,
+    ...metrics,
+    weightedRank: Math.round(weightedRank),
+  };
 });
+
+// Sort by weighted rank by default
+rows.sort((a, b) => b.weightedRank - a.weightedRank);
 ---
 
 <BaseLayout title="Compare Tools — changelogs.info" description="Compare AI coding tools by release velocity and activity.">
-  <section class="mx-auto max-w-6xl px-6 py-12">
+  <section class="mx-auto max-w-7xl px-6 py-12">
     <h1 class="text-3xl font-bold">Compare AI Coding Tools</h1>
-    <p class="mt-2 text-text-secondary">Release activity, freshness, and category at a glance.</p>
+    <p class="mt-2 text-text-secondary">
+      Intelligent metrics, release velocity, stability scores, and momentum analysis.
+    </p>
 
     <div class="mt-6 flex flex-wrap gap-2" id="filters">
       <button class="filter-btn active" data-filter="all">All</button>
@@ -37,33 +110,107 @@ const rows = tools.map((tool) => {
       <table class="min-w-full text-sm" id="compare-table">
         <thead class="bg-bg-card">
           <tr>
-            <th class="px-4 py-3 text-left">Tool</th>
+            <th class="sortable px-4 py-3 text-left cursor-pointer hover:bg-bg-primary/50" data-sort="name">
+              Tool <span class="sort-indicator"></span>
+            </th>
             <th class="px-4 py-3 text-left">Category</th>
+            <th class="sortable px-4 py-3 text-left cursor-pointer hover:bg-bg-primary/50" data-sort="rank">
+              Rank <span class="sort-indicator">▼</span>
+            </th>
+            <th class="sortable px-4 py-3 text-left cursor-pointer hover:bg-bg-primary/50" data-sort="velocity">
+              Velocity <span class="sort-indicator"></span>
+            </th>
+            <th class="sortable px-4 py-3 text-left cursor-pointer hover:bg-bg-primary/50" data-sort="stability">
+              Stability <span class="sort-indicator"></span>
+            </th>
+            <th class="sortable px-4 py-3 text-left cursor-pointer hover:bg-bg-primary/50" data-sort="momentum">
+              Momentum <span class="sort-indicator"></span>
+            </th>
+            <th class="px-4 py-3 text-left">Cadence</th>
+            <th class="px-4 py-3 text-left">Type Mix</th>
             <th class="px-4 py-3 text-left">Latest</th>
-            <th class="px-4 py-3 text-left">Last Updated</th>
-            <th class="px-4 py-3 text-left">Releases</th>
-            <th class="px-4 py-3 text-left">Avg cadence</th>
           </tr>
         </thead>
         <tbody>
           {rows.map((r) => (
-            <tr class="border-t border-border row" data-category={r.tool.category}>
+            <tr class="border-t border-border row hover:bg-bg-card/50 transition-colors"
+                data-category={r.tool.category}
+                data-name={r.tool.name}
+                data-rank={r.weightedRank}
+                data-velocity={r.velocityScore}
+                data-stability={r.stabilityScore}
+                data-momentum={r.momentumScore}>
               <td class="px-4 py-3">
-                <a class="font-medium hover:text-accent" href={`/tools/${r.tool.id}`}>{r.tool.name}</a>
+                <a class="font-medium hover:text-accent transition-colors" href={`/tools/${r.tool.id}`}>
+                  {r.tool.name}
+                </a>
               </td>
-              <td class="px-4 py-3 text-text-secondary">{getCategoryLabel(r.tool.category)}</td>
-              <td class="px-4 py-3 font-mono text-green">{r.latest?.version ?? "—"}</td>
-              <td class="px-4 py-3 text-text-secondary">{r.latest ? new Date(r.latest.date).toLocaleDateString() : "—"}</td>
-              <td class="px-4 py-3">{r.total}</td>
-              <td class="px-4 py-3 text-text-secondary">{r.avgDays ? `~${r.avgDays} days` : "—"}</td>
+              <td class="px-4 py-3 text-text-secondary text-xs">{getCategoryLabel(r.tool.category)}</td>
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-accent">{r.weightedRank}</span>
+                  <span class="text-xs text-text-muted">/100</span>
+                </div>
+              </td>
+              <td class="px-4 py-3">
+                <div class="score-badge" data-score={r.velocityScore}>
+                  {r.velocityScore}
+                </div>
+              </td>
+              <td class="px-4 py-3">
+                <div class="score-badge" data-score={r.stabilityScore}>
+                  {r.stabilityScore}
+                </div>
+              </td>
+              <td class="px-4 py-3">
+                <div class="score-badge" data-score={r.momentumScore}>
+                  {r.momentumScore}
+                </div>
+              </td>
+              <td class="px-4 py-3">
+                <div class="sparkline" data-values={r.cadenceData.join(',')} title={`Last ${r.cadenceData.length} releases`}></div>
+              </td>
+              <td class="px-4 py-3">
+                <div class="flex flex-col gap-1 w-24">
+                  <div class="flex items-center gap-1">
+                    <div class="release-bar stable" style={`width: ${r.total > 0 ? (r.stableCount / r.total) * 100 : 0}%`}></div>
+                    <span class="text-xs text-text-muted">{r.stableCount}</span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <div class="release-bar prerelease" style={`width: ${r.total > 0 ? (r.prereleaseCount / r.total) * 100 : 0}%`}></div>
+                    <span class="text-xs text-text-muted">{r.prereleaseCount}</span>
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3">
+                <div class="flex flex-col gap-1">
+                  <span class="font-mono text-xs text-green">{r.latest?.version ?? "—"}</span>
+                  <span class="text-xs text-text-muted">
+                    {r.latest ? new Date(r.latest.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : "—"}
+                  </span>
+                </div>
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
     </div>
+
+    <div class="mt-6 rounded-xl border border-border bg-bg-card p-4">
+      <h3 class="font-semibold mb-2">Metric Definitions</h3>
+      <div class="grid gap-2 text-sm text-text-secondary">
+        <p><strong class="text-text-primary">Rank:</strong> Weighted score combining all metrics (Velocity 40%, Stability 30%, Momentum 30%)</p>
+        <p><strong class="text-text-primary">Velocity:</strong> Release frequency — higher scores indicate more frequent releases</p>
+        <p><strong class="text-text-primary">Stability:</strong> Ratio of stable releases and consistency of release intervals</p>
+        <p><strong class="text-text-primary">Momentum:</strong> Recent activity trend — scores above 50 indicate accelerating development</p>
+        <p><strong class="text-text-primary">Cadence:</strong> Sparkline showing days between last 12 releases (lower bars = faster releases)</p>
+        <p><strong class="text-text-primary">Type Mix:</strong> Distribution of stable (green) vs prerelease (amber) versions</p>
+      </div>
+    </div>
   </section>
 
   <script>
+    // Filter functionality
     const buttons = document.querySelectorAll('.filter-btn');
     const rows = document.querySelectorAll('.row');
     buttons.forEach((btn) => btn.addEventListener('click', () => {
@@ -75,10 +222,253 @@ const rows = tools.map((tool) => {
         r.style.display = ok ? '' : 'none';
       });
     }));
+
+    // Sortable table functionality
+    let currentSort = 'rank';
+    let currentDirection = 'desc';
+
+    const sortableHeaders = document.querySelectorAll('.sortable');
+    sortableHeaders.forEach((header) => {
+      header.addEventListener('click', () => {
+        const sortKey = header.getAttribute('data-sort');
+
+        // Toggle direction if clicking same column
+        if (sortKey === currentSort) {
+          currentDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+          currentSort = sortKey;
+          currentDirection = 'desc';
+        }
+
+        // Update indicators
+        sortableHeaders.forEach((h) => {
+          const indicator = h.querySelector('.sort-indicator');
+          indicator.textContent = '';
+        });
+        const indicator = header.querySelector('.sort-indicator');
+        indicator.textContent = currentDirection === 'asc' ? '▲' : '▼';
+
+        // Sort rows
+        const tbody = document.querySelector('#compare-table tbody');
+        const rowsArray = Array.from(rows);
+
+        rowsArray.sort((a, b) => {
+          let aVal, bVal;
+
+          if (sortKey === 'name') {
+            aVal = a.getAttribute('data-name').toLowerCase();
+            bVal = b.getAttribute('data-name').toLowerCase();
+            return currentDirection === 'asc'
+              ? aVal.localeCompare(bVal)
+              : bVal.localeCompare(aVal);
+          } else {
+            aVal = parseFloat(a.getAttribute(`data-${sortKey}`)) || 0;
+            bVal = parseFloat(b.getAttribute(`data-${sortKey}`)) || 0;
+            return currentDirection === 'asc' ? aVal - bVal : bVal - aVal;
+          }
+        });
+
+        // Reappend sorted rows
+        rowsArray.forEach((row) => tbody.appendChild(row));
+      });
+    });
+
+    // Draw sparklines
+    function drawSparkline(element) {
+      const values = element.getAttribute('data-values').split(',').map(Number).filter(v => !isNaN(v));
+      if (values.length === 0) {
+        element.innerHTML = '<span class="text-xs text-text-muted">—</span>';
+        return;
+      }
+
+      const max = Math.max(...values, 1);
+      const min = Math.min(...values, 0);
+      const range = max - min || 1;
+
+      const bars = values.map((v) => {
+        const height = ((v - min) / range) * 100 || 5;
+        return `<div class="sparkline-bar" style="height: ${height}%"></div>`;
+      }).join('');
+
+      element.innerHTML = bars;
+    }
+
+    document.querySelectorAll('.sparkline').forEach(drawSparkline);
+
+    // Number count-up animation (only if user hasn't disabled motion)
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!prefersReducedMotion) {
+      function animateNumber(element, target, duration = 800) {
+        const start = 0;
+        const startTime = performance.now();
+
+        function update(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+
+          // Easing function (easeOutCubic)
+          const easeProgress = 1 - Math.pow(1 - progress, 3);
+
+          const current = Math.floor(start + (target - start) * easeProgress);
+          element.textContent = current;
+
+          if (progress < 1) {
+            requestAnimationFrame(update);
+          } else {
+            element.textContent = target;
+          }
+        }
+
+        requestAnimationFrame(update);
+      }
+
+      // Animate scores when they come into view
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const badge = entry.target;
+            const target = parseInt(badge.getAttribute('data-score'), 10);
+            if (!isNaN(target) && !badge.hasAttribute('data-animated')) {
+              badge.setAttribute('data-animated', 'true');
+              animateNumber(badge, target, 600);
+            }
+            observer.unobserve(badge);
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.score-badge[data-score]').forEach((badge) => {
+        observer.observe(badge);
+      });
+    }
   </script>
 
   <style>
-    .filter-btn { padding:.35rem .75rem; border:1px solid var(--color-border); border-radius:.5rem; color:var(--color-text-secondary); }
-    .filter-btn.active { border-color: var(--color-accent); color: var(--color-accent); background: rgba(59,130,246,.08); }
+    .filter-btn {
+      padding: 0.35rem 0.75rem;
+      border: 1px solid var(--color-border);
+      border-radius: 0.5rem;
+      color: var(--color-text-secondary);
+      transition: all 0.2s;
+    }
+    .filter-btn.active {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+      background: rgba(59, 130, 246, 0.08);
+    }
+
+    .sortable {
+      user-select: none;
+      transition: background-color 0.2s;
+    }
+    .sort-indicator {
+      display: inline-block;
+      margin-left: 0.25rem;
+      color: var(--color-accent);
+      font-size: 0.75rem;
+    }
+
+    .score-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 2.5rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+    .score-badge[data-score] {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+      color: rgb(239, 68, 68);
+    }
+    .score-badge[data-score^="7"],
+    .score-badge[data-score^="8"],
+    .score-badge[data-score^="9"],
+    .score-badge[data-score="100"] {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+      color: rgb(34, 197, 94);
+    }
+    .score-badge[data-score^="5"],
+    .score-badge[data-score^="6"] {
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(251, 191, 36, 0.05));
+      color: rgb(251, 191, 36);
+    }
+
+    .sparkline {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 32px;
+      width: 80px;
+    }
+    .sparkline-bar {
+      flex: 1;
+      min-height: 2px;
+      background: linear-gradient(to top, var(--color-accent), rgba(59, 130, 246, 0.5));
+      border-radius: 1px;
+      transition: all 0.2s;
+    }
+    .sparkline:hover .sparkline-bar {
+      opacity: 0.7;
+    }
+
+    .release-bar {
+      height: 6px;
+      border-radius: 3px;
+      min-width: 2px;
+      transition: all 0.2s;
+    }
+    .release-bar.stable {
+      background: linear-gradient(90deg, rgb(34, 197, 94), rgba(34, 197, 94, 0.6));
+    }
+    .release-bar.prerelease {
+      background: linear-gradient(90deg, rgb(251, 191, 36), rgba(251, 191, 36, 0.6));
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      th, td {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.75rem;
+      }
+
+      .score-badge {
+        min-width: 2rem;
+        padding: 0.2rem 0.4rem;
+        font-size: 0.75rem;
+      }
+
+      .sparkline {
+        width: 60px;
+        height: 24px;
+      }
+
+      /* Hide less critical columns on mobile */
+      th:nth-child(2),
+      td:nth-child(2),
+      th:nth-child(7),
+      td:nth-child(7) {
+        display: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      /* Show only essential columns on very small screens */
+      th:nth-child(5),
+      td:nth-child(5),
+      th:nth-child(6),
+      td:nth-child(6),
+      th:nth-child(8),
+      td:nth-child(8) {
+        display: none;
+      }
+
+      .filter-btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+      }
+    }
   </style>
 </BaseLayout>
