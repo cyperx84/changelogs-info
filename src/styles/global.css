@@ -32,6 +32,23 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-width: 320px; /* Support small mobile devices */
+}
+
+/* Ensure proper touch targets (minimum 44x44px) */
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: rgba(99, 102, 241, 0.1);
+}
+
+/* Responsive typography */
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
 }
 
 /* Scrollbar styling */
@@ -138,4 +155,223 @@ body {
   padding-left: 1rem;
   color: var(--color-text-muted);
   margin-bottom: 0.75rem;
+}
+
+/* ========================================
+   Micro-animations with accessibility
+   ======================================== */
+
+/* Default: animations enabled */
+:root {
+  --transition-fast: 150ms ease-out;
+  --transition-base: 250ms ease-out;
+  --transition-slow: 350ms ease-out;
+  --animation-fade-in: fade-in 0.4s ease-out;
+  --animation-slide-up: slide-up 0.5s ease-out;
+  --animation-scale: scale-in 0.3s ease-out;
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  :root {
+    --transition-fast: 0ms;
+    --transition-base: 0ms;
+    --transition-slow: 0ms;
+  }
+}
+
+/* Keyframe animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Page load animation */
+main {
+  animation: var(--animation-fade-in);
+}
+
+/* Card hover animations */
+.tool-card,
+.release-card {
+  transition: transform var(--transition-base), border-color var(--transition-fast),
+    background-color var(--transition-fast), box-shadow var(--transition-base);
+}
+
+.tool-card:hover,
+.release-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.tool-card:active,
+.release-card:active {
+  transform: translateY(0);
+}
+
+/* Button animations */
+button {
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translate(-50%, -50%);
+  transition: width var(--transition-base), height var(--transition-base);
+}
+
+button:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Email submit button pulse */
+.email-submit-btn {
+  transition: all var(--transition-base);
+}
+
+.email-submit-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+/* Navigation transitions */
+nav {
+  transition: background-color var(--transition-fast), backdrop-filter var(--transition-fast);
+}
+
+/* Link underline animation */
+a {
+  position: relative;
+  transition: color var(--transition-fast);
+}
+
+/* Stagger animation for grid items */
+.tool-card:nth-child(1) {
+  animation: var(--animation-slide-up);
+  animation-delay: 0ms;
+}
+.tool-card:nth-child(2) {
+  animation: var(--animation-slide-up);
+  animation-delay: 50ms;
+}
+.tool-card:nth-child(3) {
+  animation: var(--animation-slide-up);
+  animation-delay: 100ms;
+}
+.tool-card:nth-child(4) {
+  animation: var(--animation-slide-up);
+  animation-delay: 150ms;
+}
+.tool-card:nth-child(5) {
+  animation: var(--animation-slide-up);
+  animation-delay: 200ms;
+}
+.tool-card:nth-child(6) {
+  animation: var(--animation-slide-up);
+  animation-delay: 250ms;
+}
+
+/* Table row hover */
+tr {
+  transition: background-color var(--transition-fast);
+}
+
+/* Input focus animations */
+input:focus,
+textarea:focus,
+select:focus {
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Mobile menu animations */
+.mobile-menu {
+  animation: var(--animation-slide-down);
+}
+
+/* Score fill animation */
+.score-fill {
+  transition: width 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Filter button active state */
+.filter-btn {
+  transition: all var(--transition-base);
+}
+
+.filter-btn.active {
+  animation: var(--animation-scale);
+}
+
+/* Sparkline fade in */
+.sparkline {
+  animation: var(--animation-fade-in);
+  animation-delay: 300ms;
+  opacity: 0;
+  animation-fill-mode: forwards;
 }
