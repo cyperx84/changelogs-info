@@ -1,43 +1,183 @@
-# Astro Starter Kit: Minimal
-
-```sh
-pnpm create astro@latest -- --template minimal
+```
+ ██████╗██╗  ██╗ █████╗ ███╗   ██╗ ██████╗ ███████╗██╗      ██████╗  ██████╗ ███████╗
+██╔════╝██║  ██║██╔══██╗████╗  ██║██╔════╝ ██╔════╝██║     ██╔═══██╗██╔════╝ ██╔════╝
+██║     ███████║███████║██╔██╗ ██║██║  ███╗█████╗  ██║     ██║   ██║██║  ███╗███████╗
+██║     ██╔══██║██╔══██║██║╚═██║██║    ██║██╔══╝  ██║     ██║   ██║██║   ██║╚════██║
+╚██████╗██║  ██║██║  ██║██║ ╚████║╚██████╔╝███████╗███████╗╚██████╔╝╚██████╔╝███████║
+ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝╚══════╝╚══════╝ ╚═════╝  ╚═════╝╚══════╝
+                            ╔═╗╔╗╔╔═╗╔═╗
+                            ║ ║║║║╠╣ ║ ║
+                            ╚═╝╝╚╝╚  ╚═╝
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+# changelogs.info
 
-## 🚀 Project Structure
+> **Every release. One place.** Track changelogs, models, and configs for AI coding agent harnesses.
 
-Inside of your Astro project, you'll see the following folders and files:
+[![Live Site](https://img.shields.io/badge/live-changelogs.info-00ff41?style=flat-square)](https://changelogs.info)
+[![Tools](https://img.shields.io/badge/harnesses_tracked-22-6366f1?style=flat-square)](https://changelogs.info)
+[![Cheatsheets](https://img.shields.io/badge/cheatsheets-10-00d4ff?style=flat-square)](https://changelogs.info/cheatsheets)
+[![Pages](https://img.shields.io/badge/pages-516-ffb800?style=flat-square)](https://changelogs.info)
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+---
+
+## What is this?
+
+The definitive hub for AI coding agent harness releases. One site that aggregates changelogs, cheatsheets, model compatibility, and starter configs for every major AI coding tool — so you never miss a feature, fix, or breaking change.
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  changelogs.info                                        │
+│                                                         │
+│  /tools        22 agent harnesses tracked               │
+│  /models       6 model providers, 20+ models            │
+│  /cheatsheets  10 comprehensive CLI references          │
+│  /configs      9 harnesses with copy-paste configs      │
+│                                                         │
+│  Updated daily via GitHub Actions                       │
+└─────────────────────────────────────────────────────────┘
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Tracked Harnesses
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+### CLI Harnesses
+| Harness | Repo |
+|---------|------|
+| **Claude Code** | `anthropics/claude-code` |
+| **Codex CLI** | `openai/codex` |
+| **Gemini CLI** | `google-gemini/gemini-cli` |
+| **Aider** | `Aider-AI/aider` |
+| **OpenClaw** | `openclaw/openclaw` |
+| **OpenCode** | `opencode-ai/opencode` |
+| **Goose** | `block/goose` |
+| **Plandex** | `plandex-ai/plandex` |
+| **Amp** | `AmpAI/amp-cli` |
 
-Any static assets, like images, can be placed in the `public/` directory.
+### IDE Harnesses
+| Harness | Repo |
+|---------|------|
+| **Cursor** | `getcursor/cursor` |
+| **Windsurf** | `codeiumdev/windsurf` |
+| **Void** | `voideditor/void` |
 
-## 🧞 Commands
+### IDE Extensions
+| Harness | Repo |
+|---------|------|
+| **Cline** | `cline/cline` |
+| **Continue** | `continuedev/continue` |
+| **Copilot CLI** | `github/copilot-cli` |
+| **Roo Code** | `RooVetGit/Roo-Code` |
+| **Avante.nvim** | `yetone/avante.nvim` |
 
-All commands are run from the root of the project, from a terminal:
+### Agent Platforms
+| Harness | Repo |
+|---------|------|
+| **OpenHands** | `All-Hands-AI/OpenHands` |
+| **Open WebUI** | `open-webui/open-webui` |
+| **Tabby** | `TabbyML/tabby` |
+| **Khoj** | `khoj-ai/khoj` |
+| **GPTMe** | `ErikBjare/gptme` |
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+## Features
 
-## 👀 Want to learn more?
+### 📋 Release Tracking
+Every GitHub release for all 22 harnesses, synced daily. Version history, changelogs, and release notes in one place.
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+### 📖 Cheatsheets
+Comprehensive quick-reference guides for 10 harnesses — commands, flags, config options, workflows, and tips. The Claude Code cheatsheet alone is 500+ lines.
+
+### 🧠 Model Directory
+Track which AI models power these harnesses. Anthropic, OpenAI, Google, Meta, Mistral, and Qwen — with release dates, context windows, and type classifications.
+
+### ⚙️ Starter Configs
+Real, production-quality configs you can copy-paste. CLAUDE.md templates, .cursorrules, aider configs, OpenClaw gateway setups, and more. Not toy examples — configs people actually use.
+
+### 🔄 Auto-Updating Cheatsheets
+Weekly automation pulls from official docs and opens PRs when CLI commands or features change. Never stale.
+
+## Tech Stack
+
+```
+Framework    Astro 5
+Styling      Tailwind CSS v4
+Fonts        JetBrains Mono + Inter
+Search       Pagefind
+Deploy       Push to main → live
+Data         GitHub Actions (daily release sync)
+Automation   Weekly cheatsheet refresh → auto PR
+```
+
+## Development
+
+```bash
+# Install
+pnpm install
+
+# Dev server
+pnpm dev
+
+# Build (generates 516 static pages)
+pnpm build
+
+# Preview build
+pnpm preview
+
+# Sync release data
+pnpm scrape
+
+# Update cheatsheets from docs
+pnpm update-cheatsheets
+```
+
+## Project Structure
+
+```
+src/
+├── content/
+│   ├── cheatsheets/     # 10 comprehensive .md cheatsheets
+│   ├── configs/         # Config templates per harness (.json)
+│   ├── models/          # AI model data per provider (.json)
+│   └── releases/        # Release data per harness (.json)
+├── components/
+│   ├── ToolCard.astro   # Terminal-style harness card
+│   ├── ReleaseEntry.astro
+│   └── Search.astro     # Pagefind search
+├── layouts/
+│   └── BaseLayout.astro # Terminal nav, theme toggle, CRT effects
+├── pages/
+│   ├── index.astro      # Homepage with harness grid + release feed
+│   ├── models.astro     # AI model directory
+│   ├── cheatsheets.astro
+│   ├── configs.astro    # Filterable config templates
+│   └── tools/[id]/      # Per-harness pages + cheatsheet routes
+├── lib/
+│   └── releases.ts      # Data loading utilities
+└── styles/
+    └── global.css       # Terminal aesthetic + dark/light themes
+```
+
+## Design
+
+Terminal/hacker aesthetic with a phosphor green palette, CRT scanline effects, JetBrains Mono typography, and a dark/light theme toggle. Cards styled as terminal panes. Nav links are paths. The whole site feels like browsing a beautifully designed terminal.
+
+## Contributing
+
+Found a missing harness? Want to improve a cheatsheet? PRs welcome.
+
+```bash
+# Add a new harness
+# 1. Add entry to scrapers/tools.json
+# 2. Run pnpm scrape to fetch releases
+# 3. Optionally add cheatsheet in src/content/cheatsheets/
+# 4. Optionally add configs in src/content/configs/
+```
+
+## License
+
+MIT
+
+---
+
+<p align="center">
+  <code>> crafted by <a href="https://github.com/cyperx84">cyperx</a> | powered by astro + tailwind</code>
+</p>
