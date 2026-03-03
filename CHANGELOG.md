@@ -4,6 +4,22 @@ All notable changes to changelogs.info — the changelog site that tracks its ow
 
 ## [Unreleased]
 
+## [0.6.0] — 2026-03-03
+
+### Added
+- **Resources hub** — new `/resources` page linking migration guides, compatibility matrix, deprecations, and recommendations
+- **Migration guides** — `/migrations` now reads structured JSON migration files with step-by-step before/after snippets
+- **Compatibility matrix** — `/compatibility` page mapping harness-to-model support/defaults
+- **Deprecation radar** — `/deprecations` with removal countdowns and migration pointers
+- **Recommended actions** — `/recommendations` with high/medium/low impact guidance
+
+### Changed
+- **Featured priorities** — Claude Code + OpenClaw are now prioritized across homepage, tools, cheatsheets, configs, and resource pages
+- Homepage now includes `/start_here` cards for Claude Code + OpenClaw with latest-release quick context
+- Added subtle `featured` badges across resource tables/cards where these harnesses appear
+- Removed hero prompt handle (`cyperx@terminal`) for a cleaner landing experience
+- Footer credit updated to a subtle: `made with ❤️ by CyperX`
+
 ## [0.5.0] — 2026-03-03
 
 ### Added
