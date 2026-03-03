@@ -87,11 +87,11 @@ export function relativeTime(dateStr: string): string {
 
 export function getCategoryLabel(category: string): string {
   const labels: Record<string, string> = {
-    cli: "CLI Tool",
-    ide: "IDE",
+    cli: "CLI Harness",
+    ide: "IDE Harness",
     "ide-extension": "IDE Extension",
     library: "Library",
-    harness: "Agent Harness",
+    harness: "Agent Platform",
   };
   return labels[category] || category;
 }

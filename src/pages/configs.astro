@@ -1,70 +1,269 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { readdir, readFile } from "fs/promises";
+import { join } from "path";
+
+interface Config {
+  name: string;
+  filename: string;
+  language: string;
+  description: string;
+  tags: string[];
+  content: string;
+}
+
+interface HarnessConfigs {
+  harness: string;
+  configs: Config[];
+}
+
+// Load all config data files
+const configsDir = join(process.cwd(), "src/content/configs");
+const configFiles = await readdir(configsDir);
+const harnessConfigs: HarnessConfigs[] = [];
+
+for (const file of configFiles) {
+  if (file.endsWith(".json")) {
+    const content = await readFile(join(configsDir, file), "utf-8");
+    const configs = JSON.parse(content);
+    const harnessName = file.replace(".json", "");
+    harnessConfigs.push({
+      harness: harnessName,
+      configs: configs,
+    });
+  }
+}
+
+// Sort: OpenClaw first, then alphabetically
+harnessConfigs.sort((a, b) => {
+  if (a.harness === "openclaw") return -1;
+  if (b.harness === "openclaw") return 1;
+  return a.harness.localeCompare(b.harness);
+});
+
+// Get total config count
+const totalConfigs = harnessConfigs.reduce((acc, h) => acc + h.configs.length, 0);
+
+// Format harness name for display
+function formatHarnessName(name: string): string {
+  const map: Record<string, string> = {
+    "claude-code": "Claude Code",
+    "cursor": "Cursor",
+    "aider": "Aider",
+    "cline": "Cline",
+    "openclaw": "OpenClaw",
+    "windsurf": "Windsurf",
+    "continue": "Continue",
+    "codex-cli": "Codex CLI",
+    "gemini-cli": "Gemini CLI",
+  };
+  return map[name] || name;
+}
 ---
 
-<BaseLayout title="Starter Config Templates — changelogs.info" description="Copy-paste starter configs for popular AI coding tools.">
-  <section class="mx-auto max-w-5xl px-6 py-12">
-    <h1 class="font-mono text-2xl font-bold text-green sm:text-3xl">
-      <span class="text-green">/</span>configs
-    </h1>
-    <p class="mt-2 font-mono text-sm text-text-secondary">
-      <span class="text-green">#</span> baseline templates — tune for your project
-    </p>
-
-    <div class="mt-8 space-y-8">
-      <article class="rounded-lg border border-border bg-bg-card">
-        <div class="border-b border-border px-3 py-2 font-mono text-xs text-text-muted sm:px-4">
-          <span class="text-green">●●●</span>
-          <span class="ml-2">CLAUDE.md</span>
+<BaseLayout title="Config Templates — changelogs.info" description="Production-ready configuration templates for AI coding tools and agent harnesses.">
+  <!-- Terminal Hero -->
+  <section class="border-b border-border bg-bg-secondary/30">
+    <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+      <div class="max-w-3xl">
+        <div class="mb-6 font-mono">
+          <p class="text-xs text-text-muted sm:text-sm">
+            <span class="text-green">cyperx@terminal</span>
+            <span class="text-text-muted">:</span>
+            <span class="text-cyan">~/configs</span>
+            <span class="text-text-muted">$</span>
+          </p>
+          <h1 class="mt-2 text-2xl font-bold text-green sm:text-3xl md:text-4xl">
+            <span class="text-green">&gt;</span> config templates
+          </h1>
         </div>
-        <pre class="overflow-x-auto p-4 font-mono text-sm"><code class="text-text-secondary"># Project Conventions
-
-- Use TypeScript strict mode
-- Write tests for all new features
-- Keep commits small and atomic
-- Prefer functions over classes where possible
-- Never commit secrets
-</code></pre>
-      </article>
-
-      <article class="rounded-lg border border-border bg-bg-card">
-        <div class="border-b border-border px-3 py-2 font-mono text-xs text-text-muted sm:px-4">
-          <span class="text-green">●●●</span>
-          <span class="ml-2">.cursorrules</span>
+        <p class="font-mono text-xs leading-relaxed text-text-secondary sm:text-sm md:text-base">
+          <span class="text-green">#</span> production-ready configs for ai coding tools
+        </p>
+        <div class="mt-4 flex flex-wrap gap-3 font-mono text-xs text-text-muted sm:text-sm">
+          <span><span class="text-green">[</span>{totalConfigs} configs<span class="text-green">]</span></span>
+          <span><span class="text-green">[</span>{harnessConfigs.length} tools<span class="text-green">]</span></span>
+          <span><span class="text-green">[</span>copy-paste ready<span class="text-green">]</span></span>
         </div>
-        <pre class="overflow-x-auto p-4 font-mono text-sm"><code class="text-text-secondary">You are working in a TypeScript monorepo.
-- Keep changes minimal and focused
-- Add/update tests for behavior changes
-- Prefer existing project patterns
-- Run lint + typecheck before finishing
-</code></pre>
-      </article>
-
-      <article class="rounded-lg border border-border bg-bg-card">
-        <div class="border-b border-border px-3 py-2 font-mono text-xs text-text-muted sm:px-4">
-          <span class="text-green">●●●</span>
-          <span class="ml-2">.aider.conf.yml</span>
-        </div>
-        <pre class="overflow-x-auto p-4 font-mono text-sm"><code class="text-text-secondary">model: sonnet
-auto-commits: true
-pretty: true
-gitignore: true
-</code></pre>
-      </article>
-
-      <article class="rounded-lg border border-border bg-bg-card">
-        <div class="border-b border-border px-3 py-2 font-mono text-xs text-text-muted sm:px-4">
-          <span class="text-green">●●●</span>
-          <span class="ml-2">.continue/config.json</span>
-        </div>
-        <pre class="overflow-x-auto p-4 font-mono text-sm"><code class="text-text-secondary">&#123;
-  "models": [
-    &#123; "title": "Claude Sonnet", "provider": "anthropic", "model": "claude-sonnet-4-5" &#125;
-  ],
-  "tabAutocompleteModel": &#123; "provider": "ollama", "model": "qwen2.5-coder:7b" &#125;
-&#125;
-</code></pre>
-      </article>
+      </div>
     </div>
   </section>
+
+  <!-- Harness Filter Pills -->
+  <section class="sticky top-16 z-40 border-b border-border bg-bg-primary/95 backdrop-blur-xl">
+    <div class="mx-auto max-w-6xl px-4 py-3 sm:px-6">
+      <div class="flex gap-2 overflow-x-auto pb-2 sm:pb-0">
+        <button class="filter-pill active" data-harness="all">
+          all
+        </button>
+        {harnessConfigs.map((h) => (
+          <button class="filter-pill" data-harness={h.harness}>
+            {h.harness}
+          </button>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Configs by Harness -->
+  <section class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+    {harnessConfigs.map((harness) => (
+      <div class="config-group mb-12" data-harness={harness.harness}>
+        <div class="mb-6">
+          <h2 class="font-mono text-xl font-semibold text-green sm:text-2xl">
+            <span class="text-green">/</span>{formatHarnessName(harness.harness)}
+          </h2>
+          <p class="mt-1 font-mono text-xs text-text-muted sm:text-sm">
+            <span class="text-green">[</span>{harness.configs.length} config{harness.configs.length !== 1 ? "s" : ""}<span class="text-green">]</span>
+          </p>
+        </div>
+
+        <div class="space-y-6">
+          {harness.configs.map((config, idx) => (
+            <article class="config-card rounded-lg border border-border bg-bg-card transition-all hover:border-green">
+              <!-- Title Bar -->
+              <div class="flex items-center justify-between border-b border-border px-3 py-2 sm:px-4">
+                <div class="flex items-center gap-2">
+                  <span class="text-green">●●●</span>
+                  <span class="font-mono text-xs text-text-muted">{config.filename}</span>
+                </div>
+                <button
+                  class="copy-btn rounded border border-border bg-bg-tertiary px-2 py-1 font-mono text-xs text-text-secondary transition-all hover:border-green hover:bg-bg-secondary hover:text-green"
+                  data-config={`${harness.harness}-${idx}`}
+                >
+                  copy
+                </button>
+              </div>
+
+              <!-- Config Info -->
+              <div class="border-b border-border px-3 py-3 sm:px-4">
+                <h3 class="font-mono text-sm font-semibold text-text-primary sm:text-base">
+                  {config.name}
+                </h3>
+                <p class="mt-1 font-mono text-xs text-text-secondary">
+                  <span class="text-text-muted">//</span> {config.description}
+                </p>
+                {config.tags.length > 0 && (
+                  <div class="mt-2 flex flex-wrap gap-1.5">
+                    {config.tags.map((tag) => (
+                      <span class="inline-block rounded border border-border bg-bg-tertiary px-2 py-0.5 font-mono text-[10px] text-text-muted">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <!-- Code Content -->
+              <div class="relative">
+                <pre
+                  class="config-content overflow-x-auto p-3 font-mono text-xs leading-relaxed text-text-secondary sm:p-4 sm:text-sm"
+                  data-config-id={`${harness.harness}-${idx}`}
+                ><code>{config.content}</code></pre>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    ))}
+  </section>
 </BaseLayout>
+
+<script>
+  // Filter functionality
+  const filterPills = document.querySelectorAll('.filter-pill');
+  const configGroups = document.querySelectorAll('.config-group');
+
+  filterPills.forEach((pill) => {
+    pill.addEventListener('click', () => {
+      const harness = pill.getAttribute('data-harness');
+
+      // Update active pill
+      filterPills.forEach((p) => p.classList.remove('active'));
+      pill.classList.add('active');
+
+      // Filter config groups
+      configGroups.forEach((group) => {
+        const groupHarness = group.getAttribute('data-harness');
+        if (harness === 'all' || harness === groupHarness) {
+          group.classList.remove('hidden');
+        } else {
+          group.classList.add('hidden');
+        }
+      });
+    });
+  });
+
+  // Copy to clipboard functionality
+  const copyButtons = document.querySelectorAll('.copy-btn');
+
+  copyButtons.forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const configId = btn.getAttribute('data-config');
+      const codeElement = document.querySelector(`[data-config-id="${configId}"]`);
+
+      if (!codeElement) return;
+
+      const text = codeElement.textContent || '';
+
+      try {
+        await navigator.clipboard.writeText(text);
+        const originalText = btn.textContent;
+        btn.textContent = 'copied!';
+        btn.classList.add('text-green', 'border-green');
+
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.classList.remove('text-green', 'border-green');
+        }, 2000);
+      } catch (err) {
+        console.error('Failed to copy:', err);
+        btn.textContent = 'error';
+        setTimeout(() => {
+          btn.textContent = 'copy';
+        }, 2000);
+      }
+    });
+  });
+</script>
+
+<style>
+  .filter-pill {
+    padding: 0.5rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 0.375rem;
+    background: var(--color-bg-card);
+    transition: all var(--transition-base);
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .filter-pill:hover {
+    color: var(--color-text-primary);
+    border-color: var(--color-green);
+    background: var(--color-bg-secondary);
+  }
+
+  .filter-pill.active {
+    color: var(--color-green);
+    border-color: var(--color-green);
+    background: rgba(51, 255, 51, 0.1);
+  }
+
+  .config-content {
+    background: var(--color-bg-tertiary);
+  }
+
+  .config-content code {
+    color: var(--color-text-secondary);
+  }
+
+  @media (min-width: 640px) {
+    .filter-pill {
+      font-size: 0.875rem;
+    }
+  }
+</style>
