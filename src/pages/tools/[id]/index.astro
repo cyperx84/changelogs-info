@@ -34,6 +34,8 @@ const prereleases = releases.filter((r) => r.prerelease);
 const latestStable = stableReleases[0];
 const featured = isFeatured(tool.id);
 const hasCheatsheet = existsSync(join(process.cwd(), `src/content/cheatsheets/${tool.id}.md`));
+const hasConfig = existsSync(join(process.cwd(), `src/content/configs/${tool.id}.json`));
+const hasMigration = existsSync(join(process.cwd(), `src/content/migrations/${tool.id}.json`));
 ---
 
 <BaseLayout
@@ -145,6 +147,28 @@ const hasCheatsheet = existsSync(join(process.cwd(), `src/content/cheatsheets/${
           ))}
         </div>
       )}
+
+      <!-- Quick links to related content -->
+      {(hasCheatsheet || hasConfig || hasMigration) && (
+        <div class="reveal mt-6 grid gap-2 sm:grid-cols-3">
+          {hasCheatsheet && (
+            <a href={`/tools/${tool.id}/cheatsheet`} class="rounded-lg border border-border bg-bg-card px-4 py-3 font-mono text-xs transition-all hover:border-cyan hover:shadow-[0_0_8px_rgba(0,212,255,0.15)]">
+              <span class="text-cyan">📋</span> <span class="text-text-secondary">cheatsheet</span>
+            </a>
+          )}
+          {hasConfig && (
+            <a href="/configs" class="rounded-lg border border-border bg-bg-card px-4 py-3 font-mono text-xs transition-all hover:border-green hover:shadow-[0_0_8px_rgba(51,255,51,0.15)]">
+              <span class="text-green">⚙️</span> <span class="text-text-secondary">config templates</span>
+            </a>
+          )}
+          {hasMigration && (
+            <a href="/migrations" class="rounded-lg border border-border bg-bg-card px-4 py-3 font-mono text-xs transition-all hover:border-amber hover:shadow-[0_0_8px_rgba(255,184,0,0.15)]">
+              <span class="text-amber">🔄</span> <span class="text-text-secondary">migration guides</span>
+            </a>
+          )}
+        </div>
+      )}
+
     </header>
 
     <!-- Releases timeline -->
