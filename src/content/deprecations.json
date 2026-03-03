@@ -9,6 +9,24 @@
     "affects": "package.json scripts, CI bootstrap steps"
   },
   {
+    "harness": "claude-code",
+    "item": "Legacy permission format (tool-level)",
+    "deprecated": "2026-02-01",
+    "removal": null,
+    "severity": "info",
+    "migration": "Use new wildcard patterns: Bash(pnpm *) instead of per-command entries.",
+    "affects": ".claude/settings.json permissions array"
+  },
+  {
+    "harness": "codex-cli",
+    "item": "Node.js runtime (replaced by Rust)",
+    "deprecated": "2026-02-15",
+    "removal": "2026-06-01",
+    "severity": "critical",
+    "migration": "Install via cargo or download Rust binary. Node/npm package will stop receiving updates.",
+    "affects": "npm install, CI pipelines using Node codex"
+  },
+  {
     "harness": "openai",
     "item": "GPT-4 Turbo model id",
     "deprecated": "2025-04-14",
@@ -19,7 +37,7 @@
   },
   {
     "harness": "aider",
-    "item": "Legacy monolithic .aider.conf.yml pattern",
+    "item": "Legacy monolithic .aider.conf.yml",
     "deprecated": "2025-12-01",
     "removal": null,
     "severity": "info",
@@ -34,5 +52,59 @@
     "severity": "warning",
     "migration": "Use explicit MCP server blocks with per-server credentials.",
     "affects": "cline settings + MCP config"
+  },
+  {
+    "harness": "openclaw",
+    "item": "channels.*.provider flat config",
+    "deprecated": "2026-01-20",
+    "removal": null,
+    "severity": "info",
+    "migration": "Use nested channel plugin config with explicit plugin key.",
+    "affects": "gateway.yml channel definitions"
+  },
+  {
+    "harness": "cursor",
+    "item": ".cursorrules file",
+    "deprecated": "2025-11-01",
+    "removal": null,
+    "severity": "warning",
+    "migration": "Migrate to .cursor/rules directory with separate rule files per context.",
+    "affects": "Project root .cursorrules"
+  },
+  {
+    "harness": "continue",
+    "item": "config.json format",
+    "deprecated": "2026-01-15",
+    "removal": "2026-07-01",
+    "severity": "warning",
+    "migration": "Migrate to config.yaml with new schema. Run continue migrate to auto-convert.",
+    "affects": "~/.continue/config.json"
+  },
+  {
+    "harness": "gemini-cli",
+    "item": "Gemini 1.5 model references",
+    "deprecated": "2025-12-01",
+    "removal": "2026-06-01",
+    "severity": "warning",
+    "migration": "Update model config to gemini-2.5-pro or gemini-2.5-flash.",
+    "affects": "Any config specifying gemini-1.5-pro or gemini-1.5-flash"
+  },
+  {
+    "harness": "goose",
+    "item": "Python-based goose (pre-Rust rewrite)",
+    "deprecated": "2025-10-01",
+    "removal": "2026-03-01",
+    "severity": "critical",
+    "migration": "Install Rust-based goose via brew install block/tap/goose or cargo.",
+    "affects": "pip install goose-ai, Python plugin system"
+  },
+  {
+    "harness": "roo-code",
+    "item": "roo-cline extension id",
+    "deprecated": "2026-01-15",
+    "removal": null,
+    "severity": "info",
+    "migration": "Extension renamed to roo-code. Old id still works but may stop.",
+    "affects": "VS Code extension installs referencing old id"
   }
 ]
