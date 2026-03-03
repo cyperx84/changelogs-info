@@ -3,7 +3,17 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { readFile } from "fs/promises";
 import { join } from "path";
 
+const FEATURED = ["claude-code", "openclaw"];
 const items = JSON.parse(await readFile(join(process.cwd(), "src/content/recommendations.json"), "utf-8"));
+items.sort((a: any, b: any) => {
+  const aF = FEATURED.indexOf(a.harness);
+  const bF = FEATURED.indexOf(b.harness);
+  if (aF !== -1 && bF !== -1) return aF - bF;
+  if (aF !== -1) return -1;
+  if (bF !== -1) return 1;
+  const impactRank: Record<string, number> = { high: 0, medium: 1, low: 2 };
+  return (impactRank[a.impact] ?? 9) - (impactRank[b.impact] ?? 9);
+});
 ---
 
 <BaseLayout title="Recommendations — changelogs.info" description="High-impact recommended config and feature actions.">
@@ -15,7 +25,7 @@ const items = JSON.parse(await readFile(join(process.cwd(), "src/content/recomme
       {items.map((r: any) => (
         <article class="rounded-lg border border-border bg-bg-card p-4">
           <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
-            <span class="text-cyan">{r.harness}</span>
+            <span class="text-cyan">{r.harness}</span>{FEATURED.includes(r.harness) && <span class="rounded border border-green/30 bg-green/10 px-1.5 py-0.5 text-[10px] text-green">featured</span>}
             <span class="text-text-muted">v{r.version}</span>
             <span class={`ml-auto ${r.impact === 'high' ? 'text-green' : r.impact === 'medium' ? 'text-amber' : 'text-text-muted'}`}>
               {r.impact === 'high' ? '⭐ high' : `${r.impact}`}

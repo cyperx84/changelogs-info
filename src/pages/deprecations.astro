@@ -3,8 +3,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { readFile } from "fs/promises";
 import { join } from "path";
 
+const FEATURED = ["claude-code", "openclaw"];
 const items = JSON.parse(await readFile(join(process.cwd(), "src/content/deprecations.json"), "utf-8"));
 items.sort((a: any, b: any) => {
+  const aF = FEATURED.indexOf(a.harness);
+  const bF = FEATURED.indexOf(b.harness);
+  if (aF !== -1 && bF !== -1) return aF - bF;
+  if (aF !== -1) return -1;
+  if (bF !== -1) return 1;
   const da = a.removal ? new Date(a.removal).getTime() : Number.MAX_SAFE_INTEGER;
   const db = b.removal ? new Date(b.removal).getTime() : Number.MAX_SAFE_INTEGER;
   return da - db;
@@ -25,7 +31,7 @@ function daysLeft(date?: string) {
       {items.map((d: any) => (
         <article class="rounded-lg border border-border bg-bg-card p-4">
           <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
-            <span class="text-cyan">{d.harness}</span>
+            <span class="text-cyan">{d.harness}</span>{FEATURED.includes(d.harness) && <span class="rounded border border-green/30 bg-green/10 px-1.5 py-0.5 text-[10px] text-green">featured</span>}
             <span class="text-text-muted">/</span>
             <span class="text-text-primary">{d.item}</span>
             <span class={`ml-auto ${d.severity === 'critical' ? 'text-red' : d.severity === 'warning' ? 'text-amber' : 'text-cyan'}`}>{d.severity}</span>

@@ -18,7 +18,15 @@ for (const f of files) {
   const items = Array.isArray(parsed) ? parsed : parsed.migrations ?? [];
   groups.push({ harness, items });
 }
-groups.sort((a, b) => a.harness.localeCompare(b.harness));
+const FEATURED = ["claude-code", "openclaw"];
+groups.sort((a, b) => {
+  const aF = FEATURED.indexOf(a.harness);
+  const bF = FEATURED.indexOf(b.harness);
+  if (aF !== -1 && bF !== -1) return aF - bF;
+  if (aF !== -1) return -1;
+  if (bF !== -1) return 1;
+  return a.harness.localeCompare(b.harness);
+});
 ---
 
 <BaseLayout title="Migrations — changelogs.info" description="Migration guides for AI coding harness updates.">
@@ -29,7 +37,7 @@ groups.sort((a, b) => a.harness.localeCompare(b.harness));
     <div class="mt-8 space-y-6">
       {groups.map((g) => (
         <div class="rounded-lg border border-border bg-bg-card">
-          <div class="border-b border-border px-4 py-2 font-mono text-xs text-text-muted"><span class="text-green">●●●</span> <span class="ml-2">{g.harness}.migrations.json</span></div>
+          <div class="border-b border-border px-4 py-2 font-mono text-xs text-text-muted"><span class="text-green">●●●</span> <span class="ml-2">{g.harness}.migrations.json</span>{FEATURED.includes(g.harness) && <span class="ml-2 rounded border border-green/30 bg-green/10 px-1.5 py-0.5 text-[10px] text-green">featured</span>}</div>
           <div class="space-y-4 p-4">
             {g.items.map((m) => (
               <details class="rounded border border-border bg-bg-tertiary/40 p-3">
