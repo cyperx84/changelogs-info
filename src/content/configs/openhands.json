@@ -1,0 +1,13 @@
+[
+  {
+    "name": "OpenHands \u2014 Docker Compose",
+    "filename": "docker-compose.yml",
+    "language": "yaml",
+    "description": "Docker Compose setup for OpenHands with persistent storage.",
+    "tags": [
+      "docker",
+      "self-hosted"
+    ],
+    "content": "services:\n  openhands:\n    image: ghcr.io/all-hands-ai/openhands:latest\n    ports:\n      - \"3000:3000\"\n    environment:\n      - LLM_MODEL=anthropic/claude-sonnet-4-5\n      - LLM_API_KEY=${ANTHROPIC_API_KEY}\n      - SANDBOX_RUNTIME_CONTAINER_IMAGE=ghcr.io/all-hands-ai/runtime:latest\n    volumes:\n      - /var/run/docker.sock:/var/run/docker.sock\n      - openhands-data:/app/data\n    restart: unless-stopped\n\nvolumes:\n  openhands-data:\n"
+  }
+]

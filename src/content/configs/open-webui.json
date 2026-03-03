@@ -1,0 +1,25 @@
+[
+  {
+    "name": "Open WebUI \u2014 Docker Compose with Ollama",
+    "filename": "docker-compose.yml",
+    "language": "yaml",
+    "description": "Full stack Open WebUI + Ollama with persistent volumes.",
+    "tags": [
+      "docker",
+      "ollama",
+      "self-hosted"
+    ],
+    "content": "services:\n  ollama:\n    image: ollama/ollama:latest\n    volumes:\n      - ollama-data:/root/.ollama\n    restart: unless-stopped\n\n  open-webui:\n    image: ghcr.io/open-webui/open-webui:main\n    ports:\n      - \"3000:8080\"\n    environment:\n      - OLLAMA_BASE_URL=http://ollama:11434\n      - OPENAI_API_KEY=${OPENAI_API_KEY:-}\n      - WEBUI_AUTH=True\n    volumes:\n      - webui-data:/app/backend/data\n    depends_on:\n      - ollama\n    restart: unless-stopped\n\nvolumes:\n  ollama-data:\n  webui-data:\n"
+  },
+  {
+    "name": "Open WebUI \u2014 Cloud API only",
+    "filename": "docker-compose.yml",
+    "language": "yaml",
+    "description": "Open WebUI connecting to cloud APIs only (no local Ollama).",
+    "tags": [
+      "docker",
+      "cloud-api"
+    ],
+    "content": "services:\n  open-webui:\n    image: ghcr.io/open-webui/open-webui:main\n    ports:\n      - \"3000:8080\"\n    environment:\n      - OPENAI_API_BASE_URL=https://api.openai.com/v1\n      - OPENAI_API_KEY=${OPENAI_API_KEY}\n      - WEBUI_AUTH=True\n      - WEBUI_NAME=My AI Hub\n    volumes:\n      - webui-data:/app/backend/data\n    restart: unless-stopped\n\nvolumes:\n  webui-data:\n"
+  }
+]
