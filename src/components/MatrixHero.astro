@@ -1,0 +1,141 @@
+---
+// Three.js matrix particle hero - lazy loaded, homepage only
+---
+
+<canvas id="hero-canvas" aria-hidden="true"></canvas>
+
+<script>
+  const canvas = document.getElementById('hero-canvas') as HTMLCanvasElement;
+  if (canvas) {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobile = window.innerWidth < 769;
+
+    if (!prefersReduced && !isMobile) {
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+      script.onload = () => initMatrix();
+      document.head.appendChild(script);
+    }
+  }
+
+  function initMatrix() {
+    const THREE = (window as any).THREE;
+    if (!THREE || !canvas) return;
+
+    const parent = canvas.parentElement!;
+    const width = parent.offsetWidth;
+    const height = parent.offsetHeight;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 100);
+    camera.position.z = 30;
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      alpha: true,
+      antialias: false,
+      powerPreference: 'low-power',
+    });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+
+    const COLS = 40;
+    const ROWS = 60;
+    const COUNT = COLS * ROWS;
+    const positions = new Float32Array(COUNT * 3);
+    const opacities = new Float32Array(COUNT);
+    const speeds = new Float32Array(COUNT);
+
+    for (let i = 0; i < COUNT; i++) {
+      const col = i % COLS;
+      const row = Math.floor(i / COLS);
+      positions[i * 3] = (col - COLS / 2) * 1.2;
+      positions[i * 3 + 1] = (ROWS / 2 - row) * 0.8;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+      opacities[i] = Math.random();
+      speeds[i] = 0.02 + Math.random() * 0.06;
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('alpha', new THREE.BufferAttribute(opacities, 1));
+
+    const material = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      uniforms: {
+        uTime: { value: 0 },
+        uColor: { value: new THREE.Color(0x33ff33) },
+      },
+      vertexShader: `
+        attribute float alpha;
+        varying float vAlpha;
+        void main() {
+          vAlpha = alpha;
+          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+          gl_PointSize = 2.0 * (20.0 / -mvPosition.z);
+          gl_Position = projectionMatrix * mvPosition;
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 uColor;
+        varying float vAlpha;
+        void main() {
+          float dist = length(gl_PointCoord - vec2(0.5));
+          if (dist > 0.5) discard;
+          float strength = 1.0 - (dist * 2.0);
+          gl_FragColor = vec4(uColor, vAlpha * strength * 0.4);
+        }
+      `,
+    });
+
+    const points = new THREE.Points(geometry, material);
+    scene.add(points);
+
+    let time = 0;
+    let animId: number;
+
+    function animate() {
+      animId = requestAnimationFrame(animate);
+      time += 0.016;
+      material.uniforms.uTime.value = time;
+
+      const pos = geometry.attributes.position.array as Float32Array;
+      const alpha = geometry.attributes.alpha.array as Float32Array;
+
+      for (let i = 0; i < COUNT; i++) {
+        pos[i * 3 + 1] -= speeds[i];
+        alpha[i] -= speeds[i] * 0.3;
+
+        if (pos[i * 3 + 1] < -ROWS / 2 * 0.8 || alpha[i] <= 0) {
+          pos[i * 3 + 1] = ROWS / 2 * 0.8 + Math.random() * 5;
+          alpha[i] = 0.3 + Math.random() * 0.7;
+          speeds[i] = 0.02 + Math.random() * 0.06;
+        }
+      }
+
+      geometry.attributes.position.needsUpdate = true;
+      geometry.attributes.alpha.needsUpdate = true;
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    const ro = new ResizeObserver(([entry]) => {
+      const w = entry.contentRect.width;
+      const h = entry.contentRect.height;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    });
+    ro.observe(parent);
+
+    document.addEventListener('astro:before-swap', () => {
+      cancelAnimationFrame(animId);
+      ro.disconnect();
+      renderer.dispose();
+      geometry.dispose();
+      material.dispose();
+    }, { once: true });
+  }
+</script>

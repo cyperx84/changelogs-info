@@ -529,6 +529,208 @@ select:focus {
   animation-fill-mode: forwards;
 }
 
+
+/* ========================================
+   Scroll-driven reveal animations
+   ======================================== */
+
+/* Scroll reveal base state */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger children */
+.reveal-stagger > .reveal:nth-child(1) { transition-delay: 0ms; }
+.reveal-stagger > .reveal:nth-child(2) { transition-delay: 60ms; }
+.reveal-stagger > .reveal:nth-child(3) { transition-delay: 120ms; }
+.reveal-stagger > .reveal:nth-child(4) { transition-delay: 180ms; }
+.reveal-stagger > .reveal:nth-child(5) { transition-delay: 240ms; }
+.reveal-stagger > .reveal:nth-child(6) { transition-delay: 300ms; }
+.reveal-stagger > .reveal:nth-child(n+7) { transition-delay: 360ms; }
+
+/* Reveal from left */
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-24px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Scale reveal for hero elements */
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-scale.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal-left, .reveal-scale {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ========================================
+   Enhanced hover interactions
+   ======================================== */
+
+/* Card lift + glow on hover */
+.tool-card {
+  transform: translateY(0);
+  will-change: transform, box-shadow;
+}
+
+.tool-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Featured card pulse glow */
+.featured-glow {
+  position: relative;
+}
+
+.featured-glow::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(51, 255, 51, 0.1), transparent, rgba(51, 255, 51, 0.05));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.featured-glow:hover::after {
+  opacity: 1;
+}
+
+[data-theme="light"] .featured-glow::after {
+  background: linear-gradient(135deg, rgba(13, 115, 119, 0.08), transparent, rgba(13, 115, 119, 0.04));
+}
+
+/* Green line separator animation */
+.green-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-green), transparent);
+  opacity: 0.3;
+  position: relative;
+  overflow: hidden;
+}
+
+.green-divider::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--color-green-bright), transparent);
+  animation: divider-sweep 3s ease-in-out infinite;
+}
+
+@keyframes divider-sweep {
+  0% { left: -50%; }
+  100% { left: 150%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .green-divider::after {
+    animation: none;
+    display: none;
+  }
+}
+
+/* ========================================
+   Typed text effect
+   ======================================== */
+
+.typed-text {
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid var(--color-green);
+  width: 0;
+  animation: typing 1.5s steps(30, end) forwards, blink-caret 0.6s step-end 4;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: var(--color-green) }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .typed-text {
+    width: 100%;
+    border-right: none;
+    animation: none;
+  }
+}
+
+/* ========================================
+   Counter tick-up animation
+   ======================================== */
+
+.counter {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ========================================
+   Three.js hero canvas
+   ======================================== */
+
+#hero-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #hero-canvas {
+    display: none;
+  }
+}
+
+/* Mobile: hide Three.js for performance */
+@media (max-width: 768px) {
+  #hero-canvas {
+    display: none;
+  }
+}
+
 /* ========================================
    Terminal-specific utilities
    ======================================== */
