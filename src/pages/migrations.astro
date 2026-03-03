@@ -1,0 +1,59 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { readdir, readFile } from "fs/promises";
+import { join } from "path";
+
+type Step = { title?: string; description: string; before?: string | null; after?: string | null; notes?: string };
+type Migration = { from: string; to: string; title?: string; description?: string; breaking?: boolean; steps?: Step[] };
+
+type MigrationFile = { harness?: string; migrations?: Migration[] } | Migration[];
+
+const dir = join(process.cwd(), "src/content/migrations");
+const files = (await readdir(dir)).filter((f) => f.endsWith(".json"));
+
+const groups: Array<{ harness: string; items: Migration[] }> = [];
+for (const f of files) {
+  const harness = f.replace(".json", "");
+  const parsed: MigrationFile = JSON.parse(await readFile(join(dir, f), "utf-8"));
+  const items = Array.isArray(parsed) ? parsed : parsed.migrations ?? [];
+  groups.push({ harness, items });
+}
+groups.sort((a, b) => a.harness.localeCompare(b.harness));
+---
+
+<BaseLayout title="Migrations — changelogs.info" description="Migration guides for AI coding harness updates.">
+  <section class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+    <h1 class="font-mono text-2xl font-bold text-green sm:text-3xl"><span class="text-green">/</span>migrations</h1>
+    <p class="mt-2 font-mono text-sm text-text-secondary"><span class="text-green">#</span> move from old versions to new safely</p>
+
+    <div class="mt-8 space-y-6">
+      {groups.map((g) => (
+        <div class="rounded-lg border border-border bg-bg-card">
+          <div class="border-b border-border px-4 py-2 font-mono text-xs text-text-muted"><span class="text-green">●●●</span> <span class="ml-2">{g.harness}.migrations.json</span></div>
+          <div class="space-y-4 p-4">
+            {g.items.map((m) => (
+              <details class="rounded border border-border bg-bg-tertiary/40 p-3">
+                <summary class="cursor-pointer font-mono text-sm text-text-primary">
+                  {m.title ?? `${g.harness} ${m.from} → ${m.to}`} {m.breaking ? <span class="ml-2 text-red">[breaking]</span> : <span class="ml-2 text-cyan">[safe]</span>}
+                </summary>
+                {m.description && <p class="mt-2 font-mono text-xs text-text-secondary">{m.description}</p>}
+                <div class="mt-3 space-y-3">
+                  {(m.steps ?? []).map((s) => (
+                    <div class="rounded border border-border p-3">
+                      <p class="font-mono text-xs text-cyan">{s.title ? `${s.title}: ` : ""}{s.description}</p>
+                      <div class="mt-2 grid gap-2 md:grid-cols-2">
+                        <pre class="overflow-x-auto rounded bg-bg-card p-2 font-mono text-[11px] text-text-secondary"><code>{s.before ?? "(none)"}</code></pre>
+                        <pre class="overflow-x-auto rounded bg-bg-card p-2 font-mono text-[11px] text-green"><code>{s.after ?? "(none)"}</code></pre>
+                      </div>
+                      {s.notes && <p class="mt-2 font-mono text-xs text-text-muted">// {s.notes}</p>}
+                    </div>
+                  ))}
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,56 @@
+{
+  "harness": "claude-code",
+  "migrations": [
+    {
+      "from": "1.x",
+      "to": "2.0",
+      "breaking": true,
+      "description": "Major architecture rewrite with new configuration format",
+      "steps": [
+        {
+          "title": "Update installation method",
+          "description": "npm install replaced with direct binary download",
+          "before": "npm install -g @anthropic-ai/claude-code",
+          "after": "# Download from GitHub releases\ncurl -L https://github.com/anthropics/claude-code/releases/latest/download/claude-code-macos -o /usr/local/bin/claude-code\nchmod +x /usr/local/bin/claude-code",
+          "notes": "npm package deprecated in v2.0. Binary installation is now recommended."
+        },
+        {
+          "title": "Migrate settings.json structure",
+          "description": "Permissions model changed to granular tool-based system",
+          "before": "{\n  \"autoApprove\": true,\n  \"permissions\": \"all\"\n}",
+          "after": "{\n  \"permissions\": {\n    \"allow\": [\n      \"Read(*)\",\n      \"Write(*)\",\n      \"Bash(npm *)\"\n    ]\n  }\n}",
+          "notes": "Old autoApprove flag removed. Use permission wildcards instead."
+        },
+        {
+          "title": "Update CLAUDE.md location",
+          "description": "Project instructions moved from root to .claude/",
+          "before": "./CLAUDE.md",
+          "after": "./.claude/CLAUDE.md",
+          "notes": "All Claude Code files now live in .claude/ directory"
+        }
+      ]
+    },
+    {
+      "from": "2.0",
+      "to": "2.1",
+      "breaking": false,
+      "description": "Skills system and MCP integration",
+      "steps": [
+        {
+          "title": "Add MCP tool configuration",
+          "description": "Enable Model Context Protocol servers",
+          "before": "# No MCP support",
+          "after": "# .claude/settings.json\n{\n  \"mcpServers\": {\n    \"filesystem\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"@modelcontextprotocol/server-filesystem\", \"/path/to/allowed\"]\n    }\n  }\n}",
+          "notes": "MCP servers extend Claude with custom tools. Optional feature."
+        },
+        {
+          "title": "Migrate to new skills directory",
+          "description": "Custom commands now use .claude/skills/",
+          "before": ".claude/commands/my-command.md",
+          "after": ".claude/skills/my-skill/SKILL.md",
+          "notes": "Skills have dedicated directories for better organization"
+        }
+      ]
+    }
+  ]
+}

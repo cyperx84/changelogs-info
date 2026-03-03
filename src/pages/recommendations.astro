@@ -1,0 +1,34 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { readFile } from "fs/promises";
+import { join } from "path";
+
+const items = JSON.parse(await readFile(join(process.cwd(), "src/content/recommendations.json"), "utf-8"));
+---
+
+<BaseLayout title="Recommendations — changelogs.info" description="High-impact recommended config and feature actions.">
+  <section class="mx-auto max-w-5xl px-4 py-10 sm:px-6">
+    <h1 class="font-mono text-2xl font-bold text-green sm:text-3xl"><span class="text-green">/</span>recommendations</h1>
+    <p class="mt-2 font-mono text-sm text-text-secondary"><span class="text-green">#</span> highest-value actions to enable now</p>
+
+    <div class="mt-8 space-y-4">
+      {items.map((r: any) => (
+        <article class="rounded-lg border border-border bg-bg-card p-4">
+          <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
+            <span class="text-cyan">{r.harness}</span>
+            <span class="text-text-muted">v{r.version}</span>
+            <span class={`ml-auto ${r.impact === 'high' ? 'text-green' : r.impact === 'medium' ? 'text-amber' : 'text-text-muted'}`}>
+              {r.impact === 'high' ? '⭐ high' : `${r.impact}`}
+            </span>
+          </div>
+          <h2 class="mt-2 font-mono text-sm text-text-primary">{r.action}</h2>
+          <p class="mt-1 font-mono text-xs text-text-secondary">{r.description}</p>
+          <p class="mt-2 font-mono text-xs text-green">how: {r.how}</p>
+          <div class="mt-2 flex flex-wrap gap-2">
+            {r.tags?.map((t: string) => <span class="rounded border border-border px-2 py-0.5 font-mono text-[10px] text-text-muted">{t}</span>)}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

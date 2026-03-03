@@ -1,0 +1,27 @@
+{
+  "harness": "cline",
+  "migrations": [
+    {
+      "from": "2.x",
+      "to": "3.0",
+      "breaking": true,
+      "description": "VSCode extension rewrite with new API integration",
+      "steps": [
+        {
+          "title": "Update extension settings",
+          "description": "Settings namespace changed",
+          "before": "{\n  \"cline.apiKey\": \"...\",\n  \"cline.model\": \"claude-3-opus\"\n}",
+          "after": "{\n  \"cline.api.key\": \"...\",\n  \"cline.api.model\": \"claude-sonnet-4-5\"\n}",
+          "notes": "Settings now nested under api namespace"
+        },
+        {
+          "title": "Configure custom instructions",
+          "description": "New global instructions file",
+          "before": "# Instructions in VSCode settings",
+          "after": "# Create .cline/instructions.md in workspace root\n# Project-specific instructions\nAlways use TypeScript strict mode\nPrefer functional patterns",
+          "notes": "Workspace-level instructions override global settings"
+        }
+      ]
+    }
+  ]
+}
