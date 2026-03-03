@@ -1,0 +1,28 @@
+{
+  "harness": "openclaw",
+  "migrations": [
+    {
+      "from": "pre-2026",
+      "to": "2026.x",
+      "title": "OpenClaw Gateway Config v2",
+      "description": "Channel plugin config restructured for multi-provider support.",
+      "breaking": true,
+      "steps": [
+        {
+          "title": "Channel config",
+          "description": "Channels now use nested plugin config",
+          "before": "channels:\n  telegram:\n    token: xxx",
+          "after": "channels:\n  telegram:\n    plugin: telegram\n    config:\n      token: xxx",
+          "notes": "All channel definitions need the plugin key"
+        },
+        {
+          "title": "Model aliases",
+          "description": "Model aliases moved to top-level models section",
+          "before": "provider_aliases:\n  fast: openai/gpt-4o",
+          "after": "models:\n  aliases:\n    fast: openai/gpt-4o",
+          "notes": "Old format still works but deprecated"
+        }
+      ]
+    }
+  ]
+}

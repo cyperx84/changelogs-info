@@ -1,0 +1,28 @@
+{
+  "harness": "continue",
+  "migrations": [
+    {
+      "from": "config.json",
+      "to": "config.yaml",
+      "title": "Continue config.json to config.yaml",
+      "description": "Continue is migrating from JSON to YAML config format with a new schema.",
+      "breaking": true,
+      "steps": [
+        {
+          "title": "Auto-migrate",
+          "description": "Run the built-in migration tool",
+          "before": "~/.continue/config.json",
+          "after": "continue migrate",
+          "notes": "Backs up old config automatically"
+        },
+        {
+          "title": "Model config",
+          "description": "Models section restructured",
+          "before": "{\"models\": [{\"title\": \"Claude\", \"provider\": \"anthropic\"}]}",
+          "after": "models:\n  - name: Claude\n    provider: anthropic\n    model: claude-sonnet-4-5",
+          "notes": "Provider/model are now separate fields"
+        }
+      ]
+    }
+  ]
+}
