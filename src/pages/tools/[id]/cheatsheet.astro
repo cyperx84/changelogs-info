@@ -90,13 +90,54 @@ const bodyHtml = cheatsheetMd(content);
   description={`Quick reference cheat sheet for ${tool.name}`}
 >
   <div class="mx-auto max-w-4xl px-6 py-12">
-    <a href={`/tools/${tool.id}`} class="mb-8 inline-flex items-center gap-1 text-sm text-text-muted transition-colors hover:text-accent">
-      &larr; {tool.name}
-    </a>
+    <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
+      <a href={`/tools/${tool.id}`} class="inline-flex items-center gap-1 text-sm text-text-muted transition-colors hover:text-accent">
+        &larr; {tool.name}
+      </a>
+      <div class="flex gap-2">
+        <button
+          id="copy-btn"
+          class="rounded border border-border bg-bg-tertiary px-3 py-2 font-mono text-xs text-text-secondary transition-all hover:border-green hover:text-green"
+          data-content={content}
+        >
+          <span id="copy-label">copy markdown</span>
+        </button>
+        <a
+          href={`/cheatsheets/${tool.id}.md`}
+          download={`${tool.id}-cheatsheet.md`}
+          class="rounded border border-border bg-bg-tertiary px-3 py-2 font-mono text-xs text-text-secondary transition-all hover:border-green hover:text-green"
+        >
+          download .md
+        </a>
+      </div>
+    </div>
 
     <div class="cheatsheet-body" set:html={bodyHtml} />
   </div>
 </BaseLayout>
+
+
+<script>
+  const btn = document.getElementById('copy-btn');
+  const label = document.getElementById('copy-label');
+  if (btn && label) {
+    btn.addEventListener('click', async () => {
+      const md = btn.getAttribute('data-content') || '';
+      try {
+        await navigator.clipboard.writeText(md);
+        label.textContent = 'copied!';
+        btn.classList.add('border-green', 'text-green');
+        setTimeout(() => {
+          label.textContent = 'copy markdown';
+          btn.classList.remove('border-green', 'text-green');
+        }, 2000);
+      } catch {
+        label.textContent = 'failed';
+        setTimeout(() => { label.textContent = 'copy markdown'; }, 2000);
+      }
+    });
+  }
+</script>
 
 <style is:global>
   .cheatsheet-body h1 { font-size: 2rem; font-weight: 700; margin-bottom: 1rem; color: var(--color-text-primary); }
