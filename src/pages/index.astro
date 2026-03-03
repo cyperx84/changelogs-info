@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ToolCard from "../components/ToolCard.astro";
-import { getTools, getAllToolReleases } from "../lib/releases";
+import { getTools, getAllToolReleases, FEATURED_TOOLS, isFeatured } from "../lib/releases";
 import type { Release } from "../lib/releases";
 
 const tools = getTools();
@@ -48,6 +48,63 @@ try {
         <p class="mt-6 font-sans text-sm leading-relaxed text-text-secondary sm:text-base">
           Every release. Every changelog. One terminal. Stay updated with AI coding tools — never miss a feature, fix, or breaking change.
         </p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Featured Harnesses -->
+  <section class="border-b border-border bg-green/[0.03]">
+    <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+      <h2 class="mb-2 font-mono text-base font-semibold text-green sm:text-lg">
+        <span class="text-green">/</span>start_here
+      </h2>
+      <p class="mb-6 font-mono text-xs text-text-muted sm:text-sm">
+        <span class="text-green">#</span> the most popular agent harnesses — deeply tracked
+      </p>
+
+      <div class="grid gap-4 sm:grid-cols-2">
+        <!-- Claude Code -->
+        <a href="/tools/claude-code" class="group rounded-lg border border-green/30 bg-bg-card p-5 shadow-[0_0_12px_rgba(51,255,51,0.08)] transition-all hover:border-green hover:shadow-[0_0_20px_rgba(51,255,51,0.15)]">
+          <div class="mb-3 flex items-center justify-between">
+            <span class="font-mono text-lg font-bold text-green">Claude Code</span>
+            <span class="rounded border border-green/30 bg-green/10 px-2 py-0.5 font-mono text-xs text-green">★ featured</span>
+          </div>
+          <p class="mb-3 font-mono text-xs text-text-secondary">Anthropic's agentic coding CLI — understands your codebase, writes code through natural language.</p>
+          <div class="flex flex-wrap gap-2 font-mono text-xs">
+            <span class="rounded bg-bg-tertiary px-2 py-1 text-text-muted">changelog</span>
+            <span class="rounded bg-bg-tertiary px-2 py-1 text-text-muted">cheatsheet</span>
+            <span class="rounded bg-bg-tertiary px-2 py-1 text-text-muted">config</span>
+            <span class="rounded bg-bg-tertiary px-2 py-1 text-text-muted">migrations</span>
+          </div>
+          {releaseMap["claude-code"] && (
+            <div class="mt-3 rounded border border-border/50 bg-bg-tertiary px-3 py-2 font-mono text-xs">
+              <span class="text-green">{releaseMap["claude-code"].version}</span>
+              <span class="ml-2 text-text-muted">{releaseMap["claude-code"].date}</span>
+            </div>
+          )}
+        </a>
+
+        <!-- OpenClaw -->
+        <a href="/tools/openclaw" class="group rounded-lg border border-green/30 bg-bg-card p-5 shadow-[0_0_12px_rgba(51,255,51,0.08)] transition-all hover:border-green hover:shadow-[0_0_20px_rgba(51,255,51,0.15)]">
+          <div class="mb-3 flex items-center justify-between">
+            <span class="font-mono text-lg font-bold text-green">OpenClaw</span>
+            <span class="rounded border border-green/30 bg-green/10 px-2 py-0.5 font-mono text-xs text-green">★ featured</span>
+          </div>
+          <p class="mb-3 font-mono text-xs text-text-secondary">Multi-model AI agent platform — orchestrate agents across Discord, Telegram, and more.</p>
+          <div class="flex flex-wrap gap-2 font-mono text-xs">
+            <span class="rounded bg-bg-tertiary px-2 py-1 text-text-muted">changelog</span>
+            <span class="rounded bg-bg-tertiary px-2 py-1 text-text-muted">cheatsheet</span>
+            <span class="rounded bg-bg-tertiary px-2 py-1 text-text-muted">config</span>
+            <span class="rounded bg-bg-tertiary px-2 py-1 text-text-muted">migrations</span>
+          </div>
+          {releaseMap["openclaw"] && (
+            <div class="mt-3 rounded border border-border/50 bg-bg-tertiary px-3 py-2 font-mono text-xs">
+              <span class="text-green">{releaseMap["openclaw"].version}</span>
+              <span class="ml-2 text-text-muted">{releaseMap["openclaw"].date}</span>
+            </div>
+          )}
+        </a>
       </div>
     </div>
   </section>

@@ -34,10 +34,14 @@ for (const file of configFiles) {
   }
 }
 
-// Sort: OpenClaw first, then alphabetically
+// Sort: Featured first (claude-code, openclaw), then alphabetically
+const FEATURED = ["claude-code", "openclaw"];
 harnessConfigs.sort((a, b) => {
-  if (a.harness === "openclaw") return -1;
-  if (b.harness === "openclaw") return 1;
+  const aF = FEATURED.indexOf(a.harness);
+  const bF = FEATURED.indexOf(b.harness);
+  if (aF !== -1 && bF !== -1) return aF - bF;
+  if (aF !== -1) return -1;
+  if (bF !== -1) return 1;
   return a.harness.localeCompare(b.harness);
 });
 

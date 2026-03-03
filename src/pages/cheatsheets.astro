@@ -19,6 +19,14 @@ const cheatsheets = files.map(f => {
   return { id, data: { tool: fm.tool || id, title: fm.title || id } };
 });
 
+// Featured tools first
+const FEATURED = ["claude-code", "openclaw"];
+cheatsheets.sort((a, b) => {
+  const aF = FEATURED.includes(a.id) ? 0 : 1;
+  const bF = FEATURED.includes(b.id) ? 0 : 1;
+  return aF - bF;
+});
+
 // Define cheatsheet metadata for better display
 const cheatsheetMetadata = {
   "claude-code": {

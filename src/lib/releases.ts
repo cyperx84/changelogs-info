@@ -26,8 +26,19 @@ export interface ToolReleases {
   lastUpdated: string;
 }
 
+export const FEATURED_TOOLS = ["claude-code", "openclaw"];
+
+export function isFeatured(toolId: string): boolean {
+  return FEATURED_TOOLS.includes(toolId);
+}
+
 export function getTools(): Tool[] {
-  return toolsData as Tool[];
+  const tools = toolsData as Tool[];
+  return tools.sort((a, b) => {
+    const aF = isFeatured(a.id) ? 0 : 1;
+    const bF = isFeatured(b.id) ? 0 : 1;
+    return aF - bF;
+  });
 }
 
 export function getToolById(id: string): Tool | undefined {
