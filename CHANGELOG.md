@@ -4,6 +4,16 @@ All notable changes to changelogs.info — the changelog site that tracks its ow
 
 ## [Unreleased]
 
+### Added
+- **Dedicated featured hubs** — new `/openclaw` and `/claude-code` landing pages with latest release context, resource jump cards, recommendations/deprecations, and recent release logs
+- **Workflow playbooks** — new `/workflows` page with practical OpenClaw + Claude Code execution patterns (fast patch, dispatch, autonomous runs, daily review cadence)
+- **web-haptics guide** — new `/guides/web-haptics` page documenting package usage, custom patterns, iOS fallback strategy, and UX safety rules
+
+### Changed
+- **Featured order is now explicit** — OpenClaw is first, Claude Code second, then all other harnesses
+- **Navigation updated** — OpenClaw/Claude-Code-first nav on desktop, mobile, and footer, plus new `/workflows` link
+- **Resources hub expanded** — now links workflow playbooks and the web-haptics implementation guide
+
 ## [0.7.0] — 2026-03-04
 
 ### Added
