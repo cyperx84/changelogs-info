@@ -1,0 +1,59 @@
+---
+// Web Haptics — subtle vibration feedback using navigator.vibrate + iOS switch fallback
+---
+
+<input type="checkbox" id="haptic-switch" aria-hidden="true" style="position:fixed;top:-100px;left:-100px;opacity:0;pointer-events:none;" />
+
+<script is:inline>
+  (function() {
+    // Skip if reduced motion preferred
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    const sw = document.getElementById("haptic-switch");
+    const canVibrate = "vibrate" in navigator;
+
+    function haptic(pattern) {
+      if (canVibrate) {
+        // Android + desktop browsers with vibration support
+        navigator.vibrate(pattern);
+      } else if (isIOS && sw) {
+        // iOS fallback: toggle invisible switch input for haptic
+        for (let i = 0; i < pattern.length; i++) {
+          setTimeout(function() {
+            sw.checked = !sw.checked;
+            // Force change event
+            sw.dispatchEvent(new Event("change"));
+          }, pattern.slice(0, i).reduce(function(a, b) { return a + b; }, 0));
+        }
+      }
+    }
+
+    // Light tap
+    function lightTap() { haptic([10]); }
+    // Medium tap
+    function mediumTap() { haptic([15, 30, 15]); }
+    // Success pattern
+    function successTap() { haptic([10, 50, 20]); }
+
+    document.addEventListener("click", function(e) {
+      var el = e.target.closest("button, .tool-card, a[href], .release-filter-btn, .theme-toggle");
+      if (!el) return;
+
+      if (el.matches(".theme-toggle")) {
+        mediumTap();
+      } else if (el.matches("button, .release-filter-btn")) {
+        lightTap();
+      } else if (el.matches(".tool-card")) {
+        lightTap();
+      }
+    });
+
+    // Copy success feedback
+    document.addEventListener("click", function(e) {
+      if (e.target.closest("#copy-btn, .copy-btn")) {
+        setTimeout(successTap, 150);
+      }
+    });
+  })();
+</script>
