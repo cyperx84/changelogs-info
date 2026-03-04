@@ -34,6 +34,18 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:description" content={description} />
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#0c0c0c" />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "changelogs.info",
+      "url": "https://changelogs.info",
+      "description": description,
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://changelogs.info/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    })} />
     <link rel="alternate" type="application/rss+xml" title="changelogs.info — All Releases" href="/feed/all.xml" />
     <script defer data-domain="changelogs.info" src="https://plausible.io/js/script.js"></script>
   </head>

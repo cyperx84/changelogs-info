@@ -1,0 +1,13 @@
+[
+  {
+    "name": "Khoj \u2014 Docker Compose (self-hosted)",
+    "filename": "docker-compose.yml",
+    "language": "yaml",
+    "description": "Self-hosted Khoj with PostgreSQL and persistent storage.",
+    "tags": [
+      "docker",
+      "self-hosted"
+    ],
+    "content": "services:\n  khoj:\n    image: ghcr.io/khoj-ai/khoj:latest\n    ports:\n      - \"42110:42110\"\n    environment:\n      - KHOJ_ADMIN_EMAIL=admin@example.com\n      - KHOJ_ADMIN_PASSWORD=changeme\n      - POSTGRES_HOST=db\n      - POSTGRES_PORT=5432\n      - POSTGRES_DB=khoj\n      - POSTGRES_USER=khoj\n      - POSTGRES_PASSWORD=khoj\n    volumes:\n      - khoj-data:/root/.khoj\n    depends_on:\n      - db\n    restart: unless-stopped\n\n  db:\n    image: postgres:15\n    environment:\n      - POSTGRES_DB=khoj\n      - POSTGRES_USER=khoj\n      - POSTGRES_PASSWORD=khoj\n    volumes:\n      - postgres-data:/var/lib/postgresql/data\n    restart: unless-stopped\n\nvolumes:\n  khoj-data:\n  postgres-data:\n"
+  }
+]

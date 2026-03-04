@@ -1,0 +1,25 @@
+[
+  {
+    "name": "Tabby \u2014 Docker Compose (self-hosted)",
+    "filename": "docker-compose.yml",
+    "language": "yaml",
+    "description": "Self-hosted Tabby server with GPU support and persistent storage.",
+    "tags": [
+      "docker",
+      "self-hosted",
+      "gpu"
+    ],
+    "content": "services:\n  tabby:\n    image: tabbyml/tabby:latest\n    command: serve --model StarCoder-1B --device cuda\n    ports:\n      - \"8080:8080\"\n    volumes:\n      - tabby-data:/data\n    deploy:\n      resources:\n        reservations:\n          devices:\n            - driver: nvidia\n              count: 1\n              capabilities: [gpu]\n    restart: unless-stopped\n\nvolumes:\n  tabby-data:\n"
+  },
+  {
+    "name": "Tabby \u2014 CPU-only config",
+    "filename": "docker-compose.yml",
+    "language": "yaml",
+    "description": "Tabby server without GPU for smaller models.",
+    "tags": [
+      "docker",
+      "cpu"
+    ],
+    "content": "services:\n  tabby:\n    image: tabbyml/tabby:latest\n    command: serve --model StarCoder-1B --device cpu\n    ports:\n      - \"8080:8080\"\n    volumes:\n      - tabby-data:/data\n    restart: unless-stopped\n\nvolumes:\n  tabby-data:\n"
+  }
+]
