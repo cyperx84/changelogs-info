@@ -1,0 +1,175 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getToolReleases, formatDate, relativeTime } from "../lib/releases";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
+const data = await getToolReleases("claude-code");
+const releases = data?.releases || [];
+const latest = releases[0];
+const stableReleases = releases.filter((r) => !r.prerelease);
+const recentStable = stableReleases.slice(0, 5);
+
+const configs = JSON.parse(readFileSync(join(process.cwd(), "src/content/configs/claude-code.json"), "utf-8"));
+const allRecs = JSON.parse(readFileSync(join(process.cwd(), "src/content/recommendations.json"), "utf-8"));
+const recs = allRecs.filter((r: any) => r.harness === "claude-code");
+const allDeps = JSON.parse(readFileSync(join(process.cwd(), "src/content/deprecations.json"), "utf-8"));
+const deps = allDeps.filter((d: any) => d.harness === "claude-code");
+---
+
+<BaseLayout title="Claude Code Hub — changelogs.info" description="Everything you need for Claude Code: cheatsheets, configs, migrations, model compatibility, and changelog tracking.">
+  <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+    <a href="/" class="mb-6 inline-flex items-center gap-1 font-mono text-sm text-text-muted transition-colors hover:text-green">
+      <span class="text-green">&lt;</span> cd ..
+    </a>
+
+    <header class="mb-10">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 class="font-mono text-2xl font-bold text-green sm:text-3xl md:text-4xl">
+            <span class="text-green">/</span>claude-code
+          </h1>
+          <p class="mt-2 font-mono text-sm text-text-secondary">
+            Anthropic\u2019s agentic coding CLI \u2014 understands your codebase, writes code through natural language
+          </p>
+        </div>
+        <div class="flex gap-2">
+          <a href="https://github.com/anthropics/claude-code" target="_blank" rel="noopener" class="rounded border border-border bg-bg-tertiary px-3 py-1.5 font-mono text-xs text-text-secondary transition-all hover:border-green hover:text-green">github</a>
+          <a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank" rel="noopener" class="rounded border border-accent bg-accent/10 px-3 py-1.5 font-mono text-xs text-accent transition-all hover:bg-accent/20">docs</a>
+        </div>
+      </div>
+
+      {latest && (
+        <div class="reveal mt-6 rounded-lg border border-green/30 bg-bg-card shadow-[0_0_12px_rgba(51,255,51,0.06)]">
+          <div class="border-b border-border px-4 py-2 font-mono text-xs text-text-muted">
+            <span class="text-green">\u25cf\u25cf\u25cf</span> <span class="ml-2">latest</span>
+          </div>
+          <div class="flex flex-wrap items-center gap-6 p-4">
+            <div>
+              <p class="font-mono text-xs text-text-muted">version</p>
+              <p class="font-mono text-lg font-bold text-green">{latest.version}</p>
+            </div>
+            <div>
+              <p class="font-mono text-xs text-text-muted">released</p>
+              <p class="font-mono text-sm text-text-secondary">{relativeTime(latest.date)}</p>
+            </div>
+            <div>
+              <p class="font-mono text-xs text-text-muted">total releases</p>
+              <p class="font-mono text-sm text-cyan">{releases.length}</p>
+            </div>
+            <a href="/tools/claude-code" class="ml-auto rounded border border-green/30 bg-green/10 px-4 py-2 font-mono text-xs text-green transition-all hover:bg-green/20">
+              full changelog \u2192
+            </a>
+          </div>
+        </div>
+      )}
+    </header>
+
+    <section class="mb-10">
+      <h2 class="reveal mb-6 font-mono text-lg font-semibold text-green">
+        <span class="text-green">#</span> resources
+      </h2>
+      <div class="reveal-stagger grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <a href="/tools/claude-code/cheatsheet" class="reveal rounded-lg border border-border bg-bg-card p-5 transition-all hover:border-cyan hover:shadow-[0_0_12px_rgba(0,212,255,0.12)]">
+          <span class="text-2xl">\ud83d\udccb</span>
+          <h3 class="mt-3 font-mono text-sm font-semibold text-text-primary">Cheat Sheet</h3>
+          <p class="mt-1 font-mono text-xs text-text-muted">CLI flags, slash commands, agent teams, hooks, skills, MCP integration. Copy or download.</p>
+        </a>
+        <a href="/configs" class="reveal rounded-lg border border-border bg-bg-card p-5 transition-all hover:border-green hover:shadow-[0_0_12px_rgba(51,255,51,0.12)]">
+          <span class="text-2xl">\u2699\ufe0f</span>
+          <h3 class="mt-3 font-mono text-sm font-semibold text-text-primary">{configs.length} Config Templates</h3>
+          <p class="mt-1 font-mono text-xs text-text-muted">CLAUDE.md for TypeScript, Python, monorepos. Copy-paste ready.</p>
+        </a>
+        <a href="/migrations" class="reveal rounded-lg border border-border bg-bg-card p-5 transition-all hover:border-amber hover:shadow-[0_0_12px_rgba(255,184,0,0.12)]">
+          <span class="text-2xl">\ud83d\udd04</span>
+          <h3 class="mt-3 font-mono text-sm font-semibold text-text-primary">Migration Guides</h3>
+          <p class="mt-1 font-mono text-xs text-text-muted">Version upgrade paths with before/after snippets</p>
+        </a>
+        <a href="/compatibility" class="reveal rounded-lg border border-border bg-bg-card p-5 transition-all hover:border-green hover:shadow-[0_0_12px_rgba(51,255,51,0.12)]">
+          <span class="text-2xl">\ud83e\udde9</span>
+          <h3 class="mt-3 font-mono text-sm font-semibold text-text-primary">Model Compatibility</h3>
+          <p class="mt-1 font-mono text-xs text-text-muted">Anthropic models only: Sonnet, Opus, Haiku</p>
+        </a>
+        <a href="/models" class="reveal rounded-lg border border-border bg-bg-card p-5 transition-all hover:border-cyan hover:shadow-[0_0_12px_rgba(0,212,255,0.12)]">
+          <span class="text-2xl">\ud83e\udde0</span>
+          <h3 class="mt-3 font-mono text-sm font-semibold text-text-primary">Model Directory</h3>
+          <p class="mt-1 font-mono text-xs text-text-muted">Browse all AI models by provider</p>
+        </a>
+        <a href="/feed/claude-code.xml" class="reveal rounded-lg border border-border bg-bg-card p-5 transition-all hover:border-amber hover:shadow-[0_0_12px_rgba(255,184,0,0.12)]">
+          <span class="text-2xl">\ud83d\udce1</span>
+          <h3 class="mt-3 font-mono text-sm font-semibold text-text-primary">RSS Feed</h3>
+          <p class="mt-1 font-mono text-xs text-text-muted">Subscribe to Claude Code release notifications</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- Deprecations alert -->
+    {deps.length > 0 && (
+      <section class="mb-10">
+        <h2 class="reveal mb-4 font-mono text-lg font-semibold text-red">
+          <span class="text-red">!</span> deprecation alerts
+        </h2>
+        <div class="space-y-3">
+          {deps.map((d: any) => (
+            <div class="reveal rounded-lg border border-red/20 bg-bg-card p-4">
+              <div class="flex items-center gap-2 font-mono text-xs">
+                <span class={d.severity === "critical" ? "text-red" : d.severity === "warning" ? "text-amber" : "text-cyan"}>{d.severity}</span>
+                <span class="text-text-muted">\u2502</span>
+                <span class="text-text-primary">{d.item}</span>
+              </div>
+              <p class="mt-1 font-mono text-xs text-text-muted">deprecated {d.deprecated}{d.removal ? ` \u2022 removal ${d.removal}` : ""}</p>
+              <p class="mt-1 font-mono text-xs text-green">\u2192 {d.migration}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Recommendations -->
+    {recs.length > 0 && (
+      <section class="mb-10">
+        <h2 class="reveal mb-4 font-mono text-lg font-semibold text-green">
+          <span class="text-green">#</span> recommended actions
+        </h2>
+        <div class="space-y-3">
+          {recs.map((r: any) => (
+            <div class="reveal rounded-lg border border-border bg-bg-card p-4">
+              <div class="flex items-center gap-2 font-mono text-xs">
+                <span class={r.impact === "high" ? "text-green" : "text-amber"}>
+                  {r.impact === "high" ? "\u2b50 high impact" : r.impact}
+                </span>
+                <span class="text-text-muted">\u2502</span>
+                <span class="text-text-primary">{r.action}</span>
+              </div>
+              <p class="mt-2 font-mono text-xs text-text-secondary">{r.description}</p>
+              <p class="mt-1 font-mono text-xs text-green">\u2192 {r.how}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <section>
+      <h2 class="reveal mb-4 font-mono text-lg font-semibold text-green">
+        <span class="text-green">#</span> recent releases
+      </h2>
+      <div class="rounded-lg border border-border bg-bg-card">
+        <div class="border-b border-border px-4 py-2 font-mono text-xs text-text-muted">
+          <span class="text-green">\u25cf\u25cf\u25cf</span> <span class="ml-2">releases.log</span>
+        </div>
+        <div class="p-3">
+          {recentStable.map((r) => (
+            <a href={`/tools/claude-code/changelog/${r.version}`} class="block rounded px-3 py-2 font-mono text-xs transition-all hover:bg-bg-tertiary/50">
+              <span class="text-green">{r.version}</span>
+              <span class="ml-3 text-text-muted">{formatDate(r.date)}</span>
+              {r.name !== r.version && <span class="ml-3 text-text-secondary">{r.name}</span>}
+            </a>
+          ))}
+        </div>
+      </div>
+      <a href="/tools/claude-code" class="mt-3 inline-block font-mono text-xs text-text-muted transition-colors hover:text-green">
+        view all {releases.length} releases \u2192
+      </a>
+    </section>
+  </div>
+</BaseLayout>
