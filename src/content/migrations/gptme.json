@@ -1,0 +1,21 @@
+{
+  "harness": "gptme",
+  "migrations": [
+    {
+      "from": "legacy profiles",
+      "to": "provider/model aliases",
+      "title": "gptme Model Alias Migration",
+      "description": "Move from hardcoded model strings in scripts to reusable provider/model aliases.",
+      "breaking": false,
+      "steps": [
+        {
+          "title": "Alias declaration",
+          "description": "Create stable aliases to avoid pinning every command to provider/model IDs.",
+          "before": "gptme --model openai/gpt-4o-mini \"summarize this repo\"",
+          "after": "aliases:\n  fast: openai/gpt-4o-mini\n  quality: anthropic/claude-sonnet-4-6\n\n# usage\ngptme --model fast \"summarize this repo\"",
+          "notes": "Alias-based workflows reduce churn during model renames."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "harness": "open-webui",
+  "migrations": [
+    {
+      "from": "legacy env",
+      "to": "provider blocks",
+      "title": "Open WebUI Provider Configuration",
+      "description": "Move from global provider variables to explicit provider/model blocks.",
+      "breaking": false,
+      "steps": [
+        {
+          "title": "Provider definition",
+          "description": "Replace global API toggles with provider objects.",
+          "before": "OPENAI_API_KEY=...\nOPENAI_BASE_URL=https://api.openai.com/v1",
+          "after": "providers:\n  openai:\n    apiKey: ${OPENAI_API_KEY}\n    baseUrl: https://api.openai.com/v1\n  anthropic:\n    apiKey: ${ANTHROPIC_API_KEY}",
+          "notes": "This enables cleaner multi-provider routing in UI."
+        },
+        {
+          "title": "Model presets",
+          "description": "Set defaults as named presets instead of one global model string.",
+          "before": "DEFAULT_MODEL=gpt-4o-mini",
+          "after": "modelPresets:\n  fast: openai/gpt-4o-mini\n  quality: anthropic/claude-sonnet-4-6\ndefaultPreset: fast",
+          "notes": "Safer upgrades when providers deprecate model IDs."
+        }
+      ]
+    }
+  ]
+}
