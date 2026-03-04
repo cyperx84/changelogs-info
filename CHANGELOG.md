@@ -4,6 +4,32 @@ All notable changes to changelogs.info — the changelog site that tracks its ow
 
 ## [Unreleased]
 
+## [0.7.0] — 2026-03-04
+
+### Added
+- **Visual polish** — Three.js matrix rain hero (lazy-loaded, mobile/reduced-motion safe), scroll-reveal animations, green divider separators, counter tick-up effects, featured card glow
+- **22/22 cheatsheets** — complete coverage across all tracked tools with copy-to-clipboard and .md download buttons
+- **15 config templates** — added goose, roo-code, opencode, openhands, open-webui, amp
+- **11 migration guides** — added openclaw, roo-code, goose, continue, opencode
+- **Expanded resource data** — 12x13 compatibility matrix, 12 deprecations, 16 recommendations (3x previous)
+- **Quick-link cards** on tool detail pages — cheatsheet, configs, migrations when available
+- **404 page** — terminal-themed error page with navigation links
+- **SEO improvements** — twitter cards, theme-color, RSS autodiscovery, og:site_name
+- **ScrollReveal component** — IntersectionObserver-based reveal animations site-wide
+
+### Changed
+- **Claude Code + OpenClaw prioritized everywhere** — featured badges, sort-first on all pages, /start_here hero section
+- **12 tool descriptions enriched** — cursor, windsurf, goose, amp, and 8 others expanded from one-liners to full descriptions
+- Removed cyperx@terminal handle from all pages
+- Footer updated to subtle "made with ❤️ by CyperX"
+- Branded favicon (green terminal prompt on dark background)
+- Release data refreshed for all 18 tools with public repos
+- Cleaned stale git branches
+
+### Fixed
+- gptme repo path corrected (was gptme-org/gptme, now gptme/gptme)
+- migrations.astro build error (g.items.map) resolved with flexible JSON parsing
+
 ## [0.6.0] — 2026-03-03
 
 ### Added

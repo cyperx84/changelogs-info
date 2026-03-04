@@ -49,6 +49,27 @@ try {
   </section>
 
 
+
+  <!-- Latest releases ticker -->
+  {Object.keys(releaseMap).length > 0 && (
+    <div class="border-b border-border bg-bg-card/50">
+      <div class="mx-auto flex max-w-6xl items-center gap-3 overflow-x-auto px-4 py-2 font-mono text-xs sm:px-6">
+        <span class="shrink-0 text-green">latest:</span>
+        {Object.entries(releaseMap)
+          .sort(([, a], [, b]) => new Date(b.date).getTime() - new Date(a.date).getTime())
+          .slice(0, 6)
+          .map(([toolId, release]) => {
+            const tool = tools.find((t) => t.id === toolId);
+            return tool ? (
+              <a href={`/tools/${toolId}`} class="shrink-0 rounded bg-bg-tertiary px-2 py-1 text-text-muted transition-all hover:text-green">
+                <span class="text-cyan">{tool.name}</span> <span class="text-green">{release.version}</span>
+              </a>
+            ) : null;
+          })}
+      </div>
+    </div>
+  )}
+
   <div class="green-divider"></div>
 
   <!-- Featured Harnesses -->
