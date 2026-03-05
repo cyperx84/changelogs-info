@@ -15,6 +15,30 @@
   },
   "releases": [
     {
+      "version": "rust-v0.110.0",
+      "name": "0.110.0",
+      "body": "## New Features\n- Added a plugin system that can load skills, MCP entries, and app connectors from config or a local marketplace, with an install endpoint for enabling plugins from the app server. (#12864, #13333, #13401, #13422)\n- Expanded the TUI multi-agent flow with approval prompts, `/agent`-based enablement, clearer prompts, ordinal nicknames, and role-labeled handoff context. (#12995, #13246, #13404, #13412, #13505)\n- Added a persisted `/fast` toggle in the TUI and app-server support for `fast` and `flex` service tiers. (#13212, #13334, #13391)\n- Improved memories with workspace-scoped writes, renamed memory settings, and guardrails against saving stale or polluted facts. (#13008, #13088, #13237, #13467)\n- Added a direct Windows installer script to published release artifacts. (#12741)\n\n## Bug Fixes\n- Fixed `@` file mentions so parent-directory `.gitignore` rules no longer hide valid repository files. (#13250)\n- Made sub-agents faster and more reliable by reusing shell state correctly and fixing `/status`, `Esc`, pending-message handling, and startup/profile race conditions. (#12935, #13052, #13130, #13131, #13235, #13240, #13248)\n- Fixed project trust parsing so CLI overrides apply correctly to trusted project-local MCP transports. (#13090)\n- Fixed read-only sandbox policies so network access is preserved when it is explicitly enabled. (#13409)\n- Fixed multiline environment export capture and Windows state DB path handling in session state. (#12642, #13336)\n- Fixed ANSI/base16 syntax highlighting so terminal-themed colors render correctly in the TUI. (#13382)\n\n## Documentation\n- Expanded app-server docs around service tiers, plugin installation, renaming unloaded threads, and the new `skills/changed` notification. (#13282, #13391, #13414, #13422)\n\n## Chores\n- Removed the remaining legacy app-server v1 websocket/RPC surfaces in favor of the current protocol. (#13364, #13375, #13397)\n\n## Changelog\n\nFull Changelog: https://github.com/openai/codex/compare/rust-v0.107.0...rust-v0.110.0\n\n- #13086 Fix CLI feedback link @etraut-openai\n- #13063 Make cloud_requirements fail close @alexsong-oai\n- #13083 Enable analytics in codex exec and codex mcp-server @etraut-openai\n- #12995 feat: approval for sub-agent in the TUI @jif-oai\n- #13027 feat: skill disable respect config layer @jif-oai\n- #13125 chore: change mem default @jif-oai\n- #13088 Tune memory read-path for stale facts @andi-oai\n- #13128 nit: ignore `resume_startup_does_not_consume_model_availability_nux_c… @jif-oai\n- #12935 Speed up subagent startup @daveaitel-openai\n- #13127 nit: disable on windows @jif-oai\n- #13129 fix: package `models.json` for Bazel tests @jif-oai\n- #13065 core: resolve host_executable() rules during preflight @bolinfest\n- #12864 feat: load from plugins @xl-openai\n- #12989 fix: MacOSAutomationPermission::BundleIDs should allow communicating … @leoshimo-oai\n- #13181 [codex] include plan type in account updates @tibo-openai\n- #13058 Record realtime close marker on replacement @aibrahim-oai\n- #13215 Fix issue deduplication workflow for Codex issues @etraut-openai\n- #13197 Improve subagent contrast in TUI @gabec-openai\n- #13130 fix: `/status` when sub-agent @jif-oai\n- #13008 feat: polluted memories @jif-oai\n- #13237 feat: update memories config names @jif-oai\n- #13131 fix: esc in `/agent` @jif-oai\n- #13052 core: reuse parent shell snapshot for thread-spawn subagents @daveaitel-openai\n- #13249 chore: `/multiagent` alias for `/agent` @jif-oai\n- #13057 fix: use https://git.savannah.gnu.org/git/bash instead of https://github.com/bolinfest/bash @bolinfest\n- #13090 Fix project trust config parsing so CLI overrides work @etraut-openai\n- #13202 tui: restore draft footer hints @charley-oai\n- #13246 feat: enable ma through `/agent` @jif-oai\n- #12642 fix(core) shell_snapshot multiline exports @dylan-hurd-oai\n- #11814 test(app-server): increase flow test timeout to reduce flake @joshka-oai\n- #13282 app-server: Update `thread/name/set` to support not-loaded threads @euroelessar\n- #13285 feat(app-server): add tracing to all app-server APIs @owenlin0\n- #13265 Update realtime websocket API @aibrahim-oai\n- #13261 fix(app-server): emit turn/started only when turn actually starts @owenlin0\n- #13079 app-server: Silence thread status changes caused by thread being created @euroelessar\n- #13284 Adjusting plan prompt for clarity and verbosity @bfioca-openai\n- #13286 feat(app-server-test-client): support tracing @owenlin0\n- #13061 chore:  remove SkillMetadata.permissions and derive skill sandboxing from permission_profile @celia-oai\n- #12006 tui: preserve kill buffer across submit and slash-command clears @rakan-oai\n- #13212 add fast mode toggle @pash-openai\n- #13250 fix(core): scope file search gitignore to repository context @fcoury\n- #13313 Renaming Team to Business plan during TUI onboarding @bwanner-oai\n- #13248 fix: agent race @jif-oai\n- #13235 fix: agent when profile @jif-oai\n- #13336 fix: db windows path @jif-oai\n- #13334 app-server service tier plumbing (plus some cleanup) @pash-openai\n- #13341 feat: presentation artifact p1 @jif-oai\n- #13344 feat: pres artifact 2 @jif-oai\n- #13346 feat: pres artifact 3 @jif-oai\n- #13345 feat: spreadsheet artifact @jif-oai\n- #13347 feat: spreadsheet v2 @jif-oai\n- #13348 feat: presentation part 4 @jif-oai\n- #13350 feat: spreadsheet part 3 @jif-oai\n- #13355 feat: pres artifact part 5 @jif-oai\n- #13357 feat: add multi-actions to presentation tool @jif-oai\n- #13360 feat: artifact presentation part 7 @jif-oai\n- #13362 feat: wire spreadsheet artifact @jif-oai\n- #12741 Add Windows direct install script @efrazer-oai\n- #13376 realtime prompt changes @aibrahim-oai\n- #13324 app-server-protocol: export flat v2 schema bundle @apanasenko-oai\n- #13364 Remove Responses V1 websocket implementation @pakrym-oai\n- #12969 app-server: source /feedback logs from sqlite at trace level @charley-oai\n- #13381 chore: rm --all-features flag from rust-analyzer @sayan-oai\n- #13043 Collapse parsed command summaries when any stage is unknown @nornagon-openai\n- #13385 Revert \"realtime prompt changes\" @aibrahim-oai\n- #13389 fix @aibrahim-oai\n- #13375 chore(app-server): delete v1 RPC methods and notifications @owenlin0\n- #13397 chore(app-server): restore EventMsg TS types @owenlin0\n- #13395 Build delegated realtime handoff text from all messages @aibrahim-oai\n- #13399 Require deduplicator success before commenting @etraut-openai\n- #13398 Revert \"Revert \"realtime prompt changes\"\" @aibrahim-oai\n- #13333 Refactor plugin config and cache path @xl-openai\n- #13275 fix(network-proxy): reject mismatched host headers @viyatb-oai\n- #12868 tui: align pending steers with core acceptance @charley-oai\n- #13280 Add thread metadata update endpoint to app server @joeytrasatti-openai\n- #13050 Add under-development original-resolution view_image support @fjord-oai\n- #13402 Ensure the env values of imported shell_environment_policy.set is string @alexsong-oai\n- #13331 Make js_repl image output controllable @fjord-oai\n- #13401 feat: load plugin apps @sayan-oai\n- #13292 [feedback] diagnostics @rhan-oai\n- #13414 feat(app-server): add a skills/changed v2 notification @owenlin0\n- #13368 feat(app-server): propagate app-server trace context into core @owenlin0\n- #13413 copy command-runner to CODEX_HOME so sandbox users can always execute it @iceweasel-oai\n- #13366 [bazel] Bump rules_rs and llvm @zbarsky-openai\n- #13409 Feat: Preserve network access on read-only sandbox policies @celia-oai\n- #13388 config: enforce enterprise feature requirements @bolinfest\n- #13218 Add role-specific subagent nickname overrides @gabec-openai\n- #13427 chore: Nest skill and protocol network permissions under `network.enabled` @celia-oai\n- #13429 core: box wrapper futures to reduce stack pressure @bolinfest\n- #13391 support 'flex' tier in app-server in addition to 'fast' @kharvd\n- #13290 image-gen-core @won-openai\n- #13404 feat: better multi-agent prompt @jif-oai\n- #13412 feat: ordinal nick name @jif-oai\n- #13454 add metric for per-turn token usage @jif-oai\n- #13240 fix: pending messages in `/agent` @jif-oai\n- #13461 fix: bad merge @jif-oai\n- #13460 feat: disable request input on sub agent @jif-oai\n- #13456 feat: add metric for per-turn tool count and add tmp_mem flag @jif-oai\n- #13468 nit: citation prompt @jif-oai\n- #13467 feat: memories in workspace write @jif-oai\n- #12383 add new scopes to login @adaley-openai\n- #13484 allow apps to specify cwd for sandbox setup. @iceweasel-oai\n- #13424 feat(core, tracing): add a span representing a turn @owenlin0\n- #13489 remove serviceTier from app-server examples @kharvd\n- #13458 [tui] Update Fast slash command description @pash-openai\n- #13382 fix(tui): decode ANSI alpha-channel encoding in syntax themes @fcoury\n- #13485 feat: external artifacts builder @jif-oai\n- #13493 feat(app-server-test-client): OTEL setup for tracing @owenlin0\n- #13501 add metrics for external config import @alexsong-oai\n- #13495 Notify TUI about plan mode prompts and user input requests @etraut-openai\n- #13506 [release] temporarily use thin LTO for releases @bolinfest\n- #13505 Prefix handoff messages with role @aibrahim-oai\n- #13422 plugin: support local-based marketplace.json + install endpoint. @xl-openai\n",
+      "date": "2026-03-05T02:22:46Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.110.0",
+      "prerelease": false
+    },
+    {
+      "version": "rust-v0.111.0-alpha.1",
+      "name": "0.111.0-alpha.1",
+      "body": "Release 0.111.0-alpha.1\n\n",
+      "date": "2026-03-05T04:33:24Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.111.0-alpha.1",
+      "prerelease": true
+    },
+    {
+      "version": "rust-v0.110.0-alpha.1",
+      "name": "0.110.0-alpha.1",
+      "body": "Release 0.110.0-alpha.1\n\n",
+      "date": "2026-03-05T00:59:56Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.110.0-alpha.1",
+      "prerelease": true
+    },
+    {
       "version": "rust-v0.108.0-alpha.9",
       "name": "0.108.0-alpha.9",
       "body": "Release 0.108.0-alpha.9\n\n",
@@ -47,11 +71,35 @@
       "prerelease": true
     },
     {
+      "version": "rust-v0.108.0-alpha.12",
+      "name": "0.108.0-alpha.12",
+      "body": "Release 0.108.0-alpha.12\n\n",
+      "date": "2026-03-04T15:33:58Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.108.0-alpha.12",
+      "prerelease": true
+    },
+    {
+      "version": "rust-v0.108.0-alpha.11",
+      "name": "0.108.0-alpha.11",
+      "body": "Release 0.108.0-alpha.11\n\n",
+      "date": "2026-03-04T11:59:49Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.108.0-alpha.11",
+      "prerelease": true
+    },
+    {
       "version": "rust-v0.108.0-alpha.10",
       "name": "0.108.0-alpha.10",
       "body": "Release 0.108.0-alpha.10\n\n",
       "date": "2026-03-04T05:48:10Z",
       "url": "https://github.com/openai/codex/releases/tag/rust-v0.108.0-alpha.10",
+      "prerelease": true
+    },
+    {
+      "version": "artifact-runtime-v2.3.4",
+      "name": "artifact-runtime-v2.3.4",
+      "body": "",
+      "date": "2026-03-04T14:17:27Z",
+      "url": "https://github.com/openai/codex/releases/tag/artifact-runtime-v2.3.4",
       "prerelease": true
     },
     {
@@ -205,55 +253,7 @@
       "date": "2026-02-25T19:47:33Z",
       "url": "https://github.com/openai/codex/releases/tag/rust-v0.106.0-alpha.3",
       "prerelease": true
-    },
-    {
-      "version": "rust-v0.106.0-alpha.2",
-      "name": "0.106.0-alpha.2",
-      "body": "Release 0.106.0-alpha.2\n\n",
-      "date": "2026-02-25T19:11:29Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.106.0-alpha.2",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.106.0-alpha.1",
-      "name": "0.106.0-alpha.1",
-      "body": "Release 0.106.0-alpha.1\n\n",
-      "date": "2026-02-25T18:36:44Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.106.0-alpha.1",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.105.0-alpha.26",
-      "name": "0.105.0-alpha.26",
-      "body": "Release 0.105.0-alpha.26\n\n",
-      "date": "2026-02-25T16:25:19Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.105.0-alpha.26",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.105.0-alpha.25",
-      "name": "0.105.0-alpha.25",
-      "body": "Release 0.105.0-alpha.25\n\n",
-      "date": "2026-02-25T14:34:33Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.105.0-alpha.25",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.105.0-alpha.24",
-      "name": "0.105.0-alpha.24",
-      "body": "Release 0.105.0-alpha.24\n\n",
-      "date": "2026-02-25T12:20:21Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.105.0-alpha.24",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.105.0-alpha.23",
-      "name": "0.105.0-alpha.23",
-      "body": "Release 0.105.0-alpha.23\n\n",
-      "date": "2026-02-25T09:58:58Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.105.0-alpha.23",
-      "prerelease": true
     }
   ],
-  "lastUpdated": "2026-03-04T06:21:48.981Z"
+  "lastUpdated": "2026-03-05T06:23:51.997Z"
 }
