@@ -1,7 +1,7 @@
 ---
 tool: claude-code
 title: Claude Code Cheat Sheet
-lastUpdated: 2026-03-02
+lastUpdated: 2026-03-07
 ---
 
 # Claude Code 2.1 Cheat Sheet
@@ -10,28 +10,29 @@ Complete reference for Claude Code CLI tool. Updated for v2.1.x (January 2026).
 
 ---
 
-## What's New in v2.1
+## What's New in v2.1+
 
 **Major Features:**
-- **MCP Tool Search** — Lazy loading for tools, reducing context usage from ~134k to ~5k tokens
+- **MCP Tool Search** — Lazy loading for tools, reducing context from ~134k → ~5k tokens
 - **Background Agents** — Run up to 15 agents in parallel (`Ctrl+B`)
 - **Task Management** — Built-in task tracking with dependencies (`/tasks`)
+- **Remote Runs** — `claude --remote <task>` dispatches to Anthropic cloud for autonomous execution
+- **Teleport** — `/teleport` sends session to claude.ai/code for mobile steering
 - **Skill Hot-Reload** — Skills update without restart
 - **Forked Context** — `context: fork` for isolated sub-agent execution
 - **Hooks in Frontmatter** — Define hooks directly in skills, commands, and agents
 - **Setup Hooks** — New event triggered via `--init`, `--init-only`, `--maintenance`
 - **Wildcard Permissions** — `Bash(npm *)`, `Bash(* --help)`, etc.
 - **PR Review Status** — Colored dot showing PR state in prompt footer
-- **Language Setting** — Configure Claude's response language
 - **Customizable Keybindings** — `/keybindings` command
-- **Web Session Teleport** — `/teleport` to claude.ai/code
+- **Extended Thinking** — Deeper reasoning for hard problems (`/thinking`)
 - **Shift+Enter** — Works out-of-the-box (iTerm2, WezTerm, Ghostty, Kitty)
 
 **New CLI Flags:**
-`--agents`, `--json-schema`, `--fallback-model`, `--max-budget-usd`, `--remote`, `--teleport`, `--init`, `--maintenance`, `--chrome`, `--fork-session`, `--tools`
+`--agents`, `--json-schema`, `--fallback-model`, `--max-budget-usd`, `--remote`, `--teleport`, `--init`, `--maintenance`, `--chrome`, `--fork-session`, `--tools`, `--worktree`
 
 **New Slash Commands:**
-`/keybindings`, `/tasks`, `/plan`, `/stats`, `/context`, `/feedback`, `/rename`, `/teleport`, `/remote-env`
+`/keybindings`, `/tasks`, `/plan`, `/stats`, `/context`, `/feedback`, `/rename`, `/teleport`, `/remote-env`, `/thinking`
 
 ---
 
@@ -463,6 +464,85 @@ claude --remote http://remote-ip:8080
 - Use `/stats` to see token usage breakdown
 - Use `--verbose` to inspect tool calls
 - Check `.claude/sessions/*.jsonl` for full transcripts
+---
+
+## Remote Runs & Mobile Handoff
+
+### Dispatch to Cloud
+```bash
+# Run autonomous task on Anthropic cloud
+claude --remote "Implement rate limiting on the API. Pause at DB schema decisions."
+
+# Use & prefix inside a CC session
+& Refactor the auth module to use JWT
+```
+
+### Mobile Steering Pattern
+1. Dispatch with `claude --remote "task. Pause at X for input."`
+2. Monitor from Claude iOS/Android app
+3. Steer when Claude pauses for decisions
+4. Complete via:
+   - "Create a PR" → Claude opens PR on GitHub
+   - `/teleport` → Send back to local terminal
+
+### Teleport Between Surfaces
+```bash
+# From local terminal → web UI
+/teleport
+
+# From web UI → local (via OpenClaw)
+# message action=send: "@claw teleport the X session"
+```
+
+### Parallel Dispatch
+```bash
+# Two independent tasks running simultaneously
+claude --remote "Add unit tests to src/auth/"
+claude --remote "Update CHANGELOG.md for v2.2 release"
+```
+
+---
+
+## OpenClaw Integration
+
+Claude Code is the primary ACP harness in OpenClaw. Use these patterns when running via OpenClaw's `sessions_spawn`.
+
+### Spawn via OpenClaw (ACP)
+```typescript
+sessions_spawn({
+  runtime: "acp",
+  agentId: "claude-code",
+  thread: true,          // bind to Discord thread
+  mode: "session",       // persistent session
+  task: "You are Builder. Implement features as requested in this thread."
+})
+```
+
+### Headless One-Shot
+```typescript
+sessions_spawn({
+  runtime: "acp",
+  agentId: "claude-code",
+  mode: "run",
+  task: "Fix the failing tests in src/auth.ts. Return a diff summary.",
+  runTimeoutSeconds: 300
+})
+```
+
+### Steer Running Session
+```typescript
+subagents({ action: "steer", target: "builder", message: "Focus on the API layer, skip UI for now" })
+subagents({ action: "list" })
+subagents({ action: "kill", target: "builder" })
+```
+
+### Reference Files
+```bash
+# Claude Code reads these automatically when in a workspace
+~/.claude/CLAUDE.md         # global user prefs
+./CLAUDE.md                 # project instructions
+./.claude/settings.json     # project settings
+```
 
 ---
 
@@ -529,7 +609,9 @@ claude
 
 ## Resources
 
-- **Official Docs:** https://docs.claude.ai/code
+- **Official Docs:** https://docs.anthropic.com/en/docs/claude-code
 - **GitHub:** https://github.com/anthropics/claude-code
-- **Changelog:** https://github.com/anthropics/claude-code/releases
+- **Releases tracked:** https://changelogs.info/tools/claude-code
+- **Cheatsheet download:** https://changelogs.info/cheatsheets/claude-code.md
+- **OpenClaw skill:** [coding-agent](https://clawhub.com)
 - **Community:** https://discord.gg/anthropic

@@ -1,41 +1,5 @@
 [
   {
-    "harness": "claude-code",
-    "version": "2.1",
-    "action": "Enable MCP tool search",
-    "impact": "high",
-    "description": "Massive context savings by lazy-loading MCP tools instead of preloading everything.",
-    "how": "Upgrade to 2.1+ and keep default MCP search behavior enabled.",
-    "tags": [
-      "performance",
-      "cost-saving"
-    ]
-  },
-  {
-    "harness": "claude-code",
-    "version": "2.1",
-    "action": "Use wildcard permissions",
-    "impact": "medium",
-    "description": "Simplify permission policy maintenance for autonomous workflows.",
-    "how": "Use patterns like Bash(pnpm *) instead of listing each command.",
-    "tags": [
-      "config",
-      "security"
-    ]
-  },
-  {
-    "harness": "claude-code",
-    "version": "2.0",
-    "action": "Set up hooks for CI integration",
-    "impact": "high",
-    "description": "Run linting, type checking, or tests automatically after code changes.",
-    "how": "Add hooks in .claude/settings.json: PreToolUse/PostToolUse events.",
-    "tags": [
-      "automation",
-      "quality"
-    ]
-  },
-  {
     "harness": "cursor",
     "version": "0.45",
     "action": "Enable Composer agent mode",
@@ -196,5 +160,47 @@
     "impact": "medium",
     "description": "Many common integrations already exist as polished, community-maintained skills. Check ClawHub before writing a custom integration.",
     "how": "Run `clawhub search <keyword>` to find skills. Install with `clawhub install <skill>`. Update all with `clawhub sync`."
+  },
+  {
+    "harness": "claude-code",
+    "action": "Use --remote for long autonomous tasks (10+ minutes)",
+    "impact": "high",
+    "description": "Blocking your terminal for a 30-minute refactor is wasteful. --remote dispatches the task to cloud, you monitor from mobile, steer when Claude pauses for decisions.",
+    "how": "Run `claude --remote \"Task description. Pause at architecture decisions.\"` \u2014 monitor from Claude iOS app. Use /teleport to hand back to local when done."
+  },
+  {
+    "harness": "claude-code",
+    "action": "Set --max-budget-usd to prevent runaway cost",
+    "impact": "high",
+    "description": "Without a budget cap, large agentic loops on big codebases can rack up significant API spend in minutes. A $0.50\u2013$2 cap per session is a cheap safety net.",
+    "how": "Add `--max-budget-usd 1.00` flag or set `maxBudgetUsd` in `~/.claude/settings.json`."
+  },
+  {
+    "harness": "claude-code",
+    "action": "Commit CLAUDE.md to version control for team consistency",
+    "impact": "high",
+    "description": "CLAUDE.md is read by every team member's Claude Code session. A shared CLAUDE.md enforces code style, forbidden patterns, and project conventions automatically.",
+    "how": "Create `./CLAUDE.md` with project instructions and commit it. Add global preferences to `~/.claude/CLAUDE.md` (don't commit that one)."
+  },
+  {
+    "harness": "claude-code",
+    "action": "Use /plan mode for high-impact refactors",
+    "impact": "medium",
+    "description": "Without /plan, Claude dives straight into edits. For large refactors or unfamiliar code, /plan mode shows you what it will do before touching files.",
+    "how": "Type `/plan` before describing a complex task. Review the plan, then approve or redirect."
+  },
+  {
+    "harness": "claude-code",
+    "action": "Enable PostToolUse hooks for auto-formatting",
+    "impact": "medium",
+    "description": "Claude Code often writes unformatted code. A hook that runs prettier/eslint/gofmt after every Write or Edit keeps your repo consistently formatted without extra prompting.",
+    "how": "Add to `.claude/settings.json`: `\"hooks\": { \"PostToolUse\": { \"Write\": \"prettier --write {{file_path}}\", \"Edit\": \"prettier --write {{file_path}}\" } }`"
+  },
+  {
+    "harness": "claude-code",
+    "action": "Use Explore agents for codebase mapping before implementation",
+    "impact": "medium",
+    "description": "Spawning a read-only Explore agent to map a codebase before implementation reduces hallucinations about file structure and module boundaries.",
+    "how": "Ask Claude to 'explore the codebase before making changes' \u2014 it will spawn an Explore subagent with read-only tools, then use that map for implementation."
   }
 ]
