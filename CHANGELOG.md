@@ -4,17 +4,32 @@ All notable changes to changelogs.info — the changelog site that tracks its ow
 
 ## [Unreleased]
 
+## [0.8.0] — 2026-03-07
+
 ### Added
-- **Migration coverage expanded** — added migration guides for `openhands`, `open-webui`, `tabby`, and `gptme`
 - **Dedicated featured hubs** — new `/openclaw` and `/claude-code` landing pages with latest release context, resource jump cards, recommendations/deprecations, and recent release logs
 - **Workflow playbooks** — new `/workflows` page with practical OpenClaw + Claude Code execution patterns (fast patch, dispatch, autonomous runs, daily review cadence)
 - **web-haptics guide** — new `/guides/web-haptics` page documenting package usage, custom patterns, iOS fallback strategy, and UX safety rules
+- **Web haptics** — subtle vibration feedback on card taps, button presses, and theme toggle (navigator.vibrate + iOS switch fallback)
+- **Content integrity CI** — `scripts/validate-content.mjs` + GitHub Action validates all tools have releases, cheatsheets, and configs; featured tools have migration guides; tools.json parity checks
+- **Migration coverage** — added guides for `openhands`, `open-webui`, `tabby`, `gptme` (15 guides total)
+- **Cloudflare Pages config** — deploy workflow, `_headers` with security headers, `_redirects` for canonical URLs
+- **OpenClaw cheatsheet 2.0** — complete rewrite with 22 sections: agent orchestration, model aliases, ACP harnesses, ClawHub skills (25 listed), memory system, cron/heartbeat, multi-channel routing, nodes, canvas, browser control, agent identity files, TTS, security, env vars
+- **Claude Code cheatsheet update** — added Remote Runs & Mobile Handoff, OpenClaw Integration sections; extended thinking; updated CLI flags and resources to correct URLs
+- **6 OpenClaw recommendations** — model aliases, memory recall, heartbeat monitoring, sessions_spawn for long tasks, USER.md, ClawHub-first
+- **6 Claude Code recommendations** — --remote for long tasks, budget cap, CLAUDE.md for teams, /plan mode, PostToolUse hooks, Explore agents
+- **3 OpenClaw deprecations** — provider_aliases key, flat channel token format, key-value MEMORY.md pattern
 
 ### Changed
-- **Featured ordering normalized across all resource pages** — OpenClaw now appears before Claude Code on compatibility, configs, cheatsheets, migrations, deprecations, and recommendations
-- **Featured order is now explicit** — OpenClaw is first, Claude Code second, then all other harnesses
-- **Navigation updated** — OpenClaw/Claude-Code-first nav on desktop, mobile, and footer, plus new `/workflows` link
-- **Resources hub expanded** — now links workflow playbooks and the web-haptics implementation guide
+- **Featured order enforced globally** — OpenClaw is first, Claude Code second, across all resource pages (cheatsheets, configs, compatibility, migrations, deprecations, recommendations)
+- **Navigation restructured** — OpenClaw and Claude Code are first two nav links everywhere (desktop, mobile, footer); /workflows added
+- **Resources hub expanded** — now links to Workflow Playbooks and web-haptics guide
+- **Homepage redesigned** — dedicated deep-sections for OpenClaw and Claude Code; other tools demoted to `/also_tracking` grid
+- `FEATURED_TOOLS` order updated to `["openclaw", "claude-code"]` with rank-aware sort (not just featured/not-featured binary)
+
+### Fixed
+- Footer navigation duplicates removed
+- PR #6, #7, #8, #9 all merged clean with CI green (Content Integrity + Cloudflare Pages)
 
 ## [0.7.0] — 2026-03-04
 
