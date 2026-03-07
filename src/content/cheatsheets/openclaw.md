@@ -1,376 +1,591 @@
 ---
 tool: openclaw
 title: OpenClaw Cheat Sheet
-lastUpdated: 2026-03-02
+lastUpdated: 2026-03-07
 ---
 
 # OpenClaw Cheat Sheet
 
-Open-source AI agent gateway. Automate workflows with skills, cron jobs, and integrations.
+OpenClaw is a personal AI agent platform. Run AI agents across Discord, Telegram, Signal, WhatsApp, iMessage, and more — with skills, cron, memory, multi-model routing, and agent orchestration.
 
 ---
 
-## Installation
+## Installation & Setup
 
 ```bash
-# npm
+# Install CLI
 npm install -g openclaw
 
-# Docker
-docker pull openclaw/openclaw
-docker run -p 8080:8080 openclaw/openclaw
+# Guided first-time setup
+openclaw onboard
 
-# From source
-git clone https://github.com/openclaw/openclaw
-cd openclaw
-npm install
-npm run build
-npm start
+# Gateway service management
+openclaw gateway start
+openclaw gateway stop
+openclaw gateway restart
+openclaw gateway status
+
+# System health check
+openclaw status
+openclaw doctor
 ```
 
 ---
 
-## Core Commands
+## Gateway Configuration
 
-### Gateway Management
-| Command | Description |
-|---------|-------------|
-| `openclaw gateway start` | Start OpenClaw gateway service |
-| `openclaw gateway stop` | Stop gateway service |
-| `openclaw gateway restart` | Restart gateway |
-| `openclaw gateway status` | Check gateway health |
-| `openclaw gateway logs` | View runtime logs |
+**Config location:** `~/.openclaw/config.yaml` (or per-agent: `~/.openclaw/agents/<name>/`)
 
-### Setup & Configuration
-| Command | Description |
-|---------|-------------|
-| `openclaw onboard` | Guided setup wizard |
-| `openclaw configure` | Configure plugins/channels/models |
-| `openclaw configure plugins` | Manage plugins |
-| `openclaw configure channels` | Configure notification channels |
-| `openclaw configure models` | Set up AI models |
-| `openclaw status` | Check system health |
+```yaml
+# Core gateway config
+gateway:
+  port: 8080
+  host: 0.0.0.0
+  logLevel: info
 
-### Diagnostics
-| Command | Description |
-|---------|-------------|
-| `openclaw doctor` | Diagnose setup issues |
-| `openclaw logs` | View all logs |
-| `openclaw logs --level error` | Show only errors |
-| `openclaw logs --follow` | Tail logs (live) |
+# Model providers
+models:
+  default: anthropic/claude-sonnet-4-6
+  aliases:
+    fast:    google-gemini-cli/gemini-2.5-flash
+    quality: anthropic/claude-opus-4-6
+    code:    openai-codex/gpt-5.3-codex
+    local:   ollama/qwen3:30b
+
+# Channel plugins
+channels:
+  discord:
+    plugin: discord
+    config:
+      token: ${DISCORD_BOT_TOKEN}
+      guildId: ${DISCORD_GUILD_ID}
+  telegram:
+    plugin: telegram
+    config:
+      token: ${TELEGRAM_BOT_TOKEN}
+  signal:
+    plugin: signal
+    config:
+      number: "+1234567890"
+```
+
+### Key Config Sections
+
+| Section | Purpose |
+|---------|---------|
+| `models.default` | Default model for all sessions |
+| `models.aliases` | Short names for model overrides |
+| `channels` | Enabled channel plugins |
+| `agents` | Named agent definitions |
+| `memory` | Memory backend (sqlite/redis) |
+| `cron` | Scheduled job definitions |
+| `skills` | Installed skill paths |
+
+---
+
+## Model Selection
+
+### In Chat
+```
+/model flash           # switch to alias
+/model anthropic/claude-opus-4-6  # full provider/model string
+/status                # shows active model
+```
+
+### Model Aliases (configured)
+```
+flash    → google-gemini-cli/gemini-2.5-flash
+sonnet   → anthropic/claude-sonnet-4-6
+opus     → anthropic/claude-opus-4-6
+code     → openai-codex/gpt-5.3-codex
+local30  → ollama/qwen3:30b
+```
+
+### CLI Override
+```bash
+# Force a specific model for a session
+openclaw session start --model anthropic/claude-opus-4-6
+
+# Per-message model override
+/model opus
+Your next message uses Opus
+/model flash           # switch back
+```
+
+---
+
+## Agent Sessions
+
+### Session Commands (in chat)
+```
+/status        Show session info, model, usage, time
+/reasoning     Toggle reasoning mode on/off
+/verbose       Toggle verbose tool output
+/model <alias> Switch model for this session
+/context       Show context window usage
+/clear         Clear conversation context
+/reset         Full session reset
+/help          List all slash commands
+```
+
+### Session Spawn (from code/tools)
+```typescript
+// Spawn one-shot subagent
+sessions_spawn({
+  task: "Summarize the PR #42 diff and suggest review comments",
+  model: "flash",
+  mode: "run",
+  runTimeoutSeconds: 120
+})
+
+// Spawn persistent thread-bound session (Discord)
+sessions_spawn({
+  task: "You are a code reviewer. Review PRs on request.",
+  runtime: "acp",
+  agentId: "claude-code",
+  thread: true,
+  mode: "session"
+})
+```
+
+### Cross-Session Messaging
+```typescript
+// Send message to another active session
+sessions_send({
+  sessionKey: "agent:builder:discord:channel:12345",
+  message: "The deploy is complete. Run smoke tests."
+})
+
+// List active sessions
+sessions_list({ activeMinutes: 30, limit: 10 })
+```
+
+---
+
+## Agent Orchestration (Multi-Agent)
+
+### Spawn Patterns
+```typescript
+// Quick one-shot task
+sessions_spawn({ task: "Fix lint errors in src/", runtime: "acp", agentId: "claude-code", mode: "run" })
+
+// Persistent specialist session in Discord thread
+sessions_spawn({
+  task: "You are Builder — implement features as requested.",
+  runtime: "acp",
+  agentId: "claude-code",
+  thread: true,
+  mode: "session",
+  label: "builder"
+})
+
+// Parallel execution
+Promise.all([
+  sessions_spawn({ task: "Write unit tests for auth module", mode: "run" }),
+  sessions_spawn({ task: "Write unit tests for payment module", mode: "run" }),
+])
+```
+
+### Subagent Management
+```typescript
+subagents({ action: "list" })           // list running agents
+subagents({ action: "steer", target: "builder", message: "Focus on the API layer first" })
+subagents({ action: "kill", target: "builder" })
+```
+
+### ACP Harness Agents
+```
+codex    → openai-codex/gpt-5.3-codex (OpenAI Codex)
+claude   → anthropic/claude-sonnet-4-6 (Claude Code)
+gemini   → google-gemini-cli (Gemini CLI)
+```
 
 ---
 
 ## Skills System
 
-Skills are reusable AI workflows/capabilities.
+Skills extend OpenClaw with new capabilities.
 
-### Manage Skills
-| Command | Description |
-|---------|-------------|
-| `openclaw skill create <name>` | Create new skill |
-| `openclaw skill list` | List all skills |
-| `openclaw skill enable <name>` | Enable skill |
-| `openclaw skill disable <name>` | Disable skill |
-| `openclaw skill delete <name>` | Delete skill |
-| `openclaw skill run <name>` | Execute skill manually |
-
-### Skill Structure
-```yaml
-# skills/summarize-pr.yaml
-name: summarize-pr
-description: Summarize GitHub PRs
-triggers:
-  - github.pull_request.opened
-model: claude-3.5-sonnet
-prompt: |
-  Summarize this pull request in 3 bullet points:
-  {{event.pull_request.title}}
-  {{event.pull_request.body}}
-actions:
-  - type: comment
-    target: github
-    message: "{{response}}"
-```
-
----
-
-## Cron Jobs (Scheduled Tasks)
-
-### Manage Cron Jobs
-| Command | Description |
-|---------|-------------|
-| `openclaw cron add <schedule> <command>` | Add cron job |
-| `openclaw cron list` | List all cron jobs |
-| `openclaw cron remove <id>` | Remove cron job |
-| `openclaw cron enable <id>` | Enable cron job |
-| `openclaw cron disable <id>` | Disable cron job |
-
-### Examples
+### ClawHub (Skill Marketplace)
 ```bash
-# Daily standup reminder
-openclaw cron add "0 9 * * 1-5" "send-message 'Daily standup in 30 mins!'"
+# Search for skills
+clawhub search "obsidian"
+clawhub search "github"
 
-# Weekly dependency check
-openclaw cron add "0 10 * * 1" "run-skill check-outdated-deps"
+# Install a skill
+clawhub install obsidian
+clawhub install github
+clawhub install weather
 
-# Hourly health check
-openclaw cron add "0 * * * *" "run-skill monitor-api-health"
+# Update all skills to latest
+clawhub sync
+
+# Update specific skill
+clawhub sync obsidian
+
+# Publish a skill
+clawhub publish ./my-skill/
 ```
 
-### Cron Schedule Format
-```
-* * * * *
-│ │ │ │ │
-│ │ │ │ └─ Day of week (0-7, Sun=0 or 7)
-│ │ │ └─── Month (1-12)
-│ │ └───── Day of month (1-31)
-│ └─────── Hour (0-23)
-└───────── Minute (0-59)
-```
+### Common Skills
+| Skill | What it does |
+|-------|-------------|
+| `obsidian` | Read/write Obsidian vault notes |
+| `github` | PR/issue management via `gh` CLI |
+| `apple-notes` | macOS Notes via `memo` CLI |
+| `apple-reminders` | Reminders via `remindctl` |
+| `weather` | Forecasts via wttr.in / Open-Meteo |
+| `gog` | Gmail, Calendar, Drive, Docs |
+| `bluebubbles` | iMessage via BlueBubbles |
+| `wacli` | WhatsApp via wacli CLI |
+| `defuddle` | Clean web content extraction |
+| `summarize` | Summarize URLs, YouTube, podcasts |
+| `clawforge` | Coding agent swarm workflows |
+| `coding-agent` | Delegate coding tasks |
+| `tmux` | Remote-control tmux sessions |
+| `xurl` | X (Twitter) API operations |
+| `goplaces` | Google Places search |
+| `peekaboo` | macOS UI capture + automation |
+| `sag` | ElevenLabs TTS |
+| `nano-pdf` | Natural-language PDF editing |
+| `gifgrep` | GIF search + download |
+| `video-frames` | Extract frames/clips from video |
+| `openai-whisper` | Local speech-to-text |
+| `1password` | 1Password CLI integration |
+| `json-canvas` | Obsidian Canvas (.canvas) files |
+| `songsee` | Audio spectrogram visualization |
+| `session-logs` | Search/analyze past conversations |
 
----
+### SKILL.md Pattern
+```markdown
+# My Skill
 
-## Events & Triggers
+## When to Use
+Trigger conditions...
 
-### Trigger Event Manually
-```bash
-# Trigger immediate event
-openclaw system event --text "Deploy completed" --mode now
+## Commands
+- `my-tool list` — list items
+- `my-tool create <name>` — create
 
-# Trigger delayed event
-openclaw system event --text "Check deploy status" --mode delay --delay 300
-
-# Trigger with custom data
-openclaw system event --data '{"repo": "myapp", "branch": "main"}' --mode now
-```
-
-### Event Types
-- `github.*` — GitHub webhooks (PR opened, issue created, etc.)
-- `gitlab.*` — GitLab webhooks
-- `slack.*` — Slack events (message, reaction, etc.)
-- `cron.*` — Scheduled cron jobs
-- `custom.*` — Custom user events
-
----
-
-## Channels (Notifications)
-
-### Configure Channels
-```bash
-# Add Slack channel
-openclaw channel add slack \
-  --webhook https://hooks.slack.com/... \
-  --name engineering
-
-# Add Discord
-openclaw channel add discord \
-  --webhook https://discord.com/api/webhooks/... \
-  --name alerts
-
-# Add Email
-openclaw channel add email \
-  --smtp smtp.gmail.com \
-  --from bot@example.com \
-  --to team@example.com
-```
-
-### List Channels
-```bash
-openclaw channel list
-```
-
-### Send Message to Channel
-```bash
-openclaw channel send slack-engineering "Build completed! ✅"
+## Examples
+\`\`\`bash
+my-tool list --format json
+\`\`\`
 ```
 
 ---
 
 ## Memory System
 
-OpenClaw agents have persistent memory across conversations.
+OpenClaw agents have persistent MEMORY.md files.
 
-### Manage Memory
-| Command | Description |
-|---------|-------------|
-| `openclaw memory set <key> <value>` | Store key-value pair |
-| `openclaw memory get <key>` | Retrieve value |
-| `openclaw memory delete <key>` | Delete key |
-| `openclaw memory list` | List all memory entries |
-| `openclaw memory clear` | Clear all memory |
-
-### Examples
-```bash
-# Store project context
-openclaw memory set project-status "in-development"
-openclaw memory set last-deploy "2026-03-02T10:30:00Z"
-
-# Use in skills
-openclaw memory get project-status
+### Memory Files
+```
+~/.openclaw/agents/<agent>/MEMORY.md       # main agent memory
+~/.openclaw/agents/<agent>/memory/         # additional files
+~/.openclaw/agents/<agent>/memory/YYYY-MM-DD.md  # daily logs
 ```
 
----
+### Memory Tools (in-session)
+```typescript
+// Mandatory recall before answering about prior work
+memory_search({ query: "openclaw config changes" })
 
-## Plugins
+// Read specific lines from memory
+memory_get({ path: "MEMORY.md", from: 10, lines: 30 })
 
-### Manage Plugins
-| Command | Description |
-|---------|-------------|
-| `openclaw plugin install <name>` | Install plugin |
-| `openclaw plugin uninstall <name>` | Uninstall plugin |
-| `openclaw plugin list` | List installed plugins |
-| `openclaw plugin enable <name>` | Enable plugin |
-| `openclaw plugin disable <name>` | Disable plugin |
+// After search, pull only needed lines
+memory_get({ path: "memory/2026-03-07.md", from: 45, lines: 20 })
+```
 
-### Popular Plugins
-- **github** — GitHub integration (webhooks, API)
-- **gitlab** — GitLab integration
-- **slack** — Slack bot and webhooks
-- **discord** — Discord bot
-- **jira** — Jira issue tracking
-- **linear** — Linear issue tracking
-- **sentry** — Error monitoring
-- **datadog** — Metrics and monitoring
+### MEMORY.md Best Practices
+- Search memory before answering questions about prior decisions
+- Write key facts/decisions right after they're made
+- Use daily memory files (`memory/YYYY-MM-DD.md`) for logs
+- Keep entries concise — good for semantic search
+- Update when preferences change, not on every message
 
 ---
 
-## Configuration File
+## Cron Jobs
 
-**Location:** `~/.openclaw/config.yaml`
-
-### Example config.yaml
+### Configure in YAML
 ```yaml
-# Gateway settings
-gateway:
-  port: 8080
-  host: 0.0.0.0
-  log_level: info
+cron:
+  daily-report:
+    schedule: "0 8 * * *"        # 8am daily
+    task: "Send me a daily summary of yesterday's GitHub activity"
+    channel: telegram
+    model: flash
 
-# AI models
-models:
-  default: claude-3.5-sonnet
-  providers:
-    anthropic:
-      api_key: sk-ant-...
-    openai:
-      api_key: sk-...
+  weekly-review:
+    schedule: "0 9 * * 1"        # 9am Monday
+    task: "Generate weekly project status from Obsidian notes"
+    channel: discord
 
-# Channels
+  usage-budget-guard:
+    schedule: "0 6 * * *"
+    task: "Check API usage against budget. Alert if >80% of monthly budget used."
+    channel: discord
+```
+
+### Cron Schedule Reference
+```
+ ┌─── minute    (0-59)
+ │ ┌─── hour      (0-23)
+ │ │ ┌─── day       (1-31)
+ │ │ │ ┌─── month    (1-12)
+ │ │ │ │ ┌─── weekday  (0-7, Sun=0/7)
+ * * * * *
+
+"0 9 * * 1-5"    → 9am weekdays
+"0 */4 * * *"    → every 4 hours
+"30 18 * * 5"    → 6:30pm Fridays
+"0 0 1 * *"      → midnight, 1st of month
+```
+
+### Heartbeat System
+```markdown
+# HEARTBEAT.md — leave empty to skip heartbeat API calls
+# Add tasks to make agent check periodically:
+
+Check unreads in Discord #builder and summarize any blockers.
+```
+
+When non-empty, OpenClaw polls the agent on the heartbeat schedule and expects:
+- `HEARTBEAT_OK` — nothing to action
+- Any other text — treated as an alert, surfaced to the user
+
+---
+
+## Multi-Channel Routing
+
+```yaml
 channels:
-  slack-engineering:
-    type: slack
-    webhook: https://hooks.slack.com/...
-  email-alerts:
-    type: email
-    smtp: smtp.gmail.com
-    from: bot@example.com
+  discord:
+    plugin: discord
+    config: { token: "${DISCORD_TOKEN}" }
+  telegram:
+    plugin: telegram
+    config: { token: "${TELEGRAM_TOKEN}" }
+  bluebubbles:
+    plugin: bluebubbles
+    config: { host: "http://localhost:1234", password: "${BB_PASSWORD}" }
+  signal:
+    plugin: signal
+    config: { number: "${SIGNAL_NUMBER}" }
+```
 
-# Plugins
-plugins:
-  github:
-    enabled: true
-    token: ghp_...
-  slack:
-    enabled: true
-    bot_token: xoxb-...
+### Sending Messages
+```typescript
+// Send to specific channel
+message({ action: "send", channel: "discord", target: "#general", message: "Done." })
+message({ action: "send", channel: "telegram", target: "@user", message: "Deploy finished." })
+message({ action: "send", channel: "bluebubbles", target: "+61412345678", message: "Hi" })
 
-# Memory
-memory:
-  backend: sqlite # or redis, postgres
-  path: ~/.openclaw/memory.db
+// React to message
+message({ action: "react", channel: "discord", messageId: "123456", emoji: "✅" })
+
+// Thread reply (Discord)
+message({ action: "thread-reply", channel: "discord", threadId: "789", message: "Done." })
+
+// Poll
+message({
+  action: "poll",
+  channel: "discord",
+  target: "#general",
+  pollQuestion: "Deploy now or wait?",
+  pollOption: ["Deploy now", "Wait for review", "Skip this release"],
+  pollDurationHours: 4
+})
 ```
 
 ---
 
-## Examples
+## Nodes (Paired Devices)
 
-### Auto-Review PRs
-```yaml
-# skills/pr-review.yaml
-name: pr-review
-description: Automatically review pull requests
-triggers:
-  - github.pull_request.opened
-model: claude-3.5-sonnet
-prompt: |
-  Review this pull request:
-  Title: {{event.pull_request.title}}
-  Files changed: {{event.pull_request.changed_files}}
-  Diff: {{event.pull_request.diff}}
+Nodes let OpenClaw control paired phones/devices.
 
-  Provide:
-  1. Code quality assessment
-  2. Potential bugs
-  3. Suggestions for improvement
-actions:
-  - type: comment
-    target: github
-    message: "{{response}}"
+```typescript
+// List paired nodes
+nodes({ action: "status" })
+nodes({ action: "describe", node: "my-iphone" })
+
+// Camera
+nodes({ action: "camera_snap", node: "my-iphone", facing: "back" })
+nodes({ action: "camera_clip", node: "my-iphone", facing: "front", durationMs: 5000 })
+
+// Location
+nodes({ action: "location_get", node: "my-iphone", desiredAccuracy: "precise" })
+
+// Notifications
+nodes({ action: "notifications_list", node: "my-iphone", limit: 20 })
+nodes({ action: "notify", node: "my-iphone", title: "Build done", body: "Tests passed ✅" })
+
+// Run command on node
+nodes({ action: "run", node: "my-mac", command: ["git", "pull", "origin", "main"] })
+
+// Screen recording
+nodes({ action: "screen_record", node: "my-mac", durationMs: 10000 })
 ```
 
-### Daily Standup Reminder
+---
+
+## Canvas (Visual UI)
+
+Canvas renders interactive UI panels.
+
+```typescript
+// Show a canvas panel
+canvas({ action: "present", url: "https://changelogs.info/openclaw" })
+
+// Evaluate JS in canvas
+canvas({ action: "eval", javaScript: "document.title" })
+
+// Snapshot the canvas
+canvas({ action: "snapshot" })
+
+// Hide canvas
+canvas({ action: "hide" })
+```
+
+---
+
+## Browser Control
+
+```typescript
+// Open URL
+browser({ action: "open", url: "https://github.com/openclaw/openclaw/releases" })
+
+// Take screenshot
+browser({ action: "screenshot", type: "png" })
+
+// Snapshot DOM (for automation)
+browser({ action: "snapshot", refs: "aria" })
+
+// Click, fill, press
+browser({ action: "act", request: { kind: "click", ref: "e12" } })
+browser({ action: "act", request: { kind: "fill", ref: "e5", text: "hello@example.com" } })
+browser({ action: "act", request: { kind: "press", key: "Enter" } })
+
+// Navigate
+browser({ action: "navigate", url: "https://docs.openclaw.ai" })
+```
+
+---
+
+## Agent Identity Files
+
+Each agent workspace has identity configuration:
+
+### SOUL.md — personality and tone
+```markdown
+# SOUL.md
+You are **Claw** 🐾 — the orchestrator agent.
+
+## Core Identity
+Traits, values, communication style...
+
+## What You Do
+Dispatch tasks, summarize, coordinate...
+```
+
+### AGENTS.md — workspace instructions
+```markdown
+# AGENTS.md
+## Every Session
+1. Read SOUL.md
+2. Read memory/YYYY-MM-DD.md
+
+## Your Role
+...dispatch mode decisions...
+```
+
+### USER.md — who you're helping
+```markdown
+# USER.md
+Name: Chris
+Timezone: Australia/Brisbane
+Context: ...notes about preferences and projects...
+```
+
+### IDENTITY.md — agent self-definition
+```markdown
+# IDENTITY.md
+Name: Claw
+Creature: AI familiar
+Vibe: sharp, warm, decisive
+Emoji: 🐾
+```
+
+---
+
+## TTS (Text-to-Speech)
+
+```typescript
+// Speak a message (ElevenLabs via sag skill, or system)
+tts({ text: "Deploy complete. All tests passing." })
+// After a successful tts call, reply with NO_REPLY
+```
+
+---
+
+## Session Status & Debugging
+
+```typescript
+// Show usage, model, cost, time
+session_status()
+
+// Override model for this session
+session_status({ model: "flash" })     // switch to flash
+session_status({ model: "default" })  // reset to gateway default
+```
+
+### `/status` In Chat
+Returns: session key, model, usage, time, reasoning on/off, elevated, thinking mode.
+
+---
+
+## Security & Permissions
+
+```yaml
+# In gateway config
+security:
+  allowedUsers:
+    - discord_id: "140250972147417088"
+      name: Chris
+  allowedChannels:
+    - discord: "1476163282825121940"
+
+# Per-agent elevated permissions
+agents:
+  builder:
+    elevated: true          # allow elevated exec
+    sandbox: "inherit"      # inherit parent sandbox
+```
+
+---
+
+## Environment Variables
+
 ```bash
-# Add cron job
-openclaw cron add "0 9 * * 1-5" "run-skill daily-standup-reminder"
+# Core
+ANTHROPIC_API_KEY=sk-ant-...
+OPENAI_API_KEY=sk-...
+GOOGLE_API_KEY=...
 
-# Skill: skills/daily-standup-reminder.yaml
-name: daily-standup-reminder
-description: Send daily standup reminder
-model: gpt-4-turbo
-prompt: |
-  Generate a friendly reminder for daily standup.
-  Include:
-  - Meeting link: https://meet.google.com/xyz
-  - What to prepare: updates, blockers, plans
-actions:
-  - type: send
-    channel: slack-engineering
-    message: "{{response}}"
+# Channel bots
+DISCORD_BOT_TOKEN=...
+TELEGRAM_BOT_TOKEN=...
+
+# Node services
+BLUEBUBBLES_HOST=http://localhost:1234
+BLUEBUBBLES_PASSWORD=...
+
+# Misc integrations
+GITHUB_TOKEN=...
+PLAUSIBLE_API_KEY=...
 ```
-
-### Monitor API Health
-```yaml
-# skills/monitor-api-health.yaml
-name: monitor-api-health
-description: Check API health and alert if down
-triggers:
-  - cron.hourly
-actions:
-  - type: http
-    url: https://api.example.com/health
-    method: GET
-  - type: evaluate
-    condition: "{{http.status}} != 200"
-    actions:
-      - type: send
-        channel: slack-alerts
-        message: "🚨 API is down! Status: {{http.status}}"
-```
-
----
-
-## Tips & Best Practices
-
-### Skills
-- Keep skills focused and composable
-- Use clear, descriptive names
-- Test skills manually before enabling triggers
-
-### Cron Jobs
-- Use cron for reminders, checks, and reports
-- Avoid high-frequency cron (< 5 min intervals)
-- Monitor cron job execution in logs
-
-### Integrations
-- Prefer tool-first integrations (plugins) over custom scripts
-- Use webhooks for real-time events
-- Store secrets in env vars or config, not in skill files
-
-### Memory
-- Use memory for cross-conversation context
-- Clean up old memory entries periodically
-- Use structured keys (e.g., `project:status`, `deploy:last-timestamp`)
 
 ---
 
@@ -378,46 +593,43 @@ actions:
 
 ### Gateway Won't Start
 ```bash
-# Check port availability
-lsof -i :8080
-
-# Check logs
+openclaw doctor          # diagnose
 openclaw logs --level error
-
-# Run diagnostics
-openclaw doctor
+lsof -i :8080            # port conflict?
+openclaw gateway restart
 ```
 
-### Skill Not Triggering
+### Model Errors
 ```bash
-# Check skill is enabled
-openclaw skill list
-
-# Verify trigger configuration
-cat ~/.openclaw/skills/skill-name.yaml
-
-# Check event logs
-openclaw logs --follow
+/status                  # check which model is active
+/model flash             # switch to a lighter model
+openclaw configure models  # verify API keys
 ```
 
-### Plugin Issues
+### Skill Not Working
 ```bash
-# Reinstall plugin
-openclaw plugin uninstall github
-openclaw plugin install github
-
-# Check plugin config
-openclaw configure plugins
-
-# View plugin logs
-openclaw logs --filter plugin=github
+openclaw status          # check skill loaded
+clawhub sync <skill>     # update to latest
+cat ~/openclaw/skills/<name>/SKILL.md  # re-read docs
 ```
+
+### Session Stuck
+```bash
+/clear    # clear context
+/reset    # full reset
+```
+
+### Memory Not Recalled
+- Always run `memory_search()` before answering about prior work
+- Check MEMORY.md exists and is non-empty
+- Memory files must be under `~/.openclaw/agents/<agent>/`
 
 ---
 
 ## Resources
 
-- **Official Docs:** https://openclaw.dev/docs
+- **Docs:** https://docs.openclaw.ai
 - **GitHub:** https://github.com/openclaw/openclaw
-- **Community:** https://discord.gg/openclaw
-- **Examples:** https://github.com/openclaw/examples
+- **Community:** https://discord.com/invite/clawd
+- **Skills marketplace:** https://clawhub.com
+- **changelogs.info tracking:** https://changelogs.info/tools/openclaw
