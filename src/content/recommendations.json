@@ -36,43 +36,6 @@
     ]
   },
   {
-    "harness": "openclaw",
-    "version": "latest",
-    "action": "Pin model aliases by task",
-    "impact": "high",
-    "description": "Reduces drift and surprise cost spikes across agents.",
-    "how": "Define explicit model alias usage by workflow and cron jobs.",
-    "tags": [
-      "ops",
-      "cost",
-      "reliability"
-    ]
-  },
-  {
-    "harness": "openclaw",
-    "version": "latest",
-    "action": "Enable memory search for agents",
-    "impact": "high",
-    "description": "Agents recall prior work, decisions, and preferences automatically.",
-    "how": "Create MEMORY.md in agent workspace. Memory search runs automatically.",
-    "tags": [
-      "memory",
-      "context"
-    ]
-  },
-  {
-    "harness": "openclaw",
-    "version": "latest",
-    "action": "Use isolated sessions for cron jobs",
-    "impact": "medium",
-    "description": "Prevent cron jobs from polluting main session context.",
-    "how": "Set sessionTarget: isolated with payload.kind: agentTurn in cron config.",
-    "tags": [
-      "ops",
-      "cron"
-    ]
-  },
-  {
     "harness": "cursor",
     "version": "0.45",
     "action": "Enable Composer agent mode",
@@ -191,5 +154,47 @@
       "cost-saving",
       "models"
     ]
+  },
+  {
+    "harness": "openclaw",
+    "action": "Enable model aliases in gateway config",
+    "impact": "high",
+    "description": "Avoid hardcoding provider/model IDs everywhere. Set up short aliases (fast, quality, code) in config so you can switch models site-wide with one line change.",
+    "how": "Add `models.aliases` block to gateway config with fast/quality/code aliases pointing to your preferred models."
+  },
+  {
+    "harness": "openclaw",
+    "action": "Run memory_search before answering prior-work questions",
+    "impact": "high",
+    "description": "Without a mandatory recall step, agents answer from stale context. Semantic search over MEMORY.md gives accurate, grounded answers about past decisions.",
+    "how": "Ensure MEMORY.md is populated and agents call `memory_search()` before responding to questions about previous work, decisions, or dates."
+  },
+  {
+    "harness": "openclaw",
+    "action": "Set up HEARTBEAT.md for proactive monitoring",
+    "impact": "medium",
+    "description": "OpenClaw's heartbeat system lets agents self-monitor on a schedule without manual prompting. Great for budget guards, unread digests, or daily summaries.",
+    "how": "Add a task line to HEARTBEAT.md. Agent will poll on schedule and alert if action is needed, ack with HEARTBEAT_OK otherwise."
+  },
+  {
+    "harness": "openclaw",
+    "action": "Use sessions_spawn for long-running or parallel coding tasks",
+    "impact": "high",
+    "description": "Don't block your main agent session with 10+ minute coding tasks. Spawn ACP harness sessions (Claude Code, Codex, Gemini) that run independently and report back.",
+    "how": "Call `sessions_spawn({ runtime: 'acp', agentId: 'claude-code', thread: true, mode: 'session', task: '...' })` in Discord threads for persistent specialist agents."
+  },
+  {
+    "harness": "openclaw",
+    "action": "Store user context in USER.md",
+    "impact": "medium",
+    "description": "Agents that know who they're helping produce dramatically better responses. Timezone, name, ongoing projects, and preferences belong in USER.md \u2014 not in every prompt.",
+    "how": "Edit `~/.openclaw/agents/<agent>/USER.md` with your name, timezone, common projects, and communication preferences."
+  },
+  {
+    "harness": "openclaw",
+    "action": "Install skills from ClawHub instead of building from scratch",
+    "impact": "medium",
+    "description": "Many common integrations already exist as polished, community-maintained skills. Check ClawHub before writing a custom integration.",
+    "how": "Run `clawhub search <keyword>` to find skills. Install with `clawhub install <skill>`. Update all with `clawhub sync`."
   }
 ]

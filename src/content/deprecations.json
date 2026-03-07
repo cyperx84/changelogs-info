@@ -54,15 +54,6 @@
     "affects": "cline settings + MCP config"
   },
   {
-    "harness": "openclaw",
-    "item": "channels.*.provider flat config",
-    "deprecated": "2026-01-20",
-    "removal": null,
-    "severity": "info",
-    "migration": "Use nested channel plugin config with explicit plugin key.",
-    "affects": "gateway.yml channel definitions"
-  },
-  {
     "harness": "cursor",
     "item": ".cursorrules file",
     "deprecated": "2025-11-01",
@@ -106,5 +97,32 @@
     "severity": "info",
     "migration": "Extension renamed to roo-code. Old id still works but may stop.",
     "affects": "VS Code extension installs referencing old id"
+  },
+  {
+    "harness": "openclaw",
+    "item": "provider_aliases config key",
+    "deprecated": "2026.2.x",
+    "removal": "2026.4.x",
+    "severity": "warning",
+    "description": "The top-level `provider_aliases` config key is deprecated in favour of `models.aliases`.",
+    "migration": "Move aliases into `models.aliases` block. Old format still loads but emits a warning on startup."
+  },
+  {
+    "harness": "openclaw",
+    "item": "channels using flat token (not plugin block)",
+    "deprecated": "2026.1.x",
+    "removal": "2026.5.x",
+    "severity": "warning",
+    "description": "Old channel format used a flat `token:` key. Channel configs now require a `plugin:` key and nested `config:` block.",
+    "migration": "Update channel definitions to use `plugin: telegram` + `config: { token: '...' }` structure."
+  },
+  {
+    "harness": "openclaw",
+    "item": "MEMORY.md as structured key-value store",
+    "deprecated": "2026.2.x",
+    "removal": null,
+    "severity": "info",
+    "description": "Early OpenClaw used MEMORY.md as a structured key-value file. Current best practice is free-form markdown for better semantic search recall via memory_search().",
+    "migration": "Restructure MEMORY.md as readable markdown paragraphs rather than rigid key: value lines."
   }
 ]
