@@ -1,7 +1,20 @@
 ---
 tool: cline
 title: Cline Cheat Sheet
-lastUpdated: 2026-03-02
+lastUpdated: 2026-03-08
+---
+
+## What's New
+
+_Auto-detected changes from upstream documentation (2026-03-08)_
+
+**New Documentation Sections:**
+- Use any API and Model
+- Run Commands in Terminal
+- Create and Edit Files
+- Use the Browser
+- "add a tool that..."
+
 ---
 
 # Cline Cheat Sheet

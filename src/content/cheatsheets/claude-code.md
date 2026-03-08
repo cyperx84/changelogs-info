@@ -1,7 +1,23 @@
 ---
 tool: claude-code
 title: Claude Code Cheat Sheet
-lastUpdated: 2026-03-07
+lastUpdated: 2026-03-08
+---
+
+## What's New
+
+_Auto-detected changes from upstream documentation (2026-03-08)_
+
+**New Documentation Sections:**
+- Get started
+- Plugins
+- Reporting Bugs
+- Connect on Discord
+- Data collection, usage, and retention
+
+**New Flags Detected:**
+- `--cask`
+
 ---
 
 # Claude Code 2.1 Cheat Sheet

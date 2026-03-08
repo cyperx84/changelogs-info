@@ -1,7 +1,30 @@
 ---
 tool: aider
 title: Aider Cheat Sheet
-lastUpdated: 2026-03-02
+lastUpdated: 2026-03-08
+---
+
+## What's New
+
+_Auto-detected changes from upstream documentation (2026-03-08)_
+
+**New Documentation Sections:**
+- Features
+- [Cloud and local LLMs](https://aider.chat/docs/llms.html)
+- [Maps your codebase](https://aider.chat/docs/repomap.html)
+- [100+ code languages](https://aider.chat/docs/languages.html)
+- [Git integration](https://aider.chat/docs/git.html)
+
+**New Commands Detected:**
+- `aider-install`
+- `aider --model deepseek --api-key deepseek=<key>`
+- `aider --model sonnet --api-key anthropic=<key>`
+- `aider --model o3-mini --api-key openai=<key>`
+
+**New Flags Detected:**
+- `--model`
+- `--api-key`
+
 ---
 
 # Aider Cheat Sheet

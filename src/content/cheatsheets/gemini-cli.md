@@ -1,7 +1,32 @@
 ---
 tool: gemini-cli
 title: Gemini CLI Cheat Sheet
-lastUpdated: 2026-03-02
+lastUpdated: 2026-03-08
+---
+
+## What's New
+
+_Auto-detected changes from upstream documentation (2026-03-08)_
+
+**New Documentation Sections:**
+- 🚀 Why Gemini CLI?
+- 📦 Installation
+- Quick Install
+- Release Cadence and Tags
+- Preview
+
+**New Commands Detected:**
+- `gemini`
+- `gemini --include-directories ../lib,../docs`
+- `gemini -m gemini-2.5-flash`
+- `gemini -p "Explain the architecture of this codebase"`
+- `gemini -p "Explain the architecture of this codebase" --output-format json`
+- `gemini -p "Run tests and deploy" --output-format stream-json`
+
+**New Flags Detected:**
+- `--include-directories`
+- `--output-format`
+
 ---
 
 # Gemini CLI Cheat Sheet

@@ -1,7 +1,20 @@
 ---
 tool: continue
 title: Continue Cheat Sheet
-lastUpdated: 2026-03-02
+lastUpdated: 2026-03-08
+---
+
+## What's New
+
+_Auto-detected changes from upstream documentation (2026-03-08)_
+
+**New Documentation Sections:**
+- Getting started
+- How it works
+- Install CLI
+- Contributing
+- License
+
 ---
 
 # Continue Cheat Sheet
