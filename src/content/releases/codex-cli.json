@@ -15,12 +15,76 @@
   },
   "releases": [
     {
+      "version": "rust-v0.115.0-alpha.3",
+      "name": "0.115.0-alpha.3",
+      "body": "Release 0.115.0-alpha.3\n\n",
+      "date": "2026-03-11T03:39:26Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.115.0-alpha.3",
+      "prerelease": true
+    },
+    {
+      "version": "rust-v0.115.0-alpha.2",
+      "name": "0.115.0-alpha.2",
+      "body": "Release 0.115.0-alpha.2\n\n",
+      "date": "2026-03-11T02:23:32Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.115.0-alpha.2",
+      "prerelease": true
+    },
+    {
+      "version": "rust-v0.115.0-alpha.1",
+      "name": "0.115.0-alpha.1",
+      "body": "Release 0.115.0-alpha.1\n\n",
+      "date": "2026-03-11T01:11:34Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.115.0-alpha.1",
+      "prerelease": true
+    },
+    {
+      "version": "rust-v0.114.0",
+      "name": "0.114.0",
+      "body": "## New Features\n- Added an experimental code mode for more isolated coding workflows. (#13418)\n- Added an experimental hooks engine with `SessionStart` and `Stop` hook events. (#13276)\n- WebSocket app-server deployments now expose `GET /readyz` and `GET /healthz` on the same listener for easier health checks. (#13782)\n- Added a config switch to disable bundled system skills entirely. (#13792)\n- Handoffs now carry realtime transcript context, which improves continuity when work is transferred between turns. (#14132)\n- Improved the `$` mention picker by clearly labeling Skills, Apps, and Plugins, and by surfacing plugins first. (#14147, #14163)\n\n## Bug Fixes\n- Fixed a Linux `tmux` crash caused by concurrent user-shell lookups. (#13900)\n- Fixed apps being enabled in unsupported sessions by tightening the enablement check. (#14011)\n- Fixed reopened threads getting stuck as in-progress after quitting mid-run and then resuming later. (#14125)\n- Fixed permission handling so legacy `workspace-write` behavior is preserved and newer permission profiles degrade more safely on older builds. (#13957, #14107)\n- Fixed approval flows so granted permissions persist across turns, work with reject-style configs, and are honored by `apply_patch`. (#14009, #14055, #14118, #14165)\n\n## Chores\n- Laid the groundwork for the Python SDK’s generated v2 schema types and pinned platform-specific runtime binaries. (#13953)\n\n## Changelog\n\nFull Changelog: https://github.com/openai/codex/compare/rust-v0.113.0...rust-v0.114.0\n\n- #14009 feat(core) Persist request_permission data across turns @dylan-hurd-oai\n- #14136 fix(core): use dedicated types for responsesapi web search tool config @owenlin0\n- #13782 codex-rs/app-server: add health endpoints for --listen websocket server @maxj-oai\n- #14055 fix(core) RequestPermissions + ApplyPatch @dylan-hurd-oai\n- #14118 feat(approvals) RejectConfig for request_permissions @dylan-hurd-oai\n- #13957 fix(protocol): preserve legacy workspace-write semantics @viyatb-oai\n- #14107 fix: keep permissions profiles forward compatible @viyatb-oai\n- #14147 make dollar-mention always clarify item category (skill, app, plugin) @sayan-oai\n- #14152 Refactor tool output into trait implementations @pakrym-oai\n- #14163 sort plugins first in  menu @sayan-oai\n- #13418 Add code_mode experimental feature @pakrym-oai\n- #13276 start of hooks engine @eternal-openai\n- #14135 tui: only show fast status for gpt-5.4 @pash-openai\n- #14157 Enforce single tool output type in codex handlers @pakrym-oai\n- #14165 fix(core) default RejectConfig.request_permissions @dylan-hurd-oai\n- #14167 Export tools module into code mode runner @pakrym-oai\n- #13792 feat: support disabling bundled system skills @xl-openai\n- #14169 Move exec command truncation into ExecCommandToolOutput @pakrym-oai\n- #14011 [apps] Fix apps enablement condition. @mzeng-openai\n- #14000 Delay pending cleanup until task aborts @aibrahim-oai\n- #12296 Implemented thread-level atomic elicitation counter for stopwatch pausing @cconger\n- #14132 Use realtime transcript for handoff context @aibrahim-oai\n- #13879 Stabilize incomplete SSE retry test @aibrahim-oai\n- #14184 Fix unified exec test output assertion @aibrahim-oai\n- #14002 Stabilize websocket test server binding @aibrahim-oai\n- #13939 Stabilize app-server notify initialize test @aibrahim-oai\n- #13953 python-sdk: generated type foundation (all v2 schemas) @shaqayeq-oai\n- #13603 Fix release-mode integration test compiler failure @etraut-openai\n- #13900 Fix Linux tmux segfault in user shell lookup @etraut-openai\n- #13901 Log ChatGPT user ID for feedback tags @etraut-openai\n- #14183 Expose strongly-typed result for exec_command @pakrym-oai\n- #14003 Stabilize split PTY output on Windows @aibrahim-oai\n- #14229 Reuse McpToolOutput in McpHandler @pakrym-oai\n- #14125 Mark incomplete resumed turns interrupted when idle @guinness-oai\n\n\n",
+      "date": "2026-03-11T00:28:42Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
+      "prerelease": false
+    },
+    {
       "version": "rust-v0.113.0",
       "name": "0.113.0",
       "body": "## New Features\n- Added a built-in `request_permissions` tool so running turns can request additional permissions at runtime, with new TUI rendering for those approval calls. (#13092, #14004)\n- Expanded plugin workflows with curated marketplace discovery, richer `plugin/list` metadata, install-time auth checks, and a `plugin/uninstall` endpoint. (#13712, #13540, #13685, #14111)\n- Upgraded app-server command execution with streaming stdin/stdout/stderr plus TTY/PTY support, and wired `exec` to the new in-process app server path. (#13640, #14005)\n- Web search settings now support full tool configuration (for example filters and location), not just on/off. (#13675)\n- Added the new permission-profile config language and split filesystem/network sandbox policy plumbing for more precise policy control. (#13434, #13439, #13440, #13448, #13449, #13453)\n- Image generation now saves output files into the current working directory. (#13607)\n\n## Bug Fixes\n- Fixed auth error handling for cloud requirements fetch so 401s trigger the normal auth-recovery messaging instead of a generic workspace-config failure. (#14049)\n- Fixed trust bootstrap to avoid running `git` commands before project trust is established. (#13804)\n- Fixed Windows execution edge cases, including incorrect PTY `TerminateProcess` success handling and stricter sandbox startup cwd validation. (#13989, #13833, #13742)\n- Fixed plugin startup behavior so curated plugins are loaded in TUI sessions as expected. (#14050)\n- Hardened network proxy policy parsing by rejecting global wildcard (`*`) domains while preserving scoped wildcard support. (#13789)\n- Fixed approval payload compatibility for macOS automation permissions by accepting both supported input shapes. (#13683)\n\n## Documentation\n- Clarified `js_repl` guidance for persistent bindings and redeclaration recovery to reduce avoidable REPL errors. (#13803)\n\n## Chores\n- Reduced log/storage overhead by moving logs to a dedicated SQLite DB, adding timestamps to feedback logs, pruning old data, and tightening retention/row limits. (#13645, #13688, #13734, #13763, #13772, #13781)\n- Improved Windows distribution automation by publishing CLI releases to winget. (#12943)\n\n## Changelog\n\nFull Changelog: https://github.com/openai/codex/compare/rust-v0.112.0...rust-v0.113.0\n\n- #13626 feat(otel): safe tracing @owenlin0\n- #13560 Refine realtime startup context formatting @aibrahim-oai\n- #13615 Replay thread rollback from rollout history @aibrahim-oai\n- #13642 fix(tui): clean up pending steer preview wrapping @charley-oai\n- #13645 Add timestamped SQLite /feedback logs without schema changes @charley-oai\n- #13654 tui: sort resume picker by last updated time @charley-oai\n- #13540 support plugin/list. @xl-openai\n- #13677 chore: remove unused legacy macOS permission types @celia-oai\n- #13683 fix: accept two macOS automation input shapes  for approval payload compatibility @celia-oai\n- #13687 refactor: remove proxy admin endpoint @viyatb-oai\n- #13669 copy current exe to CODEX_HOME/.sandbox-bin for apply_patch @iceweasel-oai\n- #11874 fix(tui) remove config check for trusted setting @dylan-hurd-oai\n- #13685 check app auth in plugin/install @sayan-oai\n- #13697 change sound @aibrahim-oai\n- #13607 Enabling CWD Saving for Image-Gen @won-openai\n- #13621 [elicitations] Switch to use MCP style elicitation payload for mcp tool approvals. @mzeng-openai\n- #13619 feat: status line with real data @jif-oai\n- #13734 feat: prune old memories in DB @jif-oai\n- #13688 Add timestamps to feedback log lines @etraut-openai\n- #13742 fix: windows normalization @jif-oai\n- #13514 [rmcp-client] Recover from streamable HTTP 404 sessions @caseychow-oai\n- #13750 feat: drop sqlite db feature flag @jif-oai\n- #13753 feat: drop discrepency metrics @jif-oai\n- #13763 feat: limit number of rows per log @jif-oai\n- #13703 Clarify sandbox permission override helper semantics @charley-oai\n- #13770 fix(app-server): fix turn_start_shell_zsh_fork_executes_command_v2 flake @owenlin0\n- #13630 feat(otel, core): record turn TTFT and TTFM metrics in codex-core @owenlin0\n- #13674 app-server: Emit `thread/name/updated` event globally @euroelessar\n- #13772 Move sqlite logs to a dedicated database @charley-oai\n- #13620 chore: improve DB flushing @jif-oai\n- #13711 feat: structured plugin parsing @sayan-oai\n- #13781 Reduce SQLite log retention to 10 days @charley-oai\n- #13780 fix: move unit tests in codex-rs/core/src/config/mod.rs into their own file @bolinfest\n- #13783 fix: move unit tests in codex-rs/core/src/codex.rs into their own file @bolinfest\n- #13787 fix bazel build @bolinfest\n- #13789 fix: reject global wildcard network proxy domains @viyatb-oai\n- #12943 Codex/winget auto update @iceweasel-oai\n- #13800 chore(otel): reorganize codex-otel crate @owenlin0\n- #13797 feat: add auth login diagnostics @joshka-oai\n- #13695 utils/pty: add streaming spawn and terminal sizing primitives @euroelessar\n- #13803 Clarify js_repl binding reuse guidance @fjord-oai\n- #13810 docs: remove auth login logging plan @joshka-oai\n- #13434 config: add initial support for the new permission profile config language in config.toml @bolinfest\n- #13796 Add realtime startup context override @aibrahim-oai\n- #13814 fix: include libcap-dev dependency when creating a devcontainer for building Codex @bolinfest\n- #13808 chore(otel): rename OtelManager to SessionTelemetry @owenlin0\n- #13712 feat: Add curated plugin marketplace + Metadata Cleanup. @xl-openai\n- #13791 fix(core): skip exec approval for permissionless skill scripts @celia-oai\n- #13675 Allow full web search tool config @rm-openai\n- #13640 app-server: Add streaming and tty/pty capabilities to `command/exec` @euroelessar\n- #13819 feat(app-server-protocol): address naming conflicts in json schema exporter @owenlin0\n- #13804 fix: avoid invoking git before project trust is established @viyatb-oai\n- #12752 fix: support managed network allowlist controls @viyatb-oai\n- #13439 sandboxing: plumb split sandbox policies through runtime @bolinfest\n- #13440 protocol: derive effective file access from filesystem policies @bolinfest\n- #13816 fix(core): respect reject policy by approval source for skill scripts @celia-oai\n- #13833 app-server: require absolute cwd for windowsSandbox/setupStart @iceweasel-oai\n- #13670 Add Fast mode status-line indicator @etraut-openai\n- #13445 safety: honor filesystem policy carveouts in apply_patch @bolinfest\n- #13771 feat: simplify DB further @jif-oai\n- #13692 Add guardian approval MVP @charley-oai\n- #13851 tmp: drop artifact skills @jif-oai\n- #13910 fix(core) rm guardian snapshot test @dylan-hurd-oai\n- #13911 fix(ci) fix guardian ci @dylan-hurd-oai\n- #13896 Fix TUI context window display before first TokenCount @etraut-openai\n- #13448 seatbelt: honor split filesystem sandbox policies @bolinfest\n- #13921 chore: use @plugin instead of $plugin for plaintext mentions @sayan-oai\n- #13807 [elicitations] Support always allow option for mcp tool calls. @mzeng-openai\n- #13449 linux-sandbox: plumb split sandbox policies through helper @bolinfest\n- #13451 sandboxing: preserve denied paths when widening permissions @bolinfest\n- #13452 protocol: keep root carveouts sandboxed @bolinfest\n- #13874 Stabilize abort task follow-up handling @aibrahim-oai\n- #13453 linux-sandbox: honor split filesystem policies in bwrap @bolinfest\n- #13989 Fix inverted Windows PTY `TerminateProcess` handling @etraut-openai\n- #13912 fix(ci): restore guardian coverage and bazel unit tests @charley-oai\n- #13877 Stabilize shell serialization tests @aibrahim-oai\n- #13839 [app-server] Support hot-reload user config when batch writing config. @mzeng-openai\n- #14005 Add in-process app server and wire up exec to use it @etraut-openai\n- #13929 app-server: include experimental skill metadata in exec approval requests @celia-oai\n- #14014 fix(core) patch otel test @dylan-hurd-oai\n- #13841 tui: clarify pending steer follow-ups @charley-oai\n- #13092 Add request permissions tool @mousseau-oai\n- #14027 fix(bazel) add missing app-server-client BUILD.bazel @dylan-hurd-oai\n- #14004 feat(tui) render request_permissions calls @dylan-hurd-oai\n- #14052 Stabilize app list update ordering test @aibrahim-oai\n- #13897 guardian initial feedback / tweaks @charley-oai\n- #13884 Reduce app-server test timeout pressure @aibrahim-oai\n- #13872 Stabilize zsh fork app-server tests @aibrahim-oai\n- #13881 Stabilize RMCP pid file cleanup test @aibrahim-oai\n- #13883 Stabilize PTY Python REPL test @aibrahim-oai\n- #14058 Stabilize plan item app-server tests @aibrahim-oai\n- #13943 Order websocket initialize after handshake @aibrahim-oai\n- #13885 Stabilize thread resume replay tests @aibrahim-oai\n- #13878 Serialize shell snapshot stdin test @aibrahim-oai\n- #13876 Stabilize realtime startup context tests @aibrahim-oai\n- #14050 fix(plugin): Also load curated plugins for TUI. @xl-openai\n- #14049 fix: properly handle 401 error in clound requirement fetch. @xl-openai\n- #14101 Stabilize shell approval MCP test @aibrahim-oai\n- #14102 Stabilize interrupted task approval cleanup @aibrahim-oai\n- #14103 Stabilize guardian approval coverage @aibrahim-oai\n- #14060 Stabilize resumed rollout messages @aibrahim-oai\n- #14114 fix(ci) Faster shell_command::unicode_output test @dylan-hurd-oai\n- #14111 chore: plugin/uninstall endpoint @sayan-oai\n- #14117 feat(otel): Centralize OTEL metric names and shared tag builders @owenlin0\n- #13880 Stabilize RMCP streamable HTTP readiness tests @aibrahim-oai\n- #14123 pass on save info to model + ui tweaks @won-openai\n- #13886 Stabilize protocol schema fixture generation @aibrahim-oai\n\n\n",
       "date": "2026-03-10T05:24:30Z",
       "url": "https://github.com/openai/codex/releases/tag/rust-v0.113.0",
       "prerelease": false
+    },
+    {
+      "version": "rust-v0.114.0-alpha.4",
+      "name": "0.114.0-alpha.4",
+      "body": "Release 0.114.0-alpha.4\n\n",
+      "date": "2026-03-10T22:57:20Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.114.0-alpha.4",
+      "prerelease": true
+    },
+    {
+      "version": "rust-v0.114.0-alpha.3",
+      "name": "0.114.0-alpha.3",
+      "body": "Release 0.114.0-alpha.3\n\n",
+      "date": "2026-03-10T19:15:36Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.114.0-alpha.3",
+      "prerelease": true
+    },
+    {
+      "version": "rust-v0.114.0-alpha.2",
+      "name": "0.114.0-alpha.2",
+      "body": "Release 0.114.0-alpha.2\n\n",
+      "date": "2026-03-10T18:10:01Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.114.0-alpha.2",
+      "prerelease": true
+    },
+    {
+      "version": "rust-v0.114.0-alpha.1",
+      "name": "0.114.0-alpha.1",
+      "body": "Release 0.114.0-alpha.1\n\n",
+      "date": "2026-03-10T06:54:03Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.114.0-alpha.1",
+      "prerelease": true
     },
     {
       "version": "rust-v0.113.0-alpha.2",
@@ -189,71 +253,7 @@
       "date": "2026-03-05T00:59:56Z",
       "url": "https://github.com/openai/codex/releases/tag/rust-v0.110.0-alpha.1",
       "prerelease": true
-    },
-    {
-      "version": "artifact-runtime-v2.4.0",
-      "name": "artifact-runtime-v2.4.0",
-      "body": "Empty draft",
-      "date": "2026-03-05T10:52:18Z",
-      "url": "https://github.com/openai/codex/releases/tag/artifact-runtime-v2.4.0",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.108.0-alpha.9",
-      "name": "0.108.0-alpha.9",
-      "body": "Release 0.108.0-alpha.9\n\n",
-      "date": "2026-03-04T05:16:15Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.108.0-alpha.9",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.108.0-alpha.8",
-      "name": "0.108.0-alpha.8",
-      "body": "Release 0.108.0-alpha.8\n\n",
-      "date": "2026-03-04T02:39:14Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.108.0-alpha.8",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.108.0-alpha.7",
-      "name": "0.108.0-alpha.7",
-      "body": "Release 0.108.0-alpha.7\n\n",
-      "date": "2026-03-04T01:35:00Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.108.0-alpha.7",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.108.0-alpha.6",
-      "name": "0.108.0-alpha.6",
-      "body": "Release 0.108.0-alpha.6\n\n",
-      "date": "2026-03-04T00:46:06Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.108.0-alpha.6",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.108.0-alpha.12",
-      "name": "0.108.0-alpha.12",
-      "body": "Release 0.108.0-alpha.12\n\n",
-      "date": "2026-03-04T15:33:58Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.108.0-alpha.12",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.108.0-alpha.11",
-      "name": "0.108.0-alpha.11",
-      "body": "Release 0.108.0-alpha.11\n\n",
-      "date": "2026-03-04T11:59:49Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.108.0-alpha.11",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.108.0-alpha.10",
-      "name": "0.108.0-alpha.10",
-      "body": "Release 0.108.0-alpha.10\n\n",
-      "date": "2026-03-04T05:48:10Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.108.0-alpha.10",
-      "prerelease": true
     }
   ],
-  "lastUpdated": "2026-03-10T06:22:44.645Z"
+  "lastUpdated": "2026-03-11T06:24:12.477Z"
 }
