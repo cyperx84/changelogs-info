@@ -1,226 +1,210 @@
-```
- ██████╗██╗  ██╗ █████╗ ███╗   ██╗ ██████╗ ███████╗██╗      ██████╗  ██████╗ ███████╗
-██╔════╝██║  ██║██╔══██╗████╗  ██║██╔════╝ ██╔════╝██║     ██╔═══██╗██╔════╝ ██╔════╝
-██║     ███████║███████║██╔██╗ ██║██║  ███╗█████╗  ██║     ██║   ██║██║  ███╗███████╗
-██║     ██╔══██║██╔══██║██║╚═██║██║    ██║██╔══╝  ██║     ██║   ██║██║   ██║╚════██║
-╚██████╗██║  ██║██║  ██║██║ ╚████║╚██████╔╝███████╗███████╗╚██████╔╝╚██████╔╝███████║
- ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝╚══════╝╚══════╝ ╚═════╝  ╚═════╝╚══════╝
-                            ╔═╗╔╗╔╔═╗╔═╗
-                            ║ ║║║║╠╣ ║ ║
-                            ╚═╝╝╚╝╚  ╚═╝
-```
-
 # changelogs.info
 
 > **Every release. One place.** Track changelogs, models, and configs for AI coding agent harnesses.
 
 [![Live Site](https://img.shields.io/badge/live-changelogs.info-00ff41?style=flat-square)](https://changelogs.info)
-[![Tools](https://img.shields.io/badge/harnesses_tracked-22-6366f1?style=flat-square)](https://changelogs.info)
-[![Cheatsheets](https://img.shields.io/badge/cheatsheets-10-00d4ff?style=flat-square)](https://changelogs.info/cheatsheets)
-[![Pages](https://img.shields.io/badge/pages-516-ffb800?style=flat-square)](https://changelogs.info)
-
----
+[![Tools](https://img.shields.io/badge/harnesses_tracked-5-6366f1?style=flat-square)](https://changelogs.info)
+[![Pipeline](https://img.shields.io/badge/pipeline-every_hour-ffb800?style=flat-square)](.github/workflows/pipeline.yml)
 
 ## What is this?
 
-The definitive hub for AI coding agent harness releases. One site that aggregates changelogs, cheatsheets, model compatibility, and starter configs for every major AI coding tool — so you never miss a feature, fix, or breaking change.
+changelogs.info is a **static site + data pipeline** that tracks releases of AI coding tools. It provides:
 
-```
-┌─────────────────────────────────────────────────────────┐
-│  changelogs.info                                        │
-│                                                         │
-│  /tools        22 agent harnesses tracked               │
-│  /models       6 model providers, 20+ models            │
-│  /cheatsheets  10 comprehensive CLI references          │
-│  /configs      9 harnesses with copy-paste configs      │
-│                                                         │
-│  Updated daily via GitHub Actions                       │
-└─────────────────────────────────────────────────────────┘
-```
-
-## Tracked Harnesses
-
-### CLI Harnesses
-| Harness | Repo |
-|---------|------|
-| **Claude Code** | `anthropics/claude-code` |
-| **Codex CLI** | `openai/codex` |
-| **Gemini CLI** | `google-gemini/gemini-cli` |
-| **Aider** | `Aider-AI/aider` |
-| **OpenClaw** | `openclaw/openclaw` |
-| **OpenCode** | `opencode-ai/opencode` |
-| **Goose** | `block/goose` |
-| **Plandex** | `plandex-ai/plandex` |
-| **Amp** | `AmpAI/amp-cli` |
-
-### IDE Harnesses
-| Harness | Repo |
-|---------|------|
-| **Cursor** | `getcursor/cursor` |
-| **Windsurf** | `codeiumdev/windsurf` |
-| **Void** | `voideditor/void` |
-
-### IDE Extensions
-| Harness | Repo |
-|---------|------|
-| **Cline** | `cline/cline` |
-| **Continue** | `continuedev/continue` |
-| **Copilot CLI** | `github/copilot-cli` |
-| **Roo Code** | `RooVetGit/Roo-Code` |
-| **Avante.nvim** | `yetone/avante.nvim` |
-
-### Agent Platforms
-| Harness | Repo |
-|---------|------|
-| **OpenHands** | `All-Hands-AI/OpenHands` |
-| **Open WebUI** | `open-webui/open-webui` |
-| **Tabby** | `TabbyML/tabby` |
-| **Khoj** | `khoj-ai/khoj` |
-| **GPTMe** | `ErikBjare/gptme` |
-
-## Features
-
-### 📋 Release Tracking
-Every GitHub release for all 22 harnesses, synced daily. Version history, changelogs, and release notes in one place.
-
-### 📖 Cheatsheets
-Comprehensive quick-reference guides for 10 harnesses — commands, flags, config options, workflows, and tips. The Claude Code cheatsheet alone is 500+ lines.
-
-### 🧠 Model Directory
-Track which AI models power these harnesses. Anthropic, OpenAI, Google, Meta, Mistral, and Qwen — with release dates, context windows, and type classifications.
-
-### ⚙️ Starter Configs
-Real, production-quality configs you can copy-paste. CLAUDE.md templates, .cursorrules, aider configs, OpenClaw gateway setups, and more. Not toy examples — configs people actually use.
-
-### 🔄 Auto-Updating Cheatsheets
-Weekly automation pulls from official docs and opens PRs when CLI commands or features change. Never stale.
-
-## Extraction Pipeline
-
-An automated pipeline fetches GitHub releases for tracked tools, detects version changes, and updates payload files.
+- **Real-time changelog tracking** — Claude Code, Codex CLI, Gemini CLI, OpenCode, OpenClaw
+- **Structured JSON payloads** — machine-readable release data for every tracked tool
+- **Status dashboard** — pipeline health, verification status, staleness detection
+- **Cheatsheets, configs, migration guides, model references** — curated for each tool
+- **CLI tool (`clwatch`)** — install locally to diff, watch, and merge updates into your agent configs
 
 ### How it works
 
-1. GitHub Actions runs `npm run pipeline:run` every 6 hours (or on manual trigger)
-2. For each tool, the pipeline fetches the latest GitHub releases API data
-3. ETag-based conditional requests skip processing when nothing changed (304)
-4. Tier 1 diff detects version changes and applies patches to `public/api/refs/*.json`
-5. Tier 2 refresh is queued when deeper changelog analysis is needed
-6. Updated payloads are committed and pushed automatically
+```
+┌─────────────────────────────────────────────────────────────┐
+│  GitHub Actions (hourly cron)                               │
+│                                                             │
+│  1. Fetch release data from GitHub APIs (ETag-cached)       │
+│  2. Diff against local payloads — detect version changes    │
+│  3. If version changed → Tier 2: LLM extraction (OpenRouter)│
+│  4. Merge structured data into payload JSON                 │
+│  5. Write status.json + commit everything                   │
+│  6. Deploy to Cloudflare Pages (auto)                       │
+└─────────────────────────────────────────────────────────────┘
+                          │
+                          ▼
+              static JSON at /api/refs/
+              ┌──────────────────────┐
+              │  manifest.json       │  ← full tracking manifest
+              │  status.json         │  ← pipeline health
+              │  claude-code.json    │
+              │  codex-cli.json      │
+              │  gemini-cli.json     │
+              │  opencode.json       │
+              │  openclaw.json       │
+              └──────────────────────┘
+                          │
+          ┌───────────────┼───────────────┐
+          ▼               ▼               ▼
+    Website UI       clwatch CLI     Any agent tool
+```
 
-### Running locally
+## Architecture
+
+### Repos
+
+| Repo | Purpose |
+|---|---|
+| [`changelogs-info`](.) | Website + data pipeline + payloads |
+| [`clwatch`](https://github.com/cyperx84/clwatch) | Go CLI for consuming payloads |
+| [`clwatch-skill`](https://github.com/cyperx84/clwatch-skill) | Agent skill (Claude Code, Gemini, OpenClaw) |
+| [`homebrew-tap`](https://github.com/cyperx84/homebrew-tap) | Homebrew tap formula |
+
+### Pipeline modules
+
+All in `src/pipeline/`:
+
+| File | Role |
+|---|---|
+| `run.ts` | Entry point — orchestrates everything, prints summary |
+| `sources.ts` | Tool definitions + GitHub repo URLs |
+| `fetcher.ts` | GitHub API client with ETag caching + rate limit handling |
+| `evidence.ts` | Timestamped raw data storage (audit trail) |
+| `diff.ts` | Version comparison + scope detection (small/medium/large) |
+| `refresh.ts` | Tier 2 LLM extraction via OpenRouter |
+| `merge.ts` | Idempotent merge of extracted data into payloads |
+
+### API endpoints
+
+All static JSON, deployed via Cloudflare Pages:
+
+| Endpoint | Description |
+|---|---|
+| `/api/refs/manifest.json` | Full tracking manifest with all tool versions |
+| `/api/refs/status.json` | Pipeline health + per-tool verification |
+| `/api/refs/{tool-slug}.json` | Full payload for a specific tool |
+| `/api/sse/changelog.md` | Aggregated changelog markdown |
+
+### Payload schema
+
+Each tool payload follows the `clwatch.payload.v1` schema:
+
+```json
+{
+  "schema": "clwatch.payload.v1",
+  "id": "claude-code",
+  "generated_at": "2026-03-12T00:00:00Z",
+  "meta": { "latest_stable": "2.1.74", ... },
+  "payload": {
+    "features": [...],
+    "commands": [...],
+    "flags": [...],
+    "env_vars": [...],
+    "deprecations": { "commands": [...], "flags": [...] },
+    "breaking_changes": [...]
+  }
+}
+```
+
+## Development
+
+### Prerequisites
+
+- Node.js 22+
+- pnpm (`corepack enable pnpm`)
+
+### Setup
 
 ```bash
-# Run for all tools
+git clone https://github.com/cyperx84/changelogs-info.git
+cd changelogs-info
+pnpm install
+```
+
+### Run the site locally
+
+```bash
+pnpm dev          # dev server at http://localhost:4321
+pnpm build        # production build
+pnpm preview      # preview production build
+```
+
+### Run the pipeline locally
+
+```bash
+# Tier 1 only (no LLM needed)
 npm run pipeline:run
 
-# Run for a specific tool
-npm run pipeline:run -- --tool claude-code
+# With Tier 2 LLM extraction (needs OpenRouter key)
+LLM_API_KEY="sk-or-..." npm run pipeline:run -- --force-tier2
 
-# Force Tier 2 extraction
-npm run pipeline:run -- --force-tier2
+# Specific tool only
+LLM_API_KEY="sk-or-..." npm run pipeline:run -- --tool claude-code
 
-# JSON output (machine-readable summary)
+# JSON output mode
 npm run pipeline:run -- --json
 ```
 
 ### Environment variables
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `GITHUB_TOKEN` | Recommended | GitHub token for 5000 req/hr (vs 60 unauthenticated) |
-| `ANTHROPIC_API_KEY` | For Tier 2 | Required for LLM-based changelog extraction |
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `LLM_API_KEY` | No | — | API key for Tier 2 extraction (OpenRouter, OpenAI, etc.) |
+| `LLM_API_URL` | No | `https://openrouter.ai/api/v1` | OpenAI-compatible API base URL |
+| `LLM_MODEL` | No | `google/gemini-2.0-flash-001` | Model ID for extraction |
+| `GITHUB_TOKEN` | No | — | GitHub PAT for higher API rate limits (60→5000/hr) |
+
+**Legacy support:** `ANTHROPIC_API_KEY` still works — auto-converts to `LLM_API_KEY` with Anthropic API URL.
+
+### Pipeline tiers
+
+**Tier 1 — Diff detection** (runs every run, no API key needed):
+- Fetches latest release data from GitHub
+- Compares against local payloads
+- Detects version changes + scope (small/medium/large)
+- Stores evidence for audit trail
+
+**Tier 2 — LLM extraction** (runs when version changes):
+- Sends release notes to an LLM
+- Extracts structured data: features, commands, flags, breaking changes
+- Merges idempotently into existing payload
+- Falls back to queue stub if no API key
 
 ### Adding a new tool
 
-1. Add source entries to `src/pipeline/sources.ts` (at minimum a `github_releases` source)
-2. Create the tool's payload file in `public/api/refs/<slug>.json`
-3. Add the tool to `public/api/refs/manifest.json`
-4. Run `npm run pipeline:run -- --tool <slug>` to verify
+1. Add to `src/pipeline/sources.ts`:
 
-## Tech Stack
-
-```
-Framework    Astro 5
-Styling      Tailwind CSS v4
-Fonts        JetBrains Mono + Inter
-Search       Pagefind
-Deploy       Push to main → live
-Data         GitHub Actions (daily release sync)
-Automation   Weekly cheatsheet refresh → auto PR
+```typescript
+{
+  slug: "tool-name",
+  repo: "owner/repo",
+  sources: [
+    { type: "github_releases", ... }
+  ]
+}
 ```
 
-## Development
+2. Run pipeline: `npm run pipeline:run -- --tool tool-name`
 
-```bash
-# Install
-pnpm install
+3. Add hand-crafted payload: `public/api/refs/tool-name.json`
 
-# Dev server
-pnpm dev
+4. Update manifest: add entry to `public/api/refs/manifest.json`
 
-# Build (generates 516 static pages)
-pnpm build
+### Deployment
 
-# Preview build
-pnpm preview
+Automatic via Cloudflare Pages on push to `main`. Pipeline runs hourly via GitHub Actions and commits updated payloads + status.json back to the repo.
 
-# Sync release data
-pnpm scrape
+### Scheduled pipeline (GitHub Actions)
 
-# Update cheatsheets from docs
-pnpm update-cheatsheets
-```
+- **Trigger:** Hourly cron (`0 * * * *`) + manual `workflow_dispatch`
+- **Manual:** Can specify `--tool` and `--force-tier2` inputs
+- **Auto-commit:** Pipeline commits updated payloads with `[skip ci]` to prevent loops
+- **Secrets needed:** `OPENROUTER_API_KEY` (for Tier 2), `GITHUB_TOKEN` (for higher rate limits, provided automatically)
 
-## Project Structure
+## Related
 
-```
-src/
-├── content/
-│   ├── cheatsheets/     # 10 comprehensive .md cheatsheets
-│   ├── configs/         # Config templates per harness (.json)
-│   ├── models/          # AI model data per provider (.json)
-│   └── releases/        # Release data per harness (.json)
-├── components/
-│   ├── ToolCard.astro   # Terminal-style harness card
-│   ├── ReleaseEntry.astro
-│   └── Search.astro     # Pagefind search
-├── layouts/
-│   └── BaseLayout.astro # Terminal nav, theme toggle, CRT effects
-├── pages/
-│   ├── index.astro      # Homepage with harness grid + release feed
-│   ├── models.astro     # AI model directory
-│   ├── cheatsheets.astro
-│   ├── configs.astro    # Filterable config templates
-│   └── tools/[id]/      # Per-harness pages + cheatsheet routes
-├── lib/
-│   └── releases.ts      # Data loading utilities
-└── styles/
-    └── global.css       # Terminal aesthetic + dark/light themes
-```
-
-## Design
-
-Terminal/hacker aesthetic with a phosphor green palette, CRT scanline effects, JetBrains Mono typography, and a dark/light theme toggle. Cards styled as terminal panes. Nav links are paths. The whole site feels like browsing a beautifully designed terminal.
-
-## Contributing
-
-Found a missing harness? Want to improve a cheatsheet? PRs welcome.
-
-```bash
-# Add a new harness
-# 1. Add entry to scrapers/tools.json
-# 2. Run pnpm scrape to fetch releases
-# 3. Optionally add cheatsheet in src/content/cheatsheets/
-# 4. Optionally add configs in src/content/configs/
-```
+- **`clwatch` CLI** — [`cyperx84/clwatch`](https://github.com/cyperx84/clwatch) — consume these payloads locally
+- **`clwatch` skill** — [`cyperx84/clwatch-skill`](https://github.com/cyperx84/clwatch-skill) — agent integration
+- **Cheatsheets** — [changelogs.info/cheatsheets](https://changelogs.info/cheatsheets)
 
 ## License
 
 MIT
-
----
-
-<p align="center">
-  <code>> crafted by <a href="https://github.com/cyperx84">cyperx</a> | powered by astro + tailwind</code>
-</p>
