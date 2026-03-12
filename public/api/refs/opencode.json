@@ -1,0 +1,424 @@
+{
+  "schema": "clwatch.payload.v1",
+  "tool": "opencode",
+  "version": "1.2.24",
+  "generated_at": "2026-03-12T04:17:00Z",
+  "extracted_from_sources": [
+    "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
+    "https://github.com/anomalyco/opencode/releases"
+  ],
+  "verification": {
+    "status": "verified",
+    "confidence": 0.91,
+    "unverified_fields": []
+  },
+  "stale_after": "2026-03-19T04:17:00Z",
+  "delta": {
+    "from_version": "1.2.20",
+    "to_version": "1.2.24",
+    "new_features": ["workspace-support", "gitlab-1m-context", "copilot-gpt54-xhigh"],
+    "new_commands": [],
+    "new_flags": ["--attach"],
+    "new_env_vars": ["OPENCODE_SKIP_MIGRATIONS"],
+    "deprecated_commands": [],
+    "deprecated_flags": [],
+    "breaking_changes": []
+  },
+  "payload": {
+    "meta": {
+      "display_name": "OpenCode",
+      "vendor": "anomalyco",
+      "kind": "tool",
+      "tags": ["coding-agent", "cli", "agentic", "multi-provider"],
+      "homepage": "https://opencode.ai",
+      "docs_url": "https://opencode.ai/docs",
+      "changelog_url": "https://github.com/anomalyco/opencode/releases",
+      "repo_url": "https://github.com/anomalyco/opencode",
+      "license": "mit",
+      "latest_stable": "1.2.24",
+      "latest_release_date": "2026-03-09",
+      "status": "active",
+      "runtime": "bun",
+      "written_in": "typescript",
+      "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026."
+    },
+    "features": [
+      {
+        "id": "multi-provider",
+        "name": "Multi-Provider Support",
+        "status": "stable",
+        "since": "0.1.0",
+        "description": "Provider-agnostic design. Switch between Anthropic, OpenAI, Google, Copilot, Bedrock, and local models from a single config.",
+        "supported_providers": [
+          { "id": "anthropic", "example": "anthropic/claude-sonnet-4-5" },
+          { "id": "openai", "example": "openai/gpt-5.4" },
+          { "id": "copilot", "example": "copilot/gpt-5.4", "note": "xhigh support added 1.2.24" },
+          { "id": "google", "example": "google/gemini-2.5-pro" },
+          { "id": "opencode-zen", "example": "opencode/gpt-5.1-codex", "note": "Curated verified models" },
+          { "id": "amazon-bedrock", "example": "amazon-bedrock/..." },
+          { "id": "local", "note": "Via provider config" }
+        ],
+        "key_details": [
+          "model field in config: anthropic/claude-sonnet-4-5",
+          "small_model field: lightweight tasks (title gen). Falls back to main model if unavailable.",
+          "OpenCode Zen: /connect in TUI → select opencode → sign in at opencode.ai/auth",
+          "GitLab 1M context window: beta header enabled (1.2.24)"
+        ],
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "id": "desktop-app",
+        "name": "Desktop App",
+        "status": "stable",
+        "since": "1.0.0",
+        "description": "Full Electron application with forked Ghostty terminal, file tree, review panel, interactive timeline, and deep links.",
+        "key_details": [
+          "Full Electron app with forked Ghostty terminal embedded",
+          "File tree panel",
+          "Review panel",
+          "Interactive session timeline",
+          "Deep links: opencode:// for session creation",
+          "Workspace support added in TUI (1.2.24)"
+        ],
+        "source_url": "https://opencode.ai"
+      },
+      {
+        "id": "server-mode",
+        "name": "Server Mode",
+        "status": "stable",
+        "since": "0.8.0",
+        "description": "Expose OpenCode as a server with web UI, mDNS discovery, and CORS config.",
+        "key_details": [
+          "opencode serve — start server",
+          "opencode web — web UI",
+          "Default port: 4096",
+          "mDNS service discovery — devices on same network find your server",
+          "config: server.mdns = true, server.mdnsDomain = 'myproject.local'",
+          "CORS config: server.cors = ['http://localhost:5173']"
+        ],
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "id": "agents",
+        "name": "Agents (Primary + Subagents)",
+        "status": "stable",
+        "since": "0.5.0",
+        "description": "Two agent types: primary agents (cycle with Tab) and subagents (specialized, invoked with @mention).",
+        "built_in_agents": [
+          { "name": "Build", "type": "primary", "purpose": "Default, all tools enabled" },
+          { "name": "Plan", "type": "primary", "purpose": "Read-only analysis (writes/bash set to ask)" },
+          { "name": "General", "type": "subagent", "purpose": "Multi-step tasks with full tools (except todo)" },
+          { "name": "Explore", "type": "subagent", "purpose": "Fast, read-only codebase exploration" },
+          { "name": "Compaction", "type": "primary (hidden)", "purpose": "Auto-compacts long context" },
+          { "name": "Title", "type": "primary (hidden)", "purpose": "Auto-generates session titles" },
+          { "name": "Summary", "type": "primary (hidden)", "purpose": "Auto-creates session summaries" }
+        ],
+        "custom_agent_locations": [
+          "~/.config/opencode/agents/ (global)",
+          ".opencode/agents/ (project)"
+        ],
+        "custom_agent_format": "Markdown with YAML frontmatter. Filename becomes agent name.",
+        "agent_frontmatter_fields": {
+          "description": "Required. What the agent does.",
+          "mode": "primary | subagent | all (default)",
+          "model": "provider/model-id",
+          "temperature": "0.0–1.0",
+          "prompt": "string or {file:./path}",
+          "tools": "object — enable/disable. Wildcards: mymcp_*: false",
+          "permission": "object — per-tool: ask | allow | deny. Glob patterns for bash.",
+          "steps": "integer — max agentic iterations",
+          "disable": "boolean",
+          "hidden": "boolean — hide from @ menu",
+          "default_agent": "build | plan | custom — set default primary"
+        },
+        "navigation": [
+          "Tab — cycle primary agents",
+          "@name — invoke subagent",
+          "Ctrl+Right / Ctrl+Left — navigate parent ↔ child sessions"
+        ],
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "id": "auto-compaction",
+        "name": "Auto-Compaction",
+        "status": "stable",
+        "since": "1.0.0",
+        "description": "Automatic recovery from 413 Request Entity Too Large errors. Compacts context and retries transparently.",
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "id": "sharing",
+        "name": "Session Sharing",
+        "status": "stable",
+        "since": "0.8.0",
+        "description": "Create shareable conversation links. /share copies link to clipboard.",
+        "key_details": [
+          "/share — creates link, copies to clipboard",
+          "Example: opencode.ai/s/4XP1fce5"
+        ],
+        "source_url": "https://opencode.ai"
+      },
+      {
+        "id": "undo-redo",
+        "name": "Undo / Redo",
+        "status": "stable",
+        "since": "0.5.0",
+        "description": "Revert last changes and retry with edited prompt.",
+        "key_details": [
+          "/undo — revert last changes, show original prompt",
+          "/redo — reapply changes",
+          "Edit the prompt after undo and retry"
+        ],
+        "source_url": "https://opencode.ai"
+      },
+      {
+        "id": "config-layering",
+        "name": "Config Layering",
+        "status": "stable",
+        "since": "0.5.0",
+        "description": "6-layer config precedence. Configs merge, not replace — non-conflicting settings from all layers preserved.",
+        "layers": [
+          "Remote config (.well-known/opencode) — org defaults, lowest priority",
+          "Global config (~/.config/opencode/opencode.json)",
+          "Custom config (OPENCODE_CONFIG env var)",
+          "Project config (opencode.json in project root)",
+          ".opencode/ directories — agents, commands, plugins",
+          "Inline config (OPENCODE_CONFIG_CONTENT env var) — highest priority"
+        ],
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "id": "permissions-system",
+        "name": "Permissions System",
+        "status": "stable",
+        "since": "0.3.0",
+        "description": "Per-tool permissions with ask, allow, deny. Glob patterns for bash. Last matching rule wins.",
+        "key_details": [
+          "Three levels: ask, allow, deny",
+          "Glob patterns for bash commands",
+          "Last matching rule wins — put * first, specifics after",
+          "Per-agent permission overrides supported"
+        ],
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "id": "mcp",
+        "name": "MCP Servers",
+        "status": "stable",
+        "since": "0.5.0",
+        "description": "Remote and local MCP server support. Toggle via /mcp in TUI.",
+        "key_details": [
+          "Remote: { \"type\": \"remote\", \"url\": \"...\", \"enabled\": true }",
+          "Local: stdio-based",
+          "/mcp to toggle servers in TUI"
+        ],
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "id": "workspace-support",
+        "name": "Workspace Support",
+        "status": "stable",
+        "since": "1.2.24",
+        "description": "Initial workspace support in TUI. Workspace container in desktop sidebar.",
+        "source_url": "https://github.com/anomalyco/opencode/releases/tag/v1.2.24"
+      },
+      {
+        "id": "sdk",
+        "name": "SDK",
+        "status": "stable",
+        "since": "1.1.0",
+        "description": "Published SDK for programmatic OpenCode access.",
+        "source_url": "https://opencode.ai"
+      }
+    ],
+    "commands": [
+      { "name": "/init", "syntax": "/init", "description": "Generate AGENTS.md in project root. Auto-analyzes project structure and coding patterns.", "since": "0.5.0", "status": "stable", "source_url": "https://opencode.ai" },
+      { "name": "/connect", "syntax": "/connect", "description": "Connect to LLM provider. Use for OpenCode Zen (opencode.ai/auth).", "since": "0.5.0", "status": "stable", "source_url": "https://opencode.ai" },
+      { "name": "/undo", "syntax": "/undo", "description": "Revert last changes. Shows original prompt for editing and retry.", "since": "0.5.0", "status": "stable", "source_url": "https://opencode.ai" },
+      { "name": "/redo", "syntax": "/redo", "description": "Reapply undone changes.", "since": "0.5.0", "status": "stable", "source_url": "https://opencode.ai" },
+      { "name": "/share", "syntax": "/share", "description": "Create shareable conversation link, copy to clipboard.", "since": "0.8.0", "status": "stable", "source_url": "https://opencode.ai" },
+      { "name": "/mcp", "syntax": "/mcp", "description": "Toggle MCP servers on/off.", "since": "0.5.0", "status": "stable", "source_url": "https://opencode.ai" }
+    ],
+    "flags": {
+      "current": [
+        {
+          "flag": "run",
+          "syntax": "opencode run \"task\"",
+          "description": "One-shot non-interactive execution.",
+          "since": "0.5.0",
+          "source_url": "https://opencode.ai"
+        },
+        {
+          "flag": "--attach",
+          "syntax": "opencode run --attach",
+          "description": "Attach to a running session.",
+          "since": "1.2.20",
+          "source_url": "https://github.com/anomalyco/opencode/releases"
+        },
+        {
+          "flag": "serve",
+          "syntax": "opencode serve",
+          "description": "Start OpenCode server.",
+          "since": "0.8.0",
+          "source_url": "https://opencode.ai"
+        },
+        {
+          "flag": "web",
+          "syntax": "opencode web",
+          "description": "Launch web UI.",
+          "since": "0.8.0",
+          "source_url": "https://opencode.ai"
+        }
+      ],
+      "deprecated": [],
+      "new_since_previous": ["--attach"]
+    },
+    "env_vars": [
+      {
+        "name": "OPENCODE_CONFIG",
+        "purpose": "Path to custom config file.",
+        "status": "stable",
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "name": "OPENCODE_CONFIG_DIR",
+        "purpose": "Custom config directory.",
+        "status": "stable",
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "name": "OPENCODE_CONFIG_CONTENT",
+        "purpose": "Inline config as JSON string. Highest priority override.",
+        "status": "stable",
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "name": "OPENCODE_TUI_CONFIG",
+        "purpose": "Custom TUI config file path.",
+        "status": "stable",
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "name": "OPENCODE_SKIP_MIGRATIONS",
+        "purpose": "Bypass database migrations on startup.",
+        "status": "stable",
+        "since": "1.2.20",
+        "source_url": "https://github.com/anomalyco/opencode/releases"
+      }
+    ],
+    "models": [
+      {
+        "id": "anthropic/claude-sonnet-4-5",
+        "display_name": "Claude Sonnet 4.5 (via Anthropic)",
+        "status": "stable",
+        "recommended_for": ["default", "balanced tasks"],
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "id": "openai/gpt-5.4",
+        "display_name": "GPT-5.4 (via OpenAI)",
+        "status": "stable",
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "id": "copilot/gpt-5.4",
+        "display_name": "GPT-5.4 xhigh (via Copilot)",
+        "status": "stable",
+        "since": "1.2.24",
+        "note": "xhigh support added 1.2.24",
+        "source_url": "https://github.com/anomalyco/opencode/releases/tag/v1.2.24"
+      },
+      {
+        "id": "google/gemini-2.5-pro",
+        "display_name": "Gemini 2.5 Pro (via Google)",
+        "status": "stable",
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "id": "opencode/gpt-5.1-codex",
+        "display_name": "GPT-5.1 Codex (via OpenCode Zen)",
+        "status": "stable",
+        "note": "Curated and tested by OpenCode team",
+        "source_url": "https://opencode.ai"
+      }
+    ],
+    "breaking_changes": [],
+    "deprecations": [],
+    "install": {
+      "methods": [
+        {
+          "name": "install script",
+          "command": "curl -fsSL https://opencode.ai/install | bash"
+        },
+        {
+          "name": "npm",
+          "command": "npm install -g opencode-ai",
+          "update_command": "npm update -g opencode-ai"
+        },
+        {
+          "name": "brew",
+          "command": "brew install anomalyco/tap/opencode",
+          "update_command": "brew upgrade opencode"
+        },
+        {
+          "name": "choco",
+          "command": "choco install opencode",
+          "platforms": ["windows"]
+        },
+        {
+          "name": "scoop",
+          "command": "scoop install opencode",
+          "platforms": ["windows"]
+        },
+        {
+          "name": "pacman",
+          "command": "sudo pacman -S opencode",
+          "platforms": ["linux-arch"]
+        },
+        {
+          "name": "docker",
+          "command": "docker run -it --rm ghcr.io/anomalyco/opencode"
+        }
+      ],
+      "requirements": [
+        "Modern terminal recommended: WezTerm, Alacritty, Ghostty, Kitty",
+        "At least one LLM provider API key"
+      ],
+      "source_url": "https://opencode.ai"
+    },
+    "support_matrix": {
+      "platforms": ["macos", "linux", "windows"],
+      "requires_auth": true,
+      "auth_methods": ["provider_api_key", "opencode_zen_oauth"],
+      "context_file": "AGENTS.md",
+      "agent_def_locations": ["~/.config/opencode/agents/ (global)", ".opencode/agents/ (project)"],
+      "agent_def_format": "Markdown with YAML frontmatter OR JSON in config",
+      "source_url": "https://opencode.ai/docs"
+    },
+    "config": {
+      "file_paths": [
+        "~/.config/opencode/opencode.json (global)",
+        "opencode.json (project root)",
+        "~/.config/opencode/tui.json (TUI-specific)"
+      ],
+      "schema_url": "https://opencode.ai/config.json",
+      "tui_schema_url": "https://opencode.ai/tui.json",
+      "notable_keys": {
+        "model": "string — primary provider/model",
+        "small_model": "string — for lightweight tasks",
+        "autoupdate": "boolean",
+        "server.port": "integer — default 4096",
+        "server.mdns": "boolean",
+        "server.mdnsDomain": "string",
+        "server.cors": "string[]",
+        "tools.write / .bash / .edit / .webfetch": "boolean",
+        "permission.edit / .bash / .webfetch": "ask | allow | deny",
+        "agent.<name>.*": "custom agent definition inline",
+        "tui.scroll_speed": "integer",
+        "tui.diff_style": "auto | ...",
+        "tui.theme": "string"
+      },
+      "source_url": "https://opencode.ai/docs"
+    }
+  }
+}

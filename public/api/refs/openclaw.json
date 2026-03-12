@@ -1,0 +1,370 @@
+{
+  "schema": "clwatch.payload.v1",
+  "tool": "openclaw",
+  "version": "2026.3.9",
+  "generated_at": "2026-03-12T04:17:00Z",
+  "extracted_from_sources": [
+    "https://docs.openclaw.ai",
+    "https://github.com/openclaw/openclaw"
+  ],
+  "verification": {
+    "status": "verified",
+    "confidence": 0.95,
+    "unverified_fields": []
+  },
+  "stale_after": "2026-03-26T04:17:00Z",
+  "delta": {
+    "from_version": "2026.2.x",
+    "to_version": "2026.3.9",
+    "new_features": [],
+    "new_commands": [],
+    "new_flags": [],
+    "new_env_vars": [],
+    "deprecated_commands": [],
+    "deprecated_flags": [],
+    "breaking_changes": []
+  },
+  "payload": {
+    "meta": {
+      "display_name": "OpenClaw",
+      "vendor": "OpenClaw",
+      "kind": "platform",
+      "tags": ["ai-gateway", "multi-channel", "self-hosted", "coding-agent-harness"],
+      "homepage": "https://openclaw.ai",
+      "docs_url": "https://docs.openclaw.ai",
+      "changelog_url": "https://github.com/openclaw/openclaw/releases",
+      "repo_url": "https://github.com/openclaw/openclaw",
+      "license": "mit",
+      "latest_stable": "2026.3.9",
+      "latest_release_date": "2026-03-09",
+      "status": "active",
+      "runtime": "node",
+      "version_scheme": "date-based (YYYY.M.D)",
+      "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+."
+    },
+    "features": [
+      {
+        "id": "gateway",
+        "name": "Gateway Service",
+        "status": "stable",
+        "since": "1.0.0",
+        "description": "The core Gateway process bridges messaging channels to AI agents. Runs as a background daemon service. Single process serves all channels simultaneously.",
+        "key_details": [
+          "openclaw gateway — start gateway",
+          "openclaw gateway --port 18789 — custom port",
+          "openclaw gateway --verbose — debug/trace to stdio",
+          "openclaw gateway --force — force-kill listener then start",
+          "openclaw gateway status — check running status",
+          "Managed as system daemon with openclaw gateway start/stop/restart",
+          "Default port: 18789"
+        ],
+        "source_url": "https://docs.openclaw.ai/gateway"
+      },
+      {
+        "id": "multi-channel",
+        "name": "Multi-Channel Support",
+        "status": "stable",
+        "since": "1.0.0",
+        "description": "One Gateway serves multiple messaging channels simultaneously. Each channel connects independently.",
+        "supported_channels": [
+          { "id": "discord", "status": "stable" },
+          { "id": "telegram", "status": "stable" },
+          { "id": "whatsapp", "status": "stable" },
+          { "id": "imessage", "status": "stable" },
+          { "id": "signal", "status": "stable" },
+          { "id": "slack", "status": "stable" },
+          { "id": "mattermost", "status": "plugin", "note": "Via community plugin" },
+          { "id": "line", "status": "stable" },
+          { "id": "irc", "status": "stable" },
+          { "id": "googlechat", "status": "stable" }
+        ],
+        "source_url": "https://docs.openclaw.ai/channels"
+      },
+      {
+        "id": "multi-agent",
+        "name": "Multi-Agent Routing",
+        "status": "stable",
+        "since": "1.5.0",
+        "description": "Run multiple named agents. Each agent gets its own session context, model, system prompt, and channel routing. Switch between agents or dispatch tasks.",
+        "key_details": [
+          "Named agents: builder, claw, main, isolated, etc.",
+          "Each agent: own model, system prompt, memory, session state",
+          "sessions_spawn for isolated sub-agents",
+          "sessions_send for cross-agent messaging",
+          "Agent definitions: AGENTS.md + SOUL.md in agent workspace dir",
+          "ACP harness sessions via sessions_spawn with runtime:acp"
+        ],
+        "source_url": "https://docs.openclaw.ai"
+      },
+      {
+        "id": "skills",
+        "name": "Agent Skills (AgentSkills Standard)",
+        "status": "stable",
+        "since": "1.5.0",
+        "description": "Pluggable capabilities using the AgentSkills open standard. Skills are SKILL.md files that inject specialized context when activated.",
+        "key_details": [
+          "Skills location: ~/.openclaw/skills/<name>/SKILL.md",
+          "Install skills from clawhub.com via the clawhub CLI",
+          "SKILL.md format: YAML frontmatter + markdown body",
+          "Skills appear in agent system prompt discovery section",
+          "openclaw skills list — list installed skills",
+          "openclaw skills install <name> — install skill"
+        ],
+        "source_url": "https://docs.openclaw.ai"
+      },
+      {
+        "id": "memory",
+        "name": "Memory System",
+        "status": "stable",
+        "since": "1.3.0",
+        "description": "Persistent agent memory via MEMORY.md and memory/*.md files. Agents recall prior decisions, preferences, and context across sessions.",
+        "key_details": [
+          "Primary: MEMORY.md in agent workspace root",
+          "Dated logs: memory/YYYY-MM-DD.md",
+          "memory_search tool: semantic search across MEMORY.md + memory/*.md",
+          "memory_get tool: targeted line reads from memory files",
+          "Agents required to run memory_search before answering questions about prior work"
+        ],
+        "source_url": "https://docs.openclaw.ai"
+      },
+      {
+        "id": "sessions",
+        "name": "Session Management",
+        "status": "stable",
+        "since": "1.0.0",
+        "description": "Full session lifecycle management. Sessions persist across gateway restarts. Multi-session routing per channel.",
+        "key_details": [
+          "openclaw sessions list — list active sessions",
+          "sessions_spawn — spawn isolated sub-agent session",
+          "sessions_send — message another session",
+          "sessions_history — fetch session transcript",
+          "sessions_list — list all sessions with filters",
+          "Isolated sessions: runtime=subagent or runtime=acp",
+          "Thread-bound ACP sessions: thread:true mode:session"
+        ],
+        "source_url": "https://docs.openclaw.ai"
+      },
+      {
+        "id": "cron",
+        "name": "Cron Scheduler",
+        "status": "stable",
+        "since": "1.4.0",
+        "description": "Gateway-level cron job scheduling for reminders, recurring agent tasks, and timed events.",
+        "key_details": [
+          "cron tool: add, remove, list, run, update jobs",
+          "Schedule types: at (one-shot), every (interval), cron (expression)",
+          "Payload types: systemEvent (main session), agentTurn (isolated session)",
+          "sessionTarget: main (systemEvent only) or isolated (agentTurn only)",
+          "Delivery: announce, webhook, none",
+          "Webhook delivery: POST finished-run event to delivery.to URL"
+        ],
+        "source_url": "https://docs.openclaw.ai"
+      },
+      {
+        "id": "nodes",
+        "name": "Paired Nodes",
+        "status": "stable",
+        "since": "1.4.0",
+        "description": "Pair external devices (phones, laptops, Raspberry Pi) as nodes. Camera, screen recording, location, notifications, and remote command execution.",
+        "key_details": [
+          "nodes tool: status, describe, camera_snap, screen_record, location_get, notifications_list, run",
+          "Pairing via QR code or link",
+          "Camera: front/back/both, still or clip",
+          "Screen recording up to 300 seconds",
+          "Location: coarse/balanced/precise accuracy",
+          "Remote command execution on paired node"
+        ],
+        "source_url": "https://docs.openclaw.ai/nodes"
+      },
+      {
+        "id": "browser-control",
+        "name": "Browser Control",
+        "status": "stable",
+        "since": "1.5.0",
+        "description": "Full browser automation via OpenClaw Browser Control Server. Profiles: openclaw (isolated) and chrome (relay via extension).",
+        "key_details": [
+          "browser tool: status, start, stop, tabs, open, snapshot, screenshot, act",
+          "Profile openclaw: isolated OpenClaw-managed browser",
+          "Profile chrome: Chrome extension relay (existing tabs)",
+          "act tool for UI automation: click, type, press, hover, drag, select",
+          "snapshot: accessibility tree (aria or role refs)",
+          "Canvas control for node canvases"
+        ],
+        "source_url": "https://docs.openclaw.ai"
+      },
+      {
+        "id": "plugins",
+        "name": "Plugin System",
+        "status": "stable",
+        "since": "1.5.0",
+        "description": "Community plugins that extend Gateway capabilities with new channels, tools, and integrations.",
+        "key_details": [
+          "openclaw plugins list — list installed plugins",
+          "openclaw plugins install <name>",
+          "Plugins: agent-tools, voice-call, mattermost, zalouser, others",
+          "Community plugins at clawhub.com"
+        ],
+        "source_url": "https://docs.openclaw.ai/plugins"
+      },
+      {
+        "id": "acp",
+        "name": "ACP (Agent Communication Protocol)",
+        "status": "stable",
+        "since": "1.5.0",
+        "description": "ACP harness integration for spawning and managing external coding agents (Claude Code, Codex, Gemini CLI, OpenCode) from within OpenClaw sessions.",
+        "key_details": [
+          "sessions_spawn with runtime:acp",
+          "Supports thread-bound persistent sessions (thread:true, mode:session)",
+          "agentId required unless acp.defaultAgent configured",
+          "Allowed agents listed via agents_list tool",
+          "ACP sessions run in isolated workspace"
+        ],
+        "source_url": "https://docs.openclaw.ai"
+      },
+      {
+        "id": "control-ui",
+        "name": "Control UI / Dashboard",
+        "status": "stable",
+        "since": "1.3.0",
+        "description": "Browser-based chat and management dashboard. Opens at http://127.0.0.1:18789/ by default.",
+        "key_details": [
+          "openclaw dashboard — open Control UI in browser",
+          "Chat with agents directly in browser (no channel setup needed)",
+          "Session management and config editing",
+          "Model selection and provider configuration"
+        ],
+        "source_url": "https://docs.openclaw.ai/web/control-ui"
+      },
+      {
+        "id": "secrets",
+        "name": "Secrets Management",
+        "status": "stable",
+        "since": "1.2.0",
+        "description": "SecretRef contract for runtime secret injection. Secrets applied via openclaw secrets apply, referenced as ${{secret.name}} in config.",
+        "key_details": [
+          "openclaw secrets apply — apply secrets to runtime",
+          "SecretRef: ${{secret.name}} in config values",
+          "Runtime snapshot behavior: secrets not written to disk",
+          "openclaw secrets list — list known secret keys"
+        ],
+        "source_url": "https://docs.openclaw.ai/gateway/secrets"
+      },
+      {
+        "id": "sandbox",
+        "name": "Sandbox",
+        "status": "stable",
+        "since": "1.5.0",
+        "description": "Command execution sandbox for agent tool calls. Controls which shell commands agents can run without approval.",
+        "key_details": [
+          "openclaw sandbox — manage sandbox policies",
+          "Approval levels: allow-once, allow-always, deny",
+          "/approve <code> to approve pending commands"
+        ],
+        "source_url": "https://docs.openclaw.ai"
+      }
+    ],
+    "commands": [
+      { "name": "openclaw gateway", "syntax": "openclaw gateway [start|stop|restart|status]", "description": "Manage the Gateway service.", "since": "1.0.0", "status": "stable", "source_url": "https://docs.openclaw.ai/cli/gateway" },
+      { "name": "openclaw onboard", "syntax": "openclaw onboard [--install-daemon]", "description": "Guided setup wizard. Configures auth, gateway settings, and channels.", "since": "1.0.0", "status": "stable", "source_url": "https://docs.openclaw.ai/cli/onboard" },
+      { "name": "openclaw dashboard", "syntax": "openclaw dashboard", "description": "Open Control UI in browser at http://127.0.0.1:18789/.", "since": "1.3.0", "status": "stable", "source_url": "https://docs.openclaw.ai/cli/dashboard" },
+      { "name": "openclaw doctor", "syntax": "openclaw doctor", "description": "Diagnose installation and environment issues.", "since": "1.1.0", "status": "stable", "source_url": "https://docs.openclaw.ai/cli/doctor" },
+      { "name": "openclaw status", "syntax": "openclaw status", "description": "Show gateway and agent status.", "since": "1.0.0", "status": "stable", "source_url": "https://docs.openclaw.ai/cli/status" },
+      { "name": "openclaw models", "syntax": "openclaw models", "description": "List available and configured models.", "since": "1.2.0", "status": "stable", "source_url": "https://docs.openclaw.ai/cli/models" },
+      { "name": "openclaw agents", "syntax": "openclaw agents [list|status]", "description": "Manage named agents.", "since": "1.5.0", "status": "stable", "source_url": "https://docs.openclaw.ai/cli/agents" },
+      { "name": "openclaw sessions", "syntax": "openclaw sessions [list|kill]", "description": "List or kill active sessions.", "since": "1.3.0", "status": "stable", "source_url": "https://docs.openclaw.ai/cli/sessions" },
+      { "name": "openclaw plugins", "syntax": "openclaw plugins [list|install|uninstall]", "description": "Manage Gateway plugins.", "since": "1.5.0", "status": "stable", "source_url": "https://docs.openclaw.ai/cli/plugins" },
+      { "name": "openclaw skills", "syntax": "openclaw skills [list|install]", "description": "Manage agent skills.", "since": "1.5.0", "status": "stable", "source_url": "https://docs.openclaw.ai/cli/skills" },
+      { "name": "openclaw memory", "syntax": "openclaw memory [search|get]", "description": "Query agent memory files.", "since": "1.3.0", "status": "stable", "source_url": "https://docs.openclaw.ai/cli/memory" },
+      { "name": "openclaw nodes", "syntax": "openclaw nodes [list|pair|describe]", "description": "Manage paired nodes.", "since": "1.4.0", "status": "stable", "source_url": "https://docs.openclaw.ai/cli/nodes" },
+      { "name": "openclaw cron", "syntax": "openclaw cron [list|add|remove|run]", "description": "Manage scheduled cron jobs.", "since": "1.4.0", "status": "stable", "source_url": "https://docs.openclaw.ai/cli/cron" },
+      { "name": "openclaw logs", "syntax": "openclaw logs [--tail]", "description": "View gateway logs.", "since": "1.0.0", "status": "stable", "source_url": "https://docs.openclaw.ai/cli/logs" },
+      { "name": "openclaw tui", "syntax": "openclaw tui", "description": "Launch terminal UI for gateway monitoring.", "since": "1.5.0", "status": "stable", "source_url": "https://docs.openclaw.ai/cli/tui" },
+      { "name": "openclaw update", "syntax": "openclaw update", "description": "Update OpenClaw to latest version.", "since": "1.0.0", "status": "stable", "source_url": "https://docs.openclaw.ai/cli/update" }
+    ],
+    "flags": {
+      "current": [
+        {
+          "flag": "--port",
+          "syntax": "openclaw gateway --port 18789",
+          "description": "Gateway listen port. Default 18789.",
+          "since": "1.0.0",
+          "source_url": "https://docs.openclaw.ai/gateway"
+        },
+        {
+          "flag": "--verbose",
+          "syntax": "openclaw gateway --verbose",
+          "description": "Debug/trace output mirrored to stdio.",
+          "since": "1.0.0",
+          "source_url": "https://docs.openclaw.ai/gateway"
+        },
+        {
+          "flag": "--force",
+          "syntax": "openclaw gateway --force",
+          "description": "Force-kill listener on selected port then start.",
+          "since": "1.0.0",
+          "source_url": "https://docs.openclaw.ai/gateway"
+        },
+        {
+          "flag": "--install-daemon",
+          "syntax": "openclaw onboard --install-daemon",
+          "description": "Install Gateway as system daemon service during onboarding.",
+          "since": "1.0.0",
+          "source_url": "https://docs.openclaw.ai/cli/onboard"
+        }
+      ],
+      "deprecated": [],
+      "new_since_previous": []
+    },
+    "env_vars": [],
+    "models": {
+      "note": "OpenClaw is model-agnostic. Configure any provider/model in gateway config.",
+      "supported_providers": ["anthropic", "openai", "google", "openrouter", "lmstudio", "ollama", "bedrock", "vertex"],
+      "default_model_config": "Set in gateway config: model field under provider section",
+      "source_url": "https://docs.openclaw.ai/providers"
+    },
+    "breaking_changes": [],
+    "deprecations": [],
+    "install": {
+      "methods": [
+        {
+          "name": "install script (macOS/Linux)",
+          "command": "curl -fsSL https://openclaw.ai/install.sh | bash"
+        },
+        {
+          "name": "install script (Windows PowerShell)",
+          "command": "iwr -useb https://openclaw.ai/install.ps1 | iex"
+        },
+        {
+          "name": "npm",
+          "command": "npm install -g openclaw",
+          "update_command": "npm update -g openclaw"
+        }
+      ],
+      "requirements": ["Node 22+"],
+      "post_install": "openclaw onboard --install-daemon",
+      "source_url": "https://docs.openclaw.ai/install"
+    },
+    "support_matrix": {
+      "platforms": ["macos", "linux", "windows"],
+      "requires_auth": true,
+      "auth_methods": ["provider_api_key"],
+      "min_node_version": "22",
+      "context_file": "AGENTS.md or CLAUDE.md",
+      "agent_config_format": "YAML frontmatter + SOUL.md + MEMORY.md in agent workspace",
+      "source_url": "https://docs.openclaw.ai"
+    },
+    "config": {
+      "file_path": "~/.openclaw/config.json or gateway config path",
+      "key_sections": {
+        "gateway": "Port, host, daemon settings",
+        "agents": "Named agent definitions with model, system prompt, channels",
+        "channels": "Per-channel credentials and routing",
+        "providers": "LLM provider API keys and settings",
+        "secrets": "SecretRef bindings",
+        "plugins": "Installed plugin configs",
+        "acp": "ACP harness allowedAgents, defaultAgent"
+      },
+      "source_url": "https://docs.openclaw.ai/gateway/configuration"
+    }
+  }
+}
