@@ -732,6 +732,86 @@ select:focus {
 }
 
 /* ========================================
+   Glitch text effect
+   ======================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  .glitch {
+    position: relative;
+  }
+  .glitch::before,
+  .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  .glitch::before {
+    color: #00d4ff;
+    clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+    transform: translateX(-2px);
+    animation: glitch-top 4s infinite linear;
+    opacity: 0.6;
+  }
+  .glitch::after {
+    color: #33ff33;
+    clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+    transform: translateX(2px);
+    animation: glitch-bottom 4s infinite linear;
+    opacity: 0.4;
+  }
+}
+
+@keyframes glitch-top {
+  0%, 90%, 100% { transform: translateX(0); opacity: 0; }
+  92% { transform: translateX(-3px); opacity: 0.6; clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%); }
+  94% { transform: translateX(3px); opacity: 0; }
+  96% { transform: translateX(-1px); opacity: 0.4; }
+  98% { transform: translateX(0); opacity: 0; }
+}
+
+@keyframes glitch-bottom {
+  0%, 88%, 100% { transform: translateX(0); opacity: 0; }
+  90% { transform: translateX(3px); opacity: 0.4; clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%); }
+  92% { transform: translateX(-2px); opacity: 0; }
+  95% { transform: translateX(1px); opacity: 0.3; }
+  97% { transform: translateX(0); opacity: 0; }
+}
+
+/* ========================================
+   Tool card scanline sweep on hover
+   ======================================== */
+
+.tool-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.tool-card > .scanline-sweep {
+  position: absolute;
+  left: 0;
+  top: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(51, 255, 51, 0.03) 50%,
+    transparent 100%
+  );
+  transition: top 0.4s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.tool-card:hover > .scanline-sweep {
+  top: 100%;
+}
+
+/* ========================================
    Terminal-specific utilities
    ======================================== */
 

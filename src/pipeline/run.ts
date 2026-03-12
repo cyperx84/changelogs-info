@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { getAllToolSlugs, getSourcesForTool } from "./sources.js";
 import { fetchSource } from "./fetcher.js";
@@ -247,6 +247,52 @@ function parseArgs(argv: string[]): { toolFilter: string | null; forceTier2: boo
   return { toolFilter, forceTier2, jsonOutput };
 }
 
+function writeStatusJson(summary: PipelineSummary): void {
+  const manifestPath = join(REFS_DIR, "manifest.json");
+  const manifest = JSON.parse(readFileSync(manifestPath, "utf-8"));
+
+  const pipelineStatus =
+    summary.errors > 0 && summary.errors === summary.tools_checked
+      ? "error"
+      : summary.errors > 0
+        ? "partial"
+        : "ok";
+
+  const tools: Record<string, unknown> = {};
+  for (const r of summary.results) {
+    const manifestTool = manifest.tools?.[r.tool];
+    const lastCheckedAt = new Date().toISOString();
+    const staleAfter = manifestTool?.stale_after ?? null;
+    const isStale = staleAfter ? new Date(staleAfter) < new Date() : false;
+
+    tools[r.tool] = {
+      version: r.newVersion ?? manifestTool?.version ?? "unknown",
+      verification_status: manifestTool?.verification_status ?? "unverified",
+      last_checked_at: lastCheckedAt,
+      stale: isStale,
+    };
+  }
+
+  const status = {
+    schema: "clwatch.status.v1",
+    generated_at: new Date().toISOString(),
+    pipeline: {
+      last_run_at: summary.ran_at,
+      status: pipelineStatus,
+      tools_checked: summary.tools_checked,
+      tools_updated: summary.updates_found,
+      tools_errored: summary.errors,
+    },
+    tools,
+  };
+
+  const statusDir = join(process.cwd(), "public", "api");
+  mkdirSync(statusDir, { recursive: true });
+  const statusPath = join(statusDir, "status.json");
+  writeFileSync(statusPath, JSON.stringify(status, null, 2) + "\n");
+  console.log(`\n📊 Status written to ${statusPath}`);
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const slugs = args.toolFilter ? [args.toolFilter] : getAllToolSlugs();
@@ -303,6 +349,9 @@ async function main() {
     }
     console.log("═".repeat(105));
   }
+
+  // Write status.json
+  writeStatusJson(summary);
 
   // Exit with code 1 if any tool had errors
   if (summary.errors > 0) {

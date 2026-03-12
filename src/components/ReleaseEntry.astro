@@ -11,14 +11,19 @@ interface Props {
 const { release, toolId } = Astro.props;
 const versionSlug = encodeURIComponent(release.version.replace(/^v/, ""));
 const bodyHtml = release.body ? markdownToHtml(release.body) : "";
+const borderColor = release.prerelease ? "border-l-amber/40" : "border-l-green/40";
+const markerColor = release.prerelease ? "bg-amber" : "bg-green";
+// Consider body "long" if raw markdown exceeds ~600 chars
+const isLong = (release.body?.length || 0) > 600;
+const entryId = `release-${release.version.replace(/[^a-zA-Z0-9]/g, "-")}`;
 ---
 
-<article class="relative border-l-2 border-green/30 pl-6 pb-8 last:pb-0">
+<article class={`relative border-l-2 ${borderColor} pl-6 pb-8 last:pb-0`}>
   <!-- Terminal timeline marker -->
-  <div class="absolute -left-[5px] top-1 h-2 w-2 rounded-sm bg-green"></div>
+  <div class={`absolute -left-[5px] top-1 h-2 w-2 rounded-sm ${markerColor}`}></div>
 
   <div class="mb-3 flex flex-wrap items-center gap-3">
-    <span class="font-mono text-base font-bold text-green">{release.version}</span>
+    <span class="font-mono text-lg font-bold text-green">{release.version}</span>
     {release.prerelease && (
       <span class="rounded border border-amber bg-amber/10 px-2 py-0.5 font-mono text-xs text-amber">
         pre
@@ -55,6 +60,42 @@ const bodyHtml = release.body ? markdownToHtml(release.body) : "";
   )}
 
   {bodyHtml && (
-    <div class="changelog-body text-sm" set:html={bodyHtml} />
+    <div>
+      <div
+        id={entryId}
+        class:list={["changelog-body text-sm", { "max-h-[300px] overflow-hidden": isLong }]}
+        set:html={bodyHtml}
+      />
+      {isLong && (
+        <button
+          class="release-toggle mt-2 font-mono text-xs text-cyan transition-colors hover:text-cyan/80"
+          data-target={entryId}
+          data-collapsed="true"
+        >
+          show more ▾
+        </button>
+      )}
+    </div>
   )}
 </article>
+
+<script>
+  document.querySelectorAll('.release-toggle').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-target');
+      if (!targetId) return;
+      const el = document.getElementById(targetId);
+      if (!el) return;
+      const collapsed = btn.getAttribute('data-collapsed') === 'true';
+      if (collapsed) {
+        el.classList.remove('max-h-[300px]', 'overflow-hidden');
+        btn.textContent = 'show less ▴';
+        btn.setAttribute('data-collapsed', 'false');
+      } else {
+        el.classList.add('max-h-[300px]', 'overflow-hidden');
+        btn.textContent = 'show more ▾';
+        btn.setAttribute('data-collapsed', 'true');
+      }
+    });
+  });
+</script>

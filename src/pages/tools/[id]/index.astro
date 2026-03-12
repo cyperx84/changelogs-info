@@ -53,9 +53,11 @@ const hasMigration = existsSync(join(process.cwd(), `src/content/migrations/${to
 
     <!-- Tool header -->
     <header class="mb-10">
-      <div class="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 class="font-mono text-2xl font-bold text-green sm:text-3xl">{tool.name}</h1>
+      <div class="relative flex flex-wrap items-start justify-between gap-4">
+        {/* Subtle radial glow behind tool name */}
+        <div class="pointer-events-none absolute -left-8 -top-8 h-32 w-48 rounded-full bg-green/[0.04] blur-3xl"></div>
+        <div class="relative">
+          <h1 class="text-glow-green font-mono text-3xl font-bold text-green sm:text-4xl">{tool.name}</h1>
           <p class="mt-2 font-mono text-sm text-text-muted">
             <span class="text-green">~/</span>{tool.repo}
           </p>
@@ -89,45 +91,39 @@ const hasMigration = existsSync(join(process.cwd(), `src/content/migrations/${to
 
       <!-- Stats bar -->
       {releases.length > 0 && (
-        <div class="reveal mt-6 rounded-lg border border-border bg-bg-card">
-          <div class="border-b border-border px-3 py-2 font-mono text-xs text-text-muted sm:px-4">
-            <span class="text-green">●●●</span>
-            <span class="ml-2">stats.json</span>
-          </div>
-          <div class="flex flex-wrap gap-6 p-4">
-            {latestStable && (
-              <div>
-                <p class="font-mono text-xs text-text-muted">latest</p>
-                <p class="font-mono text-sm font-semibold text-green">{latestStable.version}</p>
-              </div>
-            )}
-            <div>
-              <p class="font-mono text-xs text-text-muted">total</p>
-              <p class="font-mono text-sm font-semibold text-cyan">{releases.length}</p>
+        <div class="reveal mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          {latestStable && (
+            <div class="rounded-lg border border-border bg-bg-card px-4 py-3">
+              <p class="font-mono text-[10px] uppercase tracking-wider text-text-muted">latest</p>
+              <p class="mt-1 font-mono text-base font-bold text-green">{latestStable.version}</p>
             </div>
-            <div>
-              <p class="font-mono text-xs text-text-muted">stable</p>
-              <p class="font-mono text-sm font-semibold text-text-primary">{stableReleases.length}</p>
-            </div>
-            {prereleases.length > 0 && (
-              <div>
-                <p class="font-mono text-xs text-text-muted">pre</p>
-                <p class="font-mono text-sm font-semibold text-amber">{prereleases.length}</p>
-              </div>
-            )}
-            {releases.length > 0 && (
-              <div>
-                <p class="font-mono text-xs text-text-muted">first tracked</p>
-                <p class="font-mono text-xs text-text-muted">{formatDate(releases[releases.length - 1].date)}</p>
-              </div>
-            )}
-            {lastUpdated && (
-              <div class="ml-auto">
-                <p class="font-mono text-xs text-text-muted">updated</p>
-                <p class="font-mono text-xs text-text-muted">{relativeTime(lastUpdated)}</p>
-              </div>
-            )}
+          )}
+          <div class="rounded-lg border border-border bg-bg-card px-4 py-3">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-text-muted">total</p>
+            <p class="mt-1 font-mono text-base font-bold text-cyan">{releases.length}</p>
           </div>
+          <div class="rounded-lg border border-border bg-bg-card px-4 py-3">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-text-muted">stable</p>
+            <p class="mt-1 font-mono text-base font-bold text-text-primary">{stableReleases.length}</p>
+          </div>
+          {prereleases.length > 0 && (
+            <div class="rounded-lg border border-border bg-bg-card px-4 py-3">
+              <p class="font-mono text-[10px] uppercase tracking-wider text-text-muted">pre</p>
+              <p class="mt-1 font-mono text-base font-bold text-amber">{prereleases.length}</p>
+            </div>
+          )}
+          {releases.length > 0 && (
+            <div class="rounded-lg border border-border bg-bg-card px-4 py-3">
+              <p class="font-mono text-[10px] uppercase tracking-wider text-text-muted">first tracked</p>
+              <p class="mt-1 font-mono text-xs text-text-secondary">{formatDate(releases[releases.length - 1].date)}</p>
+            </div>
+          )}
+          {lastUpdated && (
+            <div class="rounded-lg border border-border bg-bg-card px-4 py-3">
+              <p class="font-mono text-[10px] uppercase tracking-wider text-text-muted">updated</p>
+              <p class="mt-1 font-mono text-xs text-text-secondary">{relativeTime(lastUpdated)}</p>
+            </div>
+          )}
         </div>
       )}
 
@@ -137,9 +133,15 @@ const hasMigration = existsSync(join(process.cwd(), `src/content/migrations/${to
           <span class="text-text-muted">last checked: <span class="text-text-secondary">{relativeTime(lastUpdated)}</span></span>
           <span class="text-text-muted">│</span>
           {isTier2 ? (
-            <span class="rounded border border-cyan/30 bg-cyan/10 px-2 py-0.5 text-cyan">Tier 2 refresh available</span>
+            <span class="inline-flex items-center gap-1.5 rounded-full border border-cyan/30 bg-cyan/10 px-3 py-0.5 text-cyan">
+              <span class="inline-block h-1.5 w-1.5 rounded-full bg-cyan"></span>
+              Tier 2 refresh
+            </span>
           ) : (
-            <span class="rounded border border-green/30 bg-green/10 px-2 py-0.5 text-green">Tier 1 patch</span>
+            <span class="inline-flex items-center gap-1.5 rounded-full border border-green/30 bg-green/10 px-3 py-0.5 text-green">
+              <span class="inline-block h-1.5 w-1.5 rounded-full bg-green"></span>
+              Tier 1 patch
+            </span>
           )}
         </div>
       )}
@@ -156,12 +158,18 @@ const hasMigration = existsSync(join(process.cwd(), `src/content/migrations/${to
       )}
 
       <!-- clwatch CTA -->
-      <div class="reveal mt-6 rounded-lg border border-border bg-bg-card px-4 py-3">
-        <p class="font-mono text-xs text-text-muted">Run clwatch to check if your agent is current:</p>
-        <pre class="mt-2 font-mono text-xs text-text-secondary"><span class="text-green">$</span> clwatch diff {tool.id}</pre>
-        <p class="mt-2 font-mono text-[10px] text-text-muted">
-          <span class="text-green">$</span> clwatch refresh {tool.id} <span class="text-text-muted">— for a full knowledge refresh</span>
-        </p>
+      <div class="card-hover reveal mt-6 rounded-lg border border-green/20 bg-bg-card shadow-[0_0_8px_rgba(51,255,51,0.04)]">
+        <div class="border-b border-border px-4 py-2 font-mono text-xs text-text-muted">
+          <span class="text-green">●●●</span> <span class="ml-2">clwatch</span>
+        </div>
+        <div class="p-4">
+          <p class="font-mono text-xs text-text-muted">Check if your agent is current:</p>
+          <pre class="mt-2 rounded bg-bg-tertiary px-3 py-2 font-mono text-xs text-text-secondary"><span class="text-green">$</span> clwatch diff {tool.id}</pre>
+          <pre class="mt-1 rounded bg-bg-tertiary px-3 py-2 font-mono text-xs text-text-secondary"><span class="text-green">$</span> clwatch refresh {tool.id}</pre>
+          <p class="mt-2 font-mono text-[10px] text-text-muted">
+            <a href="/clwatch" class="text-cyan transition-colors hover:text-cyan/80">learn more about clwatch &rarr;</a>
+          </p>
+        </div>
       </div>
     </header>
 

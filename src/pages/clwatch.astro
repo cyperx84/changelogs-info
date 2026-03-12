@@ -1,5 +1,13 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+
+const trackedTools = [
+  { name: "Claude Code", slug: "claude-code" },
+  { name: "Codex CLI", slug: "codex-cli" },
+  { name: "Gemini CLI", slug: "gemini-cli" },
+  { name: "OpenCode", slug: "opencode" },
+  { name: "OpenClaw", slug: "openclaw" },
+];
 ---
 
 <BaseLayout title="clwatch — the changelog watcher for AI coding agents | changelogs.info" description="clwatch monitors changelogs for AI coding tools and patches your agent configs and reference files automatically.">
@@ -11,7 +19,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </a>
 
     <header class="mb-12">
-      <h1 class="font-mono text-2xl font-bold text-green sm:text-3xl">clwatch</h1>
+      <h1 class="text-glow-green font-mono text-3xl font-bold text-green sm:text-4xl">clwatch</h1>
       <p class="mt-3 font-sans text-sm leading-relaxed text-text-secondary sm:text-base">
         The changelog watcher for AI coding agents.
       </p>
@@ -37,25 +45,31 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <!-- Two-tier explainer -->
     <section class="mb-12">
       <div class="grid gap-4 sm:grid-cols-2">
-        <div class="rounded-lg border border-green/30 bg-bg-card p-5 sm:p-6">
-          <div class="mb-3 flex items-center gap-3">
-            <span class="inline-block h-2 w-2 rounded-full bg-green"></span>
-            <span class="font-mono text-xs text-green opacity-60">01</span>
+        <div class="relative overflow-hidden rounded-lg border border-green/30 border-t-2 border-t-green bg-bg-card p-5 sm:p-6">
+          <span class="pointer-events-none absolute -right-2 -top-4 select-none font-mono text-6xl font-bold text-green/[0.07] sm:text-7xl">01</span>
+          <div class="relative">
+            <div class="mb-3 flex items-center gap-3">
+              <span class="inline-block h-2 w-2 rounded-full bg-green"></span>
+              <span class="font-mono text-xs text-green opacity-60">01</span>
+            </div>
+            <h3 class="font-mono text-base font-semibold text-green sm:text-lg">Tier 1: Config Patch</h3>
+            <p class="mt-2 font-sans text-xs leading-relaxed text-text-secondary sm:text-sm">
+              A flag changed. A permission mode renamed. clwatch detects the delta and patches your skill files and aliases automatically.
+            </p>
           </div>
-          <h3 class="font-mono text-base font-semibold text-green sm:text-lg">Tier 1: Config Patch</h3>
-          <p class="mt-2 font-sans text-xs leading-relaxed text-text-secondary sm:text-sm">
-            A flag changed. A permission mode renamed. clwatch detects the delta and patches your skill files and aliases automatically.
-          </p>
         </div>
-        <div class="rounded-lg border border-cyan/30 bg-bg-card p-5 sm:p-6">
-          <div class="mb-3 flex items-center gap-3">
-            <span class="inline-block h-2 w-2 rounded-full bg-cyan"></span>
-            <span class="font-mono text-xs text-cyan opacity-60">02</span>
+        <div class="relative overflow-hidden rounded-lg border border-cyan/30 border-t-2 border-t-cyan bg-bg-card p-5 sm:p-6">
+          <span class="pointer-events-none absolute -right-2 -top-4 select-none font-mono text-6xl font-bold text-cyan/[0.07] sm:text-7xl">02</span>
+          <div class="relative">
+            <div class="mb-3 flex items-center gap-3">
+              <span class="inline-block h-2 w-2 rounded-full bg-cyan"></span>
+              <span class="font-mono text-xs text-cyan opacity-60">02</span>
+            </div>
+            <h3 class="font-mono text-base font-semibold text-cyan sm:text-lg">Tier 2: Knowledge Refresh</h3>
+            <p class="mt-2 font-sans text-xs leading-relaxed text-text-secondary sm:text-sm">
+              A new feature shipped. New commands, new capabilities. clwatch pulls structured knowledge and your agent rewrites its reference files to match.
+            </p>
           </div>
-          <h3 class="font-mono text-base font-semibold text-cyan sm:text-lg">Tier 2: Knowledge Refresh</h3>
-          <p class="mt-2 font-sans text-xs leading-relaxed text-text-secondary sm:text-sm">
-            A new feature shipped. New commands, new capabilities. clwatch pulls structured knowledge and your agent rewrites its reference files to match.
-          </p>
         </div>
       </div>
     </section>
@@ -152,41 +166,50 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </div>
         <div class="p-4 sm:p-6">
           <div class="space-y-0">
-            <div class="flex flex-col gap-1 border-b border-border/40 py-2.5 sm:flex-row sm:items-center sm:gap-4">
+            <div class="cmd-row group flex flex-col gap-1 rounded border-b border-border/40 px-3 py-2.5 transition-all hover:bg-bg-tertiary/30 sm:flex-row sm:items-center sm:gap-4">
               <code class="shrink-0 font-mono text-xs text-green sm:w-64">clwatch diff</code>
-              <span class="font-mono text-xs text-text-muted">Show what changed since last check</span>
+              <span class="flex-1 font-mono text-xs text-text-muted">Show what changed since last check</span>
+              <span class="hidden text-green opacity-0 transition-opacity group-hover:opacity-100 sm:inline">&rarr;</span>
             </div>
-            <div class="flex flex-col gap-1 border-b border-border/40 py-2.5 sm:flex-row sm:items-center sm:gap-4">
+            <div class="cmd-row group flex flex-col gap-1 rounded bg-bg-tertiary/[0.15] border-b border-border/40 px-3 py-2.5 transition-all hover:bg-bg-tertiary/30 sm:flex-row sm:items-center sm:gap-4">
               <code class="shrink-0 font-mono text-xs text-green sm:w-64">clwatch diff [tool]</code>
-              <span class="font-mono text-xs text-text-muted">Diff a specific tool</span>
+              <span class="flex-1 font-mono text-xs text-text-muted">Diff a specific tool</span>
+              <span class="hidden text-green opacity-0 transition-opacity group-hover:opacity-100 sm:inline">&rarr;</span>
             </div>
-            <div class="flex flex-col gap-1 border-b border-border/40 py-2.5 sm:flex-row sm:items-center sm:gap-4">
+            <div class="cmd-row group flex flex-col gap-1 rounded border-b border-border/40 px-3 py-2.5 transition-all hover:bg-bg-tertiary/30 sm:flex-row sm:items-center sm:gap-4">
               <code class="shrink-0 font-mono text-xs text-green sm:w-64">clwatch diff --since 7d</code>
-              <span class="font-mono text-xs text-text-muted">Diff changes in last 7 days</span>
+              <span class="flex-1 font-mono text-xs text-text-muted">Diff changes in last 7 days</span>
+              <span class="hidden text-green opacity-0 transition-opacity group-hover:opacity-100 sm:inline">&rarr;</span>
             </div>
-            <div class="flex flex-col gap-1 border-b border-border/40 py-2.5 sm:flex-row sm:items-center sm:gap-4">
+            <div class="cmd-row group flex flex-col gap-1 rounded bg-bg-tertiary/[0.15] border-b border-border/40 px-3 py-2.5 transition-all hover:bg-bg-tertiary/30 sm:flex-row sm:items-center sm:gap-4">
               <code class="shrink-0 font-mono text-xs text-green sm:w-64">clwatch diff --json</code>
-              <span class="font-mono text-xs text-text-muted">Machine-readable output</span>
+              <span class="flex-1 font-mono text-xs text-text-muted">Machine-readable output</span>
+              <span class="hidden text-green opacity-0 transition-opacity group-hover:opacity-100 sm:inline">&rarr;</span>
             </div>
-            <div class="flex flex-col gap-1 border-b border-border/40 py-2.5 sm:flex-row sm:items-center sm:gap-4">
+            <div class="cmd-row group flex flex-col gap-1 rounded border-b border-border/40 px-3 py-2.5 transition-all hover:bg-bg-tertiary/30 sm:flex-row sm:items-center sm:gap-4">
               <code class="shrink-0 font-mono text-xs text-green sm:w-64">clwatch refresh [tool]</code>
-              <span class="font-mono text-xs text-text-muted">Refresh agent reference files</span>
+              <span class="flex-1 font-mono text-xs text-text-muted">Refresh agent reference files</span>
+              <span class="hidden text-green opacity-0 transition-opacity group-hover:opacity-100 sm:inline">&rarr;</span>
             </div>
-            <div class="flex flex-col gap-1 border-b border-border/40 py-2.5 sm:flex-row sm:items-center sm:gap-4">
+            <div class="cmd-row group flex flex-col gap-1 rounded bg-bg-tertiary/[0.15] border-b border-border/40 px-3 py-2.5 transition-all hover:bg-bg-tertiary/30 sm:flex-row sm:items-center sm:gap-4">
               <code class="shrink-0 font-mono text-xs text-green sm:w-64">clwatch refresh --all</code>
-              <span class="font-mono text-xs text-text-muted">Refresh all tracked tools</span>
+              <span class="flex-1 font-mono text-xs text-text-muted">Refresh all tracked tools</span>
+              <span class="hidden text-green opacity-0 transition-opacity group-hover:opacity-100 sm:inline">&rarr;</span>
             </div>
-            <div class="flex flex-col gap-1 border-b border-border/40 py-2.5 sm:flex-row sm:items-center sm:gap-4">
+            <div class="cmd-row group flex flex-col gap-1 rounded border-b border-border/40 px-3 py-2.5 transition-all hover:bg-bg-tertiary/30 sm:flex-row sm:items-center sm:gap-4">
               <code class="shrink-0 font-mono text-xs text-green sm:w-64">clwatch refresh --diff-only</code>
-              <span class="font-mono text-xs text-text-muted">Preview changes without writing</span>
+              <span class="flex-1 font-mono text-xs text-text-muted">Preview changes without writing</span>
+              <span class="hidden text-green opacity-0 transition-opacity group-hover:opacity-100 sm:inline">&rarr;</span>
             </div>
-            <div class="flex flex-col gap-1 border-b border-border/40 py-2.5 sm:flex-row sm:items-center sm:gap-4">
+            <div class="cmd-row group flex flex-col gap-1 rounded bg-bg-tertiary/[0.15] border-b border-border/40 px-3 py-2.5 transition-all hover:bg-bg-tertiary/30 sm:flex-row sm:items-center sm:gap-4">
               <code class="shrink-0 font-mono text-xs text-green sm:w-64">clwatch init</code>
-              <span class="font-mono text-xs text-text-muted">Install skill into workspace</span>
+              <span class="flex-1 font-mono text-xs text-text-muted">Install skill into workspace</span>
+              <span class="hidden text-green opacity-0 transition-opacity group-hover:opacity-100 sm:inline">&rarr;</span>
             </div>
-            <div class="flex flex-col gap-1 py-2.5 sm:flex-row sm:items-center sm:gap-4">
+            <div class="cmd-row group flex flex-col gap-1 rounded px-3 py-2.5 transition-all hover:bg-bg-tertiary/30 sm:flex-row sm:items-center sm:gap-4">
               <code class="shrink-0 font-mono text-xs text-green sm:w-64">clwatch list</code>
-              <span class="font-mono text-xs text-text-muted">Show tracked tools + current versions</span>
+              <span class="flex-1 font-mono text-xs text-text-muted">Show tracked tools + current versions</span>
+              <span class="hidden text-green opacity-0 transition-opacity group-hover:opacity-100 sm:inline">&rarr;</span>
             </div>
           </div>
         </div>
@@ -197,11 +220,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <section class="mb-12">
       <h2 class="mb-4 font-mono text-lg font-semibold text-green"><span class="text-green">/</span>tracked_tools</h2>
       <div class="flex flex-wrap gap-2">
-        <span class="rounded border border-border bg-bg-card px-3 py-1 font-mono text-xs text-text-secondary">Claude Code</span>
-        <span class="rounded border border-border bg-bg-card px-3 py-1 font-mono text-xs text-text-secondary">Codex CLI</span>
-        <span class="rounded border border-border bg-bg-card px-3 py-1 font-mono text-xs text-text-secondary">Gemini CLI</span>
-        <span class="rounded border border-border bg-bg-card px-3 py-1 font-mono text-xs text-text-secondary">OpenCode</span>
-        <span class="rounded border border-border bg-bg-card px-3 py-1 font-mono text-xs text-text-secondary">OpenClaw</span>
+        {trackedTools.map((t) => (
+          <a href={`/tools/${t.slug}`} class="rounded border border-border bg-bg-card px-3 py-1 font-mono text-xs text-text-secondary transition-all hover:border-green hover:text-green">
+            {t.name}
+          </a>
+        ))}
       </div>
     </section>
 
@@ -220,8 +243,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         if (!text) return;
         navigator.clipboard.writeText(text).then(() => {
           const original = btn.textContent;
-          btn.textContent = '✓';
-          setTimeout(() => { btn.textContent = original; }, 1500);
+          btn.textContent = '\u2713';
+          btn.classList.add('text-green');
+          setTimeout(() => {
+            btn.textContent = original;
+            btn.classList.remove('text-green');
+          }, 1500);
         });
       });
     });
