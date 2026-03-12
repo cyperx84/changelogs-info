@@ -257,32 +257,21 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         }
       }, { passive: true });
 
-      // Scroll reveal — runs on every page load including view transitions
+      // Scroll reveal — adds .visible class for scroll-triggered animation
+      // Content is ALWAYS visible by default (opacity:1 in CSS). This just animates on scroll.
       function initReveal() {
-        const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-scale');
-        if (!revealEls.length) return;
-
-        if ('IntersectionObserver' in window) {
-          const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-              if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
-              }
-            });
-          }, { threshold: 0.05, rootMargin: '0px 0px 0px 0px' });
-          revealEls.forEach(el => observer.observe(el));
-          // Failsafe: if nothing has become visible after 600ms, show everything
-          setTimeout(() => {
-            document.querySelectorAll('.reveal:not(.visible), .reveal-left:not(.visible), .reveal-scale:not(.visible)')
-              .forEach(el => el.classList.add('visible'));
-          }, 600);
-        } else {
-          revealEls.forEach(el => el.classList.add('visible'));
-        }
+        if (!('IntersectionObserver' in window)) return;
+        const revealEls = document.querySelectorAll('.reveal:not(.visible), .reveal-left:not(.visible), .reveal-scale:not(.visible)');
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.05 });
+        revealEls.forEach(el => observer.observe(el));
       }
-
-      // Run on initial load and on Astro view transitions
       initReveal();
       document.addEventListener('astro:page-load', initReveal);
     </script>

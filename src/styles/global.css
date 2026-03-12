@@ -534,28 +534,33 @@ select:focus {
    Scroll-driven reveal animations
    ======================================== */
 
-/* Reveal animations — pure CSS, no JS dependency */
+/* Scroll reveal animations — always visible by default for robustness */
+.reveal, .reveal-left, .reveal-scale {
+  opacity: 1;
+}
+
+/* When JS adds .visible, trigger the scroll animation */
+.reveal.visible {
+  animation: revealUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.reveal-left.visible {
+  animation: revealLeft 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.reveal-scale.visible {
+  animation: revealScale 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 @keyframes revealUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes revealLeft {
-  from { opacity: 0; transform: translateX(-20px); }
+  from { opacity: 0; transform: translateX(-16px); }
   to   { opacity: 1; transform: translateX(0); }
 }
 @keyframes revealScale {
-  from { opacity: 0; transform: scale(0.96); }
+  from { opacity: 0; transform: scale(0.97); }
   to   { opacity: 1; transform: scale(1); }
-}
-
-.reveal {
-  animation: revealUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-.reveal-left {
-  animation: revealLeft 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-.reveal-scale {
-  animation: revealScale 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 /* Stagger delays for children */
@@ -567,15 +572,9 @@ select:focus {
 .reveal-stagger > .reveal:nth-child(6) { animation-delay: 200ms; }
 .reveal-stagger > .reveal:nth-child(n+7) { animation-delay: 240ms; }
 
-/* Keep .visible class working for any legacy JS usage */
-.reveal.visible, .reveal-left.visible, .reveal-scale.visible {
-  opacity: 1;
-  transform: none;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .reveal, .reveal-left, .reveal-scale {
-    animation: none;
+    animation: none !important;
     opacity: 1;
     transform: none;
   }
