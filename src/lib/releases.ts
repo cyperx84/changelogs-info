@@ -36,6 +36,12 @@ export function isFeatured(_toolId: string): boolean {
 
 export function getTools(): Tool[] {
   const tools = toolsData as Tool[];
+  return tools.sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/** Returns only the tools tracked by clwatch (the 5 core tools). */
+export function getClwatchTools(): Tool[] {
+  const tools = toolsData as Tool[];
   return tools
     .filter((t) => CLWATCH_TOOLS.includes(t.id))
     .sort((a, b) => a.name.localeCompare(b.name));
