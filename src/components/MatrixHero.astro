@@ -1,762 +1,141 @@
 ---
-// Deep Space Terminal — Three.js r128 hero with 3-layer depth effect
-// Now with real changelog text fragments flying through the hero
-
-import claudeCode from '../content/releases/claude-code.json';
-import codexCli from '../content/releases/codex-cli.json';
-import geminiCli from '../content/releases/gemini-cli.json';
-import openclaw from '../content/releases/openclaw.json';
-import opencode from '../content/releases/opencode.json';
-
-interface Release {
-  version: string;
-  name: string;
-  body: string;
-  date: string;
-}
-
-interface ToolReleases {
-  tool: { id: string; name: string };
-  releases: Release[];
-  lastUpdated: string;
-}
-
-const tools: ToolReleases[] = [claudeCode, codexCli, geminiCli, openclaw, opencode] as any;
-
-const allFragments: string[] = [];
-const seen = new Set<string>();
-
-function addUnique(s: string) {
-  const trimmed = s.trim();
-  if (trimmed && !seen.has(trimmed)) {
-    seen.add(trimmed);
-    allFragments.push(trimmed);
-  }
-}
-
-for (const tool of tools) {
-  const releases = tool.releases.slice(0, 8);
-  for (const rel of releases) {
-    // Version string
-    addUnique(rel.version);
-    // Release name if different
-    if (rel.name && rel.name !== rel.version) {
-      addUnique(rel.name.slice(0, 32));
-    }
-    // Extract bullet lines from body
-    const lines = (rel.body || '').split('\n');
-    let bulletCount = 0;
-    for (const line of lines) {
-      if (bulletCount >= 4) break;
-      const trimmed = line.trim();
-      if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
-        let bullet = trimmed.slice(2).replace(/`/g, '').replace(/\*\*/g, '').trim();
-        if (bullet.length >= 10 && bullet.length <= 40) {
-          addUnique(bullet);
-          bulletCount++;
-        }
-      }
-    }
-  }
-}
-
-// Static strings
-const statics = [
-  "clwatch diff", "clwatch refresh", "brew install clwatch",
-  "npx clwatch diff", "Tier 1: patch", "Tier 2: refresh",
-  "changelogs.info", "diff --json", "clwatch init",
-  "agent knowledge", "structured data"
-];
-for (const s of statics) addUnique(s);
-
-// Shuffle and slice
-const shuffled = allFragments.sort(() => Math.random() - 0.5).slice(0, 80);
+// Three.js matrix particle hero - lazy loaded, homepage only
 ---
 
-<canvas id="hero-canvas" aria-hidden="true" data-fragments={JSON.stringify(shuffled)}></canvas>
+<canvas id="hero-canvas" aria-hidden="true"></canvas>
 
 <script>
   const canvas = document.getElementById('hero-canvas') as HTMLCanvasElement;
   if (canvas) {
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const isMobile = window.innerWidth < 768;
+    const isMobile = window.innerWidth < 769;
 
     if (!prefersReduced && !isMobile) {
       const script = document.createElement('script');
       script.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
-      script.onload = () => initDeepSpaceTerminal();
+      script.onload = () => initMatrix();
       document.head.appendChild(script);
     }
   }
 
-  function initDeepSpaceTerminal() {
+  function initMatrix() {
     const THREE = (window as any).THREE;
     if (!THREE || !canvas) return;
 
-    // ── Read real changelog fragments ──
-    const raw = canvas.dataset.fragments;
-    const fragments: string[] = raw ? JSON.parse(raw) : ["clwatch diff", "v2.1.72", "> keep current"];
-
     const parent = canvas.parentElement!;
-    let width = parent.offsetWidth;
-    let height = parent.offsetHeight;
+    const width = parent.offsetWidth;
+    const height = parent.offsetHeight;
 
-    // ── Scene setup ──
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 500);
-    camera.position.z = 25;
+    const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 100);
+    camera.position.z = 30;
 
     const renderer = new THREE.WebGLRenderer({
       canvas,
       alpha: true,
       antialias: false,
-      powerPreference: 'high-performance',
+      powerPreference: 'low-power',
     });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 
-    // ── Sprite texture cache ──
-    const CHARS = ['>', '$', '_', '|', '#', '{', '}', '[', ']', '\\', '/', '~', '@', '%', '0', '1'];
+    const COLS = 40;
+    const ROWS = 60;
+    const COUNT = COLS * ROWS;
+    const positions = new Float32Array(COUNT * 3);
+    const opacities = new Float32Array(COUNT);
+    const speeds = new Float32Array(COUNT);
 
-    function makeCharCanvas(char: string, color: string, size: number): any {
-      const c = document.createElement('canvas');
-      c.width = size;
-      c.height = size;
-      const ctx = c.getContext('2d')!;
-      ctx.fillStyle = color;
-      ctx.font = `bold ${Math.floor(size * 0.65)}px JetBrains Mono, monospace`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(char, size / 2, size / 2);
-      const tex = new THREE.CanvasTexture(c);
-      tex.minFilter = THREE.LinearFilter;
-      tex.magFilter = THREE.LinearFilter;
-      return tex;
+    for (let i = 0; i < COUNT; i++) {
+      const col = i % COLS;
+      const row = Math.floor(i / COLS);
+      positions[i * 3] = (col - COLS / 2) * 1.2;
+      positions[i * 3 + 1] = (ROWS / 2 - row) * 0.8;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+      opacities[i] = Math.random();
+      speeds[i] = 0.02 + Math.random() * 0.06;
     }
 
-    const greenTextures: any[] = [];
-    const cyanTextures: any[] = [];
-    CHARS.forEach(ch => {
-      greenTextures.push(makeCharCanvas(ch, '#33ff33', 32));
-      cyanTextures.push(makeCharCanvas(ch, '#00d4ff', 32));
-    });
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('alpha', new THREE.BufferAttribute(opacities, 1));
 
-    // Brighter head textures for column heads
-    const headTextures: any[] = [];
-    CHARS.forEach(ch => {
-      headTextures.push(makeCharCanvas(ch, '#00ff41', 64));
-    });
-
-    // Cyan head textures for version columns
-    const cyanHeadTextures: any[] = [];
-    CHARS.forEach(ch => {
-      cyanHeadTextures.push(makeCharCanvas(ch, '#00d4ff', 64));
-    });
-
-    // Glow textures for bloom halos behind column heads
-    const glowTextures: any[] = [];
-    CHARS.forEach(ch => {
-      const c = document.createElement('canvas');
-      c.width = 64;
-      c.height = 64;
-      const ctx = c.getContext('2d')!;
-      // Draw a soft glow circle behind the char
-      const grad = ctx.createRadialGradient(32, 32, 4, 32, 32, 30);
-      grad.addColorStop(0, 'rgba(0,255,65,0.25)');
-      grad.addColorStop(1, 'rgba(0,255,65,0)');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 64, 64);
-      // Draw the character on top
-      ctx.fillStyle = '#00ff41';
-      ctx.font = 'bold 32px JetBrains Mono, monospace';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(ch, 32, 32);
-      const tex = new THREE.CanvasTexture(c);
-      tex.minFilter = THREE.LinearFilter;
-      tex.magFilter = THREE.LinearFilter;
-      glowTextures.push(tex);
-    });
-
-    // Cyan glow textures for version column heads
-    const cyanGlowTextures: any[] = [];
-    CHARS.forEach(ch => {
-      const c = document.createElement('canvas');
-      c.width = 64;
-      c.height = 64;
-      const ctx = c.getContext('2d')!;
-      const grad = ctx.createRadialGradient(32, 32, 4, 32, 32, 30);
-      grad.addColorStop(0, 'rgba(0,212,255,0.25)');
-      grad.addColorStop(1, 'rgba(0,212,255,0)');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 64, 64);
-      ctx.fillStyle = '#00d4ff';
-      ctx.font = 'bold 32px JetBrains Mono, monospace';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(ch, 32, 32);
-      const tex = new THREE.CanvasTexture(c);
-      tex.minFilter = THREE.LinearFilter;
-      tex.magFilter = THREE.LinearFilter;
-      cyanGlowTextures.push(tex);
-    });
-
-    // ── Text sprite builder for Layer 3 fragments ──
-    function buildTextSprite(text: string, color: string): { texture: any; aspect: number } {
-      const c = document.createElement('canvas');
-      const ctx = c.getContext('2d')!;
-      ctx.font = '11px JetBrains Mono, monospace';
-      const measured = ctx.measureText(text);
-      const w = Math.max(64, Math.ceil(measured.width) + 10);
-      const h = 18;
-      c.width = w;
-      c.height = h;
-      // Re-set font after resize
-      ctx.font = '11px JetBrains Mono, monospace';
-      ctx.textBaseline = 'middle';
-      ctx.fillStyle = color;
-      ctx.fillText(text, 5, 9);
-      const tex = new THREE.CanvasTexture(c);
-      tex.minFilter = THREE.LinearFilter;
-      tex.magFilter = THREE.LinearFilter;
-      return { texture: tex, aspect: w / h };
-    }
-
-    function colorForText(text: string): string {
-      if (/^v\d/.test(text) || /^\d+\.\d+/.test(text)) return '#ffb800';
-      if (text.includes('clwatch') || text.includes('diff') || text.includes('refresh')) return '#00d4ff';
-      return '#33ff33';
-    }
-
-    // ── Version strings for Layer 2 version columns ──
-    const versionFragments = fragments.filter(f => /^v?\d+\.\d+/.test(f));
-    // Ensure we have at least some version strings to cycle through
-    const versionPool = versionFragments.length > 0 ? versionFragments : ['v2.1.72', 'v1.0.0', 'v0.9.1'];
-
-    // ═══════════════════════════════════════════
-    // LAYER 1: DEEP FIELD — warp-speed tunnel
-    // ═══════════════════════════════════════════
-    const DEEP_COUNT = 600;
-    const deepPositions = new Float32Array(DEEP_COUNT * 3);
-    const deepSpeeds = new Float32Array(DEEP_COUNT);
-    const deepChars = new Float32Array(DEEP_COUNT);
-
-    function initDeepParticle(i: number, fullRandom: boolean) {
-      // Spread around center in a ring pattern, avoid center radius 6
-      let x: number, y: number;
-      do {
-        x = (Math.random() - 0.5) * 40;
-        y = (Math.random() - 0.5) * 30;
-      } while (Math.sqrt(x * x + y * y) < 6);
-      deepPositions[i * 3] = x;
-      deepPositions[i * 3 + 1] = y;
-      deepPositions[i * 3 + 2] = fullRandom ? -200 + Math.random() * 220 : -200 + Math.random() * 20;
-      deepSpeeds[i] = 0.3 + Math.random() * 0.9;
-      deepChars[i] = Math.floor(Math.random() * 16);
-    }
-
-    for (let i = 0; i < DEEP_COUNT; i++) {
-      initDeepParticle(i, true);
-    }
-
-    const deepGeometry = new THREE.BufferGeometry();
-    deepGeometry.setAttribute('position', new THREE.BufferAttribute(deepPositions, 3));
-    deepGeometry.setAttribute('charIdx', new THREE.BufferAttribute(deepChars, 1));
-
-    const deepMaterial = new THREE.ShaderMaterial({
+    const material = new THREE.ShaderMaterial({
       transparent: true,
       depthWrite: false,
-      depthTest: false,
       uniforms: {
+        uTime: { value: 0 },
         uColor: { value: new THREE.Color(0x33ff33) },
       },
       vertexShader: `
-        attribute float charIdx;
+        attribute float alpha;
         varying float vAlpha;
         void main() {
-          vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
-          float z = position.z;
-          // Normalize z: -200 = far (0), 20 = near (1)
-          float zNorm = clamp((z + 200.0) / 220.0, 0.0, 1.0);
-          vAlpha = mix(0.03, 0.2, zNorm);
-          // Point size: tiny at back, visible at front
-          gl_PointSize = mix(1.0, 4.5, zNorm);
-          gl_Position = projectionMatrix * mvPos;
+          vAlpha = alpha;
+          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+          gl_PointSize = 2.0 * (20.0 / -mvPosition.z);
+          gl_Position = projectionMatrix * mvPosition;
         }
       `,
       fragmentShader: `
         uniform vec3 uColor;
         varying float vAlpha;
         void main() {
-          // Circular point
-          vec2 c = gl_PointCoord - 0.5;
-          float d = dot(c, c);
-          if (d > 0.25) discard;
-          float edge = smoothstep(0.25, 0.15, d);
-          gl_FragColor = vec4(uColor, vAlpha * edge);
+          float dist = length(gl_PointCoord - vec2(0.5));
+          if (dist > 0.5) discard;
+          float strength = 1.0 - (dist * 2.0);
+          gl_FragColor = vec4(uColor, vAlpha * strength * 0.4);
         }
       `,
     });
 
-    const deepPoints = new THREE.Points(deepGeometry, deepMaterial);
-    scene.add(deepPoints);
+    const points = new THREE.Points(geometry, material);
+    scene.add(points);
 
-    // ═══════════════════════════════════════════
-    // LAYER 2: MATRIX COLUMNS — sprite-based
-    // ═══════════════════════════════════════════
-    const COL_COUNT = 24;
-    const COL_LENGTH = 15;
-
-    // Version columns: indices 5, 11, 17, 23
-    const VERSION_COLS = new Set([5, 11, 17, 23]);
-
-    // Column state
-    interface Column {
-      x: number;
-      speed: number;
-      headY: number;
-      charIndices: number[];
-      mutateTimer: number[];
-      isVersion: boolean;
-      versionStr: string;
-      versionCharIdx: number;
-    }
-
-    const columns: Column[] = [];
-    const columnSprites: any[] = [];   // main char sprites
-    const glowSpritesArr: any[] = [];      // glow halo for head
-
-    const colSpacing = 40 / COL_COUNT;
-    const ySpacing = 0.9;
-
-    for (let c = 0; c < COL_COUNT; c++) {
-      const x = -20 + c * colSpacing + (Math.random() - 0.5) * 0.5;
-      const speed = 0.08 + Math.random() * 0.10;
-      const charIndices: number[] = [];
-      const mutateTimer: number[] = [];
-      const isVersion = VERSION_COLS.has(c);
-
-      for (let r = 0; r < COL_LENGTH; r++) {
-        charIndices.push(Math.floor(Math.random() * 16));
-        mutateTimer.push(Math.floor(20 + Math.random() * 20));
-      }
-
-      columns.push({
-        x,
-        speed,
-        headY: 12 + Math.random() * 8,
-        charIndices,
-        mutateTimer,
-        isVersion,
-        versionStr: versionPool[Math.floor(Math.random() * versionPool.length)],
-        versionCharIdx: 0,
-      });
-    }
-
-    // Create sprites for each column position
-    for (let c = 0; c < COL_COUNT; c++) {
-      const col = columns[c];
-      const colSprites: any[] = [];
-      const colGlows: any[] = [];
-
-      for (let r = 0; r < COL_LENGTH; r++) {
-        const charIdx = col.charIndices[r];
-        const isHead = r === 0;
-
-        // Main sprite — version columns use cyan textures
-        let texMap: any;
-        if (isHead) {
-          texMap = col.isVersion ? cyanHeadTextures[charIdx] : headTextures[charIdx];
-        } else {
-          texMap = col.isVersion ? cyanTextures[charIdx] : greenTextures[charIdx];
-        }
-
-        const mat = new THREE.SpriteMaterial({
-          map: texMap,
-          transparent: true,
-          opacity: isHead ? 0.35 : Math.max(0.02, 0.35 - r * 0.042),
-          depthWrite: false,
-          depthTest: false,
-        });
-        const sprite = new THREE.Sprite(mat);
-        sprite.scale.set(0.4, 0.4, 1);
-        sprite.position.set(col.x, col.headY - r * ySpacing, 0);
-        scene.add(sprite);
-        colSprites.push(sprite);
-
-        // Glow halo for head
-        if (isHead) {
-          const glowMat = new THREE.SpriteMaterial({
-            map: col.isVersion ? cyanGlowTextures[charIdx] : glowTextures[charIdx],
-            transparent: true,
-            opacity: 0.06,
-            depthWrite: false,
-            depthTest: false,
-          });
-          const glow = new THREE.Sprite(glowMat);
-          glow.scale.set(0.7, 0.7, 1);
-          glow.position.set(col.x, col.headY, -0.1);
-          scene.add(glow);
-          colGlows.push(glow);
-        }
-      }
-
-      columnSprites.push(colSprites);
-      glowSpritesArr.push(colGlows);
-    }
-
-    // ═══════════════════════════════════════════
-    // LAYER 3: FOREGROUND DEBRIS — real text fragments
-    // ═══════════════════════════════════════════
-    const DEBRIS_COUNT = 45;
-
-    interface DebrisObj {
-      sprite: any;
-      baseX: number;
-      baseY: number;
-      baseZ: number;
-      freqX: number;
-      freqY: number;
-      phaseX: number;
-      phaseY: number;
-      phaseZ: number;
-      vx: number;
-      opacityPhase: number;
-      opacityFreq: number;
-      aspect: number;
-      fragment: string;
-      fullText: string;
-      displayedChars: number;
-      typingSpeed: number;
-      typingFrame: number;
-      colorStr: string;
-    }
-
-    const debrisData: DebrisObj[] = [];
-    const debrisTextures: any[] = []; // track for disposal
-
-    function pickFragment(): string {
-      return fragments[Math.floor(Math.random() * fragments.length)];
-    }
-
-    function rebuildDebrisTexture(d: DebrisObj, newFragment: string) {
-      // Dispose old texture
-      if (d.sprite.material.map) d.sprite.material.map.dispose();
-      d.fragment = newFragment;
-      d.fullText = newFragment;
-      d.displayedChars = 0;
-      d.typingFrame = 0;
-      d.typingSpeed = 2 + Math.floor(Math.random() * 3);
-      d.colorStr = colorForText(newFragment);
-      // Start with empty text (cursor only)
-      const { texture, aspect } = buildTextSprite('|', d.colorStr);
-      d.sprite.material.map = texture;
-      d.sprite.material.needsUpdate = true;
-      d.aspect = aspect;
-      d.sprite.scale.x = aspect * 0.85;
-      d.sprite.scale.y = 0.85;
-    }
-
-    for (let i = 0; i < DEBRIS_COUNT; i++) {
-      const fragment = pickFragment();
-      const color = colorForText(fragment);
-      // Start with cursor-only texture for typewriter effect
-      const { texture: initTex, aspect: initAspect } = buildTextSprite('|', color);
-      debrisTextures.push(initTex);
-
-      const mat = new THREE.SpriteMaterial({
-        map: initTex,
-        transparent: true,
-        opacity: 0.0,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending,
-      });
-      const sprite = new THREE.Sprite(mat);
-
-      const baseX = (Math.random() - 0.5) * 44;
-      const baseY = (Math.random() - 0.5) * 20;
-      const baseZ = 3 + Math.random() * 11;
-
-      sprite.scale.set(initAspect * 0.85, 0.85, 1);
-      sprite.position.set(baseX, baseY, baseZ);
-      scene.add(sprite);
-
-      debrisData.push({
-        sprite,
-        baseX,
-        baseY,
-        baseZ,
-        freqX: 0.2 + Math.random() * 0.3,
-        freqY: 0.15 + Math.random() * 0.25,
-        phaseX: Math.random() * Math.PI * 2,
-        phaseY: Math.random() * Math.PI * 2,
-        phaseZ: Math.random() * Math.PI * 2,
-        vx: (Math.random() - 0.5) * 0.006,
-        opacityPhase: Math.random() * Math.PI * 2,
-        opacityFreq: 0.003 + Math.random() * 0.005,
-        aspect: initAspect,
-        fragment,
-        fullText: fragment,
-        displayedChars: 0,
-        typingSpeed: 2 + Math.floor(Math.random() * 3),
-        typingFrame: 0,
-        colorStr: color,
-      });
-    }
-
-    // ═══════════════════════════════════════════
-    // VIGNETTE — radial gradient overlay
-    // ═══════════════════════════════════════════
-    const vignetteGeom = new THREE.PlaneGeometry(2, 2);
-    const vignetteMat = new THREE.ShaderMaterial({
-      transparent: true,
-      depthWrite: false,
-      depthTest: false,
-      uniforms: {},
-      vertexShader: `
-        varying vec2 vUv;
-        void main() {
-          vUv = uv;
-          gl_Position = vec4(position.xy, 0.999, 1.0);
-        }
-      `,
-      fragmentShader: `
-        varying vec2 vUv;
-        void main() {
-          vec2 uv = vUv - 0.5;
-          float dist = length(uv) * 2.0;
-          float vignette = smoothstep(0.4, 1.4, dist);
-          gl_FragColor = vec4(0.0, 0.0, 0.0, vignette * 0.35);
-        }
-      `,
-    });
-    const vignetteMesh = new THREE.Mesh(vignetteGeom, vignetteMat);
-    vignetteMesh.frustumCulled = false;
-    vignetteMesh.renderOrder = 999;
-    scene.add(vignetteMesh);
-
-    // ── Mouse parallax ──
-    let mouseX = 0;
-    let mouseY = 0;
-    let camTargetX = 0;
-    let camTargetY = 0;
-
-    function onMouseMove(e: MouseEvent) {
-      mouseX = (e.clientX / window.innerWidth) * 2 - 1;
-      mouseY = (e.clientY / window.innerHeight) * 2 - 1;
-    }
-    window.addEventListener('mousemove', onMouseMove);
-
-    // ── Animation state ──
+    let time = 0;
     let animId: number;
-    let frameCount = 0;
 
     function animate() {
       animId = requestAnimationFrame(animate);
-      frameCount++;
-      const time = frameCount * 0.016;
+      time += 0.016;
+      material.uniforms.uTime.value = time;
 
-      // ── Mouse parallax (smooth exponential decay) ──
-      camTargetX = mouseX * 3;
-      camTargetY = -mouseY * 3;
-      camera.position.x += (camTargetX - camera.position.x) * 0.04;
-      camera.position.y += (camTargetY - camera.position.y) * 0.04;
+      const pos = geometry.attributes.position.array as Float32Array;
+      const alpha = geometry.attributes.alpha.array as Float32Array;
 
-      // ── Layer 1: Deep field tunnel ──
-      const dPos = deepGeometry.attributes.position.array as Float32Array;
-      for (let i = 0; i < DEEP_COUNT; i++) {
-        dPos[i * 3 + 2] += deepSpeeds[i];
-        if (dPos[i * 3 + 2] > 20) {
-          initDeepParticle(i, false);
-        }
-      }
-      deepGeometry.attributes.position.needsUpdate = true;
+      for (let i = 0; i < COUNT; i++) {
+        pos[i * 3 + 1] -= speeds[i];
+        alpha[i] -= speeds[i] * 0.3;
 
-      // ── Layer 2: Matrix columns ──
-      for (let c = 0; c < COL_COUNT; c++) {
-        const col = columns[c];
-        col.headY -= col.speed;
-
-        // Reset column when it scrolls off screen
-        if (col.headY - COL_LENGTH * ySpacing < -14) {
-          col.headY = 14 + Math.random() * 4;
-          col.speed = 0.08 + Math.random() * 0.10;
-          // Pick a new version string for version columns
-          if (col.isVersion) {
-            col.versionStr = versionPool[Math.floor(Math.random() * versionPool.length)];
-            col.versionCharIdx = 0;
-          }
-        }
-
-        const sprites = columnSprites[c];
-
-        for (let r = 0; r < COL_LENGTH; r++) {
-          const s = sprites[r];
-          const y = col.headY - r * ySpacing;
-          s.position.y = y;
-          s.position.x = col.x;
-
-          // Character mutation
-          col.mutateTimer[r]--;
-          if (col.mutateTimer[r] <= 0) {
-            let newChar: number;
-
-            if (col.isVersion) {
-              // Cycle through version string characters
-              const vChar = col.versionStr[col.versionCharIdx % col.versionStr.length];
-              col.versionCharIdx++;
-              // Map version char to CHARS index, or use a random one
-              const charMapIdx = CHARS.indexOf(vChar);
-              newChar = charMapIdx >= 0 ? charMapIdx : Math.floor(Math.random() * 16);
-            } else {
-              newChar = Math.floor(Math.random() * 16);
-            }
-
-            col.charIndices[r] = newChar;
-            col.mutateTimer[r] = Math.floor(20 + Math.random() * 20);
-
-            if (r === 0) {
-              s.material.map = col.isVersion ? cyanHeadTextures[newChar] : headTextures[newChar];
-              if (glowSpritesArr[c][0]) {
-                glowSpritesArr[c][0].material.map = col.isVersion ? cyanGlowTextures[newChar] : glowTextures[newChar];
-              }
-            } else {
-              s.material.map = col.isVersion ? cyanTextures[newChar] : greenTextures[newChar];
-            }
-            s.material.needsUpdate = true;
-          }
-
-          // Trail fade
-          if (r === 0) {
-            s.material.opacity = 0.35;
-          } else {
-            s.material.opacity = Math.max(0.02, 0.35 - r * 0.042);
-          }
-        }
-
-        // Update glow position
-        if (glowSpritesArr[c][0]) {
-          glowSpritesArr[c][0].position.y = col.headY;
-          glowSpritesArr[c][0].position.x = col.x;
+        if (pos[i * 3 + 1] < -ROWS / 2 * 0.8 || alpha[i] <= 0) {
+          pos[i * 3 + 1] = ROWS / 2 * 0.8 + Math.random() * 5;
+          alpha[i] = 0.3 + Math.random() * 0.7;
+          speeds[i] = 0.02 + Math.random() * 0.06;
         }
       }
 
-      // ── Layer 3: Foreground debris (text fragments) ──
-      // Global blink counter for typewriter cursor
-      const showCursor = Math.floor(frameCount / 20) % 2 === 0;
-
-      for (let i = 0; i < DEBRIS_COUNT; i++) {
-        const d = debrisData[i];
-        const x = d.baseX + Math.sin(time * d.freqX + d.phaseX) * 2.5 + d.vx * frameCount;
-        const y = d.baseY + Math.cos(time * d.freqY + d.phaseY) * 1.8;
-        const z = d.baseZ + Math.sin(time * 0.3 + d.phaseZ) * 0.8;
-
-        // Dimmer opacity: base range 0.06–0.18, per-color max cap
-        const baseOpacity = 0.12 + Math.sin(time * d.opacityFreq * 60 + d.opacityPhase) * 0.06;
-        const colorStr = d.colorStr;
-        let maxOpacity = 0.16; // green default
-        if (colorStr === '#ffb800') maxOpacity = 0.22; // amber (versions)
-        else if (colorStr === '#00d4ff') maxOpacity = 0.20; // cyan
-        const opacity = Math.min(baseOpacity, maxOpacity);
-
-        // Respawn at opposite edge if out of bounds
-        if (Math.abs(x) > 26 || Math.abs(y) > 15) {
-          const newFragment = pickFragment();
-          rebuildDebrisTexture(d, newFragment);
-          d.baseX = x > 0 ? -24 : 24;
-          d.baseY = (Math.random() - 0.5) * 20;
-          d.phaseX = Math.random() * Math.PI * 2;
-          d.phaseY = Math.random() * Math.PI * 2;
-          d.vx = (Math.random() - 0.5) * 0.006;
-        }
-
-        // Typewriter effect: rebuild texture while still typing
-        if (d.displayedChars < d.fullText.length) {
-          d.typingFrame++;
-          if (d.typingFrame % d.typingSpeed === 0) {
-            d.displayedChars++;
-          }
-          const visibleText = d.fullText.slice(0, d.displayedChars);
-          const cursorChar = (d.displayedChars < d.fullText.length && showCursor) ? '|' : '';
-          const displayText = visibleText + cursorChar || '|';
-          // Dispose old and rebuild
-          if (d.sprite.material.map) d.sprite.material.map.dispose();
-          const { texture, aspect } = buildTextSprite(displayText, d.colorStr);
-          d.sprite.material.map = texture;
-          d.sprite.material.needsUpdate = true;
-          d.aspect = aspect;
-          d.sprite.scale.x = aspect * 0.85;
-          d.sprite.scale.y = 0.85;
-        }
-
-        d.sprite.position.set(x, y, z);
-        d.sprite.material.opacity = opacity;
-      }
-
+      geometry.attributes.position.needsUpdate = true;
+      geometry.attributes.alpha.needsUpdate = true;
       renderer.render(scene, camera);
     }
 
     animate();
 
-    // ── Resize handling ──
     const ro = new ResizeObserver(([entry]) => {
       const w = entry.contentRect.width;
       const h = entry.contentRect.height;
-      if (w === 0 || h === 0) return;
-      width = w;
-      height = h;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
     });
     ro.observe(parent);
 
-    // ── Cleanup ──
-    function cleanup() {
+    document.addEventListener('astro:before-swap', () => {
       cancelAnimationFrame(animId);
       ro.disconnect();
-      window.removeEventListener('mousemove', onMouseMove);
-
-      // Dispose all textures
-      greenTextures.forEach((t: any) => t.dispose());
-      cyanTextures.forEach((t: any) => t.dispose());
-      headTextures.forEach((t: any) => t.dispose());
-      cyanHeadTextures.forEach((t: any) => t.dispose());
-      glowTextures.forEach((t: any) => t.dispose());
-      cyanGlowTextures.forEach((t: any) => t.dispose());
-
-      // Dispose column sprites
-      for (let c = 0; c < COL_COUNT; c++) {
-        for (let r = 0; r < COL_LENGTH; r++) {
-          columnSprites[c][r].material.dispose();
-          scene.remove(columnSprites[c][r]);
-        }
-        if (glowSpritesArr[c][0]) {
-          glowSpritesArr[c][0].material.dispose();
-          scene.remove(glowSpritesArr[c][0]);
-        }
-      }
-
-      // Dispose debris
-      for (const d of debrisData) {
-        if (d.sprite.material.map) d.sprite.material.map.dispose();
-        d.sprite.material.dispose();
-        scene.remove(d.sprite);
-      }
-
-      // Dispose deep field
-      deepGeometry.dispose();
-      deepMaterial.dispose();
-      scene.remove(deepPoints);
-
-      // Dispose vignette
-      vignetteGeom.dispose();
-      vignetteMat.dispose();
-      scene.remove(vignetteMesh);
-
       renderer.dispose();
-    }
-
-    document.addEventListener('astro:before-swap', cleanup, { once: true });
+      geometry.dispose();
+      material.dispose();
+    }, { once: true });
   }
 </script>
