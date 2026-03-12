@@ -1,0 +1,615 @@
+{
+  "schema": "clwatch.payload.v1",
+  "tool": "claude-code",
+  "version": "2.1.74",
+  "generated_at": "2026-03-12T04:10:00Z",
+  "extracted_from_sources": [
+    "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
+    "https://docs.anthropic.com/en/docs/claude-code"
+  ],
+  "verification": {
+    "status": "verified",
+    "confidence": 0.96,
+    "unverified_fields": []
+  },
+  "stale_after": "2026-03-19T04:10:00Z",
+  "delta": {
+    "from_version": "2.1.71",
+    "to_version": "2.1.74",
+    "new_features": ["autoMemoryDirectory", "modelOverrides", "context-suggestions"],
+    "new_commands": ["/context"],
+    "new_flags": [],
+    "new_env_vars": ["CLAUDE_CODE_SESSIONEND_HOOKS_TIMEOUT_MS"],
+    "deprecated_commands": ["/output-style"],
+    "deprecated_flags": [],
+    "breaking_changes": []
+  },
+  "payload": {
+    "meta": {
+      "display_name": "Claude Code",
+      "vendor": "Anthropic",
+      "kind": "tool",
+      "tags": ["coding-agent", "cli", "agentic"],
+      "homepage": "https://claude.ai/code",
+      "docs_url": "https://docs.anthropic.com/en/docs/claude-code",
+      "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
+      "repo_url": "https://github.com/anthropics/claude-code",
+      "license": "proprietary",
+      "latest_stable": "2.1.74",
+      "latest_release_date": "2026-03-12",
+      "status": "active",
+      "runtime": "node",
+      "written_in": "typescript"
+    },
+    "features": [
+      {
+        "id": "agent-teams",
+        "name": "Agent Teams",
+        "status": "experimental",
+        "since": "2.1.0",
+        "description": "Full multi-agent orchestration. A team lead spawns named teammates, each running as a separate Claude Code instance with a shared task list and direct inter-agent messaging.",
+        "enabled_by": {
+          "env_var": "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS",
+          "value": "1",
+          "or_settings": "settings.json: { \"env\": { \"CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS\": \"1\" } }"
+        },
+        "related_commands": ["/feature-dev", "/simplify", "/batch"],
+        "key_details": [
+          "3–5 teammates recommended",
+          "Teammates inherit the lead's model unless overridden",
+          "Shift+Down cycles between teammates in in-process mode",
+          "Ctrl+T opens shared task list",
+          "Tasks: pending → in progress → completed with dependency support",
+          "File locking prevents race conditions on task claiming",
+          "Teammates do NOT inherit lead's conversation history — include context in spawn prompt",
+          "TeammateIdle and TaskCompleted hooks support exit code 2 to keep working",
+          "Lead must clean up team — shut down teammates before cleanup",
+          "Plan approval mode: teammate works read-only then submits plan for lead review"
+        ],
+        "display_modes": ["in-process", "split-panes", "auto"],
+        "storage": {
+          "team_config": "~/.claude/teams/{team-name}/config.json",
+          "task_list": "~/.claude/tasks/{team-name}/"
+        },
+        "source_url": "https://docs.anthropic.com/en/docs/claude-code/agent-teams"
+      },
+      {
+        "id": "subagents",
+        "name": "Subagents",
+        "status": "stable",
+        "since": "2.0.0",
+        "description": "Focused workers that run inside a session and report back to the caller. Simpler than agent teams — no inter-agent messaging, no shared task list.",
+        "key_details": [
+          "Cannot spawn other subagents (no nesting)",
+          "Do not inherit parent conversation history",
+          "Define in .claude/agents/*.md (project) or ~/.claude/agents/*.md (user)",
+          "Invoke with --agent <name> flag or Agent tool",
+          "Frontmatter fields: name, description, tools, disallowedTools, model, permissionMode, mcpServers, hooks, maxTurns, skills, memory",
+          "Built-in: Explore (Haiku, read-only), Plan (read-only), General-purpose, Bash, Claude Code Guide"
+        ],
+        "file_format": "markdown with YAML frontmatter",
+        "scopes_priority": ["--agents CLI flag (session-only)", ".claude/agents/ (project)", "~/.claude/agents/ (user)", "plugin agents/ directory"],
+        "source_url": "https://docs.anthropic.com/en/docs/claude-code/subagents"
+      },
+      {
+        "id": "http-hooks",
+        "name": "HTTP Hooks",
+        "status": "stable",
+        "since": "2.1.60",
+        "description": "Lifecycle hooks that fire HTTP requests to a local server at key events. Use for command validation, audit logging, CI triggers, and custom security policies.",
+        "hook_events": [
+          "PreToolUse",
+          "PostToolUse",
+          "SessionStart",
+          "SessionEnd",
+          "InstructionsLoaded",
+          "TeammateIdle",
+          "TaskCompleted",
+          "WorktreeCreate",
+          "WorktreeRemove"
+        ],
+        "config_path": ".claude/settings.json or ~/.claude/settings.json",
+        "key_details": [
+          "Exit code 2 from hook sends feedback and blocks action",
+          "SessionEnd hooks timeout configurable via CLAUDE_CODE_SESSIONEND_HOOKS_TIMEOUT_MS",
+          "Hooks fire per-session — JSON-output hooks no longer inject no-op system-reminder messages",
+          "agent_id and agent_type fields available in hook events for subagent identification",
+          "worktree field added with name, path, branch, original repo directory"
+        ],
+        "source_url": "https://docs.anthropic.com/en/docs/claude-code/hooks"
+      },
+      {
+        "id": "plugins",
+        "name": "Plugin Marketplace",
+        "status": "stable",
+        "since": "2.1.65",
+        "description": "Full plugin ecosystem. Plugins distribute skills, agents, hooks, and MCP servers. Managed via /plugin command or claude plugins CLI.",
+        "key_details": [
+          "Plugin structure: .claude-plugin/plugin.json, skills/, agents/, hooks/",
+          "Skills namespaced: /plugin-name:skill-name",
+          "Project-scope and user-scope installs supported",
+          "/plugin validate for marketplace submission",
+          "/plugin marketplace update to refresh",
+          "/reload-plugins to activate changes without restart",
+          "--plugin-dir ./path for local dev (overrides installed same-name plugins)",
+          "Plugin-provided MCP servers deduplicated against manually configured ones",
+          "Marketplace supports git URLs without .git suffix (Azure DevOps, AWS CodeCommit)",
+          "CLAUDE_CODE_PLUGIN_CACHE_DIR for custom cache location",
+          "strictKnownMarketplaces supports pathPattern for subdirectory sources"
+        ],
+        "source_url": "https://docs.anthropic.com/en/docs/claude-code/plugins"
+      },
+      {
+        "id": "sandboxing",
+        "name": "Sandboxing",
+        "status": "stable",
+        "since": "2.1.50",
+        "description": "OS-level filesystem and network isolation for autonomous execution. Enable with /sandbox.",
+        "key_details": [
+          "Enable: /sandbox command",
+          "Filesystem: OS-level enforcement (Seatbelt on macOS, bubblewrap on Linux)",
+          "Default: read/write to CWD and children only",
+          "Network: proxy server outside sandbox, only approved domains accessible",
+          "All subprocesses (kubectl, terraform, npm) inherit restrictions",
+          "sandbox.excludedCommands for exemptions",
+          "sandbox.enableWeakerNetworkIsolation (macOS) for Go tools with custom MITM proxy",
+          "allowManagedDomainsOnly: non-allowed domains blocked automatically with no bypass"
+        ],
+        "config_example": "{ \"sandbox\": { \"enabled\": true, \"filesystem\": { \"allowWrite\": [\"~/.kube\", \"/tmp/build\"] } } }",
+        "source_url": "https://docs.anthropic.com/en/docs/claude-code/sandboxing"
+      },
+      {
+        "id": "checkpointing",
+        "name": "Checkpointing",
+        "status": "stable",
+        "since": "2.1.55",
+        "description": "Automatic state tracking for undo/rewind. Every user prompt creates a checkpoint persisted for 30 days.",
+        "key_details": [
+          "Esc+Esc or /rewind opens rewind menu",
+          "Actions: restore code+conversation, restore conversation only, restore code only, summarize-from-here",
+          "30-day retention (configurable)",
+          "Limitation: Bash-modified files NOT tracked — only Claude's edit tools"
+        ],
+        "source_url": "https://docs.anthropic.com/en/docs/claude-code/checkpointing"
+      },
+      {
+        "id": "scheduled-tasks",
+        "name": "Scheduled Tasks / Cron",
+        "status": "stable",
+        "since": "2.1.71",
+        "description": "Session-scoped task scheduling. /loop for recurring prompts, one-shot reminders via natural language.",
+        "key_details": [
+          "Max 50 tasks per session",
+          "3-day auto-expiry for recurring tasks",
+          "No catch-up for missed fires",
+          "±10% jitter (max 15min) for recurring, ±90s for one-shots",
+          "Session-scoped only — not durable across restarts",
+          "Disable mid-session: CLAUDE_CODE_DISABLE_CRON env var",
+          "Tools: CronCreate, CronList, CronDelete"
+        ],
+        "source_url": "https://docs.anthropic.com/en/docs/claude-code/scheduled-tasks"
+      },
+      {
+        "id": "fast-mode",
+        "name": "Fast Mode",
+        "status": "stable",
+        "since": "2.1.60",
+        "description": "Opus 4.6 at 2.5x speed at higher cost. Toggles with /fast. Persists across sessions.",
+        "pricing": {
+          "fast_under_200k": { "input_per_mtok": 30, "output_per_mtok": 150 },
+          "fast_over_200k": { "input_per_mtok": 60, "output_per_mtok": 225 }
+        },
+        "key_details": [
+          "↯ icon appears while active",
+          "Compatible with 1M context window",
+          "Switching mid-conversation pays full uncached input price",
+          "/fast again to toggle off (stays on Opus 4.6)",
+          "settings.json: \"fastMode\": true"
+        ],
+        "source_url": "https://docs.anthropic.com/en/docs/claude-code/fast-mode"
+      },
+      {
+        "id": "code-review",
+        "name": "Automated Code Review (Teams/Enterprise)",
+        "status": "stable",
+        "since": "2.1.40",
+        "description": "Automated PR review using multi-agent parallel analysis. Posts inline PR comments.",
+        "key_details": [
+          "Multiple specialized agents examine diff + full codebase in parallel",
+          "Severity: 🔴 Normal, 🟡 Nit, 🟣 Pre-existing",
+          "Verification step filters false positives",
+          "Customizable via CLAUDE.md and REVIEW.md in repo",
+          "Runs on PR creation and/or every push (configurable)",
+          "Average completion ~20 minutes"
+        ],
+        "source_url": "https://docs.anthropic.com/en/docs/claude-code/code-review"
+      },
+      {
+        "id": "voice-mode",
+        "name": "Voice Mode",
+        "status": "stable",
+        "since": "2.1.50",
+        "description": "Push-to-talk voice input with STT transcription. 20 languages supported.",
+        "key_details": [
+          "Default key: space (rebindable via voice:pushToTalk in keybindings.json)",
+          "20 languages: includes Russian, Polish, Turkish, Dutch, Ukrainian, Greek, Czech, Danish, Swedish, Norwegian",
+          "Improved transcription for repo names and dev terms (regex, OAuth, JSON)",
+          "macOS native binary includes audio-input entitlement for microphone permission prompt"
+        ],
+        "source_url": "https://docs.anthropic.com/en/docs/claude-code/voice-mode"
+      },
+      {
+        "id": "remote-control",
+        "name": "Remote Control",
+        "status": "stable",
+        "since": "2.1.40",
+        "description": "Expose a session to claude.ai/code for mobile monitoring and steering.",
+        "key_details": [
+          "Start: /remote-control [--name \"title\"]",
+          "Custom session title visible in claude.ai/code",
+          "Poll rate: 10min while connected (was 1–2s), 300x server load reduction",
+          "Reconnection immediately wakes fast polling on transport loss"
+        ],
+        "source_url": "https://docs.anthropic.com/en/docs/claude-code/remote-control"
+      },
+      {
+        "id": "worktrees",
+        "name": "Git Worktrees",
+        "status": "stable",
+        "since": "2.0.0",
+        "description": "Isolated git worktrees for parallel agent work. Each agent gets its own copy, creates its own PR.",
+        "key_details": [
+          "--worktree <name> flag to run on a specific worktree",
+          "ExitWorktree tool to leave an EnterWorktree session cleanly",
+          "Each sub-agent gets own worktree for isolation",
+          "worktree field in hook events: name, path, branch, original repo dir",
+          "Background task notifications include worktreePath and worktreeBranch"
+        ],
+        "source_url": "https://docs.anthropic.com/en/docs/claude-code/worktrees"
+      },
+      {
+        "id": "agent-sdk",
+        "name": "Agent SDK",
+        "status": "stable",
+        "since": "2.1.0",
+        "description": "Headless/programmatic Claude Code via -p mode or TypeScript/Python SDKs.",
+        "key_details": [
+          "CLI: claude -p \"prompt\" --allowedTools --output-format json",
+          "--output-format: json, stream-json",
+          "--json-schema for structured output with validation",
+          "--append-system-prompt for custom system prompts",
+          "--continue / --resume <session-id> for multi-turn",
+          "Bash permission rules use prefix matching: Bash(git diff *)",
+          "TypeScript and Python SDKs available",
+          "SDK: platform.claude.com/docs/en/agent-sdk/"
+        ],
+        "source_url": "https://docs.anthropic.com/en/docs/claude-code/sdk"
+      }
+    ],
+    "commands": [
+      { "name": "/loop", "syntax": "/loop [interval] <prompt>", "description": "Run a prompt on a recurring interval. Defaults to 10 minutes if no interval specified.", "since": "2.1.71", "status": "stable", "examples": ["/loop 5m check the deploy", "/loop 20m /review-pr 1234"], "source_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md" },
+      { "name": "/batch", "syntax": "/batch <task-list-file>", "description": "Fan out multiple tasks from a file. Each task runs in its own worktree. Interactive planning then parallel execution.", "since": "2.1.0", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/simplify", "syntax": "/simplify", "description": "Run parallel agents for code quality, performance tuning, and CLAUDE.md compliance. Run after changes.", "since": "2.1.0", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/plan", "syntax": "/plan [description]", "description": "Enter plan mode. Optional description starts planning immediately.", "since": "2.1.72", "status": "stable", "examples": ["/plan fix the auth bug"], "source_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md" },
+      { "name": "/feature-dev", "syntax": "/feature-dev <task>", "description": "Spawn coordinated subagent team: code-explorer (maps architecture), code-architect (designs approach), code-reviewer (reviews output).", "since": "2.1.0", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/effort", "syntax": "/effort <low|medium|high|auto>", "description": "Set reasoning effort level. auto resets to default. Works while Claude is responding.", "since": "2.1.72", "status": "stable", "symbols": { "low": "○", "medium": "◐", "high": "●" }, "source_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md" },
+      { "name": "/fast", "syntax": "/fast", "description": "Toggle Opus 4.6 fast mode (2.5x speed, higher cost). Persists across sessions.", "since": "2.1.60", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/sandbox", "syntax": "/sandbox", "description": "Toggle OS-level filesystem and network isolation.", "since": "2.1.50", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/compact", "syntax": "/compact", "description": "Summarize conversation to reduce context. Preserves images for cache reuse.", "since": "2.0.0", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/context", "syntax": "/context", "description": "Show context usage. Identifies context-heavy tools, memory bloat, capacity warnings with optimization tips.", "since": "2.1.74", "status": "stable", "source_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md" },
+      { "name": "/rewind", "syntax": "/rewind", "description": "Open checkpoint rewind menu (also Esc+Esc). Restore code, conversation, or both.", "since": "2.1.55", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/remote-control", "syntax": "/remote-control [--name \"title\"]", "description": "Start remote control session for monitoring from claude.ai/code or mobile.", "since": "2.1.40", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/plugin", "syntax": "/plugin [install|uninstall|validate|marketplace]", "description": "Manage plugins. Also: claude plugins.", "since": "2.1.65", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/reload-plugins", "syntax": "/reload-plugins", "description": "Reload plugins without restarting the session.", "since": "2.1.69", "status": "stable", "source_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md" },
+      { "name": "/agents", "syntax": "/agents", "description": "Interactively manage subagents. Create/edit agent definitions.", "since": "2.1.40", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/model", "syntax": "/model", "description": "Switch model mid-session. Works while Claude is processing.", "since": "2.0.0", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/permissions", "syntax": "/permissions", "description": "Manage tool permissions.", "since": "2.0.0", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/review", "syntax": "/review", "description": "Review a PR or diff.", "since": "2.0.0", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/pr-comments", "syntax": "/pr-comments", "description": "Address PR review comments.", "since": "2.0.0", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/security-review", "syntax": "/security-review", "description": "Security review of changes.", "since": "2.0.0", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/fork", "syntax": "/fork", "description": "Fork conversation. Forks no longer share plan files.", "since": "2.0.0", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/copy", "syntax": "/copy", "description": "Copy last Claude message to clipboard. Press w to write to file instead (useful over SSH).", "since": "2.1.72", "status": "stable", "source_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md" },
+      { "name": "/init", "syntax": "/init", "description": "Create CLAUDE.md with project conventions.", "since": "2.0.0", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/memory", "syntax": "/memory", "description": "Manage memory files.", "since": "2.0.0", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/cost", "syntax": "/cost", "description": "Show token usage and cost for current session.", "since": "2.0.0", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/doctor", "syntax": "/doctor", "description": "Diagnose installation and environment issues.", "since": "2.0.0", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/debug", "syntax": "/debug", "description": "Toggle debug logging on mid-session (logs no longer written by default).", "since": "2.0.0", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/config", "syntax": "/config", "description": "Edit config. Escape cancels, Enter saves, Space toggles. Replaces deprecated /output-style.", "since": "2.0.0", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/output-style", "syntax": "/output-style", "description": "DEPRECATED since 2.1.73. Use /config instead.", "since": "2.0.0", "status": "deprecated", "replaced_by": "/config", "source_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md" },
+      { "name": "/claude-api", "syntax": "/claude-api", "description": "Skill for building apps with the Claude API and Anthropic SDK.", "since": "2.1.69", "status": "stable", "source_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md" },
+      { "name": "/clear", "syntax": "/clear", "description": "Clear foreground only — does not kill background agent/bash tasks.", "since": "2.0.0", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/vim", "syntax": "/vim", "description": "Open vim-like editor for multi-line input.", "since": "2.0.0", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/rename", "syntax": "/rename", "description": "Rename session. Works while Claude is processing.", "since": "2.0.0", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/color", "syntax": "/color <color|default|reset>", "description": "Set/reset terminal color theme. /color default, /color reset, /color none all restore default.", "since": "2.0.0", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" },
+      { "name": "/terminal-setup", "syntax": "/terminal-setup", "description": "Configure terminal integration.", "since": "2.0.0", "status": "stable", "source_url": "https://docs.anthropic.com/en/docs/claude-code" }
+    ],
+    "flags": {
+      "current": [
+        {
+          "flag": "--permission-mode",
+          "values": ["bypassPermissions", "acceptEdits", "plan", "default"],
+          "default": "default",
+          "description": "Sets how Claude Code handles permission prompts. bypassPermissions = full autonomous mode.",
+          "since": "2.1.30",
+          "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+        },
+        {
+          "flag": "--print / -p",
+          "syntax": "claude -p \"prompt\"",
+          "description": "Headless one-shot mode with full tool access.",
+          "since": "2.0.0",
+          "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+        },
+        {
+          "flag": "--output-format",
+          "values": ["json", "stream-json"],
+          "description": "Machine-readable output for -p / headless mode.",
+          "since": "2.0.0",
+          "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+        },
+        {
+          "flag": "--effort",
+          "values": ["low", "medium", "high", "auto"],
+          "default": "auto",
+          "description": "Set reasoning effort level at launch.",
+          "since": "2.1.72",
+          "source_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
+        },
+        {
+          "flag": "--model",
+          "description": "Override model. Accepts full model IDs (e.g. claude-opus-4-6) or aliases.",
+          "since": "2.0.0",
+          "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+        },
+        {
+          "flag": "--worktree",
+          "syntax": "--worktree <name>",
+          "description": "Run on a specific git worktree.",
+          "since": "2.0.0",
+          "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+        },
+        {
+          "flag": "--tmux",
+          "syntax": "--tmux \"session-name command\"",
+          "description": "Spawn in a tmux session.",
+          "since": "2.0.0",
+          "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+        },
+        {
+          "flag": "--remote",
+          "syntax": "--remote \"task\"",
+          "description": "Run in cloud for mobile handoff monitoring.",
+          "since": "2.1.40",
+          "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+        },
+        {
+          "flag": "--agent",
+          "syntax": "--agent <name>",
+          "description": "Run with a named agent definition. Name shown in terminal title.",
+          "since": "2.1.40",
+          "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+        },
+        {
+          "flag": "--agents",
+          "syntax": "--agents '{\"name\": {\"description\": \"\", \"prompt\": \"\", \"tools\": []}}'",
+          "description": "Session-only agent definition via JSON (no file needed).",
+          "since": "2.1.50",
+          "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+        },
+        {
+          "flag": "--allowedTools",
+          "syntax": "--allowedTools \"Read,Edit,Bash(git diff *)\"",
+          "description": "Restrict available tools. Supports prefix matching for Bash.",
+          "since": "2.0.0",
+          "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+        },
+        {
+          "flag": "--continue",
+          "description": "Resume last session. Fixed: works after --compact.",
+          "since": "2.0.0",
+          "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+        },
+        {
+          "flag": "--resume",
+          "syntax": "--resume <session-id>",
+          "description": "Resume a specific session by ID.",
+          "since": "2.0.0",
+          "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+        },
+        {
+          "flag": "--plugin-dir",
+          "syntax": "--plugin-dir ./path",
+          "description": "Load local plugin for dev/testing. Overrides installed same-name plugins.",
+          "since": "2.1.65",
+          "source_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
+        },
+        {
+          "flag": "--append-system-prompt",
+          "syntax": "--append-system-prompt \"You are a security engineer.\"",
+          "description": "Append custom text to system prompt. Works in both interactive and -p mode.",
+          "since": "2.0.0",
+          "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+        },
+        {
+          "flag": "--teammate-mode",
+          "values": ["in-process", "split-panes", "auto"],
+          "description": "Override agent team display mode for this session.",
+          "since": "2.1.0",
+          "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+        },
+        {
+          "flag": "--json-schema",
+          "syntax": "--json-schema '{\"type\":\"object\",...}'",
+          "description": "Enforce JSON schema for structured output in -p mode.",
+          "since": "2.1.20",
+          "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+        }
+      ],
+      "deprecated": [
+        {
+          "flag": "--dangerously-skip-permissions",
+          "replaced_by": "--permission-mode bypassPermissions",
+          "deprecated_since": "2.1.30",
+          "removed_in": null,
+          "note": "Still works as alias but will be removed in future. Migrate all scripts.",
+          "source_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
+        }
+      ],
+      "new_since_previous": ["--effort", "--plugin-dir"]
+    },
+    "env_vars": [
+      {
+        "name": "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS",
+        "purpose": "Enable experimental agent teams feature",
+        "values": ["1", "0"],
+        "default": "0",
+        "status": "experimental",
+        "source_url": "https://docs.anthropic.com/en/docs/claude-code/agent-teams"
+      },
+      {
+        "name": "CLAUDE_CODE_DISABLE_CRON",
+        "purpose": "Stop all scheduled cron jobs immediately mid-session",
+        "status": "stable",
+        "source_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
+      },
+      {
+        "name": "CLAUDE_CODE_DISABLE_TERMINAL_TITLE",
+        "purpose": "Prevent Claude Code from modifying terminal title",
+        "status": "stable",
+        "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+      },
+      {
+        "name": "CLAUDE_CODE_PLUGIN_CACHE_DIR",
+        "purpose": "Set custom directory for plugin cache",
+        "status": "stable",
+        "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+      },
+      {
+        "name": "CLAUDE_CODE_SESSIONEND_HOOKS_TIMEOUT_MS",
+        "purpose": "Configure SessionEnd hook timeout in milliseconds (was fixed at 1500ms)",
+        "status": "stable",
+        "since": "2.1.74",
+        "source_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
+      },
+      {
+        "name": "CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS",
+        "purpose": "Remove built-in commit and PR workflow instructions from system prompt",
+        "status": "stable",
+        "since": "2.1.69",
+        "source_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
+      },
+      {
+        "name": "CLAUDE_CODE_MAX_OUTPUT_TOKENS",
+        "purpose": "Override maximum output tokens (applies during conversation compaction too)",
+        "status": "stable",
+        "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+      },
+      {
+        "name": "ANTHROPIC_API_KEY",
+        "purpose": "Required for API auth. Not needed when using claude.ai OAuth.",
+        "status": "stable",
+        "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+      }
+    ],
+    "models": [
+      {
+        "id": "claude-opus-4-6",
+        "display_name": "Claude Opus 4.6",
+        "aliases": ["opus"],
+        "context_window": 200000,
+        "extended_context": 1000000,
+        "status": "stable",
+        "recommended_for": ["complex agentic tasks", "architecture decisions", "long autonomous runs"],
+        "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+      },
+      {
+        "id": "claude-sonnet-4-6",
+        "display_name": "Claude Sonnet 4.6",
+        "aliases": ["sonnet"],
+        "context_window": 200000,
+        "extended_context": null,
+        "status": "stable",
+        "recommended_for": ["balanced tasks", "sub-agent workers", "review tasks"],
+        "note": "Sonnet 4.5 Pro/Max/Team Premium users auto-migrated to 4.6",
+        "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+      },
+      {
+        "id": "claude-haiku-4-5",
+        "display_name": "Claude Haiku 4.5",
+        "aliases": ["haiku"],
+        "context_window": 200000,
+        "extended_context": null,
+        "status": "stable",
+        "recommended_for": ["read-only exploration", "quick lookups", "guide agent (Explore, Claude Code Guide)"],
+        "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+      }
+    ],
+    "breaking_changes": [],
+    "deprecations": [
+      {
+        "id": "dep-dangerously-skip-permissions",
+        "item": "flag:--dangerously-skip-permissions",
+        "title": "--dangerously-skip-permissions deprecated",
+        "deprecated_since": "2.1.30",
+        "expected_removal": null,
+        "replacement": "--permission-mode bypassPermissions",
+        "source_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
+      },
+      {
+        "id": "dep-output-style",
+        "item": "command:/output-style",
+        "title": "/output-style command deprecated",
+        "deprecated_since": "2.1.73",
+        "expected_removal": null,
+        "replacement": "/config",
+        "source_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
+      }
+    ],
+    "install": {
+      "methods": [
+        {
+          "name": "npm",
+          "command": "npm install -g @anthropic-ai/claude-code",
+          "update_command": "npm update -g @anthropic-ai/claude-code"
+        },
+        {
+          "name": "brew",
+          "command": "brew install claude-code",
+          "update_command": "brew upgrade claude-code"
+        },
+        {
+          "name": "binary",
+          "url": "https://github.com/anthropics/claude-code/releases"
+        }
+      ],
+      "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+    },
+    "support_matrix": {
+      "platforms": ["macos", "linux", "windows"],
+      "requires_auth": true,
+      "auth_methods": ["anthropic_api_key", "claude_ai_oauth"],
+      "min_node_version": "18",
+      "vscode_extension": true,
+      "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+    },
+    "settings": {
+      "file_paths": [
+        "~/.claude/settings.json (user-global)",
+        ".claude/settings.json (project)",
+        ".claude/settings.local.json (project-local, gitignored)"
+      ],
+      "notable_keys": {
+        "fastMode": "boolean — enable fast mode",
+        "teammateMode": "in-process | split-panes | auto",
+        "autoMemoryDirectory": "string — custom directory for auto-memory storage (new in 2.1.74)",
+        "modelOverrides": "object — map model picker entries to custom provider model IDs (new in 2.1.73)",
+        "includeGitInstructions": "boolean — include built-in git commit/PR workflow instructions",
+        "sandbox.enabled": "boolean",
+        "sandbox.filesystem.allowWrite": "string[]",
+        "permissions.defaultMode": "acceptEdits | plan",
+        "permissions.disableBypassPermissionsMode": "disable"
+      },
+      "source_url": "https://docs.anthropic.com/en/docs/claude-code"
+    }
+  }
+}

@@ -1,0 +1,506 @@
+{
+  "schema": "clwatch.payload.v1",
+  "tool": "codex-cli",
+  "version": "0.114.0",
+  "generated_at": "2026-03-12T04:10:00Z",
+  "extracted_from_sources": [
+    "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
+    "https://github.com/openai/codex/releases"
+  ],
+  "verification": {
+    "status": "verified",
+    "confidence": 0.94,
+    "unverified_fields": []
+  },
+  "stale_after": "2026-03-19T04:10:00Z",
+  "delta": {
+    "from_version": "0.113.0",
+    "to_version": "0.114.0",
+    "new_features": ["hooks-engine", "code-mode", "health-endpoints", "disable-bundled-skills", "handoff-transcript-context"],
+    "new_commands": [],
+    "new_flags": [],
+    "new_env_vars": [],
+    "deprecated_commands": [],
+    "deprecated_flags": [],
+    "breaking_changes": ["permission-profiles-forward-compat"]
+  },
+  "payload": {
+    "meta": {
+      "display_name": "Codex CLI",
+      "vendor": "OpenAI",
+      "kind": "tool",
+      "tags": ["coding-agent", "cli", "agentic"],
+      "homepage": "https://github.com/openai/codex",
+      "docs_url": "https://github.com/openai/codex",
+      "changelog_url": "https://github.com/openai/codex/releases",
+      "repo_url": "https://github.com/openai/codex",
+      "license": "apache-2.0",
+      "latest_stable": "0.114.0",
+      "latest_prerelease": "0.115.0-alpha.6",
+      "latest_release_date": "2026-03-11",
+      "status": "active",
+      "runtime": "native",
+      "written_in": "rust",
+      "notes": "Rust rewrite. Git repo required to run."
+    },
+    "features": [
+      {
+        "id": "interactive-tui",
+        "name": "Interactive TUI",
+        "status": "stable",
+        "since": "0.1.0",
+        "description": "Full-screen terminal UI with conversation, approvals, transcript, and tool output panels.",
+        "key_details": [
+          "Launch: codex or codex \"initial prompt\"",
+          "Requires PTY (pseudo-terminal)",
+          "@ in composer triggers fuzzy file search",
+          "Enter while Claude running: inject instructions mid-turn",
+          "Tab while running: queue follow-up for next turn",
+          "Esc Esc: edit previous user message / walk back transcript",
+          "! prefix: run local shell command",
+          "Ctrl+G: open $VISUAL/$EDITOR for long prompt",
+          "$ mention picker: labels Skills, Apps, Plugins — plugins surface first"
+        ],
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "id": "exec-mode",
+        "name": "Non-Interactive Exec Mode",
+        "status": "stable",
+        "since": "0.50.0",
+        "description": "One-shot headless execution. codex exec runs without interactive TUI, outputs to stdout.",
+        "key_details": [
+          "codex exec \"task\" — basic one-shot",
+          "codex exec --full-auto \"task\" — auto-approve in workspace",
+          "codex exec --yolo \"task\" — no sandbox, no approvals, live web search",
+          "codex exec --json \"task\" — machine-readable output",
+          "codex exec resume --last \"follow-up\" — resume last session headlessly",
+          "codex exec resume <id> \"follow-up\" — resume specific session headlessly"
+        ],
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "id": "cloud-tasks",
+        "name": "Cloud Tasks",
+        "status": "stable",
+        "since": "0.90.0",
+        "description": "Run tasks in cloud environments. Best-of-N runs supported.",
+        "key_details": [
+          "codex cloud exec --env ENV_ID \"task\"",
+          "codex cloud exec --env ENV_ID --attempts 3 \"task\" — best-of-N runs",
+          "codex cloud — interactive picker",
+          "Requires configured cloud environment ID"
+        ],
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "id": "session-resume",
+        "name": "Session Resume",
+        "status": "stable",
+        "since": "0.60.0",
+        "description": "Resume prior sessions with transcript, plan history, and approvals preserved.",
+        "key_details": [
+          "codex resume — picker of recent sessions",
+          "codex resume --all — sessions from any directory",
+          "codex resume --last — jump to most recent",
+          "codex resume <session-id> — specific session",
+          "Override CWD with --cd or add extra dirs with --add-dir"
+        ],
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "id": "multi-agent",
+        "name": "Multi-Agent",
+        "status": "experimental",
+        "since": "0.100.0",
+        "description": "Codex auto-spawns sub-agents for parallel work. Manages orchestration, routing, and consolidation.",
+        "enabled_by": {
+          "slash_command": "/experimental → Multi-agents → restart",
+          "or_config": "~/.codex/config.toml: [features] multi_agent = true"
+        },
+        "built_in_roles": [
+          { "role": "default", "purpose": "General-purpose fallback" },
+          { "role": "worker", "purpose": "Execution-focused: implementation and fixes" },
+          { "role": "explorer", "purpose": "Read-heavy codebase exploration" },
+          { "role": "monitor", "purpose": "Long-running command monitoring, up to 1hr wait calls" }
+        ],
+        "key_details": [
+          "Consolidated response after all agents complete",
+          "/agent to switch between active agent threads",
+          "Sub-agents inherit parent's sandbox policy",
+          "Interactive: approval requests surface from inactive threads (press o to open)",
+          "Non-interactive: unapproved actions fail and surface to parent",
+          "agents.max_threads = 6 (concurrent cap)",
+          "agents.max_depth = 1 (nesting depth, direct children only)",
+          "agents.job_max_runtime_seconds = 1800 (default per-worker CSV timeout)"
+        ],
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "id": "csv-fanout",
+        "name": "CSV Fan-Out (spawn_agents_on_csv)",
+        "status": "experimental",
+        "since": "0.110.0",
+        "description": "Batch parallel processing. One worker per CSV row, results collected into output CSV.",
+        "key_details": [
+          "Tool: spawn_agents_on_csv",
+          "Requires multi_agent feature enabled",
+          "Each worker calls report_agent_job_result exactly once",
+          "Output CSV includes original data + job metadata",
+          "Column placeholders in instruction: {column_name}",
+          "Configurable per-job timeout via agents.job_max_runtime_seconds"
+        ],
+        "example": "Create /tmp/components.csv with columns path,owner. Call spawn_agents_on_csv with csv_path, instruction: 'Review {path} owned by {owner}. Return JSON.', output_csv_path: /tmp/review.csv",
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "id": "custom-agent-roles",
+        "name": "Custom Agent Roles",
+        "status": "experimental",
+        "since": "0.100.0",
+        "description": "Define custom agent roles in config. Each role gets its own model, reasoning effort, sandbox policy, and developer instructions.",
+        "config_example": "[agents.reviewer]\ndescription = \"PR reviewer focused on correctness and security.\"\nconfig_file = \"agents/reviewer.toml\"",
+        "per_role_config": "model, model_reasoning_effort, sandbox_mode, developer_instructions",
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "id": "code-review",
+        "name": "Code Review",
+        "status": "stable",
+        "since": "0.80.0",
+        "description": "Built-in code review via /review command with preset review modes.",
+        "review_presets": [
+          "Review against base branch — diff vs upstream",
+          "Review uncommitted changes — staged + unstaged + untracked",
+          "Review a commit — specific SHA",
+          "Custom review instructions — user-defined focus"
+        ],
+        "key_details": [
+          "Uses dedicated reviewer agent",
+          "Override model with review_model in config"
+        ],
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "id": "web-search",
+        "name": "Web Search",
+        "status": "stable",
+        "since": "0.90.0",
+        "description": "Web search with cached results by default. --search flag for live results.",
+        "modes": {
+          "cached": "Default. OpenAI-maintained cached index (reduced prompt injection exposure).",
+          "live": "--search flag or web_search = 'live' in config",
+          "disabled": "web_search = 'disabled' in config",
+          "yolo": "--yolo automatically uses live search"
+        },
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "id": "hooks-engine",
+        "name": "Hooks Engine",
+        "status": "experimental",
+        "since": "0.114.0",
+        "description": "Lifecycle hooks that fire at session start and stop events.",
+        "hook_events": ["SessionStart", "Stop"],
+        "config_path": "~/.codex/config.toml",
+        "source_url": "https://github.com/openai/codex/releases/tag/rust-v0.114.0"
+      },
+      {
+        "id": "code-mode",
+        "name": "Code Mode",
+        "status": "experimental",
+        "since": "0.114.0",
+        "description": "Isolated coding workflows with different execution context.",
+        "enabled_by": {
+          "config": "~/.codex/config.toml: [features] code_mode = true"
+        },
+        "source_url": "https://github.com/openai/codex/releases/tag/rust-v0.114.0"
+      },
+      {
+        "id": "plugin-system",
+        "name": "Plugin System",
+        "status": "stable",
+        "since": "0.110.0",
+        "description": "Curated marketplace with auth checks, rich metadata. Plugins provide tools, skills, and MCP servers.",
+        "key_details": [
+          "/plugin to manage",
+          "codex plugins list / install <url> / uninstall <name>",
+          "Config switch to disable bundled system skills entirely (0.114.0)",
+          "$ mention picker labels Skills/Apps/Plugins, plugins surface first"
+        ],
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "id": "mcp",
+        "name": "MCP (Model Context Protocol)",
+        "status": "stable",
+        "since": "0.90.0",
+        "description": "STDIO and streaming HTTP MCP servers. Codex itself can run as MCP server for other agents.",
+        "key_details": [
+          "Configure in ~/.codex/config.toml",
+          "codex mcp CLI for management",
+          "Auto-launches on session start",
+          "Codex as MCP server: allows other agents to use Codex capabilities"
+        ],
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "id": "sdk",
+        "name": "TypeScript + Python SDK",
+        "status": "stable",
+        "since": "0.100.0",
+        "description": "Programmatic Codex control via TypeScript or Python SDKs.",
+        "typescript_example": "const codex = new Codex(); const thread = codex.startThread(); await thread.run('Fix CI'); const thread2 = codex.resumeThread('<thread-id>');",
+        "key_details": [
+          "npm install @openai/codex-sdk",
+          "Thread-based API: startThread(), run(), resumeThread()",
+          "Same thread: multiple sequential run() calls",
+          "Python SDK: generated v2 schema types added in 0.114.0",
+          "WebSocket server: GET /readyz and GET /healthz health endpoints (0.114.0)"
+        ],
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "id": "image-input",
+        "name": "Image Inputs",
+        "status": "stable",
+        "since": "0.80.0",
+        "description": "Attach images to queries. PNG and JPEG supported.",
+        "key_details": [
+          "codex -i screenshot.png \"Explain this error\"",
+          "codex --image img1.png,img2.jpg \"Summarize\"",
+          "Paste images directly into interactive composer",
+          "Image generation also available (saves to CWD)"
+        ],
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "id": "permission-profiles",
+        "name": "Permission Profiles",
+        "status": "stable",
+        "since": "0.113.0",
+        "description": "Precise filesystem and network sandbox policy configuration language. Replaces legacy permission modes.",
+        "key_details": [
+          "Defined in ~/.codex/config.toml or .codex/config.toml",
+          "Per-role sandbox override: sandbox_mode = 'read-only'",
+          "Legacy workspace-write behavior preserved for backward compat (0.114.0 fix)",
+          "Profiles forward-compatible: newer profiles degrade safely on older builds"
+        ],
+        "source_url": "https://github.com/openai/codex/releases/tag/rust-v0.114.0"
+      },
+      {
+        "id": "feature-flags",
+        "name": "Feature Flags",
+        "status": "stable",
+        "since": "0.100.0",
+        "description": "Toggle experimental features per-profile.",
+        "key_details": [
+          "codex features list",
+          "codex features enable <flag>",
+          "codex features disable <flag>",
+          "Persists to ~/.codex/config.toml (or --profile specific)"
+        ],
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "id": "sqlite-logging",
+        "name": "SQLite Session Logging",
+        "status": "stable",
+        "since": "0.113.0",
+        "description": "Session transcripts stored in SQLite with configurable retention and pruning.",
+        "source_url": "https://github.com/openai/codex"
+      }
+    ],
+    "commands": [
+      { "name": "/review", "syntax": "/review", "description": "Open code review preset picker. Review branch diff, uncommitted changes, specific commit, or custom instructions.", "since": "0.80.0", "status": "stable", "source_url": "https://github.com/openai/codex" },
+      { "name": "/model", "syntax": "/model", "description": "Switch model mid-session.", "since": "0.1.0", "status": "stable", "source_url": "https://github.com/openai/codex" },
+      { "name": "/permissions", "syntax": "/permissions", "description": "Change approval mode mid-session.", "since": "0.1.0", "status": "stable", "source_url": "https://github.com/openai/codex" },
+      { "name": "/experimental", "syntax": "/experimental", "description": "Toggle experimental features including multi-agent mode.", "since": "0.100.0", "status": "stable", "source_url": "https://github.com/openai/codex" },
+      { "name": "/agent", "syntax": "/agent", "description": "Switch between active agent threads in multi-agent mode.", "since": "0.100.0", "status": "experimental", "source_url": "https://github.com/openai/codex" },
+      { "name": "/plugin", "syntax": "/plugin", "description": "Manage plugins. Also: codex plugins.", "since": "0.110.0", "status": "stable", "source_url": "https://github.com/openai/codex" },
+      { "name": "/theme", "syntax": "/theme", "description": "Preview and save TUI themes.", "since": "0.60.0", "status": "stable", "source_url": "https://github.com/openai/codex" },
+      { "name": "/copy", "syntax": "/copy", "description": "Copy latest output to clipboard.", "since": "0.60.0", "status": "stable", "source_url": "https://github.com/openai/codex" },
+      { "name": "/clear", "syntax": "/clear", "description": "Wipe terminal and start fresh chat.", "since": "0.1.0", "status": "stable", "source_url": "https://github.com/openai/codex" },
+      { "name": "/exit", "syntax": "/exit", "description": "Close session.", "since": "0.1.0", "status": "stable", "source_url": "https://github.com/openai/codex" },
+      { "name": "/fork", "syntax": "/fork", "description": "Fork conversation from an earlier message.", "since": "0.60.0", "status": "stable", "source_url": "https://github.com/openai/codex" },
+      { "name": "/status", "syntax": "/status", "description": "Show session info.", "since": "0.1.0", "status": "stable", "source_url": "https://github.com/openai/codex" }
+    ],
+    "flags": {
+      "current": [
+        {
+          "flag": "--model",
+          "description": "Override model for this session.",
+          "since": "0.1.0",
+          "source_url": "https://github.com/openai/codex"
+        },
+        {
+          "flag": "--full-auto",
+          "description": "Auto-approve all actions within workspace. No permission prompts.",
+          "since": "0.50.0",
+          "source_url": "https://github.com/openai/codex"
+        },
+        {
+          "flag": "--yolo",
+          "description": "No sandbox, no approvals, live web search enabled.",
+          "since": "0.50.0",
+          "source_url": "https://github.com/openai/codex"
+        },
+        {
+          "flag": "-i / --image",
+          "syntax": "codex -i img.png,img2.jpg",
+          "description": "Attach images to the initial query.",
+          "since": "0.80.0",
+          "source_url": "https://github.com/openai/codex"
+        },
+        {
+          "flag": "--cd",
+          "syntax": "--cd <path>",
+          "description": "Set working root directory.",
+          "since": "0.60.0",
+          "source_url": "https://github.com/openai/codex"
+        },
+        {
+          "flag": "--add-dir",
+          "syntax": "--add-dir <path>",
+          "description": "Expose additional writable roots.",
+          "since": "0.60.0",
+          "source_url": "https://github.com/openai/codex"
+        },
+        {
+          "flag": "--json",
+          "description": "Machine-readable exec output.",
+          "since": "0.50.0",
+          "source_url": "https://github.com/openai/codex"
+        },
+        {
+          "flag": "--search",
+          "description": "Force live web search (overrides cached default).",
+          "since": "0.90.0",
+          "source_url": "https://github.com/openai/codex"
+        },
+        {
+          "flag": "--profile",
+          "syntax": "--profile <name>",
+          "description": "Use a named config profile.",
+          "since": "0.100.0",
+          "source_url": "https://github.com/openai/codex"
+        },
+        {
+          "flag": "--attempts",
+          "syntax": "--attempts N",
+          "description": "Best-of-N runs for cloud tasks.",
+          "since": "0.90.0",
+          "source_url": "https://github.com/openai/codex"
+        },
+        {
+          "flag": "--env",
+          "syntax": "--env ENV_ID",
+          "description": "Specify cloud environment ID for cloud tasks.",
+          "since": "0.90.0",
+          "source_url": "https://github.com/openai/codex"
+        }
+      ],
+      "deprecated": [],
+      "new_since_previous": []
+    },
+    "env_vars": [
+      {
+        "name": "OPENAI_API_KEY",
+        "purpose": "Required for API auth.",
+        "status": "stable",
+        "source_url": "https://github.com/openai/codex"
+      }
+    ],
+    "models": [
+      {
+        "id": "gpt-5.4",
+        "display_name": "GPT-5.4",
+        "status": "stable",
+        "default": true,
+        "recommended_for": ["general coding tasks", "reasoning-heavy work"],
+        "note": "Fast status indicator shown in TUI for gpt-5.4 only",
+        "source_url": "https://github.com/openai/codex/releases/tag/rust-v0.114.0"
+      },
+      {
+        "id": "gpt-5.3-codex",
+        "display_name": "GPT-5.3 Codex",
+        "status": "stable",
+        "recommended_for": ["coding-optimized tasks", "review agent"],
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "id": "gpt-5.3-codex-spark",
+        "display_name": "GPT-5.3 Codex Spark",
+        "status": "stable",
+        "access": "Pro subscribers only (research preview)",
+        "recommended_for": ["fast iteration", "time-sensitive tasks"],
+        "source_url": "https://github.com/openai/codex"
+      }
+    ],
+    "breaking_changes": [
+      {
+        "id": "bc-permission-profiles-0114",
+        "version": "0.114.0",
+        "title": "Permission profiles behavior change",
+        "description": "Permission profiles forward-compatibility: newer profiles now degrade safely on older builds. Legacy workspace-write behavior preserved. Some configs that relied on older behavior may behave differently.",
+        "affected": ["config:permission_profiles"],
+        "migration": "Review permission profile configs after upgrading. Test that sandbox policy behaves as expected. Use permission-profiles forward-compat config syntax.",
+        "source_url": "https://github.com/openai/codex/releases/tag/rust-v0.114.0"
+      }
+    ],
+    "deprecations": [],
+    "install": {
+      "methods": [
+        {
+          "name": "npm",
+          "command": "npm install -g @openai/codex",
+          "update_command": "npm update -g @openai/codex"
+        },
+        {
+          "name": "brew",
+          "command": "brew install --cask codex",
+          "update_command": "brew upgrade --cask codex"
+        },
+        {
+          "name": "winget",
+          "command": "winget install OpenAI.Codex",
+          "platforms": ["windows"]
+        },
+        {
+          "name": "binary",
+          "url": "https://github.com/openai/codex/releases"
+        }
+      ],
+      "requirements": [
+        "Git repository required (will not run outside trusted git directory)",
+        "PTY required for interactive TUI mode"
+      ],
+      "source_url": "https://github.com/openai/codex"
+    },
+    "support_matrix": {
+      "platforms": ["macos", "linux", "windows"],
+      "requires_auth": true,
+      "auth_methods": ["openai_api_key"],
+      "requires_git_repo": true,
+      "requires_pty_for_tui": true,
+      "source_url": "https://github.com/openai/codex"
+    },
+    "config": {
+      "file_paths": [
+        "~/.codex/config.toml (user-global)",
+        ".codex/config.toml (project)"
+      ],
+      "notable_keys": {
+        "model": "string — default model",
+        "web_search": "cached | live | disabled",
+        "review_model": "string — model for /review agent",
+        "[features] multi_agent": "boolean — enable multi-agent",
+        "[features] code_mode": "boolean — enable experimental code mode",
+        "[agents] max_threads": "integer — concurrent agent cap (default 6)",
+        "[agents] max_depth": "integer — nesting depth (default 1)",
+        "[agents] job_max_runtime_seconds": "integer — CSV job timeout (default 1800)"
+      },
+      "source_url": "https://github.com/openai/codex"
+    }
+  }
+}
