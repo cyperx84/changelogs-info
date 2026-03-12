@@ -1,14 +1,23 @@
 /**
  * Tier 2 LLM-based extraction: takes a GitHub release body + current payload,
- * calls Claude to extract structured changes, and merges into the payload.
+ * calls an LLM via OpenRouter (or any OpenAI-compatible API) to extract
+ * structured changes, and merges into the payload.
+ *
+ * Works with ANY provider — just set LLM_API_KEY and optionally:
+ *   LLM_API_URL   — base URL (default: https://openrouter.ai/api/v1)
+ *   LLM_MODEL     — model ID (default: google/gemini-2.0-flash-001)
+ *
+ * Falls back to queue stub if no API key is set.
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import Anthropic from "@anthropic-ai/sdk";
 import type { DiffResult } from "./diff.js";
 import { mergeExtraction, type ExtractionResult } from "./merge.js";
 
 const QUEUE_DIR = join(process.cwd(), "data", "refresh-queue");
+
+const DEFAULT_API_URL = "https://openrouter.ai/api/v1";
+const DEFAULT_MODEL = "google/gemini-2.0-flash-001";
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Interfaces
@@ -117,25 +126,51 @@ If a category has no items, use an empty array []. Return ONLY the JSON.`;
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
-// LLM call + parse
+// LLM call via OpenAI-compatible API (OpenRouter, OpenAI, etc.)
 // ──────────────────────────────────────────────────────────────────────────────
 
 async function callLLM(prompt: string): Promise<ExtractionResult> {
-  const client = new Anthropic();
+  const apiKey = process.env.LLM_API_KEY;
+  if (!apiKey) {
+    throw new Error("LLM_API_KEY not set");
+  }
 
-  const response = await client.messages.create({
-    model: "claude-3-5-haiku-latest",
-    max_tokens: 4000,
-    temperature: 0,
-    messages: [{ role: "user", content: prompt }],
+  const baseURL = process.env.LLM_API_URL || DEFAULT_API_URL;
+  const model = process.env.LLM_MODEL || DEFAULT_MODEL;
+
+  const res = await fetch(`${baseURL}/chat/completions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+      ...(baseURL.includes("openrouter.ai")
+        ? { "HTTP-Referer": "https://changelogs.info", "X-Title": "changelogs.info" }
+        : {}),
+    },
+    body: JSON.stringify({
+      model,
+      temperature: 0,
+      max_tokens: 4000,
+      messages: [{ role: "user", content: prompt }],
+    }),
   });
 
-  const textBlock = response.content.find((b) => b.type === "text");
-  if (!textBlock || textBlock.type !== "text") {
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`LLM API error ${res.status}: ${body.slice(0, 300)}`);
+  }
+
+  const data = (await res.json()) as {
+    choices: Array<{ message: { content: string } }>;
+    usage?: { prompt_tokens: number; completion_tokens: number };
+  };
+
+  const content = data.choices[0]?.message?.content;
+  if (!content) {
     throw new Error("No text response from LLM");
   }
 
-  let raw = textBlock.text.trim();
+  let raw = content.trim();
 
   // Strip markdown fences if the model wraps them anyway
   if (raw.startsWith("```")) {
@@ -152,16 +187,26 @@ async function callLLM(prompt: string): Promise<ExtractionResult> {
 export async function runTier2Refresh(input: RefreshInput): Promise<RefreshOutput> {
   const notes: string[] = [];
 
-  // Check for API key
-  if (!process.env.ANTHROPIC_API_KEY) {
-    console.warn("  ⚠️  ANTHROPIC_API_KEY not set — falling back to queue-only stub");
+  // Check for API key (supports both LLM_API_KEY and legacy ANTHROPIC_API_KEY)
+  const apiKey = process.env.LLM_API_KEY || process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    console.warn("  ⚠️  No API key set — falling back to queue-only stub");
+    console.warn("     Set LLM_API_KEY (and optionally LLM_API_URL + LLM_MODEL)");
     return {
       success: false,
       updatedPayload: input.currentPayload,
       changeCount: 0,
-      extractionNotes: ["No ANTHROPIC_API_KEY — skipped LLM extraction"],
-      error: "ANTHROPIC_API_KEY not set",
+      extractionNotes: ["No LLM_API_KEY — skipped LLM extraction"],
+      error: "No API key set",
     };
+  }
+
+  // If ANTHROPIC_API_KEY was used but no LLM_API_KEY, set the env for callLLM
+  if (!process.env.LLM_API_KEY && process.env.ANTHROPIC_API_KEY) {
+    process.env.LLM_API_KEY = process.env.ANTHROPIC_API_KEY;
+    process.env.LLM_API_URL = process.env.LLM_API_URL || "https://api.anthropic.com/v1";
+    process.env.LLM_MODEL = process.env.LLM_MODEL || "claude-3-5-haiku-latest";
+    notes.push("Using legacy ANTHROPIC_API_KEY (migrate to LLM_API_KEY)");
   }
 
   try {
@@ -170,7 +215,8 @@ export async function runTier2Refresh(input: RefreshInput): Promise<RefreshOutpu
     notes.push(`Prompt length: ${prompt.length} chars`);
 
     // 2. Call LLM
-    console.log("  🤖 Calling LLM for structured extraction...");
+    const model = process.env.LLM_MODEL || DEFAULT_MODEL;
+    console.log(`  🤖 Calling LLM (${model}) for structured extraction...`);
     const extraction = await callLLM(prompt);
 
     // 3. Count changes
@@ -204,8 +250,8 @@ export async function runTier2Refresh(input: RefreshInput): Promise<RefreshOutpu
     };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error(`  ❌ Tier 2 extraction failed: ${msg}`);
     notes.push(`Error: ${msg}`);
+    console.warn(`  ⚠️  Tier 2 extraction failed: ${msg}`);
 
     return {
       success: false,

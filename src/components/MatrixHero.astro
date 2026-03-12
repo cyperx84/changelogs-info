@@ -205,17 +205,17 @@ const shuffled = allFragments.sort(() => Math.random() - 0.5).slice(0, 80);
     function buildTextSprite(text: string, color: string): { texture: any; aspect: number } {
       const c = document.createElement('canvas');
       const ctx = c.getContext('2d')!;
-      ctx.font = 'bold 14px JetBrains Mono, monospace';
+      ctx.font = '11px JetBrains Mono, monospace';
       const measured = ctx.measureText(text);
-      const w = Math.max(64, Math.ceil(measured.width) + 16);
-      const h = 24;
+      const w = Math.max(64, Math.ceil(measured.width) + 10);
+      const h = 18;
       c.width = w;
       c.height = h;
       // Re-set font after resize
-      ctx.font = 'bold 14px JetBrains Mono, monospace';
+      ctx.font = '11px JetBrains Mono, monospace';
       ctx.textBaseline = 'middle';
       ctx.fillStyle = color;
-      ctx.fillText(text, 8, 12);
+      ctx.fillText(text, 5, 9);
       const tex = new THREE.CanvasTexture(c);
       tex.minFilter = THREE.LinearFilter;
       tex.magFilter = THREE.LinearFilter;
@@ -278,7 +278,7 @@ const shuffled = allFragments.sort(() => Math.random() - 0.5).slice(0, 80);
           float z = position.z;
           // Normalize z: -200 = far (0), 20 = near (1)
           float zNorm = clamp((z + 200.0) / 220.0, 0.0, 1.0);
-          vAlpha = mix(0.03, 0.5, zNorm);
+          vAlpha = mix(0.03, 0.2, zNorm);
           // Point size: tiny at back, visible at front
           gl_PointSize = mix(1.0, 4.5, zNorm);
           gl_Position = projectionMatrix * mvPos;
@@ -374,7 +374,7 @@ const shuffled = allFragments.sort(() => Math.random() - 0.5).slice(0, 80);
         const mat = new THREE.SpriteMaterial({
           map: texMap,
           transparent: true,
-          opacity: isHead ? 1.0 : Math.max(0.02, 1.0 - r * 0.12),
+          opacity: isHead ? 0.35 : Math.max(0.02, 0.35 - r * 0.042),
           depthWrite: false,
           depthTest: false,
         });
@@ -389,7 +389,7 @@ const shuffled = allFragments.sort(() => Math.random() - 0.5).slice(0, 80);
           const glowMat = new THREE.SpriteMaterial({
             map: col.isVersion ? cyanGlowTextures[charIdx] : glowTextures[charIdx],
             transparent: true,
-            opacity: 0.2,
+            opacity: 0.06,
             depthWrite: false,
             depthTest: false,
           });
@@ -425,6 +425,11 @@ const shuffled = allFragments.sort(() => Math.random() - 0.5).slice(0, 80);
       opacityFreq: number;
       aspect: number;
       fragment: string;
+      fullText: string;
+      displayedChars: number;
+      typingSpeed: number;
+      typingFrame: number;
+      colorStr: string;
     }
 
     const debrisData: DebrisObj[] = [];
@@ -438,22 +443,29 @@ const shuffled = allFragments.sort(() => Math.random() - 0.5).slice(0, 80);
       // Dispose old texture
       if (d.sprite.material.map) d.sprite.material.map.dispose();
       d.fragment = newFragment;
-      const { texture, aspect } = buildTextSprite(newFragment, colorForText(newFragment));
+      d.fullText = newFragment;
+      d.displayedChars = 0;
+      d.typingFrame = 0;
+      d.typingSpeed = 2 + Math.floor(Math.random() * 3);
+      d.colorStr = colorForText(newFragment);
+      // Start with empty text (cursor only)
+      const { texture, aspect } = buildTextSprite('|', d.colorStr);
       d.sprite.material.map = texture;
       d.sprite.material.needsUpdate = true;
       d.aspect = aspect;
-      d.sprite.scale.x = aspect * 1.2;
-      d.sprite.scale.y = 1.2;
+      d.sprite.scale.x = aspect * 0.85;
+      d.sprite.scale.y = 0.85;
     }
 
     for (let i = 0; i < DEBRIS_COUNT; i++) {
       const fragment = pickFragment();
       const color = colorForText(fragment);
-      const { texture, aspect } = buildTextSprite(fragment, color);
-      debrisTextures.push(texture);
+      // Start with cursor-only texture for typewriter effect
+      const { texture: initTex, aspect: initAspect } = buildTextSprite('|', color);
+      debrisTextures.push(initTex);
 
       const mat = new THREE.SpriteMaterial({
-        map: texture,
+        map: initTex,
         transparent: true,
         opacity: 0.0,
         depthWrite: false,
@@ -465,7 +477,7 @@ const shuffled = allFragments.sort(() => Math.random() - 0.5).slice(0, 80);
       const baseY = (Math.random() - 0.5) * 20;
       const baseZ = 3 + Math.random() * 11;
 
-      sprite.scale.set(aspect * 1.2, 1.2, 1);
+      sprite.scale.set(initAspect * 0.85, 0.85, 1);
       sprite.position.set(baseX, baseY, baseZ);
       scene.add(sprite);
 
@@ -482,8 +494,13 @@ const shuffled = allFragments.sort(() => Math.random() - 0.5).slice(0, 80);
         vx: (Math.random() - 0.5) * 0.006,
         opacityPhase: Math.random() * Math.PI * 2,
         opacityFreq: 0.003 + Math.random() * 0.005,
-        aspect,
+        aspect: initAspect,
         fragment,
+        fullText: fragment,
+        displayedChars: 0,
+        typingSpeed: 2 + Math.floor(Math.random() * 3),
+        typingFrame: 0,
+        colorStr: color,
       });
     }
 
@@ -611,9 +628,9 @@ const shuffled = allFragments.sort(() => Math.random() - 0.5).slice(0, 80);
 
           // Trail fade
           if (r === 0) {
-            s.material.opacity = 1.0;
+            s.material.opacity = 0.35;
           } else {
-            s.material.opacity = Math.max(0.02, 1.0 - r * 0.12);
+            s.material.opacity = Math.max(0.02, 0.35 - r * 0.042);
           }
         }
 
@@ -625,12 +642,22 @@ const shuffled = allFragments.sort(() => Math.random() - 0.5).slice(0, 80);
       }
 
       // ── Layer 3: Foreground debris (text fragments) ──
+      // Global blink counter for typewriter cursor
+      const showCursor = Math.floor(frameCount / 20) % 2 === 0;
+
       for (let i = 0; i < DEBRIS_COUNT; i++) {
         const d = debrisData[i];
         const x = d.baseX + Math.sin(time * d.freqX + d.phaseX) * 2.5 + d.vx * frameCount;
         const y = d.baseY + Math.cos(time * d.freqY + d.phaseY) * 1.8;
         const z = d.baseZ + Math.sin(time * 0.3 + d.phaseZ) * 0.8;
-        const opacity = 0.15 + (Math.sin(time * d.opacityFreq * 60 + d.opacityPhase) * 0.5) * 0.35 + 0.35;
+
+        // Dimmer opacity: base range 0.06–0.18, per-color max cap
+        const baseOpacity = 0.12 + Math.sin(time * d.opacityFreq * 60 + d.opacityPhase) * 0.06;
+        const colorStr = d.colorStr;
+        let maxOpacity = 0.16; // green default
+        if (colorStr === '#ffb800') maxOpacity = 0.22; // amber (versions)
+        else if (colorStr === '#00d4ff') maxOpacity = 0.20; // cyan
+        const opacity = Math.min(baseOpacity, maxOpacity);
 
         // Respawn at opposite edge if out of bounds
         if (Math.abs(x) > 26 || Math.abs(y) > 15) {
@@ -641,6 +668,25 @@ const shuffled = allFragments.sort(() => Math.random() - 0.5).slice(0, 80);
           d.phaseX = Math.random() * Math.PI * 2;
           d.phaseY = Math.random() * Math.PI * 2;
           d.vx = (Math.random() - 0.5) * 0.006;
+        }
+
+        // Typewriter effect: rebuild texture while still typing
+        if (d.displayedChars < d.fullText.length) {
+          d.typingFrame++;
+          if (d.typingFrame % d.typingSpeed === 0) {
+            d.displayedChars++;
+          }
+          const visibleText = d.fullText.slice(0, d.displayedChars);
+          const cursorChar = (d.displayedChars < d.fullText.length && showCursor) ? '|' : '';
+          const displayText = visibleText + cursorChar || '|';
+          // Dispose old and rebuild
+          if (d.sprite.material.map) d.sprite.material.map.dispose();
+          const { texture, aspect } = buildTextSprite(displayText, d.colorStr);
+          d.sprite.material.map = texture;
+          d.sprite.material.needsUpdate = true;
+          d.aspect = aspect;
+          d.sprite.scale.x = aspect * 0.85;
+          d.sprite.scale.y = 0.85;
         }
 
         d.sprite.position.set(x, y, z);

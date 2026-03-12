@@ -534,57 +534,50 @@ select:focus {
    Scroll-driven reveal animations
    ======================================== */
 
-/* Scroll reveal base state */
+/* Reveal animations — pure CSS, no JS dependency */
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes revealLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes revealScale {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
 .reveal {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: revealUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Stagger children */
-.reveal-stagger > .reveal:nth-child(1) { transition-delay: 0ms; }
-.reveal-stagger > .reveal:nth-child(2) { transition-delay: 40ms; }
-.reveal-stagger > .reveal:nth-child(3) { transition-delay: 80ms; }
-.reveal-stagger > .reveal:nth-child(4) { transition-delay: 120ms; }
-.reveal-stagger > .reveal:nth-child(5) { transition-delay: 160ms; }
-.reveal-stagger > .reveal:nth-child(6) { transition-delay: 200ms; }
-.reveal-stagger > .reveal:nth-child(n+7) { transition-delay: 240ms; }
-
-/* Reveal from left */
 .reveal-left {
-  opacity: 0;
-  transform: translateX(-24px);
-  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: revealLeft 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-.reveal-left.visible {
-  opacity: 1;
-  transform: translateX(0);
+.reveal-scale {
+  animation: revealScale 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* Scale reveal for hero elements */
-.reveal-scale {
-  opacity: 0;
-  transform: scale(0.95);
-  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.reveal-scale.visible {
+/* Stagger delays for children */
+.reveal-stagger > .reveal:nth-child(1) { animation-delay: 0ms; }
+.reveal-stagger > .reveal:nth-child(2) { animation-delay: 40ms; }
+.reveal-stagger > .reveal:nth-child(3) { animation-delay: 80ms; }
+.reveal-stagger > .reveal:nth-child(4) { animation-delay: 120ms; }
+.reveal-stagger > .reveal:nth-child(5) { animation-delay: 160ms; }
+.reveal-stagger > .reveal:nth-child(6) { animation-delay: 200ms; }
+.reveal-stagger > .reveal:nth-child(n+7) { animation-delay: 240ms; }
+
+/* Keep .visible class working for any legacy JS usage */
+.reveal.visible, .reveal-left.visible, .reveal-scale.visible {
   opacity: 1;
-  transform: scale(1);
+  transform: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .reveal, .reveal-left, .reveal-scale {
+    animation: none;
     opacity: 1;
     transform: none;
-    transition: none;
   }
 }
 
@@ -710,7 +703,7 @@ select:focus {
   height: 100%;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.6;
+  opacity: 0.5;
 }
 
 .hero-content {

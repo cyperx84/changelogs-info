@@ -26,7 +26,9 @@ jobs:
       - run: npm ci
       - name: Run extraction pipeline
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          LLM_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LLM_API_URL: "https://openrouter.ai/api/v1"
+          LLM_MODEL: "google/gemini-2.0-flash-001"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TOOL="${{ github.event.inputs.tool }}"
