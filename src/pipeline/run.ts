@@ -4,7 +4,7 @@ import { getAllToolSlugs, getSourcesForTool } from "./sources.js";
 import { fetchSource } from "./fetcher.js";
 import { storeEvidence, loadLatestEvidence } from "./evidence.js";
 import { computeDiff, type DiffResult } from "./diff.js";
-import { queueTier2Refresh } from "./refresh.js";
+import { queueTier2Refresh, runTier2Refresh, type RefreshInput } from "./refresh.js";
 
 const REFS_DIR = join(process.cwd(), "public", "api", "refs");
 
@@ -47,10 +47,32 @@ interface RunResult {
   scope: string;
   patchesApplied: number;
   tier2Queued: boolean;
+  tier2Extracted: number;
+  skipped: boolean;
   error?: string;
 }
 
-async function runTool(toolSlug: string): Promise<RunResult> {
+// Extract the release body for the detected version from GitHub releases JSON
+function getReleaseBody(evidenceContent: string, version: string): { body: string; date: string } | null {
+  try {
+    const releases = JSON.parse(evidenceContent) as Array<{
+      tag_name: string;
+      body: string;
+      published_at: string;
+    }>;
+    const stripTag = (t: string) => t.replace(/^@[^@]+@/, "").replace(/^[a-zA-Z]+-v/, "").replace(/^v/, "");
+    const release = releases.find((r) => stripTag(r.tag_name) === version);
+    if (release) {
+      return {
+        body: release.body ?? "",
+        date: release.published_at?.split("T")[0] ?? new Date().toISOString().split("T")[0],
+      };
+    }
+  } catch { /* ignore */ }
+  return null;
+}
+
+async function runTool(toolSlug: string, forceTier2: boolean): Promise<RunResult> {
   const result: RunResult = {
     tool: toolSlug,
     previousVersion: null,
@@ -58,6 +80,8 @@ async function runTool(toolSlug: string): Promise<RunResult> {
     scope: "none",
     patchesApplied: 0,
     tier2Queued: false,
+    tier2Extracted: 0,
+    skipped: false,
   };
 
   try {
@@ -81,6 +105,31 @@ async function runTool(toolSlug: string): Promise<RunResult> {
       return result;
     }
 
+    // Handle skipped fetches (304 Not Modified or rate limited)
+    if (fetchResult.skipped) {
+      result.skipped = true;
+      console.log(`  ✅ Skipped (${fetchResult.statusCode})`);
+
+      // If force-tier2 requested and we have previous evidence, queue tier2 anyway
+      if (forceTier2 && previousEvidence) {
+        const payload = loadPayload(toolSlug);
+        const version = (payload as Record<string, Record<string, unknown>>).meta?.latest_stable as string ?? null;
+        await queueTier2Refresh({
+          toolSlug,
+          changeDetected: false,
+          scope: "none",
+          reasons: ["force-tier2 flag"],
+          versionChanged: false,
+          previousVersion: version,
+          detectedVersion: version,
+          tier2Required: true,
+          directPatches: [],
+        });
+        result.tier2Queued = true;
+      }
+      return result;
+    }
+
     if (fetchResult.statusCode !== 200) {
       result.error = `HTTP ${fetchResult.statusCode}`;
       return result;
@@ -88,7 +137,9 @@ async function runTool(toolSlug: string): Promise<RunResult> {
 
     // Store evidence
     const evidencePath = storeEvidence(fetchResult);
-    console.log(`  💾 Evidence stored: ${evidencePath}`);
+    if (evidencePath) {
+      console.log(`  💾 Evidence stored: ${evidencePath}`);
+    }
 
     // Load payload and compute diff
     const payload = loadPayload(toolSlug);
@@ -117,13 +168,48 @@ async function runTool(toolSlug: string): Promise<RunResult> {
       console.log(`  📋 Manifest updated`);
     }
 
-    // Queue tier 2 if needed
-    if (diff.tier2Required) {
+    // Tier 2: LLM extraction
+    const shouldRunTier2 = forceTier2 || diff.tier2Required;
+    if (shouldRunTier2 && diff.detectedVersion) {
+      const releaseInfo = getReleaseBody(fetchResult.content, diff.detectedVersion);
+      if (releaseInfo && releaseInfo.body) {
+        const refreshInput: RefreshInput = {
+          toolSlug,
+          releaseVersion: diff.detectedVersion,
+          releaseBody: releaseInfo.body,
+          releaseDate: releaseInfo.date,
+          currentPayload: payload,
+          previousVersion: diff.previousVersion,
+        };
+
+        const refreshOutput = await runTier2Refresh(refreshInput);
+
+        if (refreshOutput.success) {
+          // Write the LLM-updated payload
+          const payloadPath = join(REFS_DIR, `${toolSlug}.json`);
+          writeFileSync(payloadPath, JSON.stringify(refreshOutput.updatedPayload, null, 2) + "\n");
+          result.tier2Extracted = refreshOutput.changeCount;
+          console.log(`  ✨ Tier 2 refresh: extracted ${refreshOutput.changeCount} changes`);
+          for (const note of refreshOutput.extractionNotes) {
+            console.log(`     ${note}`);
+          }
+        } else {
+          // Fall back to queue
+          console.log(`  ⚠️  Tier 2 extraction failed: ${refreshOutput.error}`);
+          await queueTier2Refresh(diff);
+          result.tier2Queued = true;
+        }
+      } else {
+        console.log(`  ⚠️  No release body found for ${diff.detectedVersion}`);
+        await queueTier2Refresh(diff);
+        result.tier2Queued = true;
+      }
+    } else if (diff.tier2Required) {
       await queueTier2Refresh(diff);
       result.tier2Queued = true;
     }
 
-    if (!diff.changeDetected) {
+    if (!diff.changeDetected && !forceTier2) {
       console.log(`  ✅ No changes detected`);
     }
   } catch (err) {
@@ -133,50 +219,95 @@ async function runTool(toolSlug: string): Promise<RunResult> {
   return result;
 }
 
-async function main() {
-  const args = process.argv.slice(2);
-  let toolFilter: string | null = null;
+interface PipelineSummary {
+  ran_at: string;
+  tools_checked: number;
+  updates_found: number;
+  tier2_ran: number;
+  errors: number;
+  results: RunResult[];
+}
 
-  for (let i = 0; i < args.length; i++) {
-    if (args[i] === "--tool" && args[i + 1]) {
-      toolFilter = args[i + 1];
+function parseArgs(argv: string[]): { toolFilter: string | null; forceTier2: boolean; jsonOutput: boolean } {
+  let toolFilter: string | null = null;
+  let forceTier2 = false;
+  let jsonOutput = false;
+
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === "--tool" && argv[i + 1]) {
+      toolFilter = argv[i + 1];
       i++;
+    } else if (argv[i] === "--force-tier2") {
+      forceTier2 = true;
+    } else if (argv[i] === "--json") {
+      jsonOutput = true;
     }
   }
 
-  const slugs = toolFilter ? [toolFilter] : getAllToolSlugs();
-  console.log(`🚀 Pipeline running for: ${slugs.join(", ")}`);
+  return { toolFilter, forceTier2, jsonOutput };
+}
+
+async function main() {
+  const args = parseArgs(process.argv.slice(2));
+  const slugs = args.toolFilter ? [args.toolFilter] : getAllToolSlugs();
+
+  if (!args.jsonOutput) {
+    console.log(`🚀 Pipeline running for: ${slugs.join(", ")}`);
+  }
 
   const results: RunResult[] = [];
   for (const slug of slugs) {
-    results.push(await runTool(slug));
+    results.push(await runTool(slug, args.forceTier2));
   }
 
-  // Summary table
-  console.log("\n" + "═".repeat(90));
-  console.log(
-    "Tool".padEnd(15) +
-    "Previous".padEnd(14) +
-    "New".padEnd(14) +
-    "Scope".padEnd(10) +
-    "Patches".padEnd(10) +
-    "Tier2".padEnd(8) +
-    "Error"
-  );
-  console.log("─".repeat(90));
+  const summary: PipelineSummary = {
+    ran_at: new Date().toISOString(),
+    tools_checked: results.length,
+    updates_found: results.filter((r) => r.patchesApplied > 0).length,
+    tier2_ran: results.filter((r) => r.tier2Queued || r.tier2Extracted > 0).length,
+    errors: results.filter((r) => r.error).length,
+    results,
+  };
 
-  for (const r of results) {
+  if (args.jsonOutput) {
+    console.log(JSON.stringify(summary, null, 2));
+  } else {
+    // Summary table
+    console.log("\n" + "═".repeat(105));
     console.log(
-      r.tool.padEnd(15) +
-      (r.previousVersion ?? "—").padEnd(14) +
-      (r.newVersion ?? "—").padEnd(14) +
-      r.scope.padEnd(10) +
-      String(r.patchesApplied).padEnd(10) +
-      (r.tier2Queued ? "yes" : "no").padEnd(8) +
-      (r.error ?? "")
+      "Tool".padEnd(15) +
+      "Previous".padEnd(14) +
+      "New".padEnd(14) +
+      "Scope".padEnd(10) +
+      "Patches".padEnd(10) +
+      "Tier2".padEnd(10) +
+      "Extracted".padEnd(12) +
+      "Skip".padEnd(7) +
+      "Error"
     );
+    console.log("─".repeat(105));
+
+    for (const r of results) {
+      const tier2Status = r.tier2Extracted > 0 ? "done" : r.tier2Queued ? "queued" : "no";
+      console.log(
+        r.tool.padEnd(15) +
+        (r.previousVersion ?? "—").padEnd(14) +
+        (r.newVersion ?? "—").padEnd(14) +
+        r.scope.padEnd(10) +
+        String(r.patchesApplied).padEnd(10) +
+        tier2Status.padEnd(10) +
+        String(r.tier2Extracted).padEnd(12) +
+        (r.skipped ? "yes" : "no").padEnd(7) +
+        (r.error ?? "")
+      );
+    }
+    console.log("═".repeat(105));
   }
-  console.log("═".repeat(90));
+
+  // Exit with code 1 if any tool had errors
+  if (summary.errors > 0) {
+    process.exit(1);
+  }
 }
 
 main().catch((err) => {

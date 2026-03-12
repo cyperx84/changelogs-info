@@ -538,8 +538,8 @@ select:focus {
 .reveal {
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .reveal.visible {
@@ -549,12 +549,12 @@ select:focus {
 
 /* Stagger children */
 .reveal-stagger > .reveal:nth-child(1) { transition-delay: 0ms; }
-.reveal-stagger > .reveal:nth-child(2) { transition-delay: 60ms; }
-.reveal-stagger > .reveal:nth-child(3) { transition-delay: 120ms; }
-.reveal-stagger > .reveal:nth-child(4) { transition-delay: 180ms; }
-.reveal-stagger > .reveal:nth-child(5) { transition-delay: 240ms; }
-.reveal-stagger > .reveal:nth-child(6) { transition-delay: 300ms; }
-.reveal-stagger > .reveal:nth-child(n+7) { transition-delay: 360ms; }
+.reveal-stagger > .reveal:nth-child(2) { transition-delay: 40ms; }
+.reveal-stagger > .reveal:nth-child(3) { transition-delay: 80ms; }
+.reveal-stagger > .reveal:nth-child(4) { transition-delay: 120ms; }
+.reveal-stagger > .reveal:nth-child(5) { transition-delay: 160ms; }
+.reveal-stagger > .reveal:nth-child(6) { transition-delay: 200ms; }
+.reveal-stagger > .reveal:nth-child(n+7) { transition-delay: 240ms; }
 
 /* Reveal from left */
 .reveal-left {
@@ -810,4 +810,60 @@ select:focus {
   left: 0.75rem;
   color: var(--color-border);
   font-size: 0.75rem;
+}
+
+/* ========================================
+   Utility classes
+   ======================================== */
+
+/* Text glow effects */
+.text-glow-green {
+  text-shadow: 0 0 20px rgba(51, 255, 51, 0.25), 0 0 40px rgba(51, 255, 51, 0.1);
+}
+
+.text-glow-cyan {
+  text-shadow: 0 0 20px rgba(0, 212, 255, 0.25);
+}
+
+[data-theme="light"] .text-glow-green,
+[data-theme="light"] .text-glow-cyan {
+  text-shadow: none;
+}
+
+/* Pulse dot for live indicators */
+.pulse-dot {
+  animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-dot {
+    animation: none;
+  }
+}
+
+/* Card hover glow */
+.card-hover {
+  transition: border-color var(--transition-base),
+              box-shadow var(--transition-base),
+              background-color var(--transition-fast);
+}
+
+.card-hover:hover {
+  box-shadow: 0 0 16px rgba(51, 255, 51, 0.12),
+              0 0 4px rgba(51, 255, 51, 0.08);
+}
+
+[data-theme="light"] .card-hover:hover {
+  box-shadow: 0 0 12px rgba(13, 115, 119, 0.15);
 }

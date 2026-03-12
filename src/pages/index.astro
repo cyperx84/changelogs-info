@@ -2,11 +2,11 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ToolCard from "../components/ToolCard.astro";
 import MatrixHero from "../components/MatrixHero.astro";
-import { getTools, getAllToolReleases, FEATURED_TOOLS, isFeatured, relativeTime } from "../lib/releases";
+import HowItWorks from "../components/HowItWorks.astro";
+import { getTools, getAllToolReleases, relativeTime, CLWATCH_TOOLS } from "../lib/releases";
 import type { Release } from "../lib/releases";
 
 const tools = getTools();
-const otherTools = tools.filter((t) => !isFeatured(t.id));
 
 let releaseMap: Record<string, Release> = {};
 try {
@@ -20,37 +20,94 @@ try {
     }
   }
 } catch {}
+
+// Gather unique categories for the filter
+const categories = [...new Set(tools.map((t) => t.category))].sort();
+
+// Helper: extract highlight lines from a markdown release body
+function parseReleaseHighlights(body: string, max: number = 3): string[] {
+  if (!body) return [];
+
+  const lines = body.split("\n");
+  const highlights: string[] = [];
+
+  for (const line of lines) {
+    if (highlights.length >= max) break;
+
+    const trimmed = line.trim();
+    // Prefer bullet points and heading lines
+    if (/^[-*]\s+/.test(trimmed) || /^###\s+/.test(trimmed)) {
+      let clean = trimmed
+        .replace(/^[-*]\s+/, "")
+        .replace(/^###\s+/, "")
+        .replace(/\*\*/g, "")
+        .replace(/\*/g, "")
+        .replace(/#/g, "")
+        .replace(/`/g, "")
+        .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1") // [text](url) -> text
+        .trim();
+
+      if (clean.length < 10) continue; // skip very short lines
+      if (clean.length > 100) clean = clean.slice(0, 97) + "...";
+      highlights.push(clean);
+    }
+  }
+
+  return highlights;
+}
+
+// The 5 tracked tools for the Latest Changes section
+const latestChangesTools = CLWATCH_TOOLS.map((id) => {
+  const tool = tools.find((t) => t.id === id);
+  const release = releaseMap[id];
+  const highlights = release ? parseReleaseHighlights(release.body) : [];
+  return { id, tool, release, highlights };
+}).filter((entry) => entry.tool);
 ---
 
-<BaseLayout title="changelogs.info — OpenClaw & Claude Code Hub + AI Coding Tool Tracker">
-  <!-- Terminal Hero -->
+<BaseLayout title="changelogs.info — AI Coding Tool Changelog Tracker">
+  <!-- Section 1: Hero -->
   <section class="relative overflow-hidden border-b border-border bg-bg-secondary/30">
     <MatrixHero />
     <div class="hero-content mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 md:py-20">
-      <div class="max-w-3xl">
+      <div class="max-w-xl">
         <h1 class="font-mono text-2xl font-bold text-green sm:text-3xl md:text-4xl">
-          <span class="text-green">&gt;</span> changelogs.info
+          <span class="text-green">&gt;</span> Keep your AI tools current.
         </h1>
-        <p class="mt-3 font-mono text-xs leading-relaxed text-text-secondary sm:text-sm md:text-base">
-          <span class="text-green">#</span> your hub for <span class="text-cyan">OpenClaw</span> and <span class="text-cyan">Claude Code</span> — plus {otherTools.length} more AI coding tools
-        </p>
         <p class="mt-4 font-sans text-sm leading-relaxed text-text-secondary sm:text-base">
-          Cheatsheets, configs, model compatibility, migration guides, and daily changelog tracking. Everything you need to get the most out of your AI coding workflow.
+          changelogs.info tracks every major AI coding tool and model. clwatch patches your agent configs and reference files when things change &mdash; automatically.
         </p>
-        <div class="mt-6 flex flex-wrap gap-3 font-mono text-xs sm:text-sm">
-          <a href="/openclaw" class="rounded border border-green/40 bg-green/10 px-4 py-2 text-green transition-all hover:bg-green/20">OpenClaw</a>
-          <a href="/claude-code" class="rounded border border-green/40 bg-green/10 px-4 py-2 text-green transition-all hover:bg-green/20">Claude Code</a>
-          <a href="#all-tools" class="rounded border border-border bg-bg-tertiary px-4 py-2 text-text-muted transition-all hover:border-green hover:text-green">all {tools.length} tools</a>
+
+        <!-- Divider between hero copy and install -->
+        <div class="mt-6 h-px w-16 bg-green/30"></div>
+
+        <!-- Terminal install block -->
+        <p class="mt-5 font-mono text-xs uppercase tracking-widest text-text-muted text-center sm:text-left">Quick Start</p>
+        <div class="mt-3 rounded-lg border border-border bg-bg-card">
+          <div class="border-b border-border px-3 py-1.5 font-mono text-[10px] text-text-muted">
+            <span class="text-green">●●●</span> <span class="ml-2">terminal</span>
+          </div>
+          <pre class="px-4 py-3 font-mono text-xs leading-relaxed text-text-secondary sm:text-sm"><span class="text-green">$</span> brew install clwatch
+<span class="text-green">$</span> npx clwatch diff</pre>
+        </div>
+
+        <!-- CTAs -->
+        <div class="mt-5 flex flex-wrap gap-3 font-mono text-xs sm:text-sm">
+          <a href="#all-tools" class="rounded border border-green bg-green/10 px-4 py-2 font-medium text-green transition-all hover:bg-green/20 hover:shadow-[0_0_12px_rgba(51,255,51,0.15)]">Browse all tools</a>
+          <a href="/clwatch" class="rounded border border-border bg-transparent px-4 py-2 text-text-muted transition-all hover:border-green/50 hover:text-green">/clwatch docs</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Latest releases ticker -->
+  <!-- Section 2: Freshness ticker -->
   {Object.keys(releaseMap).length > 0 && (
     <div class="border-b border-border bg-bg-card/50">
       <div class="mx-auto flex max-w-6xl items-center gap-3 overflow-x-auto px-4 py-2 font-mono text-xs sm:px-6">
-        <span class="shrink-0 text-green">latest:</span>
+        <span class="flex shrink-0 items-center gap-1.5 text-green">
+          <span class="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-green"></span>
+          LIVE &mdash;
+        </span>
         {Object.entries(releaseMap)
           .sort(([, a], [, b]) => new Date(b.date).getTime() - new Date(a.date).getTime())
           .slice(0, 6)
@@ -68,154 +125,231 @@ try {
 
   <div class="green-divider"></div>
 
-  <!-- OpenClaw Deep Section -->
-  <section id="openclaw" class="border-b border-border bg-green/[0.02]">
-    <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
-      <div class="mb-8 flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h2 class="reveal font-mono text-xl font-bold text-green sm:text-2xl">
-            <span class="text-green">/</span>openclaw
-          </h2>
-          <p class="mt-2 font-mono text-xs text-text-secondary sm:text-sm">
-            Personal AI assistant platform \u2014 run your own AI on any device, any channel
-          </p>
-        </div>
-        {releaseMap["openclaw"] && (
-          <div class="reveal rounded border border-green/30 bg-bg-card px-3 py-2 font-mono text-xs">
-            <span class="text-green">{releaseMap["openclaw"].version}</span>
-            <span class="ml-2 text-text-muted">{relativeTime(releaseMap["openclaw"].date)}</span>
-          </div>
-        )}
-      </div>
-
-      <div class="reveal-stagger grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <a href="/tools/openclaw" class="reveal rounded-lg border border-border bg-bg-card p-4 transition-all hover:border-green hover:shadow-[0_0_12px_rgba(51,255,51,0.12)]">
-          <span class="text-lg">\ud83d\udcdd</span>
-          <h3 class="mt-2 font-mono text-sm font-semibold text-text-primary">Changelog</h3>
-          <p class="mt-1 font-mono text-xs text-text-muted">Every release tracked with full notes</p>
-        </a>
-        <a href="/tools/openclaw/cheatsheet" class="reveal rounded-lg border border-border bg-bg-card p-4 transition-all hover:border-cyan hover:shadow-[0_0_12px_rgba(0,212,255,0.12)]">
-          <span class="text-lg">\ud83d\udccb</span>
-          <h3 class="mt-2 font-mono text-sm font-semibold text-text-primary">Cheat Sheet</h3>
-          <p class="mt-1 font-mono text-xs text-text-muted">Skills, cron, memory, plugins, config</p>
-        </a>
-        <a href="/configs" class="reveal rounded-lg border border-border bg-bg-card p-4 transition-all hover:border-green hover:shadow-[0_0_12px_rgba(51,255,51,0.12)]">
-          <span class="text-lg">\u2699\ufe0f</span>
-          <h3 class="mt-2 font-mono text-sm font-semibold text-text-primary">Config Templates</h3>
-          <p class="mt-1 font-mono text-xs text-text-muted">Gateway, agents, channels, cron</p>
-        </a>
-        <a href="/migrations" class="reveal rounded-lg border border-border bg-bg-card p-4 transition-all hover:border-amber hover:shadow-[0_0_12px_rgba(255,184,0,0.12)]">
-          <span class="text-lg">\ud83d\udd04</span>
-          <h3 class="mt-2 font-mono text-sm font-semibold text-text-primary">Migration Guide</h3>
-          <p class="mt-1 font-mono text-xs text-text-muted">Upgrade safely between versions</p>
-        </a>
-      </div>
-
-      <div class="reveal mt-6 grid gap-3 sm:grid-cols-3">
-        <a href="/compatibility" class="rounded border border-border bg-bg-card px-4 py-3 font-mono text-xs text-text-muted transition-all hover:border-green hover:text-green">
-          \ud83e\udde9 model compatibility
-        </a>
-        <a href="/recommendations" class="rounded border border-border bg-bg-card px-4 py-3 font-mono text-xs text-text-muted transition-all hover:border-green hover:text-green">
-          \u2b50 recommendations
-        </a>
-        <a href="/deprecations" class="rounded border border-border bg-bg-card px-4 py-3 font-mono text-xs text-text-muted transition-all hover:border-red hover:text-red">
-          \u26a0\ufe0f deprecation radar
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <div class="green-divider"></div>
-
-  <!-- Claude Code Deep Section -->
-  <section id="claude-code" class="border-b border-border bg-green/[0.02]">
-    <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
-      <div class="mb-8 flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h2 class="reveal font-mono text-xl font-bold text-green sm:text-2xl">
-            <span class="text-green">/</span>claude-code
-          </h2>
-          <p class="mt-2 font-mono text-xs text-text-secondary sm:text-sm">
-            Anthropic\u2019s agentic coding CLI \u2014 understands your codebase, writes code through natural language
-          </p>
-        </div>
-        {releaseMap["claude-code"] && (
-          <div class="reveal rounded border border-green/30 bg-bg-card px-3 py-2 font-mono text-xs">
-            <span class="text-green">{releaseMap["claude-code"].version}</span>
-            <span class="ml-2 text-text-muted">{relativeTime(releaseMap["claude-code"].date)}</span>
-          </div>
-        )}
-      </div>
-
-      <div class="reveal-stagger grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <a href="/tools/claude-code" class="reveal rounded-lg border border-border bg-bg-card p-4 transition-all hover:border-green hover:shadow-[0_0_12px_rgba(51,255,51,0.12)]">
-          <span class="text-lg">\ud83d\udcdd</span>
-          <h3 class="mt-2 font-mono text-sm font-semibold text-text-primary">Changelog</h3>
-          <p class="mt-1 font-mono text-xs text-text-muted">Every release tracked with full notes</p>
-        </a>
-        <a href="/tools/claude-code/cheatsheet" class="reveal rounded-lg border border-border bg-bg-card p-4 transition-all hover:border-cyan hover:shadow-[0_0_12px_rgba(0,212,255,0.12)]">
-          <span class="text-lg">\ud83d\udccb</span>
-          <h3 class="mt-2 font-mono text-sm font-semibold text-text-primary">Cheat Sheet</h3>
-          <p class="mt-1 font-mono text-xs text-text-muted">CLI flags, agent teams, hooks, MCP, skills</p>
-        </a>
-        <a href="/configs" class="reveal rounded-lg border border-border bg-bg-card p-4 transition-all hover:border-green hover:shadow-[0_0_12px_rgba(51,255,51,0.12)]">
-          <span class="text-lg">\u2699\ufe0f</span>
-          <h3 class="mt-2 font-mono text-sm font-semibold text-text-primary">Config Templates</h3>
-          <p class="mt-1 font-mono text-xs text-text-muted">CLAUDE.md, settings.json, permissions</p>
-        </a>
-        <a href="/migrations" class="reveal rounded-lg border border-border bg-bg-card p-4 transition-all hover:border-amber hover:shadow-[0_0_12px_rgba(255,184,0,0.12)]">
-          <span class="text-lg">\ud83d\udd04</span>
-          <h3 class="mt-2 font-mono text-sm font-semibold text-text-primary">Migration Guide</h3>
-          <p class="mt-1 font-mono text-xs text-text-muted">Version upgrades, breaking changes</p>
-        </a>
-      </div>
-
-      <div class="reveal mt-6 grid gap-3 sm:grid-cols-3">
-        <a href="/compatibility" class="rounded border border-border bg-bg-card px-4 py-3 font-mono text-xs text-text-muted transition-all hover:border-green hover:text-green">
-          \ud83e\udde9 model compatibility
-        </a>
-        <a href="/recommendations" class="rounded border border-border bg-bg-card px-4 py-3 font-mono text-xs text-text-muted transition-all hover:border-green hover:text-green">
-          \u2b50 recommendations
-        </a>
-        <a href="/deprecations" class="rounded border border-border bg-bg-card px-4 py-3 font-mono text-xs text-text-muted transition-all hover:border-red hover:text-red">
-          \u26a0\ufe0f deprecation radar
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <div class="green-divider"></div>
-
-  <!-- Also Tracking -->
-  <section id="all-tools" class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+  <!-- Section 3: Latest Changes -->
+  <section class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
     <div class="mb-6 flex items-center justify-between sm:mb-8">
-      <h2 class="font-mono text-base font-semibold text-green sm:text-lg">
-        <span class="text-green">/</span>also_tracking
+      <h2 class="font-mono text-lg font-semibold text-text-primary sm:text-xl">
+        Latest Changes
+        <span class="mt-1 block h-0.5 w-12 rounded bg-green/50"></span>
       </h2>
-      <span class="font-mono text-xs text-text-muted sm:text-sm">
-        <span class="text-green">[</span>{otherTools.length} more<span class="text-green">]</span>
+      <span class="flex items-center gap-2 font-mono text-xs text-text-muted">
+        <span class="pulse-dot inline-block h-1.5 w-1.5 rounded-full bg-green"></span>
+        updated live from GitHub
       </span>
     </div>
 
-    <div class="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 reveal-stagger">
-      {otherTools.map((tool) => (
-        <div class="reveal"><ToolCard tool={tool} latestRelease={releaseMap[tool.id]} /></div>
+    <div class="flex gap-3 overflow-x-auto pb-2 sm:grid sm:grid-cols-2 sm:overflow-visible sm:pb-0 lg:grid-cols-5">
+      {latestChangesTools.map(({ id, tool, release, highlights }) => (
+        <div class="min-w-[260px] flex-shrink-0 sm:min-w-0">
+          {release && tool ? (
+            <a
+              href={`/tools/${id}`}
+              class="group flex h-full flex-col rounded-lg border border-border bg-bg-card p-4 transition-all duration-200 hover:border-green/40 hover:shadow-[0_0_12px_rgba(51,255,51,0.08)] sm:p-5"
+            >
+              <div class="flex items-center justify-between gap-2">
+                <span class="font-mono text-sm font-semibold text-text-primary">{tool.name}</span>
+                <span class="shrink-0 rounded border border-green/30 bg-green/10 px-2 py-0.5 font-mono text-xs text-green">
+                  {release.version}
+                </span>
+              </div>
+              <span class="mt-1 font-mono text-xs text-text-muted">
+                {relativeTime(release.date)}
+              </span>
+
+              <div class="my-3 border-t border-border"></div>
+
+              {release.name && release.name !== release.version && (
+                <p class="mb-2 truncate font-mono text-xs text-text-secondary">
+                  {release.name}
+                </p>
+              )}
+
+              {highlights.length > 0 ? (
+                <ul class="flex-1 space-y-1.5">
+                  {highlights.map((h) => (
+                    <li class="flex gap-2 font-mono text-[11px] leading-snug text-text-muted">
+                      <span class="shrink-0 text-green opacity-60">&mdash;</span>
+                      <span class="line-clamp-2">{h}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p class="flex-1 font-mono text-[11px] text-text-muted opacity-60">no release notes</p>
+              )}
+
+              <div class="mt-3 flex items-center justify-between">
+                <span class="font-mono text-[10px] text-text-muted">{tool.repo}</span>
+                <span class="text-green transition-transform duration-200 ease-out group-hover:translate-x-1.5 group-hover:text-green-bright">&rarr;</span>
+              </div>
+            </a>
+          ) : (
+            <div class="flex h-full flex-col items-center justify-center rounded-lg border border-dashed border-border bg-bg-card p-5">
+              <span class="font-mono text-xs text-text-muted">no data yet</span>
+            </div>
+          )}
+        </div>
       ))}
     </div>
   </section>
 
   <div class="green-divider"></div>
 
-  <!-- Recent releases -->
-  <section class="mx-auto max-w-6xl px-4 pb-12 sm:px-6 sm:pb-16">
-    <h2 class="reveal mb-4 font-mono text-base font-semibold text-green sm:mb-6 sm:text-lg">
-      <span class="text-green">/</span>recent_releases
+  <!-- Section 4: How it works -->
+  <section class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+    <h2 class="reveal mb-6 font-mono text-lg text-green sm:mb-8">
+      <span class="text-green">&gt;</span> how it works
     </h2>
+    <HowItWorks />
+  </section>
+
+  <div class="green-divider"></div>
+
+  <!-- Section 5: Tools grid -->
+  <section id="all-tools" class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+    <div class="mb-6 flex items-center justify-between sm:mb-8">
+      <h2 class="font-mono text-base font-semibold text-green sm:text-lg">
+        <span class="text-green">/</span>all_tools
+      </h2>
+      <span class="font-mono text-xs text-text-muted sm:text-sm">
+        <span class="text-green">[</span>{tools.length}<span class="text-green">]</span>
+      </span>
+    </div>
+
+    <!-- Category filter -->
+    <div class="mb-6 flex flex-wrap gap-2 font-mono text-xs" id="category-filters">
+      <button class="category-filter-btn rounded border border-green bg-green/10 px-3 py-1.5 text-green transition-all" data-category="all">All</button>
+      {categories.map((cat) => (
+        <button class="category-filter-btn rounded border border-border bg-bg-tertiary px-3 py-1.5 text-text-muted transition-all hover:border-green hover:text-green" data-category={cat}>
+          {cat === "cli" ? "CLI" : cat === "ide" ? "IDE" : cat === "ide-extension" ? "Extension" : cat === "harness" ? "Platform" : cat}
+        </button>
+      ))}
+    </div>
+
+    <div class="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 reveal-stagger" id="tools-grid">
+      {tools.map((tool) => (
+        <div class="reveal tool-grid-item" data-category={tool.category}>
+          <ToolCard tool={tool} latestRelease={releaseMap[tool.id]} />
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <div class="green-divider"></div>
+
+  <!-- Section 6: Get clwatch — dual install -->
+  <section class="border-y border-border py-12 sm:py-16">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6">
+      <div class="mb-8">
+        <h2 class="font-mono text-xl font-semibold text-text-primary">Get clwatch</h2>
+        <p class="mt-1 font-sans text-sm text-text-secondary">Install once. Works for you and your AI agents.</p>
+      </div>
+
+      <div class="grid gap-6 md:grid-cols-2">
+        <!-- Left column — For Humans -->
+        <div class="flex flex-col">
+          <span class="mb-3 inline-flex w-fit items-center rounded-full border border-border bg-bg-card px-3 py-1 font-mono text-xs text-text-secondary">For Humans</span>
+
+          <div class="flex flex-1 flex-col rounded-lg border border-border bg-bg-card">
+            <div class="border-b border-border px-4 py-2 font-mono text-xs text-text-muted">
+              <span class="text-green/40">●●●</span> <span class="ml-2">install.sh</span>
+            </div>
+            <div class="flex flex-1 flex-col gap-0 p-4">
+              <!-- brew -->
+              <div class="clwatch-cmd-row group flex items-center justify-between rounded px-3 py-2 hover:bg-bg-tertiary/50">
+                <div class="font-mono text-sm">
+                  <span class="text-text-muted"># macOS / Linux</span><br/>
+                  <span class="text-text-primary">brew install clwatch</span>
+                </div>
+                <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-xs text-text-muted opacity-0 transition-all hover:text-green group-hover:opacity-100" data-copy="brew install clwatch">copy</button>
+              </div>
+              <!-- npm -->
+              <div class="clwatch-cmd-row group flex items-center justify-between rounded px-3 py-2 hover:bg-bg-tertiary/50">
+                <div class="font-mono text-sm">
+                  <span class="text-text-muted"># Anywhere (npm)</span><br/>
+                  <span class="text-text-primary">npm install -g clwatch</span>
+                </div>
+                <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-xs text-text-muted opacity-0 transition-all hover:text-green group-hover:opacity-100" data-copy="npm install -g clwatch">copy</button>
+              </div>
+              <!-- npx -->
+              <div class="clwatch-cmd-row group flex items-center justify-between rounded px-3 py-2 hover:bg-bg-tertiary/50">
+                <div class="font-mono text-sm">
+                  <span class="text-text-muted"># No install needed</span><br/>
+                  <span class="text-text-primary">npx clwatch diff</span>
+                </div>
+                <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-xs text-text-muted opacity-0 transition-all hover:text-green group-hover:opacity-100" data-copy="npx clwatch diff">copy</button>
+              </div>
+            </div>
+          </div>
+
+          <p class="mt-3 font-sans text-xs text-text-muted">Then run <code class="font-mono text-text-secondary">clwatch diff</code> to see what changed in your tools.</p>
+        </div>
+
+        <!-- Right column — For Agents -->
+        <div class="flex flex-col">
+          <span class="mb-3 inline-flex w-fit items-center rounded-full border border-cyan/30 bg-cyan/10 px-3 py-1 font-mono text-xs text-cyan">For Agents</span>
+
+          <div class="flex flex-1 flex-col rounded-lg border border-border bg-bg-card">
+            <div class="border-b border-border px-4 py-2 font-mono text-xs text-text-muted">
+              <span class="text-green/40">●●●</span> <span class="ml-2">agent-setup.sh</span>
+            </div>
+            <div class="flex flex-1 flex-col gap-0 p-4">
+              <!-- zero-install -->
+              <div class="clwatch-cmd-row group flex items-center justify-between rounded px-3 py-2 hover:bg-bg-tertiary/50">
+                <div class="font-mono text-sm">
+                  <span class="text-text-muted"># Zero-install — run directly in any agent</span><br/>
+                  <span class="text-text-primary">npx clwatch diff</span><br/>
+                  <span class="text-text-primary">uvx clwatch diff</span>
+                </div>
+                <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-xs text-text-muted opacity-0 transition-all hover:text-cyan group-hover:opacity-100" data-copy="npx clwatch diff">copy</button>
+              </div>
+              <!-- init -->
+              <div class="clwatch-cmd-row group flex items-center justify-between rounded px-3 py-2 hover:bg-bg-tertiary/50">
+                <div class="font-mono text-sm">
+                  <span class="text-text-muted"># Install the skill into your workspace</span><br/>
+                  <span class="text-text-primary">clwatch init</span>
+                </div>
+                <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-xs text-text-muted opacity-0 transition-all hover:text-cyan group-hover:opacity-100" data-copy="clwatch init">copy</button>
+              </div>
+              <!-- diff -->
+              <div class="clwatch-cmd-row group flex items-center justify-between rounded px-3 py-2 hover:bg-bg-tertiary/50">
+                <div class="font-mono text-sm">
+                  <span class="text-text-muted"># Check what changed</span><br/>
+                  <span class="text-text-primary">clwatch diff</span>
+                </div>
+                <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-xs text-text-muted opacity-0 transition-all hover:text-cyan group-hover:opacity-100" data-copy="clwatch diff">copy</button>
+              </div>
+              <!-- refresh -->
+              <div class="clwatch-cmd-row group flex items-center justify-between rounded px-3 py-2 hover:bg-bg-tertiary/50">
+                <div class="font-mono text-sm">
+                  <span class="text-text-muted"># Refresh your reference files</span><br/>
+                  <span class="text-text-primary">clwatch refresh claude-code</span>
+                </div>
+                <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-xs text-text-muted opacity-0 transition-all hover:text-cyan group-hover:opacity-100" data-copy="clwatch refresh claude-code">copy</button>
+              </div>
+            </div>
+          </div>
+
+          <p class="mt-3 font-sans text-xs text-text-muted">Drop clwatch into any Claude Code, Codex CLI, Gemini CLI, or OpenClaw workspace. The skill auto-runs on session start and patches your configs when tools update.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="green-divider"></div>
+
+  <!-- Section 7: Recent releases -->
+  <section class="mx-auto max-w-6xl px-4 pb-8 sm:px-6 sm:pb-12">
+    <div class="reveal mb-4 flex items-center justify-between sm:mb-6">
+      <h2 class="font-mono text-base font-semibold text-green sm:text-lg">
+        <span class="text-green">/</span>recent_releases
+      </h2>
+      <a href="#all-tools" class="font-mono text-xs text-text-muted transition-colors hover:text-green">view all &rarr;</a>
+    </div>
 
     {Object.keys(releaseMap).length > 0 ? (
       <div class="rounded-lg border border-border bg-bg-card">
         <div class="border-b border-border px-3 py-2 font-mono text-xs text-text-muted sm:px-4">
-          <span class="text-green">\u25cf\u25cf\u25cf</span> <span class="ml-2">release.log</span>
+          <span class="text-green">●●●</span> <span class="ml-2">release.log</span>
         </div>
         <div class="space-y-0 p-2 sm:p-3">
           {Object.entries(releaseMap)
@@ -234,7 +368,7 @@ try {
                   <span class="ml-2 text-green">{release.version}</span>
                   <span class="ml-2 text-cyan">{tool.name}</span>
                   {release.name !== release.version && (
-                    <span class="ml-2 hidden text-text-secondary sm:inline">\u2501\u2501 \"{release.name}\"</span>
+                    <span class="ml-2 hidden text-text-secondary sm:inline">━━ "{release.name}"</span>
                   )}
                 </a>
               ) : null;
@@ -250,11 +384,11 @@ try {
     )}
   </section>
 
-  <!-- Newsletter -->
+  <!-- Section 8: Newsletter -->
   <section class="mx-auto max-w-4xl px-4 pb-12 sm:px-6 sm:pb-16">
     <div class="rounded-lg border border-border bg-bg-card">
       <div class="border-b border-border px-3 py-2 font-mono text-xs text-text-muted sm:px-4">
-        <span class="text-green">\u25cf\u25cf\u25cf</span> <span class="ml-2">newsletter.sh</span>
+        <span class="text-green">●●●</span> <span class="ml-2">newsletter.sh</span>
       </div>
       <div class="p-4 sm:p-6">
         <h3 class="font-mono text-base font-semibold text-green sm:text-lg">
@@ -263,11 +397,11 @@ try {
         <p class="mt-2 font-mono text-xs text-text-secondary sm:text-sm">
           <span class="text-text-muted">//</span> one email with the most important updates
         </p>
-        <form action="#" method="post" class="mt-4 flex flex-col gap-3 sm:flex-row">
+        <form id="newsletter-form" method="post" class="mt-4 flex flex-col gap-3 sm:flex-row">
           <input
             type="email"
             required
-            placeholder="you@company.com"
+            placeholder="your@email.com — get weekly AI tool updates"
             class="w-full rounded border border-border bg-bg-tertiary px-4 py-3 font-mono text-sm text-text-primary outline-none transition-all focus:border-green focus:shadow-[0_0_8px_rgba(51,255,51,0.2)]"
           />
           <button
@@ -277,7 +411,69 @@ try {
             subscribe
           </button>
         </form>
+        <div id="newsletter-success" class="mt-4 hidden font-mono text-xs text-green">
+          Thanks! We will be in touch.
+        </div>
       </div>
     </div>
   </section>
+
+  <script>
+    // Copy button logic for clwatch install section
+    document.querySelectorAll('.copy-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const text = btn.getAttribute('data-copy');
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(() => {
+          const original = btn.textContent;
+          btn.textContent = '✓';
+          setTimeout(() => { btn.textContent = original; }, 1500);
+        });
+      });
+    });
+
+    // Newsletter form
+    const newsletterForm = document.getElementById('newsletter-form');
+    const newsletterSuccess = document.getElementById('newsletter-success');
+    const submitBtn = newsletterForm?.querySelector('.email-submit-btn') as HTMLButtonElement | null;
+    newsletterForm?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (submitBtn) {
+        submitBtn.textContent = '...';
+        submitBtn.disabled = true;
+      }
+      setTimeout(() => {
+        newsletterForm.style.display = 'none';
+        newsletterSuccess?.classList.remove('hidden');
+      }, 600);
+    });
+
+    // Category filter logic
+    const filterBtns = document.querySelectorAll('.category-filter-btn');
+    const gridItems = document.querySelectorAll('.tool-grid-item');
+
+    filterBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const category = btn.getAttribute('data-category');
+
+        // Update active button styles
+        filterBtns.forEach((b) => {
+          b.classList.remove('border-green', 'bg-green/10', 'text-green');
+          b.classList.add('border-border', 'bg-bg-tertiary', 'text-text-muted');
+        });
+        btn.classList.remove('border-border', 'bg-bg-tertiary', 'text-text-muted');
+        btn.classList.add('border-green', 'bg-green/10', 'text-green');
+
+        // Filter grid items
+        gridItems.forEach((item) => {
+          const el = item as HTMLElement;
+          if (category === 'all' || item.getAttribute('data-category') === category) {
+            el.style.display = '';
+          } else {
+            el.style.display = 'none';
+          }
+        });
+      });
+    });
+  </script>
 </BaseLayout>

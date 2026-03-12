@@ -26,26 +26,19 @@ export interface ToolReleases {
   lastUpdated: string;
 }
 
-export const FEATURED_TOOLS = ["openclaw", "claude-code"];
+export const FEATURED_TOOLS: string[] = [];
 
-export function isFeatured(toolId: string): boolean {
-  return FEATURED_TOOLS.includes(toolId);
+export const CLWATCH_TOOLS = ['claude-code', 'codex-cli', 'gemini-cli', 'opencode', 'openclaw'];
+
+export function isFeatured(_toolId: string): boolean {
+  return false;
 }
 
 export function getTools(): Tool[] {
   const tools = toolsData as Tool[];
-  return tools.sort((a, b) => {
-    const aRank = FEATURED_TOOLS.indexOf(a.id);
-    const bRank = FEATURED_TOOLS.indexOf(b.id);
-
-    // Featured tools first, in explicit FEATURED_TOOLS order
-    if (aRank !== -1 && bRank !== -1) return aRank - bRank;
-    if (aRank !== -1) return -1;
-    if (bRank !== -1) return 1;
-
-    // Preserve deterministic order for non-featured tools
-    return a.name.localeCompare(b.name);
-  });
+  return tools
+    .filter((t) => CLWATCH_TOOLS.includes(t.id))
+    .sort((a, b) => a.name.localeCompare(b.name));
 }
 
 export function getToolById(id: string): Tool | undefined {

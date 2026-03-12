@@ -1,0 +1,44 @@
+name: Update changelogs payloads
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      tool:
+        description: "Specific tool slug (leave empty for all)"
+        required: false
+      force_tier2:
+        description: "Force Tier 2 extraction even if no version change"
+        type: boolean
+        default: false
+
+jobs:
+  update-payloads:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm ci
+      - name: Run extraction pipeline
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TOOL="${{ github.event.inputs.tool }}"
+          FORCE="${{ github.event.inputs.force_tier2 }}"
+          ARGS=""
+          [ -n "$TOOL" ] && ARGS="--tool $TOOL"
+          [ "$FORCE" = "true" ] && ARGS="$ARGS --force-tier2"
+          npm run pipeline:run -- $ARGS
+      - name: Commit updated payloads
+        run: |
+          git config user.name "changelogs-bot"
+          git config user.email "bot@changelogs.info"
+          git add public/api/refs/
+          git diff --staged --quiet || git commit -m "chore: update payloads [$(date -u +%Y-%m-%dT%H:%M:%SZ)]"
+          git push

@@ -9,7 +9,7 @@ interface Props {
   description?: string;
 }
 
-const { title, description = "Your hub for OpenClaw and Claude Code — cheatsheets, configs, model compatibility, migrations, and daily changelog tracking for 22 AI coding tools." } = Astro.props;
+const { title, description = "Track changelogs for every major AI coding tool. clwatch keeps your agent configs and reference files automatically current." } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -30,9 +30,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:site_name" content="changelogs.info" />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content="https://changelogs.info/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="https://changelogs.info/og-image.png" />
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#0c0c0c" />
     <script type="application/ld+json" set:html={JSON.stringify({
@@ -51,32 +53,27 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <script defer data-domain="changelogs.info" src="https://plausible.io/js/script.js"></script>
   </head>
   <body class="min-h-screen bg-bg-primary text-text-primary">
-    <nav class="sticky top-0 z-50 border-b border-border bg-bg-primary/95 backdrop-blur-xl">
+    <nav id="main-nav" class="sticky top-0 z-50 border-b border-border bg-bg-primary/95 backdrop-blur-xl transition-all duration-200">
       <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-        <a href="/" class="flex items-center gap-2 font-mono text-base font-bold tracking-tight sm:text-lg">
-          <span class="text-green">&gt;</span>
-          <span class="text-text-primary">changelogs.info</span>
-          <span class="terminal-cursor"></span>
+        <a href="/" class="font-mono text-base font-semibold tracking-tight transition-opacity hover:opacity-80">
+          <span class="text-text-primary">changelogs</span><span class="text-green">.info</span>
         </a>
 
         <!-- Desktop Navigation -->
-        <div class="hidden items-center gap-3 md:flex">
-          <a href="/openclaw" class="nav-link"><span class="text-green">/</span>openclaw</a>
-          <a href="/claude-code" class="nav-link"><span class="text-green">/</span>claude-code</a>
-          <a href="/" class="nav-link"><span class="text-green">/</span>tools</a>
-          <a href="/cheatsheets" class="nav-link"><span class="text-green">/</span>cheatsheets</a>
-          <a href="/configs" class="nav-link"><span class="text-green">/</span>configs</a>
-          <a href="/resources" class="nav-link"><span class="text-green">/</span>resources</a>
-          <a href="/workflows" class="nav-link"><span class="text-green">/</span>workflows</a>
-          <Search />
-          <button id="theme-toggle-desktop" class="theme-toggle" aria-label="Toggle theme">
-            <svg id="sun-icon-desktop" class="hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-            </svg>
-            <svg id="moon-icon-desktop" class="" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-            </svg>
-          </button>
+        <div class="hidden items-center gap-2 md:flex">
+          <a href="/" class="nav-link">Tools</a>
+          <a href="/clwatch" class="nav-link">clwatch</a>
+          <div class="ml-2 flex items-center gap-1">
+            <Search />
+            <button id="theme-toggle-desktop" class="theme-toggle" aria-label="Toggle theme">
+              <svg id="sun-icon-desktop" class="hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+              </svg>
+              <svg id="moon-icon-desktop" class="" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+              </svg>
+            </button>
+          </div>
         </div>
 
         <!-- Mobile Menu Button -->
@@ -91,13 +88,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       <!-- Mobile Navigation Menu -->
       <div id="mobile-menu" class="mobile-menu hidden border-t border-border bg-bg-primary md:hidden">
         <div class="space-y-1 px-4 py-3">
-          <a href="/openclaw" class="mobile-nav-link"><span class="text-green">/</span>openclaw</a>
-          <a href="/claude-code" class="mobile-nav-link"><span class="text-green">/</span>claude-code</a>
-          <a href="/" class="mobile-nav-link"><span class="text-green">/</span>tools</a>
-          <a href="/cheatsheets" class="mobile-nav-link"><span class="text-green">/</span>cheatsheets</a>
-          <a href="/configs" class="mobile-nav-link"><span class="text-green">/</span>configs</a>
-          <a href="/resources" class="mobile-nav-link"><span class="text-green">/</span>resources</a>
-          <a href="/workflows" class="mobile-nav-link"><span class="text-green">/</span>workflows</a>
+          <a href="/" class="mobile-nav-link">Tools</a>
+          <a href="/clwatch" class="mobile-nav-link">clwatch</a>
           <div class="pt-3 pb-2 flex items-center justify-between">
             <span class="text-sm text-text-secondary">Theme</span>
             <button id="theme-toggle-mobile" class="theme-toggle" aria-label="Toggle theme">
@@ -130,14 +122,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
             <a href="https://github.com/cyperx84/changelogs-info" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover transition-colors">src</a>
           </p>
           <div class="flex flex-wrap items-center gap-3 font-mono text-xs sm:gap-4">
-            <a href="/openclaw" class="footer-link">openclaw</a>
-            <a href="/claude-code" class="footer-link">claude-code</a>
-            <a href="/" class="footer-link">tools</a>
-            <a href="/workflows" class="footer-link">workflows</a>
-            <a href="/cheatsheets" class="footer-link">cheatsheets</a>
-            <a href="/configs" class="footer-link">configs</a>
-            <a href="/resources" class="footer-link">resources</a>
-            <a href="/feed/all.xml" class="footer-link">rss</a>
+            <a href="/" class="footer-link">Tools</a>
+            <a href="/clwatch" class="footer-link">clwatch</a>
+            <a href="/feed/all.xml" class="footer-link">RSS</a>
           </div>
         </div>
         <p class="mt-3 font-mono text-xs text-text-muted">
@@ -259,39 +246,68 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
           closeIcon?.classList.add('hidden');
         }
       });
+
+      // Nav scroll effect
+      const nav = document.getElementById('main-nav');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 10) {
+          nav?.classList.add('scrolled');
+        } else {
+          nav?.classList.remove('scrolled');
+        }
+      }, { passive: true });
     </script>
 
     <style>
+      /* Nav scroll state */
+      #main-nav.scrolled {
+        backdrop-filter: blur(20px) saturate(1.2);
+        -webkit-backdrop-filter: blur(20px) saturate(1.2);
+      }
+
+      /* Desktop nav links */
       .nav-link {
         font-family: var(--font-mono);
         font-size: 0.875rem;
-        color: var(--color-text-secondary);
-        transition: all var(--transition-base);
-        padding: 0.5rem 0.75rem;
+        color: var(--color-text-muted);
+        transition: color 150ms ease;
+        padding: 0.5rem 0.625rem;
         border-radius: 0.25rem;
         min-height: 44px;
         display: flex;
         align-items: center;
-        position: relative;
-        border: 1px solid transparent;
       }
 
       .nav-link:hover {
         color: var(--color-text-primary);
-        border-color: var(--color-border);
-        background: var(--color-bg-card);
       }
 
-      .nav-link span {
-        margin-right: 0.125rem;
+      /* CTA button */
+      .nav-cta {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--color-text-muted);
+        padding: 0.375rem 0.75rem;
+        border-radius: 0.25rem;
+        border: 1px solid var(--color-border);
+        background: transparent;
+        transition: color 150ms ease, border-color 150ms ease;
+        margin-left: 0.25rem;
+        white-space: nowrap;
       }
 
+      .nav-cta:hover {
+        color: var(--color-green);
+        border-color: color-mix(in srgb, var(--color-green) 50%, transparent);
+      }
+
+      /* Mobile menu button */
       .mobile-menu-btn {
         color: var(--color-text-secondary);
         padding: 0.5rem;
         border-radius: 0.375rem;
-        transition: all var(--transition-base);
-        min-width: 44px; /* Touch target size */
+        transition: all 150ms ease;
+        min-width: 44px;
         min-height: 44px;
         display: flex;
         align-items: center;
@@ -301,38 +317,35 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       .mobile-menu-btn:hover {
         color: var(--color-text-primary);
         background: rgba(255, 255, 255, 0.05);
-        transform: rotate(90deg);
       }
 
       .mobile-menu-btn svg {
-        transition: transform var(--transition-base);
+        transition: transform 150ms ease;
       }
 
+      /* Mobile nav links */
       .mobile-nav-link {
         display: block;
         padding: 0.75rem 1rem;
         font-family: var(--font-mono);
         font-size: 0.875rem;
-        color: var(--color-text-secondary);
-        border-radius: 0.25rem;
-        transition: all var(--transition-base);
+        color: var(--color-text-muted);
+        border-radius: 0.375rem;
+        transition: all 150ms ease;
         min-height: 44px;
-        border: 1px solid transparent;
+        border-left: 2px solid transparent;
       }
 
       .mobile-nav-link:hover {
         color: var(--color-text-primary);
-        border-color: var(--color-border);
-        background: var(--color-bg-card);
+        border-left-color: var(--color-green);
+        padding-left: 0.875rem;
       }
 
-      .mobile-nav-link span {
-        margin-right: 0.25rem;
-      }
-
+      /* Footer links */
       .footer-link {
         color: var(--color-text-muted);
-        transition: color var(--transition-base);
+        transition: color 150ms ease;
         padding: 0.25rem 0.5rem;
         min-height: 44px;
         display: inline-flex;
@@ -340,11 +353,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       }
 
       .footer-link:hover {
-        color: var(--color-green);
-      }
-
-      .footer-link span {
-        margin-right: 0.125rem;
+        color: var(--color-text-secondary);
       }
     </style>
     <ScrollReveal />

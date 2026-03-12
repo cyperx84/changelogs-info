@@ -1,6 +1,6 @@
 ---
 import type { Tool, Release } from "../lib/releases";
-import { formatDate, relativeTime, getCategoryLabel, isFeatured } from "../lib/releases";
+import { formatDate, relativeTime, getCategoryLabel } from "../lib/releases";
 
 interface Props {
   tool: Tool;
@@ -8,12 +8,21 @@ interface Props {
 }
 
 const { tool, latestRelease } = Astro.props;
-const featured = isFeatured(tool.id);
+
+// Freshness calculation
+let freshness: "fresh" | "normal" | "stale" = "normal";
+if (latestRelease) {
+  const now = Date.now();
+  const releaseDate = new Date(latestRelease.date).getTime();
+  const daysSince = Math.floor((now - releaseDate) / (1000 * 60 * 60 * 24));
+  if (daysSince <= 7) freshness = "fresh";
+  else if (daysSince > 30) freshness = "stale";
+}
 ---
 
 <a
   href={`/tools/${tool.id}`}
-  class:list={["tool-card group block rounded-lg border bg-bg-card transition-all hover:border-green hover:shadow-[0_0_12px_rgba(51,255,51,0.15)]", featured ? "border-green/40 shadow-[0_0_8px_rgba(51,255,51,0.1)] featured-glow" : "border-border"]}
+  class="tool-card group block rounded-lg border border-border bg-bg-card transition-all hover:border-green hover:shadow-[0_0_12px_rgba(51,255,51,0.15)]"
 >
   <!-- Terminal title bar -->
   <div class="border-b border-border px-3 py-2 font-mono text-xs text-text-muted">
@@ -25,23 +34,16 @@ const featured = isFeatured(tool.id);
   <div class="p-4 sm:p-5">
     <div class="mb-3 flex items-start justify-between gap-2">
       <div class="min-w-0 flex-1">
-        <h3 class="font-mono text-base font-semibold text-green transition-colors group-hover:text-green-bright sm:text-lg">
+        <h3 class="font-mono text-base font-semibold text-green transition-all group-hover:text-green-bright group-hover:text-glow-green sm:text-lg">
           {tool.name}
         </h3>
         <p class="mt-1 font-mono text-xs text-text-muted truncate">
           <span class="text-green">~/</span>{tool.repo}
         </p>
       </div>
-      <div class="flex shrink-0 items-center gap-2">
-        {featured && (
-          <span class="rounded border border-green/30 bg-green/10 px-2 py-0.5 font-mono text-xs text-green">
-            ★ featured
-          </span>
-        )}
-        <span class="rounded border border-border bg-bg-tertiary px-2 py-0.5 font-mono text-xs text-text-secondary">
-          --{tool.category}
-        </span>
-      </div>
+      <span class="shrink-0 rounded border border-border/50 bg-bg-tertiary px-2 py-0.5 font-mono text-[10px] text-text-muted">
+        {getCategoryLabel(tool.category)}
+      </span>
     </div>
 
     <p class="mb-4 font-sans text-xs leading-relaxed text-text-secondary line-clamp-2 sm:text-sm">
@@ -55,6 +57,24 @@ const featured = isFeatured(tool.id);
         <span class="text-text-muted" title={formatDate(latestRelease.date)}>
           {relativeTime(latestRelease.date)}
         </span>
+        {freshness === "fresh" && (
+          <>
+            <span class="text-text-muted">│</span>
+            <span class="flex items-center gap-1">
+              <span class="pulse-dot inline-block h-1.5 w-1.5 rounded-full bg-green"></span>
+              <span class="text-green text-[10px]">fresh</span>
+            </span>
+          </>
+        )}
+        {freshness === "stale" && (
+          <>
+            <span class="text-text-muted">│</span>
+            <span class="flex items-center gap-1">
+              <span class="inline-block h-1.5 w-1.5 rounded-full bg-amber"></span>
+              <span class="text-amber text-[10px]">stale</span>
+            </span>
+          </>
+        )}
       </div>
     ) : (
       <div class="flex items-center gap-2 rounded border border-border/50 bg-bg-tertiary px-3 py-2 font-mono text-xs">

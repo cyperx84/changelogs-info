@@ -95,6 +95,49 @@ Real, production-quality configs you can copy-paste. CLAUDE.md templates, .curso
 ### 🔄 Auto-Updating Cheatsheets
 Weekly automation pulls from official docs and opens PRs when CLI commands or features change. Never stale.
 
+## Extraction Pipeline
+
+An automated pipeline fetches GitHub releases for tracked tools, detects version changes, and updates payload files.
+
+### How it works
+
+1. GitHub Actions runs `npm run pipeline:run` every 6 hours (or on manual trigger)
+2. For each tool, the pipeline fetches the latest GitHub releases API data
+3. ETag-based conditional requests skip processing when nothing changed (304)
+4. Tier 1 diff detects version changes and applies patches to `public/api/refs/*.json`
+5. Tier 2 refresh is queued when deeper changelog analysis is needed
+6. Updated payloads are committed and pushed automatically
+
+### Running locally
+
+```bash
+# Run for all tools
+npm run pipeline:run
+
+# Run for a specific tool
+npm run pipeline:run -- --tool claude-code
+
+# Force Tier 2 extraction
+npm run pipeline:run -- --force-tier2
+
+# JSON output (machine-readable summary)
+npm run pipeline:run -- --json
+```
+
+### Environment variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `GITHUB_TOKEN` | Recommended | GitHub token for 5000 req/hr (vs 60 unauthenticated) |
+| `ANTHROPIC_API_KEY` | For Tier 2 | Required for LLM-based changelog extraction |
+
+### Adding a new tool
+
+1. Add source entries to `src/pipeline/sources.ts` (at minimum a `github_releases` source)
+2. Create the tool's payload file in `public/api/refs/<slug>.json`
+3. Add the tool to `public/api/refs/manifest.json`
+4. Run `npm run pipeline:run -- --tool <slug>` to verify
+
 ## Tech Stack
 
 ```

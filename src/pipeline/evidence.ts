@@ -19,7 +19,12 @@ function toolDir(toolSlug: string): string {
   return dir;
 }
 
-export function storeEvidence(result: FetchResult): string {
+export function storeEvidence(result: FetchResult): string | null {
+  // If fetch was skipped (304 or rate limited), return previous evidence path
+  if (result.skipped) {
+    return null;
+  }
+
   const record: EvidenceRecord = {
     toolSlug: result.source.toolSlug,
     sourceRole: result.source.role,

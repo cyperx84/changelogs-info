@@ -1,0 +1,54 @@
+---
+const steps = [
+  {
+    number: "01",
+    title: "Detect",
+    body: "A new release ships. We catch it from GitHub within minutes.",
+    color: "green" as const,
+  },
+  {
+    number: "02",
+    title: "Classify",
+    body: "Is it a small config change or a new capability? Tier 1 patches fast. Tier 2 rebuilds knowledge.",
+    color: "cyan" as const,
+  },
+  {
+    number: "03",
+    title: "Refresh",
+    body: "Structured knowledge gets published. Your agent stays current automatically.",
+    color: "amber" as const,
+  },
+];
+
+const colorMap = {
+  green: { border: "border-green/30", topBorder: "border-t-green", text: "text-green", dot: "bg-green", numBg: "text-green/[0.07]" },
+  cyan: { border: "border-cyan/30", topBorder: "border-t-cyan", text: "text-cyan", dot: "bg-cyan", numBg: "text-cyan/[0.07]" },
+  amber: { border: "border-amber/30", topBorder: "border-t-amber", text: "text-amber", dot: "bg-amber", numBg: "text-amber/[0.07]" },
+};
+---
+
+<div class="reveal-stagger grid gap-4 sm:grid-cols-3">
+  {steps.map((step) => {
+    const c = colorMap[step.color];
+    return (
+      <div class={`reveal relative overflow-hidden rounded-lg border border-border ${c.topBorder} border-t-2 bg-bg-card p-5 sm:p-6`}>
+        {/* Watermark number */}
+        <span class={`pointer-events-none absolute -right-2 -top-4 select-none font-mono text-7xl font-bold ${c.numBg} sm:text-8xl`}>
+          {step.number}
+        </span>
+        <div class="relative">
+          <div class="mb-3 flex items-center gap-3">
+            <span class={`inline-block h-2 w-2 rounded-full ${c.dot}`}></span>
+            <span class={`font-mono text-xs ${c.text} opacity-60`}>{step.number}</span>
+          </div>
+          <h3 class={`font-mono text-base font-semibold ${c.text} sm:text-lg`}>
+            {step.title}
+          </h3>
+          <p class="mt-2 font-sans text-xs leading-relaxed text-text-secondary sm:text-sm">
+            {step.body}
+          </p>
+        </div>
+      </div>
+    );
+  })}
+</div>

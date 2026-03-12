@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import ReleaseEntry from "../../../components/ReleaseEntry.astro";
-import { getTools, getToolReleases, getCategoryLabel, formatDate, relativeTime, isFeatured } from "../../../lib/releases";
+import { getTools, getToolReleases, getCategoryLabel, formatDate, relativeTime } from "../../../lib/releases";
 import type { Tool, Release, ToolReleases } from "../../../lib/releases";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
@@ -32,8 +32,11 @@ if (data) {
 const stableReleases = releases.filter((r) => !r.prerelease);
 const prereleases = releases.filter((r) => r.prerelease);
 const latestStable = stableReleases[0];
-const featured = isFeatured(tool.id);
 const hasCheatsheet = existsSync(join(process.cwd(), `src/content/cheatsheets/${tool.id}.md`));
+
+// Tier heuristic: check if latest release body suggests a deep refresh
+const latestBody = (latestStable?.body || releases[0]?.body || "").toLowerCase();
+const isTier2 = /\b(agent|feature|new|add)\b/.test(latestBody);
 const hasConfig = existsSync(join(process.cwd(), `src/content/configs/${tool.id}.json`));
 const hasMigration = existsSync(join(process.cwd(), `src/content/migrations/${tool.id}.json`));
 ---
@@ -53,7 +56,6 @@ const hasMigration = existsSync(join(process.cwd(), `src/content/migrations/${to
       <div class="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 class="font-mono text-2xl font-bold text-green sm:text-3xl">{tool.name}</h1>
-          {featured && <span class="ml-2 inline-block rounded border border-green/30 bg-green/10 px-2 py-0.5 align-middle font-mono text-xs text-green">★ featured</span>}
           <p class="mt-2 font-mono text-sm text-text-muted">
             <span class="text-green">~/</span>{tool.repo}
           </p>
@@ -78,14 +80,6 @@ const hasMigration = existsSync(join(process.cwd(), `src/content/migrations/${to
               class="rounded border border-accent bg-accent/10 px-3 py-1.5 font-mono text-xs text-accent transition-all hover:bg-accent/20 sm:px-4 sm:text-sm"
             >
               web
-            </a>
-          )}
-          {hasCheatsheet && (
-            <a
-              href={`/tools/${tool.id}/cheatsheet`}
-              class="rounded border border-cyan bg-cyan/10 px-3 py-1.5 font-mono text-xs text-cyan transition-all hover:bg-cyan/20 sm:px-4 sm:text-sm"
-            >
-              cheatsheet
             </a>
           )}
         </div>
@@ -137,6 +131,19 @@ const hasMigration = existsSync(join(process.cwd(), `src/content/migrations/${to
         </div>
       )}
 
+      <!-- Freshness status row -->
+      {lastUpdated && (
+        <div class="reveal mt-4 flex flex-wrap items-center gap-3 font-mono text-xs">
+          <span class="text-text-muted">last checked: <span class="text-text-secondary">{relativeTime(lastUpdated)}</span></span>
+          <span class="text-text-muted">│</span>
+          {isTier2 ? (
+            <span class="rounded border border-cyan/30 bg-cyan/10 px-2 py-0.5 text-cyan">Tier 2 refresh available</span>
+          ) : (
+            <span class="rounded border border-green/30 bg-green/10 px-2 py-0.5 text-green">Tier 1 patch</span>
+          )}
+        </div>
+      )}
+
       <!-- Tags -->
       {tool.tags.length > 0 && (
         <div class="mt-4 flex flex-wrap gap-2">
@@ -148,27 +155,14 @@ const hasMigration = existsSync(join(process.cwd(), `src/content/migrations/${to
         </div>
       )}
 
-      <!-- Quick links to related content -->
-      {(hasCheatsheet || hasConfig || hasMigration) && (
-        <div class="reveal mt-6 grid gap-2 sm:grid-cols-3">
-          {hasCheatsheet && (
-            <a href={`/tools/${tool.id}/cheatsheet`} class="rounded-lg border border-border bg-bg-card px-4 py-3 font-mono text-xs transition-all hover:border-cyan hover:shadow-[0_0_8px_rgba(0,212,255,0.15)]">
-              <span class="text-cyan">📋</span> <span class="text-text-secondary">cheatsheet</span>
-            </a>
-          )}
-          {hasConfig && (
-            <a href="/configs" class="rounded-lg border border-border bg-bg-card px-4 py-3 font-mono text-xs transition-all hover:border-green hover:shadow-[0_0_8px_rgba(51,255,51,0.15)]">
-              <span class="text-green">⚙️</span> <span class="text-text-secondary">config templates</span>
-            </a>
-          )}
-          {hasMigration && (
-            <a href="/migrations" class="rounded-lg border border-border bg-bg-card px-4 py-3 font-mono text-xs transition-all hover:border-amber hover:shadow-[0_0_8px_rgba(255,184,0,0.15)]">
-              <span class="text-amber">🔄</span> <span class="text-text-secondary">migration guides</span>
-            </a>
-          )}
-        </div>
-      )}
-
+      <!-- clwatch CTA -->
+      <div class="reveal mt-6 rounded-lg border border-border bg-bg-card px-4 py-3">
+        <p class="font-mono text-xs text-text-muted">Run clwatch to check if your agent is current:</p>
+        <pre class="mt-2 font-mono text-xs text-text-secondary"><span class="text-green">$</span> clwatch diff {tool.id}</pre>
+        <p class="mt-2 font-mono text-[10px] text-text-muted">
+          <span class="text-green">$</span> clwatch refresh {tool.id} <span class="text-text-muted">— for a full knowledge refresh</span>
+        </p>
+      </div>
     </header>
 
     <!-- Releases timeline -->
