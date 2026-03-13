@@ -398,9 +398,11 @@ const latestChangesTools = CLWATCH_TOOLS.map((id) => {
         <p class="mt-2 font-mono text-xs text-text-secondary sm:text-sm">
           <span class="text-text-muted">//</span> one email with the most important updates
         </p>
-        <form id="newsletter-form" method="post" class="mt-4 flex flex-col gap-3 sm:flex-row">
+        <form id="newsletter-form" method="post" action="/api/subscribe" class="mt-4 flex flex-col gap-3 sm:flex-row">
           <input
+            id="newsletter-email"
             type="email"
+            name="email"
             required
             placeholder="your@email.com — get weekly AI tool updates"
             class="w-full rounded border border-border bg-bg-tertiary px-4 py-3 font-mono text-sm text-text-primary outline-none transition-all focus:border-green focus:shadow-[0_0_8px_rgba(51,255,51,0.2)]"
@@ -413,7 +415,10 @@ const latestChangesTools = CLWATCH_TOOLS.map((id) => {
           </button>
         </form>
         <div id="newsletter-success" class="mt-4 hidden font-mono text-xs text-green">
-          Thanks! We will be in touch.
+          ✓ subscribed. you'll get a digest when there's something worth reading.
+        </div>
+        <div id="newsletter-error" class="mt-4 hidden font-mono text-xs text-red">
+          something broke. try again or just use the RSS feed.
         </div>
       </div>
     </div>
@@ -440,17 +445,47 @@ const latestChangesTools = CLWATCH_TOOLS.map((id) => {
     // Newsletter form
     const newsletterForm = document.getElementById('newsletter-form');
     const newsletterSuccess = document.getElementById('newsletter-success');
+    const newsletterError = document.getElementById('newsletter-error');
+    const emailInput = document.getElementById('newsletter-email') as HTMLInputElement;
     const submitBtn = newsletterForm?.querySelector('.email-submit-btn') as HTMLButtonElement | null;
-    newsletterForm?.addEventListener('submit', (e) => {
+
+    newsletterForm?.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (!emailInput?.value) return;
+
+      // Reset states
+      newsletterSuccess?.classList.add('hidden');
+      newsletterError?.classList.add('hidden');
       if (submitBtn) {
         submitBtn.textContent = '...';
         submitBtn.disabled = true;
       }
-      setTimeout(() => {
-        newsletterForm.style.display = 'none';
-        newsletterSuccess?.classList.remove('hidden');
-      }, 600);
+
+      try {
+        const res = await fetch('/api/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: emailInput.value }),
+        });
+        const data = await res.json();
+
+        if (data.ok) {
+          newsletterForm.style.display = 'none';
+          newsletterSuccess?.classList.remove('hidden');
+        } else {
+          newsletterError?.classList.remove('hidden');
+          if (submitBtn) {
+            submitBtn.textContent = 'subscribe';
+            submitBtn.disabled = false;
+          }
+        }
+      } catch {
+        newsletterError?.classList.remove('hidden');
+        if (submitBtn) {
+          submitBtn.textContent = 'subscribe';
+          submitBtn.disabled = false;
+        }
+      }
     });
 
     // Category filter logic
