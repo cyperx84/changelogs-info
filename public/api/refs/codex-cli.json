@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.114.0",
-  "generated_at": "2026-03-12T04:10:00Z",
+  "generated_at": "2026-03-13T23:49:49.212Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,22 +14,31 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.113.0",
+    "from_version": "0.114.0",
     "to_version": "0.114.0",
-    "new_features": ["hooks-engine", "code-mode", "health-endpoints", "disable-bundled-skills", "handoff-transcript-context"],
+    "new_features": [
+      "websocket-health-endpoints",
+      "disable-bundled-system-skills",
+      "realtime-transcript-handoffs",
+      "improved-mention-picker"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": ["permission-profiles-forward-compat"]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
       "display_name": "Codex CLI",
       "vendor": "OpenAI",
       "kind": "tool",
-      "tags": ["coding-agent", "cli", "agentic"],
+      "tags": [
+        "coding-agent",
+        "cli",
+        "agentic"
+      ],
       "homepage": "https://github.com/openai/codex",
       "docs_url": "https://github.com/openai/codex",
       "changelog_url": "https://github.com/openai/codex/releases",
@@ -119,10 +128,22 @@
           "or_config": "~/.codex/config.toml: [features] multi_agent = true"
         },
         "built_in_roles": [
-          { "role": "default", "purpose": "General-purpose fallback" },
-          { "role": "worker", "purpose": "Execution-focused: implementation and fixes" },
-          { "role": "explorer", "purpose": "Read-heavy codebase exploration" },
-          { "role": "monitor", "purpose": "Long-running command monitoring, up to 1hr wait calls" }
+          {
+            "role": "default",
+            "purpose": "General-purpose fallback"
+          },
+          {
+            "role": "worker",
+            "purpose": "Execution-focused: implementation and fixes"
+          },
+          {
+            "role": "explorer",
+            "purpose": "Read-heavy codebase exploration"
+          },
+          {
+            "role": "monitor",
+            "purpose": "Long-running command monitoring, up to 1hr wait calls"
+          }
         ],
         "key_details": [
           "Consolidated response after all agents complete",
@@ -201,7 +222,10 @@
         "status": "experimental",
         "since": "0.114.0",
         "description": "Lifecycle hooks that fire at session start and stop events.",
-        "hook_events": ["SessionStart", "Stop"],
+        "hook_events": [
+          "SessionStart",
+          "Stop"
+        ],
         "config_path": "~/.codex/config.toml",
         "source_url": "https://github.com/openai/codex/releases/tag/rust-v0.114.0"
       },
@@ -309,21 +333,141 @@
         "since": "0.113.0",
         "description": "Session transcripts stored in SQLite with configurable retention and pruning.",
         "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "id": "websocket-health-endpoints",
+        "name": "WebSocket Health Endpoints",
+        "status": "stable",
+        "since": "0.114.0",
+        "description": "WebSocket app-server deployments now expose `GET /readyz` and `GET /healthz` on the same listener for easier health checks.",
+        "key_details": [],
+        "source_url": "#13782"
+      },
+      {
+        "id": "disable-bundled-system-skills",
+        "name": "Disable Bundled System Skills",
+        "status": "stable",
+        "since": "0.114.0",
+        "description": "Added a config switch to disable bundled system skills entirely.",
+        "key_details": [],
+        "source_url": "#13792"
+      },
+      {
+        "id": "realtime-transcript-handoffs",
+        "name": "Realtime Transcript Handoffs",
+        "status": "stable",
+        "since": "0.114.0",
+        "description": "Handoffs now carry realtime transcript context, which improves continuity when work is transferred between turns.",
+        "key_details": [],
+        "source_url": "#14132"
+      },
+      {
+        "id": "improved-mention-picker",
+        "name": "Improved Mention Picker",
+        "status": "stable",
+        "since": "0.114.0",
+        "description": "Improved the `$` mention picker by clearly labeling Skills, Apps, and Plugins, and by surfacing plugins first.",
+        "key_details": [],
+        "source_url": "#14147, #14163"
       }
     ],
     "commands": [
-      { "name": "/review", "syntax": "/review", "description": "Open code review preset picker. Review branch diff, uncommitted changes, specific commit, or custom instructions.", "since": "0.80.0", "status": "stable", "source_url": "https://github.com/openai/codex" },
-      { "name": "/model", "syntax": "/model", "description": "Switch model mid-session.", "since": "0.1.0", "status": "stable", "source_url": "https://github.com/openai/codex" },
-      { "name": "/permissions", "syntax": "/permissions", "description": "Change approval mode mid-session.", "since": "0.1.0", "status": "stable", "source_url": "https://github.com/openai/codex" },
-      { "name": "/experimental", "syntax": "/experimental", "description": "Toggle experimental features including multi-agent mode.", "since": "0.100.0", "status": "stable", "source_url": "https://github.com/openai/codex" },
-      { "name": "/agent", "syntax": "/agent", "description": "Switch between active agent threads in multi-agent mode.", "since": "0.100.0", "status": "experimental", "source_url": "https://github.com/openai/codex" },
-      { "name": "/plugin", "syntax": "/plugin", "description": "Manage plugins. Also: codex plugins.", "since": "0.110.0", "status": "stable", "source_url": "https://github.com/openai/codex" },
-      { "name": "/theme", "syntax": "/theme", "description": "Preview and save TUI themes.", "since": "0.60.0", "status": "stable", "source_url": "https://github.com/openai/codex" },
-      { "name": "/copy", "syntax": "/copy", "description": "Copy latest output to clipboard.", "since": "0.60.0", "status": "stable", "source_url": "https://github.com/openai/codex" },
-      { "name": "/clear", "syntax": "/clear", "description": "Wipe terminal and start fresh chat.", "since": "0.1.0", "status": "stable", "source_url": "https://github.com/openai/codex" },
-      { "name": "/exit", "syntax": "/exit", "description": "Close session.", "since": "0.1.0", "status": "stable", "source_url": "https://github.com/openai/codex" },
-      { "name": "/fork", "syntax": "/fork", "description": "Fork conversation from an earlier message.", "since": "0.60.0", "status": "stable", "source_url": "https://github.com/openai/codex" },
-      { "name": "/status", "syntax": "/status", "description": "Show session info.", "since": "0.1.0", "status": "stable", "source_url": "https://github.com/openai/codex" }
+      {
+        "name": "/review",
+        "syntax": "/review",
+        "description": "Open code review preset picker. Review branch diff, uncommitted changes, specific commit, or custom instructions.",
+        "since": "0.80.0",
+        "status": "stable",
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "name": "/model",
+        "syntax": "/model",
+        "description": "Switch model mid-session.",
+        "since": "0.1.0",
+        "status": "stable",
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "name": "/permissions",
+        "syntax": "/permissions",
+        "description": "Change approval mode mid-session.",
+        "since": "0.1.0",
+        "status": "stable",
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "name": "/experimental",
+        "syntax": "/experimental",
+        "description": "Toggle experimental features including multi-agent mode.",
+        "since": "0.100.0",
+        "status": "stable",
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "name": "/agent",
+        "syntax": "/agent",
+        "description": "Switch between active agent threads in multi-agent mode.",
+        "since": "0.100.0",
+        "status": "experimental",
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "name": "/plugin",
+        "syntax": "/plugin",
+        "description": "Manage plugins. Also: codex plugins.",
+        "since": "0.110.0",
+        "status": "stable",
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "name": "/theme",
+        "syntax": "/theme",
+        "description": "Preview and save TUI themes.",
+        "since": "0.60.0",
+        "status": "stable",
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "name": "/copy",
+        "syntax": "/copy",
+        "description": "Copy latest output to clipboard.",
+        "since": "0.60.0",
+        "status": "stable",
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "name": "/clear",
+        "syntax": "/clear",
+        "description": "Wipe terminal and start fresh chat.",
+        "since": "0.1.0",
+        "status": "stable",
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "name": "/exit",
+        "syntax": "/exit",
+        "description": "Close session.",
+        "since": "0.1.0",
+        "status": "stable",
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "name": "/fork",
+        "syntax": "/fork",
+        "description": "Fork conversation from an earlier message.",
+        "since": "0.60.0",
+        "status": "stable",
+        "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "name": "/status",
+        "syntax": "/status",
+        "description": "Show session info.",
+        "since": "0.1.0",
+        "status": "stable",
+        "source_url": "https://github.com/openai/codex"
+      }
     ],
     "flags": {
       "current": [
@@ -417,7 +561,10 @@
         "display_name": "GPT-5.4",
         "status": "stable",
         "default": true,
-        "recommended_for": ["general coding tasks", "reasoning-heavy work"],
+        "recommended_for": [
+          "general coding tasks",
+          "reasoning-heavy work"
+        ],
         "note": "Fast status indicator shown in TUI for gpt-5.4 only",
         "source_url": "https://github.com/openai/codex/releases/tag/rust-v0.114.0"
       },
@@ -425,7 +572,10 @@
         "id": "gpt-5.3-codex",
         "display_name": "GPT-5.3 Codex",
         "status": "stable",
-        "recommended_for": ["coding-optimized tasks", "review agent"],
+        "recommended_for": [
+          "coding-optimized tasks",
+          "review agent"
+        ],
         "source_url": "https://github.com/openai/codex"
       },
       {
@@ -433,7 +583,10 @@
         "display_name": "GPT-5.3 Codex Spark",
         "status": "stable",
         "access": "Pro subscribers only (research preview)",
-        "recommended_for": ["fast iteration", "time-sensitive tasks"],
+        "recommended_for": [
+          "fast iteration",
+          "time-sensitive tasks"
+        ],
         "source_url": "https://github.com/openai/codex"
       }
     ],
@@ -443,7 +596,9 @@
         "version": "0.114.0",
         "title": "Permission profiles behavior change",
         "description": "Permission profiles forward-compatibility: newer profiles now degrade safely on older builds. Legacy workspace-write behavior preserved. Some configs that relied on older behavior may behave differently.",
-        "affected": ["config:permission_profiles"],
+        "affected": [
+          "config:permission_profiles"
+        ],
         "migration": "Review permission profile configs after upgrading. Test that sandbox policy behaves as expected. Use permission-profiles forward-compat config syntax.",
         "source_url": "https://github.com/openai/codex/releases/tag/rust-v0.114.0"
       }
@@ -464,7 +619,9 @@
         {
           "name": "winget",
           "command": "winget install OpenAI.Codex",
-          "platforms": ["windows"]
+          "platforms": [
+            "windows"
+          ]
         },
         {
           "name": "binary",
@@ -478,9 +635,15 @@
       "source_url": "https://github.com/openai/codex"
     },
     "support_matrix": {
-      "platforms": ["macos", "linux", "windows"],
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
       "requires_auth": true,
-      "auth_methods": ["openai_api_key"],
+      "auth_methods": [
+        "openai_api_key"
+      ],
       "requires_git_repo": true,
       "requires_pty_for_tui": true,
       "source_url": "https://github.com/openai/codex"
