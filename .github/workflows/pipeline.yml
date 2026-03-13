@@ -20,10 +20,14 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - run: npm ci
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
       - name: Run extraction pipeline
         env:
           LLM_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
@@ -36,7 +40,7 @@ jobs:
           ARGS=""
           [ -n "$TOOL" ] && ARGS="--tool $TOOL"
           [ "$FORCE" = "true" ] && ARGS="$ARGS --force-tier2"
-          npm run pipeline:run -- $ARGS
+          pnpm run pipeline:run -- $ARGS
       - name: Commit updated payloads
         run: |
           git config user.name "changelogs-bot"
