@@ -36,7 +36,12 @@ export function isFeatured(_toolId: string): boolean {
 
 export function getTools(): Tool[] {
   const tools = toolsData as Tool[];
-  return tools.sort((a, b) => a.name.localeCompare(b.name));
+  const priority: Record<string, number> = { 'openclaw': 0, 'claude-code': 1, 'codex-cli': 2 };
+  return tools.sort((a, b) => {
+    const pa = priority[a.id] ?? 3;
+    const pb = priority[b.id] ?? 3;
+    return pa !== pb ? pa - pb : a.name.localeCompare(b.name);
+  });
 }
 
 /** Returns only the tools tracked by clwatch (the 5 core tools). */
