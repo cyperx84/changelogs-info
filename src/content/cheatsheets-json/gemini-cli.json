@@ -1,95 +1,323 @@
 {
   "tool": "gemini-cli",
   "lastUpdated": "2026-03-14",
+  "quickStart": {
+    "title": "Get productive in 30 seconds",
+    "steps": [
+      "Install: npm i -g @google/gemini-cli or brew install gemini-cli",
+      "Authenticate with a Google account or export GEMINI_API_KEY, then run gemini",
+      "Use gemini -p \"summarize this repo\" for one-shot tasks and plain gemini for the full TUI",
+      "Hit /plan for read-only planning, /tools to inspect available tools, and /model set gemini-2.5-pro --persist if you want a stronger default model",
+      "If you are touching untrusted code, start with gemini -s or set tools.sandbox in ~/.gemini/settings.json"
+    ]
+  },
+  "dailyWorkflows": [
+    {
+      "title": "Fast one-shot repo question",
+      "description": "Ask a direct question without opening the interactive UI.",
+      "command": "gemini -p \"Explain the auth flow in this repo\"",
+      "tags": ["headless", "qa", "fast"]
+    },
+    {
+      "title": "Structured output for scripts",
+      "description": "Use JSON output so shell scripts can parse the answer, token stats, and tool usage.",
+      "command": "gemini -p \"Generate release notes from git log\" --output-format json | jq -r '.response'",
+      "tags": ["automation", "json", "ci"]
+    },
+    {
+      "title": "Plan before changing code",
+      "description": "Switch to read-only planning mode to inspect a codebase and draft a sequence of edits.",
+      "command": "gemini\n# then run: /plan",
+      "tags": ["planning", "safe", "read-only"]
+    },
+    {
+      "title": "Use extra directories as context",
+      "description": "Bring sibling packages or docs into the workspace context without moving directories.",
+      "command": "gemini --include-directories ../docs,../packages/shared",
+      "tags": ["monorepo", "context", "workspace"]
+    },
+    {
+      "title": "Run in ACP mode",
+      "description": "Use Agent Communication Protocol mode when integrating Gemini CLI into agentic tooling or orchestrators.",
+      "command": "gemini --acp \"analyze this repository and return a task plan\"",
+      "tags": ["acp", "integration", "agents"]
+    }
+  ],
+  "powerMoves": [
+    {
+      "title": "Create reusable slash commands",
+      "description": "Store repeatable prompts in ~/.gemini/commands or .gemini/commands as TOML files, including file injection and shell output injection.",
+      "command": "mkdir -p .gemini/commands/git && $EDITOR .gemini/commands/git/commit.toml",
+      "why": "Turns recurring prompts like commit writing, code review, and changelog updates into one-command muscle memory."
+    },
+    {
+      "title": "Bundle capabilities with extensions",
+      "description": "Install extensions that package custom commands, MCP servers, prompt context, and tool exclusions.",
+      "command": "gemini extensions install https://github.com/gemini-cli-extensions/security",
+      "why": "Best way to share team workflows or add specialized commands without manually copying config files."
+    },
+    {
+      "title": "Enable browser automation when text tools are not enough",
+      "description": "Turn on the experimental browser_agent and optionally a visual model for UI-driving tasks.",
+      "command": "# configure ~/.gemini/settings.json with agents.overrides.browser_agent.enabled=true",
+      "why": "Useful for sites or flows where DOM text extraction alone is insufficient and you need accessibility-tree or visual browser control."
+    },
+    {
+      "title": "Use MCP servers for custom tools",
+      "description": "Connect stdio, SSE, or HTTP MCP servers via mcpServers in settings.json and selectively include or exclude tools.",
+      "command": "# add mcpServers in ~/.gemini/settings.json, then use /mcp list",
+      "why": "Lets Gemini talk to internal APIs, docs search, issue trackers, or bespoke local tooling without patching the CLI itself."
+    },
+    {
+      "title": "Prefer sandbox plus plan mode on risky repos",
+      "description": "Combine read-only planning with sandboxed execution for safer exploration of unfamiliar or untrusted projects.",
+      "command": "gemini -s\n# then run: /plan",
+      "why": "Reduces the chance of accidental edits or shell damage while still letting you explore deeply."
+    }
+  ],
+  "gotchas": [
+    {
+      "problem": "The browser agent is not available by default.",
+      "solution": "Enable experimental agents and explicitly enable browser_agent in settings before expecting browser automation to work.",
+      "severity": "annoying"
+    },
+    {
+      "problem": "Custom commands that use !{...} can surprise you with shell execution.",
+      "solution": "Remember Gemini CLI asks for confirmation, keep commands simple, and use argument placeholders carefully because shell blocks escape arguments differently than raw prompt text.",
+      "severity": "subtle"
+    },
+    {
+      "problem": "OAuth MCP auth needs a real browser on the local machine.",
+      "solution": "Do not expect /mcp auth to succeed from a headless box without local browser/redirect support; authenticate from a local desktop session instead.",
+      "severity": "blocking"
+    },
+    {
+      "problem": "Project and user settings merge across multiple layers.",
+      "solution": "Check ~/.gemini/settings.json, .gemini/settings.json, env vars, and CLI args when behavior feels inconsistent because later layers override earlier ones.",
+      "severity": "subtle"
+    },
+    {
+      "problem": "Sandboxing can break commands that need broader filesystem or network access.",
+      "solution": "Switch to a more permissive seatbelt profile, use a container image with needed tools preinstalled, or temporarily disable sandboxing for the exact task.",
+      "severity": "annoying"
+    },
+    {
+      "problem": "Subagents are experimental and operate more aggressively than normal flows.",
+      "solution": "Treat them as advanced tooling, enable only when needed, and understand the current docs warn they can run in a YOLO-like confirmation model.",
+      "severity": "subtle"
+    }
+  ],
   "cliFlags": [
-    { "name": "model", "shorthand": null, "description": "Choose model (gemini-pro, gemini-pro-vision, gemini-ultra)", "example": "gemini --model gemini-pro", "added": "1.0.0", "deprecated": null },
-    { "name": "model-version", "shorthand": null, "description": "Specific version (e.g., gemini-1.5-pro)", "example": "gemini --model-version gemini-1.5-pro", "added": "1.0.0", "deprecated": null },
-    { "name": "file", "shorthand": "f", "description": "Include file(s) in context (supports globs)", "example": "gemini -f *.ts \"find bugs\"", "added": "1.0.0", "deprecated": null },
-    { "name": "json", "shorthand": null, "description": "Output in JSON format", "example": "gemini --json \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "stream", "shorthand": null, "description": "Stream response tokens (default)", "example": "gemini --stream \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "no-stream", "shorthand": null, "description": "Wait for complete response", "example": "gemini --no-stream \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "output", "shorthand": null, "description": "Write response to file", "example": "gemini --output result.txt \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "temperature", "shorthand": null, "description": "Creativity control (0=focused, 1=creative)", "example": "gemini --temperature 0.5 \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "top-p", "shorthand": null, "description": "Nucleus sampling threshold (0-1)", "example": "gemini --top-p 0.9 \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "top-k", "shorthand": null, "description": "Top-k sampling limit", "example": "gemini --top-k 40 \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "max-tokens", "shorthand": null, "description": "Maximum response length", "example": "gemini --max-tokens 1000 \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "system", "shorthand": null, "description": "System instruction/persona", "example": "gemini --system \"You are a code expert\" \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "api-key", "shorthand": null, "description": "Override API key (instead of env var)", "example": "gemini --api-key YOUR-KEY \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "timeout", "shorthand": null, "description": "Request timeout in milliseconds", "example": "gemini --timeout 30000 \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "verbose", "shorthand": null, "description": "Show debug information", "example": "gemini --verbose \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "no-color", "shorthand": null, "description": "Disable colored output", "example": "gemini --no-color \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "help", "shorthand": null, "description": "Show help message", "example": "gemini --help", "added": "1.0.0", "deprecated": null }
+    {
+      "flag": "--prompt",
+      "shorthand": "-p",
+      "description": "Run headless with a one-shot prompt instead of opening the interactive TUI.",
+      "example": "gemini -p \"Review this diff for security issues\"",
+      "useCase": "Automation, CI, shell scripts, and fast single questions."
+    },
+    {
+      "flag": "--model",
+      "shorthand": "-m",
+      "description": "Choose the Gemini model for the current run.",
+      "example": "gemini -m gemini-2.5-flash",
+      "useCase": "Switch between speed and capability depending on task size."
+    },
+    {
+      "flag": "--output-format",
+      "shorthand": null,
+      "description": "Select response format such as text or json for headless runs.",
+      "example": "gemini -p \"Summarize this changelog\" --output-format json",
+      "useCase": "Pipe results into jq or other tooling."
+    },
+    {
+      "flag": "--include-directories",
+      "shorthand": null,
+      "description": "Add extra directories to the workspace context.",
+      "example": "gemini -p \"Compare code and docs\" --include-directories ../docs,../sdk",
+      "useCase": "Monorepos and adjacent-docs workflows."
+    },
+    {
+      "flag": "--all-files",
+      "shorthand": "-a",
+      "description": "Include all files in context for the current run.",
+      "example": "gemini -p \"Find dead code\" -a",
+      "useCase": "Broad codebase analysis when you want maximal context."
+    },
+    {
+      "flag": "--sandbox",
+      "shorthand": "-s",
+      "description": "Enable sandboxing for tool execution; can use built-in or configured sandbox backends.",
+      "example": "gemini -s -p \"run tests and explain failures\"",
+      "useCase": "Safer operation on untrusted code or risky commands."
+    },
+    {
+      "flag": "--yolo",
+      "shorthand": "-y",
+      "description": "Auto-approve actions.",
+      "example": "gemini -p \"apply the obvious fix\" --yolo",
+      "useCase": "Fast local workflows when you intentionally want fewer approval prompts."
+    },
+    {
+      "flag": "--approval-mode",
+      "shorthand": null,
+      "description": "Set approval behavior, including auto_edit and plan-oriented modes.",
+      "example": "gemini -p \"refactor this module\" --approval-mode auto_edit",
+      "useCase": "Tuning how interactive or hands-off tool execution should be."
+    },
+    {
+      "flag": "--acp",
+      "shorthand": null,
+      "description": "Run in ACP mode; this replaced the older experimental ACP flag name.",
+      "example": "gemini --acp \"inspect the repo and emit a plan\"",
+      "useCase": "Agent-to-agent integrations and external orchestration."
+    },
+    {
+      "flag": "--debug",
+      "shorthand": "-d",
+      "description": "Enable debug logging for troubleshooting.",
+      "example": "gemini -d -p \"why is this MCP server failing\"",
+      "useCase": "Diagnosing auth, sandbox, tool, and transport problems."
+    }
   ],
-  "slashCommands": [],
+  "slashCommands": [
+    {
+      "command": "/plan",
+      "description": "Switch to Plan Mode, a read-only mode for exploring and drafting changes safely.",
+      "example": "/plan",
+      "tip": "Great first move in unfamiliar repos; pair it with sandboxing for extra safety."
+    },
+    {
+      "command": "/model set",
+      "description": "Switch the current model, optionally persisting the choice.",
+      "example": "/model set gemini-2.5-pro --persist",
+      "tip": "Use flash for quick sweeps, then pro for final reasoning-heavy passes."
+    },
+    {
+      "command": "/mcp",
+      "description": "List, authenticate, enable, disable, and refresh configured MCP servers.",
+      "example": "/mcp list",
+      "tip": "If a tool disappears after config changes, try /mcp refresh."
+    },
+    {
+      "command": "/extensions",
+      "description": "Manage installed extensions from within the CLI.",
+      "example": "/extensions list",
+      "tip": "Extension changes usually require a restart to affect active sessions."
+    },
+    {
+      "command": "/commands reload",
+      "description": "Reload custom slash commands from user, project, MCP prompt, and extension sources.",
+      "example": "/commands reload",
+      "tip": "Use this after editing .toml command files instead of restarting."
+    },
+    {
+      "command": "/memory refresh",
+      "description": "Reload hierarchical GEMINI.md memory and context files.",
+      "example": "/memory refresh",
+      "tip": "Useful after updating GEMINI.md or adding context directories."
+    },
+    {
+      "command": "/resume",
+      "description": "Browse and resume prior sessions or manage manual checkpoints.",
+      "example": "/resume",
+      "tip": "All chats are auto-saved, so use this liberally instead of manually recreating context."
+    },
+    {
+      "command": "/skills",
+      "description": "List, enable, disable, and reload Agent Skills.",
+      "example": "/skills list",
+      "tip": "If a skill folder exists but does not appear, run /skills reload."
+    }
+  ],
   "config": [
-    { "key": "GEMINI_API_KEY", "description": "Google API key for authentication", "required": true, "type": "env" },
-    { "key": "model", "description": "Default model to use", "required": false, "type": "env" },
-    { "key": "temperature", "description": "Default creativity setting", "required": false, "type": "env" }
-  ],
-  "workflows": [
     {
-      "title": "File Analysis with Context",
-      "description": "Analyze multiple files by including them in context",
-      "steps": [
-        "Run `gemini -f src/**/*.ts \"find all bugs\"`",
-        "Gemini includes all matching TypeScript files",
-        "Gets holistic view of codebase",
-        "Returns analysis of patterns and issues",
-        "Perfect for security reviews or refactoring"
-      ]
+      "key": "model.name",
+      "description": "Default Gemini model for conversations.",
+      "default": "unset / provider default",
+      "recommended": "gemini-2.5-pro for deeper coding work, or gemini-2.5-flash for speed-first sessions"
     },
     {
-      "title": "Batch Processing with JSON Output",
-      "description": "Process multiple files and parse JSON output",
-      "steps": [
-        "Run `gemini --json -f file.ts \"extract functions\"`",
-        "Gemini returns structured JSON",
-        "Pipe to `jq` for filtering: `| jq '.functions'`",
-        "Great for scripting and automation",
-        "Can feed into other tools"
-      ]
+      "key": "tools.sandbox",
+      "description": "Enable sandboxing and optionally specify the sandbox backend such as docker.",
+      "default": "unset",
+      "recommended": "true or \"docker\" for risky repos and untrusted code"
     },
     {
-      "title": "Interactive Chat Session",
-      "description": "Have a multi-turn conversation",
-      "steps": [
-        "Run `gemini chat` to start interactive mode",
-        "Ask questions about code or get help",
-        "Continue conversation naturally",
-        "Context persists across turns",
-        "Exit with Ctrl+C"
-      ]
+      "key": "context.includeDirectories",
+      "description": "Additional directories to include in workspace context.",
+      "default": "[]",
+      "recommended": "Add sibling packages or docs in monorepos instead of copying files around"
     },
     {
-      "title": "Model Exploration",
-      "description": "List available models and choose the right one",
-      "steps": [
-        "Run `gemini models` to see available models",
-        "Use gemini-pro for text tasks",
-        "Use gemini-pro-vision for image analysis",
-        "Use gemini-ultra for complex reasoning",
-        "Compare model outputs: `gemini --model gemini-pro` vs `--model gemini-ultra`"
-      ]
+      "key": "tools.allowed",
+      "description": "Allowlist trusted tools or shell command prefixes that bypass confirmation.",
+      "default": "unset",
+      "recommended": "Only allow low-risk repetitive commands like git status or npm test"
+    },
+    {
+      "key": "mcpServers",
+      "description": "Define stdio, SSE, or streamable HTTP MCP servers and per-server trust, headers, filters, and timeouts.",
+      "default": "{}",
+      "recommended": "Keep trust=false by default and include only the tools you actually need"
+    },
+    {
+      "key": "experimental.enableAgents",
+      "description": "Enables experimental subagent support.",
+      "default": "false",
+      "recommended": "Enable only if you actively need subagents and understand the current safety tradeoffs"
+    },
+    {
+      "key": "agents.overrides.browser_agent.enabled",
+      "description": "Turns on the browser automation agent.",
+      "default": "false",
+      "recommended": "true only when you need browser-driven tasks and have a supported Chrome setup"
+    },
+    {
+      "key": "telemetry.enabled",
+      "description": "Controls telemetry logging and metrics collection.",
+      "default": "provider-dependent / feature default",
+      "recommended": "Review and set explicitly in team or enterprise environments"
     }
   ],
   "proTips": [
-    "Set GEMINI_API_KEY env var to avoid passing --api-key every time",
-    "Use -f with glob patterns to include multiple files efficiently",
-    "Use --json for scripting and pipeline integration",
-    "Use --stream for real-time output on long responses",
-    "Use --no-stream and redirect to file for batch processing",
-    "Adjust --temperature: lower (0.2) for consistency, higher (0.8) for creativity",
-    "Use --max-tokens to limit response length and costs",
-    "Use --system to give context-specific instructions",
-    "Compare models: gemini-pro (fast), gemini-ultra (most accurate)",
-    "Use --timeout for slow network connections",
-    "Enable --verbose to debug API issues",
-    "Use models command to check latest available models"
+    "For automation, prefer --output-format json so you get both the response and usage/tool stats in one payload.",
+    "Use /plan before giving a broad refactor prompt; it tends to produce cleaner decompositions and fewer accidental edits.",
+    "Put team conventions in GEMINI.md and refresh memory instead of re-pasting long instructions each session.",
+    "Use project-scoped custom commands in .gemini/commands for workflows you want teammates to share through git.",
+    "When an MCP server exposes many tools, filter aggressively with includeTools or excludeTools to avoid wasting context."
   ],
   "resources": [
-    { "title": "Official Docs", "url": "https://ai.google.dev/tutorials" },
-    { "title": "GitHub Repository", "url": "https://github.com/google/generative-ai-js" },
-    { "title": "Gemini API Reference", "url": "https://ai.google.dev/api" },
-    { "title": "Changelogs Tracking", "url": "https://changelogs.info/tools/gemini-cli" }
+    {
+      "title": "Gemini CLI docs",
+      "url": "https://google-gemini.github.io/gemini-cli"
+    },
+    {
+      "title": "Gemini CLI GitHub repo",
+      "url": "https://github.com/google-gemini/gemini-cli"
+    },
+    {
+      "title": "CLI commands reference",
+      "url": "https://raw.githubusercontent.com/google-gemini/gemini-cli/main/docs/reference/commands.md"
+    },
+    {
+      "title": "Configuration guide",
+      "url": "https://google-gemini.github.io/gemini-cli/docs/get-started/configuration.html"
+    },
+    {
+      "title": "Sandboxing guide",
+      "url": "https://google-gemini.github.io/gemini-cli/docs/cli/sandbox.html"
+    },
+    {
+      "title": "Extensions guide",
+      "url": "https://google-gemini.github.io/gemini-cli/docs/extensions/index.html"
+    },
+    {
+      "title": "Headless mode guide",
+      "url": "https://google-gemini.github.io/gemini-cli/docs/cli/headless.html"
+    },
+    {
+      "title": "MCP servers guide",
+      "url": "https://google-gemini.github.io/gemini-cli/docs/tools/mcp-server.html"
+    }
   ]
 }
