@@ -1,0 +1,124 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getTools } from "../../lib/releases";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
+export function getStaticPaths() {
+  const tools = getTools();
+  const paths = [];
+  for (let i = 0; i < tools.length; i++) {
+    for (let j = i + 1; j < tools.length; j++) {
+      paths.push({ params: { pair: `${tools[i].id}-vs-${tools[j].id}` }, props: { toolA: tools[i], toolB: tools[j] } });
+    }
+  }
+  return paths;
+}
+
+const { toolA, toolB } = Astro.props;
+
+function loadCheatsheet(toolId: string) {
+  try {
+    const dir = join(process.cwd(), "src/content/cheatsheets-json");
+    return JSON.parse(readFileSync(join(dir, `${toolId}.json`), "utf-8"));
+  } catch { return null; }
+}
+
+const csA = loadCheatsheet(toolA.id);
+const csB = loadCheatsheet(toolB.id);
+
+// Feature comparison matrix
+const features = [
+  { label: "Type", getA: () => toolA.category, getB: () => toolB.category },
+  { label: "Open Source", getA: () => getMeta(csA, "opensource"), getB: () => getMeta(csB, "opensource") },
+  { label: "Model Support", getA: () => getMeta(csA, "models"), getB: () => getMeta(csB, "models") },
+  { label: "Agent Mode", getA: () => getMeta(csA, "agent"), getB: () => getMeta(csB, "agent") },
+  { label: "Workflows", getA: () => count(csA, "dailyWorkflows"), getB: () => count(csB, "dailyWorkflows") },
+  { label: "Power Moves", getA: () => count(csA, "powerMoves"), getB: () => count(csB, "powerMoves") },
+  { label: "Gotchas", getA: () => count(csA, "gotchas"), getB: () => count(csB, "gotchas") },
+  { label: "CLI Flags", getA: () => count(csA, "cliFlags"), getB: () => count(csB, "cliFlags") },
+  { label: "Commands", getA: () => count(csA, "slashCommands"), getB: () => count(csB, "slashCommands") },
+  { label: "Pro Tips", getA: () => count(csA, "proTips"), getB: () => count(csB, "proTips") },
+];
+
+function count(cs: any, key: string): string {
+  if (!cs?.[key]) return "0";
+  return String(cs[key].length);
+}
+
+function getMeta(cs: any, key: string): string {
+  if (!cs) return "—";
+  if (cs.metadata?.[key]) return cs.metadata[key];
+  return "—";
+}
+---
+
+<BaseLayout
+  title={`${toolA.name} vs ${toolB.name} — changelogs.info`}
+  description={`Compare ${toolA.name} and ${toolB.name}. Features, workflows, gotchas, and which to pick.`}
+>
+  <div class="mx-auto max-w-5xl px-6 py-12">
+
+    <a href="/compare" class="mb-8 inline-flex items-center gap-1 font-mono text-sm text-text-muted transition-colors hover:text-green">
+      <span class="text-green">&lt;</span> /compare
+    </a>
+
+    <!-- Header -->
+    <header class="mb-10">
+      <h1 class="font-mono text-2xl font-bold sm:text-3xl">
+        <span class="text-green">{toolA.name}</span>
+        <span class="mx-2 text-text-muted">vs</span>
+        <span class="text-cyan">{toolB.name}</span>
+      </h1>
+      <p class="mt-3 font-sans text-sm text-text-secondary">
+        Side-by-side feature comparison, workflows, and gotchas.
+      </p>
+    </header>
+
+    <!-- Feature matrix -->
+    <section class="mb-10">
+      <h2 class="mb-4 font-mono text-base font-semibold text-green"><span class="text-green">//</span> feature_matrix</h2>
+      <div class="rounded-lg border border-border bg-bg-card overflow-hidden">
+        <div class="grid grid-cols-3 border-b border-border bg-bg-tertiary/30 px-4 py-2.5 font-mono text-xs font-semibold">
+          <span class="text-text-muted">Feature</span>
+          <span class="text-green">{toolA.name}</span>
+          <span class="text-cyan">{toolB.name}</span>
+        </div>
+        {features.map((f, i) => (
+          <div class:list={["grid grid-cols-3 px-4 py-2.5 font-mono text-xs", i % 2 === 0 ? "bg-transparent" : "bg-bg-tertiary/[0.05]", "border-t border-border/30"]}>
+            <span class="text-text-secondary">{f.label}</span>
+            <span class="text-text-primary">{f.getA()}</span>
+            <span class="text-text-primary">{f.getB()}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Side by side quick comparison -->
+    <div class="mb-10 grid gap-4 sm:grid-cols-2">
+      <div class="rounded-lg border border-green/30 bg-bg-card p-5">
+        <h3 class="mb-3 font-mono text-sm font-semibold text-green">{toolA.name}</h3>
+        <p class="mb-4 font-sans text-xs text-text-muted">{toolA.description}</p>
+        <a href={`/tools/${toolA.id}`} class="font-mono text-xs text-green transition-colors hover:text-green/80">view tool page →</a>
+        {csA?.cheatsheet && (
+          <a href={`/tools/${toolA.id}/cheatsheet`} class="ml-4 font-mono text-xs text-text-muted transition-colors hover:text-green">cheatsheet →</a>
+        )}
+      </div>
+      <div class="rounded-lg border border-cyan/30 bg-bg-card p-5">
+        <h3 class="mb-3 font-mono text-sm font-semibold text-cyan">{toolB.name}</h3>
+        <p class="mb-4 font-sans text-xs text-text-muted">{toolB.description}</p>
+        <a href={`/tools/${toolB.id}`} class="font-mono text-xs text-cyan transition-colors hover:text-cyan/80">view tool page →</a>
+        {csB?.cheatsheet && (
+          <a href={`/tools/${toolB.id}/cheatsheet`} class="ml-4 font-mono text-xs text-text-muted transition-colors hover:text-cyan">cheatsheet →</a>
+        )}
+      </div>
+    </div>
+
+    <!-- All comparisons -->
+    <div class="text-center">
+      <a href="/compare" class="font-mono text-sm text-text-muted transition-colors hover:text-green">
+        all comparisons →
+      </a>
+    </div>
+  </div>
+</BaseLayout>

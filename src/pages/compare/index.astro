@@ -1,0 +1,277 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getTools } from "../../lib/releases";
+
+const tools = getTools();
+
+// Build comparison data for each tool
+const comparisons: Record<string, string[]> = {
+  "IDE": ["cursor", "void", "windsurf"],
+  "IDE Extension": ["cline", "roo-code", "continue", "avante-nvim"],
+  "CLI": ["claude-code", "codex-cli", "gemini-cli", "opencode", "copilot-cli", "aider", "plandex", "amp"],
+  "Platform": ["openclaw", "goose", "gptme", "khoj", "open-webui", "openhands"],
+};
+
+const popularPairs = [
+  ["claude-code", "codex-cli"],
+  ["claude-code", "cursor"],
+  ["cursor", "windsurf"],
+  ["cline", "roo-code"],
+  ["gemini-cli", "codex-cli"],
+  ["opencode", "claude-code"],
+  ["openclaw", "claude-code"],
+  ["continue", "cursor"],
+];
+
+// Build comparison matrix
+function getFeatureMatrix(toolIds: string[]) {
+  const rows = [
+    { feature: "Open Source", key: "opensource" },
+    { feature: "Cloud/Local", key: "deployment" },
+    { feature: "Free Tier", key: "freetier" },
+    { feature: "Offline Mode", key: "offline" },
+    { feature: "Multi-Model", key: "multimodel" },
+    { feature: "Agent Mode", key: "agent" },
+    { feature: "Background Agents", key: "background" },
+    { feature: "Web Search", key: "websearch" },
+    { feature: "MCP Support", key: "mcp" },
+    { feature: "Config File", key: "configfile" },
+    { feature: "Built-in Memory", key: "memory" },
+    { feature: "VS Code Extension", key: "vscode" },
+  ];
+
+  const toolData: Record<string, Record<string, string>> = {
+    "claude-code": {
+      opensource: "✓",
+      deployment: "Cloud + Local",
+      freetier: "✓ (API key needed)",
+      offline: "No",
+      multimodel: "✓",
+      agent: "✓",
+      background: "✓",
+      websearch: "✓",
+      mcp: "✓",
+      configfile: "~/.claude/settings.json",
+      memory: "✓ (AGENTS.md)",
+      vscode: "✓",
+    },
+    "codex-cli": {
+      opensource: "✓",
+      deployment: "Cloud + Local",
+      freetier: "✓ (API key needed)",
+      offline: "No",
+      multimodel: "✓",
+      agent: "✓",
+      background: "Limited",
+      websearch: "✓",
+      mcp: "✓",
+      configfile: "~/.codex/config.toml",
+      memory: "✓ (AGENTS.md)",
+      vscode: "No",
+    },
+    "gemini-cli": {
+      opensource: "✓",
+      deployment: "Cloud",
+      freetier: "✓ (generous)",
+      offline: "No",
+      multimodel: "✓",
+      agent: "✓",
+      background: "✓",
+      websearch: "✓",
+      mcp: "✓",
+      configfile: "~/.gemini/settings.json",
+      memory: "✓ (GEMINI.md)",
+      vscode: "No",
+    },
+    "opencode": {
+      opensource: "✓",
+      deployment: "Cloud",
+      freetier: "Bring your own key",
+      offline: "No",
+      multimodel: "✓ (any provider)",
+      agent: "✓",
+      background: "No",
+      websearch: "No",
+      mcp: "✓",
+      configfile: "opencode.json",
+      memory: "No",
+      vscode: "No",
+    },
+    "openclaw": {
+      opensource: "✓",
+      deployment: "Self-hosted",
+      freetier: "✓ (bring keys)",
+      offline: "Local models",
+      multimodel: "✓ (multi-provider)",
+      agent: "✓ (agent army)",
+      background: "✓ (cron)",
+      websearch: "✓",
+      mcp: "✓",
+      configfile: "~/.openclaw/config.yaml",
+      memory: "✓ (MEMORY.md)",
+      vscode: "No",
+    },
+    "cursor": {
+      opensource: "No",
+      deployment: "Cloud",
+      freetier: "✓ (limited)",
+      offline: "No",
+      multimodel: "✓",
+      agent: "✓ (Agent mode)",
+      background: "✓ (Background agents)",
+      websearch: "✓",
+      mcp: "✓",
+      configfile: ".cursorrules",
+      memory: "✓ (Memories)",
+      vscode: "Fork of VS Code",
+    },
+    "cline": {
+      opensource: "✓",
+      deployment: "Cloud (BYOK)",
+      freetier: "✓ (API key needed)",
+      offline: "Local models",
+      multimodel: "✓ (any provider)",
+      agent: "✓ (autonomous)",
+      background: "No",
+      websearch: "No",
+      mcp: "✓",
+      configfile: ".clinerules",
+      memory: "✓ (MEMORY.md)",
+      vscode: "Extension",
+    },
+    "roo-code": {
+      opensource: "✓",
+      deployment: "Cloud (BYOK)",
+      freetier: "✓ (API key needed)",
+      offline: "Local models",
+      multimodel: "✓ (any provider)",
+      agent: "✓ (modes)",
+      background: "No",
+      websearch: "No",
+      mcp: "✓",
+      configfile: ".roo-rules",
+      memory: "✓ (MEMORY.md)",
+      vscode: "Extension",
+    },
+    "continue": {
+      opensource: "✓",
+      deployment: "Cloud (BYOK)",
+      freetier: "✓ (API key needed)",
+      offline: "Local models",
+      multimodel: "✓ (any provider)",
+      agent: "✓ (limited)",
+      background: "No",
+      websearch: "No",
+      mcp: "✓",
+      configfile: "continue.json",
+      memory: "No",
+      vscode: "Extension",
+    },
+    "windsurf": {
+      opensource: "No",
+      deployment: "Cloud",
+      freetier: "✓ (limited)",
+      offline: "No",
+      multimodel: "✓",
+      agent: "✓ (Cascade)",
+      background: "No",
+      websearch: "✓",
+      mcp: "No",
+      configfile: "project rules",
+      memory: "✓ (Memories)",
+      vscode: "Fork of VS Code",
+    },
+  };
+
+  return { rows, data: toolData };
+}
+
+const allTools = getTools();
+---
+
+<BaseLayout
+  title="AI Coding Tool Comparison — changelogs.info"
+  description="Compare Claude Code, Codex CLI, Gemini CLI, Cursor, Cline, and more. Feature matrix, pricing, and use case recommendations."
+>
+  <div class="mx-auto max-w-5xl px-6 py-12">
+
+    <a href="/" class="mb-8 inline-flex items-center gap-1 font-mono text-sm text-text-muted transition-colors hover:text-green">
+      <span class="text-green">&lt;</span> cd ..
+    </a>
+
+    <header class="mb-10">
+      <h1 class="text-glow-green font-mono text-2xl font-bold text-green sm:text-3xl">compare tools</h1>
+      <p class="mt-3 font-sans text-sm leading-relaxed text-text-secondary sm:text-base max-w-2xl">
+        Side-by-side comparison of AI coding tools. Features, pricing, and "which one should I use" guidance.
+      </p>
+    </header>
+
+    <!-- Popular comparisons -->
+    <section class="mb-10">
+      <h2 class="mb-4 font-mono text-base font-semibold text-green"><span class="text-green">//</span> popular_comparisons</h2>
+      <div class="grid gap-2 sm:grid-cols-2">
+        {popularPairs.map(([a, b]) => {
+          const toolA = allTools.find(t => t.id === a);
+          const toolB = allTools.find(t => t.id === b);
+          return toolA && toolB ? (
+            <a href={`/compare/${a}-vs-${b}`} class="group flex items-center gap-3 rounded-lg border border-border bg-bg-card px-4 py-3 transition-all hover:border-green/40 hover:shadow-[0_0_12px_rgba(51,255,51,0.1)]">
+              <span class="font-mono text-sm font-semibold text-text-primary group-hover:text-green transition-colors">{toolA.name}</span>
+              <span class="font-mono text-xs text-text-muted">vs</span>
+              <span class="font-mono text-sm font-semibold text-text-primary group-hover:text-cyan transition-colors">{toolB.name}</span>
+              <span class="ml-auto text-text-muted group-hover:text-green transition-all">→</span>
+            </a>
+          ) : null;
+        })}
+      </div>
+    </section>
+
+    <!-- By category -->
+    <section class="mb-10">
+      <h2 class="mb-4 font-mono text-base font-semibold text-green"><span class="text-green">//</span> by_category</h2>
+      {Object.entries(comparisons).map(([category, toolIds]) => (
+        <div class="mb-6">
+          <h3 class="mb-3 font-mono text-sm font-semibold text-text-primary">{category}</h3>
+          <div class="flex flex-wrap gap-2">
+            {toolIds.map((id) => {
+              const tool = allTools.find(t => t.id === id);
+              return tool ? (
+                <a href={`/tools/${id}`} class="rounded border border-border bg-bg-card px-3 py-1 font-mono text-xs text-text-secondary transition-all hover:border-green hover:text-green">
+                  {tool.name}
+                </a>
+              ) : null;
+            })}
+          </div>
+        </div>
+      ))}
+    </section>
+
+    <!-- Quick decision helper -->
+    <section class="mb-10">
+      <h2 class="mb-4 font-mono text-base font-semibold text-green"><span class="text-green">//</span> which_should_i_use</h2>
+      <div class="space-y-3">
+        <div class="rounded-lg border border-green/30 bg-green/[0.03] p-5">
+          <h3 class="mb-2 font-mono text-sm font-semibold text-green">I want a terminal-based agent</h3>
+          <p class="font-sans text-xs text-text-secondary mb-1"><strong>Claude Code</strong> — best reasoning, great subagent support, /commands ecosystem</p>
+          <p class="font-sans text-xs text-text-secondary mb-1"><strong>Codex CLI</strong> — GPT-5.4 optimized, security sandbox, parallel worktree mode</p>
+          <p class="font-sans text-xs text-text-secondary"><strong>OpenCode</strong> — multi-provider TUI, desktop app, transparent pricing</p>
+        </div>
+        <div class="rounded-lg border border-cyan/30 bg-cyan/[0.03] p-5">
+          <h3 class="mb-2 font-mono text-sm font-semibold text-cyan">I want an IDE with agent mode</h3>
+          <p class="font-sans text-xs text-text-secondary mb-1"><strong>Cursor</strong> — polished, background agents, great autocomplete</p>
+          <p class="font-sans text-xs text-text-secondary mb-1"><strong>Windsurf</strong> — Cascade flow, good for file-spanning edits</p>
+          <p class="font-sans text-xs text-text-secondary"><strong>Continue</strong> — open source, any model, VS Code native</p>
+        </div>
+        <div class="rounded-lg border border-amber/30 bg-amber/[0.03] p-5">
+          <h3 class="mb-2 font-mono text-sm font-semibold text-amber">I want autonomous agents I can trust</h3>
+          <p class="font-sans text-xs text-text-secondary mb-1"><strong>Cline</strong> — always asks before changes, any model, MCP support</p>
+          <p class="font-sans text-xs text-text-secondary"><strong>Roo Code</strong> — Cline fork with modes (code, architect, ask), plan-first approach</p>
+        </div>
+        <div class="rounded-lg border border-purple-400/30 bg-purple-400/[0.03] p-5">
+          <h3 class="mb-2 font-mono text-sm font-semibold text-purple-400">I want to orchestrate agents across platforms</h3>
+          <p class="font-sans text-xs text-text-secondary"><strong>OpenClaw</strong> — multi-channel (Discord/Telegram/Signal), cron, memory, agent army</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</BaseLayout>
