@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.3.13",
-  "generated_at": "2026-03-14T05:22:36.734Z",
+  "version": "2026.3.12",
+  "generated_at": "2026-03-13T23:50:11.412Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,25 +14,35 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.3.13",
-    "to_version": "2026.3.13",
-    "new_features": [
-      "chrome-devtools-mcp-attach-mode",
-      "built-in-browser-profiles",
-      "batched-browser-act-automation"
-    ],
-    "new_commands": [
-      "openclaw gateway status"
-    ],
-    "new_flags": [
-      "--require-rpc"
-    ],
-    "new_env_vars": [
-      "OPENCLAW_TZ"
-    ],
+    "from_version": "2026.3.12",
+    "to_version": "2026.3.12",
+    "new_features": [],
+    "new_commands": [],
+    "new_flags": [],
+    "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "security-exec-approvals",
+      "security-exec-detection",
+      "security-exec-allowlist",
+      "security-commands",
+      "security-gateway-auth",
+      "security-browser-request",
+      "security-agent",
+      "security-session-status",
+      "security-device-pairing",
+      "security-websocket-preauth",
+      "security-proxy-attachments",
+      "security-host-env",
+      "security-feishu-webhook",
+      "security-feishu-reactions",
+      "security-line-webhook",
+      "security-zalo-webhook",
+      "security-zalouser-groups",
+      "security-slack-and-teams-routing",
+      "security-exec-approvals-inline-loader"
+    ]
   },
   "payload": {
     "meta": {
@@ -50,8 +60,8 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.3.13",
-      "latest_release_date": "2026-03-14",
+      "latest_stable": "2026.3.12",
+      "latest_release_date": "2026-03-13",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
@@ -307,33 +317,6 @@
           "/approve <code> to approve pending commands"
         ],
         "source_url": "https://docs.openclaw.ai"
-      },
-      {
-        "id": "chrome-devtools-mcp-attach-mode",
-        "name": "Chrome DevTools MCP attach mode",
-        "status": "stable",
-        "since": "2026.3.13",
-        "description": "Add an official Chrome DevTools MCP attach mode for signed-in live Chrome sessions, with docs for `chrome://inspect/#remote-debugging` enablement and direct backlinks to Chrome’s own setup guides.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "built-in-browser-profiles",
-        "name": "Built-in browser profiles",
-        "status": "stable",
-        "since": "2026.3.13",
-        "description": "Add built-in `profile=\"user\"` for the logged-in host browser and `profile=\"chrome-relay\"` for the extension relay, so agent browser calls can prefer the real signed-in browser without the extra `browserSession` selector.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "batched-browser-act-automation",
-        "name": "Batched browser act automation",
-        "status": "stable",
-        "since": "2026.3.13",
-        "description": "Add batched actions, selector targeting, and delayed clicks for browser act requests with normalized batch dispatch.",
-        "key_details": [],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -464,14 +447,6 @@
         "since": "1.0.0",
         "status": "stable",
         "source_url": "https://docs.openclaw.ai/cli/update"
-      },
-      {
-        "name": "openclaw gateway status",
-        "syntax": "openclaw gateway status --require-rpc",
-        "description": "Add `openclaw gateway status --require-rpc` and clearer Linux non-interactive daemon-install failure reporting so automation can fail hard on probe misses instead of treating a printed RPC error as green.",
-        "since": "2026.3.13",
-        "status": "stable",
-        "source_url": ""
       }
     ],
     "flags": {
@@ -503,28 +478,12 @@
           "description": "Install Gateway as system daemon service during onboarding.",
           "since": "1.0.0",
           "source_url": "https://docs.openclaw.ai/cli/onboard"
-        },
-        {
-          "flag": "--require-rpc",
-          "description": "Requires RPC for gateway status.",
-          "since": "2026.3.13",
-          "source_url": ""
         }
       ],
       "deprecated": [],
-      "new_since_previous": [
-        "--require-rpc"
-      ]
+      "new_since_previous": []
     },
-    "env_vars": [
-      {
-        "name": "OPENCLAW_TZ",
-        "purpose": "Pin gateway and CLI containers to a chosen IANA timezone instead of inheriting the daemon default.",
-        "status": "stable",
-        "since": "2026.3.13",
-        "source_url": ""
-      }
-    ],
+    "env_vars": [],
     "models": {
       "note": "OpenClaw is model-agnostic. Configure any provider/model in gateway config.",
       "supported_providers": [
