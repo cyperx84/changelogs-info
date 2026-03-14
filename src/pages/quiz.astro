@@ -1,0 +1,321 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Which AI Coding Tool Is Right for You? | changelogs.info" description="Answer 6 quick questions to find your perfect AI coding tool match.">
+  <div class="max-w-3xl mx-auto px-4 py-12">
+    <!-- Header -->
+    <div class="mb-10 text-center">
+      <div class="font-mono text-[var(--color-text-muted)] text-sm mb-2">$ ai-tool --quiz</div>
+      <h1 class="text-3xl font-bold text-[var(--color-green-bright)] font-mono mb-3">Which AI Coding Tool Is Right for You?</h1>
+      <p class="text-[var(--color-text-secondary)] text-sm">Answer 6 questions. Get your top 3 matches with explanations.</p>
+    </div>
+
+    <!-- Quiz -->
+    <div id="quiz">
+      <!-- Progress bar -->
+      <div class="mb-8">
+        <div class="flex justify-between items-center mb-2">
+          <span id="progress-label" class="text-xs font-mono text-[var(--color-text-muted)]">Question 1 of 6</span>
+          <span id="progress-pct" class="text-xs font-mono text-[var(--color-green)]">0%</span>
+        </div>
+        <div class="h-1 bg-[var(--color-bg-secondary)] rounded-full overflow-hidden">
+          <div id="progress-bar" class="h-full bg-[var(--color-green)] transition-all duration-300" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Question container -->
+      <div id="question-container"></div>
+
+      <!-- Navigation -->
+      <div class="flex justify-between mt-8">
+        <button id="btn-back" class="px-4 py-2 font-mono text-sm border border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-border-hover)] hover:text-[var(--color-text-primary)] transition-colors hidden">← back</button>
+        <div class="flex-1"></div>
+        <button id="btn-next" class="px-5 py-2 font-mono text-sm bg-[var(--color-bg-secondary)] border border-[var(--color-green)] text-[var(--color-green)] hover:bg-[var(--color-bg-tertiary)] transition-colors disabled:opacity-30 disabled:cursor-not-allowed" disabled>next →</button>
+      </div>
+    </div>
+
+    <!-- Results (hidden initially) -->
+    <div id="results" class="hidden">
+      <div class="mb-6 font-mono text-[var(--color-text-muted)] text-sm">> Analyzing your profile...</div>
+      <h2 class="text-xl font-bold text-[var(--color-green-bright)] font-mono mb-2">Your Top Matches</h2>
+      <p class="text-[var(--color-text-secondary)] text-sm mb-8">Based on your answers, here are the tools best suited to you.</p>
+      <div id="results-list" class="space-y-4"></div>
+      <div class="mt-10 text-center">
+        <button id="btn-retake" class="px-5 py-2 font-mono text-sm border border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-border-hover)] hover:text-[var(--color-text-primary)] transition-colors">↩ retake quiz</button>
+        <div class="mt-4">
+          <a href="/compare" class="text-[var(--color-cyan)] hover:underline font-mono text-sm">→ Compare tools in detail</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+const questions = [
+  {
+    id: "interface",
+    text: "How do you prefer to work?",
+    options: [
+      { value: "terminal", label: "Terminal all the way — CLI, tmux, vim", tags: ["cli"] },
+      { value: "ide", label: "I live in an IDE (VS Code, JetBrains, etc.)", tags: ["ide"] },
+      { value: "both", label: "Mix of both, depending on the task", tags: ["cli", "ide"] },
+    ],
+  },
+  {
+    id: "editor",
+    text: "What's your primary editor?",
+    options: [
+      { value: "vscode", label: "VS Code / Cursor / Windsurf", tags: ["vscode"] },
+      { value: "jetbrains", label: "JetBrains (IntelliJ, PyCharm, etc.)", tags: ["jetbrains"] },
+      { value: "neovim", label: "Neovim / Vim / Emacs", tags: ["neovim"] },
+      { value: "other", label: "Other / I don't have a strong preference", tags: [] },
+    ],
+  },
+  {
+    id: "team",
+    text: "How do you mostly code?",
+    options: [
+      { value: "solo", label: "Solo — my own projects", tags: ["solo"] },
+      { value: "small", label: "Small team (2–5 people)", tags: ["team"] },
+      { value: "large", label: "Large team or enterprise", tags: ["enterprise"] },
+    ],
+  },
+  {
+    id: "budget",
+    text: "What's your budget sensitivity?",
+    options: [
+      { value: "free", label: "Needs to be free or nearly free", tags: ["free"] },
+      { value: "low", label: "OK with $10–20/mo for real productivity gains", tags: ["lowcost"] },
+      { value: "flexible", label: "Budget flexible — I pay for what works", tags: ["premium"] },
+    ],
+  },
+  {
+    id: "agent",
+    text: "How much do you want AI to do autonomously?",
+    options: [
+      { value: "suggest", label: "Just suggest — I stay in control", tags: ["assist"] },
+      { value: "delegate", label: "Delegate tasks, review the results", tags: ["agent"] },
+      { value: "autopilot", label: "Full autopilot on long multi-step tasks", tags: ["agent", "background"] },
+    ],
+  },
+  {
+    id: "context",
+    text: "How big are your projects / context needs?",
+    options: [
+      { value: "small", label: "Small scripts, single files", tags: ["small"] },
+      { value: "medium", label: "Medium repos — a few thousand lines", tags: ["medium"] },
+      { value: "large", label: "Large codebases or need huge context windows", tags: ["large"] },
+    ],
+  },
+];
+
+type Option = { value: string; label: string; tags: string[] };
+type Question = { id: string; text: string; options: Option[] };
+
+// Tool scoring config
+const tools: Record<string, { name: string; url: string; color: string; scores: Record<string, number>; tagline: string }> = {
+  "claude-code": {
+    name: "Claude Code",
+    url: "/claude-code",
+    color: "#d97706",
+    tagline: "The most capable autonomous CLI agent. Best for terminal users who want to delegate large tasks.",
+    scores: { cli: 3, ide: 1, vscode: 1, neovim: 3, solo: 2, team: 2, enterprise: 1, free: 0, lowcost: 2, premium: 3, assist: 1, agent: 3, background: 3, small: 1, medium: 2, large: 3 },
+  },
+  "codex-cli": {
+    name: "Codex CLI",
+    url: "https://github.com/openai/codex",
+    color: "#10b981",
+    tagline: "OpenAI's open-source CLI agent. Great for terminal-first developers on a budget.",
+    scores: { cli: 3, ide: 0, vscode: 0, neovim: 2, solo: 3, team: 1, enterprise: 0, free: 2, lowcost: 3, premium: 2, assist: 2, agent: 2, background: 1, small: 2, medium: 3, large: 1 },
+  },
+  "cursor": {
+    name: "Cursor",
+    url: "https://cursor.sh",
+    color: "#6366f1",
+    tagline: "AI-native IDE built on VS Code. Best for developers who want everything in one polished editor.",
+    scores: { cli: 0, ide: 3, vscode: 3, neovim: 0, solo: 3, team: 2, enterprise: 2, free: 1, lowcost: 3, premium: 3, assist: 3, agent: 2, background: 1, small: 3, medium: 3, large: 2 },
+  },
+  "windsurf": {
+    name: "Windsurf",
+    url: "https://codeium.com/windsurf",
+    color: "#0ea5e9",
+    tagline: "Codeium's AI IDE with Cascade agents. Strong free tier and smooth IDE experience.",
+    scores: { cli: 0, ide: 3, vscode: 3, neovim: 0, solo: 3, team: 2, enterprise: 1, free: 3, lowcost: 2, premium: 2, assist: 3, agent: 2, background: 1, small: 3, medium: 3, large: 1 },
+  },
+  "gemini-cli": {
+    name: "Gemini CLI",
+    url: "https://github.com/google-gemini/gemini-cli",
+    color: "#f59e0b",
+    tagline: "Google's open-source CLI agent with 1M token context. Best for huge codebases or research-heavy tasks.",
+    scores: { cli: 3, ide: 0, vscode: 0, neovim: 2, solo: 2, team: 2, enterprise: 1, free: 3, lowcost: 2, premium: 1, assist: 1, agent: 3, background: 2, small: 1, medium: 2, large: 3 },
+  },
+  "cline": {
+    name: "Cline",
+    url: "https://github.com/cline/cline",
+    color: "#a78bfa",
+    tagline: "Open-source VS Code extension with strong agentic capabilities. Pay for what you use.",
+    scores: { cli: 0, ide: 3, vscode: 3, neovim: 0, solo: 3, team: 2, enterprise: 1, free: 1, lowcost: 3, premium: 2, assist: 2, agent: 3, background: 2, small: 2, medium: 3, large: 2 },
+  },
+  "opencode": {
+    name: "OpenCode",
+    url: "https://opencode.ai",
+    color: "#ec4899",
+    tagline: "Terminal-first multi-model agent. Use any AI provider from your terminal.",
+    scores: { cli: 3, ide: 0, vscode: 0, neovim: 3, solo: 3, team: 1, enterprise: 0, free: 2, lowcost: 3, premium: 2, assist: 2, agent: 3, background: 1, small: 2, medium: 3, large: 2 },
+  },
+  "continue": {
+    name: "Continue",
+    url: "https://continue.dev",
+    color: "#14b8a6",
+    tagline: "Open-source IDE extension supporting VS Code and JetBrains. Bring your own model.",
+    scores: { cli: 0, ide: 3, vscode: 2, jetbrains: 3, neovim: 1, solo: 2, team: 3, enterprise: 2, free: 3, lowcost: 3, premium: 1, assist: 3, agent: 1, background: 0, small: 3, medium: 3, large: 1 },
+  },
+  "openclaw": {
+    name: "OpenClaw",
+    url: "/openclaw",
+    color: "#00ff41",
+    tagline: "Persistent AI agent platform with memory, skills, and multi-channel access. Best for power users who want an AI teammate.",
+    scores: { cli: 2, ide: 1, vscode: 0, neovim: 2, solo: 2, team: 2, enterprise: 2, free: 1, lowcost: 1, premium: 3, assist: 1, agent: 3, background: 3, small: 1, medium: 2, large: 3 },
+  },
+};
+
+let currentQ = 0;
+const answers: Record<string, string[]> = {};
+
+function renderQuestion(idx: number) {
+  const q = questions[idx] as Question;
+  const selected = answers[q.id] || [];
+
+  const container = document.getElementById("question-container")!;
+  container.innerHTML = `
+    <div class="border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6 rounded-sm">
+      <div class="text-xs font-mono text-[var(--color-text-muted)] mb-3">Q${idx + 1}/${questions.length}</div>
+      <h2 class="text-lg font-bold font-mono text-[var(--color-text-primary)] mb-5">${q.text}</h2>
+      <div class="space-y-2">
+        ${q.options.map((opt) => `
+          <label class="flex items-start gap-3 p-3 cursor-pointer border transition-colors ${selected.includes(opt.value) ? 'border-[var(--color-green)] bg-[var(--color-bg-tertiary)]' : 'border-[var(--color-border)] hover:border-[var(--color-border-hover)]'}" data-value="${opt.value}">
+            <div class="mt-0.5 w-4 h-4 border ${selected.includes(opt.value) ? 'border-[var(--color-green)] bg-[var(--color-green)]' : 'border-[var(--color-text-muted)]'} flex items-center justify-center flex-shrink-0 font-mono text-[10px] text-black">${selected.includes(opt.value) ? '✓' : ''}</div>
+            <span class="text-sm font-mono text-[var(--color-text-primary)]">${opt.label}</span>
+          </label>
+        `).join('')}
+      </div>
+    </div>
+  `;
+
+  // Attach click handlers
+  container.querySelectorAll<HTMLElement>("[data-value]").forEach((el) => {
+    el.addEventListener("click", () => {
+      const val = el.dataset.value!;
+      answers[q.id] = [val]; // single select
+      renderQuestion(idx);
+      (document.getElementById("btn-next") as HTMLButtonElement).disabled = false;
+    });
+  });
+
+  updateProgress(idx);
+}
+
+function updateProgress(idx: number) {
+  const pct = Math.round((idx / questions.length) * 100);
+  const label = document.getElementById("progress-label")!;
+  const pctEl = document.getElementById("progress-pct")!;
+  const bar = document.getElementById("progress-bar")!;
+  label.textContent = `Question ${idx + 1} of ${questions.length}`;
+  pctEl.textContent = `${pct}%`;
+  bar.style.width = `${pct}%`;
+
+  const backBtn = document.getElementById("btn-back")!;
+  if (idx > 0) backBtn.classList.remove("hidden");
+  else backBtn.classList.add("hidden");
+}
+
+function computeResults() {
+  const scores: Record<string, number> = {};
+
+  for (const toolId of Object.keys(tools)) {
+    scores[toolId] = 0;
+  }
+
+  for (const [qid, vals] of Object.entries(answers)) {
+    const q = questions.find((q) => q.id === qid) as Question | undefined;
+    if (!q) continue;
+    for (const val of vals) {
+      const opt = q.options.find((o) => o.value === val);
+      if (!opt) continue;
+      for (const tag of opt.tags) {
+        for (const toolId of Object.keys(tools)) {
+          const s = tools[toolId].scores[tag] || 0;
+          scores[toolId] += s;
+        }
+      }
+    }
+  }
+
+  return Object.entries(scores)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([id]) => id);
+}
+
+function renderResults(topTools: string[]) {
+  const quiz = document.getElementById("quiz")!;
+  const results = document.getElementById("results")!;
+  quiz.classList.add("hidden");
+  results.classList.remove("hidden");
+
+  const list = document.getElementById("results-list")!;
+  const medals = ["🥇", "🥈", "🥉"];
+  const ranks = ["Best match", "Strong match", "Also consider"];
+
+  list.innerHTML = topTools.map((id, i) => {
+    const tool = tools[id];
+    return `
+      <div class="border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-5 rounded-sm" style="border-left: 3px solid ${tool.color}">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="text-lg">${medals[i]}</span>
+          <span class="text-xs font-mono px-2 py-0.5" style="color: ${tool.color}; background: ${tool.color}22;">${ranks[i]}</span>
+        </div>
+        <a href="${tool.url}" class="text-base font-bold font-mono hover:underline" style="color: ${tool.color}">${tool.name}</a>
+        <p class="text-sm text-[var(--color-text-secondary)] mt-2 font-mono leading-relaxed">${tool.tagline}</p>
+      </div>
+    `;
+  }).join('');
+}
+
+// Init
+renderQuestion(0);
+(document.getElementById("btn-next") as HTMLButtonElement).disabled = !answers[questions[0].id];
+
+document.getElementById("btn-next")!.addEventListener("click", () => {
+  if (currentQ < questions.length - 1) {
+    currentQ++;
+    renderQuestion(currentQ);
+    (document.getElementById("btn-next") as HTMLButtonElement).disabled = !answers[questions[currentQ].id];
+    const nextLabel = currentQ === questions.length - 1 ? "See results →" : "next →";
+    document.getElementById("btn-next")!.textContent = nextLabel;
+  } else {
+    const top = computeResults();
+    renderResults(top);
+  }
+});
+
+document.getElementById("btn-back")!.addEventListener("click", () => {
+  if (currentQ > 0) {
+    currentQ--;
+    renderQuestion(currentQ);
+    (document.getElementById("btn-next") as HTMLButtonElement).disabled = false;
+    document.getElementById("btn-next")!.textContent = currentQ === questions.length - 1 ? "See results →" : "next →";
+  }
+});
+
+document.getElementById("btn-retake")!.addEventListener("click", () => {
+  currentQ = 0;
+  for (const key of Object.keys(answers)) delete answers[key];
+  document.getElementById("quiz")!.classList.remove("hidden");
+  document.getElementById("results")!.classList.add("hidden");
+  renderQuestion(0);
+  (document.getElementById("btn-next") as HTMLButtonElement).disabled = true;
+  document.getElementById("btn-next")!.textContent = "next →";
+});
+</script>
