@@ -51,9 +51,12 @@ jobs:
         run: |
           git config user.name "changelogs-bot"
           git config user.email "bot@changelogs.info"
-          git add public/api/refs/
+          git add public/api/refs/ public/api/history/
           git diff --staged --quiet || git commit -m "chore: update payloads [$(date -u +%Y-%m-%dT%H:%M:%SZ)]"
           git push
+      - name: Validate payloads
+        if: success()
+        run: pnpm validate
       - name: Create failure issue
         if: failure()
         uses: actions/github-script@v7

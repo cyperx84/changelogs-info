@@ -42,8 +42,8 @@ const hasMigration = existsSync(join(process.cwd(), `src/content/migrations/${to
 ---
 
 <BaseLayout
-  title={`${tool.name} Changelog — changelogs.info`}
-  description={`Track all releases and changelogs for ${tool.name} (${tool.repo}). ${tool.description}`}
+  title={`${tool.name} changelog — changelogs.info`}
+  description={`Track ${tool.name} releases, breaking changes, and config updates.`}
 >
   <div class="mx-auto max-w-4xl px-6 py-12">
     <!-- Back link -->
@@ -88,6 +88,18 @@ const hasMigration = existsSync(join(process.cwd(), `src/content/migrations/${to
       </div>
 
       <p class="mt-4 font-sans leading-relaxed text-text-secondary">{tool.description}</p>
+
+      <!-- Cheatsheet CTA (if available) -->
+      {hasCheatsheet && (
+        <a
+          href={`/tools/${tool.id}/cheatsheet`}
+          class="reveal mt-5 inline-flex items-center gap-2 rounded-lg border border-cyan/40 bg-cyan/10 px-4 py-2.5 font-mono text-sm text-cyan transition-all hover:border-cyan hover:bg-cyan/20"
+        >
+          <span>📋</span>
+          <span>view cheatsheet</span>
+          <span class="text-cyan/60">→</span>
+        </a>
+      )}
 
       <!-- Stats bar -->
       {releases.length > 0 && (
@@ -204,11 +216,19 @@ const hasMigration = existsSync(join(process.cwd(), `src/content/migrations/${to
           ))}
         </div>
       ) : (
-        <div class="rounded-lg border border-dashed border-border bg-bg-card p-8 text-center sm:p-12">
-          <p class="mb-3 font-mono text-sm text-red">ERROR: no release data</p>
-          <p class="font-mono text-xs text-text-secondary sm:text-sm">
-            Release data syncs automatically. Check back soon.
-          </p>
+        <div class="rounded-lg border border-dashed border-green/20 bg-bg-card p-8 text-center sm:p-12">
+          <p class="mb-2 font-mono text-sm text-green">> no releases tracked yet.</p>
+          <p class="mb-4 font-sans text-sm text-text-secondary">We track this tool — data coming soon.</p>
+          {tool.website && (
+            <a
+              href={tool.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1.5 rounded border border-border bg-bg-tertiary px-3 py-1.5 font-mono text-xs text-text-secondary transition-all hover:border-green hover:text-green"
+            >
+              visit {tool.name} →
+            </a>
+          )}
         </div>
       )}
     </section>

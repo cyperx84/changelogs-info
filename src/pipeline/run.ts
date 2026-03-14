@@ -1,10 +1,11 @@
-import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { getAllToolSlugs, getSourcesForTool } from "./sources.js";
 import { fetchSource } from "./fetcher.js";
 import { storeEvidence, loadLatestEvidence } from "./evidence.js";
 import { computeDiff, type DiffResult } from "./diff.js";
 import { queueTier2Refresh, runTier2Refresh, type RefreshInput } from "./refresh.js";
+import { writeChecksum, verifyChecksum } from "./checksum.js";
 
 const REFS_DIR = join(process.cwd(), "public", "api", "refs");
 const HISTORY_DIR = join(process.cwd(), "public", "api", "history");
@@ -173,6 +174,7 @@ async function runTool(toolSlug: string, forceTier2: boolean): Promise<RunResult
       archivePayload(toolSlug, diff.previousVersion || "unknown");
       const payloadPath = join(REFS_DIR, `${toolSlug}.json`);
       writeFileSync(payloadPath, JSON.stringify(payload, null, 2) + "\n");
+      writeChecksum(payloadPath);
       result.patchesApplied = diff.directPatches.length;
       console.log(`  ✏️  Applied ${diff.directPatches.length} patches to payload`);
     }
@@ -204,6 +206,7 @@ async function runTool(toolSlug: string, forceTier2: boolean): Promise<RunResult
           archivePayload(toolSlug, diff.previousVersion || "unknown");
           const payloadPath = join(REFS_DIR, `${toolSlug}.json`);
           writeFileSync(payloadPath, JSON.stringify(refreshOutput.updatedPayload, null, 2) + "\n");
+          writeChecksum(payloadPath);
           result.tier2Extracted = refreshOutput.changeCount;
           console.log(`  ✨ Tier 2 refresh: extracted ${refreshOutput.changeCount} changes`);
           for (const note of refreshOutput.extractionNotes) {
@@ -368,6 +371,17 @@ async function main() {
 
   // Write status.json
   writeStatusJson(summary);
+
+  // Generate checksums for all payloads
+  const jsonFiles = readdirSync(REFS_DIR).filter(f => f.endsWith(".json"));
+  let checksumCount = 0;
+  for (const file of jsonFiles) {
+    writeChecksum(join(REFS_DIR, file));
+    checksumCount++;
+  }
+  if (checksumCount > 0) {
+    console.log(`\n🔐 Generated ${checksumCount} payload checksums`);
+  }
 
   // Exit with code 1 if any tool had errors
   if (summary.errors > 0) {
