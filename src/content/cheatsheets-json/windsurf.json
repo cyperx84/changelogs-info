@@ -1,97 +1,204 @@
 {
   "tool": "windsurf",
   "lastUpdated": "2026-03-14",
+  "quickStart": {
+    "title": "Get productive in 30 seconds",
+    "steps": [
+      "Open Windsurf and press Cmd/Ctrl+L to open Cascade.",
+      "Pick Chat mode for questions or Write mode when you want code changes.",
+      "Choose a model in the selector below the Cascade input; start with a recommended low-cost model, then escalate for harder tasks.",
+      "Use Tab suggestions for inline flow, and escalate to Cascade only when the task needs broader context or tool use.",
+      "Create a workspace rule or workflow in .windsurf/ if you find yourself repeating the same instructions."
+    ]
+  },
+  "dailyWorkflows": [
+    {
+      "title": "Inline coding with Tab first",
+      "description": "Use Windsurf Tab for small edits, import insertion, and cursor jumps before involving the full agent.",
+      "command": "Accept with Tab, cancel with Esc, or accept incrementally word-by-word.",
+      "tags": ["tab", "autocomplete", "fast-edits"]
+    },
+    {
+      "title": "Escalate to Cascade Write mode for real tasks",
+      "description": "When the change spans multiple files or needs tool calls, switch to Write mode and describe the task directly.",
+      "command": "Cmd/Ctrl+L → Write mode → Implement this feature and update tests.",
+      "tags": ["cascade", "write-mode", "multi-file"]
+    },
+    {
+      "title": "Use context-aware continuation",
+      "description": "Make a manual edit, then ask Cascade to continue from your last action instead of re-explaining everything.",
+      "command": "After editing manually, prompt: continue my work and finish wiring this up.",
+      "tags": ["context-awareness", "collaboration", "flow"]
+    },
+    {
+      "title": "Capture repetitive playbooks as workflows",
+      "description": "Save a deployment, PR triage, or test-fix routine as a markdown workflow and invoke it by slash command.",
+      "command": "Create .windsurf/workflows/run-tests-and-fix.md, then invoke /run-tests-and-fix in Cascade.",
+      "tags": ["workflow", "automation", "slash-command"]
+    }
+  ],
+  "powerMoves": [
+    {
+      "title": "Exploit real-time collaboration awareness",
+      "description": "Let Cascade observe your terminal activity, chat history, and recent editor actions, then ask it to pick up where you left off.",
+      "command": "Make a few manual changes, then tell Cascade: continue my work, keep the current direction, and finish the edge cases.",
+      "why": "This is one of Windsurf's distinct strengths and reduces context restating."
+    },
+    {
+      "title": "Use rules + memories + workflows together",
+      "description": "Keep durable coding standards in rules, let Cascade store useful workspace memories, and turn multi-step procedures into workflows.",
+      "command": "Store coding conventions in .windsurf/rules, ask Cascade to create a memory for repo-specific facts, and save repeated procedures in .windsurf/workflows/.",
+      "why": "You get persistent context without bloating every prompt."
+    },
+    {
+      "title": "Tune auto-execution conservatively",
+      "description": "Use Off, Auto, or Turbo based on task sensitivity and your trust in the model and environment.",
+      "command": "Keep Off for sensitive repos, Auto for normal development, and Turbo only when the command deny list is already hardened.",
+      "why": "Windsurf becomes fast without silently turning into a risky shell bot."
+    }
+  ],
+  "gotchas": [
+    {
+      "problem": "Cascade can stop after reaching its tool-call budget for a prompt.",
+      "solution": "If the trajectory stalls, type continue to resume from where it left off; each continue counts as a new prompt.",
+      "severity": "annoying"
+    },
+    {
+      "problem": "Turbo mode auto-executes commands and browser controls except items on your deny list.",
+      "solution": "Use Turbo only in well-understood repos with a strict deny list; otherwise stay on Off or Auto.",
+      "severity": "blocking"
+    },
+    {
+      "problem": "Reverts are currently irreversible.",
+      "solution": "Use revert carefully, especially after larger changes; checkpoint mentally before clicking it.",
+      "severity": "blocking"
+    },
+    {
+      "problem": "If ignored files are not configured, Cascade may consider files you do not want it touching.",
+      "solution": "Maintain .codeiumignore at the workspace root and, for enterprise setups, use a global ~/.codeium/.codeiumignore if needed.",
+      "severity": "subtle"
+    },
+    {
+      "problem": "Too many rules or overly verbose workflows can make behavior inconsistent.",
+      "solution": "Keep rules concise and specific, and keep each workflow focused on a single repeatable process.",
+      "severity": "subtle"
+    }
+  ],
   "cliFlags": [],
   "slashCommands": [
-    { "name": "@file", "description": "Reference specific file", "example": "@file:auth.ts Explain this middleware", "added": "1.0.0", "category": "context" },
-    { "name": "@folder", "description": "Reference folder", "example": "@folder:components List all React components", "added": "1.0.0", "category": "context" },
-    { "name": "@symbol", "description": "Reference function/class", "example": "@symbol:UserService Show all methods", "added": "1.0.0", "category": "context" },
-    { "name": "@terminal", "description": "Reference terminal output", "example": "@terminal Why did the build fail?", "added": "1.0.0", "category": "context" },
-    { "name": "@web", "description": "Search web (requires internet)", "example": "@web Latest TypeScript 5.4 features", "added": "1.0.0", "category": "context" }
+    {
+      "command": "/[workflow-name]",
+      "description": "Run a saved Cascade workflow stored as markdown in .windsurf/workflows/.",
+      "example": "/run-tests-and-fix",
+      "tip": "This is the main slash-command pattern Windsurf documents officially for repeatable task automation."
+    },
+    {
+      "command": "/address-pr-comments",
+      "description": "Example workflow pattern for processing PR feedback one comment at a time.",
+      "example": "/address-pr-comments",
+      "tip": "Good template for review-heavy repos."
+    },
+    {
+      "command": "/git-workflows",
+      "description": "Example workflow pattern for standardized commits and PR creation.",
+      "example": "/git-workflows",
+      "tip": "Turn your team's git checklist into a reusable command."
+    },
+    {
+      "command": "/deployment",
+      "description": "Example workflow pattern for deployment steps and verification.",
+      "example": "/deployment",
+      "tip": "Best when your deploy sequence is stable and CLI-driven."
+    },
+    {
+      "command": "/security-scan",
+      "description": "Example workflow pattern for on-demand vulnerability or security review steps.",
+      "example": "/security-scan",
+      "tip": "Useful for release gates or pre-merge checks."
+    }
   ],
   "config": [
-    { "key": "windsurf.model", "description": "Default AI model", "required": false, "type": "settings" },
-    { "key": "windsurf.apiProvider", "description": "API provider (Codeium, OpenAI, Anthropic, etc)", "required": false, "type": "settings" },
-    { "key": "windsurf.temperature", "description": "Creativity (0-1)", "required": false, "type": "settings" },
-    { "key": "windsurf.maxTokens", "description": "Max response tokens", "required": false, "type": "settings" },
-    { "key": "windsurf.autocompleteEnabled", "description": "Enable/disable autocomplete", "required": false, "type": "settings" },
-    { "key": "windsurf.customInstructions", "description": "Global instructions for AI", "required": false, "type": "settings" }
-  ],
-  "workflows": [
     {
-      "title": "Cascade Chat for Codebase Understanding",
-      "description": "Use multi-turn conversations to understand and modify code",
-      "steps": [
-        "Press Cmd+Shift+Space (Mac) or Ctrl+Shift+Space (Win/Linux)",
-        "Ask questions about architecture and design",
-        "Use @file, @folder, @symbol for focused context",
-        "Continue conversation naturally",
-        "Build mental model before making changes"
-      ]
+      "key": "Cascade model selector",
+      "description": "Per-conversation model selection for Cascade across Windsurf and provider-hosted models, including BYOK options.",
+      "default": "User-selected model in the UI",
+      "recommended": "Start with a recommended cheaper model and switch up only for harder reasoning or larger context windows."
     },
     {
-      "title": "Flows for Repeatable Workflows",
-      "description": "Create and reuse AI workflows",
-      "steps": [
-        "Press Cmd+Shift+F (Mac) or Ctrl+Shift+F (Win/Linux)",
-        "Browse available flows",
-        "Select a flow for your task (e.g., 'Generate Tests')",
-        "Flows automate common patterns",
-        "Save custom flows for team reuse"
-      ]
+      "key": "Auto-Execution Level",
+      "description": "Controls command/browser auto-execution behavior in Cascade: Off, Auto, or Turbo.",
+      "default": "Off or team-admin-limited maximum",
+      "recommended": "Use Off for sensitive work, Auto for common dev tasks, Turbo only with strong guardrails."
     },
     {
-      "title": "Autocomplete & Tab Acceptance",
-      "description": "Use inline code suggestions as you type",
-      "steps": [
-        "Start typing code",
-        "Windsurf suggests completions",
-        "Press Tab to accept full suggestion",
-        "Use Escape to reject",
-        "Works across all programming languages"
-      ]
+      "key": ".codeiumignore",
+      "description": "Gitignore-style file for excluding paths from Windsurf viewing, editing, creating, and indexing behavior.",
+      "default": "Absent unless you add it",
+      "recommended": "Add generated files, secrets, vendor dirs, and anything you do not want the agent touching."
     },
     {
-      "title": "Deep Codebase Understanding",
-      "description": "Windsurf learns your codebase structure",
-      "steps": [
-        "Windsurf indexes your codebase on first launch",
-        "Uses semantic understanding for better suggestions",
-        "Can reference functions/classes across files",
-        "Understands project architecture",
-        "Better context = better suggestions"
-      ]
+      "key": ".windsurf/rules",
+      "description": "Workspace rules directory for persistent coding instructions tied to the project.",
+      "default": "No workspace rules",
+      "recommended": "Store concise repo conventions here instead of repeating them in every prompt."
     },
     {
-      "title": "Flows with Memory",
-      "description": "Windsurf remembers project context across sessions",
-      "steps": [
-        "Windsurf maintains project memory",
-        "Remembers your coding style and preferences",
-        "Adapts suggestions over time",
-        "Learns patterns in your codebase",
-        "Gets smarter with more usage"
-      ]
+      "key": "global_rules.md",
+      "description": "Global rules file applied across workspaces.",
+      "default": "User-level customization",
+      "recommended": "Use for personal coding habits; keep project-specific rules in the workspace."
+    },
+    {
+      "key": ".windsurf/workflows/",
+      "description": "Markdown workflow directory discovered from the workspace, subdirectories, and parent directories up to git root.",
+      "default": "No custom workflows",
+      "recommended": "Create one workflow per repeatable procedure and invoke it as a slash command."
+    },
+    {
+      "key": "Tab mode",
+      "description": "Windsurf Tab can run in Autocomplete or Supercomplete mode, with optional clipboard context and Tab-to-Import/Tab-to-Jump toggles.",
+      "default": "Configurable in settings",
+      "recommended": "Use Supercomplete for richer edits; enable clipboard context only if the extra context is worth the privacy tradeoff."
     }
   ],
   "proTips": [
-    "Cascade is best for exploratory conversations before coding",
-    "Use @file for specific file questions",
-    "Use @folder for directory-level understanding",
-    "Use @symbol to reference functions/classes directly",
-    "Use @web to look up latest API/library documentation",
-    "Flows are perfect for repetitive tasks like test generation",
-    "Create custom flows for your team's common patterns",
-    "Windsurf learns your project: usage improves over time",
-    "Use memory to maintain context across sessions",
-    "Tab autocomplete is context-aware and language-specific",
-    "Free Codeium account: sign up for basic features",
-    "Set custom instructions to enforce team coding standards"
+    "Windsurf shines when you mix manual edits with agent follow-through instead of treating it as a one-shot black box.",
+    "Use Tab for tiny deltas, Cascade for multi-file work, and workflows for repeatable operational playbooks.",
+    "Rules should encode stable standards; workflows should encode ordered procedures.",
+    "If Cascade feels noisy, reduce prompt scope and clean up rules before changing models."
   ],
   "resources": [
-    { "title": "Official Site", "url": "https://codeium.com/windsurf" },
-    { "title": "Documentation", "url": "https://docs.codeium.com/windsurf" },
-    { "title": "GitHub Repository", "url": "https://github.com/Codeium/windsurf" },
-    { "title": "Changelogs Tracking", "url": "https://changelogs.info/tools/windsurf" }
+    {
+      "title": "Windsurf product page",
+      "url": "https://codeium.com/windsurf"
+    },
+    {
+      "title": "Windsurf docs index",
+      "url": "https://docs.windsurf.com/llms.txt"
+    },
+    {
+      "title": "Cascade overview",
+      "url": "https://docs.windsurf.com/plugins/cascade/cascade-overview"
+    },
+    {
+      "title": "Cascade models",
+      "url": "https://docs.windsurf.com/plugins/cascade/models"
+    },
+    {
+      "title": "Memories and rules",
+      "url": "https://docs.windsurf.com/plugins/cascade/memories"
+    },
+    {
+      "title": "Workflows",
+      "url": "https://docs.windsurf.com/plugins/cascade/workflows"
+    },
+    {
+      "title": "Windsurf Tab overview",
+      "url": "https://docs.windsurf.com/tab/overview"
+    },
+    {
+      "title": "Context awareness overview",
+      "url": "https://docs.windsurf.com/context-awareness/overview"
+    }
   ]
 }

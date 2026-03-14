@@ -1,99 +1,206 @@
 {
   "tool": "continue",
   "lastUpdated": "2026-03-14",
+  "quickStart": {
+    "title": "Get productive in 30 seconds",
+    "steps": [
+      "Install the Continue VS Code extension and open the sidebar panel.",
+      "Set up at least one model in config.yaml or through the UI for chat/edit/apply, plus an autocomplete-capable model if you want tab completion.",
+      "Use Cmd/Ctrl+L to send selected code to chat, or open Agent mode and describe the task in plain English.",
+      "Cycle modes with Cmd/Ctrl+. between Chat, Plan, and Agent depending on whether you want conversation, safe planning, or code changes.",
+      "Add context with @ mentions like files or terminal output before asking for a fix or explanation."
+    ]
+  },
+  "dailyWorkflows": [
+    {
+      "title": "Ask about selected code fast",
+      "description": "Send your current selection to chat and iterate conversationally.",
+      "command": "Select code → Cmd/Ctrl+L → ask for explanation, tests, or refactors.",
+      "tags": ["chat", "selection", "explanation"]
+    },
+    {
+      "title": "Plan safely before editing",
+      "description": "Use Plan mode when you want repo exploration and reasoning without write tools.",
+      "command": "Cmd/Ctrl+. until Plan mode is active, then ask for an implementation plan and impacted files.",
+      "tags": ["plan", "safe", "analysis"]
+    },
+    {
+      "title": "Delegate implementation in Agent mode",
+      "description": "Give Agent a concrete natural-language change request and let it choose tools.",
+      "command": "Switch to Agent mode and ask: Update every ESLint config to disable @typescript-eslint/naming-convention.",
+      "tags": ["agent", "implementation", "automation"]
+    },
+    {
+      "title": "Stay in flow with autocomplete",
+      "description": "Use tab autocomplete for boilerplate, then escalate to chat or agent only when you need larger context or edits.",
+      "command": "Accept with Tab, reject with Esc, partial accept with Cmd/Ctrl+Right, force suggestion in VS Code with Cmd/Ctrl+Alt+Space.",
+      "tags": ["autocomplete", "editing", "flow"]
+    }
+  ],
+  "powerMoves": [
+    {
+      "title": "Split models by role",
+      "description": "Configure different models for chat/edit/apply/autocomplete instead of forcing one provider to do everything.",
+      "command": "In config.yaml, assign roles so a strong reasoning model handles chat/edit while a low-latency model handles autocomplete.",
+      "why": "This usually improves cost, latency, and suggestion quality all at once."
+    },
+    {
+      "title": "Add external context through providers and MCP",
+      "description": "Use Continue context providers, including MCP-backed resources, so the model can pull structured context instead of guessing.",
+      "command": "Configure context providers in Continue and then add them with @ mentions before asking for changes.",
+      "why": "Better context reduces hallucinations and leads to more actionable edits."
+    },
+    {
+      "title": "Use built-in slash commands for routine repo chores",
+      "description": "Lean on slash commands for commit messages, review passes, terminal command generation, or issue drafting.",
+      "command": "/commit, /review, /cmd, or /draftIssue in chat when the task matches.",
+      "why": "They remove prompt-writing overhead for repetitive tasks."
+    }
+  ],
+  "gotchas": [
+    {
+      "problem": "Agent and Plan modes can appear unsupported with some models/providers.",
+      "solution": "If you see Not Supported, switch to a model/provider with tool support or reassign roles in config.yaml.",
+      "severity": "blocking"
+    },
+    {
+      "problem": "Autocomplete quality suffers if you only configure a chat model and ignore latency-sensitive setup.",
+      "solution": "Use a model/provider that explicitly supports autocomplete and keep it separate from your heavier chat model when possible.",
+      "severity": "annoying"
+    },
+    {
+      "problem": "Agent mode prompts for tool permission by default, which can feel slow.",
+      "solution": "Use tool policies to auto-allow only the specific tools you trust; do not blanket-approve everything.",
+      "severity": "annoying"
+    },
+    {
+      "problem": "Context quality is heavily dependent on what you attach.",
+      "solution": "Use selection send-to-chat, @Files, @Terminal, and relevant context providers before asking for edits or debugging help.",
+      "severity": "subtle"
+    },
+    {
+      "problem": "Continue supports many model providers, so it is easy to misconfigure roles or secrets.",
+      "solution": "Keep config.yaml tidy, use provider-specific API keys/secrets correctly, and verify each model has the right roles assigned.",
+      "severity": "subtle"
+    }
+  ],
   "cliFlags": [],
   "slashCommands": [
-    { "name": "/edit", "description": "Edit selected code", "example": "/edit", "added": "1.0.0", "category": "editing" },
-    { "name": "/comment", "description": "Add comments to code", "example": "/comment", "added": "1.0.0", "category": "editing" },
-    { "name": "/explain", "description": "Explain code", "example": "/explain", "added": "1.0.0", "category": "docs" },
-    { "name": "/test", "description": "Write tests", "example": "/test", "added": "1.0.0", "category": "testing" },
-    { "name": "/fix", "description": "Fix errors", "example": "/fix", "added": "1.0.0", "category": "debugging" }
+    {
+      "command": "/commit",
+      "description": "Generate a commit message from the current diff.",
+      "example": "/commit",
+      "tip": "Useful right before you stage or commit changes."
+    },
+    {
+      "command": "/review",
+      "description": "Review code and give focused feedback on readability, maintainability, smells, and performance.",
+      "example": "/review Refactor the following function for clarity and performance.",
+      "tip": "Paste or attach the relevant code context first for better reviews."
+    },
+    {
+      "command": "/cmd",
+      "description": "Generate a terminal command for the task you describe.",
+      "example": "/cmd find all large files over 50MB in this repo",
+      "tip": "Handy when you know the outcome you want but not the exact shell incantation."
+    },
+    {
+      "command": "/draftIssue",
+      "description": "Draft a GitHub issue from the discussed bug or feature request.",
+      "example": "/draftIssue Summarize the flaky integration test problem as a reproducible bug report.",
+      "tip": "Good after a debugging session or postmortem."
+    },
+    {
+      "command": "/http",
+      "description": "Work with HTTP/API-oriented prompts from chat.",
+      "example": "/http Explain this endpoint contract and propose a request example.",
+      "tip": "Best when paired with pasted API details or selected code."
+    },
+    {
+      "command": "/onboard",
+      "description": "Generate onboarding-oriented help for understanding a project.",
+      "example": "/onboard Help me understand the architecture and main entry points of this repo.",
+      "tip": "Great first command in an unfamiliar codebase."
+    },
+    {
+      "command": "/share",
+      "description": "Share the current conversation or result when supported.",
+      "example": "/share",
+      "tip": "Useful for passing an explanation or review result to teammates."
+    }
   ],
   "config": [
-    { "key": "continue.model", "description": "Default LLM model", "required": false, "type": "settings" },
-    { "key": "continue.provider", "description": "Model provider (openai, anthropic, etc)", "required": false, "type": "settings" },
-    { "key": "continue.apiKey", "description": "API key for provider", "required": true, "type": "settings" },
-    { "key": "continue.temperature", "description": "Creativity (0-1)", "required": false, "type": "settings" },
-    { "key": "continue.maxTokens", "description": "Max response tokens", "required": false, "type": "settings" },
-    { "key": "continue.customSystemPrompt", "description": "Custom system instructions", "required": false, "type": "settings" },
-    { "key": ".continueignore", "description": "Files to exclude from context", "required": false, "type": "file" }
-  ],
-  "workflows": [
     {
-      "title": "Chat Workflow",
-      "description": "Ask questions and get code suggestions",
-      "steps": [
-        "Press Cmd+L (Mac) or Ctrl+L (Win/Linux)",
-        "Ask questions about code or request features",
-        "Get suggestions and explanations",
-        "Click 'Apply' on code blocks to insert",
-        "Test and iterate"
-      ]
+      "key": "models[]",
+      "description": "List of configured models/providers in config.yaml, each with provider, model name, credentials, and roles.",
+      "default": "No useful behavior until you configure at least one model",
+      "recommended": "Define separate chat/edit/apply and autocomplete models instead of one-size-fits-all."
     },
     {
-      "title": "Inline Code Edit",
-      "description": "Make quick edits to selected code",
-      "steps": [
-        "Select code you want to change",
-        "Press Cmd+I (Mac) or Ctrl+I (Win/Linux)",
-        "Describe the change",
-        "Review and accept",
-        "Continue with next edit"
-      ]
+      "key": "roles",
+      "description": "Assign a model to roles like chat, edit, apply, embeddings, and autocomplete depending on provider support.",
+      "default": "Depends on your config",
+      "recommended": "Give autocomplete a fast low-latency model and reserve premium reasoning models for chat/edit."
     },
     {
-      "title": "Autocomplete Workflow",
-      "description": "Get smart code suggestions as you type",
-      "steps": [
-        "Start typing code",
-        "Continue suggests completions",
-        "Press Tab to accept",
-        "Press Escape to reject",
-        "Works across all languages"
-      ]
+      "key": "provider",
+      "description": "Continue supports providers such as Anthropic, OpenAI, Gemini, Ollama, Azure, Bedrock, OpenRouter, LM Studio, and many more.",
+      "default": "User choice",
+      "recommended": "Pick providers based on hosting, latency, privacy, and capability rather than brand alone."
     },
     {
-      "title": "VS Code + JetBrains Support",
-      "description": "Use Continue in your preferred IDE",
-      "steps": [
-        "Install Continue from Extension marketplace",
-        "For VS Code: Cmd+Shift+X, search 'Continue'",
-        "For JetBrains: Settings → Plugins, search 'Continue'",
-        "Configure API key and model",
-        "Keyboard shortcuts work across IDEs"
-      ]
+      "key": "tool policies",
+      "description": "Permission behavior for Agent mode tools.",
+      "default": "Ask permission before tool use",
+      "recommended": "Auto-allow only a narrow trusted subset; leave risky tools approval-gated."
     },
     {
-      "title": "Model Customization",
-      "description": "Use any LLM with Continue",
-      "steps": [
-        "Continue works with any LLM",
-        "Configure your preferred provider",
-        "Set API keys and model names",
-        "Supports local models via OpenAI-compatible APIs",
-        "Compare outputs from different models"
-      ]
+      "key": "context providers",
+      "description": "Sources that can supply structured context to chat or agent, including MCP-backed resources.",
+      "default": "Basic built-in context only",
+      "recommended": "Add the providers your team actually uses instead of overloading prompts with pasted context."
+    },
+    {
+      "key": "Enable Tab Autocomplete",
+      "description": "Turns inline code suggestions on or off in the IDE.",
+      "default": "Enabled when configured",
+      "recommended": "Keep on for boilerplate-heavy work; turn off temporarily if suggestions are distracting."
     }
   ],
   "proTips": [
-    "Continue is open-source and fully customizable",
-    "Use with Claude, GPT-4, or any OpenAI-compatible API",
-    "Keyboard shortcuts are consistent across VS Code and JetBrains",
-    "Tab autocomplete is context-aware and language-aware",
-    "Create .continueignore to exclude sensitive files",
-    "Use Cmd+Shift+L to start a new chat when switching tasks",
-    "Regenerate responses with Cmd+Shift+R if not satisfied",
-    "Use /explain to understand code before editing",
-    "Use /test to auto-generate test cases",
-    "Set custom system prompt for team-specific instructions",
-    "Local model support: run Open WebUI for privacy",
-    "Configure temperature: lower for consistency, higher for creativity"
+    "Chat for exploration, Plan for safe reasoning, Agent for action; switching modes is faster than overprompting in the wrong one.",
+    "Use Cmd/Ctrl+L habitually on selected code instead of re-describing code by hand.",
+    "When Agent feels weak, the issue is often missing context or a model without tool support, not the prompt itself.",
+    "A clean config.yaml with role-specific models is one of the highest leverage Continue upgrades."
   ],
   "resources": [
-    { "title": "GitHub Repository", "url": "https://github.com/continuedev/continue" },
-    { "title": "Documentation", "url": "https://docs.continue.dev" },
-    { "title": "VS Code Extension", "url": "https://marketplace.visualstudio.com/items?itemName=Continue.continue" },
-    { "title": "Discord Community", "url": "https://discord.gg/continue" },
-    { "title": "Changelogs Tracking", "url": "https://changelogs.info/tools/continue" }
+    {
+      "title": "Continue GitHub repo",
+      "url": "https://github.com/continuedev/continue"
+    },
+    {
+      "title": "Continue website",
+      "url": "https://continue.dev"
+    },
+    {
+      "title": "VS Code extension README",
+      "url": "https://raw.githubusercontent.com/continuedev/continue/main/extensions/vscode/README.md"
+    },
+    {
+      "title": "Agent quick start",
+      "url": "https://docs.continue.dev/ide-extensions/agent/quick-start"
+    },
+    {
+      "title": "Chat quick start",
+      "url": "https://docs.continue.dev/ide-extensions/chat/quick-start"
+    },
+    {
+      "title": "Autocomplete quick start",
+      "url": "https://docs.continue.dev/ide-extensions/autocomplete/quick-start"
+    },
+    {
+      "title": "Model providers overview",
+      "url": "https://docs.continue.dev/customize/model-providers/overview"
+    }
   ]
 }
