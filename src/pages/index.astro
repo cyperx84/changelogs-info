@@ -126,6 +126,29 @@ const latestChangesTools = CLWATCH_TOOLS.map((id) => {
 
   <div class="green-divider"></div>
 
+  <!-- Section 2.5: My Tools filter -->
+  <section class="mx-auto max-w-6xl px-4 py-4 sm:px-6" id="my-tools-section">
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="font-mono text-xs text-text-muted">my tools:</span>
+      <div class="flex flex-wrap gap-2" id="my-tools-filter">
+        {tools.map((tool) => (
+          <button
+            class="my-tool-btn rounded border border-border bg-bg-card px-2.5 py-1 font-mono text-[11px] text-text-muted transition-all hover:border-green hover:text-green"
+            data-tool={tool.id}
+          >
+            {tool.name}
+          </button>
+        ))}
+        <button
+          id="clear-tools-filter"
+          class="hidden rounded border border-red-400/30 bg-red-400/10 px-2.5 py-1 font-mono text-[11px] text-red-400 transition-all hover:border-red-400"
+        >
+          clear
+        </button>
+      </div>
+    </div>
+  </section>
+
   <!-- Section 3: Latest Changes -->
   <section class="relative mx-auto max-w-6xl overflow-hidden px-4 py-8 sm:px-6 sm:py-12">
     <div class="mb-6 flex items-center justify-between sm:mb-8">
@@ -141,7 +164,7 @@ const latestChangesTools = CLWATCH_TOOLS.map((id) => {
 
     <div class="flex gap-3 overflow-x-auto pb-2 sm:grid sm:grid-cols-2 sm:overflow-visible sm:pb-0 lg:grid-cols-5">
       {latestChangesTools.map(({ id, tool, release, highlights }) => (
-        <div class="min-w-[260px] flex-shrink-0 sm:min-w-0">
+        <div class="min-w-[260px] flex-shrink-0 sm:min-w-0" data-latest-tool={id}>
           {release && tool ? (
             <a
               href={`/tools/${id}`}
@@ -516,5 +539,80 @@ const latestChangesTools = CLWATCH_TOOLS.map((id) => {
         });
       });
     });
+
+    // My Tools filter — persist to localStorage
+    (function() {
+      const STORAGE_KEY = 'changelogs:my-tools';
+      const btns = document.querySelectorAll('.my-tool-btn');
+      const clearBtn = document.getElementById('clear-tools-filter');
+      const gridItems = document.querySelectorAll('.tool-grid-item');
+      const latestCards = document.querySelectorAll('[data-latest-tool]');
+
+      let selected = [];
+      try { selected = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch {}
+
+      function applyFilter() {
+        const allActive = selected.length === 0;
+
+        // Toggle button styles
+        btns.forEach(b => {
+          const tid = b.getAttribute('data-tool');
+          if (selected.includes(tid)) {
+            b.classList.add('border-green', 'bg-green/10', 'text-green');
+            b.classList.remove('border-border', 'text-text-muted');
+          } else {
+            b.classList.remove('border-green', 'bg-green/10', 'text-green');
+            b.classList.add('border-border', 'text-text-muted');
+          }
+        });
+
+        // Show/hide clear button
+        if (clearBtn) clearBtn.classList.toggle('hidden', selected.length === 0);
+
+        // Filter grid
+        gridItems.forEach(item => {
+          const tid = item.getAttribute('data-category');
+          // tools grid doesn't have data-tool, check by tool name lookup
+          (item as HTMLElement).style.display = '';
+        });
+
+        // Filter latest changes cards
+        latestCards.forEach(card => {
+          const tid = card.getAttribute('data-latest-tool');
+          (card as HTMLElement).style.display = (allActive || selected.includes(tid)) ? '' : 'none';
+        });
+
+        // Filter tool grid items by tool name in the card
+        gridItems.forEach(item => {
+          const card = item.querySelector('a[href*="/tools/"]');
+          const href = card?.getAttribute('href') || '';
+          const toolId = href.split('/tools/')[1];
+          (item as HTMLElement).style.display = (allActive || selected.includes(toolId)) ? '' : 'none';
+        });
+      }
+
+      btns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tid = btn.getAttribute('data-tool');
+          if (!tid) return;
+          if (selected.includes(tid)) {
+            selected = selected.filter(t => t !== tid);
+          } else {
+            selected.push(tid);
+          }
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(selected));
+          applyFilter();
+        });
+      });
+
+      clearBtn?.addEventListener('click', () => {
+        selected = [];
+        localStorage.removeItem(STORAGE_KEY);
+        applyFilter();
+      });
+
+      // Apply on load
+      applyFilter();
+    })();
   </script>
 </BaseLayout>
