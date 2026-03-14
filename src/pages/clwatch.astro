@@ -2,73 +2,111 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 const trackedTools = [
-  { name: "Claude Code", slug: "claude-code" },
-  { name: "Codex CLI", slug: "codex-cli" },
-  { name: "Gemini CLI", slug: "gemini-cli" },
-  { name: "OpenCode", slug: "opencode" },
-  { name: "OpenClaw", slug: "openclaw" },
+  { name: "Claude Code", slug: "claude-code", color: "text-amber" },
+  { name: "Codex CLI", slug: "codex-cli", color: "text-green" },
+  { name: "Gemini CLI", slug: "gemini-cli", color: "text-cyan" },
+  { name: "OpenCode", slug: "opencode", color: "text-sky-400" },
+  { name: "OpenClaw", slug: "openclaw", color: "text-green" },
+];
+
+const commands = [
+  { cmd: "clwatch diff", desc: "Show what changed since last check", tag: "" },
+  { cmd: "clwatch diff claude-code", desc: "Diff a specific tool", tag: "" },
+  { cmd: "clwatch diff --since 7d", desc: "Diff changes in the last 7 days", tag: "" },
+  { cmd: "clwatch diff --json", desc: "Machine-readable JSON output for agents", tag: "agent" },
+  { cmd: "clwatch diff --tier 1", desc: "Show config-level changes only (Tier 1)", tag: "" },
+  { cmd: "clwatch diff --tier 2", desc: "Show knowledge-level changes only (Tier 2)", tag: "" },
+  { cmd: "clwatch refresh claude-code", desc: "Refresh reference files for one tool", tag: "" },
+  { cmd: "clwatch refresh --all", desc: "Refresh all tracked tools", tag: "" },
+  { cmd: "clwatch refresh --diff-only", desc: "Preview changes without writing files", tag: "" },
+  { cmd: "clwatch init", desc: "Install the clwatch skill into current workspace", tag: "agent" },
+  { cmd: "clwatch init --agent claude", desc: "Init for a specific agent type", tag: "agent" },
+  { cmd: "clwatch list", desc: "Show tracked tools + current known versions", tag: "" },
+  { cmd: "clwatch status", desc: "Check sync status + last update timestamps", tag: "" },
+  { cmd: "clwatch watch", desc: "Poll for updates every 30 min (daemon mode)", tag: "" },
 ];
 ---
 
-<BaseLayout title="clwatch — the changelog watcher for AI coding agents | changelogs.info" description="clwatch monitors changelogs for AI coding tools and patches your agent configs and reference files automatically.">
+<BaseLayout
+  title="clwatch docs — changelog watcher for AI coding agents | changelogs.info"
+  description="clwatch monitors changelogs for Claude Code, Codex CLI, Gemini CLI, OpenCode, and OpenClaw — and patches your agent configs automatically."
+>
   <div class="mx-auto max-w-4xl px-6 py-12">
 
-    <!-- Hero -->
     <a href="/" class="mb-8 inline-flex items-center gap-1 font-mono text-sm text-text-muted transition-colors hover:text-green">
       <span class="text-green">&lt;</span> cd ..
     </a>
 
+    <!-- Hero -->
     <header class="mb-12">
-      <h1 class="text-glow-green font-mono text-3xl font-bold text-green sm:text-4xl">clwatch</h1>
-      <p class="mt-3 font-sans text-sm leading-relaxed text-text-secondary sm:text-base">
-        The changelog watcher for AI coding agents.
+      <div class="flex items-end gap-4">
+        <h1 class="text-glow-green font-mono text-3xl font-bold text-green sm:text-4xl">clwatch</h1>
+        <span class="mb-1 rounded border border-green/30 bg-green/10 px-2 py-0.5 font-mono text-xs text-green">v0.2.0</span>
+      </div>
+      <p class="mt-3 font-sans text-sm leading-relaxed text-text-secondary sm:text-base max-w-2xl">
+        The changelog watcher for AI coding agents. Detects releases, classifies changes by severity, and patches your agent configs and reference files automatically.
       </p>
-      <div class="mt-4 flex gap-2">
-        <span class="rounded border border-border px-3 py-1 font-mono text-xs text-text-secondary">Open Source</span>
-        <span class="rounded border border-border px-3 py-1 font-mono text-xs text-text-secondary">Go Binary</span>
+      <div class="mt-5 flex flex-wrap gap-2">
+        <a href="https://github.com/cyperx84/clwatch" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded border border-border bg-bg-card px-3 py-1.5 font-mono text-xs text-text-secondary transition-all hover:border-green hover:text-green">
+          <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+        <a href="/changelog" class="inline-flex items-center gap-2 rounded border border-border bg-bg-card px-3 py-1.5 font-mono text-xs text-text-secondary transition-all hover:border-cyan hover:text-cyan">
+          Release notes
+        </a>
+        <a href="/feed/all.xml" class="inline-flex items-center gap-2 rounded border border-border bg-bg-card px-3 py-1.5 font-mono text-xs text-text-secondary transition-all hover:border-green hover:text-green">
+          RSS feed
+        </a>
       </div>
     </header>
 
-    <!-- What is clwatch -->
+    <!-- What it does -->
     <section class="mb-12">
-      <h2 class="mb-4 font-mono text-lg font-semibold text-green"><span class="text-green">/</span>what_is_clwatch</h2>
-      <div class="space-y-4 font-sans text-sm leading-relaxed text-text-secondary sm:text-base">
+      <h2 class="mb-4 font-mono text-base font-semibold text-green"><span class="text-green">//</span> what_is_clwatch</h2>
+      <div class="space-y-3 font-sans text-sm leading-relaxed text-text-secondary">
         <p>
-          clwatch monitors changelogs for Claude Code, Codex CLI, Gemini CLI, OpenCode, and OpenClaw. When a tool ships a release, clwatch detects it and tells you exactly what changed.
+          AI coding tools ship fast. Flags get renamed, permission models change, new commands land. If your agent is running stale configs or referencing deprecated flags, it breaks silently.
         </p>
         <p>
-          Run it in your terminal or drop it into any AI coding agent workspace. The included skill auto-runs on session start, patches outdated flags and configs (Tier 1), and refreshes your agent reference files when bigger changes ship (Tier 2).
+          clwatch monitors GitHub releases for the 5 core tools, classifies each change by impact tier, and keeps your workspace current — automatically.
         </p>
       </div>
     </section>
 
-    <!-- Two-tier explainer -->
+    <!-- Two-tier system -->
     <section class="mb-12">
+      <h2 class="mb-4 font-mono text-base font-semibold text-green"><span class="text-green">//</span> how_it_works</h2>
       <div class="grid gap-4 sm:grid-cols-2">
-        <div class="relative overflow-hidden rounded-lg border border-green/30 border-t-2 border-t-green bg-bg-card p-5 sm:p-6">
-          <span class="pointer-events-none absolute -right-2 -top-4 select-none font-mono text-6xl font-bold text-green/[0.07] sm:text-7xl">01</span>
+        <div class="relative overflow-hidden rounded-lg border border-green/30 border-t-2 border-t-green bg-bg-card p-5">
+          <span class="pointer-events-none absolute -right-2 -top-4 select-none font-mono text-6xl font-bold text-green/[0.07]">01</span>
           <div class="relative">
-            <div class="mb-3 flex items-center gap-3">
+            <div class="mb-3 flex items-center gap-2">
               <span class="inline-block h-2 w-2 rounded-full bg-green"></span>
-              <span class="font-mono text-xs text-green opacity-60">01</span>
+              <span class="font-mono text-xs text-green">Tier 1 — Config Patch</span>
             </div>
-            <h3 class="font-mono text-base font-semibold text-green sm:text-lg">Tier 1: Config Patch</h3>
-            <p class="mt-2 font-sans text-xs leading-relaxed text-text-secondary sm:text-sm">
-              A flag changed. A permission mode renamed. clwatch detects the delta and patches your skill files and aliases automatically.
+            <h3 class="font-mono text-sm font-semibold text-text-primary">Small, targeted fix</h3>
+            <p class="mt-2 font-sans text-xs leading-relaxed text-text-muted">
+              A flag renamed. A permission mode changed. A CLI argument deprecated. clwatch detects the delta and patches your skill files, aliases, and AGENTS.md configs automatically. No agent restart needed.
             </p>
+            <div class="mt-3 rounded border border-green/20 bg-bg-tertiary/50 p-2.5 font-mono text-[11px] text-text-muted">
+              <span class="text-green">example:</span> --permission-prompt → --permission-mode
+            </div>
           </div>
         </div>
-        <div class="relative overflow-hidden rounded-lg border border-cyan/30 border-t-2 border-t-cyan bg-bg-card p-5 sm:p-6">
-          <span class="pointer-events-none absolute -right-2 -top-4 select-none font-mono text-6xl font-bold text-cyan/[0.07] sm:text-7xl">02</span>
+        <div class="relative overflow-hidden rounded-lg border border-cyan/30 border-t-2 border-t-cyan bg-bg-card p-5">
+          <span class="pointer-events-none absolute -right-2 -top-4 select-none font-mono text-6xl font-bold text-cyan/[0.07]">02</span>
           <div class="relative">
-            <div class="mb-3 flex items-center gap-3">
+            <div class="mb-3 flex items-center gap-2">
               <span class="inline-block h-2 w-2 rounded-full bg-cyan"></span>
-              <span class="font-mono text-xs text-cyan opacity-60">02</span>
+              <span class="font-mono text-xs text-cyan">Tier 2 — Knowledge Refresh</span>
             </div>
-            <h3 class="font-mono text-base font-semibold text-cyan sm:text-lg">Tier 2: Knowledge Refresh</h3>
-            <p class="mt-2 font-sans text-xs leading-relaxed text-text-secondary sm:text-sm">
-              A new feature shipped. New commands, new capabilities. clwatch pulls structured knowledge and your agent rewrites its reference files to match.
+            <h3 class="font-mono text-sm font-semibold text-text-primary">New feature landed</h3>
+            <p class="mt-2 font-sans text-xs leading-relaxed text-text-muted">
+              A major new command, a new agentic capability, a model or context window change. clwatch pulls structured knowledge from changelogs.info and your agent rewrites its reference files to match.
             </p>
+            <div class="mt-3 rounded border border-cyan/20 bg-bg-tertiary/50 p-2.5 font-mono text-[11px] text-text-muted">
+              <span class="text-cyan">example:</span> Claude Code ships /loop, /plan, /batch commands
+            </div>
           </div>
         </div>
       </div>
@@ -76,164 +114,191 @@ const trackedTools = [
 
     <!-- Install -->
     <section class="mb-12">
-      <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <!-- Left column — For Humans -->
+      <h2 class="mb-4 font-mono text-base font-semibold text-green"><span class="text-green">//</span> install</h2>
+      <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
         <div class="flex flex-col">
-          <span class="mb-3 inline-flex w-fit items-center rounded-full border border-border bg-bg-card px-3 py-1 font-mono text-xs text-text-secondary">For Humans</span>
-
+          <div class="mb-2 font-mono text-xs text-text-muted">For humans</div>
           <div class="flex flex-1 flex-col rounded-lg border border-border bg-bg-card">
             <div class="border-b border-border px-4 py-2 font-mono text-xs text-text-muted">
-              <span class="text-green/40">●●●</span> <span class="ml-2">install.sh</span>
+              <span class="text-green/40">●●●</span> <span class="ml-2">terminal</span>
             </div>
-            <div class="flex flex-1 flex-col gap-0 p-4">
-              <div class="clwatch-cmd-row group flex items-center justify-between rounded px-3 py-2 hover:bg-bg-tertiary/50">
-                <div class="font-mono text-sm">
-                  <span class="text-text-muted"># macOS / Linux</span><br/>
-                  <span class="text-green">$</span> <span class="text-text-primary">brew install clwatch</span>
+            <div class="flex flex-1 flex-col p-3 gap-0">
+              {[
+                { comment: "# macOS / Linux (recommended)", cmd: "brew install clwatch" },
+                { comment: "# Anywhere (npm)", cmd: "npm install -g clwatch" },
+                { comment: "# No install needed", cmd: "npx clwatch diff" },
+              ].map(({ comment, cmd }) => (
+                <div class="group flex items-center justify-between rounded px-3 py-2 hover:bg-bg-tertiary/50">
+                  <div class="font-mono text-xs">
+                    <span class="block text-text-muted">{comment}</span>
+                    <span class="text-text-primary">{cmd}</span>
+                  </div>
+                  <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-[10px] text-text-muted opacity-0 transition-all hover:text-green group-hover:opacity-100" data-copy={cmd}>copy</button>
                 </div>
-                <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-xs text-text-muted opacity-0 transition-all hover:text-green group-hover:opacity-100" data-copy="brew install clwatch">copy</button>
-              </div>
-              <div class="clwatch-cmd-row group flex items-center justify-between rounded px-3 py-2 hover:bg-bg-tertiary/50">
-                <div class="font-mono text-sm">
-                  <span class="text-text-muted"># Everywhere</span><br/>
-                  <span class="text-green">$</span> <span class="text-text-primary">npm install -g clwatch</span>
-                </div>
-                <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-xs text-text-muted opacity-0 transition-all hover:text-green group-hover:opacity-100" data-copy="npm install -g clwatch">copy</button>
-              </div>
-              <div class="clwatch-cmd-row group flex items-center justify-between rounded px-3 py-2 hover:bg-bg-tertiary/50">
-                <div class="font-mono text-sm">
-                  <span class="text-text-muted"># No install needed</span><br/>
-                  <span class="text-green">$</span> <span class="text-text-primary">npx clwatch diff</span>
-                </div>
-                <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-xs text-text-muted opacity-0 transition-all hover:text-green group-hover:opacity-100" data-copy="npx clwatch diff">copy</button>
-              </div>
+              ))}
             </div>
           </div>
-
-          <p class="mt-3 font-sans text-xs text-text-muted">Run <code class="font-mono text-text-secondary">clwatch diff</code> to see what changed in your tools.</p>
         </div>
 
-        <!-- Right column — For Agents -->
         <div class="flex flex-col">
-          <span class="mb-3 inline-flex w-fit items-center rounded-full border border-cyan/30 bg-cyan/10 px-3 py-1 font-mono text-xs text-cyan">For Agents</span>
-
+          <div class="mb-2 font-mono text-xs text-text-muted">For agents (zero-install)</div>
           <div class="flex flex-1 flex-col rounded-lg border border-border bg-bg-card">
             <div class="border-b border-border px-4 py-2 font-mono text-xs text-text-muted">
-              <span class="text-green/40">●●●</span> <span class="ml-2">agent-setup.sh</span>
+              <span class="text-cyan/40">●●●</span> <span class="ml-2">agent</span>
             </div>
-            <div class="flex flex-1 flex-col gap-0 p-4">
-              <div class="clwatch-cmd-row group flex items-center justify-between rounded px-3 py-2 hover:bg-bg-tertiary/50">
-                <div class="font-mono text-sm">
-                  <span class="text-text-muted"># Zero-install, run in any agent</span><br/>
-                  <span class="text-cyan">$</span> <span class="text-text-primary">npx clwatch diff</span>
+            <div class="flex flex-1 flex-col p-3 gap-0">
+              {[
+                { comment: "# Run without installing", cmd: "npx clwatch diff" },
+                { comment: "# Python environments", cmd: "uvx clwatch diff" },
+                { comment: "# Install skill into workspace", cmd: "clwatch init" },
+              ].map(({ comment, cmd }) => (
+                <div class="group flex items-center justify-between rounded px-3 py-2 hover:bg-bg-tertiary/50">
+                  <div class="font-mono text-xs">
+                    <span class="block text-text-muted">{comment}</span>
+                    <span class="text-text-primary">{cmd}</span>
+                  </div>
+                  <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-[10px] text-text-muted opacity-0 transition-all hover:text-cyan group-hover:opacity-100" data-copy={cmd}>copy</button>
                 </div>
-                <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-xs text-text-muted opacity-0 transition-all hover:text-cyan group-hover:opacity-100" data-copy="npx clwatch diff">copy</button>
-              </div>
-              <div class="clwatch-cmd-row group flex items-center justify-between rounded px-3 py-2 hover:bg-bg-tertiary/50">
-                <div class="font-mono text-sm">
-                  <span class="text-text-muted"># Zero-install via uv</span><br/>
-                  <span class="text-cyan">$</span> <span class="text-text-primary">uvx clwatch diff</span>
-                </div>
-                <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-xs text-text-muted opacity-0 transition-all hover:text-cyan group-hover:opacity-100" data-copy="uvx clwatch diff">copy</button>
-              </div>
-              <div class="clwatch-cmd-row group flex items-center justify-between rounded px-3 py-2 hover:bg-bg-tertiary/50">
-                <div class="font-mono text-sm">
-                  <span class="text-text-muted"># Install skill into workspace</span><br/>
-                  <span class="text-cyan">$</span> <span class="text-text-primary">clwatch init</span>
-                </div>
-                <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-xs text-text-muted opacity-0 transition-all hover:text-cyan group-hover:opacity-100" data-copy="clwatch init">copy</button>
-              </div>
-              <div class="clwatch-cmd-row group flex items-center justify-between rounded px-3 py-2 hover:bg-bg-tertiary/50">
-                <div class="font-mono text-sm">
-                  <span class="text-text-muted"># Machine-readable output for agents</span><br/>
-                  <span class="text-cyan">$</span> <span class="text-text-primary">clwatch diff --json</span>
-                </div>
-                <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-xs text-text-muted opacity-0 transition-all hover:text-cyan group-hover:opacity-100" data-copy="clwatch diff --json">copy</button>
-              </div>
+              ))}
             </div>
           </div>
-
-          <p class="mt-3 font-sans text-xs text-text-muted">Drop into any Claude Code, Codex CLI, Gemini CLI, or OpenClaw workspace. The skill auto-runs on session start.</p>
         </div>
       </div>
     </section>
 
-    <!-- Commands reference -->
+    <!-- Quick start -->
     <section class="mb-12">
+      <h2 class="mb-4 font-mono text-base font-semibold text-green"><span class="text-green">//</span> quick_start</h2>
       <div class="rounded-lg border border-border bg-bg-card">
-        <div class="border-b border-border px-3 py-2 font-mono text-xs text-text-muted sm:px-4">
-          <span class="text-green">●●●</span> <span class="ml-2">commands.sh</span>
+        <div class="border-b border-border px-4 py-2 font-mono text-xs text-text-muted">
+          <span class="text-green">●●●</span> <span class="ml-2">quickstart.sh</span>
         </div>
-        <div class="p-4 sm:p-6">
-          <div class="space-y-0">
-            <div class="cmd-row group flex flex-col gap-1 rounded border-b border-border/40 px-3 py-2.5 transition-all hover:bg-bg-tertiary/30 sm:flex-row sm:items-center sm:gap-4">
-              <code class="shrink-0 font-mono text-xs text-green sm:w-64">clwatch diff</code>
-              <span class="flex-1 font-mono text-xs text-text-muted">Show what changed since last check</span>
-              <span class="hidden text-green opacity-0 transition-opacity group-hover:opacity-100 sm:inline">&rarr;</span>
+        <div class="p-5 space-y-5 font-mono text-xs">
+          <div>
+            <p class="text-text-muted mb-2"># 1. Install</p>
+            <div class="group flex items-center justify-between rounded bg-bg-tertiary/50 px-3 py-2">
+              <code class="text-text-primary">brew install clwatch</code>
+              <button class="copy-btn rounded px-2 py-1 text-text-muted opacity-0 transition-all hover:text-green group-hover:opacity-100" data-copy="brew install clwatch">copy</button>
             </div>
-            <div class="cmd-row group flex flex-col gap-1 rounded bg-bg-tertiary/[0.15] border-b border-border/40 px-3 py-2.5 transition-all hover:bg-bg-tertiary/30 sm:flex-row sm:items-center sm:gap-4">
-              <code class="shrink-0 font-mono text-xs text-green sm:w-64">clwatch diff [tool]</code>
-              <span class="flex-1 font-mono text-xs text-text-muted">Diff a specific tool</span>
-              <span class="hidden text-green opacity-0 transition-opacity group-hover:opacity-100 sm:inline">&rarr;</span>
+          </div>
+          <div>
+            <p class="text-text-muted mb-2"># 2. See what changed in your tools since last week</p>
+            <div class="group flex items-center justify-between rounded bg-bg-tertiary/50 px-3 py-2">
+              <code class="text-text-primary">clwatch diff --since 7d</code>
+              <button class="copy-btn rounded px-2 py-1 text-text-muted opacity-0 transition-all hover:text-green group-hover:opacity-100" data-copy="clwatch diff --since 7d">copy</button>
             </div>
-            <div class="cmd-row group flex flex-col gap-1 rounded border-b border-border/40 px-3 py-2.5 transition-all hover:bg-bg-tertiary/30 sm:flex-row sm:items-center sm:gap-4">
-              <code class="shrink-0 font-mono text-xs text-green sm:w-64">clwatch diff --since 7d</code>
-              <span class="flex-1 font-mono text-xs text-text-muted">Diff changes in last 7 days</span>
-              <span class="hidden text-green opacity-0 transition-opacity group-hover:opacity-100 sm:inline">&rarr;</span>
+          </div>
+          <div>
+            <p class="text-text-muted mb-2"># 3. Install the skill into your workspace (adds to CLAUDE.md / AGENTS.md)</p>
+            <div class="group flex items-center justify-between rounded bg-bg-tertiary/50 px-3 py-2">
+              <code class="text-text-primary">clwatch init</code>
+              <button class="copy-btn rounded px-2 py-1 text-text-muted opacity-0 transition-all hover:text-green group-hover:opacity-100" data-copy="clwatch init">copy</button>
             </div>
-            <div class="cmd-row group flex flex-col gap-1 rounded bg-bg-tertiary/[0.15] border-b border-border/40 px-3 py-2.5 transition-all hover:bg-bg-tertiary/30 sm:flex-row sm:items-center sm:gap-4">
-              <code class="shrink-0 font-mono text-xs text-green sm:w-64">clwatch diff --json</code>
-              <span class="flex-1 font-mono text-xs text-text-muted">Machine-readable output</span>
-              <span class="hidden text-green opacity-0 transition-opacity group-hover:opacity-100 sm:inline">&rarr;</span>
-            </div>
-            <div class="cmd-row group flex flex-col gap-1 rounded border-b border-border/40 px-3 py-2.5 transition-all hover:bg-bg-tertiary/30 sm:flex-row sm:items-center sm:gap-4">
-              <code class="shrink-0 font-mono text-xs text-green sm:w-64">clwatch refresh [tool]</code>
-              <span class="flex-1 font-mono text-xs text-text-muted">Refresh agent reference files</span>
-              <span class="hidden text-green opacity-0 transition-opacity group-hover:opacity-100 sm:inline">&rarr;</span>
-            </div>
-            <div class="cmd-row group flex flex-col gap-1 rounded bg-bg-tertiary/[0.15] border-b border-border/40 px-3 py-2.5 transition-all hover:bg-bg-tertiary/30 sm:flex-row sm:items-center sm:gap-4">
-              <code class="shrink-0 font-mono text-xs text-green sm:w-64">clwatch refresh --all</code>
-              <span class="flex-1 font-mono text-xs text-text-muted">Refresh all tracked tools</span>
-              <span class="hidden text-green opacity-0 transition-opacity group-hover:opacity-100 sm:inline">&rarr;</span>
-            </div>
-            <div class="cmd-row group flex flex-col gap-1 rounded border-b border-border/40 px-3 py-2.5 transition-all hover:bg-bg-tertiary/30 sm:flex-row sm:items-center sm:gap-4">
-              <code class="shrink-0 font-mono text-xs text-green sm:w-64">clwatch refresh --diff-only</code>
-              <span class="flex-1 font-mono text-xs text-text-muted">Preview changes without writing</span>
-              <span class="hidden text-green opacity-0 transition-opacity group-hover:opacity-100 sm:inline">&rarr;</span>
-            </div>
-            <div class="cmd-row group flex flex-col gap-1 rounded bg-bg-tertiary/[0.15] border-b border-border/40 px-3 py-2.5 transition-all hover:bg-bg-tertiary/30 sm:flex-row sm:items-center sm:gap-4">
-              <code class="shrink-0 font-mono text-xs text-green sm:w-64">clwatch init</code>
-              <span class="flex-1 font-mono text-xs text-text-muted">Install skill into workspace</span>
-              <span class="hidden text-green opacity-0 transition-opacity group-hover:opacity-100 sm:inline">&rarr;</span>
-            </div>
-            <div class="cmd-row group flex flex-col gap-1 rounded px-3 py-2.5 transition-all hover:bg-bg-tertiary/30 sm:flex-row sm:items-center sm:gap-4">
-              <code class="shrink-0 font-mono text-xs text-green sm:w-64">clwatch list</code>
-              <span class="flex-1 font-mono text-xs text-text-muted">Show tracked tools + current versions</span>
-              <span class="hidden text-green opacity-0 transition-opacity group-hover:opacity-100 sm:inline">&rarr;</span>
+          </div>
+          <div>
+            <p class="text-text-muted mb-2"># 4. On session start, your agent now runs this automatically:</p>
+            <div class="rounded bg-bg-tertiary/50 px-3 py-2">
+              <code class="text-text-muted">clwatch diff --json | clwatch refresh --apply</code>
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- Command reference -->
+    <section class="mb-12">
+      <h2 class="mb-4 font-mono text-base font-semibold text-green"><span class="text-green">//</span> commands</h2>
+      <div class="rounded-lg border border-border bg-bg-card overflow-hidden">
+        <div class="border-b border-border px-4 py-2 font-mono text-xs text-text-muted">
+          <span class="text-green">●●●</span> <span class="ml-2">clwatch --help</span>
+        </div>
+        <div class="divide-y divide-border/40">
+          {commands.map((c, i) => (
+            <div class:list={["group flex flex-col gap-1 px-4 py-2.5 transition-all hover:bg-bg-tertiary/30 sm:flex-row sm:items-center sm:gap-4", i % 2 === 1 ? "bg-bg-tertiary/[0.08]" : ""]}>
+              <code class="shrink-0 font-mono text-xs text-green sm:w-72">{c.cmd}</code>
+              <span class="flex-1 font-mono text-xs text-text-muted">{c.desc}</span>
+              {c.tag && (
+                <span class="w-fit rounded border border-cyan/30 bg-cyan/10 px-1.5 py-0.5 font-mono text-[10px] text-cyan">{c.tag}</span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Agent integration -->
+    <section class="mb-12">
+      <h2 class="mb-4 font-mono text-base font-semibold text-green"><span class="text-green">//</span> agent_integration</h2>
+      <div class="space-y-4">
+        <p class="font-sans text-sm text-text-secondary">
+          After running <code class="font-mono text-xs text-green">clwatch init</code>, a skill block is added to your agent's memory file. The agent runs a diff check on every session start and applies any pending patches automatically.
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          {[
+            { name: "Claude Code", file: "CLAUDE.md", cmd: "claude" },
+            { name: "Codex CLI", file: "AGENTS.md", cmd: "codex" },
+            { name: "Gemini CLI", file: "GEMINI.md", cmd: "gemini" },
+            { name: "OpenCode", file: ".opencode/agent/AGENTS.md", cmd: "opencode" },
+            { name: "OpenClaw", file: "AGENTS.md", cmd: "openclaw" },
+          ].map((agent) => (
+            <div class="rounded-lg border border-border bg-bg-card p-4">
+              <div class="mb-2 flex items-center justify-between">
+                <span class="font-mono text-sm font-medium text-text-primary">{agent.name}</span>
+                <span class="font-mono text-[10px] text-text-muted">{agent.file}</span>
+              </div>
+              <div class="group flex items-center justify-between rounded bg-bg-tertiary/50 px-2 py-1.5">
+                <code class="font-mono text-xs text-green">clwatch init --agent {agent.cmd}</code>
+                <button class="copy-btn shrink-0 rounded px-1.5 py-0.5 font-mono text-[10px] text-text-muted opacity-0 transition-all hover:text-green group-hover:opacity-100" data-copy={`clwatch init --agent ${agent.cmd}`}>copy</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Configuration -->
+    <section class="mb-12">
+      <h2 class="mb-4 font-mono text-base font-semibold text-green"><span class="text-green">//</span> configuration</h2>
+      <div class="rounded-lg border border-border bg-bg-card">
+        <div class="border-b border-border px-4 py-2 font-mono text-xs text-text-muted">
+          <span class="text-green">●●●</span> <span class="ml-2">~/.clwatch/config.toml</span>
+        </div>
+        <pre class="overflow-x-auto p-5 font-mono text-xs leading-relaxed text-text-secondary"><span class="text-text-muted"># clwatch config — generated by clwatch init
+# location: ~/.clwatch/config.toml</span>
+
+<span class="text-cyan">[core]</span>
+<span class="text-green">tools</span> = [<span class="text-amber">"claude-code"</span>, <span class="text-amber">"codex-cli"</span>, <span class="text-amber">"gemini-cli"</span>, <span class="text-amber">"opencode"</span>, <span class="text-amber">"openclaw"</span>]
+<span class="text-green">check_interval</span> = <span class="text-amber">"30m"</span>     <span class="text-text-muted"># how often to poll for updates</span>
+<span class="text-green">data_dir</span>       = <span class="text-amber">"~/.clwatch"</span>
+
+<span class="text-cyan">[refresh]</span>
+<span class="text-green">auto_apply</span>    = <span class="text-amber">false</span>      <span class="text-text-muted"># require confirmation before patching</span>
+<span class="text-green">tier1_auto</span>    = <span class="text-amber">true</span>       <span class="text-text-muted"># auto-apply config-level patches</span>
+<span class="text-green">tier2_confirm</span> = <span class="text-amber">true</span>       <span class="text-text-muted"># confirm before knowledge rewrites</span>
+<span class="text-green">backup</span>        = <span class="text-amber">true</span>       <span class="text-text-muted"># backup files before patching</span>
+
+<span class="text-cyan">[output]</span>
+<span class="text-green">format</span> = <span class="text-amber">"terminal"</span>          <span class="text-text-muted"># terminal | json | markdown</span>
+<span class="text-green">color</span>  = <span class="text-amber">true</span></pre>
       </div>
     </section>
 
     <!-- Tracked tools -->
     <section class="mb-12">
-      <h2 class="mb-4 font-mono text-lg font-semibold text-green"><span class="text-green">/</span>tracked_tools</h2>
+      <h2 class="mb-4 font-mono text-base font-semibold text-green"><span class="text-green">//</span> tracked_tools</h2>
       <div class="flex flex-wrap gap-2">
         {trackedTools.map((t) => (
-          <a href={`/tools/${t.slug}`} class="rounded border border-border bg-bg-card px-3 py-1 font-mono text-xs text-text-secondary transition-all hover:border-green hover:text-green">
+          <a href={`/tools/${t.slug}`} class="rounded border border-border bg-bg-card px-3 py-1.5 font-mono text-xs text-text-secondary transition-all hover:border-green hover:text-green">
             {t.name}
           </a>
         ))}
       </div>
+      <p class="mt-4 font-sans text-xs text-text-muted">
+        More tools coming soon. <a href="https://github.com/cyperx84/changelogs-info/issues" target="_blank" rel="noopener" class="text-cyan hover:underline">Request a tool →</a>
+      </p>
     </section>
 
-    <!-- Footer CTA -->
-    <div class="text-center">
-      <a href="/" class="font-mono text-sm text-text-muted transition-colors hover:text-green">
-        View tracked tools &rarr;
-      </a>
-    </div>
   </div>
 
   <script>
@@ -243,7 +308,7 @@ const trackedTools = [
         if (!text) return;
         navigator.clipboard.writeText(text).then(() => {
           const original = btn.textContent;
-          btn.textContent = '\u2713';
+          btn.textContent = '✓';
           btn.classList.add('text-green');
           setTimeout(() => {
             btn.textContent = original;

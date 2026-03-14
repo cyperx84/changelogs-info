@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { getAllToolSlugs, getSourcesForTool } from "./sources.js";
 import { fetchSource } from "./fetcher.js";
@@ -7,6 +7,20 @@ import { computeDiff, type DiffResult } from "./diff.js";
 import { queueTier2Refresh, runTier2Refresh, type RefreshInput } from "./refresh.js";
 
 const REFS_DIR = join(process.cwd(), "public", "api", "refs");
+const HISTORY_DIR = join(process.cwd(), "public", "api", "history");
+
+/**
+ * Archive current payload before overwriting.
+ */
+function archivePayload(toolSlug: string, version: string): void {
+  const src = join(REFS_DIR, `${toolSlug}.json`);
+  if (!existsSync(src)) return;
+  mkdirSync(HISTORY_DIR, { recursive: true });
+  const dest = join(HISTORY_DIR, `${toolSlug}-${version}.json`);
+  if (!existsSync(dest)) {
+    copyFileSync(src, dest);
+  }
+}
 
 function loadPayload(toolSlug: string): Record<string, unknown> {
   const path = join(REFS_DIR, `${toolSlug}.json`);
@@ -156,6 +170,7 @@ async function runTool(toolSlug: string, forceTier2: boolean): Promise<RunResult
     // Apply patches if any
     if (diff.directPatches.length > 0) {
       applyPatches(payload, diff.directPatches);
+      archivePayload(toolSlug, diff.previousVersion || "unknown");
       const payloadPath = join(REFS_DIR, `${toolSlug}.json`);
       writeFileSync(payloadPath, JSON.stringify(payload, null, 2) + "\n");
       result.patchesApplied = diff.directPatches.length;
@@ -185,7 +200,8 @@ async function runTool(toolSlug: string, forceTier2: boolean): Promise<RunResult
         const refreshOutput = await runTier2Refresh(refreshInput);
 
         if (refreshOutput.success) {
-          // Write the LLM-updated payload
+          // Archive current and write the LLM-updated payload
+          archivePayload(toolSlug, diff.previousVersion || "unknown");
           const payloadPath = join(REFS_DIR, `${toolSlug}.json`);
           writeFileSync(payloadPath, JSON.stringify(refreshOutput.updatedPayload, null, 2) + "\n");
           result.tier2Extracted = refreshOutput.changeCount;

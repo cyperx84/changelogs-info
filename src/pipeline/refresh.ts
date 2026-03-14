@@ -13,11 +13,13 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import type { DiffResult } from "./diff.js";
 import { mergeExtraction, type ExtractionResult } from "./merge.js";
+import { validateExtraction, hasChanges } from "./validate.js";
 
 const QUEUE_DIR = join(process.cwd(), "data", "refresh-queue");
 
 const DEFAULT_API_URL = "https://openrouter.ai/api/v1";
 const DEFAULT_MODEL = "google/gemini-2.0-flash-001";
+const MAX_RETRIES = 2;
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Interfaces
@@ -129,7 +131,7 @@ If a category has no items, use an empty array []. Return ONLY the JSON.`;
 // LLM call via OpenAI-compatible API (OpenRouter, OpenAI, etc.)
 // ──────────────────────────────────────────────────────────────────────────────
 
-async function callLLM(prompt: string): Promise<ExtractionResult> {
+async function callLLM(prompt: string, retryCount = 0): Promise<ExtractionResult> {
   const apiKey = process.env.LLM_API_KEY;
   if (!apiKey) {
     throw new Error("LLM_API_KEY not set");
@@ -157,6 +159,13 @@ async function callLLM(prompt: string): Promise<ExtractionResult> {
 
   if (!res.ok) {
     const body = await res.text();
+    // Retry on rate limit or server errors
+    if ((res.status === 429 || res.status >= 500) && retryCount < MAX_RETRIES) {
+      const delay = Math.pow(2, retryCount) * 2000; // 2s, 4s
+      console.warn(`  ⏳ LLM API ${res.status}, retrying in ${delay / 1000}s...`);
+      await new Promise(r => setTimeout(r, delay));
+      return callLLM(prompt, retryCount + 1);
+    }
     throw new Error(`LLM API error ${res.status}: ${body.slice(0, 300)}`);
   }
 
@@ -167,6 +176,11 @@ async function callLLM(prompt: string): Promise<ExtractionResult> {
 
   const content = data.choices[0]?.message?.content;
   if (!content) {
+    if (retryCount < MAX_RETRIES) {
+      console.warn(`  ⏳ Empty LLM response, retrying...`);
+      await new Promise(r => setTimeout(r, 2000));
+      return callLLM(prompt, retryCount + 1);
+    }
     throw new Error("No text response from LLM");
   }
 
@@ -177,7 +191,36 @@ async function callLLM(prompt: string): Promise<ExtractionResult> {
     raw = raw.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
   }
 
-  return JSON.parse(raw) as ExtractionResult;
+  let parsed: ExtractionResult;
+  try {
+    parsed = JSON.parse(raw) as ExtractionResult;
+  } catch (e) {
+    // Retry on invalid JSON
+    if (retryCount < MAX_RETRIES) {
+      console.warn(`  ⏳ Invalid JSON from LLM, retrying...`);
+      await new Promise(r => setTimeout(r, 2000));
+      return callLLM(prompt, retryCount + 1);
+    }
+    throw new Error(`LLM returned invalid JSON: ${(e as Error).message}`);
+  }
+
+  // Validate extraction schema
+  const validationErrors = validateExtraction(parsed);
+  if (validationErrors.length > 0) {
+    console.warn(`  ⚠️  Validation errors in LLM output:`);
+    for (const err of validationErrors.slice(0, 5)) {
+      console.warn(`     ${err.field}: ${err.message}`);
+    }
+    if (retryCount < MAX_RETRIES) {
+      console.warn(`  ⏳ Retrying extraction...`);
+      await new Promise(r => setTimeout(r, 2000));
+      return callLLM(prompt, retryCount + 1);
+    }
+    // If all retries exhausted, return empty extraction rather than corrupt data
+    throw new Error(`LLM output failed validation: ${validationErrors.length} errors`);
+  }
+
+  return parsed;
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
