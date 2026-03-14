@@ -6,7 +6,7 @@ const releasesDir = join(root, 'src/content/releases');
 const toolsPath = join(root, 'scrapers/tools.json');
 
 const checks = [
-  { name: 'cheatsheet', dir: join(root, 'src/content/cheatsheets'), ext: '.md' },
+  { name: 'cheatsheet', dir: join(root, 'src/content/cheatsheets-json'), ext: '.json' },
   { name: 'config', dir: join(root, 'src/content/configs'), ext: '.json' },
 ];
 
