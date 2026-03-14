@@ -27,6 +27,14 @@ jobs:
 
       - run: pnpm check:content
 
+      - name: Run extraction pipeline (generate status.json + payloads)
+        env:
+          LLM_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LLM_API_URL: "https://openrouter.ai/api/v1"
+          LLM_MODEL: "google/gemini-2.0-flash-001"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pnpm run pipeline:run
+
       - run: pnpm build
 
       - name: Deploy to Cloudflare Pages
