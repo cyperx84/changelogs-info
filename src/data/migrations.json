@@ -1,0 +1,828 @@
+{
+  "migrations": [
+    {
+      "id": "cursor-to-claude-code",
+      "source": "cursor",
+      "target": "claude-code",
+      "title": "Cursor → Claude Code",
+      "description": "Switching from the AI-first IDE to terminal-based agentic coding",
+      "equivalentCommands": [
+        {
+          "cursor": "Cmd+K (inline edit)",
+          "claudeCode": "claude \"edit this function to...\"",
+          "notes": "Claude Code works on entire files via natural language"
+        },
+        {
+          "cursor": "Cmd+L (chat)",
+          "claudeCode": "claude \"explain how this code works\"",
+          "notes": "Chat is conversational in terminal"
+        },
+        {
+          "cursor": "Composer (Cmd+I)",
+          "claudeCode": "claude \"implement feature X\"",
+          "notes": "Claude Code can edit multiple files autonomously"
+        },
+        {
+          "cursor": "@codebase search",
+          "claudeCode": "Claude Code indexes automatically on first run",
+          "notes": "No explicit indexing needed"
+        }
+      ],
+      "configMigration": [
+        {
+          "step": 1,
+          "action": "Export Cursor rules",
+          "command": "Copy .cursorrules content",
+          "notes": "Cursor stores project rules in .cursorrules"
+        },
+        {
+          "step": 2,
+          "action": "Create CLAUDE.md",
+          "command": "Create CLAUDE.md in project root",
+          "notes": "Paste your .cursorrules content as a starting point"
+        },
+        {
+          "step": 3,
+          "action": "Add model preference",
+          "command": "Add 'Model: anthropic/claude-sonnet-4' to CLAUDE.md",
+          "notes": "Claude Code uses Claude models natively"
+        },
+        {
+          "step": 4,
+          "action": "Set up settings",
+          "command": "claude config set model claude-sonnet-4",
+          "notes": "Configure default model in CLI"
+        }
+      ],
+      "keyDifferences": [
+        {
+          "aspect": "Interface",
+          "source": "Full IDE with editor, terminal, chat panels",
+          "target": "Terminal-based, works in your existing editor"
+        },
+        {
+          "aspect": "Context",
+          "source": "Visual context from open files",
+          "target": "Explicit file/CLI context you provide"
+        },
+        {
+          "aspect": "Multi-file edits",
+          "source": "Composer mode with diff preview",
+          "target": "Autonomous multi-file edits with git integration"
+        },
+        {
+          "aspect": "Model choice",
+          "source": "Multiple providers (Claude, GPT, Gemini)",
+          "target": "Claude models only (native integration)"
+        }
+      ],
+      "mentalModelChanges": [
+        {
+          "from": "Think in UI interactions",
+          "to": "Think in natural language commands",
+          "example": "Instead of selecting text → Cmd+K, just say 'refactor the auth module'"
+        },
+        {
+          "from": "Preview every change",
+          "to": "Trust autonomous edits (with git safety)",
+          "example": "Claude commits after each logical change; review via git diff"
+        },
+        {
+          "from": "Context is what you see",
+          "to": "Context is what you describe",
+          "example": "Be explicit: 'in src/auth/login.ts' rather than relying on open tabs"
+        }
+      ]
+    },
+    {
+      "id": "codex-to-gemini",
+      "source": "codex-cli",
+      "target": "gemini-cli",
+      "title": "Codex CLI → Gemini CLI",
+      "description": "Switching between terminal-based coding agents",
+      "equivalentCommands": [
+        {
+          "codex": "codex \"implement X\"",
+          "gemini": "gemini -p \"implement X\"",
+          "notes": "Both work as one-shot commands"
+        },
+        {
+          "codex": "codex exec --full-auto",
+          "gemini": "gemini -p \"task\" (auto-approves by default)",
+          "notes": "Gemini CLI tends to be more autonomous"
+        },
+        {
+          "codex": "codex --writable-root .",
+          "gemini": "gemini works in current directory",
+          "notes": "Both operate on local files"
+        },
+        {
+          "codex": "codex review",
+          "gemini": "gemini -p \"review the changes\"",
+          "notes": "Gemini doesn't have dedicated review mode"
+        }
+      ],
+      "configMigration": [
+        {
+          "step": 1,
+          "action": "Export Codex config",
+          "command": "cat ~/.codex/config.json",
+          "notes": "Check your current settings"
+        },
+        {
+          "step": 2,
+          "action": "Set Gemini API key",
+          "command": "export GOOGLE_API_KEY=your_key",
+          "notes": "Or add to ~/.bashrc or ~/.zshrc"
+        },
+        {
+          "step": 3,
+          "action": "Create Gemini config",
+          "command": "mkdir -p ~/.gemini && touch ~/.gemini/config.json",
+          "notes": "Gemini uses different config structure"
+        },
+        {
+          "step": 4,
+          "action": "Copy AGENTS.md",
+          "command": "cp AGENTS.md AGENTS.md (no change needed)",
+          "notes": "Both tools can read AGENTS.md for project context"
+        }
+      ],
+      "keyDifferences": [
+        {
+          "aspect": "Default model",
+          "source": "GPT-5.4",
+          "target": "Gemini 2.5 Pro/Flash"
+        },
+        {
+          "aspect": "Context window",
+          "source": "200K tokens",
+          "target": "1M+ tokens (Gemini excels here)"
+        },
+        {
+          "aspect": "Sandbox",
+          "source": "Built-in sandbox mode",
+          "target": "LXC/gVisor sandbox available"
+        },
+        {
+          "aspect": "Review mode",
+          "source": "Dedicated 'codex review' command",
+          "target": "Use natural language for review tasks"
+        }
+      ],
+      "mentalModelChanges": [
+        {
+          "from": "GPT-style responses",
+          "to": "Gemini-style responses",
+          "example": "Gemini tends to be more verbose, better at research tasks"
+        },
+        {
+          "from": "200K context limit",
+          "to": "1M+ context opens new possibilities",
+          "example": "Can include entire codebases or long documentation"
+        },
+        {
+          "from": "Explicit review command",
+          "to": "Review is just another task",
+          "example": "Say 'review PR #123' instead of using dedicated mode"
+        }
+      ]
+    },
+    {
+      "id": "cline-to-claude-code",
+      "source": "cline",
+      "target": "claude-code",
+      "title": "Cline → Claude Code",
+      "description": "Moving from VS Code extension to terminal-based agent",
+      "equivalentCommands": [
+        {
+          "cline": "Type in VS Code chat panel",
+          "claudeCode": "claude \"your request\"",
+          "notes": "Terminal instead of chat panel"
+        },
+        {
+          "cline": "Approve actions via VS Code UI",
+          "claudeCode": "Approve via terminal prompts",
+          "notes": "Both ask for permission before destructive actions"
+        },
+        {
+          "cline": "MCP server config in VS Code settings",
+          "claudeCode": "MCP config in ~/.claude/claude_desktop_config.json",
+          "notes": "Different config locations"
+        },
+        {
+          "cline": "Browser use built-in",
+          "claudeCode": "claude --browser or MCP tools",
+          "notes": "Claude Code has browser mode via flag"
+        }
+      ],
+      "configMigration": [
+        {
+          "step": 1,
+          "action": "Export Cline settings",
+          "command": "Copy from VS Code settings.json",
+          "notes": "Look for 'cline.' prefixed settings"
+        },
+        {
+          "step": 2,
+          "action": "Create CLAUDE.md",
+          "command": "Create CLAUDE.md with your preferences",
+          "notes": "Cline's custom instructions → CLAUDE.md"
+        },
+        {
+          "step": 3,
+          "action": "Migrate MCP servers",
+          "command": "Move MCP config to ~/.claude/claude_desktop_config.json",
+          "notes": "Same MCP servers work in both"
+        },
+        {
+          "step": 4,
+          "action": "Set up API key",
+          "command": "export ANTHROPIC_API_KEY=your_key",
+          "notes": "Claude Code uses Anthropic directly"
+        }
+      ],
+      "keyDifferences": [
+        {
+          "aspect": "Environment",
+          "source": "VS Code extension",
+          "target": "Terminal CLI"
+        },
+        {
+          "aspect": "Approval flow",
+          "source": "Click buttons in VS Code",
+          "target": "Type y/n in terminal"
+        },
+        {
+          "aspect": "Context",
+          "source": "VS Code workspace context",
+          "target": "Terminal/shell context"
+        },
+        {
+          "aspect": "Model support",
+          "source": "Multi-provider (via API keys)",
+          "target": "Claude models only"
+        }
+      ],
+      "mentalModelChanges": [
+        {
+          "from": "GUI-based approval",
+          "to": "Keyboard-driven workflow",
+          "example": "Press 'y' to approve instead of clicking buttons"
+        },
+        {
+          "from": "VS Code-centric",
+          "to": "Editor-agnostic",
+          "example": "Works with Neovim, Vim, any editor"
+        },
+        {
+          "from": "Extension marketplace",
+          "to": "MCP servers for extensibility",
+          "example": "Both use MCP, but Claude Code emphasizes it more"
+        }
+      ]
+    },
+    {
+      "id": "continue-to-cursor",
+      "source": "continue",
+      "target": "cursor",
+      "title": "Continue → Cursor",
+      "description": "Moving from open-source extension to AI-first IDE",
+      "equivalentCommands": [
+        {
+          "continue": "Cmd+L (chat)",
+          "cursor": "Cmd+L (chat)",
+          "notes": "Same shortcut!"
+        },
+        {
+          "continue": "Cmd+I (edit)",
+          "cursor": "Cmd+K (inline edit)",
+          "notes": "Different shortcuts, similar functionality"
+        },
+        {
+          "continue": "@codebase in chat",
+          "cursor": "@codebase in Composer",
+          "notes": "Both support codebase-wide context"
+        },
+        {
+          "continue": "Tab autocomplete",
+          "cursor": "Tab autocomplete",
+          "notes": "Both have AI-powered autocomplete"
+        }
+      ],
+      "configMigration": [
+        {
+          "step": 1,
+          "action": "Export Continue config",
+          "command": "Copy ~/.continue/config.json",
+          "notes": "Contains model settings and preferences"
+        },
+        {
+          "step": 2,
+          "action": "Create .cursorrules",
+          "command": "Create .cursorrules in project root",
+          "notes": "Paste Continue's custom instructions"
+        },
+        {
+          "step": 3,
+          "action": "Configure models in Cursor",
+          "command": "Settings → Models → Add API keys",
+          "notes": "Cursor supports Claude, GPT, Gemini"
+        },
+        {
+          "step": 4,
+          "action": "Migrate snippets",
+          "command": "Copy slash commands if any",
+          "notes": "Cursor has its own slash command system"
+        }
+      ],
+      "keyDifferences": [
+        {
+          "aspect": "Editor",
+          "source": "Works in any IDE (VS Code, JetBrains)",
+          "target": "Cursor is the editor (VS Code fork)"
+        },
+        {
+          "aspect": "Integration",
+          "source": "Extension layer on top",
+          "target": "AI is native to the editor"
+        },
+        {
+          "aspect": "Models",
+          "source": "Bring your own API keys",
+          "target": "Includes subscription with usage"
+        },
+        {
+          "aspect": "Cost",
+          "source": "Free (you pay for API calls)",
+          "target": "Subscription-based with included usage"
+        }
+      ],
+      "mentalModelChanges": [
+        {
+          "from": "Extension in your editor",
+          "to": "AI-native editor",
+          "example": "Cursor IS the editor, not an add-on"
+        },
+        {
+          "from": "BYO API keys",
+          "to": "Subscription includes usage",
+          "example": "No need to manage API costs separately"
+        },
+        {
+          "from": "Cross-IDE consistency",
+          "to": "Cursor-specific workflow",
+          "example": "Lock into Cursor's ecosystem and features"
+        }
+      ]
+    },
+    {
+      "id": "claude-code-to-codex",
+      "source": "claude-code",
+      "target": "codex-cli",
+      "title": "Claude Code → Codex CLI",
+      "description": "Switching between leading terminal-based coding agents",
+      "equivalentCommands": [
+        {
+          "claudeCode": "claude \"task\"",
+          "codex": "codex \"task\"",
+          "notes": "Same basic invocation"
+        },
+        {
+          "claudeCode": "claude --print",
+          "codex": "codex exec --full-auto",
+          "notes": "Both have headless/auto modes"
+        },
+        {
+          "claudeCode": "claude --remote",
+          "codex": "No direct equivalent",
+          "notes": "Claude Code has cloud dispatch"
+        },
+        {
+          "claudeCode": "/plan in Claude Code",
+          "codex": "codex --plan (experimental)",
+          "notes": "Both have planning modes"
+        }
+      ],
+      "configMigration": [
+        {
+          "step": 1,
+          "action": "Export CLAUDE.md",
+          "command": "cp CLAUDE.md AGENTS.md",
+          "notes": "Both read project context files"
+        },
+        {
+          "step": 2,
+          "action": "Update API key",
+          "command": "export OPENAI_API_KEY=your_key",
+          "notes": "Switch from Anthropic to OpenAI"
+        },
+        {
+          "step": 3,
+          "action": "Create Codex config",
+          "command": "mkdir -p ~/.codex && configure as needed",
+          "notes": "Codex uses ~/.codex/ for config"
+        },
+        {
+          "step": 4,
+          "action": "Review model differences",
+          "command": "Adjust prompts for GPT-style vs Claude-style",
+          "notes": "Models respond differently to prompts"
+        }
+      ],
+      "keyDifferences": [
+        {
+          "aspect": "Model",
+          "source": "Claude (Anthropic)",
+          "target": "GPT-5.4 (OpenAI)"
+        },
+        {
+          "aspect": "Cloud dispatch",
+          "source": "claude --remote for cloud execution",
+          "target": "Local only"
+        },
+        {
+          "aspect": "Sandbox",
+          "source": "Optional sandbox mode",
+          "target": "Built-in sandbox with --writable-root"
+        },
+        {
+          "aspect": "Review mode",
+          "source": "Use natural language",
+          "target": "Dedicated 'codex review' command"
+        }
+      ],
+      "mentalModelChanges": [
+        {
+          "from": "Claude-style reasoning",
+          "to": "GPT-style reasoning",
+          "example": "GPT tends to be more direct, Claude more explanatory"
+        },
+        {
+          "from": "Cloud dispatch available",
+          "to": "All execution is local",
+          "example": "No mobile handoff, no cloud sessions"
+        },
+        {
+          "from": "Claude Code ecosystem",
+          "to": "Codex ecosystem",
+          "example": "Different MCP servers, different integrations"
+        }
+      ]
+    },
+    {
+      "id": "windsurf-to-cursor",
+      "source": "windsurf",
+      "target": "cursor",
+      "title": "Windsurf → Cursor",
+      "description": "Switching between AI-first IDEs",
+      "equivalentCommands": [
+        {
+          "windsurf": "Cascade flow",
+          "cursor": "Composer (Cmd+I)",
+          "notes": "Both are agentic multi-file editing modes"
+        },
+        {
+          "windsurf": "Cmd+K inline",
+          "cursor": "Cmd+K inline",
+          "notes": "Same shortcut for inline edits"
+        },
+        {
+          "windsurf": "Chat panel",
+          "cursor": "Cmd+L chat",
+          "notes": "Similar chat interfaces"
+        },
+        {
+          "windsurf": "@codebase",
+          "cursor": "@codebase",
+          "notes": "Both support codebase-wide context"
+        }
+      ],
+      "configMigration": [
+        {
+          "step": 1,
+          "action": "Export Windsurf settings",
+          "command": "Export from Settings → Sync",
+          "notes": "Windsurf has settings sync"
+        },
+        {
+          "step": 2,
+          "action": "Create .cursorrules",
+          "command": "Create .cursorrules with Windsurf preferences",
+          "notes": "Similar concept to Windsurf's project rules"
+        },
+        {
+          "step": 3,
+          "action": "Configure Cursor models",
+          "command": "Add API keys in Cursor settings",
+          "notes": "Both support multiple providers"
+        },
+        {
+          "step": 4,
+          "action": "Migrate keybindings",
+          "command": "Adjust if you customized Windsurf",
+          "notes": "Most shortcuts are similar (VS Code base)"
+        }
+      ],
+      "keyDifferences": [
+        {
+          "aspect": "Agentic mode",
+          "source": "Cascade (flow-based)",
+          "target": "Composer (multi-file editor)"
+        },
+        {
+          "aspect": "Provider",
+          "source": "Codeium",
+          "target": "Cursor (independent)"
+        },
+        {
+          "aspect": "Pricing",
+          "source": "Free tier + Codeium subscription",
+          "target": "Free tier + Pro subscription"
+        },
+        {
+          "aspect": "Telemetry",
+          "source": "Codeium data collection",
+          "target": "Cursor data collection"
+        }
+      ],
+      "mentalModelChanges": [
+        {
+          "from": "Cascade flow paradigm",
+          "to": "Composer multi-file paradigm",
+          "example": "Both are agentic, but UI/UX differs slightly"
+        },
+        {
+          "from": "Codeium ecosystem",
+          "to": "Cursor ecosystem",
+          "example": "Different account, different billing"
+        },
+        {
+          "from": "Windsurf-specific features",
+          "to": "Cursor-specific features",
+          "example": "Cursor has .cursorrules, different tab system"
+        }
+      ]
+    },
+    {
+      "id": "cursor-to-codex",
+      "source": "cursor",
+      "target": "codex-cli",
+      "title": "Cursor → Codex CLI",
+      "description": "Moving from AI IDE to terminal-based agent",
+      "equivalentCommands": [
+        {
+          "cursor": "Cmd+K (inline)",
+          "codex": "codex \"edit this file to...\"",
+          "notes": "Codex edits via natural language"
+        },
+        {
+          "cursor": "Composer (Cmd+I)",
+          "codex": "codex exec --full-auto \"implement X\"",
+          "notes": "Full-auto mode for autonomous changes"
+        },
+        {
+          "cursor": "@codebase",
+          "codex": "Codex reads files you reference",
+          "notes": "Be explicit about file paths"
+        },
+        {
+          "cursor": "Tab autocomplete",
+          "codex": "No autocomplete (it's a CLI)",
+          "notes": "Use your editor's autocomplete separately"
+        }
+      ],
+      "configMigration": [
+        {
+          "step": 1,
+          "action": "Export .cursorrules",
+          "command": "cat .cursorrules",
+          "notes": "Contains your project rules"
+        },
+        {
+          "step": 2,
+          "action": "Create AGENTS.md",
+          "command": "Create AGENTS.md with .cursorrules content",
+          "notes": "Codex reads AGENTS.md for context"
+        },
+        {
+          "step": 3,
+          "action": "Set up OpenAI API key",
+          "command": "export OPENAI_API_KEY=your_key",
+          "notes": "Codex uses OpenAI models"
+        },
+        {
+          "step": 4,
+          "action": "Configure Codex",
+          "command": "codex config set model gpt-5.4",
+          "notes": "Set your preferred model"
+        }
+      ],
+      "keyDifferences": [
+        {
+          "aspect": "Interface",
+          "source": "Full IDE with visual editor",
+          "target": "Terminal CLI, use your own editor"
+        },
+        {
+          "aspect": "Autocomplete",
+          "source": "Built-in AI autocomplete",
+          "target": "No autocomplete (use editor's)"
+        },
+        {
+          "aspect": "Visual diff",
+          "source": "Inline diff preview",
+          "target": "Git-based review workflow"
+        },
+        {
+          "aspect": "Multi-file",
+          "source": "Composer with visual preview",
+          "target": "Autonomous edits with git commits"
+        }
+      ],
+      "mentalModelChanges": [
+        {
+          "from": "Visual interaction",
+          "to": "Text-based interaction",
+          "example": "Describe changes in natural language, review via git"
+        },
+        {
+          "from": "IDE handles everything",
+          "to": "CLI + your editor",
+          "example": "Edit in Neovim/VS Code, run Codex in terminal"
+        },
+        {
+          "from": "Instant visual feedback",
+          "to": "Trust and verify via git",
+          "example": "Review changes with 'git diff' after Codex runs"
+        }
+      ]
+    },
+    {
+      "id": "roo-code-to-claude-code",
+      "source": "roo-code",
+      "target": "claude-code",
+      "title": "Roo Code → Claude Code",
+      "description": "Moving from VS Code extension (Cline fork) to terminal agent",
+      "equivalentCommands": [
+        {
+          "rooCode": "Chat in VS Code panel",
+          "claudeCode": "claude \"your request\"",
+          "notes": "Terminal vs VS Code panel"
+        },
+        {
+          "rooCode": "Approve via UI buttons",
+          "claudeCode": "Approve via y/n prompts",
+          "notes": "Both require approval for actions"
+        },
+        {
+          "rooCode": "MCP in VS Code settings",
+          "claudeCode": "MCP in ~/.claude/claude_desktop_config.json",
+          "notes": "MCP servers work in both"
+        },
+        {
+          "rooCode": "Custom modes in VS Code",
+          "claudeCode": "Modes configured in CLAUDE.md",
+          "notes": "Different configuration approach"
+        }
+      ],
+      "configMigration": [
+        {
+          "step": 1,
+          "action": "Export Roo Code settings",
+          "command": "Copy from VS Code settings.json",
+          "notes": "Look for 'roo-code.' settings"
+        },
+        {
+          "step": 2,
+          "action": "Create CLAUDE.md",
+          "command": "Create CLAUDE.md with custom instructions",
+          "notes": "Roo Code modes → CLAUDE.md sections"
+        },
+        {
+          "step": 3,
+          "action": "Migrate MCP servers",
+          "command": "Move to ~/.claude/claude_desktop_config.json",
+          "notes": "Same MCP servers, different config file"
+        },
+        {
+          "step": 4,
+          "action": "Set Anthropic API key",
+          "command": "export ANTHROPIC_API_KEY=your_key",
+          "notes": "Claude Code requires Anthropic key"
+        }
+      ],
+      "keyDifferences": [
+        {
+          "aspect": "Environment",
+          "source": "VS Code extension",
+          "target": "Terminal CLI"
+        },
+        {
+          "aspect": "Modes",
+          "source": "Custom modes in VS Code UI",
+          "target": "Modes defined in CLAUDE.md"
+        },
+        {
+          "aspect": "Fork features",
+          "source": "Roo-specific features (Cline fork)",
+          "target": "Claude Code native features"
+        },
+        {
+          "aspect": "Model choice",
+          "source": "Multi-provider support",
+          "target": "Claude models only"
+        }
+      ],
+      "mentalModelChanges": [
+        {
+          "from": "VS Code-integrated workflow",
+          "to": "Terminal-first workflow",
+          "example": "Run Claude Code alongside any editor"
+        },
+        {
+          "from": "UI-configured modes",
+          "to": "Text-file configured modes",
+          "example": "Edit CLAUDE.md to change behavior"
+        },
+        {
+          "from": "Roo Code ecosystem",
+          "to": "Claude Code ecosystem",
+          "example": "Different community, different extensions"
+        }
+      ]
+    }
+  ],
+  "tools": {
+    "claude-code": {
+      "name": "Claude Code",
+      "configFile": "CLAUDE.md",
+      "configPath": "~/CLAUDE.md (project root)",
+      "cliCommand": "claude",
+      "defaultModel": "anthropic/claude-sonnet-4"
+    },
+    "codex-cli": {
+      "name": "Codex CLI",
+      "configFile": "AGENTS.md",
+      "configPath": "~/AGENTS.md (project root)",
+      "cliCommand": "codex",
+      "defaultModel": "openai/gpt-5.4"
+    },
+    "gemini-cli": {
+      "name": "Gemini CLI",
+      "configFile": "AGENTS.md",
+      "configPath": "~/AGENTS.md (project root)",
+      "cliCommand": "gemini",
+      "defaultModel": "google/gemini-2.5-pro"
+    },
+    "cursor": {
+      "name": "Cursor",
+      "configFile": ".cursorrules",
+      "configPath": "~/.cursorrules (project root)",
+      "cliCommand": null,
+      "defaultModel": "Multi-provider"
+    },
+    "cline": {
+      "name": "Cline",
+      "configFile": "VS Code settings",
+      "configPath": "settings.json (cline.* keys)",
+      "cliCommand": null,
+      "defaultModel": "Multi-provider"
+    },
+    "roo-code": {
+      "name": "Roo Code",
+      "configFile": "VS Code settings",
+      "configPath": "settings.json (roo-code.* keys)",
+      "cliCommand": null,
+      "defaultModel": "Multi-provider"
+    },
+    "continue": {
+      "name": "Continue",
+      "configFile": "config.json",
+      "configPath": "~/.continue/config.json",
+      "cliCommand": null,
+      "defaultModel": "Multi-provider"
+    },
+    "windsurf": {
+      "name": "Windsurf",
+      "configFile": "Project rules",
+      "configPath": "Windsurf settings",
+      "cliCommand": null,
+      "defaultModel": "Codeium models"
+    },
+    "opencode": {
+      "name": "OpenCode",
+      "configFile": ".opencode/agent/*.md",
+      "configPath": "~/.opencode/agent/",
+      "cliCommand": "opencode",
+      "defaultModel": "Multi-provider"
+    },
+    "openclaw": {
+      "name": "OpenClaw",
+      "configFile": "AGENTS.md",
+      "configPath": "~/.openclaw/agents/*/AGENTS.md",
+      "cliCommand": "openclaw",
+      "defaultModel": "Multi-provider"
+    }
+  }
+}

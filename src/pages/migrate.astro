@@ -1,0 +1,443 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import migrationsData from "../data/migrations.json";
+
+const { migrations, tools } = migrationsData;
+
+// Get unique source and target tools from migrations
+const sourceTools = [...new Set(migrations.map((m) => m.source))];
+const targetTools = [...new Set(migrations.map((m) => m.target))];
+---
+
+<BaseLayout
+  title="Migration Guides — changelogs.info"
+  description="Switch between AI coding tools with confidence. Find equivalent commands, config migration steps, and mental model changes."
+>
+  <div class="mx-auto max-w-5xl px-6 py-12">
+
+    <a href="/" class="mb-8 inline-flex items-center gap-1 font-mono text-sm text-text-muted transition-colors hover:text-green">
+      <span class="text-green">&lt;</span> cd ..
+    </a>
+
+    <header class="mb-10">
+      <h1 class="text-glow-green font-mono text-2xl font-bold text-green sm:text-3xl">migration guides</h1>
+      <p class="mt-3 font-sans text-sm leading-relaxed text-text-secondary sm:text-base max-w-2xl">
+        Switching tools? Find equivalent commands, config migration steps, and mental model changes for popular AI coding tool transitions.
+      </p>
+    </header>
+
+    <!-- Tool Selector -->
+    <section class="mb-10">
+      <h2 class="mb-4 font-mono text-sm font-semibold text-green"><span class="text-green">//</span> select_migration</h2>
+      
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-end">
+        <!-- Source Tool -->
+        <div class="flex-1">
+          <label class="mb-2 block font-mono text-xs text-text-muted">Switching from</label>
+          <select id="source-select" class="w-full rounded-lg border border-border bg-bg-card px-4 py-3 font-mono text-sm text-text-secondary transition-colors focus:border-green focus:outline-none focus:ring-1 focus:ring-green/30">
+            <option value="">Select source tool...</option>
+            {sourceTools.map((toolId) => (
+              <option value={toolId}>{tools[toolId as keyof typeof tools]?.name || toolId}</option>
+            ))}
+          </select>
+        </div>
+
+        <!-- Arrow -->
+        <div class="flex items-center justify-center px-2 text-text-muted">
+          <svg class="h-6 w-6 rotate-90 sm:rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </div>
+
+        <!-- Target Tool -->
+        <div class="flex-1">
+          <label class="mb-2 block font-mono text-xs text-text-muted">Switching to</label>
+          <select id="target-select" class="w-full rounded-lg border border-border bg-bg-card px-4 py-3 font-mono text-sm text-text-secondary transition-colors focus:border-green focus:outline-none focus:ring-1 focus:ring-green/30">
+            <option value="">Select target tool...</option>
+            {targetTools.map((toolId) => (
+              <option value={toolId}>{tools[toolId as keyof typeof tools]?.name || toolId}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <!-- Available Migrations -->
+      <div id="available-migrations" class="mt-4 hidden">
+        <p class="font-mono text-xs text-text-muted mb-2">Available migrations:</p>
+        <div class="flex flex-wrap gap-2" id="migration-chips"></div>
+      </div>
+    </section>
+
+    <!-- Migration Content (hidden until selected) -->
+    <section id="migration-content" class="hidden">
+      
+      <!-- Header -->
+      <div class="mb-8 rounded-lg border border-green/30 bg-green/[0.03] p-4 sm:p-6">
+        <div class="flex items-center gap-3 mb-3">
+          <span id="source-badge" class="rounded bg-bg-tertiary px-2 py-1 font-mono text-xs text-text-secondary"></span>
+          <svg class="h-4 w-4 text-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+          <span id="target-badge" class="rounded bg-green/10 px-2 py-1 font-mono text-xs text-green"></span>
+        </div>
+        <h3 id="migration-title" class="font-mono text-lg font-semibold text-text-primary mb-2"></h3>
+        <p id="migration-description" class="font-sans text-sm text-text-secondary"></p>
+      </div>
+
+      <!-- Equivalent Commands -->
+      <div class="mb-8">
+        <h3 class="mb-4 font-mono text-sm font-semibold text-green flex items-center gap-2">
+          <span class="text-green">$</span> equivalent_commands
+        </h3>
+        <div class="space-y-3" id="commands-list"></div>
+      </div>
+
+      <!-- Config Migration -->
+      <div class="mb-8">
+        <h3 class="mb-4 font-mono text-sm font-semibold text-green flex items-center gap-2">
+          <span class="text-green">$</span> config_migration
+        </h3>
+        <div class="rounded-lg border border-border bg-bg-card overflow-hidden">
+          <div class="border-b border-border bg-bg-tertiary px-4 py-2">
+            <span class="font-mono text-xs text-text-muted">Migration steps</span>
+          </div>
+          <ol id="config-steps" class="p-4 space-y-4"></ol>
+        </div>
+      </div>
+
+      <!-- Key Differences -->
+      <div class="mb-8">
+        <h3 class="mb-4 font-mono text-sm font-semibold text-green flex items-center gap-2">
+          <span class="text-green">$</span> key_differences
+        </h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border">
+                <th class="px-4 py-3 text-left font-mono text-xs font-medium text-text-muted uppercase tracking-wider">Aspect</th>
+                <th id="source-header" class="px-4 py-3 text-left font-mono text-xs font-medium text-text-muted uppercase tracking-wider">From</th>
+                <th id="target-header" class="px-4 py-3 text-left font-mono text-xs font-medium text-text-muted uppercase tracking-wider">To</th>
+              </tr>
+            </thead>
+            <tbody id="differences-table" class="divide-y divide-border"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Mental Model Changes -->
+      <div class="mb-8">
+        <h3 class="mb-4 font-mono text-sm font-semibold text-green flex items-center gap-2">
+          <span class="text-green">$</span> mental_model_changes
+        </h3>
+        <div class="grid gap-4 sm:grid-cols-2" id="mental-model-list"></div>
+      </div>
+
+    </section>
+
+    <!-- No Migration Available -->
+    <section id="no-migration" class="hidden">
+      <div class="rounded-lg border border-amber/30 bg-amber/[0.03] p-6 text-center">
+        <p class="font-mono text-sm text-text-secondary mb-2">
+          <span class="text-amber">⚠</span> No migration guide available for this pair yet.
+        </p>
+        <p class="font-sans text-xs text-text-muted">
+          Check the <a href="/" class="text-green hover:underline">tools page</a> for individual tool documentation.
+        </p>
+      </div>
+    </section>
+
+    <!-- All Available Migrations -->
+    <section class="mt-12 pt-8 border-t border-border">
+      <h2 class="mb-4 font-mono text-sm font-semibold text-green"><span class="text-green">//</span> all_available_migrations</h2>
+      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {migrations.map((migration) => (
+          <button
+            class="migration-card rounded-lg border border-border bg-bg-card p-4 text-left transition-all hover:border-green hover:shadow-[0_0_12px_rgba(51,255,51,0.1)]"
+            data-source={migration.source}
+            data-target={migration.target}
+          >
+            <div class="flex items-center gap-2 mb-2">
+              <span class="font-mono text-xs text-text-muted">{tools[migration.source as keyof typeof tools]?.name || migration.source}</span>
+              <span class="text-green">→</span>
+              <span class="font-mono text-xs text-green">{tools[migration.target as keyof typeof tools]?.name || migration.target}</span>
+            </div>
+            <p class="font-sans text-xs text-text-secondary line-clamp-2">{migration.description}</p>
+          </button>
+        ))}
+      </div>
+    </section>
+
+  </div>
+</BaseLayout>
+
+<script define:vars={{ migrations, tools }}>
+  // Store migrations data for client-side use
+  const migrationsData = migrations;
+  const toolsData = tools;
+
+  // DOM elements
+  const sourceSelect = document.getElementById('source-select');
+  const targetSelect = document.getElementById('target-select');
+  const migrationContent = document.getElementById('migration-content');
+  const noMigration = document.getElementById('no-migration');
+  const availableMigrations = document.getElementById('available-migrations');
+  const migrationChips = document.getElementById('migration-chips');
+
+  // Find migration by source and target
+  function findMigration(source, target) {
+    return migrationsData.find(m => m.source === source && m.target === target);
+  }
+
+  // Get available migrations for a source
+  function getMigrationsForSource(source) {
+    return migrationsData.filter(m => m.source === source);
+  }
+
+  // Get available migrations for a target
+  function getMigrationsForTarget(target) {
+    return migrationsData.filter(m => m.target === target);
+  }
+
+  // Update available migration chips
+  function updateMigrationChips(source, target) {
+    let available = [];
+    
+    if (source && !target) {
+      available = getMigrationsForSource(source);
+    } else if (target && !source) {
+      available = getMigrationsForTarget(target);
+    } else if (source && target) {
+      available = [findMigration(source, target)].filter(Boolean);
+    }
+
+    if (available.length > 0) {
+      availableMigrations.classList.remove('hidden');
+      migrationChips.innerHTML = available.map(m => `
+        <button 
+          class="chip rounded border border-border bg-bg-tertiary px-3 py-1.5 font-mono text-xs text-text-muted transition-all hover:border-green hover:text-green"
+          data-source="${m.source}"
+          data-target="${m.target}"
+        >
+          ${toolsData[m.source]?.name || m.source} → ${toolsData[m.target]?.name || m.target}
+        </button>
+      `).join('');
+
+      // Add click handlers to chips
+      migrationChips.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          sourceSelect.value = chip.dataset.source;
+          targetSelect.value = chip.dataset.target;
+          showMigration(chip.dataset.source, chip.dataset.target);
+        });
+      });
+    } else {
+      availableMigrations.classList.add('hidden');
+    }
+  }
+
+  // Render command comparison
+  function renderCommands(commands, sourceLabel, targetLabel) {
+    const container = document.getElementById('commands-list');
+    container.innerHTML = commands.map(cmd => `
+      <div class="rounded-lg border border-border bg-bg-card overflow-hidden">
+        <div class="grid sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-border">
+          <div class="p-3 sm:p-4">
+            <span class="font-mono text-xs text-text-muted block mb-1">${sourceLabel}</span>
+            <code class="font-mono text-sm text-text-secondary break-all">${cmd.source}</code>
+          </div>
+          <div class="p-3 sm:p-4 bg-green/[0.02]">
+            <span class="font-mono text-xs text-green block mb-1">${targetLabel}</span>
+            <code class="font-mono text-sm text-green break-all">${cmd.target}</code>
+          </div>
+        </div>
+        ${cmd.notes ? `
+          <div class="border-t border-border px-3 py-2 sm:px-4">
+            <span class="font-mono text-xs text-text-muted">💡 ${cmd.notes}</span>
+          </div>
+        ` : ''}
+      </div>
+    `).join('');
+  }
+
+  // Render config steps
+  function renderConfigSteps(steps) {
+    const container = document.getElementById('config-steps');
+    container.innerHTML = steps.map(step => `
+      <li class="flex gap-3">
+        <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green/10 font-mono text-xs text-green">
+          ${step.step}
+        </span>
+        <div class="flex-1 min-w-0">
+          <p class="font-mono text-sm text-text-primary mb-1">${step.action}</p>
+          <code class="font-mono text-xs text-green bg-bg-tertiary px-2 py-1 rounded break-all inline-block">${step.command}</code>
+          ${step.notes ? `<p class="font-sans text-xs text-text-muted mt-1">${step.notes}</p>` : ''}
+        </div>
+      </li>
+    `).join('');
+  }
+
+  // Render differences table
+  function renderDifferences(differences, sourceName, targetName) {
+    document.getElementById('source-header').textContent = sourceName;
+    document.getElementById('target-header').textContent = targetName;
+    
+    const container = document.getElementById('differences-table');
+    container.innerHTML = differences.map(diff => `
+      <tr class="hover:bg-bg-card transition-colors">
+        <td class="px-4 py-3 font-mono text-xs text-text-muted whitespace-nowrap">${diff.aspect}</td>
+        <td class="px-4 py-3 font-sans text-sm text-text-secondary">${diff.source}</td>
+        <td class="px-4 py-3 font-sans text-sm text-green">${diff.target}</td>
+      </tr>
+    `).join('');
+  }
+
+  // Render mental model changes
+  function renderMentalModel(changes) {
+    const container = document.getElementById('mental-model-list');
+    container.innerHTML = changes.map(change => `
+      <div class="rounded-lg border border-border bg-bg-card p-4">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="font-mono text-xs text-text-muted">${change.from}</span>
+          <svg class="h-4 w-4 text-green flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+          <span class="font-mono text-xs text-green">${change.to}</span>
+        </div>
+        <p class="font-sans text-xs text-text-secondary">${change.example}</p>
+      </div>
+    `).join('');
+  }
+
+  // Show migration guide
+  function showMigration(source, target) {
+    const migration = findMigration(source, target);
+    
+    if (!migration) {
+      migrationContent.classList.add('hidden');
+      noMigration.classList.remove('hidden');
+      return;
+    }
+
+    noMigration.classList.add('hidden');
+    migrationContent.classList.remove('hidden');
+
+    const sourceName = toolsData[source]?.name || source;
+    const targetName = toolsData[target]?.name || target;
+
+    // Update header
+    document.getElementById('source-badge').textContent = sourceName;
+    document.getElementById('target-badge').textContent = targetName;
+    document.getElementById('migration-title').textContent = migration.title;
+    document.getElementById('migration-description').textContent = migration.description;
+
+    // Render sections
+    renderCommands(migration.equivalentCommands, sourceName, targetName);
+    renderConfigSteps(migration.configMigration);
+    renderDifferences(migration.keyDifferences, sourceName, targetName);
+    renderMentalModel(migration.mentalModelChanges);
+
+    // Scroll to content
+    migrationContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Event listeners
+  sourceSelect.addEventListener('change', (e) => {
+    const source = e.target.value;
+    const target = targetSelect.value;
+    updateMigrationChips(source, target);
+    
+    if (source && target) {
+      showMigration(source, target);
+    } else {
+      migrationContent.classList.add('hidden');
+      noMigration.classList.add('hidden');
+    }
+  });
+
+  targetSelect.addEventListener('change', (e) => {
+    const target = e.target.value;
+    const source = sourceSelect.value;
+    updateMigrationChips(source, target);
+    
+    if (source && target) {
+      showMigration(source, target);
+    } else {
+      migrationContent.classList.add('hidden');
+      noMigration.classList.add('hidden');
+    }
+  });
+
+  // Migration card clicks
+  document.querySelectorAll('.migration-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const source = card.dataset.source;
+      const target = card.dataset.target;
+      sourceSelect.value = source;
+      targetSelect.value = target;
+      showMigration(source, target);
+    });
+  });
+</script>
+
+<style>
+  /* Custom scrollbar for code blocks */
+  .overflow-x-auto::-webkit-scrollbar {
+    height: 6px;
+  }
+  
+  .overflow-x-auto::-webkit-scrollbar-track {
+    background: var(--color-bg-primary);
+  }
+  
+  .overflow-x-auto::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 3px;
+  }
+  
+  .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+    background: var(--color-green);
+  }
+
+  /* Line clamp for descriptions */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Select styling */
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236e7681'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+  }
+
+  select:hover {
+    border-color: var(--color-green);
+  }
+
+  /* Smooth transitions for sections */
+  #migration-content,
+  #no-migration,
+  #available-migrations {
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Chip hover states */
+  .chip {
+    cursor: pointer;
+  }
+
+  .chip:hover {
+    background: rgba(51, 255, 51, 0.1);
+  }
+</style>
