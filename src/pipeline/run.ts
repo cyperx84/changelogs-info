@@ -286,7 +286,7 @@ function writeStatusJson(summary: PipelineSummary): void {
     tools,
   };
 
-  const statusDir = join(process.cwd(), "public", "api");
+  const statusDir = join(process.cwd(), "public", "api", "refs");
   mkdirSync(statusDir, { recursive: true });
   const statusPath = join(statusDir, "status.json");
   writeFileSync(statusPath, JSON.stringify(status, null, 2) + "\n");
