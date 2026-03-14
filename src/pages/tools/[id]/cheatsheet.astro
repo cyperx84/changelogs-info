@@ -7,7 +7,6 @@ import { join } from "node:path";
 export function getStaticPaths() {
   const cheatsheetsDir = join(process.cwd(), "src/content/cheatsheets-json");
   const tools = getTools();
-
   return tools
     .filter((t) => {
       try {
@@ -23,288 +22,282 @@ export function getStaticPaths() {
 const { tool } = Astro.props;
 const cheatsheetsDir = join(process.cwd(), "src/content/cheatsheets-json");
 const raw = readFileSync(join(cheatsheetsDir, `${tool.id}.json`), "utf-8");
-const cheatsheet = JSON.parse(raw);
+const cs = JSON.parse(raw);
 
-// Detect new items in the last 30 days
-const thirtyDaysAgo = new Date();
-thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-const newFlags = cheatsheet.cliFlags?.filter((f: any) => {
-  const addedDate = new Date(f.added + "T00:00:00Z");
-  return addedDate > thirtyDaysAgo;
-}) || [];
-
-const newCommands = cheatsheet.slashCommands?.filter((c: any) => {
-  const addedDate = new Date(c.added + "T00:00:00Z");
-  return addedDate > thirtyDaysAgo;
-}) || [];
-
-const hasWhatsnew = newFlags.length > 0 || newCommands.length > 0;
+const dailyWorkflows = cs.dailyWorkflows || [];
+const powerMoves = cs.powerMoves || [];
+const gotchas = cs.gotchas || [];
+const cliFlags = cs.cliFlags || [];
+const slashCommands = cs.slashCommands || [];
+const config = cs.config || [];
+const proTips = cs.proTips || [];
+const resources = cs.resources || [];
+const quickStart = cs.quickStart || null;
 ---
 
 <BaseLayout
   title={`${tool.name} Cheat Sheet — changelogs.info`}
-  description={`Quick reference cheat sheet for ${tool.name}`}
+  description={`The actually useful ${tool.name} cheat sheet. Daily workflows, power moves, gotchas, and pro tips.`}
 >
-  <div class="mx-auto max-w-6xl px-6 py-12">
+  <div class="mx-auto max-w-4xl px-6 py-12">
+
+    <!-- Nav -->
     <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
-      <a href={`/tools/${tool.id}`} class="inline-flex items-center gap-1 text-sm text-text-muted transition-colors hover:text-accent">
-        &larr; {tool.name}
+      <a href={`/tools/${tool.id}`} class="inline-flex items-center gap-1 font-mono text-sm text-text-muted transition-colors hover:text-green">
+        <span class="text-green">&lt;</span> {tool.name}
       </a>
       <div class="flex gap-2">
         <button
           id="copy-btn"
           class="rounded border border-border bg-bg-tertiary px-3 py-2 font-mono text-xs text-text-secondary transition-all hover:border-green hover:text-green"
-          data-content={JSON.stringify(cheatsheet, null, 2)}
+          data-content={raw}
         >
-          <span id="copy-label">copy json</span>
+          <span id="copy-label">copy JSON</span>
         </button>
         <a
-          href={`/cheatsheets-json/${tool.id}.json`}
+          href={`/cheatsheets/${tool.id}.json`}
           download={`${tool.id}-cheatsheet.json`}
           class="rounded border border-border bg-bg-tertiary px-3 py-2 font-mono text-xs text-text-secondary transition-all hover:border-green hover:text-green"
         >
-          download .json
+          download
         </a>
       </div>
     </div>
 
-    {hasWhatsnew && (
-      <div class="mb-8 rounded-lg border border-green/30 bg-green/5 p-6">
-        <h2 class="mb-4 flex items-center gap-2 text-lg font-semibold text-green">
-          <span>✨</span> What's New (Last 30 Days)
-        </h2>
-        <div class="grid gap-6 md:grid-cols-2">
-          {newFlags.length > 0 && (
-            <div>
-              <h3 class="mb-2 font-semibold text-text-primary">New Flags</h3>
-              <ul class="space-y-2 text-sm">
-                {newFlags.map((flag: any) => (
-                  <li class="text-text-secondary">
-                    <code class="text-green font-mono">{flag.shorthand ? `-${flag.shorthand}, --${flag.name}` : `--${flag.name}`}</code>
-                    <p class="mt-1 text-text-muted">{flag.description}</p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {newCommands.length > 0 && (
-            <div>
-              <h3 class="mb-2 font-semibold text-text-primary">New Commands</h3>
-              <ul class="space-y-2 text-sm">
-                {newCommands.map((cmd: any) => (
-                  <li class="text-text-secondary">
-                    <code class="text-accent font-mono">{cmd.name}</code>
-                    <p class="mt-1 text-text-muted">{cmd.description}</p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      </div>
-    )}
+    <!-- Header -->
+    <header class="mb-10">
+      <h1 class="text-glow-green font-mono text-2xl font-bold text-green sm:text-3xl">{tool.name} cheat sheet</h1>
+      <p class="mt-2 font-sans text-sm text-text-muted">The stuff you actually need. Updated {cs.lastUpdated}.</p>
+    </header>
 
-    {cheatsheet.cliFlags && cheatsheet.cliFlags.length > 0 && (
-      <div class="mb-8">
-        <div class="mb-4 flex items-center justify-between">
-          <h2 class="text-2xl font-bold text-text-primary">CLI Flags & Options</h2>
-          <input
-            type="text"
-            id="flagsSearch"
-            placeholder="Search flags..."
-            class="rounded border border-border bg-bg-tertiary px-3 py-2 font-mono text-sm text-text-secondary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent"
-          />
-        </div>
-        <div class="overflow-x-auto rounded-lg border border-border">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="border-b border-border bg-bg-tertiary">
-                <th class="px-4 py-3 text-left font-semibold text-text-primary">Flag</th>
-                <th class="px-4 py-3 text-left font-semibold text-text-primary">Short</th>
-                <th class="px-4 py-3 text-left font-semibold text-text-primary">Description</th>
-                <th class="px-4 py-3 text-left font-semibold text-text-primary">Example</th>
-                <th class="px-4 py-3 text-left font-semibold text-text-primary">Added</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cheatsheet.cliFlags.map((flag: any) => (
-                <tr class="border-b border-border hover:bg-bg-tertiary/50 transition-colors flag-row" data-searchable={`${flag.name} ${flag.shorthand || ''} ${flag.description}`.toLowerCase()}>
-                  <td class="px-4 py-3 font-mono text-accent">{flag.shorthand ? `-${flag.shorthand}, --${flag.name}` : `--${flag.name}`}</td>
-                  <td class="px-4 py-3 font-mono text-text-muted">{flag.shorthand || '—'}</td>
-                  <td class="px-4 py-3 text-text-secondary max-w-xs">{flag.description}</td>
-                  <td class="px-4 py-3 font-mono text-text-muted text-xs">{flag.example}</td>
-                  <td class="px-4 py-3 text-text-muted text-xs">{flag.added}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    )}
-
-    {cheatsheet.slashCommands && cheatsheet.slashCommands.length > 0 && (
-      <div class="mb-8">
-        <div class="mb-4 flex items-center justify-between">
-          <h2 class="text-2xl font-bold text-text-primary">Commands</h2>
-          <input
-            type="text"
-            id="commandsSearch"
-            placeholder="Search commands..."
-            class="rounded border border-border bg-bg-tertiary px-3 py-2 font-mono text-sm text-text-secondary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent"
-          />
-        </div>
-        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {cheatsheet.slashCommands.map((cmd: any) => (
-            <div class="rounded-lg border border-border p-4 hover:border-accent transition-colors command-card" data-searchable={`${cmd.name} ${cmd.description}`.toLowerCase()}>
-              <div class="mb-2 flex items-start justify-between">
-                <code class="font-mono text-accent font-semibold">{cmd.name}</code>
-                {cmd.category && <span class="rounded bg-bg-tertiary px-2 py-1 text-xs text-text-muted">{cmd.category}</span>}
-              </div>
-              <p class="mb-3 text-sm text-text-secondary">{cmd.description}</p>
-              <code class="block bg-bg-tertiary/50 rounded p-2 font-mono text-xs text-text-muted overflow-x-auto">{cmd.example}</code>
-            </div>
-          ))}
-        </div>
-      </div>
-    )}
-
-    {cheatsheet.config && cheatsheet.config.length > 0 && (
-      <div class="mb-8">
-        <h2 class="mb-4 text-2xl font-bold text-text-primary">Configuration</h2>
-        <div class="overflow-x-auto rounded-lg border border-border">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="border-b border-border bg-bg-tertiary">
-                <th class="px-4 py-3 text-left font-semibold text-text-primary">Key</th>
-                <th class="px-4 py-3 text-left font-semibold text-text-primary">Type</th>
-                <th class="px-4 py-3 text-left font-semibold text-text-primary">Description</th>
-                <th class="px-4 py-3 text-left font-semibold text-text-primary">Required</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cheatsheet.config.map((cfg: any) => (
-                <tr class="border-b border-border hover:bg-bg-tertiary/50 transition-colors">
-                  <td class="px-4 py-3 font-mono text-accent">{cfg.key}</td>
-                  <td class="px-4 py-3 font-mono text-text-muted text-xs">{cfg.type}</td>
-                  <td class="px-4 py-3 text-text-secondary">{cfg.description}</td>
-                  <td class="px-4 py-3 text-text-muted">{cfg.required ? '✓' : '—'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    )}
-
-    {cheatsheet.workflows && cheatsheet.workflows.length > 0 && (
-      <div class="mb-8">
-        <h2 class="mb-4 text-2xl font-bold text-text-primary">Workflows</h2>
-        <div class="space-y-4">
-          {cheatsheet.workflows.map((workflow: any, idx: number) => (
-            <details class="rounded-lg border border-border p-4 group hover:border-accent transition-colors">
-              <summary class="flex cursor-pointer items-center justify-between font-semibold text-text-primary hover:text-accent transition-colors">
-                <span>{workflow.title}</span>
-                <span class="transition-transform group-open:rotate-180">▼</span>
-              </summary>
-              <div class="mt-4 space-y-3 text-sm text-text-secondary border-t border-border pt-4">
-                <p>{workflow.description}</p>
-                <ol class="ml-4 space-y-2 list-decimal">
-                  {workflow.steps.map((step: string) => (
-                    <li>{step}</li>
-                  ))}
-                </ol>
-              </div>
-            </details>
-          ))}
-        </div>
-      </div>
-    )}
-
-    {cheatsheet.proTips && cheatsheet.proTips.length > 0 && (
-      <div class="mb-8 rounded-lg border border-yellow/30 bg-yellow/5 p-6">
-        <h2 class="mb-4 flex items-center gap-2 text-lg font-semibold text-yellow">
-          <span>💡</span> Pro Tips
-        </h2>
-        <ul class="grid gap-3 md:grid-cols-2">
-          {cheatsheet.proTips.map((tip: string) => (
-            <li class="flex gap-3 text-sm text-text-secondary">
-              <span class="text-yellow">•</span>
-              <span>{tip}</span>
+    <!-- Quick Start -->
+    {quickStart && (
+      <section class="mb-10 rounded-lg border-2 border-green/40 bg-green/[0.03] p-5">
+        <h2 class="mb-3 font-mono text-sm font-bold text-green">🚀 {quickStart.title}</h2>
+        <ol class="space-y-2">
+          {quickStart.steps.map((step: string, i: number) => (
+            <li class="flex gap-3 font-mono text-xs text-text-secondary">
+              <span class="shrink-0 text-green">{i + 1}.</span>
+              <span>{step}</span>
             </li>
           ))}
-        </ul>
-      </div>
+        </ol>
+      </section>
     )}
 
-    {cheatsheet.resources && cheatsheet.resources.length > 0 && (
-      <div class="mb-8">
-        <h2 class="mb-4 text-2xl font-bold text-text-primary">Resources</h2>
-        <div class="grid gap-3 md:grid-cols-2">
-          {cheatsheet.resources.map((res: any) => (
-            <a href={res.url} target="_blank" rel="noopener noreferrer" class="rounded-lg border border-border p-4 hover:border-accent transition-colors hover:bg-bg-tertiary/50">
-              <div class="font-semibold text-accent">{res.title}</div>
-              <div class="mt-1 text-xs text-text-muted break-all">{res.url}</div>
+    <!-- Daily Workflows -->
+    {dailyWorkflows.length > 0 && (
+      <section class="mb-10">
+        <h2 class="mb-4 font-mono text-base font-semibold text-green"><span class="text-green">//</span> daily_workflows</h2>
+        <p class="mb-4 font-sans text-xs text-text-muted">The things you'll actually do every day.</p>
+        <div class="space-y-3">
+          {dailyWorkflows.map((wf: any) => (
+            <div class="group rounded-lg border border-border bg-bg-card p-4 transition-all hover:border-green/40">
+              <div class="mb-2 flex flex-wrap items-center gap-2">
+                <h3 class="font-mono text-sm font-semibold text-text-primary">{wf.title}</h3>
+                {(wf.tags || []).map((tag: string) => (
+                  <span class="rounded bg-bg-tertiary px-1.5 py-0.5 font-mono text-[10px] text-text-muted">{tag}</span>
+                ))}
+              </div>
+              <p class="mb-2 font-sans text-xs text-text-muted">{wf.description}</p>
+              {wf.command && (
+                <div class="flex items-center justify-between rounded bg-bg-tertiary px-3 py-2">
+                  <code class="font-mono text-xs text-green">{wf.command}</code>
+                  <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-[10px] text-text-muted opacity-0 transition-all hover:text-green group-hover:opacity-100" data-copy={wf.command}>copy</button>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Power Moves -->
+    {powerMoves.length > 0 && (
+      <section class="mb-10">
+        <h2 class="mb-4 font-mono text-base font-semibold text-amber"><span class="text-amber">⚡</span> power_moves</h2>
+        <p class="mb-4 font-sans text-xs text-text-muted">Stuff most people don't know about.</p>
+        <div class="grid gap-3 sm:grid-cols-2">
+          {powerMoves.map((pm: any) => (
+            <div class="group rounded-lg border border-border bg-bg-card p-4 transition-all hover:border-amber/40">
+              <h3 class="mb-1 font-mono text-sm font-semibold text-text-primary">{pm.title}</h3>
+              <p class="mb-2 font-sans text-xs text-text-muted">{pm.description}</p>
+              {pm.command && (
+                <div class="mb-2 flex items-center justify-between rounded bg-bg-tertiary px-3 py-2">
+                  <code class="font-mono text-[11px] text-amber break-all">{pm.command}</code>
+                  <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-[10px] text-text-muted opacity-0 transition-all hover:text-amber group-hover:opacity-100" data-copy={pm.command}>copy</button>
+                </div>
+              )}
+              {pm.why && (
+                <p class="font-sans text-[11px] text-text-muted italic">{pm.why}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Gotchas -->
+    {gotchas.length > 0 && (
+      <section class="mb-10">
+        <h2 class="mb-4 font-mono text-base font-semibold text-red-400"><span class="text-red-400">🔥</span> common_gotchas</h2>
+        <p class="mb-4 font-sans text-xs text-text-muted">Save yourself 30 minutes of debugging.</p>
+        <div class="space-y-3">
+          {gotchas.map((g: any) => (
+            <div class="rounded-lg border border-red-400/20 bg-red-400/[0.03] p-4">
+              <div class="mb-2 flex items-start gap-2">
+                <span class="shrink-0 rounded px-1.5 py-0.5 font-mono text-[10px] font-medium" class:list={[
+                  g.severity === 'blocking' ? 'bg-red-400/20 text-red-400' :
+                  g.severity === 'annoying' ? 'bg-amber/20 text-amber' :
+                  'bg-cyan/20 text-cyan'
+                ]}>{g.severity || 'gotcha'}</span>
+                <h3 class="font-mono text-sm font-semibold text-text-primary">{g.problem}</h3>
+              </div>
+              <p class="pl-[calc(3rem+0.5rem)] font-sans text-xs text-text-secondary">{g.solution}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- CLI Flags Reference -->
+    {cliFlags.length > 0 && (
+      <section class="mb-10">
+        <h2 class="mb-4 font-mono text-base font-semibold text-green"><span class="text-green">📋</span> cli_flags</h2>
+        <input
+          type="text"
+          id="flag-search"
+          placeholder="search flags..."
+          class="mb-3 w-full rounded border border-border bg-bg-tertiary px-3 py-2 font-mono text-xs text-text-primary outline-none transition-colors focus:border-green"
+        />
+        <div class="rounded-lg border border-border bg-bg-card overflow-hidden">
+          <div id="flags-list" class="divide-y divide-border/30">
+            {cliFlags.map((f: any) => (
+              <div class="flag-row flex flex-col gap-1 px-4 py-2.5 transition-all hover:bg-bg-tertiary/30 sm:flex-row sm:items-start sm:gap-4" data-search={`${f.flag} ${f.shorthand || ''} ${f.description} ${f.useCase || ''}`}>
+                <code class="shrink-0 font-mono text-xs font-semibold text-green sm:w-48">
+                  --{f.flag}{f.shorthand ? `, -${f.shorthand}` : ''}
+                </code>
+                <div class="flex-1">
+                  <p class="font-sans text-xs text-text-secondary">{f.description}</p>
+                  {f.useCase && <p class="mt-1 font-sans text-[11px] text-text-muted italic">{f.useCase}</p>}
+                  {f.example && (
+                    <div class="group mt-1.5 flex items-center justify-between rounded bg-bg-tertiary/50 px-2 py-1">
+                      <code class="font-mono text-[11px] text-text-muted">{f.example}</code>
+                      <button class="copy-btn shrink-0 rounded px-1.5 py-0.5 font-mono text-[10px] text-text-muted opacity-0 transition-all hover:text-green group-hover:opacity-100" data-copy={f.example}>copy</button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- Slash Commands -->
+    {slashCommands.length > 0 && (
+      <section class="mb-10">
+        <h2 class="mb-4 font-mono text-base font-semibold text-cyan"><span class="text-cyan">/</span> commands</h2>
+        <div class="grid gap-2 sm:grid-cols-2">
+          {slashCommands.map((cmd: any) => (
+            <div class="group rounded border border-border bg-bg-card px-4 py-3 transition-all hover:border-cyan/40">
+              <code class="font-mono text-sm font-semibold text-cyan">{cmd.command}</code>
+              <p class="mt-1 font-sans text-xs text-text-muted">{cmd.description}</p>
+              {cmd.tip && <p class="mt-1 font-sans text-[11px] text-cyan/70 italic">💡 {cmd.tip}</p>}
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Pro Tips -->
+    {proTips.length > 0 && (
+      <section class="mb-10">
+        <h2 class="mb-4 font-mono text-base font-semibold text-amber"><span class="text-amber">💡</span> pro_tips</h2>
+        <div class="rounded-lg border border-amber/20 bg-amber/[0.03] p-5">
+          <ul class="grid gap-2 sm:grid-cols-2">
+            {proTips.map((tip: string) => (
+              <li class="flex gap-2 font-sans text-xs text-text-secondary">
+                <span class="shrink-0 text-amber">›</span>
+                <span>{tip}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
+
+    <!-- Config -->
+    {config.length > 0 && (
+      <section class="mb-10">
+        <h2 class="mb-4 font-mono text-base font-semibold text-text-primary">⚙️ configuration</h2>
+        <div class="rounded-lg border border-border bg-bg-card overflow-hidden divide-y divide-border/30">
+          {config.map((c: any) => (
+            <div class="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-start sm:gap-4">
+              <code class="shrink-0 font-mono text-xs font-semibold text-green sm:w-56">{c.key}</code>
+              <div class="flex-1">
+                <p class="font-sans text-xs text-text-secondary">{c.description}</p>
+                {c.default && <p class="mt-0.5 font-mono text-[11px] text-text-muted">default: {c.default}</p>}
+                {c.recommended && <p class="mt-0.5 font-mono text-[11px] text-cyan">recommended: {c.recommended}</p>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Resources -->
+    {resources.length > 0 && (
+      <section class="mb-10">
+        <h2 class="mb-4 font-mono text-base font-semibold text-text-primary">📚 resources</h2>
+        <div class="flex flex-wrap gap-2">
+          {resources.map((r: any) => (
+            <a href={r.url} target="_blank" rel="noopener" class="rounded border border-border bg-bg-card px-3 py-1.5 font-mono text-xs text-text-secondary transition-all hover:border-green hover:text-green">
+              {r.title} →
             </a>
           ))}
         </div>
-      </div>
+      </section>
     )}
+
+    <!-- All cheatsheets link -->
+    <div class="text-center">
+      <a href="/cheatsheets" class="font-mono text-sm text-text-muted transition-colors hover:text-green">
+        all cheatsheets →
+      </a>
+    </div>
   </div>
+
+  <script>
+    // Copy buttons
+    document.querySelectorAll('.copy-btn, #copy-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const text = btn.getAttribute('data-copy') || btn.getAttribute('data-content') || '';
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(() => {
+          const label = btn.querySelector('#copy-label') || btn;
+          const original = label.textContent;
+          label.textContent = '✓ copied';
+          if (btn.classList) btn.classList.add('text-green');
+          setTimeout(() => {
+            label.textContent = original;
+            btn.classList.remove('text-green');
+          }, 1500);
+        });
+      });
+    });
+
+    // Flag search
+    const searchInput = document.getElementById('flag-search') as HTMLInputElement;
+    const flagRows = document.querySelectorAll('.flag-row');
+    if (searchInput && flagRows.length) {
+      searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase();
+        flagRows.forEach((row) => {
+          const searchText = (row as HTMLElement).dataset.search?.toLowerCase() || '';
+          (row as HTMLElement).style.display = searchText.includes(query) ? '' : 'none';
+        });
+      });
+    }
+  </script>
 </BaseLayout>
-
-<script>
-  // Copy to clipboard
-  const btn = document.getElementById('copy-btn');
-  const label = document.getElementById('copy-label');
-  if (btn && label) {
-    btn.addEventListener('click', async () => {
-      const json = btn.getAttribute('data-content') || '';
-      try {
-        await navigator.clipboard.writeText(json);
-        label.textContent = 'copied!';
-        btn.classList.add('border-green', 'text-green');
-        setTimeout(() => {
-          label.textContent = 'copy json';
-          btn.classList.remove('border-green', 'text-green');
-        }, 2000);
-      } catch {
-        label.textContent = 'failed';
-        setTimeout(() => { label.textContent = 'copy json'; }, 2000);
-      }
-    });
-  }
-
-  // Search functionality
-  const flagsSearch = document.getElementById('flagsSearch');
-  if (flagsSearch) {
-    flagsSearch.addEventListener('input', (e) => {
-      const query = (e.target as HTMLInputElement).value.toLowerCase();
-      document.querySelectorAll('.flag-row').forEach((row) => {
-        const searchable = row.getAttribute('data-searchable') || '';
-        row.style.display = searchable.includes(query) ? '' : 'none';
-      });
-    });
-  }
-
-  const commandsSearch = document.getElementById('commandsSearch');
-  if (commandsSearch) {
-    commandsSearch.addEventListener('input', (e) => {
-      const query = (e.target as HTMLInputElement).value.toLowerCase();
-      document.querySelectorAll('.command-card').forEach((card) => {
-        const searchable = card.getAttribute('data-searchable') || '';
-        card.style.display = searchable.includes(query) ? '' : 'none';
-      });
-    });
-  }
-</script>
-
-<style is:global>
-  .cheatsheet-body h1 { font-size: 2rem; font-weight: 700; margin-bottom: 1rem; color: var(--color-text-primary); }
-  .cheatsheet-body h2 { font-size: 1.25rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--color-text-primary); }
-  .cheatsheet-body h3 { font-size: 1.1rem; font-weight: 600; margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--color-text-primary); }
-  .cheatsheet-body p { margin-bottom: 0.75rem; line-height: 1.7; color: var(--color-text-secondary); }
-  .cheatsheet-body code { background: var(--color-bg-tertiary); padding: 0.15em 0.4em; border-radius: 4px; font-family: var(--font-mono); font-size: 0.875em; }
-  .cheatsheet-body pre { background: var(--color-bg-tertiary); padding: 1rem; border-radius: 8px; overflow-x: auto; margin-bottom: 1rem; }
-  .cheatsheet-body pre code { background: none; padding: 0; }
-</style>

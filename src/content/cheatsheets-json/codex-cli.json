@@ -1,105 +1,479 @@
 {
   "tool": "codex-cli",
   "lastUpdated": "2026-03-14",
+  "quickStart": {
+    "title": "Get productive in 30 seconds",
+    "steps": [
+      "Inside your repo, run `codex --full-auto \"fix the failing test, run the smallest relevant test, and show the diff\"` for a fast one-shot edit loop.",
+      "For interactive work, run `codex` then use `/plan` before big changes and `/review` before you commit.",
+      "If Codex needs more scope, add writable roots with `--add-dir` instead of jumping straight to full access.",
+      "Use `codex resume --last` to continue the same thread tomorrow instead of re-explaining context.",
+      "Keep a repo-level `AGENTS.md` with build/test commands and constraints so Codex stops making the same mistakes."
+    ]
+  },
+  "dailyWorkflows": [
+    {
+      "title": "Quick one-shot fix",
+      "description": "Best default for small bugs, lint fixes, test failures, or targeted refactors. Ask for the smallest fix plus validation so you get code and proof, not just code.",
+      "command": "codex exec --full-auto \"fix the failing test, run the narrowest relevant test, and summarize what changed\"",
+      "tags": ["quick", "debugging", "tests"]
+    },
+    {
+      "title": "Interactive debugging in a real repo",
+      "description": "Use the TUI when you want to steer, inspect diffs, answer questions, and approve actions live. Better than `exec` when the problem is ambiguous.",
+      "command": "codex \"investigate why login sometimes fails after refresh; explain root cause before editing\"",
+      "tags": ["interactive", "debugging", "investigation"]
+    },
+    {
+      "title": "Plan first, then implement",
+      "description": "For risky or multi-file changes, force a planning pass first. This reduces thrash and catches missing constraints early.",
+      "command": "codex \"propose a step-by-step plan to add rate limiting to the API; do not edit yet\"",
+      "tags": ["planning", "architecture", "safer"]
+    },
+    {
+      "title": "Resume yesterday's thread",
+      "description": "Huge time saver. Reuse the transcript, approvals, and plan history instead of pasting context back in.",
+      "command": "codex resume --last",
+      "tags": ["context", "resume", "daily"]
+    },
+    {
+      "title": "Continue a past non-interactive run",
+      "description": "Great when an earlier `exec` run found issues but did not finish the implementation. Lets Codex build on prior findings.",
+      "command": "codex exec resume --last \"implement the fix you proposed and run focused validation\"",
+      "tags": ["exec", "resume", "automation"]
+    },
+    {
+      "title": "Review your local diff before commit",
+      "description": "Use Codex as a second reviewer after you or Codex changed code. Good for catching missing tests, regressions, and risky assumptions.",
+      "command": "codex exec review \"review the current changes for correctness, regressions, and missing tests\"",
+      "tags": ["review", "pre-commit", "quality"]
+    },
+    {
+      "title": "Patch across multiple directories safely",
+      "description": "When frontend and backend live side-by-side, add extra writable roots explicitly. This is the power-user alternative to broad full access.",
+      "command": "codex --cd apps/frontend --add-dir ../backend --add-dir ../shared \"implement the API + UI change end to end\"",
+      "tags": ["monorepo", "multi-project", "safe"]
+    },
+    {
+      "title": "Headless/remote login setup",
+      "description": "When browser auth breaks in SSH, WSL, containers, or headless boxes, use device auth instead of fighting localhost callback issues.",
+      "command": "codex login --device-auth",
+      "tags": ["auth", "remote", "headless"]
+    },
+    {
+      "title": "Machine-readable CI run",
+      "description": "Use JSONL output when another script needs progress events and the final answer. Pair it with a file for the last assistant message.",
+      "command": "codex exec --json -o /tmp/codex-last.txt \"summarize the CI failure and propose the smallest fix\"",
+      "tags": ["ci", "automation", "json"]
+    }
+  ],
+  "powerMoves": [
+    {
+      "title": "Parallel worktree army",
+      "description": "Create several git worktrees and run one `codex exec --full-auto` task in each. Use this for parallel bugfixes, audits, or independent feature slices.",
+      "command": "git worktree add ../repo-bug-1 -b bug-1 && git worktree add ../repo-bug-2 -b bug-2 && (cd ../repo-bug-1 && codex exec --full-auto \"fix bug A and run focused tests\") & (cd ../repo-bug-2 && codex exec --full-auto \"fix bug B and run focused tests\") & wait",
+      "why": "Beginners run one long thread. Power users isolate context and file changes per task, which reduces agent confusion, merge pain, and context bloat."
+    },
+    {
+      "title": "Plan → implement → review loop",
+      "description": "Use one thread for planning, then implementation, then a dedicated review pass with explicit review criteria.",
+      "command": "codex \"plan the migration\"  # then /review after changes",
+      "why": "This gets better results than treating Codex like a one-shot code generator. You turn it into planner, implementer, and reviewer in sequence."
+    },
+    {
+      "title": "Scoped autonomy instead of YOLO",
+      "description": "Keep Codex in workspace-write and widen scope only with `--add-dir`, repo config, or network toggles when needed.",
+      "command": "codex --cd services/api --add-dir ../shared \"update the contract and consumers\"",
+      "why": "Power users rarely jump straight to `--yolo`. They give exactly enough access for the task, which is safer and usually easier to reason about."
+    },
+    {
+      "title": "Codify your workflow in AGENTS.md",
+      "description": "Put build/test/lint commands, architecture constraints, and 'done when' rules in AGENTS.md so Codex loads them automatically.",
+      "command": "codex  # in a repo with AGENTS.md describing conventions and validation commands",
+      "why": "This removes repeated prompt boilerplate and makes Codex more consistent across sessions and teammates."
+    },
+    {
+      "title": "Use `/compact` before the thread gets dumb",
+      "description": "After a long debugging or implementation session, compact the transcript to preserve key facts while freeing context.",
+      "command": "/compact",
+      "why": "Long unmaintained threads degrade. Compacting keeps the important state while reducing context rot."
+    },
+    {
+      "title": "JSON schema output for structured pipelines",
+      "description": "When you need Codex to feed another tool, constrain the final answer with a schema instead of regexing prose.",
+      "command": "codex exec --output-schema ./result.schema.json \"analyze the repo and return structured risks\"",
+      "why": "This is much more robust for CI, dashboards, checklists, and bulk analysis than parsing human-oriented text."
+    },
+    {
+      "title": "Multi-agent for bounded parallel work",
+      "description": "Enable experimental multi-agent and split a large task into explorer/reviewer/worker roles or one agent per review category.",
+      "command": "codex  # enable Multi-agents via /experimental, then ask Codex to spawn one agent per concern",
+      "why": "Useful when a task is naturally parallel. Power users use it for exploration, review, and evidence gathering—not for every tiny change."
+    },
+    {
+      "title": "Device auth + copied auth cache for remote boxes",
+      "description": "Authenticate once on a local machine, then reuse trusted auth on headless machines when browser callbacks are painful.",
+      "command": "codex login --device-auth",
+      "why": "This avoids one of the most common setup blockers for SSH boxes, containers, and remote dev environments."
+    }
+  ],
+  "gotchas": [
+    {
+      "problem": "Codex exec refuses to run outside a Git repo by default.",
+      "solution": "Run it inside a repo, `git init` first, or deliberately bypass with `codex exec --skip-git-repo-check ...` if you know what you're doing.",
+      "severity": "blocking"
+    },
+    {
+      "problem": "`--full-auto` is not full machine access.",
+      "solution": "It means workspace-write plus on-request approvals. Codex will still stop for out-of-workspace edits or network access.",
+      "severity": "high"
+    },
+    {
+      "problem": "Protected paths like `.git` and `.codex` can still be read-only even in writable mode.",
+      "solution": "Expect commands like `git commit` or direct edits under protected paths to require approval or fail under the sandbox.",
+      "severity": "medium"
+    },
+    {
+      "problem": "Browser login fails on SSH, WSL, remote boxes, or locked-down networking.",
+      "solution": "Use `codex login --device-auth`, or authenticate locally and copy `~/.codex/auth.json` only within trusted environments.",
+      "severity": "blocking"
+    },
+    {
+      "problem": "Beginners overuse `--yolo` / danger-full-access.",
+      "solution": "Prefer workspace-write plus `--add-dir` and selective config changes. Use dangerous full access only inside an externally sandboxed environment you trust.",
+      "severity": "high"
+    },
+    {
+      "problem": "Long threads get worse over time.",
+      "solution": "Use one thread per task, `codex resume --last` for continuation, `/fork` when the task branches, and `/compact` when context gets bloated.",
+      "severity": "medium"
+    },
+    {
+      "problem": "Web search behavior changes with sandbox/access level.",
+      "solution": "Default local mode uses cached web search. `--search` forces live results, and full-access/YOLO modes default to live web results. Treat all web content as untrusted.",
+      "severity": "medium"
+    },
+    {
+      "problem": "People forget to tell Codex how to validate the change.",
+      "solution": "Always include 'run the narrowest relevant test/lint/typecheck' or put those commands in AGENTS.md so Codex can prove the change worked.",
+      "severity": "high"
+    },
+    {
+      "problem": "Running Codex in the wrong directory causes bad edits or irrelevant reasoning.",
+      "solution": "Use `--cd` explicitly and check `/status` before asking for multi-file work.",
+      "severity": "medium"
+    },
+    {
+      "problem": "Shell completions can fail in zsh with `compdef` errors.",
+      "solution": "Add `autoload -Uz compinit && compinit` before `eval \"$(codex completion zsh)\"` in `~/.zshrc`.",
+      "severity": "low"
+    }
+  ],
   "cliFlags": [
-    { "name": "model", "shorthand": "m", "description": "Model name (o4-mini, gpt-4-turbo, claude-3.5-sonnet)", "example": "codex --model gpt-4-turbo", "added": "1.0.0", "deprecated": null },
-    { "name": "provider", "shorthand": "p", "description": "AI provider (openai, anthropic, azure, local)", "example": "codex --provider anthropic", "added": "1.0.0", "deprecated": null },
-    { "name": "api-key", "shorthand": null, "description": "API key override (instead of env var)", "example": "codex --api-key sk-...", "added": "1.0.0", "deprecated": null },
-    { "name": "base-url", "shorthand": null, "description": "Custom API endpoint (for local models)", "example": "codex --base-url http://localhost:8000", "added": "1.0.0", "deprecated": null },
-    { "name": "approval-mode", "shorthand": "a", "description": "suggest, auto-edit, or full-auto", "example": "codex --approval-mode full-auto", "added": "1.0.0", "deprecated": null },
-    { "name": "quiet", "shorthand": "q", "description": "Non-interactive, print final output only", "example": "codex --quiet \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "json", "shorthand": null, "description": "Output in JSON format (for scripting)", "example": "codex --json \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "yes", "shorthand": "y", "description": "Auto-approve all (same as full-auto)", "example": "codex --yes \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "files", "shorthand": null, "description": "Include files in context (glob pattern)", "example": "codex --files \"src/**/*.ts\" \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "full-context", "shorthand": null, "description": "Disable context condensing (use all files)", "example": "codex --full-context \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "no-project-doc", "shorthand": null, "description": "Skip reading project docs (README, CONTRIBUTING)", "example": "codex --no-project-doc \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "include-hidden", "shorthand": null, "description": "Include hidden files/folders", "example": "codex --include-hidden \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "notify", "shorthand": null, "description": "Desktop notification when finished", "example": "codex --notify \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "timeout", "shorthand": null, "description": "Max execution time in seconds", "example": "codex --timeout 300", "added": "1.0.0", "deprecated": null },
-    { "name": "max-turns", "shorthand": null, "description": "Limit agentic turns", "example": "codex --max-turns 20", "added": "1.0.0", "deprecated": null },
-    { "name": "sandbox", "shorthand": null, "description": "Force sandbox mode (default in full-auto)", "example": "codex --sandbox \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "no-sandbox", "shorthand": null, "description": "Disable sandbox (use carefully!)", "example": "codex --no-sandbox \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "verbose", "shorthand": null, "description": "Show detailed logs", "example": "codex --verbose \"query\"", "added": "1.0.0", "deprecated": null },
-    { "name": "debug", "shorthand": null, "description": "Debug mode (very verbose)", "example": "codex --debug \"query\"", "added": "1.0.0", "deprecated": null }
+    {
+      "flag": "--full-auto",
+      "shorthand": null,
+      "description": "Convenience alias for `--sandbox workspace-write --ask-for-approval on-request`. Best default for hands-off local edits inside the repo.",
+      "example": "codex exec --full-auto \"fix the flaky test and run it 5 times\"",
+      "useCase": "Daily one-shot fixes, focused refactors, and scripted local automation with sane safety rails."
+    },
+    {
+      "flag": "--dangerously-bypass-approvals-and-sandbox",
+      "shorthand": null,
+      "description": "Disables both sandboxing and approval prompts. Highest-risk mode.",
+      "example": "codex exec --dangerously-bypass-approvals-and-sandbox \"run the full migration\"",
+      "useCase": "Only inside a disposable VM/container or another environment that is already strongly sandboxed."
+    },
+    {
+      "flag": "--sandbox",
+      "shorthand": "-s",
+      "description": "Sets sandbox mode: `read-only`, `workspace-write`, or `danger-full-access`.",
+      "example": "codex --sandbox read-only \"explain this service and identify likely bugs\"",
+      "useCase": "When you want to reason safely before allowing edits, or deliberately widen/narrow execution scope."
+    },
+    {
+      "flag": "--ask-for-approval",
+      "shorthand": "-a",
+      "description": "Controls when Codex asks before executing commands: `untrusted`, `on-request`, or `never` (plus deprecated `on-failure`).",
+      "example": "codex --sandbox read-only --ask-for-approval never \"summarize this codebase\"",
+      "useCase": "Useful for CI, read-only audits, or tightening control during risky investigations."
+    },
+    {
+      "flag": "--cd",
+      "shorthand": "-C",
+      "description": "Sets the working root without manually changing directories.",
+      "example": "codex --cd apps/web \"trace the checkout flow\"",
+      "useCase": "Great for monorepos, scripts, and launching Codex from anywhere."
+    },
+    {
+      "flag": "--add-dir",
+      "shorthand": null,
+      "description": "Adds extra writable roots alongside the primary workspace.",
+      "example": "codex --cd apps/web --add-dir ../packages/ui \"update the component and its consumers\"",
+      "useCase": "The safe way to work across multiple packages or sibling repos."
+    },
+    {
+      "flag": "--skip-git-repo-check",
+      "shorthand": null,
+      "description": "Allows `codex exec` to run outside a Git repository.",
+      "example": "codex exec --skip-git-repo-check \"generate a tiny prototype in this temp dir\"",
+      "useCase": "Useful for scratch dirs, temp repros, and generated experiments."
+    },
+    {
+      "flag": "--json",
+      "shorthand": null,
+      "description": "Streams newline-delimited JSON events instead of human-formatted output in `exec` mode.",
+      "example": "codex exec --json \"analyze CI failures\"",
+      "useCase": "Automation, dashboards, CI pipelines, and any system that needs machine-readable progress."
+    },
+    {
+      "flag": "--output-last-message",
+      "shorthand": "-o",
+      "description": "Writes the final assistant message to a file in `exec` mode.",
+      "example": "codex exec --json -o /tmp/final.txt \"summarize the patch\"",
+      "useCase": "Handy when you want JSONL event logs plus one clean summary artifact."
+    },
+    {
+      "flag": "--output-schema",
+      "shorthand": null,
+      "description": "Constrains the final response shape using a JSON Schema file.",
+      "example": "codex exec --output-schema ./report.schema.json \"audit dependencies and return structured findings\"",
+      "useCase": "Reliable downstream automation, reports, and structured audits."
+    },
+    {
+      "flag": "--ephemeral",
+      "shorthand": null,
+      "description": "Runs without persisting session files to disk.",
+      "example": "codex exec --ephemeral \"inspect this repo and summarize the architecture\"",
+      "useCase": "Temporary runs, sensitive environments, and cleaner automation hosts."
+    },
+    {
+      "flag": "--model",
+      "shorthand": "-m",
+      "description": "Selects the model for the run or session.",
+      "example": "codex --model gpt-5.4 \"review this codebase\"",
+      "useCase": "Use stronger reasoning for hard debugging/review or cheaper/faster models for light exploration."
+    },
+    {
+      "flag": "--profile",
+      "shorthand": "-p",
+      "description": "Loads a named config profile from `config.toml`.",
+      "example": "codex --profile deep-review \"review the branch vs main\"",
+      "useCase": "Switching between personal modes like deep review, lightweight edit, or read-only audit."
+    },
+    {
+      "flag": "--search",
+      "shorthand": null,
+      "description": "Enables live web search instead of cached web results.",
+      "example": "codex --search \"check the latest Next.js docs for this API\"",
+      "useCase": "When you need fresh docs, release notes, or current ecosystem information."
+    },
+    {
+      "flag": "--image",
+      "shorthand": "-i",
+      "description": "Attaches one or more images to the initial prompt.",
+      "example": "codex -i screenshot.png \"explain this runtime error screen\"",
+      "useCase": "Debugging screenshots, design handoff, diagrams, and visual bug reports."
+    },
+    {
+      "flag": "--config",
+      "shorthand": "-c",
+      "description": "One-off override for any config key; values are parsed as TOML.",
+      "example": "codex -c 'shell_environment_policy.include_only=[\"PATH\",\"HOME\"]' \"run the test command\"",
+      "useCase": "Advanced one-run tweaks without editing your persistent config."
+    }
   ],
-  "slashCommands": [],
+  "slashCommands": [
+    {
+      "command": "/plan",
+      "description": "Switches into planning mode before coding.",
+      "whenToUse": "Before multi-step, risky, or ambiguous work."
+    },
+    {
+      "command": "/review",
+      "description": "Runs a dedicated local code review on your branch, commit, or working tree.",
+      "whenToUse": "Before commit/push or after Codex made substantial edits."
+    },
+    {
+      "command": "/permissions",
+      "description": "Changes approval behavior mid-session.",
+      "whenToUse": "When you want to tighten control or let Codex move faster without restarting."
+    },
+    {
+      "command": "/status",
+      "description": "Shows model, permissions, writable roots, and token/context state.",
+      "whenToUse": "Any time results seem weird or you want to confirm Codex's environment."
+    },
+    {
+      "command": "/diff",
+      "description": "Shows the Git diff including untracked files.",
+      "whenToUse": "Before accepting or committing changes."
+    },
+    {
+      "command": "/compact",
+      "description": "Summarizes earlier conversation to free context.",
+      "whenToUse": "After long sessions to avoid context bloat."
+    },
+    {
+      "command": "/fork",
+      "description": "Branches the current conversation into a new thread.",
+      "whenToUse": "When exploring an alternative implementation or debugging path."
+    },
+    {
+      "command": "/resume",
+      "description": "Loads a saved conversation from the session list.",
+      "whenToUse": "To continue an older task without restating context."
+    },
+    {
+      "command": "/agent",
+      "description": "Switches between active agent threads in multi-agent mode.",
+      "whenToUse": "When parallel agents are running and you need to inspect or steer one."
+    },
+    {
+      "command": "/init",
+      "description": "Scaffolds an `AGENTS.md` file in the current directory.",
+      "whenToUse": "When setting up a repo so Codex learns your conventions once instead of every run."
+    },
+    {
+      "command": "/model",
+      "description": "Changes model (and reasoning when supported) mid-session.",
+      "whenToUse": "When a task shifts from quick edits to deep debugging or vice versa."
+    },
+    {
+      "command": "/mcp",
+      "description": "Lists configured MCP tools available in this session.",
+      "whenToUse": "When you expect external tools/docs/connectors and want to verify access."
+    }
+  ],
   "config": [
-    { "key": "OPENAI_API_KEY", "description": "OpenAI API key", "required": false, "type": "env" },
-    { "key": "ANTHROPIC_API_KEY", "description": "Anthropic API key", "required": false, "type": "env" },
-    { "key": "CODEX_HOME", "description": "Config directory override", "required": false, "type": "env" },
-    { "key": "CODEX_APPROVAL_MODE", "description": "Default approval mode", "required": false, "type": "env" },
-    { "key": "CODEX_MODEL", "description": "Default model", "required": false, "type": "env" },
-    { "key": "model", "description": "Model name (o4-mini, gpt-4-turbo, etc)", "required": false, "type": "config.yaml" },
-    { "key": "provider", "description": "Provider (openai, anthropic, azure, local)", "required": false, "type": "config.yaml" },
-    { "key": "approval_mode", "description": "suggest, auto-edit, or full-auto", "required": false, "type": "config.yaml" },
-    { "key": "max_turns", "description": "Maximum agentic turns", "required": false, "type": "config.yaml" },
-    { "key": "timeout", "description": "Max execution time in seconds", "required": false, "type": "config.yaml" },
-    { "key": "sandbox_enabled", "description": "Enable sandbox (true/false)", "required": false, "type": "config.yaml" }
-  ],
-  "workflows": [
     {
-      "title": "Suggest → Auto-Edit → Full-Auto Escalation",
-      "description": "Start safe, gradually escalate approval mode as confidence grows",
-      "steps": [
-        "Start with `suggest` mode for risky changes",
-        "Review each proposed edit carefully",
-        "Switch to `auto-edit` for file changes, still approve shell commands",
-        "Graduate to `full-auto` only for trusted, well-tested tasks",
-        "Always use version control (git) to rollback if needed"
-      ]
+      "key": "model",
+      "example": "model = \"gpt-5.4\"",
+      "whyItMatters": "Set a strong default once so every session starts on the right model."
     },
     {
-      "title": "Multi-File Refactoring",
-      "description": "Refactor code across multiple files with file glob patterns",
-      "steps": [
-        "Run `codex --files \"src/**/*.ts\" \"refactor to use const instead of let\"`",
-        "Codex finds all matching files and includes them in context",
-        "Review proposed changes across all files",
-        "Accept or reject changes per file",
-        "Run tests to verify refactoring worked"
-      ]
+      "key": "approval_policy",
+      "example": "approval_policy = \"on-request\"",
+      "whyItMatters": "Defines how interrupt-y or autonomous Codex feels."
     },
     {
-      "title": "Batch Processing Script",
-      "description": "Automate repetitive tasks across multiple files",
-      "steps": [
-        "Create script with loop: `for file in src/**/*.ts`",
-        "Run `codex --quiet --full-auto \"add JSDoc to $file\" >> log.txt`",
-        "Sandbox ensures each task can't affect system",
-        "Results logged for review",
-        "Perfect for bulk migrations or documentation"
-      ]
+      "key": "sandbox_mode",
+      "example": "sandbox_mode = \"workspace-write\"",
+      "whyItMatters": "The core safety/productivity dial for local execution."
     },
     {
-      "title": "CI/CD Integration",
-      "description": "Use codex in CI pipeline to auto-fix failing tests",
-      "steps": [
-        "On CI failure, run `codex --full-auto --sandbox \"fix the failing tests\"`",
-        "Sandbox prevents network access, keeps it safe",
-        "Output diff for review",
-        "Optionally auto-commit if changes look good"
-      ]
+      "key": "[sandbox_workspace_write].network_access",
+      "example": "[sandbox_workspace_write]\nnetwork_access = true",
+      "whyItMatters": "Needed for package installs, live docs fetches, and networked verification from workspace-write mode."
+    },
+    {
+      "key": "web_search",
+      "example": "web_search = \"cached\"",
+      "whyItMatters": "Choose between safer cached search, fresher live search, or no web search at all."
+    },
+    {
+      "key": "model_reasoning_effort",
+      "example": "model_reasoning_effort = \"high\"",
+      "whyItMatters": "Useful for harder debugging, planning, and review tasks."
+    },
+    {
+      "key": "[features].multi_agent",
+      "example": "[features]\nmulti_agent = true",
+      "whyItMatters": "Unlocks parallel sub-agents for exploration, review, and batch analysis."
+    },
+    {
+      "key": "[features].shell_snapshot",
+      "example": "[features]\nshell_snapshot = true",
+      "whyItMatters": "Can speed up repeated command execution in your shell environment."
+    },
+    {
+      "key": "[profiles.<name>]",
+      "example": "[profiles.deep-review]\nmodel = \"gpt-5.4\"\nmodel_reasoning_effort = \"high\"\napproval_policy = \"never\"",
+      "whyItMatters": "Lets power users switch between repeatable modes like deep review, safe read-only, or quick edit."
+    },
+    {
+      "key": "cli_auth_credentials_store",
+      "example": "cli_auth_credentials_store = \"keyring\"",
+      "whyItMatters": "Avoids plaintext token storage when the OS credential store is available."
+    },
+    {
+      "key": "[shell_environment_policy]",
+      "example": "[shell_environment_policy]\ninclude_only = [\"PATH\", \"HOME\"]",
+      "whyItMatters": "Prevents accidental secret leakage to subprocesses while keeping needed env vars."
+    },
+    {
+      "key": "notify",
+      "example": "notify = [\"python3\", \"/path/to/notify.py\"]",
+      "whyItMatters": "Power-user alerting hook for desktop notifications, webhooks, or CI updates when a turn completes."
+    },
+    {
+      "key": "[history].persistence",
+      "example": "[history]\npersistence = \"none\"",
+      "whyItMatters": "Useful in sensitive environments where you do not want local transcript history saved."
     }
   ],
   "proTips": [
-    "Use `o4-mini` for simple tasks (fast and cheap)",
-    "Use `claude-3.5-sonnet` for complex refactors",
-    "Start with `suggest` mode and gradually escalate to `full-auto`",
-    "Always use `--sandbox` with `full-auto` to prevent accidental damage",
-    "Limit context with `--files` glob patterns to only relevant files",
-    "Use `--full-context` only for small projects (includes all files)",
-    "Set `--max-turns` to prevent infinite loops in agentic mode",
-    "Use `--notify` for long-running tasks to get desktop alert when done",
-    "Use `--quiet --json` for scripting and CI/CD integration",
-    "Check `--no-sandbox` changes very carefully before accepting",
-    "Review multimodal support: pipe screenshots directly: `codex \"describe this\" < screenshot.png`",
-    "Use `codex config` commands to set defaults instead of flags every time"
+    "The highest-leverage prompt pattern is: goal + relevant context/files + constraints + done-when. This consistently beats vague requests.",
+    "Always tell Codex how to verify success: specific test, lint, typecheck, or repro command. Otherwise it may stop at 'I changed the code.'",
+    "Use one thread per task. Resume the thread if the task continues; fork only if the task truly branches.",
+    "For big repos, mention files or set `--cd` explicitly so Codex starts in the right part of the tree.",
+    "Use `/review` even on your own changes. Codex is much more useful as a second reviewer than as a blind first drafter.",
+    "If a workflow repeats, move it into `AGENTS.md`, config, or a custom slash command/skill instead of rewriting the same mega-prompt.",
+    "In monorepos, `--add-dir` is one of the biggest quality-of-life flags. It is safer and more precise than broad full access.",
+    "Use `codex exec --json` for tooling, but pair it with `-o` or `--output-schema` so humans and machines both get a clean artifact.",
+    "When remote auth is flaky, device auth is usually faster than debugging browser callbacks.",
+    "Default web search is cached for a reason. Prefer cached unless you specifically need the latest docs or releases.",
+    "For parallel work, separate branches/worktrees beat one overloaded thread every time.",
+    "If Codex keeps making the same repo-specific mistake, that is a documentation/config problem, not a prompt problem. Fix it in AGENTS.md."
   ],
   "resources": [
-    { "title": "Official Docs", "url": "https://codex-cli.dev/docs" },
-    { "title": "GitHub Repository", "url": "https://github.com/codex-cli/codex" },
-    { "title": "Examples", "url": "https://codex-cli.dev/examples" },
-    { "title": "Discord Community", "url": "https://discord.gg/codex-cli" },
-    { "title": "Changelogs", "url": "https://changelogs.info/tools/codex-cli" }
+    {
+      "title": "Official Repo",
+      "url": "https://github.com/openai/codex"
+    },
+    {
+      "title": "Codex CLI Overview",
+      "url": "https://developers.openai.com/codex/cli"
+    },
+    {
+      "title": "Codex CLI Features",
+      "url": "https://developers.openai.com/codex/cli/features"
+    },
+    {
+      "title": "Command Line Reference",
+      "url": "https://developers.openai.com/codex/cli/reference"
+    },
+    {
+      "title": "Authentication",
+      "url": "https://developers.openai.com/codex/auth"
+    },
+    {
+      "title": "Config Basics",
+      "url": "https://developers.openai.com/codex/config-basic"
+    },
+    {
+      "title": "Advanced Configuration",
+      "url": "https://developers.openai.com/codex/config-advanced"
+    },
+    {
+      "title": "Slash Commands Guide",
+      "url": "https://developers.openai.com/codex/cli/slash-commands"
+    },
+    {
+      "title": "Agent Approvals & Security",
+      "url": "https://developers.openai.com/codex/agent-approvals-security"
+    },
+    {
+      "title": "Best Practices",
+      "url": "https://developers.openai.com/codex/learn/best-practices"
+    },
+    {
+      "title": "Multi-Agent Workflows",
+      "url": "https://developers.openai.com/codex/multi-agent"
+    },
+    {
+      "title": "Codex SDK",
+      "url": "https://developers.openai.com/codex/sdk"
+    }
   ]
 }

@@ -1,111 +1,473 @@
 {
   "tool": "openclaw",
   "lastUpdated": "2026-03-14",
+  "quickStart": {
+    "title": "Get productive in 30 seconds",
+    "steps": [
+      "Install OpenClaw, then run: openclaw onboard --install-daemon",
+      "Check the gateway is alive: openclaw gateway status",
+      "Open the fastest first chat surface: openclaw dashboard",
+      "If you want chat apps next, add Telegram or Discord first (fastest bot-token flows), then pair your own DM",
+      "Run openclaw doctor after setup or upgrades to catch config drift, bad auth, and stale service state"
+    ]
+  },
+  "dailyWorkflows": [
+    {
+      "title": "Fastest first chat without any messaging app",
+      "description": "Skip channel setup entirely. Use the local Control UI in your browser to confirm the gateway, model auth, and workspace all work before touching Telegram/Discord/Signal.",
+      "command": "openclaw dashboard",
+      "tags": ["setup", "dashboard", "sanity-check"]
+    },
+    {
+      "title": "Set up a new agent",
+      "description": "Create an isolated brain with its own workspace, sessions, persona files, and auth profiles. Best pattern when you want separate assistants for coding, ops, research, or family use.",
+      "command": "openclaw agents add <name>",
+      "tags": ["setup", "agents", "isolation"]
+    },
+    {
+      "title": "Check whether everything is healthy",
+      "description": "Use this before debugging. It catches broken services, invalid config, risky DM policies, orphan session files, cron schema drift, and missing memory-search prerequisites.",
+      "command": "openclaw doctor",
+      "tags": ["ops", "debugging", "health"]
+    },
+    {
+      "title": "See live runtime and channel health",
+      "description": "Shows whether the gateway is reachable, whether channels are connected, and recent session/link health. Add --deep when you suspect a channel auth or connectivity issue.",
+      "command": "openclaw status --deep",
+      "tags": ["ops", "status", "channels"]
+    },
+    {
+      "title": "Add Telegram fast",
+      "description": "Telegram is usually the easiest real chat channel: create a bot in BotFather, add the token, start the gateway, then approve your first DM pairing code.",
+      "command": "openclaw channels add --channel telegram --token $TELEGRAM_BOT_TOKEN",
+      "tags": ["telegram", "channels", "setup"]
+    },
+    {
+      "title": "Add Discord for workspace-style use",
+      "description": "Best when you want multiple persistent topic channels. Create a bot, enable Message Content Intent, add it to your server, then allowlist the guild/channels you want.",
+      "command": "openclaw channels add --channel discord --token $DISCORD_BOT_TOKEN",
+      "tags": ["discord", "channels", "workspace"]
+    },
+    {
+      "title": "Connect Signal privately",
+      "description": "Use a separate Signal number or linked Signal device via signal-cli. Signal is great for private DM access but has more setup friction than Telegram/Discord.",
+      "command": "openclaw pairing approve signal <CODE>",
+      "tags": ["signal", "channels", "privacy"]
+    },
+    {
+      "title": "Inspect which skills are actually ready",
+      "description": "Don’t guess. This shows which skills are available and which are blocked by missing binaries, env vars, or dependencies.",
+      "command": "openclaw skills check",
+      "tags": ["skills", "debugging", "readiness"]
+    },
+    {
+      "title": "Search long-term memory",
+      "description": "Useful when the assistant has accumulated notes over time. Memory lives in Markdown files in the workspace, not hidden magic.",
+      "command": "openclaw memory search \"<query>\"",
+      "tags": ["memory", "search", "recall"]
+    },
+    {
+      "title": "Schedule a real recurring job",
+      "description": "Use cron for exact-time reminders, reports, and isolated background jobs. Prefer isolated cron for noisy or model-specific tasks.",
+      "command": "openclaw cron add --name \"Morning brief\" --cron \"0 7 * * *\" --session isolated --message \"Summarize overnight updates\" --announce",
+      "tags": ["automation", "cron", "reports"]
+    }
+  ],
+  "powerMoves": [
+    {
+      "title": "Agent army by channel/account binding",
+      "description": "Run multiple isolated agents behind one gateway, then route inbound messages by channel, account, guild, group, topic, or even specific sender. This is the core pattern for a personal fleet: one coding agent, one alerts agent, one family agent, one social agent.",
+      "command": "openclaw agents add coding && openclaw agents add alerts && openclaw agents list --bindings",
+      "why": "You get separate workspaces, memory, auth, and sessions without running multiple gateways. It scales cleanly and prevents context bleed."
+    },
+    {
+      "title": "Use dashboard first, channels second",
+      "description": "Bring the gateway up and confirm the local browser UI works before spending time on bot tokens, QR pairing, or Signal setup. If the dashboard works, your core install is fine.",
+      "command": "openclaw gateway status && openclaw dashboard",
+      "why": "This removes 80% of setup ambiguity. You separate gateway/model problems from channel problems immediately."
+    },
+    {
+      "title": "Secure multi-user inboxes with per-sender DM isolation",
+      "description": "Set session.dmScope to per-channel-peer (or per-account-channel-peer in multi-account setups) so different people don’t silently share the same DM session history.",
+      "command": "openclaw config set session.dmScope \"per-channel-peer\"",
+      "why": "This is one of the highest-value safety settings. Shared main-session DMs are convenient for one owner, but risky for shared inboxes."
+    },
+    {
+      "title": "Heartbeat for awareness, cron for precision",
+      "description": "Put recurring awareness checks into heartbeat, and exact-time tasks into cron. Example: inbox/calendar monitoring in heartbeat; daily 7am briefing and one-shot reminders in cron.",
+      "command": "openclaw cron add --name \"Reminder\" --at \"20m\" --session main --system-event \"Reminder text\" --wake now",
+      "why": "This keeps token use low while still giving you reliable scheduled actions. Heartbeat batches; cron pinpoints."
+    },
+    {
+      "title": "Thread-bind subagents in Discord/Telegram",
+      "description": "Use /focus, /agents, /subagents, and ACP thread binding so a discussion thread becomes a dedicated workstream tied to one subagent or harness session.",
+      "command": "/focus <target>",
+      "why": "This turns chat threads into durable task lanes instead of one noisy shared conversation."
+    },
+    {
+      "title": "Direct config surgery instead of manual JSON editing",
+      "description": "Use config get/set/unset/validate for repeatable, scriptable changes. It’s much safer than hand-editing a big JSON5 file, especially remotely.",
+      "command": "openclaw config validate && openclaw config set channels.telegram.linkPreview false",
+      "why": "You get validation, automation, and less typo-driven downtime."
+    },
+    {
+      "title": "Treat doctor as the safe update command",
+      "description": "After updates or weird behavior, run doctor before chasing ghosts. It repairs service/config mismatches and warns about insecure or outdated patterns.",
+      "command": "openclaw update && openclaw doctor",
+      "why": "Most production pain is boring drift: env overrides, stale services, missing deps, migrated config keys. Doctor is designed for exactly that."
+    }
+  ],
+  "gotchas": [
+    {
+      "problem": "You set up a channel but messages still do nothing.",
+      "solution": "Check openclaw gateway status, then openclaw channels status --probe, then openclaw logs --follow. Most failures are gateway not running, missing token, or policy blocking the sender.",
+      "severity": "blocking"
+    },
+    {
+      "problem": "Different DM senders are sharing the same conversation context.",
+      "solution": "Set session.dmScope to per-channel-peer (or per-account-channel-peer). Local onboarding now prefers this, but older installs may still be on shared main-session DM scope.",
+      "severity": "subtle"
+    },
+    {
+      "problem": "Telegram bot works in DM but seems blind in groups.",
+      "solution": "Disable Telegram privacy mode or make the bot a group admin, then re-add it to the group. Also verify channels.telegram.groups and requireMention/groupPolicy settings.",
+      "severity": "blocking"
+    },
+    {
+      "problem": "Discord bot is online but never sees guild messages.",
+      "solution": "Enable Message Content Intent, invite the bot with the right scopes, allowlist the guild/channel, and confirm requireMention/groupPolicy are what you expect.",
+      "severity": "blocking"
+    },
+    {
+      "problem": "Signal setup is much harder than Telegram/Discord.",
+      "solution": "That’s normal. Signal depends on signal-cli and a linked or registered account. Use a separate bot number if you want a clean bot identity and to avoid loop protection issues.",
+      "severity": "annoying"
+    },
+    {
+      "problem": "Cron jobs never fire.",
+      "solution": "Cron runs inside the gateway, so the gateway must stay running. Check cron.enabled, verify the schedule timezone, and inspect openclaw cron list / openclaw cron runs --id <jobId>.",
+      "severity": "blocking"
+    },
+    {
+      "problem": "Memory search is empty or weak even though notes exist.",
+      "solution": "Remember memory is workspace Markdown plus an index. Run openclaw memory status, reindex with openclaw memory index, and ensure an embeddings provider is configured for memory search.",
+      "severity": "annoying"
+    },
+    {
+      "problem": "A skill shows up in list but doesn’t actually work.",
+      "solution": "Run openclaw skills check or openclaw skills info <name>. A skill can exist but be ineligible because required binaries, env vars, or platform deps are missing.",
+      "severity": "annoying"
+    },
+    {
+      "problem": "Changing config file manually caused strange runtime/auth mismatches.",
+      "solution": "Use openclaw config validate and openclaw doctor. Also check for env overrides like OPENCLAW_CONFIG_PATH, OPENCLAW_STATE_DIR, or macOS launchctl OPENCLAW_GATEWAY_TOKEN/PASSWORD values shadowing your file.",
+      "severity": "subtle"
+    },
+    {
+      "problem": "You expected one workspace but actually launched a different profile/state dir.",
+      "solution": "Be explicit with --profile and know that OPENCLAW_STATE_DIR / OPENCLAW_CONFIG_PATH fully change where state lives. Mixed profiles are a common source of ‘missing sessions’ and ‘wrong token’ confusion.",
+      "severity": "subtle"
+    }
+  ],
   "cliFlags": [
-    { "name": "onboard", "shorthand": null, "description": "Guided first-time setup", "example": "openclaw onboard", "added": "1.0.0", "deprecated": null },
-    { "name": "status", "shorthand": null, "description": "Show system health status", "example": "openclaw status", "added": "1.0.0", "deprecated": null },
-    { "name": "doctor", "shorthand": null, "description": "Diagnose system issues", "example": "openclaw doctor", "added": "1.0.0", "deprecated": null },
-    { "name": "config", "shorthand": null, "description": "View/set configuration", "example": "openclaw config", "added": "1.0.0", "deprecated": null },
-    { "name": "logs", "shorthand": null, "description": "View system logs", "example": "openclaw logs --level error", "added": "1.0.0", "deprecated": null },
-    { "name": "gateway start", "shorthand": null, "description": "Start gateway service", "example": "openclaw gateway start", "added": "1.0.0", "deprecated": null },
-    { "name": "gateway stop", "shorthand": null, "description": "Stop gateway service", "example": "openclaw gateway stop", "added": "1.0.0", "deprecated": null },
-    { "name": "gateway restart", "shorthand": null, "description": "Restart gateway service", "example": "openclaw gateway restart", "added": "1.0.0", "deprecated": null },
-    { "name": "gateway status", "shorthand": null, "description": "Check gateway status", "example": "openclaw gateway status", "added": "1.0.0", "deprecated": null }
+    {
+      "flag": "--install-daemon",
+      "shorthand": null,
+      "description": "Install and start the managed gateway service during onboarding.",
+      "example": "openclaw onboard --install-daemon",
+      "useCase": "Best default for an always-on assistant."
+    },
+    {
+      "flag": "--flow",
+      "shorthand": null,
+      "description": "Choose onboarding depth: quickstart for sensible defaults, advanced/manual for full control.",
+      "example": "openclaw onboard --flow quickstart",
+      "useCase": "Get productive fast or force the wizard to expose every option."
+    },
+    {
+      "flag": "--mode",
+      "shorthand": null,
+      "description": "Select local or remote onboarding mode.",
+      "example": "openclaw onboard --mode remote --remote-url wss://gateway-host:18789",
+      "useCase": "Attach a laptop/client to a gateway that already runs elsewhere."
+    },
+    {
+      "flag": "--non-interactive",
+      "shorthand": null,
+      "description": "Run setup commands without prompts. Useful for scripts, CI, or reproducible bootstrap flows.",
+      "example": "openclaw onboard --non-interactive --auth-choice openai-api-key --install-daemon",
+      "useCase": "Automated installs and infrastructure provisioning."
+    },
+    {
+      "flag": "--channel",
+      "shorthand": null,
+      "description": "Target a specific chat channel in channel-management commands.",
+      "example": "openclaw channels add --channel telegram --token $TELEGRAM_BOT_TOKEN",
+      "useCase": "Add or manage Telegram, Discord, Signal, Slack, etc."
+    },
+    {
+      "flag": "--account",
+      "shorthand": null,
+      "description": "Name a specific account instance for a channel that supports multiple accounts.",
+      "example": "openclaw channels add --channel discord --account work --token $DISCORD_BOT_TOKEN",
+      "useCase": "Run multiple bots/numbers/accounts behind one gateway."
+    },
+    {
+      "flag": "--bind",
+      "shorthand": null,
+      "description": "Bind a new agent to a channel or account during agent creation.",
+      "example": "openclaw agents add coding --workspace ~/.openclaw/workspace-coding --bind discord:coding --non-interactive",
+      "useCase": "Create an agent and route traffic to it in one step."
+    },
+    {
+      "flag": "--deep",
+      "shorthand": null,
+      "description": "Do extra health/probe work instead of a lightweight status check.",
+      "example": "openclaw status --deep",
+      "useCase": "Troubleshoot channels, services, and runtime state more aggressively."
+    },
+    {
+      "flag": "--json",
+      "shorthand": null,
+      "description": "Emit machine-readable output instead of terminal formatting.",
+      "example": "openclaw channels list --json",
+      "useCase": "Scripts, dashboards, and external automation."
+    },
+    {
+      "flag": "--profile",
+      "shorthand": null,
+      "description": "Use an isolated OpenClaw profile with its own state directory.",
+      "example": "openclaw --profile work gateway status",
+      "useCase": "Separate personal/work/test environments without collisions."
+    },
+    {
+      "flag": "--dev",
+      "shorthand": null,
+      "description": "Use dev-isolated state and shifted default ports.",
+      "example": "openclaw --dev gateway run",
+      "useCase": "Safely test config and channels without touching your real setup."
+    },
+    {
+      "flag": "--at",
+      "shorthand": null,
+      "description": "Create a one-shot cron job at a specific timestamp or relative time.",
+      "example": "openclaw cron add --name \"Reminder\" --at \"20m\" --session main --system-event \"Check in\" --wake now",
+      "useCase": "Precise reminders."
+    },
+    {
+      "flag": "--cron",
+      "shorthand": null,
+      "description": "Create a recurring cron schedule using cron expression syntax.",
+      "example": "openclaw cron add --name \"Daily brief\" --cron \"0 7 * * *\" --session isolated --message \"Morning briefing\" --announce",
+      "useCase": "Daily/weekly automation and reporting."
+    },
+    {
+      "flag": "--session",
+      "shorthand": null,
+      "description": "Choose whether a cron job runs in the main session or an isolated cron session.",
+      "example": "openclaw cron add --name \"Review\" --cron \"0 9 * * 1\" --session isolated --message \"Weekly review\"",
+      "useCase": "Control whether scheduled work shares context or runs clean-room."
+    },
+    {
+      "flag": "--announce",
+      "shorthand": null,
+      "description": "Have an isolated cron run deliver its result to a chat target instead of staying internal.",
+      "example": "openclaw cron add --name \"Status\" --cron \"0 7 * * *\" --session isolated --message \"Summarize today\" --announce --channel telegram --to 123456789",
+      "useCase": "Push scheduled reports directly to yourself."
+    }
   ],
   "slashCommands": [
-    { "name": "/status", "description": "Show session info, model, usage, time", "example": "/status", "added": "1.0.0", "category": "core" },
-    { "name": "/help", "description": "List all slash commands", "example": "/help", "added": "1.0.0", "category": "core" },
-    { "name": "/clear", "description": "Clear conversation context", "example": "/clear", "added": "1.0.0", "category": "core" },
-    { "name": "/reset", "description": "Full session reset", "example": "/reset", "added": "1.0.0", "category": "core" },
-    { "name": "/model", "description": "Switch model for this session", "example": "/model opus", "added": "1.0.0", "category": "config" },
-    { "name": "/context", "description": "Show context window usage", "example": "/context", "added": "1.0.0", "category": "config" },
-    { "name": "/reasoning", "description": "Toggle reasoning mode on/off", "example": "/reasoning", "added": "1.0.0", "category": "config" },
-    { "name": "/verbose", "description": "Toggle verbose tool output", "example": "/verbose", "added": "1.0.0", "category": "config" }
+    {
+      "command": "/status",
+      "description": "The everyday health check from chat. Fast way to see whether the agent is reachable and what state it’s in.",
+      "whenToUse": "First thing when something feels off."
+    },
+    {
+      "command": "/model",
+      "description": "Inspect or switch the active model. Discord also gives you an interactive model picker.",
+      "whenToUse": "Swap between cheap/fast and strong/deep models mid-conversation."
+    },
+    {
+      "command": "/subagents spawn",
+      "description": "Kick off a subagent task from chat and keep the main session clean.",
+      "whenToUse": "Parallel research, coding, or background work."
+    },
+    {
+      "command": "/acp spawn",
+      "description": "Start an ACP-backed coding/tool harness session from chat, optionally thread-bound.",
+      "whenToUse": "Persistent coding or tool sessions in Discord/Telegram threads."
+    },
+    {
+      "command": "/focus <target>",
+      "description": "Bind a Discord thread to a specific session/subagent target.",
+      "whenToUse": "Turn one thread into one durable workstream."
+    },
+    {
+      "command": "/agents",
+      "description": "Show active thread/session bindings and related agent context.",
+      "whenToUse": "Inspect what a thread is currently attached to."
+    },
+    {
+      "command": "/config set ...",
+      "description": "Write persistent config from chat if commands.config is enabled and channel configWrites permits it.",
+      "whenToUse": "Quick remote reconfiguration without shell access."
+    },
+    {
+      "command": "/debug set ...",
+      "description": "Apply runtime-only config overrides that do not touch disk.",
+      "whenToUse": "Temporary experiments and debugging."
+    },
+    {
+      "command": "/approve <id> allow-once|allow-always|deny",
+      "description": "Resolve exec approval prompts from chat.",
+      "whenToUse": "Approve gated shell/tool actions without going back to terminal."
+    },
+    {
+      "command": "/reset or /new",
+      "description": "Start a fresh conversational branch/session state.",
+      "whenToUse": "When the current thread has too much baggage."
+    }
   ],
   "config": [
-    { "key": "ANTHROPIC_API_KEY", "description": "Anthropic API key for Claude models", "required": true, "type": "env" },
-    { "key": "OPENAI_API_KEY", "description": "OpenAI API key for GPT models", "required": false, "type": "env" },
-    { "key": "GOOGLE_API_KEY", "description": "Google API key for Gemini models", "required": false, "type": "env" },
-    { "key": "DISCORD_BOT_TOKEN", "description": "Discord bot token for channel plugin", "required": false, "type": "env" },
-    { "key": "TELEGRAM_BOT_TOKEN", "description": "Telegram bot token for channel plugin", "required": false, "type": "env" },
-    { "key": "gateway.port", "description": "Gateway service port (default: 8080)", "required": false, "type": "config.yaml" },
-    { "key": "models.default", "description": "Default model for all sessions", "required": false, "type": "config.yaml" },
-    { "key": "models.aliases", "description": "Short names for model overrides", "required": false, "type": "config.yaml" },
-    { "key": "channels", "description": "Enabled channel plugins (Discord, Telegram, etc)", "required": false, "type": "config.yaml" }
-  ],
-  "workflows": [
     {
-      "title": "Multi-Channel Message Routing",
-      "description": "Send same message to multiple channels simultaneously",
-      "steps": [
-        "Configure channels in gateway config.yaml",
-        "Use `message({ action: \"send\", channel: \"discord\", target: \"#general\", message: \"...\" })`",
-        "Message routes through appropriate plugin",
-        "Can target specific channels, users, or threads"
-      ]
+      "key": "session.dmScope",
+      "description": "How DM sessions are isolated. main shares one DM thread; per-channel-peer isolates by sender per channel; per-account-channel-peer adds account separation too.",
+      "default": "Historically often main; new local onboarding prefers per-channel-peer when unset",
+      "recommended": "per-channel-peer for almost everyone; per-account-channel-peer if you run multiple channel accounts"
     },
     {
-      "title": "Agent Orchestration with Teams",
-      "description": "Spawn parallel agents for different tasks",
-      "steps": [
-        "Use `sessions_spawn()` to create subagents",
-        "Set mode to 'run' for one-shot or 'session' for persistent",
-        "Assign labels like 'builder', 'reviewer', etc",
-        "Use `sessions_send()` for inter-agent communication",
-        "Monitor with `sessions_list()`"
-      ]
+      "key": "tools.profile",
+      "description": "Base tool policy profile for the assistant.",
+      "default": "New local onboarding defaults to coding",
+      "recommended": "coding for serious personal-agent use; tighten further for untrusted/group-facing agents"
     },
     {
-      "title": "Cron-Based Automations",
-      "description": "Schedule tasks to run on a recurring basis",
-      "steps": [
-        "Define cron jobs in config.yaml with schedule and task",
-        "Use cron syntax: '0 9 * * 1-5' for weekdays at 9am",
-        "Tasks are dispatched to the gateway on schedule",
-        "Results sent to configured channel (Discord, Telegram, etc)",
-        "Check HEARTBEAT.md for periodic health checks"
-      ]
+      "key": "agents.defaults.workspace",
+      "description": "Default workspace root where AGENTS.md, SOUL.md, USER.md, MEMORY.md, and memory/ live.",
+      "default": "~/.openclaw/workspace",
+      "recommended": "Keep it stable and backed up; treat it as the assistant’s home directory"
     },
     {
-      "title": "Memory-Driven Agent Decisions",
-      "description": "Use persistent memory to inform agent behavior",
-      "steps": [
-        "Before answering, run `memory_search({ query: \"topic\" })`",
-        "Read relevant memory entries from MEMORY.md or daily logs",
-        "Use memory context in decision-making",
-        "After task, update memory with new facts/decisions",
-        "Keep entries concise for semantic search"
-      ]
+      "key": "channels.telegram.dmPolicy",
+      "description": "Controls who can DM your Telegram bot: pairing, allowlist, open, or disabled.",
+      "default": "pairing in general docs; quickstart local onboarding may guide you toward allowlist",
+      "recommended": "allowlist for single-owner bots, pairing if you want explicit first-contact approvals"
     },
     {
-      "title": "Skill Extension via ClawHub",
-      "description": "Install and manage skills to extend capabilities",
-      "steps": [
-        "Run `clawhub search \"keyword\"` to find skills",
-        "Install with `clawhub install skill-name`",
-        "Update all skills: `clawhub sync`",
-        "Skills appear as commands in agent sessions",
-        "Check SKILL.md files to understand skill capabilities"
-      ]
+      "key": "channels.telegram.groups.*.requireMention",
+      "description": "Whether the Telegram bot should only respond when mentioned in groups/topics.",
+      "default": "true in most safe examples",
+      "recommended": "true for shared groups, false only in trusted/private groups"
+    },
+    {
+      "key": "channels.discord.groupPolicy",
+      "description": "Controls guild/channel access behavior for Discord.",
+      "default": "allowlist as the secure baseline when Discord is configured",
+      "recommended": "allowlist, then explicitly permit only your own guild/channels"
+    },
+    {
+      "key": "channels.discord.guilds.<guildId>.requireMention",
+      "description": "Whether Discord guild channels require @mention before the agent responds.",
+      "default": "true in safe setups",
+      "recommended": "false only in private personal servers where every message should be routed to the bot"
+    },
+    {
+      "key": "commands.native",
+      "description": "Whether native slash/menu commands are registered on supported channels.",
+      "default": "auto",
+      "recommended": "Leave on auto for Discord/Telegram unless native command clutter is a problem"
+    },
+    {
+      "key": "commands.config",
+      "description": "Enables persistent /config writes from chat.",
+      "default": "false",
+      "recommended": "Enable only if you trust the channel and want remote admin from chat"
+    },
+    {
+      "key": "commands.debug",
+      "description": "Enables runtime-only /debug overrides from chat.",
+      "default": "false",
+      "recommended": "Enable for power use; safer than /config because it does not persist"
+    },
+    {
+      "key": "agents.defaults.heartbeat.every",
+      "description": "How often the main heartbeat runs for periodic awareness tasks.",
+      "default": "30m in docs/examples",
+      "recommended": "15m-30m for a personal assistant; keep HEARTBEAT.md small"
+    },
+    {
+      "key": "cron.enabled",
+      "description": "Master switch for gateway scheduler jobs.",
+      "default": "true",
+      "recommended": "true if you rely on reminders or scheduled reports"
+    },
+    {
+      "key": "agents.defaults.memorySearch",
+      "description": "Controls semantic memory indexing/search over MEMORY.md and memory/*.md.",
+      "default": "enabled when a usable embeddings provider is available",
+      "recommended": "Enable with a real embeddings provider and periodically check memory status/index health"
+    },
+    {
+      "key": "OPENCLAW_STATE_DIR",
+      "description": "Environment override for the entire mutable state directory: config, auth, sessions, cron, credentials, logs, and more.",
+      "default": "~/.openclaw",
+      "recommended": "Leave unset unless you deliberately want isolation or are migrating infrastructure"
+    },
+    {
+      "key": "OPENCLAW_CONFIG_PATH",
+      "description": "Environment override for the active config file path.",
+      "default": "$OPENCLAW_STATE_DIR/openclaw.json",
+      "recommended": "Use only intentionally; accidental overrides are a classic source of confusion"
     }
   ],
   "proTips": [
-    "Use model aliases to quickly switch between fast (Gemini) and quality (Opus) models",
-    "Set up daily Cron jobs to monitor GitHub activity, budget, or project status",
-    "Use memory_search before answering questions about prior work—don't rely on context alone",
-    "Configure heartbeat tasks in HEARTBEAT.md to keep agents responsive to incoming messages",
-    "Use MCP servers (filesystem, github, postgres) to extend agent capabilities",
-    "Set up Discord threads for agent conversations to keep chat organized",
-    "Use `--no-sandbox` carefully—only in controlled, trusted environments",
-    "Monitor agent logs with `openclaw logs` to debug issues",
-    "Create custom agent identities with SOUL.md for personality consistency",
-    "Use message reactions to gather user feedback on agent outputs"
+    "Use the dashboard first. It proves gateway + auth + model + workspace before you waste time debugging Telegram/Discord/Signal setup.",
+    "Telegram is usually the fastest real chat channel to get working; Signal is the slowest. Use that ordering unless privacy is your top constraint.",
+    "Create one agent per durable role, not per mood: coding, alerts, family, research. Routing becomes much easier to reason about.",
+    "Use openclaw agents list --bindings whenever routing feels mysterious. Most ‘wrong agent replied’ bugs are just binding precedence misunderstandings.",
+    "Memory is just Markdown plus an index. If you want the assistant to truly remember something, have it write it to MEMORY.md or memory/YYYY-MM-DD.md.",
+    "Prefer heartbeat for batch awareness checks and cron for exact-time tasks. If you schedule everything as cron, you’ll waste tokens and clutter sessions.",
+    "For multi-user or public-ish contexts, keep mention gating on and tool policy tight. OpenClaw is powerful enough that sloppy defaults become security problems fast.",
+    "Use openclaw config validate before restarting after config changes. It’s faster than discovering a typo via downtime.",
+    "If status looks wrong after an edit, suspect profile/state/env mismatch before suspecting the model. OPENCLAW_STATE_DIR and OPENCLAW_CONFIG_PATH can make you debug the wrong installation.",
+    "After upgrades, run openclaw doctor. It is intentionally the boring fix-everything command."
   ],
   "resources": [
-    { "title": "Official Docs", "url": "https://docs.openclaw.ai" },
-    { "title": "GitHub Repository", "url": "https://github.com/openclaw/openclaw" },
-    { "title": "ClawHub Skills", "url": "https://clawhub.com" },
-    { "title": "Discord Community", "url": "https://discord.com/invite/clawd" },
-    { "title": "Changelogs", "url": "https://changelogs.info/tools/openclaw" }
+    {
+      "title": "Official Docs",
+      "url": "https://docs.openclaw.ai"
+    },
+    {
+      "title": "Getting Started",
+      "url": "https://docs.openclaw.ai/start/getting-started"
+    },
+    {
+      "title": "Onboarding Wizard",
+      "url": "https://docs.openclaw.ai/start/wizard"
+    },
+    {
+      "title": "GitHub Repository",
+      "url": "https://github.com/openclaw/openclaw"
+    },
+    {
+      "title": "CLI Reference",
+      "url": "https://docs.openclaw.ai/cli"
+    },
+    {
+      "title": "Multi-Agent Routing",
+      "url": "https://docs.openclaw.ai/concepts/multi-agent"
+    },
+    {
+      "title": "Slash Commands",
+      "url": "https://docs.openclaw.ai/tools/slash-commands"
+    },
+    {
+      "title": "Cron Jobs",
+      "url": "https://docs.openclaw.ai/automation/cron-jobs"
+    },
+    {
+      "title": "Discord Community (Friends of the Crustacean)",
+      "url": "https://discord.com/invite/clawd"
+    }
   ]
 }

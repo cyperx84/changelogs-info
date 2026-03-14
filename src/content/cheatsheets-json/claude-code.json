@@ -1,149 +1,489 @@
 {
   "tool": "claude-code",
   "lastUpdated": "2026-03-14",
+  "quickStart": {
+    "title": "Get productive in 30 seconds",
+    "steps": [
+      "From your repo root, run `claude` for interactive work or `claude -p \"your task\"` for one-shot/headless work.",
+      "For anything non-trivial, start with a verification target: tell Claude what command proves success, like `npm test`, `pnpm lint`, or a screenshot comparison.",
+      "Use `@path/to/file` to point Claude at the exact file instead of describing it vaguely.",
+      "For bigger changes, enter Plan Mode first with `/plan` or `claude --permission-mode plan` so Claude explores before editing.",
+      "After changes, ask Claude to run the relevant tests, summarize risks, and create the commit or PR if you want the full workflow handled."
+    ]
+  },
+  "dailyWorkflows": [
+    {
+      "title": "Fix a bug from an error message",
+      "description": "Paste the real error, give the reproduce command, and make Claude verify the fix instead of guessing.",
+      "command": "claude \"The app fails when I run npm test with this error: [paste stack trace]. Reproduce it, find the root cause, fix it, and verify the failing test passes.\"",
+      "tags": ["debugging", "quick", "high-value"]
+    },
+    {
+      "title": "Understand an unfamiliar codebase fast",
+      "description": "Have Claude map the architecture, key flows, and hotspots before you touch code.",
+      "command": "claude --permission-mode plan \"Give me a high-level overview of this codebase, identify the main architecture patterns, trace the auth flow, and list the files I should read first.\"",
+      "tags": ["onboarding", "exploration", "planning"]
+    },
+    {
+      "title": "Targeted code explanation with exact files",
+      "description": "Use `@` references so Claude starts with the right context instead of scanning the whole repo.",
+      "command": "claude \"Explain how @src/auth/session.ts and @src/api/login.ts work together, and point out likely failure points.\"",
+      "tags": ["reading", "precise", "everyday"]
+    },
+    {
+      "title": "Write tests for an existing module",
+      "description": "Ask for missing coverage plus edge cases, then have Claude run and fix the new tests.",
+      "command": "claude \"Find gaps in test coverage for @src/services/notifications.ts, add meaningful tests for happy path and edge cases, run the relevant test file, and fix any failures.\"",
+      "tags": ["testing", "quality", "common"]
+    },
+    {
+      "title": "Safe refactor in stages",
+      "description": "Use plan mode first, then implement against the plan so the change stays scoped.",
+      "command": "claude --permission-mode plan \"Analyze @src/utils and create a safe refactor plan to modernize deprecated API usage without changing behavior.\"",
+      "tags": ["refactor", "safe", "planning"]
+    },
+    {
+      "title": "Continue yesterday's work",
+      "description": "Resume the last conversation or a named session instead of restating everything.",
+      "command": "claude -c",
+      "tags": ["resume", "daily", "context-saving"]
+    },
+    {
+      "title": "Review a PR you already created",
+      "description": "Claude can re-open context linked to a PR and continue from there.",
+      "command": "claude --from-pr 123",
+      "tags": ["git", "pr", "resume"]
+    },
+    {
+      "title": "Use Claude like a Unix tool",
+      "description": "Pipe logs, diffs, or command output straight into headless mode for quick analysis.",
+      "command": "git diff main --name-only | claude -p \"Review these changed files for security issues and list the top risks first.\"",
+      "tags": ["automation", "cli", "review"]
+    }
+  ],
+  "powerMoves": [
+    {
+      "title": "Explore -> Plan -> Implement -> Verify",
+      "description": "Power users split discovery from coding. First use Plan Mode to understand the codebase and produce a plan, then switch to implementation with explicit verification steps.",
+      "command": "claude --permission-mode plan \"Read @src/auth and plan an OAuth migration. Identify files, risks, tests, and rollback concerns.\"",
+      "why": "This avoids the biggest beginner mistake: letting Claude start coding before it fully understands the problem."
+    },
+    {
+      "title": "Make Claude self-check every change",
+      "description": "Always specify how Claude should prove success: a test command, linter, screenshot, or exact expected output.",
+      "command": "claude \"Add retry logic to the payment client, run pnpm test payment-client, and only stop when the tests pass and there are no new lint errors.\"",
+      "why": "Verification is the highest-leverage prompt upgrade because it closes the loop without needing you to babysit every step."
+    },
+    {
+      "title": "Use `@files` to slash token waste",
+      "description": "Instead of saying 'look around the repo', reference the exact files or directory that matter.",
+      "command": "claude \"Compare @src/db/schema.ts with @src/db/migrations and tell me why signup is failing in production.\"",
+      "why": "Precise file references reduce context bloat and get better answers faster."
+    },
+    {
+      "title": "Create a project CLAUDE.md that actually helps",
+      "description": "Run `/init`, keep the file short, and store only the things Claude cannot infer: build commands, test rules, repo conventions, dangerous areas, and team expectations.",
+      "command": "/init",
+      "why": "A concise CLAUDE.md compounds over time; a bloated one gets ignored and pollutes every session."
+    },
+    {
+      "title": "Use subagents for specialist work",
+      "description": "Create a debugger, reviewer, or API designer subagent so research and implementation happen in separate context windows.",
+      "command": "/agents",
+      "why": "Subagents preserve main-session context, reduce noise, and can be constrained to the exact tools/models needed."
+    },
+    {
+      "title": "Use `opusplan` or higher effort only when the problem deserves it",
+      "description": "Keep everyday coding on Sonnet, but raise effort or use Opus planning for architecture, migrations, or stubborn bugs.",
+      "command": "claude --model opusplan --effort high",
+      "why": "This matches compute to task complexity instead of paying a speed/cost penalty on every prompt."
+    },
+    {
+      "title": "Compact before the session gets dumb",
+      "description": "When context starts getting heavy, compact with an explicit focus so Claude keeps the right thread.",
+      "command": "/compact Keep the current debugging state, reproduction steps, and the hypothesis about token refresh failures.",
+      "why": "Claude quality drops as context fills. Power users actively manage context instead of hoping it stays sharp forever."
+    },
+    {
+      "title": "Use headless mode in scripts and CI",
+      "description": "For repeatable automation, call Claude with `-p`, structured output, turn limits, and a budget ceiling.",
+      "command": "claude -p --output-format json --max-turns 3 --max-budget-usd 2.00 \"Review this diff for security regressions and output JSON with severity, file, and recommendation.\"",
+      "why": "This makes Claude reliable in automation instead of interactive-only."
+    },
+    {
+      "title": "Kick off long work in the cloud, then continue from anywhere",
+      "description": "Start a web session for long-running tasks or enable remote control for a local session you want to pick up from mobile or browser later.",
+      "command": "claude --remote \"Implement the rate limiter, run tests, and pause only if you hit an architectural decision.\"",
+      "why": "You don’t have to keep a laptop session open for long autonomous tasks."
+    },
+    {
+      "title": "Use hooks for rules that must happen every time",
+      "description": "If a formatter, linter, or safety check is non-negotiable, enforce it with hooks instead of repeating yourself in prompts.",
+      "command": "/hooks",
+      "why": "CLAUDE.md is advisory; hooks are deterministic. That’s the difference between 'usually' and 'always'."
+    }
+  ],
+  "gotchas": [
+    {
+      "problem": "Claude starts coding before it fully understands the problem.",
+      "solution": "Use `/plan` or `--permission-mode plan` for anything multi-file, ambiguous, or architecture-heavy. Switch to implementation only after you like the plan.",
+      "severity": "high"
+    },
+    {
+      "problem": "You get okay-looking code that never got verified.",
+      "solution": "Always give a success command or artifact: tests, linter, screenshot, exact output, or repro steps. Ask Claude to run it before stopping.",
+      "severity": "high"
+    },
+    {
+      "problem": "Context quality degrades in long sessions and Claude starts forgetting earlier constraints.",
+      "solution": "Use `/context` to watch usage, `/compact` to trim history, and start a fresh or resumed session when the conversation becomes bloated.",
+      "severity": "high"
+    },
+    {
+      "problem": "Claude keeps asking for permission and the session becomes click-heavy.",
+      "solution": "Use `/permissions` or settings allowlists for safe commands. For read-only work use Plan Mode. Only use `--dangerously-skip-permissions` in a well-contained sandbox.",
+      "severity": "annoying"
+    },
+    {
+      "problem": "Your CLAUDE.md is huge, vague, or full of things Claude could infer anyway.",
+      "solution": "Keep it concise, specific, and focused on repo-specific instructions. If it grows large, split it with `.claude/rules/` or imports.",
+      "severity": "medium"
+    },
+    {
+      "problem": "You describe files in words instead of pointing at them.",
+      "solution": "Use `@file` and `@directory` references. This is faster, more precise, and reduces wasteful exploration.",
+      "severity": "medium"
+    },
+    {
+      "problem": "Resuming work means re-explaining everything.",
+      "solution": "Use `-c`, `-r <session>`, or `--from-pr <number>` to reopen the existing session context instead of creating a brand-new chat.",
+      "severity": "medium"
+    },
+    {
+      "problem": "Beginner prompts ask for 'fix it' with no reproduction steps or constraints.",
+      "solution": "Include the error, reproduce command, likely area, and what 'done' looks like. Claude performs much better with concrete scope.",
+      "severity": "high"
+    },
+    {
+      "problem": "Install works, but `claude` is not found.",
+      "solution": "Your install directory is probably missing from PATH. Verify `~/.local/bin` is on PATH on macOS/Linux, or `%USERPROFILE%\\.local\\bin` on Windows.",
+      "severity": "annoying"
+    },
+    {
+      "problem": "Multiple installations conflict and you get weird version behavior.",
+      "solution": "Check `which -a claude` and remove duplicate npm/Homebrew/native installs. Anthropic recommends the native installer path.",
+      "severity": "medium"
+    }
+  ],
   "cliFlags": [
-    { "name": "print", "shorthand": "p", "description": "Print mode — output and exit", "example": "claude -p \"query\"", "added": "2.0.0", "deprecated": null },
-    { "name": "continue", "shorthand": "c", "description": "Continue last conversation", "example": "claude -c", "added": "2.0.0", "deprecated": null },
-    { "name": "resume", "shorthand": null, "description": "Resume a specific session by ID", "example": "claude --resume <id>", "added": "2.0.0", "deprecated": null },
-    { "name": "model", "shorthand": null, "description": "Specify model (sonnet/opus/haiku)", "example": "claude --model opus", "added": "2.0.0", "deprecated": null },
-    { "name": "allowedTools", "shorthand": null, "description": "Whitelist specific tools", "example": "claude --allowedTools Read,Write", "added": "2.0.0", "deprecated": null },
-    { "name": "forbiddenTools", "shorthand": null, "description": "Blacklist specific tools", "example": "claude --forbiddenTools Bash", "added": "2.0.0", "deprecated": null },
-    { "name": "agents", "shorthand": null, "description": "Load custom agent definitions", "example": "claude --agents ./agents/", "added": "2.1.0", "deprecated": null },
-    { "name": "json-schema", "shorthand": null, "description": "Output JSON schema for responses", "example": "claude --json-schema", "added": "2.1.0", "deprecated": null },
-    { "name": "fallback-model", "shorthand": null, "description": "Model to use if primary fails", "example": "claude --fallback-model haiku", "added": "2.1.0", "deprecated": null },
-    { "name": "max-budget-usd", "shorthand": null, "description": "Hard stop at dollar limit", "example": "claude --max-budget-usd 10", "added": "2.1.0", "deprecated": null },
-    { "name": "max-turns", "shorthand": null, "description": "Limit agentic turns (default: 100)", "example": "claude --max-turns 50", "added": "2.0.0", "deprecated": null },
-    { "name": "remote", "shorthand": null, "description": "Connect to remote session or dispatch task", "example": "claude --remote \"implement auth\"", "added": "2.1.0", "deprecated": null },
-    { "name": "teleport", "shorthand": null, "description": "Send session to claude.ai/code", "example": "claude --teleport", "added": "2.1.0", "deprecated": null },
-    { "name": "fork-session", "shorthand": null, "description": "Fork from specific session, keep transcript", "example": "claude --fork-session <id>", "added": "2.1.0", "deprecated": null },
-    { "name": "add-dir", "shorthand": null, "description": "Add additional working directory", "example": "claude --add-dir /path", "added": "2.0.0", "deprecated": null },
-    { "name": "init", "shorthand": null, "description": "Run setup hooks only", "example": "claude --init", "added": "2.1.0", "deprecated": null },
-    { "name": "init-only", "shorthand": null, "description": "Setup hooks, then exit", "example": "claude --init-only", "added": "2.1.0", "deprecated": null },
-    { "name": "maintenance", "shorthand": null, "description": "Run maintenance tasks", "example": "claude --maintenance", "added": "2.1.0", "deprecated": null },
-    { "name": "chrome", "shorthand": null, "description": "Enable Chrome MCP plugin", "example": "claude --chrome", "added": "2.1.0", "deprecated": null },
-    { "name": "no-cache", "shorthand": null, "description": "Disable prompt caching", "example": "claude --no-cache", "added": "2.0.0", "deprecated": null },
-    { "name": "verbose", "shorthand": null, "description": "Show full tool calls and debug info", "example": "claude --verbose", "added": "2.0.0", "deprecated": null },
-    { "name": "output-format", "shorthand": null, "description": "Output format (json/text)", "example": "claude --output-format json", "added": "2.0.0", "deprecated": null },
-    { "name": "no-permissions", "shorthand": null, "description": "Use default permissions", "example": "claude --no-permissions", "added": "2.0.0", "deprecated": null },
-    { "name": "dangerously-skip-permissions", "shorthand": null, "description": "Skip all permission prompts (risky!)", "example": "claude --dangerously-skip-permissions", "added": "2.0.0", "deprecated": null }
+    {
+      "flag": "--print",
+      "shorthand": "-p",
+      "description": "Run headless: Claude completes the task and exits instead of opening the interactive TUI.",
+      "example": "claude -p \"Explain this function\"",
+      "useCase": "Use in scripts, CI, one-shot analysis, and quick answers without starting a full session."
+    },
+    {
+      "flag": "--continue",
+      "shorthand": "-c",
+      "description": "Resume the most recent conversation in the current directory.",
+      "example": "claude -c",
+      "useCase": "Best for daily work when you want to pick up where you left off without reloading context manually."
+    },
+    {
+      "flag": "--resume",
+      "shorthand": "-r",
+      "description": "Resume a specific session by ID or name.",
+      "example": "claude -r \"auth-refactor\" \"Finish the migration and run tests\"",
+      "useCase": "Use when juggling multiple parallel tasks and you need the exact old thread, not just the latest one."
+    },
+    {
+      "flag": "--permission-mode",
+      "shorthand": "",
+      "description": "Start a session in a specific permission mode, including Plan Mode for read-only exploration.",
+      "example": "claude --permission-mode plan",
+      "useCase": "Use `plan` for safe research before edits, especially in unfamiliar repos or risky changes."
+    },
+    {
+      "flag": "--model",
+      "shorthand": "",
+      "description": "Choose the model or model alias for the session, such as `sonnet`, `opus`, `haiku`, or `opusplan`.",
+      "example": "claude --model opusplan",
+      "useCase": "Use stronger models for planning, architecture, or hard bugs; keep everyday work on faster defaults."
+    },
+    {
+      "flag": "--effort",
+      "shorthand": "",
+      "description": "Adjust adaptive reasoning depth for the current session: `low`, `medium`, `high`, or `max` on Opus 4.6.",
+      "example": "claude --effort high \"Trace the real root cause of this flaky test\"",
+      "useCase": "Use when the problem is genuinely hard; don’t spend extra latency/cost on routine edits."
+    },
+    {
+      "flag": "--add-dir",
+      "shorthand": "",
+      "description": "Give Claude access to additional directories outside the main working directory.",
+      "example": "claude --add-dir ../shared-lib ../docs",
+      "useCase": "Useful in monorepos, split repos, or when implementation depends on sibling projects."
+    },
+    {
+      "flag": "--allowedTools",
+      "shorthand": "",
+      "description": "Allow specific tools or command patterns to run without asking for approval.",
+      "example": "claude --allowedTools \"Bash(git diff *)\" \"Bash(npm test *)\" \"Read\"",
+      "useCase": "Great for reducing permission fatigue while still avoiding full permission bypass."
+    },
+    {
+      "flag": "--dangerously-skip-permissions",
+      "shorthand": "",
+      "description": "Skip all permission prompts entirely.",
+      "example": "claude --dangerously-skip-permissions",
+      "useCase": "Only for tightly sandboxed or disposable environments where full autonomy is worth the risk."
+    },
+    {
+      "flag": "--agents",
+      "shorthand": "",
+      "description": "Define custom subagents inline as JSON for the current session only.",
+      "example": "claude --agents '{\"reviewer\":{\"description\":\"Reviews code\",\"prompt\":\"You are a code reviewer\"}}'",
+      "useCase": "Handy for temporary specialist agents in automation or experiments without creating files."
+    },
+    {
+      "flag": "--json-schema",
+      "shorthand": "",
+      "description": "Force headless output to match a JSON Schema after the agent finishes its work.",
+      "example": "claude -p --json-schema '{\"type\":\"object\",\"properties\":{\"risks\":{\"type\":\"array\"}}}' \"Analyze this diff\"",
+      "useCase": "Best for machine-readable automation, structured reviews, or downstream tooling."
+    },
+    {
+      "flag": "--max-turns",
+      "shorthand": "",
+      "description": "Limit how many agentic turns Claude can take in print mode.",
+      "example": "claude -p --max-turns 3 \"Summarize and classify these logs\"",
+      "useCase": "Useful in CI or scripts where you want bounded runtime and predictable behavior."
+    },
+    {
+      "flag": "--max-budget-usd",
+      "shorthand": "",
+      "description": "Set a cost ceiling for API calls in print mode.",
+      "example": "claude -p --max-budget-usd 1.50 \"Review this patch for security bugs\"",
+      "useCase": "Use in automation to stop costs from drifting upward on open-ended tasks."
+    },
+    {
+      "flag": "--remote",
+      "shorthand": "",
+      "description": "Start a new Claude Code web session on claude.ai with the provided task description.",
+      "example": "claude --remote \"Refactor the report generator and open a PR\"",
+      "useCase": "Great for long-running autonomous work you want to monitor from browser or mobile."
+    },
+    {
+      "flag": "--chrome",
+      "shorthand": "",
+      "description": "Enable Chrome integration for web automation, screenshots, and UI debugging.",
+      "example": "claude --chrome",
+      "useCase": "Use for front-end debugging, visual verification, and end-to-end browser tasks."
+    }
   ],
   "slashCommands": [
-    { "name": "/help", "description": "Show all available commands", "example": "/help", "added": "2.0.0", "category": "core" },
-    { "name": "/clear", "description": "Clear conversation context", "example": "/clear", "added": "2.0.0", "category": "core" },
-    { "name": "/compact", "description": "Compress conversation (reduce tokens)", "example": "/compact", "added": "2.0.0", "category": "core" },
-    { "name": "/cost", "description": "Show token usage and cost", "example": "/cost", "added": "2.0.0", "category": "core" },
-    { "name": "/stats", "description": "Show detailed session statistics", "example": "/stats", "added": "2.1.0", "category": "core" },
-    { "name": "/status", "description": "Show session status", "example": "/status", "added": "2.0.0", "category": "core" },
-    { "name": "/copy", "description": "Copy last response to clipboard", "example": "/copy", "added": "2.0.0", "category": "core" },
-    { "name": "/context", "description": "View current context summary", "example": "/context", "added": "2.1.0", "category": "core" },
-    { "name": "/model", "description": "Switch model mid-conversation", "example": "/model opus", "added": "2.0.0", "category": "config" },
-    { "name": "/permissions", "description": "View and manage permissions", "example": "/permissions", "added": "2.0.0", "category": "config" },
-    { "name": "/keybindings", "description": "Customize keyboard shortcuts", "example": "/keybindings", "added": "2.1.0", "category": "config" },
-    { "name": "/rename", "description": "Rename current session", "example": "/rename my-task", "added": "2.1.0", "category": "config" },
-    { "name": "/feedback", "description": "Send feedback to Anthropic", "example": "/feedback", "added": "2.1.0", "category": "config" },
-    { "name": "/memory", "description": "Edit CLAUDE.md memory file", "example": "/memory", "added": "2.0.0", "category": "files" },
-    { "name": "/cd", "description": "Change working directory", "example": "/cd /path", "added": "2.0.0", "category": "files" },
-    { "name": "/ls", "description": "List files in current directory", "example": "/ls", "added": "2.0.0", "category": "files" },
-    { "name": "/commit", "description": "Commit staged changes with AI message", "example": "/commit", "added": "2.0.0", "category": "git" },
-    { "name": "/pr", "description": "Create a pull request", "example": "/pr", "added": "2.0.0", "category": "git" },
-    { "name": "/review", "description": "Code review current changes", "example": "/review", "added": "2.0.0", "category": "git" },
-    { "name": "/review-pr", "description": "Review a PR by number", "example": "/review-pr 42", "added": "2.0.0", "category": "git" },
-    { "name": "/simplify", "description": "Review and simplify changed code", "example": "/simplify", "added": "2.0.0", "category": "git" },
-    { "name": "/plan", "description": "Enter planning mode (approve before edit)", "example": "/plan", "added": "2.1.0", "category": "advanced" },
-    { "name": "/tasks", "description": "View task list and dependencies", "example": "/tasks", "added": "2.1.0", "category": "advanced" },
-    { "name": "/teleport", "description": "Send session to claude.ai/code", "example": "/teleport", "added": "2.1.0", "category": "advanced" },
-    { "name": "/remote-env", "description": "Connect to remote environment", "example": "/remote-env", "added": "2.1.0", "category": "advanced" },
-    { "name": "/batch", "description": "Execute batch commands from file", "example": "/batch commands.txt", "added": "2.0.0", "category": "advanced" },
-    { "name": "/thinking", "description": "Enable extended thinking for hard problems", "example": "/thinking", "added": "2.1.0", "category": "advanced" }
+    {
+      "command": "/init",
+      "description": "Generate or improve a project CLAUDE.md based on the current repo.",
+      "example": "/init",
+      "tip": "Run this early in a new repo, then trim aggressively so only high-value instructions remain."
+    },
+    {
+      "command": "/plan",
+      "description": "Enter plan mode directly from the prompt for read-only analysis and planning.",
+      "example": "/plan",
+      "tip": "Use before migrations, refactors, or any task that spans multiple files or uncertain requirements."
+    },
+    {
+      "command": "/compact",
+      "description": "Compress the conversation to recover context while preserving the important thread.",
+      "example": "/compact Keep only the debugging summary, failing test, and pending next steps.",
+      "tip": "Give compact instructions; otherwise Claude may preserve the wrong parts of the conversation."
+    },
+    {
+      "command": "/context",
+      "description": "Show current context usage and warnings about heavy history.",
+      "example": "/context",
+      "tip": "Check this before long sessions get sloppy; it’s an early warning system for degraded performance."
+    },
+    {
+      "command": "/permissions",
+      "description": "Manage permission rules and allowlists for commands/tools.",
+      "example": "/permissions",
+      "tip": "Allowlist safe repeat commands like test/lint/git read operations to avoid approval fatigue."
+    },
+    {
+      "command": "/model",
+      "description": "Switch models during a session and, where supported, adjust effort level.",
+      "example": "/model opus",
+      "tip": "Switch up only for genuinely hard reasoning tasks; keep default or Sonnet for routine coding."
+    },
+    {
+      "command": "/effort",
+      "description": "Change adaptive reasoning depth for the current model.",
+      "example": "/effort high",
+      "tip": "This is often a better move than switching models when the task just needs deeper thought, not a whole new workflow."
+    },
+    {
+      "command": "/agents",
+      "description": "Create, inspect, and manage custom subagents.",
+      "example": "/agents",
+      "tip": "Make a read-only reviewer or debugger first; they pay off quickly and keep your main context clean."
+    },
+    {
+      "command": "/memory",
+      "description": "Manage CLAUDE.md memory files and auto-memory behavior.",
+      "example": "/memory",
+      "tip": "If Claude repeats the same mistakes across sessions, fix your memory instead of re-explaining manually every time."
+    },
+    {
+      "command": "/diff",
+      "description": "Open an interactive diff viewer for uncommitted changes and Claude’s per-turn edits.",
+      "example": "/diff",
+      "tip": "Use this before commit/PR creation so you catch broad or unintended edits early."
+    },
+    {
+      "command": "/cost",
+      "description": "Show token usage statistics for the session.",
+      "example": "/cost",
+      "tip": "If cost spikes, it usually means context sprawl, over-broad exploration, or using a stronger model than the task needs."
+    },
+    {
+      "command": "/clear",
+      "description": "Start fresh and clear conversation history.",
+      "example": "/clear",
+      "tip": "For a truly messy session, sometimes a clean restart beats trying to salvage bloated context."
+    },
+    {
+      "command": "/fast",
+      "description": "Toggle fast mode on or off.",
+      "example": "/fast on",
+      "tip": "Use when you want quicker answers for exploration or iteration and can trade a bit of depth for speed."
+    },
+    {
+      "command": "/doctor",
+      "description": "Run diagnostics on Claude Code installation and settings.",
+      "example": "/doctor",
+      "tip": "This is the first thing to try before spelunking through PATH, auth, or config issues by hand."
+    }
   ],
   "config": [
-    { "key": "CLAUDE_API_KEY", "description": "Anthropic API key for authentication", "required": true, "type": "env" },
-    { "key": "model", "description": "Default model (sonnet/opus/haiku)", "required": false, "type": "settings.json" },
-    { "key": "maxTurns", "description": "Maximum agentic turns", "required": false, "type": "settings.json" },
-    { "key": "permissionMode", "description": "Permission mode (default/auto/bypassPermissions)", "required": false, "type": "settings.json" },
-    { "key": "language", "description": "Language setting (en/es/fr/etc)", "required": false, "type": "settings.json" },
-    { "key": "allowedTools", "description": "List of allowed tools", "required": false, "type": "settings.json" },
-    { "key": "forbiddenTools", "description": "List of forbidden tools", "required": false, "type": "settings.json" }
-  ],
-  "workflows": [
     {
-      "title": "Quick Code Review",
-      "description": "Review staged changes and auto-commit with AI message",
-      "steps": [
-        "Make code changes in your editor",
-        "Stage changes with git",
-        "Run `/review` to get AI feedback",
-        "Run `/simplify` to optimize code",
-        "Run `/commit` to create AI-generated commit message"
-      ]
+      "key": "model",
+      "description": "Default model or alias for Claude Code sessions.",
+      "default": "default",
+      "recommended": "Use `sonnet` for daily work, or `opusplan` if you regularly do heavy planning before coding."
     },
     {
-      "title": "Feature Development",
-      "description": "Plan, implement, and test a new feature using plan mode",
-      "steps": [
-        "Start Claude Code session",
-        "Run `/plan` to enter plan mode",
-        "Describe feature and review architecture plan",
-        "Approve plan",
-        "Implementation begins automatically",
-        "Run tests and review output",
-        "Run `/pr` to create pull request"
-      ]
+      "key": "effortLevel",
+      "description": "Persistent adaptive reasoning level for supported models.",
+      "default": "model default",
+      "recommended": "Set to `medium` for general use; bump to `high` only if you routinely do complex debugging or architecture."
     },
     {
-      "title": "Multi-Agent Parallel Work",
-      "description": "Coordinate multiple agents to work on different parts of a task",
-      "steps": [
-        "Use `TeamCreate` to form a team",
-        "Create tasks with `TaskCreate`",
-        "Spawn teammates with `Agent` tool",
-        "Assign tasks with `TaskUpdate`",
-        "Teammates communicate via `SendMessage`",
-        "Monitor progress with task list",
-        "Shutdown with `shutdown_request` when complete"
-      ]
+      "key": "permissions.defaultMode",
+      "description": "Default permission mode for new sessions.",
+      "default": "default",
+      "recommended": "Set to `plan` if you want Claude to explore safely by default before making changes."
     },
     {
-      "title": "Remote Task Dispatch",
-      "description": "Dispatch autonomous work to Anthropic cloud",
-      "steps": [
-        "Run `claude --remote \"task description\"`",
-        "Claude executes task on Anthropic servers",
-        "Monitor progress from local terminal",
-        "Results returned to local environment",
-        "Use `/teleport` to move session to claude.ai/code if needed"
-      ]
+      "key": "permissions.allow",
+      "description": "Allowlist of safe commands/tools that can run without prompting.",
+      "default": "[]",
+      "recommended": "Add common read/test/lint/git commands you trust, like `Bash(npm test *)`, `Bash(git diff *)`, and `Read`."
     },
     {
-      "title": "Worktree Experimentation",
-      "description": "Test risky changes in isolated worktrees",
-      "steps": [
-        "User requests: 'work in a worktree'",
-        "Claude creates isolated branch in .claude/worktrees/",
-        "Make experimental changes",
-        "Test thoroughly",
-        "Exit worktree with option to keep or remove"
-      ]
+      "key": "permissions.deny",
+      "description": "Denylist of risky paths or commands even if Claude might request them.",
+      "default": "[]",
+      "recommended": "Block secrets by default, e.g. `.env`, `.env.*`, and sensitive directories."
+    },
+    {
+      "key": "includeGitInstructions",
+      "description": "Whether Claude includes built-in commit/PR workflow instructions.",
+      "default": "true",
+      "recommended": "Keep `true` unless your team already has custom git workflow skills or strict alternate conventions."
+    },
+    {
+      "key": "respectGitignore",
+      "description": "Whether `@` file suggestions should respect `.gitignore` patterns.",
+      "default": "true",
+      "recommended": "Leave it `true` unless you intentionally need ignored/generated files in the picker."
+    },
+    {
+      "key": "cleanupPeriodDays",
+      "description": "How long inactive sessions persist before cleanup.",
+      "default": "30",
+      "recommended": "Keep default unless you want shorter retention for privacy or disk hygiene."
+    },
+    {
+      "key": "statusLine",
+      "description": "Custom status line configuration for showing context, costs, or git state.",
+      "default": "unset",
+      "recommended": "Set one up if you use Claude heavily; seeing context pressure in real time helps you compact before performance drops."
+    },
+    {
+      "key": "autoMemoryDirectory",
+      "description": "Custom location for auto-memory storage.",
+      "default": "Claude-managed location",
+      "recommended": "Only change this if you have a deliberate storage/workstation policy; otherwise leave it alone."
     }
   ],
   "proTips": [
-    "Use `/plan` mode before major refactors to get architecture approval first",
-    "Use `--max-turns` to prevent runaway agentic loops",
-    "Use `/compact` to compress context when approaching token limits",
-    "Prefer `Explore` agent over `general-purpose` for read-only tasks to save tokens",
-    "Create .claude/CLAUDE.md in projects for team-shared instructions",
-    "Use hooks to enforce code style (prettier, eslint) automatically",
-    "Set `--fallback-model` to ensure work continues if primary model is overloaded",
-    "Use `/stats` to debug token usage and understand what's consuming context",
-    "Configure `.claude/keybindings.json` to match your editor (vim, emacs, etc)",
-    "Commit `.claude/CLAUDE.md` to version control for team consistency",
-    "Use `--dangerously-skip-permissions` only in trusted, isolated environments",
-    "Review `.claude/sessions/` transcripts to understand agent decision-making"
+    "The single best prompt upgrade is adding a verification target: test command, linter, screenshot, or exact expected output.",
+    "Use Plan Mode for uncertainty, not for everything. If you can describe the exact diff in one sentence, just ask Claude to do it directly.",
+    "Prefer `@file` references over repo-wide exploration when you already know the area involved.",
+    "When a session starts drifting, check `/context` and compact before quality drops noticeably.",
+    "A short, repo-specific CLAUDE.md beats a giant handbook. Include only what Claude cannot infer from code.",
+    "If you repeat the same instruction every day, move it into CLAUDE.md, rules, a hook, or a subagent.",
+    "Use `/diff` before asking for a commit or PR; it’s the fastest way to catch accidental broad edits.",
+    "`claude -c` is one of the most useful daily commands. Resuming context is often better than starting over.",
+    "Headless mode becomes much more powerful when paired with `--json-schema`, `--max-turns`, and `--max-budget-usd`.",
+    "Subagents are not just for teams. A personal debugger or code-reviewer agent can keep your main conversation far cleaner.",
+    "If Claude is repeatedly violating a rule, the problem is often instruction quality or context overload, not model capability.",
+    "Use stronger models or higher effort selectively. The fastest workflow is usually Sonnet for execution plus better prompts, not always Opus."
   ],
   "resources": [
-    { "title": "Official Docs", "url": "https://docs.anthropic.com/en/docs/claude-code" },
-    { "title": "GitHub Releases", "url": "https://github.com/anthropics/claude-code/releases" },
-    { "title": "Changelogs", "url": "https://changelogs.info/tools/claude-code" },
-    { "title": "Discord Community", "url": "https://discord.gg/anthropic" }
+    {
+      "title": "Official Docs Overview",
+      "url": "https://code.claude.com/docs/en/overview"
+    },
+    {
+      "title": "Common Workflows",
+      "url": "https://code.claude.com/docs/en/common-workflows"
+    },
+    {
+      "title": "Best Practices",
+      "url": "https://code.claude.com/docs/en/best-practices"
+    },
+    {
+      "title": "CLI Reference",
+      "url": "https://code.claude.com/docs/en/cli-reference"
+    },
+    {
+      "title": "Built-in Commands",
+      "url": "https://code.claude.com/docs/en/commands"
+    },
+    {
+      "title": "Memory / CLAUDE.md Guide",
+      "url": "https://code.claude.com/docs/en/memory"
+    },
+    {
+      "title": "Subagents",
+      "url": "https://code.claude.com/docs/en/sub-agents"
+    },
+    {
+      "title": "Settings",
+      "url": "https://code.claude.com/docs/en/settings"
+    },
+    {
+      "title": "Troubleshooting",
+      "url": "https://code.claude.com/docs/en/troubleshooting"
+    },
+    {
+      "title": "GitHub Repository README",
+      "url": "https://github.com/anthropics/claude-code"
+    }
   ]
 }
