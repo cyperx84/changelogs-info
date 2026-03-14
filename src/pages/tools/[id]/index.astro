@@ -8,6 +8,62 @@ import { join } from "node:path";
 
 import referrals from "../../../data/referrals.json";
 
+// Quick Start data per tool
+const quickStartData: Record<string, { install: string; firstCmd: string; docsUrl: string }> = {
+  "openclaw": {
+    install: "npm install -g openclaw",
+    firstCmd: "openclaw onboard --install-daemon",
+    docsUrl: "https://github.com/openclaw/openclaw",
+  },
+  "claude-code": {
+    install: "npm install -g @anthropic-ai/claude-code",
+    firstCmd: 'claude -p "explain this codebase"',
+    docsUrl: "https://docs.anthropic.com/en/docs/claude-code",
+  },
+  "codex-cli": {
+    install: "npm install -g @openai/codex",
+    firstCmd: 'codex --full-auto "fix the failing test"',
+    docsUrl: "https://github.com/openai/codex",
+  },
+  "gemini-cli": {
+    install: "npm install -g @google/gemini-cli",
+    firstCmd: 'gemini -p "summarize this repo"',
+    docsUrl: "https://github.com/google-gemini/gemini-cli",
+  },
+  "opencode": {
+    install: "npm install -g opencode-ai",
+    firstCmd: "opencode",
+    docsUrl: "https://opencode.ai/docs",
+  },
+  "cursor": {
+    install: "# Download from cursor.com/download",
+    firstCmd: "cursor .  # open project, then Cmd+I",
+    docsUrl: "https://docs.cursor.com",
+  },
+  "cline": {
+    install: "# Install 'Cline' from VS Code marketplace",
+    firstCmd: "# Open VS Code → Extensions → search 'Cline'",
+    docsUrl: "https://github.com/cline/cline",
+  },
+  "roo-code": {
+    install: "# Install 'Roo Code' from VS Code marketplace",
+    firstCmd: "# Open VS Code → Extensions → search 'Roo Code'",
+    docsUrl: "https://github.com/RooVeterinaryInc/roo-cline",
+  },
+  "continue": {
+    install: "# Install 'Continue' from VS Code marketplace",
+    firstCmd: "# Open VS Code → Extensions → search 'Continue'",
+    docsUrl: "https://docs.continue.dev",
+  },
+  "windsurf": {
+    install: "# Download from codeium.com/windsurf",
+    firstCmd: "windsurf .  # open project, then Cmd+L for Cascade",
+    docsUrl: "https://docs.codeium.com/windsurf",
+  },
+};
+
+const quickStart = quickStartData[tool.id];
+
 export function getStaticPaths() {
   const tools = getTools();
   return tools.map((tool) => ({
