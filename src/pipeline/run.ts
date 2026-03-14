@@ -6,6 +6,7 @@ import { storeEvidence, loadLatestEvidence } from "./evidence.js";
 import { computeDiff, type DiffResult } from "./diff.js";
 import { queueTier2Refresh, runTier2Refresh, type RefreshInput } from "./refresh.js";
 import { writeChecksum, verifyChecksum } from "./checksum.js";
+import { loadMetrics, recordRun, saveMetrics, metricsSummary } from "./metrics.js";
 
 const REFS_DIR = join(process.cwd(), "public", "api", "refs");
 const HISTORY_DIR = join(process.cwd(), "public", "api", "history");
@@ -302,6 +303,7 @@ function writeStatusJson(summary: PipelineSummary): void {
       tools_updated: summary.updates_found,
       tools_errored: summary.errors,
     },
+    metrics: loadMetrics(),
     tools,
   };
 
@@ -314,6 +316,7 @@ function writeStatusJson(summary: PipelineSummary): void {
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
+  const startTime = Date.now();
   const slugs = args.toolFilter ? [args.toolFilter] : getAllToolSlugs();
 
   if (!args.jsonOutput) {
@@ -406,6 +409,21 @@ async function main() {
     }
   } catch (err) {
     console.warn(`⚠️  Failed to generate history index: ${(err as Error).message}`);
+  }
+
+  // Save metrics
+  try {
+    const metrics = loadMetrics();
+    const tier2Changes: Record<string, number> = {};
+    for (const r of summary.results) {
+      tier2Changes[r.tool] = r.tier2Extracted || 0;
+    }
+    const durationMs = Date.now() - startTime;
+    recordRun(metrics, summary.errors > 0 ? "error" : "ok", summary.total, summary.updated, durationMs, tier2Changes);
+    saveMetrics(metrics);
+    console.log(metricsSummary(metrics));
+  } catch (err) {
+    console.warn(`⚠️  Failed to record metrics: ${(err as Error).message}`);
   }
 
   // Exit with code 1 if any tool had errors

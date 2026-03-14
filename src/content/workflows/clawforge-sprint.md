@@ -3,7 +3,7 @@ title: ClawForge Sprint — Single-Agent Dev Cycle
 category: development
 tools: [claude-code, codex-cli]
 difficulty: beginner
-lastUpdated: 2026-03-14
+lastUpdated: "2026-03-14"
 source: https://github.com/cyperx84/clawforge
 ---
 

@@ -1,0 +1,89 @@
+{
+  "tool": "cursor",
+  "lastUpdated": "2026-03-14",
+  "cliFlags": [],
+  "slashCommands": [
+    { "name": "@codebase", "description": "Search entire codebase", "example": "@codebase How is auth implemented?", "added": "1.0.0", "category": "context" },
+    { "name": "@file", "description": "Reference specific file", "example": "@file:api.ts Explain this endpoint", "added": "1.0.0", "category": "context" },
+    { "name": "@folder", "description": "Reference folder", "example": "@folder:components Find unused components", "added": "1.0.0", "category": "context" },
+    { "name": "@docs", "description": "Search documentation", "example": "@docs Next.js data fetching", "added": "1.0.0", "category": "context" },
+    { "name": "@web", "description": "Search web (requires internet)", "example": "@web Latest React 19 features", "added": "1.0.0", "category": "context" }
+  ],
+  "config": [
+    { "key": "cursor.defaultModel", "description": "Model for edits", "required": false, "type": "settings" },
+    { "key": "cursor.chatModel", "description": "Model for chat", "required": false, "type": "settings" },
+    { "key": "cursor.temperature", "description": "Creativity (0-1)", "required": false, "type": "settings" },
+    { "key": "cursor.maxTokens", "description": "Response length", "required": false, "type": "settings" },
+    { "key": "cursor.autoApplyEdits", "description": "Auto-accept low-risk edits", "required": false, "type": "settings" },
+    { "key": "cursor.enableComposer", "description": "Enable/disable Composer", "required": false, "type": "settings" },
+    { "key": "cursor.privacyMode", "description": "Disable code indexing", "required": false, "type": "settings" },
+    { "key": "cursor.telemetry", "description": "Disable usage tracking", "required": false, "type": "settings" }
+  ],
+  "workflows": [
+    {
+      "title": "Inline Code Edit Workflow",
+      "description": "Make quick, targeted changes to specific code blocks",
+      "steps": [
+        "Select code you want to change",
+        "Press Cmd+K (Mac) or Ctrl+K (Win/Linux)",
+        "Describe the change you want",
+        "Review the diff",
+        "Accept or reject"
+      ]
+    },
+    {
+      "title": "Composer Multi-File Refactor",
+      "description": "Make architectural changes across multiple files",
+      "steps": [
+        "Press Cmd+I (Mac) or Ctrl+I (Win/Linux)",
+        "Describe task (e.g., 'Refactor auth to use JWT instead of sessions')",
+        "Review changes across all affected files",
+        "Accept all or selectively accept individual files",
+        "Test the changes"
+      ]
+    },
+    {
+      "title": "Chat with Apply Pattern",
+      "description": "Explore solutions in chat, then apply code blocks",
+      "steps": [
+        "Press Cmd+L (Mac) or Ctrl+L (Win/Linux)",
+        "Ask exploratory question (e.g., 'Show me how to add Redis caching')",
+        "Review code suggestions in chat",
+        "Click 'Apply' on interesting code blocks",
+        "Test the applied changes"
+      ]
+    },
+    {
+      "title": "Codebase Understanding",
+      "description": "Learn about your codebase before making changes",
+      "steps": [
+        "Use @codebase in chat for broad questions",
+        "Use @file for specific file questions",
+        "Use @folder for directory overviews",
+        "Ask about patterns, architecture, or specific functions",
+        "Build mental model before making edits"
+      ]
+    }
+  ],
+  "proTips": [
+    "Use @codebase for broad questions about architecture and patterns",
+    "Use @file and @folder to narrow context and improve accuracy",
+    "Don't overload chat with too many files—focus context is key",
+    "Select exact code you want to change before Cmd+K",
+    "Be specific in instructions: 'Add error handling to the API fetch' is better than 'Fix the code'",
+    "Use Composer for multi-file changes, not Chat with Apply",
+    "Clear chat with Cmd+Shift+L when switching to a different task",
+    "Review diffs carefully before accepting, especially in multi-file edits",
+    "Test changes immediately after applying to catch issues",
+    "Use .cursorrules file in project root to enforce consistent AI behavior",
+    "Enable 'Auto-Apply Edits' only for simple, low-risk changes",
+    "Model selection matters: cursor-small is fast/free, claude-opus is best quality"
+  ],
+  "resources": [
+    { "title": "Official Site", "url": "https://cursor.sh" },
+    { "title": "Documentation", "url": "https://cursor.sh/docs" },
+    { "title": "Discord Community", "url": "https://discord.gg/cursor" },
+    { "title": "Changelog", "url": "https://cursor.sh/changelog" },
+    { "title": "Changelogs Tracking", "url": "https://changelogs.info/tools/cursor" }
+  ]
+}

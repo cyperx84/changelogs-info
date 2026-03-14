@@ -1,0 +1,93 @@
+{
+  "tool": "cline",
+  "lastUpdated": "2026-03-14",
+  "cliFlags": [],
+  "slashCommands": [
+    { "name": "/files", "description": "Add files to context (glob supported)", "example": "/files src/**/*.ts", "added": "1.0.0", "category": "context" },
+    { "name": "/folder", "description": "Add entire folder to context", "example": "/folder src/components", "added": "1.0.0", "category": "context" },
+    { "name": "/clear", "description": "Clear conversation history", "example": "/clear", "added": "1.0.0", "category": "core" },
+    { "name": "/model", "description": "Switch AI model", "example": "/model gpt-4", "added": "1.0.0", "category": "config" },
+    { "name": "/memory", "description": "Show memory/context usage", "example": "/memory", "added": "1.0.0", "category": "core" },
+    { "name": "/settings", "description": "Open Cline settings", "example": "/settings", "added": "1.0.0", "category": "config" }
+  ],
+  "config": [
+    { "key": "cline.model", "description": "AI model (gpt-4-turbo, claude-3.5-sonnet, gpt-4o, etc)", "required": true, "type": "settings" },
+    { "key": "cline.apiKey", "description": "API key (or use env var)", "required": true, "type": "settings" },
+    { "key": "cline.provider", "description": "Provider (openai, anthropic, azure, local)", "required": true, "type": "settings" },
+    { "key": "cline.baseUrl", "description": "Custom API endpoint (for local models)", "required": false, "type": "settings" },
+    { "key": "cline.autoApprove", "description": "Auto-approve file edits (risky!)", "required": false, "type": "settings" },
+    { "key": "cline.maxTokens", "description": "Max tokens per response", "required": false, "type": "settings" },
+    { "key": "cline.temperature", "description": "Creativity (0-1)", "required": false, "type": "settings" },
+    { "key": "cline.systemPrompt", "description": "Custom system instructions", "required": false, "type": "settings" },
+    { "key": "cline.contextWindow", "description": "Token limit for context", "required": false, "type": "settings" },
+    { "key": "cline.mcpServers", "description": "MCP server configurations (JSON)", "required": false, "type": "settings" },
+    { "key": "cline.enableMcp", "description": "Enable/disable MCP tools", "required": false, "type": "settings" }
+  ],
+  "workflows": [
+    {
+      "title": "Approval-Based Code Review",
+      "description": "Review and approve file edits before applying",
+      "steps": [
+        "Open Cline panel in VS Code",
+        "Describe task with clear constraints",
+        "Review proposed file edits in diff view",
+        "Approve or reject each action individually",
+        "Iterate until task is complete",
+        "Run tests to verify changes"
+      ]
+    },
+    {
+      "title": "MCP Integration for Extended Capabilities",
+      "description": "Use MCP servers to enhance Cline's abilities",
+      "steps": [
+        "Configure MCP servers in settings.json",
+        "Include filesystem, github, or postgres servers",
+        "Pass environment variables for authentication",
+        "Cline now has access to extended tools",
+        "Use /files and /folder commands to add context from MCP sources"
+      ]
+    },
+    {
+      "title": "Project Rules Enforcement",
+      "description": "Define coding standards with .clinerules",
+      "steps": [
+        "Create .clinerules file in project root",
+        "Define code style, testing, commit conventions",
+        "List forbidden actions",
+        "Cline reads file automatically",
+        "All responses follow these rules"
+      ]
+    },
+    {
+      "title": "Context Management with Glob Patterns",
+      "description": "Efficiently manage context with file patterns",
+      "steps": [
+        "Use /files with glob patterns: /files src/**/*.ts",
+        "Cline includes only matching files in context",
+        "Remove files with /files --clear",
+        "Add folders with /folder command",
+        "Monitor context usage with /memory"
+      ]
+    }
+  ],
+  "proTips": [
+    "Always create a .clinerules file for team consistency",
+    "Use /files with specific glob patterns to narrow context",
+    "Enable MCP servers (filesystem, github, postgres) for powerful integrations",
+    "Never auto-approve changes—always review diffs first",
+    "Use claude-3.5-sonnet for best quality results",
+    "Use gpt-4o for balanced speed and quality",
+    "Monitor token usage with /memory to optimize context",
+    "Clear chat history regularly to keep context fresh",
+    "Test changes immediately after applying",
+    "Use MCP's github server to read PRs and issues directly",
+    "Use postgres MCP to query databases during development",
+    "Document forbidden actions clearly in .clinerules to prevent mistakes"
+  ],
+  "resources": [
+    { "title": "GitHub Repository", "url": "https://github.com/cline/cline" },
+    { "title": "VS Code Extension", "url": "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev" },
+    { "title": "Model Context Protocol", "url": "https://modelcontextprotocol.io" },
+    { "title": "Changelogs Tracking", "url": "https://changelogs.info/tools/cline" }
+  ]
+}

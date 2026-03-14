@@ -1,0 +1,99 @@
+{
+  "tool": "opencode",
+  "lastUpdated": "2026-03-14",
+  "cliFlags": [
+    { "name": "p", "shorthand": "p", "description": "Run headless prompt (non-interactive)", "example": "opencode -p \"implement auth\"", "added": "1.0.0", "deprecated": null },
+    { "name": "model", "shorthand": null, "description": "Override default model", "example": "opencode --model claude-opus", "added": "1.0.0", "deprecated": null },
+    { "name": "version", "shorthand": null, "description": "Show version", "example": "opencode --version", "added": "1.0.0", "deprecated": null }
+  ],
+  "slashCommands": [
+    { "name": "Enter", "description": "Send message", "example": "Type message and press Enter", "added": "1.0.0", "category": "core" },
+    { "name": "Ctrl+C", "description": "Cancel/quit", "example": "Press Ctrl+C to exit", "added": "1.0.0", "category": "core" },
+    { "name": "Ctrl+N", "description": "New conversation", "example": "Press Ctrl+N for new chat", "added": "1.0.0", "category": "core" },
+    { "name": "Tab", "description": "Switch panels", "example": "Press Tab to navigate", "added": "1.0.0", "category": "nav" },
+    { "name": "Ctrl+L", "description": "Clear screen", "example": "Press Ctrl+L to clear", "added": "1.0.0", "category": "nav" },
+    { "name": "/", "description": "Command mode", "example": "Type / to enter command mode", "added": "1.0.0", "category": "core" }
+  ],
+  "config": [
+    { "key": "ANTHROPIC_API_KEY", "description": "Claude API key", "required": false, "type": "env" },
+    { "key": "OPENAI_API_KEY", "description": "OpenAI API key", "required": false, "type": "env" },
+    { "key": "GOOGLE_API_KEY", "description": "Google Gemini API key", "required": false, "type": "env" },
+    { "key": ".opencode.json", "description": "Per-project configuration file", "required": false, "type": "file" }
+  ],
+  "workflows": [
+    {
+      "title": "Interactive TUI Workflow",
+      "description": "Use OpenCode's terminal UI for interactive development",
+      "steps": [
+        "Run `opencode` to launch TUI interface",
+        "Type your task or question",
+        "Review file edits with diff preview before applying",
+        "Accept or reject each change",
+        "Switch between panels with Tab",
+        "Real-time streaming of responses"
+      ]
+    },
+    {
+      "title": "Headless Mode for Scripting",
+      "description": "Use -p flag for non-interactive, scriptable execution",
+      "steps": [
+        "Run `opencode -p \"task description\"`",
+        "No interactive approval needed",
+        "Perfect for CI/CD pipelines",
+        "Changes applied automatically",
+        "Output returned for further processing"
+      ]
+    },
+    {
+      "title": "Multi-Model Support",
+      "description": "Switch between different AI providers",
+      "steps": [
+        "Configure supported providers: Claude, GPT-4, Gemini, Groq, Ollama",
+        "Use --model flag to override default",
+        "Or set in .opencode.json per project",
+        "Compare outputs from different models",
+        "Choose best model for your use case"
+      ]
+    },
+    {
+      "title": "Git-Aware Context",
+      "description": "Leverage git information for better understanding",
+      "steps": [
+        "OpenCode reads git history and status",
+        "Understands recent changes and branches",
+        "Can reference uncommitted changes",
+        "Better context for bug fixes and refactoring",
+        "Automatic diffs for review before applying"
+      ]
+    },
+    {
+      "title": "MCP Server Integration",
+      "description": "Extend capabilities with MCP servers",
+      "steps": [
+        "Enable MCP servers in configuration",
+        "Connect to filesystem, databases, APIs",
+        "OpenCode can interact with external systems",
+        "Richer context and more powerful automation",
+        "Use for complex multi-system tasks"
+      ]
+    }
+  ],
+  "proTips": [
+    "Use TUI mode (-p is not specified) for complex tasks that need interaction",
+    "Use headless mode (-p) for CI/CD integration",
+    "Real-time file diffs in TUI let you review before applying",
+    "Supports multiple providers: always use the right tool for the job",
+    "MCP servers unlock powerful capabilities (filesystem, databases, APIs)",
+    "Git-aware context means better understanding of your codebase",
+    "Create .opencode.json for per-project configuration and consistency",
+    "Use Ctrl+N to start fresh conversations without reloading",
+    "Tab navigation makes it easy to switch between code and chat",
+    "Conversation history is preserved across sessions",
+    "Shell command execution is built-in to the TUI",
+    "Diff preview prevents accidental bad changes"
+  ],
+  "resources": [
+    { "title": "GitHub Repository", "url": "https://github.com/opencode-ai/opencode" },
+    { "title": "Changelogs Tracking", "url": "https://changelogs.info/tools/opencode" }
+  ]
+}

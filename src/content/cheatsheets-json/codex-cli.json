@@ -1,0 +1,105 @@
+{
+  "tool": "codex-cli",
+  "lastUpdated": "2026-03-14",
+  "cliFlags": [
+    { "name": "model", "shorthand": "m", "description": "Model name (o4-mini, gpt-4-turbo, claude-3.5-sonnet)", "example": "codex --model gpt-4-turbo", "added": "1.0.0", "deprecated": null },
+    { "name": "provider", "shorthand": "p", "description": "AI provider (openai, anthropic, azure, local)", "example": "codex --provider anthropic", "added": "1.0.0", "deprecated": null },
+    { "name": "api-key", "shorthand": null, "description": "API key override (instead of env var)", "example": "codex --api-key sk-...", "added": "1.0.0", "deprecated": null },
+    { "name": "base-url", "shorthand": null, "description": "Custom API endpoint (for local models)", "example": "codex --base-url http://localhost:8000", "added": "1.0.0", "deprecated": null },
+    { "name": "approval-mode", "shorthand": "a", "description": "suggest, auto-edit, or full-auto", "example": "codex --approval-mode full-auto", "added": "1.0.0", "deprecated": null },
+    { "name": "quiet", "shorthand": "q", "description": "Non-interactive, print final output only", "example": "codex --quiet \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "json", "shorthand": null, "description": "Output in JSON format (for scripting)", "example": "codex --json \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "yes", "shorthand": "y", "description": "Auto-approve all (same as full-auto)", "example": "codex --yes \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "files", "shorthand": null, "description": "Include files in context (glob pattern)", "example": "codex --files \"src/**/*.ts\" \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "full-context", "shorthand": null, "description": "Disable context condensing (use all files)", "example": "codex --full-context \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "no-project-doc", "shorthand": null, "description": "Skip reading project docs (README, CONTRIBUTING)", "example": "codex --no-project-doc \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "include-hidden", "shorthand": null, "description": "Include hidden files/folders", "example": "codex --include-hidden \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "notify", "shorthand": null, "description": "Desktop notification when finished", "example": "codex --notify \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "timeout", "shorthand": null, "description": "Max execution time in seconds", "example": "codex --timeout 300", "added": "1.0.0", "deprecated": null },
+    { "name": "max-turns", "shorthand": null, "description": "Limit agentic turns", "example": "codex --max-turns 20", "added": "1.0.0", "deprecated": null },
+    { "name": "sandbox", "shorthand": null, "description": "Force sandbox mode (default in full-auto)", "example": "codex --sandbox \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "no-sandbox", "shorthand": null, "description": "Disable sandbox (use carefully!)", "example": "codex --no-sandbox \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "verbose", "shorthand": null, "description": "Show detailed logs", "example": "codex --verbose \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "debug", "shorthand": null, "description": "Debug mode (very verbose)", "example": "codex --debug \"query\"", "added": "1.0.0", "deprecated": null }
+  ],
+  "slashCommands": [],
+  "config": [
+    { "key": "OPENAI_API_KEY", "description": "OpenAI API key", "required": false, "type": "env" },
+    { "key": "ANTHROPIC_API_KEY", "description": "Anthropic API key", "required": false, "type": "env" },
+    { "key": "CODEX_HOME", "description": "Config directory override", "required": false, "type": "env" },
+    { "key": "CODEX_APPROVAL_MODE", "description": "Default approval mode", "required": false, "type": "env" },
+    { "key": "CODEX_MODEL", "description": "Default model", "required": false, "type": "env" },
+    { "key": "model", "description": "Model name (o4-mini, gpt-4-turbo, etc)", "required": false, "type": "config.yaml" },
+    { "key": "provider", "description": "Provider (openai, anthropic, azure, local)", "required": false, "type": "config.yaml" },
+    { "key": "approval_mode", "description": "suggest, auto-edit, or full-auto", "required": false, "type": "config.yaml" },
+    { "key": "max_turns", "description": "Maximum agentic turns", "required": false, "type": "config.yaml" },
+    { "key": "timeout", "description": "Max execution time in seconds", "required": false, "type": "config.yaml" },
+    { "key": "sandbox_enabled", "description": "Enable sandbox (true/false)", "required": false, "type": "config.yaml" }
+  ],
+  "workflows": [
+    {
+      "title": "Suggest → Auto-Edit → Full-Auto Escalation",
+      "description": "Start safe, gradually escalate approval mode as confidence grows",
+      "steps": [
+        "Start with `suggest` mode for risky changes",
+        "Review each proposed edit carefully",
+        "Switch to `auto-edit` for file changes, still approve shell commands",
+        "Graduate to `full-auto` only for trusted, well-tested tasks",
+        "Always use version control (git) to rollback if needed"
+      ]
+    },
+    {
+      "title": "Multi-File Refactoring",
+      "description": "Refactor code across multiple files with file glob patterns",
+      "steps": [
+        "Run `codex --files \"src/**/*.ts\" \"refactor to use const instead of let\"`",
+        "Codex finds all matching files and includes them in context",
+        "Review proposed changes across all files",
+        "Accept or reject changes per file",
+        "Run tests to verify refactoring worked"
+      ]
+    },
+    {
+      "title": "Batch Processing Script",
+      "description": "Automate repetitive tasks across multiple files",
+      "steps": [
+        "Create script with loop: `for file in src/**/*.ts`",
+        "Run `codex --quiet --full-auto \"add JSDoc to $file\" >> log.txt`",
+        "Sandbox ensures each task can't affect system",
+        "Results logged for review",
+        "Perfect for bulk migrations or documentation"
+      ]
+    },
+    {
+      "title": "CI/CD Integration",
+      "description": "Use codex in CI pipeline to auto-fix failing tests",
+      "steps": [
+        "On CI failure, run `codex --full-auto --sandbox \"fix the failing tests\"`",
+        "Sandbox prevents network access, keeps it safe",
+        "Output diff for review",
+        "Optionally auto-commit if changes look good"
+      ]
+    }
+  ],
+  "proTips": [
+    "Use `o4-mini` for simple tasks (fast and cheap)",
+    "Use `claude-3.5-sonnet` for complex refactors",
+    "Start with `suggest` mode and gradually escalate to `full-auto`",
+    "Always use `--sandbox` with `full-auto` to prevent accidental damage",
+    "Limit context with `--files` glob patterns to only relevant files",
+    "Use `--full-context` only for small projects (includes all files)",
+    "Set `--max-turns` to prevent infinite loops in agentic mode",
+    "Use `--notify` for long-running tasks to get desktop alert when done",
+    "Use `--quiet --json` for scripting and CI/CD integration",
+    "Check `--no-sandbox` changes very carefully before accepting",
+    "Review multimodal support: pipe screenshots directly: `codex \"describe this\" < screenshot.png`",
+    "Use `codex config` commands to set defaults instead of flags every time"
+  ],
+  "resources": [
+    { "title": "Official Docs", "url": "https://codex-cli.dev/docs" },
+    { "title": "GitHub Repository", "url": "https://github.com/codex-cli/codex" },
+    { "title": "Examples", "url": "https://codex-cli.dev/examples" },
+    { "title": "Discord Community", "url": "https://discord.gg/codex-cli" },
+    { "title": "Changelogs", "url": "https://changelogs.info/tools/codex-cli" }
+  ]
+}

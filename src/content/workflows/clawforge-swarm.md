@@ -3,7 +3,7 @@ title: ClawForge Swarm — Parallel Multi-Agent Orchestration
 category: orchestration
 tools: [claude-code, codex-cli]
 difficulty: advanced
-lastUpdated: 2026-03-14
+lastUpdated: "2026-03-14"
 source: https://github.com/cyperx84/clawforge
 ---
 

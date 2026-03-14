@@ -3,7 +3,7 @@ title: ClawForge Review — Multi-Model PR Quality Gate
 category: review
 tools: [claude-code, codex-cli, gemini-cli]
 difficulty: beginner
-lastUpdated: 2026-03-14
+lastUpdated: "2026-03-14"
 source: https://github.com/cyperx84/clawforge
 ---
 

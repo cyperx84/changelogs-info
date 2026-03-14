@@ -1,0 +1,111 @@
+{
+  "tool": "openclaw",
+  "lastUpdated": "2026-03-14",
+  "cliFlags": [
+    { "name": "onboard", "shorthand": null, "description": "Guided first-time setup", "example": "openclaw onboard", "added": "1.0.0", "deprecated": null },
+    { "name": "status", "shorthand": null, "description": "Show system health status", "example": "openclaw status", "added": "1.0.0", "deprecated": null },
+    { "name": "doctor", "shorthand": null, "description": "Diagnose system issues", "example": "openclaw doctor", "added": "1.0.0", "deprecated": null },
+    { "name": "config", "shorthand": null, "description": "View/set configuration", "example": "openclaw config", "added": "1.0.0", "deprecated": null },
+    { "name": "logs", "shorthand": null, "description": "View system logs", "example": "openclaw logs --level error", "added": "1.0.0", "deprecated": null },
+    { "name": "gateway start", "shorthand": null, "description": "Start gateway service", "example": "openclaw gateway start", "added": "1.0.0", "deprecated": null },
+    { "name": "gateway stop", "shorthand": null, "description": "Stop gateway service", "example": "openclaw gateway stop", "added": "1.0.0", "deprecated": null },
+    { "name": "gateway restart", "shorthand": null, "description": "Restart gateway service", "example": "openclaw gateway restart", "added": "1.0.0", "deprecated": null },
+    { "name": "gateway status", "shorthand": null, "description": "Check gateway status", "example": "openclaw gateway status", "added": "1.0.0", "deprecated": null }
+  ],
+  "slashCommands": [
+    { "name": "/status", "description": "Show session info, model, usage, time", "example": "/status", "added": "1.0.0", "category": "core" },
+    { "name": "/help", "description": "List all slash commands", "example": "/help", "added": "1.0.0", "category": "core" },
+    { "name": "/clear", "description": "Clear conversation context", "example": "/clear", "added": "1.0.0", "category": "core" },
+    { "name": "/reset", "description": "Full session reset", "example": "/reset", "added": "1.0.0", "category": "core" },
+    { "name": "/model", "description": "Switch model for this session", "example": "/model opus", "added": "1.0.0", "category": "config" },
+    { "name": "/context", "description": "Show context window usage", "example": "/context", "added": "1.0.0", "category": "config" },
+    { "name": "/reasoning", "description": "Toggle reasoning mode on/off", "example": "/reasoning", "added": "1.0.0", "category": "config" },
+    { "name": "/verbose", "description": "Toggle verbose tool output", "example": "/verbose", "added": "1.0.0", "category": "config" }
+  ],
+  "config": [
+    { "key": "ANTHROPIC_API_KEY", "description": "Anthropic API key for Claude models", "required": true, "type": "env" },
+    { "key": "OPENAI_API_KEY", "description": "OpenAI API key for GPT models", "required": false, "type": "env" },
+    { "key": "GOOGLE_API_KEY", "description": "Google API key for Gemini models", "required": false, "type": "env" },
+    { "key": "DISCORD_BOT_TOKEN", "description": "Discord bot token for channel plugin", "required": false, "type": "env" },
+    { "key": "TELEGRAM_BOT_TOKEN", "description": "Telegram bot token for channel plugin", "required": false, "type": "env" },
+    { "key": "gateway.port", "description": "Gateway service port (default: 8080)", "required": false, "type": "config.yaml" },
+    { "key": "models.default", "description": "Default model for all sessions", "required": false, "type": "config.yaml" },
+    { "key": "models.aliases", "description": "Short names for model overrides", "required": false, "type": "config.yaml" },
+    { "key": "channels", "description": "Enabled channel plugins (Discord, Telegram, etc)", "required": false, "type": "config.yaml" }
+  ],
+  "workflows": [
+    {
+      "title": "Multi-Channel Message Routing",
+      "description": "Send same message to multiple channels simultaneously",
+      "steps": [
+        "Configure channels in gateway config.yaml",
+        "Use `message({ action: \"send\", channel: \"discord\", target: \"#general\", message: \"...\" })`",
+        "Message routes through appropriate plugin",
+        "Can target specific channels, users, or threads"
+      ]
+    },
+    {
+      "title": "Agent Orchestration with Teams",
+      "description": "Spawn parallel agents for different tasks",
+      "steps": [
+        "Use `sessions_spawn()` to create subagents",
+        "Set mode to 'run' for one-shot or 'session' for persistent",
+        "Assign labels like 'builder', 'reviewer', etc",
+        "Use `sessions_send()` for inter-agent communication",
+        "Monitor with `sessions_list()`"
+      ]
+    },
+    {
+      "title": "Cron-Based Automations",
+      "description": "Schedule tasks to run on a recurring basis",
+      "steps": [
+        "Define cron jobs in config.yaml with schedule and task",
+        "Use cron syntax: '0 9 * * 1-5' for weekdays at 9am",
+        "Tasks are dispatched to the gateway on schedule",
+        "Results sent to configured channel (Discord, Telegram, etc)",
+        "Check HEARTBEAT.md for periodic health checks"
+      ]
+    },
+    {
+      "title": "Memory-Driven Agent Decisions",
+      "description": "Use persistent memory to inform agent behavior",
+      "steps": [
+        "Before answering, run `memory_search({ query: \"topic\" })`",
+        "Read relevant memory entries from MEMORY.md or daily logs",
+        "Use memory context in decision-making",
+        "After task, update memory with new facts/decisions",
+        "Keep entries concise for semantic search"
+      ]
+    },
+    {
+      "title": "Skill Extension via ClawHub",
+      "description": "Install and manage skills to extend capabilities",
+      "steps": [
+        "Run `clawhub search \"keyword\"` to find skills",
+        "Install with `clawhub install skill-name`",
+        "Update all skills: `clawhub sync`",
+        "Skills appear as commands in agent sessions",
+        "Check SKILL.md files to understand skill capabilities"
+      ]
+    }
+  ],
+  "proTips": [
+    "Use model aliases to quickly switch between fast (Gemini) and quality (Opus) models",
+    "Set up daily Cron jobs to monitor GitHub activity, budget, or project status",
+    "Use memory_search before answering questions about prior work—don't rely on context alone",
+    "Configure heartbeat tasks in HEARTBEAT.md to keep agents responsive to incoming messages",
+    "Use MCP servers (filesystem, github, postgres) to extend agent capabilities",
+    "Set up Discord threads for agent conversations to keep chat organized",
+    "Use `--no-sandbox` carefully—only in controlled, trusted environments",
+    "Monitor agent logs with `openclaw logs` to debug issues",
+    "Create custom agent identities with SOUL.md for personality consistency",
+    "Use message reactions to gather user feedback on agent outputs"
+  ],
+  "resources": [
+    { "title": "Official Docs", "url": "https://docs.openclaw.ai" },
+    { "title": "GitHub Repository", "url": "https://github.com/openclaw/openclaw" },
+    { "title": "ClawHub Skills", "url": "https://clawhub.com" },
+    { "title": "Discord Community", "url": "https://discord.com/invite/clawd" },
+    { "title": "Changelogs", "url": "https://changelogs.info/tools/openclaw" }
+  ]
+}

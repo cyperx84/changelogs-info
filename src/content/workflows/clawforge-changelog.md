@@ -3,7 +3,7 @@ title: ClawForge Changelog — Auto-Updating Reference Files
 category: maintenance
 tools: [clwatch]
 difficulty: beginner
-lastUpdated: 2026-03-14
+lastUpdated: "2026-03-14"
 source: https://github.com/cyperx84/clawforge
 ---
 

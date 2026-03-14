@@ -5,12 +5,13 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 export function getStaticPaths() {
-  const cheatsheetsDir = join(process.cwd(), "src/content/cheatsheets");
+  const cheatsheetsDir = join(process.cwd(), "src/content/cheatsheets-json");
   const tools = getTools();
+
   return tools
     .filter((t) => {
       try {
-        readFileSync(join(cheatsheetsDir, `${t.id}.md`), "utf-8");
+        readFileSync(join(cheatsheetsDir, `${t.id}.json`), "utf-8");
         return true;
       } catch {
         return false;
@@ -20,76 +21,32 @@ export function getStaticPaths() {
 }
 
 const { tool } = Astro.props;
-const cheatsheetsDir = join(process.cwd(), "src/content/cheatsheets");
-const raw = readFileSync(join(cheatsheetsDir, `${tool.id}.md`), "utf-8");
-const content = raw.replace(/^---[\s\S]*?---\n*/, "");
+const cheatsheetsDir = join(process.cwd(), "src/content/cheatsheets-json");
+const raw = readFileSync(join(cheatsheetsDir, `${tool.id}.json`), "utf-8");
+const cheatsheet = JSON.parse(raw);
 
-function cheatsheetMd(md: string): string {
-  let html = md
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+// Detect new items in the last 30 days
+const thirtyDaysAgo = new Date();
+thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-  // code blocks
-  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_m, _lang, code) => {
-    return `<pre><code>${code.trim()}</code></pre>`;
-  });
+const newFlags = cheatsheet.cliFlags?.filter((f: any) => {
+  const addedDate = new Date(f.added + "T00:00:00Z");
+  return addedDate > thirtyDaysAgo;
+}) || [];
 
-  // tables
-  html = html.replace(
-    /^(\|.+\|)\n(\|[\s:|-]+\|)\n((?:\|.+\|\n?)+)/gm,
-    (_m, header, _sep, body) => {
-      const ths = header.split("|").filter(Boolean).map((c: string) => `<th>${c.trim()}</th>`).join("");
-      const rows = body.trim().split("\n").map((row: string) => {
-        const tds = row.split("|").filter(Boolean).map((c: string) => `<td>${c.trim()}</td>`).join("");
-        return `<tr>${tds}</tr>`;
-      }).join("");
-      return `<table><thead><tr>${ths}</tr></thead><tbody>${rows}</tbody></table>`;
-    }
-  );
+const newCommands = cheatsheet.slashCommands?.filter((c: any) => {
+  const addedDate = new Date(c.added + "T00:00:00Z");
+  return addedDate > thirtyDaysAgo;
+}) || [];
 
-  // inline code (after tables so backticks in table cells work)
-  html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
-
-  // headers
-  html = html.replace(/^### (.+)$/gm, "<h3>$1</h3>");
-  html = html.replace(/^## (.+)$/gm, "<h2>$1</h2>");
-  html = html.replace(/^# (.+)$/gm, "<h1>$1</h1>");
-
-  // bold/italic
-  html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-  html = html.replace(/\*(.+?)\*/g, "<em>$1</em>");
-
-  // lists
-  html = html.replace(/^[-*] (.+)$/gm, "<li>$1</li>");
-  html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, "<ul>$1</ul>");
-
-  // paragraphs
-  html = html
-    .split("\n\n")
-    .map((block) => {
-      const t = block.trim();
-      if (!t) return "";
-      if (/^<[a-z]/.test(t)) return t;
-      return `<p>${t}</p>`;
-    })
-    .join("\n");
-
-  html = html
-    .replace(/<p><(h[1-3]|ul|ol|pre|blockquote|hr|table)/g, "<$1")
-    .replace(/<\/(h[1-3]|ul|ol|pre|blockquote|table)><\/p>/g, "</$1>");
-
-  return html;
-}
-
-const bodyHtml = cheatsheetMd(content);
+const hasWhatsnew = newFlags.length > 0 || newCommands.length > 0;
 ---
 
 <BaseLayout
   title={`${tool.name} Cheat Sheet — changelogs.info`}
   description={`Quick reference cheat sheet for ${tool.name}`}
 >
-  <div class="mx-auto max-w-4xl px-6 py-12">
+  <div class="mx-auto max-w-6xl px-6 py-12">
     <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
       <a href={`/tools/${tool.id}`} class="inline-flex items-center gap-1 text-sm text-text-muted transition-colors hover:text-accent">
         &larr; {tool.name}
@@ -98,43 +55,246 @@ const bodyHtml = cheatsheetMd(content);
         <button
           id="copy-btn"
           class="rounded border border-border bg-bg-tertiary px-3 py-2 font-mono text-xs text-text-secondary transition-all hover:border-green hover:text-green"
-          data-content={content}
+          data-content={JSON.stringify(cheatsheet, null, 2)}
         >
-          <span id="copy-label">copy markdown</span>
+          <span id="copy-label">copy json</span>
         </button>
         <a
-          href={`/cheatsheets/${tool.id}.md`}
-          download={`${tool.id}-cheatsheet.md`}
+          href={`/cheatsheets-json/${tool.id}.json`}
+          download={`${tool.id}-cheatsheet.json`}
           class="rounded border border-border bg-bg-tertiary px-3 py-2 font-mono text-xs text-text-secondary transition-all hover:border-green hover:text-green"
         >
-          download .md
+          download .json
         </a>
       </div>
     </div>
 
-    <div class="cheatsheet-body" set:html={bodyHtml} />
+    {hasWhatsnew && (
+      <div class="mb-8 rounded-lg border border-green/30 bg-green/5 p-6">
+        <h2 class="mb-4 flex items-center gap-2 text-lg font-semibold text-green">
+          <span>✨</span> What's New (Last 30 Days)
+        </h2>
+        <div class="grid gap-6 md:grid-cols-2">
+          {newFlags.length > 0 && (
+            <div>
+              <h3 class="mb-2 font-semibold text-text-primary">New Flags</h3>
+              <ul class="space-y-2 text-sm">
+                {newFlags.map((flag: any) => (
+                  <li class="text-text-secondary">
+                    <code class="text-green font-mono">{flag.shorthand ? `-${flag.shorthand}, --${flag.name}` : `--${flag.name}`}</code>
+                    <p class="mt-1 text-text-muted">{flag.description}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {newCommands.length > 0 && (
+            <div>
+              <h3 class="mb-2 font-semibold text-text-primary">New Commands</h3>
+              <ul class="space-y-2 text-sm">
+                {newCommands.map((cmd: any) => (
+                  <li class="text-text-secondary">
+                    <code class="text-accent font-mono">{cmd.name}</code>
+                    <p class="mt-1 text-text-muted">{cmd.description}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      </div>
+    )}
+
+    {cheatsheet.cliFlags && cheatsheet.cliFlags.length > 0 && (
+      <div class="mb-8">
+        <div class="mb-4 flex items-center justify-between">
+          <h2 class="text-2xl font-bold text-text-primary">CLI Flags & Options</h2>
+          <input
+            type="text"
+            id="flagsSearch"
+            placeholder="Search flags..."
+            class="rounded border border-border bg-bg-tertiary px-3 py-2 font-mono text-sm text-text-secondary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+          />
+        </div>
+        <div class="overflow-x-auto rounded-lg border border-border">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border bg-bg-tertiary">
+                <th class="px-4 py-3 text-left font-semibold text-text-primary">Flag</th>
+                <th class="px-4 py-3 text-left font-semibold text-text-primary">Short</th>
+                <th class="px-4 py-3 text-left font-semibold text-text-primary">Description</th>
+                <th class="px-4 py-3 text-left font-semibold text-text-primary">Example</th>
+                <th class="px-4 py-3 text-left font-semibold text-text-primary">Added</th>
+              </tr>
+            </thead>
+            <tbody>
+              {cheatsheet.cliFlags.map((flag: any) => (
+                <tr class="border-b border-border hover:bg-bg-tertiary/50 transition-colors flag-row" data-searchable={`${flag.name} ${flag.shorthand || ''} ${flag.description}`.toLowerCase()}>
+                  <td class="px-4 py-3 font-mono text-accent">{flag.shorthand ? `-${flag.shorthand}, --${flag.name}` : `--${flag.name}`}</td>
+                  <td class="px-4 py-3 font-mono text-text-muted">{flag.shorthand || '—'}</td>
+                  <td class="px-4 py-3 text-text-secondary max-w-xs">{flag.description}</td>
+                  <td class="px-4 py-3 font-mono text-text-muted text-xs">{flag.example}</td>
+                  <td class="px-4 py-3 text-text-muted text-xs">{flag.added}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    )}
+
+    {cheatsheet.slashCommands && cheatsheet.slashCommands.length > 0 && (
+      <div class="mb-8">
+        <div class="mb-4 flex items-center justify-between">
+          <h2 class="text-2xl font-bold text-text-primary">Commands</h2>
+          <input
+            type="text"
+            id="commandsSearch"
+            placeholder="Search commands..."
+            class="rounded border border-border bg-bg-tertiary px-3 py-2 font-mono text-sm text-text-secondary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+          />
+        </div>
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {cheatsheet.slashCommands.map((cmd: any) => (
+            <div class="rounded-lg border border-border p-4 hover:border-accent transition-colors command-card" data-searchable={`${cmd.name} ${cmd.description}`.toLowerCase()}>
+              <div class="mb-2 flex items-start justify-between">
+                <code class="font-mono text-accent font-semibold">{cmd.name}</code>
+                {cmd.category && <span class="rounded bg-bg-tertiary px-2 py-1 text-xs text-text-muted">{cmd.category}</span>}
+              </div>
+              <p class="mb-3 text-sm text-text-secondary">{cmd.description}</p>
+              <code class="block bg-bg-tertiary/50 rounded p-2 font-mono text-xs text-text-muted overflow-x-auto">{cmd.example}</code>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {cheatsheet.config && cheatsheet.config.length > 0 && (
+      <div class="mb-8">
+        <h2 class="mb-4 text-2xl font-bold text-text-primary">Configuration</h2>
+        <div class="overflow-x-auto rounded-lg border border-border">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border bg-bg-tertiary">
+                <th class="px-4 py-3 text-left font-semibold text-text-primary">Key</th>
+                <th class="px-4 py-3 text-left font-semibold text-text-primary">Type</th>
+                <th class="px-4 py-3 text-left font-semibold text-text-primary">Description</th>
+                <th class="px-4 py-3 text-left font-semibold text-text-primary">Required</th>
+              </tr>
+            </thead>
+            <tbody>
+              {cheatsheet.config.map((cfg: any) => (
+                <tr class="border-b border-border hover:bg-bg-tertiary/50 transition-colors">
+                  <td class="px-4 py-3 font-mono text-accent">{cfg.key}</td>
+                  <td class="px-4 py-3 font-mono text-text-muted text-xs">{cfg.type}</td>
+                  <td class="px-4 py-3 text-text-secondary">{cfg.description}</td>
+                  <td class="px-4 py-3 text-text-muted">{cfg.required ? '✓' : '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    )}
+
+    {cheatsheet.workflows && cheatsheet.workflows.length > 0 && (
+      <div class="mb-8">
+        <h2 class="mb-4 text-2xl font-bold text-text-primary">Workflows</h2>
+        <div class="space-y-4">
+          {cheatsheet.workflows.map((workflow: any, idx: number) => (
+            <details class="rounded-lg border border-border p-4 group hover:border-accent transition-colors">
+              <summary class="flex cursor-pointer items-center justify-between font-semibold text-text-primary hover:text-accent transition-colors">
+                <span>{workflow.title}</span>
+                <span class="transition-transform group-open:rotate-180">▼</span>
+              </summary>
+              <div class="mt-4 space-y-3 text-sm text-text-secondary border-t border-border pt-4">
+                <p>{workflow.description}</p>
+                <ol class="ml-4 space-y-2 list-decimal">
+                  {workflow.steps.map((step: string) => (
+                    <li>{step}</li>
+                  ))}
+                </ol>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {cheatsheet.proTips && cheatsheet.proTips.length > 0 && (
+      <div class="mb-8 rounded-lg border border-yellow/30 bg-yellow/5 p-6">
+        <h2 class="mb-4 flex items-center gap-2 text-lg font-semibold text-yellow">
+          <span>💡</span> Pro Tips
+        </h2>
+        <ul class="grid gap-3 md:grid-cols-2">
+          {cheatsheet.proTips.map((tip: string) => (
+            <li class="flex gap-3 text-sm text-text-secondary">
+              <span class="text-yellow">•</span>
+              <span>{tip}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+
+    {cheatsheet.resources && cheatsheet.resources.length > 0 && (
+      <div class="mb-8">
+        <h2 class="mb-4 text-2xl font-bold text-text-primary">Resources</h2>
+        <div class="grid gap-3 md:grid-cols-2">
+          {cheatsheet.resources.map((res: any) => (
+            <a href={res.url} target="_blank" rel="noopener noreferrer" class="rounded-lg border border-border p-4 hover:border-accent transition-colors hover:bg-bg-tertiary/50">
+              <div class="font-semibold text-accent">{res.title}</div>
+              <div class="mt-1 text-xs text-text-muted break-all">{res.url}</div>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
   </div>
 </BaseLayout>
 
-
 <script>
+  // Copy to clipboard
   const btn = document.getElementById('copy-btn');
   const label = document.getElementById('copy-label');
   if (btn && label) {
     btn.addEventListener('click', async () => {
-      const md = btn.getAttribute('data-content') || '';
+      const json = btn.getAttribute('data-content') || '';
       try {
-        await navigator.clipboard.writeText(md);
+        await navigator.clipboard.writeText(json);
         label.textContent = 'copied!';
         btn.classList.add('border-green', 'text-green');
         setTimeout(() => {
-          label.textContent = 'copy markdown';
+          label.textContent = 'copy json';
           btn.classList.remove('border-green', 'text-green');
         }, 2000);
       } catch {
         label.textContent = 'failed';
-        setTimeout(() => { label.textContent = 'copy markdown'; }, 2000);
+        setTimeout(() => { label.textContent = 'copy json'; }, 2000);
       }
+    });
+  }
+
+  // Search functionality
+  const flagsSearch = document.getElementById('flagsSearch');
+  if (flagsSearch) {
+    flagsSearch.addEventListener('input', (e) => {
+      const query = (e.target as HTMLInputElement).value.toLowerCase();
+      document.querySelectorAll('.flag-row').forEach((row) => {
+        const searchable = row.getAttribute('data-searchable') || '';
+        row.style.display = searchable.includes(query) ? '' : 'none';
+      });
+    });
+  }
+
+  const commandsSearch = document.getElementById('commandsSearch');
+  if (commandsSearch) {
+    commandsSearch.addEventListener('input', (e) => {
+      const query = (e.target as HTMLInputElement).value.toLowerCase();
+      document.querySelectorAll('.command-card').forEach((card) => {
+        const searchable = card.getAttribute('data-searchable') || '';
+        card.style.display = searchable.includes(query) ? '' : 'none';
+      });
     });
   }
 </script>
@@ -144,13 +304,7 @@ const bodyHtml = cheatsheetMd(content);
   .cheatsheet-body h2 { font-size: 1.25rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--color-text-primary); }
   .cheatsheet-body h3 { font-size: 1.1rem; font-weight: 600; margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--color-text-primary); }
   .cheatsheet-body p { margin-bottom: 0.75rem; line-height: 1.7; color: var(--color-text-secondary); }
-  .cheatsheet-body table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
-  .cheatsheet-body th { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--color-border); color: var(--color-text-primary); font-size: 0.875rem; }
-  .cheatsheet-body td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary); font-size: 0.875rem; }
-  .cheatsheet-body tr:hover td { background: var(--color-bg-tertiary); }
   .cheatsheet-body code { background: var(--color-bg-tertiary); padding: 0.15em 0.4em; border-radius: 4px; font-family: var(--font-mono); font-size: 0.875em; }
   .cheatsheet-body pre { background: var(--color-bg-tertiary); padding: 1rem; border-radius: 8px; overflow-x: auto; margin-bottom: 1rem; }
   .cheatsheet-body pre code { background: none; padding: 0; }
-  .cheatsheet-body ul { list-style: disc; padding-left: 1.5rem; margin-bottom: 0.75rem; }
-  .cheatsheet-body li { margin-bottom: 0.25rem; line-height: 1.6; color: var(--color-text-secondary); }
 </style>

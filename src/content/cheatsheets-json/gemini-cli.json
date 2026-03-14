@@ -1,0 +1,95 @@
+{
+  "tool": "gemini-cli",
+  "lastUpdated": "2026-03-14",
+  "cliFlags": [
+    { "name": "model", "shorthand": null, "description": "Choose model (gemini-pro, gemini-pro-vision, gemini-ultra)", "example": "gemini --model gemini-pro", "added": "1.0.0", "deprecated": null },
+    { "name": "model-version", "shorthand": null, "description": "Specific version (e.g., gemini-1.5-pro)", "example": "gemini --model-version gemini-1.5-pro", "added": "1.0.0", "deprecated": null },
+    { "name": "file", "shorthand": "f", "description": "Include file(s) in context (supports globs)", "example": "gemini -f *.ts \"find bugs\"", "added": "1.0.0", "deprecated": null },
+    { "name": "json", "shorthand": null, "description": "Output in JSON format", "example": "gemini --json \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "stream", "shorthand": null, "description": "Stream response tokens (default)", "example": "gemini --stream \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "no-stream", "shorthand": null, "description": "Wait for complete response", "example": "gemini --no-stream \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "output", "shorthand": null, "description": "Write response to file", "example": "gemini --output result.txt \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "temperature", "shorthand": null, "description": "Creativity control (0=focused, 1=creative)", "example": "gemini --temperature 0.5 \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "top-p", "shorthand": null, "description": "Nucleus sampling threshold (0-1)", "example": "gemini --top-p 0.9 \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "top-k", "shorthand": null, "description": "Top-k sampling limit", "example": "gemini --top-k 40 \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "max-tokens", "shorthand": null, "description": "Maximum response length", "example": "gemini --max-tokens 1000 \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "system", "shorthand": null, "description": "System instruction/persona", "example": "gemini --system \"You are a code expert\" \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "api-key", "shorthand": null, "description": "Override API key (instead of env var)", "example": "gemini --api-key YOUR-KEY \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "timeout", "shorthand": null, "description": "Request timeout in milliseconds", "example": "gemini --timeout 30000 \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "verbose", "shorthand": null, "description": "Show debug information", "example": "gemini --verbose \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "no-color", "shorthand": null, "description": "Disable colored output", "example": "gemini --no-color \"query\"", "added": "1.0.0", "deprecated": null },
+    { "name": "help", "shorthand": null, "description": "Show help message", "example": "gemini --help", "added": "1.0.0", "deprecated": null }
+  ],
+  "slashCommands": [],
+  "config": [
+    { "key": "GEMINI_API_KEY", "description": "Google API key for authentication", "required": true, "type": "env" },
+    { "key": "model", "description": "Default model to use", "required": false, "type": "env" },
+    { "key": "temperature", "description": "Default creativity setting", "required": false, "type": "env" }
+  ],
+  "workflows": [
+    {
+      "title": "File Analysis with Context",
+      "description": "Analyze multiple files by including them in context",
+      "steps": [
+        "Run `gemini -f src/**/*.ts \"find all bugs\"`",
+        "Gemini includes all matching TypeScript files",
+        "Gets holistic view of codebase",
+        "Returns analysis of patterns and issues",
+        "Perfect for security reviews or refactoring"
+      ]
+    },
+    {
+      "title": "Batch Processing with JSON Output",
+      "description": "Process multiple files and parse JSON output",
+      "steps": [
+        "Run `gemini --json -f file.ts \"extract functions\"`",
+        "Gemini returns structured JSON",
+        "Pipe to `jq` for filtering: `| jq '.functions'`",
+        "Great for scripting and automation",
+        "Can feed into other tools"
+      ]
+    },
+    {
+      "title": "Interactive Chat Session",
+      "description": "Have a multi-turn conversation",
+      "steps": [
+        "Run `gemini chat` to start interactive mode",
+        "Ask questions about code or get help",
+        "Continue conversation naturally",
+        "Context persists across turns",
+        "Exit with Ctrl+C"
+      ]
+    },
+    {
+      "title": "Model Exploration",
+      "description": "List available models and choose the right one",
+      "steps": [
+        "Run `gemini models` to see available models",
+        "Use gemini-pro for text tasks",
+        "Use gemini-pro-vision for image analysis",
+        "Use gemini-ultra for complex reasoning",
+        "Compare model outputs: `gemini --model gemini-pro` vs `--model gemini-ultra`"
+      ]
+    }
+  ],
+  "proTips": [
+    "Set GEMINI_API_KEY env var to avoid passing --api-key every time",
+    "Use -f with glob patterns to include multiple files efficiently",
+    "Use --json for scripting and pipeline integration",
+    "Use --stream for real-time output on long responses",
+    "Use --no-stream and redirect to file for batch processing",
+    "Adjust --temperature: lower (0.2) for consistency, higher (0.8) for creativity",
+    "Use --max-tokens to limit response length and costs",
+    "Use --system to give context-specific instructions",
+    "Compare models: gemini-pro (fast), gemini-ultra (most accurate)",
+    "Use --timeout for slow network connections",
+    "Enable --verbose to debug API issues",
+    "Use models command to check latest available models"
+  ],
+  "resources": [
+    { "title": "Official Docs", "url": "https://ai.google.dev/tutorials" },
+    { "title": "GitHub Repository", "url": "https://github.com/google/generative-ai-js" },
+    { "title": "Gemini API Reference", "url": "https://ai.google.dev/api" },
+    { "title": "Changelogs Tracking", "url": "https://changelogs.info/tools/gemini-cli" }
+  ]
+}

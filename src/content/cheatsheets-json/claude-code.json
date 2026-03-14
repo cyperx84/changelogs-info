@@ -1,0 +1,149 @@
+{
+  "tool": "claude-code",
+  "lastUpdated": "2026-03-14",
+  "cliFlags": [
+    { "name": "print", "shorthand": "p", "description": "Print mode — output and exit", "example": "claude -p \"query\"", "added": "2.0.0", "deprecated": null },
+    { "name": "continue", "shorthand": "c", "description": "Continue last conversation", "example": "claude -c", "added": "2.0.0", "deprecated": null },
+    { "name": "resume", "shorthand": null, "description": "Resume a specific session by ID", "example": "claude --resume <id>", "added": "2.0.0", "deprecated": null },
+    { "name": "model", "shorthand": null, "description": "Specify model (sonnet/opus/haiku)", "example": "claude --model opus", "added": "2.0.0", "deprecated": null },
+    { "name": "allowedTools", "shorthand": null, "description": "Whitelist specific tools", "example": "claude --allowedTools Read,Write", "added": "2.0.0", "deprecated": null },
+    { "name": "forbiddenTools", "shorthand": null, "description": "Blacklist specific tools", "example": "claude --forbiddenTools Bash", "added": "2.0.0", "deprecated": null },
+    { "name": "agents", "shorthand": null, "description": "Load custom agent definitions", "example": "claude --agents ./agents/", "added": "2.1.0", "deprecated": null },
+    { "name": "json-schema", "shorthand": null, "description": "Output JSON schema for responses", "example": "claude --json-schema", "added": "2.1.0", "deprecated": null },
+    { "name": "fallback-model", "shorthand": null, "description": "Model to use if primary fails", "example": "claude --fallback-model haiku", "added": "2.1.0", "deprecated": null },
+    { "name": "max-budget-usd", "shorthand": null, "description": "Hard stop at dollar limit", "example": "claude --max-budget-usd 10", "added": "2.1.0", "deprecated": null },
+    { "name": "max-turns", "shorthand": null, "description": "Limit agentic turns (default: 100)", "example": "claude --max-turns 50", "added": "2.0.0", "deprecated": null },
+    { "name": "remote", "shorthand": null, "description": "Connect to remote session or dispatch task", "example": "claude --remote \"implement auth\"", "added": "2.1.0", "deprecated": null },
+    { "name": "teleport", "shorthand": null, "description": "Send session to claude.ai/code", "example": "claude --teleport", "added": "2.1.0", "deprecated": null },
+    { "name": "fork-session", "shorthand": null, "description": "Fork from specific session, keep transcript", "example": "claude --fork-session <id>", "added": "2.1.0", "deprecated": null },
+    { "name": "add-dir", "shorthand": null, "description": "Add additional working directory", "example": "claude --add-dir /path", "added": "2.0.0", "deprecated": null },
+    { "name": "init", "shorthand": null, "description": "Run setup hooks only", "example": "claude --init", "added": "2.1.0", "deprecated": null },
+    { "name": "init-only", "shorthand": null, "description": "Setup hooks, then exit", "example": "claude --init-only", "added": "2.1.0", "deprecated": null },
+    { "name": "maintenance", "shorthand": null, "description": "Run maintenance tasks", "example": "claude --maintenance", "added": "2.1.0", "deprecated": null },
+    { "name": "chrome", "shorthand": null, "description": "Enable Chrome MCP plugin", "example": "claude --chrome", "added": "2.1.0", "deprecated": null },
+    { "name": "no-cache", "shorthand": null, "description": "Disable prompt caching", "example": "claude --no-cache", "added": "2.0.0", "deprecated": null },
+    { "name": "verbose", "shorthand": null, "description": "Show full tool calls and debug info", "example": "claude --verbose", "added": "2.0.0", "deprecated": null },
+    { "name": "output-format", "shorthand": null, "description": "Output format (json/text)", "example": "claude --output-format json", "added": "2.0.0", "deprecated": null },
+    { "name": "no-permissions", "shorthand": null, "description": "Use default permissions", "example": "claude --no-permissions", "added": "2.0.0", "deprecated": null },
+    { "name": "dangerously-skip-permissions", "shorthand": null, "description": "Skip all permission prompts (risky!)", "example": "claude --dangerously-skip-permissions", "added": "2.0.0", "deprecated": null }
+  ],
+  "slashCommands": [
+    { "name": "/help", "description": "Show all available commands", "example": "/help", "added": "2.0.0", "category": "core" },
+    { "name": "/clear", "description": "Clear conversation context", "example": "/clear", "added": "2.0.0", "category": "core" },
+    { "name": "/compact", "description": "Compress conversation (reduce tokens)", "example": "/compact", "added": "2.0.0", "category": "core" },
+    { "name": "/cost", "description": "Show token usage and cost", "example": "/cost", "added": "2.0.0", "category": "core" },
+    { "name": "/stats", "description": "Show detailed session statistics", "example": "/stats", "added": "2.1.0", "category": "core" },
+    { "name": "/status", "description": "Show session status", "example": "/status", "added": "2.0.0", "category": "core" },
+    { "name": "/copy", "description": "Copy last response to clipboard", "example": "/copy", "added": "2.0.0", "category": "core" },
+    { "name": "/context", "description": "View current context summary", "example": "/context", "added": "2.1.0", "category": "core" },
+    { "name": "/model", "description": "Switch model mid-conversation", "example": "/model opus", "added": "2.0.0", "category": "config" },
+    { "name": "/permissions", "description": "View and manage permissions", "example": "/permissions", "added": "2.0.0", "category": "config" },
+    { "name": "/keybindings", "description": "Customize keyboard shortcuts", "example": "/keybindings", "added": "2.1.0", "category": "config" },
+    { "name": "/rename", "description": "Rename current session", "example": "/rename my-task", "added": "2.1.0", "category": "config" },
+    { "name": "/feedback", "description": "Send feedback to Anthropic", "example": "/feedback", "added": "2.1.0", "category": "config" },
+    { "name": "/memory", "description": "Edit CLAUDE.md memory file", "example": "/memory", "added": "2.0.0", "category": "files" },
+    { "name": "/cd", "description": "Change working directory", "example": "/cd /path", "added": "2.0.0", "category": "files" },
+    { "name": "/ls", "description": "List files in current directory", "example": "/ls", "added": "2.0.0", "category": "files" },
+    { "name": "/commit", "description": "Commit staged changes with AI message", "example": "/commit", "added": "2.0.0", "category": "git" },
+    { "name": "/pr", "description": "Create a pull request", "example": "/pr", "added": "2.0.0", "category": "git" },
+    { "name": "/review", "description": "Code review current changes", "example": "/review", "added": "2.0.0", "category": "git" },
+    { "name": "/review-pr", "description": "Review a PR by number", "example": "/review-pr 42", "added": "2.0.0", "category": "git" },
+    { "name": "/simplify", "description": "Review and simplify changed code", "example": "/simplify", "added": "2.0.0", "category": "git" },
+    { "name": "/plan", "description": "Enter planning mode (approve before edit)", "example": "/plan", "added": "2.1.0", "category": "advanced" },
+    { "name": "/tasks", "description": "View task list and dependencies", "example": "/tasks", "added": "2.1.0", "category": "advanced" },
+    { "name": "/teleport", "description": "Send session to claude.ai/code", "example": "/teleport", "added": "2.1.0", "category": "advanced" },
+    { "name": "/remote-env", "description": "Connect to remote environment", "example": "/remote-env", "added": "2.1.0", "category": "advanced" },
+    { "name": "/batch", "description": "Execute batch commands from file", "example": "/batch commands.txt", "added": "2.0.0", "category": "advanced" },
+    { "name": "/thinking", "description": "Enable extended thinking for hard problems", "example": "/thinking", "added": "2.1.0", "category": "advanced" }
+  ],
+  "config": [
+    { "key": "CLAUDE_API_KEY", "description": "Anthropic API key for authentication", "required": true, "type": "env" },
+    { "key": "model", "description": "Default model (sonnet/opus/haiku)", "required": false, "type": "settings.json" },
+    { "key": "maxTurns", "description": "Maximum agentic turns", "required": false, "type": "settings.json" },
+    { "key": "permissionMode", "description": "Permission mode (default/auto/bypassPermissions)", "required": false, "type": "settings.json" },
+    { "key": "language", "description": "Language setting (en/es/fr/etc)", "required": false, "type": "settings.json" },
+    { "key": "allowedTools", "description": "List of allowed tools", "required": false, "type": "settings.json" },
+    { "key": "forbiddenTools", "description": "List of forbidden tools", "required": false, "type": "settings.json" }
+  ],
+  "workflows": [
+    {
+      "title": "Quick Code Review",
+      "description": "Review staged changes and auto-commit with AI message",
+      "steps": [
+        "Make code changes in your editor",
+        "Stage changes with git",
+        "Run `/review` to get AI feedback",
+        "Run `/simplify` to optimize code",
+        "Run `/commit` to create AI-generated commit message"
+      ]
+    },
+    {
+      "title": "Feature Development",
+      "description": "Plan, implement, and test a new feature using plan mode",
+      "steps": [
+        "Start Claude Code session",
+        "Run `/plan` to enter plan mode",
+        "Describe feature and review architecture plan",
+        "Approve plan",
+        "Implementation begins automatically",
+        "Run tests and review output",
+        "Run `/pr` to create pull request"
+      ]
+    },
+    {
+      "title": "Multi-Agent Parallel Work",
+      "description": "Coordinate multiple agents to work on different parts of a task",
+      "steps": [
+        "Use `TeamCreate` to form a team",
+        "Create tasks with `TaskCreate`",
+        "Spawn teammates with `Agent` tool",
+        "Assign tasks with `TaskUpdate`",
+        "Teammates communicate via `SendMessage`",
+        "Monitor progress with task list",
+        "Shutdown with `shutdown_request` when complete"
+      ]
+    },
+    {
+      "title": "Remote Task Dispatch",
+      "description": "Dispatch autonomous work to Anthropic cloud",
+      "steps": [
+        "Run `claude --remote \"task description\"`",
+        "Claude executes task on Anthropic servers",
+        "Monitor progress from local terminal",
+        "Results returned to local environment",
+        "Use `/teleport` to move session to claude.ai/code if needed"
+      ]
+    },
+    {
+      "title": "Worktree Experimentation",
+      "description": "Test risky changes in isolated worktrees",
+      "steps": [
+        "User requests: 'work in a worktree'",
+        "Claude creates isolated branch in .claude/worktrees/",
+        "Make experimental changes",
+        "Test thoroughly",
+        "Exit worktree with option to keep or remove"
+      ]
+    }
+  ],
+  "proTips": [
+    "Use `/plan` mode before major refactors to get architecture approval first",
+    "Use `--max-turns` to prevent runaway agentic loops",
+    "Use `/compact` to compress context when approaching token limits",
+    "Prefer `Explore` agent over `general-purpose` for read-only tasks to save tokens",
+    "Create .claude/CLAUDE.md in projects for team-shared instructions",
+    "Use hooks to enforce code style (prettier, eslint) automatically",
+    "Set `--fallback-model` to ensure work continues if primary model is overloaded",
+    "Use `/stats` to debug token usage and understand what's consuming context",
+    "Configure `.claude/keybindings.json` to match your editor (vim, emacs, etc)",
+    "Commit `.claude/CLAUDE.md` to version control for team consistency",
+    "Use `--dangerously-skip-permissions` only in trusted, isolated environments",
+    "Review `.claude/sessions/` transcripts to understand agent decision-making"
+  ],
+  "resources": [
+    { "title": "Official Docs", "url": "https://docs.anthropic.com/en/docs/claude-code" },
+    { "title": "GitHub Releases", "url": "https://github.com/anthropics/claude-code/releases" },
+    { "title": "Changelogs", "url": "https://changelogs.info/tools/claude-code" },
+    { "title": "Discord Community", "url": "https://discord.gg/anthropic" }
+  ]
+}
