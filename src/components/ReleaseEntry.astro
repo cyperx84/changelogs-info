@@ -13,6 +13,10 @@ const versionSlug = encodeURIComponent(release.version.replace(/^v/, ""));
 const bodyHtml = release.body ? markdownToHtml(release.body) : "";
 const borderColor = release.prerelease ? "border-l-amber/40" : "border-l-green/40";
 const markerColor = release.prerelease ? "bg-amber" : "bg-green";
+
+// Detect breaking changes
+const breakingPatterns = /BREAKING|breaking change|removed|deprecated|incompatible|breaking:/i;
+const hasBreaking = release.body ? breakingPatterns.test(release.body) : false;
 // Consider body "long" if raw markdown exceeds ~600 chars
 const isLong = (release.body?.length || 0) > 600;
 const entryId = `release-${release.version.replace(/[^a-zA-Z0-9]/g, "-")}`;
@@ -27,6 +31,11 @@ const entryId = `release-${release.version.replace(/[^a-zA-Z0-9]/g, "-")}`;
     {release.prerelease && (
       <span class="rounded border border-amber bg-amber/10 px-2 py-0.5 font-mono text-xs text-amber">
         pre
+      </span>
+    )}
+    {hasBreaking && (
+      <span class="rounded border border-red-400 bg-red-400/10 px-2 py-0.5 font-mono text-xs text-red-400">
+        BREAKING
       </span>
     )}
     <span class="font-mono text-xs text-text-muted" title={formatDate(release.date)}>
