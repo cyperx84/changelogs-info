@@ -22,7 +22,7 @@ const isLong = (release.body?.length || 0) > 600;
 const entryId = `release-${release.version.replace(/[^a-zA-Z0-9]/g, "-")}`;
 
 // Generate structured summary from release body
-function generateSummary(body: string | null) {
+function generateSummary(body: string | null, isPrerelease: boolean, hasBreakingChanges: boolean) {
   if (!body) return null;
 
   const text = body.toLowerCase();
@@ -68,7 +68,7 @@ function generateSummary(body: string | null) {
     if (text.includes('fix') || text.includes('bug')) whyMatters = "Fixes issues and improves stability";
     else if (text.includes('feature') || text.includes('add')) whyMatters = "Adds new capabilities";
     else if (text.includes('security')) whyMatters = "Addresses security concerns";
-    else if (hasBreaking) whyMatters = "Introduces breaking changes requiring updates";
+    else if (hasBreakingChanges) whyMatters = "Introduces breaking changes requiring updates";
     else whyMatters = "General improvements and updates";
   }
   
@@ -82,11 +82,11 @@ function generateSummary(body: string | null) {
   else if (text.includes('performance')) audience = "Performance-sensitive users";
   else if (text.includes('bug') || text.includes('fix')) audience = "Users affected by bugs";
   else if (text.includes('docs') || text.includes('documentation')) audience = "Documentation readers";
-  else if (release.prerelease) audience = "Early adopters and testers";
+  else if (isPrerelease) audience = "Early adopters and testers";
 
   // Action needed
   let actionNeeded = "No";
-  if (hasBreaking) actionNeeded = "Yes - migration may be required";
+  if (hasBreakingChanges) actionNeeded = "Yes - migration may be required";
   else if (text.includes('security') && text.includes('fix')) actionNeeded = "Yes - update recommended";
   else if (text.includes('critical') || text.includes('urgent')) actionNeeded = "Yes - update ASAP";
   else if (text.includes('deprecated') && !text.includes('removed')) actionNeeded = "Yes - prepare for future changes";
@@ -94,7 +94,7 @@ function generateSummary(body: string | null) {
   return { whatChanged, whyMatters, audience, actionNeeded };
 }
 
-const summary = generateSummary(release.body);
+const summary = generateSummary(release.body, release.prerelease, hasBreaking);
 const summaryId = `summary-${entryId}`;
 ---
 

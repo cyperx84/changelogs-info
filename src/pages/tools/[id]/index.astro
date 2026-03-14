@@ -8,6 +8,20 @@ import { join } from "node:path";
 
 import referrals from "../../../data/referrals.json";
 
+export function getStaticPaths() {
+  const tools = getTools();
+  return tools.map((tool) => ({
+    params: { id: tool.id },
+    props: { tool },
+  }));
+}
+
+interface Props {
+  tool: Tool;
+}
+
+const { tool } = Astro.props;
+
 // Quick Start data per tool
 const quickStartData: Record<string, { install: string; firstCmd: string; docsUrl: string }> = {
   "openclaw": {
@@ -61,22 +75,7 @@ const quickStartData: Record<string, { install: string; firstCmd: string; docsUr
     docsUrl: "https://docs.codeium.com/windsurf",
   },
 };
-
 const quickStart = quickStartData[tool.id];
-
-export function getStaticPaths() {
-  const tools = getTools();
-  return tools.map((tool) => ({
-    params: { id: tool.id },
-    props: { tool },
-  }));
-}
-
-interface Props {
-  tool: Tool;
-}
-
-const { tool } = Astro.props;
 
 let releases: Release[] = [];
 let lastUpdated = "";
@@ -272,6 +271,71 @@ const hasMigration = existsSync(join(process.cwd(), `src/content/migrations/${to
       </div>
     </header>
 
+    <!-- Quick Start section -->
+    {quickStart && (
+      <section class="reveal mb-10">
+        <div class="rounded-lg border border-green/30 bg-bg-card shadow-[0_0_12px_rgba(51,255,51,0.04)]">
+          <div class="flex items-center justify-between border-b border-border px-4 py-2 font-mono text-xs">
+            <span><span class="text-green">●●●</span> <span class="ml-2 text-text-muted">quick start</span></span>
+            <span class="text-text-muted">// get running in 60s</span>
+          </div>
+          <div class="grid gap-4 p-4 sm:grid-cols-2">
+            <!-- Install -->
+            <div>
+              <p class="mb-1.5 font-mono text-[10px] uppercase tracking-wider text-text-muted">install</p>
+              <div class="group relative">
+                <pre class="rounded bg-bg-tertiary px-3 py-2.5 font-mono text-xs text-text-secondary overflow-x-auto"><span class="text-green">$</span> {quickStart.install}</pre>
+                <button
+                  class="copy-btn absolute right-2 top-1.5 rounded border border-border bg-bg-tertiary px-2 py-0.5 font-mono text-[10px] text-text-muted opacity-0 transition-opacity group-hover:opacity-100 hover:border-green hover:text-green"
+                  data-copy={quickStart.install}
+                >copy</button>
+              </div>
+            </div>
+            <!-- First command -->
+            <div>
+              <p class="mb-1.5 font-mono text-[10px] uppercase tracking-wider text-text-muted">first command</p>
+              <div class="group relative">
+                <pre class="rounded bg-bg-tertiary px-3 py-2.5 font-mono text-xs text-text-secondary overflow-x-auto"><span class="text-cyan">$</span> {quickStart.firstCmd}</pre>
+                <button
+                  class="copy-btn absolute right-2 top-1.5 rounded border border-border bg-bg-tertiary px-2 py-0.5 font-mono text-[10px] text-text-muted opacity-0 transition-opacity group-hover:opacity-100 hover:border-cyan hover:text-cyan"
+                  data-copy={quickStart.firstCmd}
+                >copy</button>
+              </div>
+            </div>
+          </div>
+          <!-- Links row -->
+          <div class="flex flex-wrap gap-3 border-t border-border px-4 py-3">
+            {hasCheatsheet && (
+              <a
+                href={`/tools/${tool.id}/cheatsheet`}
+                class="inline-flex items-center gap-1.5 font-mono text-xs text-cyan transition-colors hover:text-cyan/80"
+              >
+                <span>📋</span> cheatsheet →
+              </a>
+            )}
+            <a
+              href={quickStart.docsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1.5 font-mono text-xs text-text-secondary transition-colors hover:text-green"
+            >
+              <span>📖</span> official docs →
+            </a>
+            {tool.website && tool.website !== quickStart.docsUrl && (
+              <a
+                href={tool.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 font-mono text-xs text-text-secondary transition-colors hover:text-green"
+              >
+                <span>🌐</span> website →
+              </a>
+            )}
+          </div>
+        </div>
+      </section>
+    )}
+
     <!-- Releases timeline -->
     <section>
       <div class="reveal mb-6 flex flex-wrap items-center justify-between gap-3">
@@ -341,6 +405,18 @@ const hasMigration = existsSync(join(process.cwd(), `src/content/migrations/${to
           (el as HTMLElement).style.display = textMatch && filterMatch ? '' : 'none';
         });
       }
+
+      // Copy buttons
+      document.querySelectorAll('.copy-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const text = btn.getAttribute('data-copy') || '';
+          navigator.clipboard.writeText(text).then(() => {
+            const orig = btn.textContent;
+            btn.textContent = 'copied!';
+            setTimeout(() => { btn.textContent = orig; }, 1500);
+          });
+        });
+      });
 
       filter?.addEventListener('input', applyFilters);
 
