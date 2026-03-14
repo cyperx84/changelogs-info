@@ -383,6 +383,31 @@ async function main() {
     console.log(`\n🔐 Generated ${checksumCount} payload checksums`);
   }
 
+  // Generate history index
+  try {
+    const historyDir = join(process.cwd(), "public", "api", "history");
+    if (existsSync(historyDir)) {
+      const historyFiles = readdirSync(historyDir).filter(f => f.endsWith(".json") && f !== "index.json");
+      const byTool: Record<string, { version: string; file: string }[]> = {};
+      for (const f of historyFiles) {
+        const parts = f.replace(".json", "").split("-");
+        const version = parts.pop();
+        const tool = parts.join("-");
+        if (tool && version) {
+          if (!byTool[tool]) byTool[tool] = [];
+          byTool[tool].push({ version, file: f });
+        }
+      }
+      writeFileSync(
+        join(historyDir, "index.json"),
+        JSON.stringify({ schema: "clwatch.history.v1", tools: byTool }, null, 2) + "\n"
+      );
+      console.log(`📚 History index: ${Object.keys(byTool).length} tools, ${historyFiles.length} snapshots`);
+    }
+  } catch (err) {
+    console.warn(`⚠️  Failed to generate history index: ${(err as Error).message}`);
+  }
+
   // Exit with code 1 if any tool had errors
   if (summary.errors > 0) {
     process.exit(1);

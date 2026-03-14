@@ -93,3 +93,11 @@ jobs:
                 labels: ['bug', 'pipeline-failure']
               });
             }
+
+      - name: Cleanup old evidence (keep last 7 days)
+        if: success()
+        run: |
+          find data/evidence -name "*.json" -mtime +7 -delete 2>/dev/null || true
+          find data/etags -name "*.etag" -mtime +30 -delete 2>/dev/null || true
+          find public/api/history -name "*.json" -mtime +90 -delete 2>/dev/null || true
+          echo "Cleaned evidence (>7d), etags (>30d), history (>90d)"
