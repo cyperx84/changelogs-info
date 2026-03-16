@@ -6,7 +6,6 @@ import type { Tool, Release, ToolReleases } from "../../../lib/releases";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 
-import referrals from "../../../data/referrals.json";
 
 export function getStaticPaths() {
   const tools = getTools();
@@ -141,15 +140,6 @@ const hasMigration = existsSync(join(process.cwd(), `src/content/migrations/${to
               web
             </a>
           )}
-          {(() => {
-            const ref = (referrals as any)[tool.id];
-            if (!ref) return null;
-            return (
-              <span class="rounded border border-green/20 bg-green/5 px-3 py-1 font-mono text-[10px] text-green sm:text-xs">
-                {ref.pricing?.hasFreeTier ? '✓ free tier' : ref.pricing?.paid || ''}
-              </span>
-            );
-          })()}
         </div>
       </div>
 
@@ -166,26 +156,6 @@ const hasMigration = existsSync(join(process.cwd(), `src/content/migrations/${to
           <span class="text-cyan/60">→</span>
         </a>
       )}
-
-      {/* Get started CTA */}
-      {(() => {
-        const ref = (referrals as any)[tool.id];
-        if (!ref) return null;
-        const url = ref.referral || ref.website;
-        const label = ref.referral ? ref.refLabel : ref.label;
-        return (
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="reveal mt-3 inline-flex items-center gap-2 rounded-lg border border-green/40 bg-green/10 px-4 py-2.5 font-mono text-sm text-green transition-all hover:border-green hover:bg-green/20"
-          >
-            <span>⚡</span>
-            <span>{label}</span>
-            <span class="text-green/60">→</span>
-          </a>
-        );
-      })()}
 
       <!-- Stats bar -->
       {releases.length > 0 && (
