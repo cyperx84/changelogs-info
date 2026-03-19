@@ -1,0 +1,125 @@
+---
+import SectionLayout from "../../layouts/SectionLayout.astro";
+import ReleaseCard from "../../components/ReleaseCard.astro";
+import BreakingChangesSummary from "../../components/BreakingChangesSummary.astro";
+import { getSectionById } from "../../lib/sections";
+import { getToolById, getToolReleases, relativeTime } from "../../lib/releases";
+
+const section = getSectionById("openclaw")!;
+const tool = getToolById("openclaw");
+const data = await getToolReleases("openclaw");
+const releases = data?.releases || [];
+const stableReleases = releases.filter((r) => !r.prerelease);
+const latestStable = stableReleases[0];
+const latestRelease = releases[0];
+---
+
+<SectionLayout
+  section={section}
+  title="OpenClaw — changelogs.info"
+  description="Track OpenClaw releases, breaking changes, and config updates."
+  latestRelease={latestStable || latestRelease}
+  heroDescription={tool?.description}
+  repo={tool?.repo}
+>
+
+    <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+      <!-- Quick stats -->
+      {releases.length > 0 && (
+        <div class="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {latestStable && (
+            <div class="rounded-lg border bg-bg-card px-4 py-3" style={`border-color: rgba(${section.colorRgb}, 0.15);`}>
+              <p class="font-mono text-[10px] uppercase tracking-wider text-text-muted">latest</p>
+              <p class="mt-1 font-mono text-base font-bold" style={`color: ${section.color};`}>{latestStable.version}</p>
+            </div>
+          )}
+          <div class="rounded-lg border border-border bg-bg-card px-4 py-3">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-text-muted">releases</p>
+            <p class="mt-1 font-mono text-base font-bold text-cyan">{releases.length}</p>
+          </div>
+          <div class="rounded-lg border border-border bg-bg-card px-4 py-3">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-text-muted">stable</p>
+            <p class="mt-1 font-mono text-base font-bold text-text-primary">{stableReleases.length}</p>
+          </div>
+          {data?.lastUpdated && (
+            <div class="rounded-lg border border-border bg-bg-card px-4 py-3">
+              <p class="font-mono text-[10px] uppercase tracking-wider text-text-muted">updated</p>
+              <p class="mt-1 font-mono text-xs text-text-secondary">{relativeTime(data.lastUpdated)}</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      <div class="grid gap-8 lg:grid-cols-3">
+        <!-- Main content -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Latest release card -->
+          {(latestStable || latestRelease) && (
+            <div>
+              <h2 class="mb-4 font-mono text-sm uppercase tracking-wider text-text-muted">Latest Release</h2>
+              <ReleaseCard
+                release={latestStable || latestRelease!}
+                sectionColor={section.color}
+                sectionRgb={section.colorRgb}
+                toolId={section.id}
+              />
+            </div>
+          )}
+
+          <!-- Breaking changes -->
+          {releases.length > 0 && (
+            <div>
+              <h2 class="mb-4 font-mono text-sm uppercase tracking-wider text-text-muted">Breaking Changes</h2>
+              <BreakingChangesSummary releases={releases} sectionColor={section.color} sectionRgb={section.colorRgb} />
+            </div>
+          )}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+          <!-- clwatch CTA -->
+          <div class="rounded-lg border bg-bg-card p-4" style={`border-color: rgba(${section.colorRgb}, 0.2);`}>
+            <p class="font-mono text-xs font-semibold" style={`color: ${section.color};`}>clwatch</p>
+            <p class="mt-1 font-mono text-xs text-text-muted">Keep your config current:</p>
+            <pre class="mt-2 rounded bg-bg-tertiary px-3 py-2 font-mono text-xs text-text-secondary"><span style={`color: ${section.color};`}>$</span> clwatch diff openclaw</pre>
+            <a href="/clwatch" class="mt-2 inline-block font-mono text-xs text-cyan transition-colors hover:text-cyan/80">learn more &rarr;</a>
+          </div>
+
+          <!-- Quick links -->
+          <div class="rounded-lg border border-border bg-bg-card p-4">
+            <p class="font-mono text-xs font-semibold text-text-primary mb-3">Quick Links</p>
+            <div class="space-y-2">
+              <a href="/openclaw/changelog/" class="block font-mono text-xs text-text-muted transition-colors hover:text-text-primary" style={`--hover-color: ${section.color};`}>
+                <span style={`color: ${section.color};`}>/</span> Full changelog
+              </a>
+              <a href="/openclaw/cheatsheet/" class="block font-mono text-xs text-text-muted transition-colors hover:text-text-primary">
+                <span style={`color: ${section.color};`}>/</span> Cheatsheet
+              </a>
+              <a href="/openclaw/releases/" class="block font-mono text-xs text-text-muted transition-colors hover:text-text-primary">
+                <span style={`color: ${section.color};`}>/</span> All releases
+              </a>
+              {tool?.website && (
+                <a href={tool.website} target="_blank" rel="noopener noreferrer" class="block font-mono text-xs text-text-muted transition-colors hover:text-text-primary">
+                  <span style={`color: ${section.color};`}>/</span> Website &nearr;
+                </a>
+              )}
+              {tool?.repo && (
+                <a href={`https://github.com/${tool.repo}`} target="_blank" rel="noopener noreferrer" class="block font-mono text-xs text-text-muted transition-colors hover:text-text-primary">
+                  <span style={`color: ${section.color};`}>/</span> GitHub &nearr;
+                </a>
+              )}
+            </div>
+          </div>
+
+          <!-- Tags -->
+          {tool?.tags && tool.tags.length > 0 && (
+            <div class="flex flex-wrap gap-2">
+              {tool.tags.map((tag) => (
+                <span class="rounded border border-border/50 bg-bg-tertiary px-2 py-0.5 font-mono text-xs text-text-muted">#{tag}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+</SectionLayout>

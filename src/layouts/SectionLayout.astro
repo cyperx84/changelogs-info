@@ -1,0 +1,52 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import SectionNav from "../components/SectionNav.astro";
+import SectionHero from "../components/SectionHero.astro";
+import type { Section } from "../lib/sections";
+import type { Release } from "../lib/releases";
+
+interface Props {
+  section: Section;
+  title: string;
+  description?: string;
+  latestRelease?: Release;
+  heroDescription?: string;
+  repo?: string;
+  showHero?: boolean;
+  showNav?: boolean;
+}
+
+const {
+  section,
+  title,
+  description,
+  latestRelease,
+  heroDescription,
+  repo,
+  showHero = true,
+  showNav = true,
+} = Astro.props;
+
+const sectionId = section.id as "openclaw" | "claude-code" | "codex-cli" | "models" | "tools";
+---
+
+<BaseLayout title={title} description={description} section={sectionId}>
+  {showHero && (
+    <SectionHero section={section} latestRelease={latestRelease} description={heroDescription} repo={repo} />
+  )}
+  {showNav && (
+    <SectionNav section={section} currentPath={Astro.url.pathname} />
+  )}
+  <div
+    class="section-content"
+    style={`--section-color: ${section.color}; --section-accent: ${section.accent}; --section-rgb: ${section.colorRgb};`}
+  >
+    <slot />
+  </div>
+</BaseLayout>
+
+<style>
+  .section-content :global(.section-card) {
+    border-left: 3px solid var(--section-color);
+  }
+</style>
