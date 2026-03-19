@@ -16,6 +16,14 @@
   },
   "releases": [
     {
+      "version": "v2.1.79",
+      "name": "v2.1.79",
+      "body": "## What's changed\n\n- Added `--console` flag to `claude auth login` for Anthropic Console (API billing) authentication\n- Added \"Show turn duration\" toggle to the `/config` menu\n- Fixed `claude -p` hanging when spawned as a subprocess without explicit stdin (e.g. Python `subprocess.run`)\n- Fixed Ctrl+C not working in `-p` (print) mode\n- Fixed `/btw` returning the main agent's output instead of answering the side question when triggered during streaming\n- Fixed voice mode not activating correctly on startup when `voiceEnabled: true` is set\n- Fixed left/right arrow tab navigation in `/permissions`\n- Fixed `CLAUDE_CODE_DISABLE_TERMINAL_TITLE` not preventing terminal title from being set on startup\n- Fixed custom status line showing nothing when workspace trust is blocking it\n- Fixed enterprise users being unable to retry on rate limit (429) errors\n- Fixed `SessionEnd` hooks not firing when using interactive `/resume` to switch sessions\n- Improved startup memory usage by ~18MB across all scenarios\n- Improved non-streaming API fallback with a 2-minute per-attempt timeout, preventing sessions from hanging indefinitely\n- `CLAUDE_CODE_PLUGIN_SEED_DIR` now supports multiple seed directories separated by the platform path delimiter (`:` on Unix, `;` on Windows)\n- [VSCode] Added `/remote-control` — bridge your session to claude.ai/code to continue from a browser or phone\n- [VSCode] Session tabs now get AI-generated titles based on your first message\n- [VSCode] Fixed the thinking pill showing \"Thinking\" instead of \"Thought for Ns\" after a response completes\n- [VSCode] Fixed missing session diff button when opening sessions from the left sidebar\n",
+      "date": "2026-03-18T22:29:36Z",
+      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.79",
+      "prerelease": false
+    },
+    {
       "version": "v2.1.78",
       "name": "v2.1.78",
       "body": "## What's changed\n\n- Added `StopFailure` hook event that fires when the turn ends due to an API error (rate limit, auth failure, etc.)\n- Added `${CLAUDE_PLUGIN_DATA}` variable for plugin persistent state that survives plugin updates; `/plugin uninstall` prompts before deleting it\n- Added `effort`, `maxTurns`, and `disallowedTools` frontmatter support for plugin-shipped agents\n- Terminal notifications (iTerm2/Kitty/Ghostty popups, progress bar) now reach the outer terminal when running inside tmux with `set -g allow-passthrough on`\n- Response text now streams line-by-line as it's generated\n- Fixed `git log HEAD` failing with \"ambiguous argument\" inside sandboxed Bash on Linux, and stub files polluting `git status` in the working directory\n- Fixed `cc log` and `--resume` silently truncating conversation history on large sessions (>5 MB) that used subagents\n- Fixed infinite loop when API errors triggered stop hooks that re-fed blocking errors to the model\n- Fixed `deny: [\"mcp__servername\"]` permission rules not removing MCP server tools before sending to the model, allowing it to see and attempt blocked tools\n- Fixed `sandbox.filesystem.allowWrite` not working with absolute paths (previously required `//` prefix)\n- Fixed `/sandbox` Dependencies tab showing Linux prerequisites on macOS instead of macOS-specific info\n- **Security:** Fixed silent sandbox disable when `sandbox.enabled: true` is set but dependencies are missing — now shows a visible startup warning\n- Fixed `.git`, `.claude`, and other protected directories being writable without a prompt in `bypassPermissions` mode\n- Fixed ctrl+u in normal mode scrolling instead of readline kill-line (ctrl+u/ctrl+d half-page scroll moved to transcript mode only)\n- Fixed voice mode modifier-combo push-to-talk keybindings (e.g. ctrl+k) requiring a hold instead of activating immediately\n- Fixed voice mode not working on WSL2 with WSLg (Windows 11); WSL1/Win10 users now get a clear error\n- Fixed `--worktree` flag not loading skills and hooks from the worktree directory\n- Fixed `CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS` and `includeGitInstructions` setting not suppressing the git status section in the system prompt\n- Fixed Bash tool not finding Homebrew and other PATH-dependent binaries when VS Code is launched from Dock/Spotlight\n- Fixed washed-out Claude orange color in VS Code/Cursor/code-server terminals that don't advertise truecolor support\n- Added `ANTHROPIC_CUSTOM_MODEL_OPTION` env var to add a custom entry to the `/model` picker, with optional `_NAME` and `_DESCRIPTION` suffixed vars for display\n- Fixed `ANTHROPIC_BETAS` environment variable being silently ignored when using Haiku models\n- Fixed queued prompts being concatenated without a newline separator\n- Improved memory usage and startup time when resuming large sessions\n- [VSCode] Fixed a brief flash of the login screen when opening the sidebar while already authenticated\n- [VSCode] Fixed \"API Error: Rate limit reached\" when selecting Opus — model dropdown no longer offers 1M context variant to subscribers whose plan tier is unknown\n",
@@ -246,15 +254,7 @@
       "date": "2026-02-13T06:08:49Z",
       "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.41",
       "prerelease": false
-    },
-    {
-      "version": "v2.1.39",
-      "name": "v2.1.39",
-      "body": "## What's changed\n\n- Improved terminal rendering performance\n- Fixed fatal errors being swallowed instead of displayed\n- Fixed process hanging after session close\n- Fixed character loss at terminal screen boundary\n- Fixed blank lines in verbose transcript view\n",
-      "date": "2026-02-10T23:11:36Z",
-      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.39",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-03-18T06:31:28.363Z"
+  "lastUpdated": "2026-03-19T06:28:33.398Z"
 }
