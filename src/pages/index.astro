@@ -17,6 +17,7 @@ let releaseMap: Record<string, { latest: Release; count: number }> = {};
 try {
   const allReleases = await getAllToolReleases();
   for (const tr of allReleases) {
+    if (tr.releases.length === 0) continue;
     const stable = tr.releases.find((r) => !r.prerelease);
     releaseMap[tr.tool.id] = {
       latest: stable || tr.releases[0],
