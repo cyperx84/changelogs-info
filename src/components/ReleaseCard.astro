@@ -15,9 +15,9 @@ const { release, sectionColor = "#33ff33", sectionRgb = "51, 255, 51", toolId, c
 const breakingPatterns = /BREAKING|breaking change|removed|deprecated|incompatible|breaking:/i;
 const hasBreaking = release.body ? breakingPatterns.test(release.body) : false;
 
-// Tier: breaking/config changes = Tier 1, new features/knowledge = Tier 2
+// Tier classification
 const bodyLower = (release.body || "").toLowerCase();
-const isTier1 = hasBreaking || /config|setting|flag|option|parameter/i.test(bodyLower);
+const isTier1 = hasBreaking || /\b(config|deprecated|removed|migration|incompatible)\b/i.test(bodyLower);
 
 // Extract first few highlights
 function getHighlights(body: string, max = 3): string[] {
@@ -42,22 +42,25 @@ const detailHref = toolId ? `/${toolId}/changelog/` : undefined;
 ---
 
 <div
-  class="group rounded-lg border bg-bg-card p-4 transition-all duration-200 hover:shadow-[0_0_16px_rgba(var(--glow),0.12)] sm:p-5"
-  style={`border-color: rgba(${sectionRgb}, 0.15); --glow: ${sectionRgb};`}
+  class:list={[
+    "group rounded-lg border bg-bg-card p-4 transition-all duration-200 hover:shadow-[0_0_16px_rgba(var(--glow),0.12)] sm:p-5",
+    isTier1 && "ring-1 ring-red/20",
+  ]}
+  style={`border-color: rgba(${sectionRgb}, 0.15); border-left: 3px solid ${isTier1 ? "var(--color-red, #ff3333)" : sectionColor}; --glow: ${sectionRgb};`}
 >
   <div class="flex items-start justify-between gap-2">
-    <div class="flex items-center gap-2">
+    <div class="flex flex-wrap items-center gap-2">
       <span class="font-mono text-base font-bold" style={`color: ${sectionColor};`}>{release.version}</span>
       {release.prerelease && (
         <span class="rounded border border-amber/40 bg-amber/10 px-1.5 py-0.5 font-mono text-[10px] text-amber">pre</span>
       )}
       {hasBreaking && (
-        <span class="rounded border border-red bg-red/10 px-1.5 py-0.5 font-mono text-[10px] text-red">BREAKING</span>
+        <span class="animate-pulse rounded border border-red bg-red/15 px-2 py-0.5 font-mono text-[10px] font-bold text-red shadow-[0_0_8px_rgba(255,51,51,0.2)]">BREAKING</span>
       )}
     </div>
     <div class="flex items-center gap-2">
       {isTier1 ? (
-        <span class="rounded-full border px-2 py-0.5 font-mono text-[10px]" style={`border-color: rgba(${sectionRgb}, 0.4); color: ${sectionColor};`}>Tier 1</span>
+        <span class="rounded-full border border-red/40 bg-red/10 px-2.5 py-0.5 font-mono text-[10px] font-bold text-red">Tier 1</span>
       ) : (
         <span class="rounded-full border border-cyan/30 px-2 py-0.5 font-mono text-[10px] text-cyan">Tier 2</span>
       )}
@@ -78,7 +81,7 @@ const detailHref = toolId ? `/${toolId}/changelog/` : undefined;
     <ul class="mt-3 space-y-1.5">
       {highlights.map((h) => (
         <li class="flex gap-2 font-mono text-[11px] leading-snug text-text-muted">
-          <span class="shrink-0" style={`color: ${sectionColor}; opacity: 0.6;`}>&mdash;</span>
+          <span class="shrink-0" style={`color: ${isTier1 ? "var(--color-red, #ff3333)" : sectionColor}; opacity: 0.6;`}>&mdash;</span>
           <span class="line-clamp-2">{h}</span>
         </li>
       ))}
