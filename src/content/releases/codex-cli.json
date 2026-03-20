@@ -15,6 +15,46 @@
   },
   "releases": [
     {
+      "version": "rusty-v8-v146.4.0",
+      "name": "rusty-v8-v146.4.0",
+      "body": "",
+      "date": "2026-03-20T02:48:56Z",
+      "url": "https://github.com/openai/codex/releases/tag/rusty-v8-v146.4.0",
+      "prerelease": true
+    },
+    {
+      "version": "rust-v0.117.0-alpha.3",
+      "name": "0.117.0-alpha.3",
+      "body": "Release 0.117.0-alpha.3\n\n",
+      "date": "2026-03-20T03:51:20Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.117.0-alpha.3",
+      "prerelease": true
+    },
+    {
+      "version": "rust-v0.116.0",
+      "name": "0.116.0",
+      "body": "## New Features\n- App-server TUI now supports device-code ChatGPT sign-in during onboarding and can refresh existing ChatGPT tokens. (#14952)\n- Plugin setup is smoother: Codex can prompt to install missing plugins or connectors, honor a configured suggestion allowlist, and sync install/uninstall state remotely. (#14896, #15022, #14878)\n- Added a `userpromptsubmit` hook so prompts can be blocked or augmented before execution and before they enter history. (#14626)\n- Realtime sessions now start with recent thread context and are less likely to self-interrupt during audio playback. (#14829, #14827)\n\n## Bug Fixes\n- Fixed a first-turn stall where websocket prewarm could delay `turn/start`; startup now times out and falls back cleanly. (#14838)\n- Restored conversation history for remote resume/fork in the app-server TUI and stopped duplicate live transcript output from legacy stream events. (#14930, #14892)\n- Improved Linux sandbox startup on symlinked checkouts, missing writable roots, and Ubuntu/AppArmor hosts by preferring system `bwrap` when available. (#14849, #14890, #14963)\n- Fixed an agent job finalization race and reduced status polling churn for worker threads. (#14843)\n\n## Documentation\n- Refreshed the Python SDK public API docs, examples, and walkthrough around the generated app-server models. (#14446)\n\n## Chores\n- Pinned the `setup-zig` GitHub Action to an immutable SHA for more reproducible CI. (#14858)\n\n## Changelog\n\nFull Changelog: https://github.com/openai/codex/compare/rust-v0.115.0...rust-v0.116.0\n\n- #14717 Move TUI on top of app server (parallel code) @etraut-openai\n- #14665 Use request permission profile in app server @mousseau-oai\n- #14826 Fixed build failures related to PR 14717 @etraut-openai\n- #14833 fix(core): fix sanitize name to use '_' everywhere @apanasenko-oai\n- #14268 memories: exclude AGENTS and skills from stage1 input @andi-oai\n- #14139 windows-sandbox: add runner IPC foundation for future unified_exec @iceweasel-oai\n- #14851 Add exit helper to code mode scripts @pakrym-oai\n- #14828 [stack 1/4] Split realtime websocket methods by version @aibrahim-oai\n- #14652 Apply argument comment lint across codex-rs @bolinfest\n- #14837 skill-creator: default new skills to ~/.codex/skills @xl-openai\n- #14861 Add marketplace display names to plugin/list @xl-openai\n- #14878 feat: support remote_sync for plugin install/uninstall. @xl-openai\n- #14830 [stack 2/4] Align main realtime v2 wire and runtime flow @aibrahim-oai\n- #14886 fix: align marketplace display name with existing interface conventions @xl-openai\n- #14881 [codex] add Jason as a predefined subagent name @tibo-openai\n- #14864 fix: tighten up shell arg quoting in GitHub workflows @bolinfest\n- #14829 [stack 3/4] Add current thread context to realtime startup @aibrahim-oai\n- #14827 [stack 4/4] Reduce realtime self-interruptions during playback @aibrahim-oai\n- #14849 fix: canonicalize symlinked Linux sandbox cwd @viyatb-oai\n- #14892 Fix tui_app_server: ignore duplicate legacy stream events @etraut-openai\n- #14899 Revert tui code so it does not rely on in-process app server @etraut-openai\n- #14890 fix(linux-sandbox): ignore missing writable roots @viyatb-oai\n- #14920 feat: centralize package manager version @jif-oai\n- #14935 feat: rename to get more explicit close agent @jif-oai\n- #14843 Fix agent jobs finalization race and reduce status polling churn @daveaitel-openai\n- #14944 feat: show effective model in spawn agent event @jif-oai\n- #14838 fix(core): prevent hanging turn/start due to websocket warming issues @owenlin0\n- #14859 Feat: CXA-1831 Persist latest model and reasoning effort in sqlite @shijie-oai\n- #14930 fix(tui): restore remote resume and fork history @fcoury\n- #14955 Fix fuzzy search notification buffering in app-server tests @aibrahim-oai\n- #14938 feat: add suffix to shell snapshot name @jif-oai\n- #14959 Fix code mode yield startup race @aibrahim-oai\n- #14434 generate an internal json schema for `RolloutLine` @keyz\n- #14846 use framed IPC for elevated command runner @iceweasel-oai\n- #14952 Add device-code onboarding and ChatGPT token refresh to app-server TUI @etraut-openai\n- #14896 [plugins] Support plugin installation elicitation. @mzeng-openai\n- #14958 Stabilize Windows cmd-based shell test harnesses @aibrahim-oai\n- #14966 Stabilize permissions popup selection tests @aibrahim-oai\n- #14968 Stabilize approval matrix write-file command @aibrahim-oai\n- #14986 temporarily disable private desktop until it works with elevated IPC path @iceweasel-oai\n- #14983 Rename exec_wait tool to wait @pakrym-oai\n- #14905 Add auth env observability @ccy-oai\n- #14931 fix(tui): implement /mcp inventory for tui_app_server @fcoury\n- #14977 Cleanup skills/remote/xxx endpoints. @xl-openai\n- #14984 Gate realtime audio interruption logic to v2 @aibrahim-oai\n- #14902 Unify realtime shutdown in core @aibrahim-oai\n- #14963 fix(linux-sandbox): prefer system /usr/bin/bwrap when available @viyatb-oai\n- #14446 Add Python SDK public API and examples @shaqayeq-oai\n- #14993 feat: Add product-aware plugin policies and clean up manifest naming @xl-openai\n- #14995 app-server: reject websocket requests with Origin headers @maxj-oai\n- #14960 Add FS abstraction and use in view_image @pakrym-oai\n- #14293 fix: honor active permission profiles in sandbox debug @viyatb-oai\n- #14610 feat: support restricted ReadOnlyAccess in elevated Windows sandbox @viyatb-oai\n- #13592 Prefer websockets when providers support them @pakrym-oai\n- #14903 Handle realtime conversation end in the TUI @aibrahim-oai\n- #14727 Use workspace requirements for guardian prompt override @charley-oai\n- #14626 [hooks] userpromptsubmit - hook before user's prompt is executed @eternal-openai\n- #14858 Pin setup-zig GitHub Action to immutable SHA @viyatb-oai\n- #13702 fix(subagents) share execpolicy by default @dylan-hurd-oai\n- #15022 [plugins] Support configuration tool suggest allowlist. @mzeng-openai\n- #14947 feat: adapt artifacts to new packaging and 2.5.6 @jif-oai\n- #14821 feat: add memory citation to agent message @jif-oai\n- #15058 nit: disable live memory edition @jif-oai\n- #14942 Removed remaining core events from tui_app_server @etraut-openai\n- #15059 chore: disable memory read path for morpheus @jif-oai\n- #14842 Add notify to code-mode @pakrym-oai\n- #15020 fix: harden plugin feature gating @xl-openai\n\n\n",
+      "date": "2026-03-19T17:51:35Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.116.0",
+      "prerelease": false
+    },
+    {
+      "version": "rust-v0.117.0-alpha.2",
+      "name": "0.117.0-alpha.2",
+      "body": "Release 0.117.0-alpha.2\n\n",
+      "date": "2026-03-19T23:27:47Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.117.0-alpha.2",
+      "prerelease": true
+    },
+    {
+      "version": "rust-v0.116.0-alpha.12",
+      "name": "0.116.0-alpha.12",
+      "body": "Release 0.116.0-alpha.12\n\n",
+      "date": "2026-03-19T16:38:16Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.116.0-alpha.12",
+      "prerelease": true
+    },
+    {
       "version": "rust-v0.116.0-alpha.11",
       "name": "0.116.0-alpha.11",
       "body": "Release 0.116.0-alpha.11\n\n",
@@ -213,47 +253,7 @@
       "date": "2026-03-12T06:38:24Z",
       "url": "https://github.com/openai/codex/releases/tag/rust-v0.115.0-alpha.9",
       "prerelease": true
-    },
-    {
-      "version": "rust-v0.115.0-alpha.14",
-      "name": "0.115.0-alpha.14",
-      "body": "Release 0.115.0-alpha.14\n\n",
-      "date": "2026-03-12T22:01:03Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.115.0-alpha.14",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.115.0-alpha.13",
-      "name": "0.115.0-alpha.13",
-      "body": "Release 0.115.0-alpha.13\n\n",
-      "date": "2026-03-12T19:53:03Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.115.0-alpha.13",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.115.0-alpha.12",
-      "name": "0.115.0-alpha.12",
-      "body": "Release 0.115.0-alpha.12\n\n",
-      "date": "2026-03-12T17:13:15Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.115.0-alpha.12",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.115.0-alpha.11",
-      "name": "0.115.0-alpha.11",
-      "body": "Release 0.115.0-alpha.11\n\n",
-      "date": "2026-03-12T07:38:16Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.115.0-alpha.11",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.115.0-alpha.7",
-      "name": "0.115.0-alpha.7",
-      "body": "Release 0.115.0-alpha.7\n\n",
-      "date": "2026-03-12T04:46:50Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.115.0-alpha.7",
-      "prerelease": true
     }
   ],
-  "lastUpdated": "2026-03-19T06:28:35.816Z"
+  "lastUpdated": "2026-03-20T06:25:59.689Z"
 }
