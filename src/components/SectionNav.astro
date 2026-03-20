@@ -1,0 +1,38 @@
+---
+import type { Section } from "../lib/sections";
+
+interface Props {
+  section: Section;
+  currentPath?: string;
+}
+
+const { section, currentPath = "" } = Astro.props;
+---
+
+<nav class="sticky top-[57px] z-40 border-b bg-bg-primary/95 backdrop-blur-xl" style={`border-color: rgba(${section.colorRgb}, 0.2);`}>
+  <div class="mx-auto flex max-w-6xl items-center gap-1 overflow-x-auto px-4 py-0 sm:px-6">
+    <a
+      href={section.route}
+      class="shrink-0 font-mono text-sm font-semibold px-3 py-3 transition-colors"
+      style={`color: ${section.color};`}
+    >
+      <span class="opacity-60">&larr;</span> {section.name}
+    </a>
+    <span class="text-text-muted/30 mx-1">|</span>
+    {section.subNav.map((item) => {
+      const isActive = currentPath === item.href || currentPath === item.href.replace(/\/$/, "");
+      return (
+        <a
+          href={item.href}
+          class:list={[
+            "shrink-0 font-mono text-xs px-3 py-3 transition-colors border-b-2",
+            isActive ? "border-current" : "border-transparent",
+          ]}
+          style={isActive ? `color: ${section.color};` : "color: var(--color-text-muted);"}
+        >
+          {item.label}
+        </a>
+      );
+    })}
+  </div>
+</nav>

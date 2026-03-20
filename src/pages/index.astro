@@ -1,374 +1,141 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import ToolCard from "../components/ToolCard.astro";
-import MatrixHero from "../components/MatrixHero.astro";
-
-import HowItWorks from "../components/HowItWorks.astro";
-import { getTools, getAllToolReleases, relativeTime, CLWATCH_TOOLS } from "../lib/releases";
+import HubSectionCard from "../components/HubSectionCard.astro";
+import { SECTIONS, MODELS_SECTION, TOOLS_SECTION } from "../lib/sections";
+import { getToolById, getToolReleases, getAllToolReleases, relativeTime } from "../lib/releases";
 import type { Release } from "../lib/releases";
 
-const tools = getTools();
+// Load release data for all sections
+const openclawSection = SECTIONS.find((s) => s.id === "openclaw")!;
+const openclawData = await getToolReleases("openclaw");
+const openclawReleases = openclawData?.releases || [];
+const openclawLatest = openclawReleases.find((r) => !r.prerelease) || openclawReleases[0];
+const openclawTool = getToolById("openclaw");
 
-let releaseMap: Record<string, Release> = {};
+// Load latest releases for section cards
+let releaseMap: Record<string, { latest: Release; count: number }> = {};
 try {
   const allReleases = await getAllToolReleases();
   for (const tr of allReleases) {
+    if (tr.releases.length === 0) continue;
     const stable = tr.releases.find((r) => !r.prerelease);
-    if (stable) {
-      releaseMap[tr.tool.id] = stable;
-    } else if (tr.releases.length > 0) {
-      releaseMap[tr.tool.id] = tr.releases[0];
-    }
+    releaseMap[tr.tool.id] = {
+      latest: stable || tr.releases[0],
+      count: tr.releases.length,
+    };
   }
 } catch {}
 
-// Gather unique categories for the filter
-const categories = [...new Set(tools.map((t) => t.category))].sort();
-
-// Helper: extract highlight lines from a markdown release body
-function parseReleaseHighlights(body: string, max: number = 3): string[] {
-  if (!body) return [];
-
-  const lines = body.split("\n");
-  const highlights: string[] = [];
-
-  for (const line of lines) {
-    if (highlights.length >= max) break;
-
-    const trimmed = line.trim();
-    // Prefer bullet points and heading lines
-    if (/^[-*]\s+/.test(trimmed) || /^###\s+/.test(trimmed)) {
-      let clean = trimmed
-        .replace(/^[-*]\s+/, "")
-        .replace(/^###\s+/, "")
-        .replace(/\*\*/g, "")
-        .replace(/\*/g, "")
-        .replace(/#/g, "")
-        .replace(/`/g, "")
-        .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1") // [text](url) -> text
-        .trim();
-
-      if (clean.length < 10) continue; // skip very short lines
-      if (clean.length > 100) clean = clean.slice(0, 97) + "...";
-      highlights.push(clean);
-    }
-  }
-
-  return highlights;
-}
-
-// The 5 tracked tools for the Latest Changes section
-const latestChangesTools = CLWATCH_TOOLS.map((id) => {
-  const tool = tools.find((t) => t.id === id);
-  const release = releaseMap[id];
-  const highlights = release ? parseReleaseHighlights(release.body) : [];
-  return { id, tool, release, highlights };
-}).filter((entry) => entry.tool);
+const claudeCodeSection = SECTIONS.find((s) => s.id === "claude-code")!;
+const codexCliSection = SECTIONS.find((s) => s.id === "codex-cli")!;
 ---
 
 <BaseLayout title="changelogs.info — AI Coding Tool Changelog Tracker">
-  <!-- Section 1: Hero -->
-  <section class="relative overflow-hidden border-b border-border bg-bg-secondary/30">
-    <MatrixHero />
-    <div class="hero-content mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 md:py-20">
-      <div class="max-w-xl">
-        <h1 class="font-mono text-2xl font-bold text-green sm:text-3xl md:text-4xl">
-          <span class="text-green">&gt;</span> Keep your AI tools current.
-        </h1>
-        <p class="mt-4 font-sans text-sm leading-relaxed text-text-secondary sm:text-base">
-          changelogs.info tracks every major AI coding tool and model. clwatch patches your agent configs and reference files when things change &mdash; automatically.
-        </p>
-
-        <!-- Divider between hero copy and install -->
-        <div class="mt-6 h-px w-16 bg-green/30"></div>
-
-        <!-- Terminal install block -->
-        <p class="mt-5 font-mono text-xs uppercase tracking-widest text-text-muted text-center sm:text-left">Quick Start</p>
-        <div class="mt-3 rounded-lg border border-border bg-bg-card">
-          <div class="border-b border-border px-3 py-1.5 font-mono text-[10px] text-text-muted">
-            <span class="text-green">●●●</span> <span class="ml-2">terminal</span>
-          </div>
-          <pre class="px-4 py-3 font-mono text-xs leading-relaxed text-text-secondary sm:text-sm"><span class="text-green">$</span> brew install clwatch
-<span class="text-green">$</span> npx clwatch diff</pre>
+  <!-- OpenClaw Hero -->
+  <section
+    class="relative overflow-hidden border-b"
+    style={`border-color: rgba(${openclawSection.colorRgb}, 0.2); background: linear-gradient(135deg, rgba(${openclawSection.colorRgb}, 0.06) 0%, transparent 50%);`}
+  >
+    <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+      <div class="max-w-2xl">
+        <div class="mb-4 flex items-center gap-3">
+          <span
+            class="inline-block h-3 w-3 rounded-sm"
+            style={`background: ${openclawSection.color}; box-shadow: 0 0 16px ${openclawSection.color};`}
+          ></span>
+          <span class="font-mono text-xs uppercase tracking-widest text-text-muted">featured</span>
         </div>
 
-        <!-- CTAs -->
-        <div class="mt-5 flex flex-wrap gap-3 font-mono text-xs sm:text-sm">
-          <a href="#all-tools" class="rounded border border-green bg-green/10 px-4 py-2 font-medium text-green transition-all hover:bg-green/20 hover:shadow-[0_0_12px_rgba(51,255,51,0.15)]">Browse all tools</a>
-          <a href="/clwatch" class="rounded border border-border bg-transparent px-4 py-2 text-text-muted transition-all hover:border-green/50 hover:text-green">/clwatch docs</a>
+        <h1 class="font-mono text-3xl font-bold sm:text-4xl md:text-5xl">
+          <span style={`color: ${openclawSection.color};`}>What changed?</span>
+        </h1>
+
+        <p class="mt-4 font-sans text-sm leading-relaxed text-text-secondary sm:text-base max-w-lg">
+          changelogs.info tracks every major AI coding tool. clwatch patches your agent configs when things change &mdash; automatically.
+        </p>
+
+        {openclawLatest && (
+          <div class="mt-6 inline-flex items-center gap-3 rounded-lg border px-4 py-2.5 font-mono text-sm" style={`border-color: rgba(${openclawSection.colorRgb}, 0.3); background: rgba(${openclawSection.colorRgb}, 0.08);`}>
+            <a href="/openclaw/" class="font-semibold transition-colors hover:opacity-80" style={`color: ${openclawSection.color};`}>OpenClaw</a>
+            <span class="text-text-muted">|</span>
+            <span style={`color: ${openclawSection.color};`}>{openclawLatest.version}</span>
+            <span class="text-text-muted">|</span>
+            <span class="text-text-secondary text-xs">{relativeTime(openclawLatest.date)}</span>
+          </div>
+        )}
+
+        <div class="mt-6 flex flex-wrap gap-3 font-mono text-xs sm:text-sm">
+          <a
+            href="/openclaw/"
+            class="rounded border px-4 py-2 font-medium transition-all hover:shadow-[0_0_12px_rgba(255,51,51,0.15)]"
+            style={`border-color: ${openclawSection.color}; background: rgba(${openclawSection.colorRgb}, 0.1); color: ${openclawSection.color};`}
+          >
+            Explore OpenClaw
+          </a>
+          <a href="/clwatch" class="rounded border border-border bg-transparent px-4 py-2 text-text-muted transition-all hover:border-green/50 hover:text-green">
+            /clwatch docs
+          </a>
         </div>
       </div>
     </div>
   </section>
-
-  <!-- Section 2: Freshness ticker -->
-  {Object.keys(releaseMap).length > 0 && (
-    <div class="border-b border-border bg-bg-card/50">
-      <div class="mx-auto flex max-w-6xl items-center gap-3 overflow-x-auto px-4 py-2 font-mono text-xs sm:px-6">
-        <span class="flex shrink-0 items-center gap-1.5 text-green">
-          <span class="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-green"></span>
-          LIVE &mdash;
-        </span>
-        {Object.entries(releaseMap)
-          .sort(([, a], [, b]) => new Date(b.date).getTime() - new Date(a.date).getTime())
-          .slice(0, 6)
-          .map(([toolId, release]) => {
-            const tool = tools.find((t) => t.id === toolId);
-            return tool ? (
-              <a href={`/tools/${toolId}`} class="shrink-0 rounded bg-bg-tertiary px-2 py-1 text-text-muted transition-all hover:text-green">
-                <span class="text-cyan">{tool.name}</span> <span class="text-green">{release.version}</span>
-              </a>
-            ) : null;
-          })}
-      </div>
-    </div>
-  )}
 
   <div class="green-divider"></div>
 
-  <!-- Section 2.5: My Tools filter -->
-  <section class="mx-auto max-w-6xl px-4 py-4 sm:px-6" id="my-tools-section">
-    <div class="flex flex-wrap items-center gap-3">
-      <span class="font-mono text-xs text-text-muted">my tools:</span>
-      <div class="flex flex-wrap gap-2" id="my-tools-filter">
-        {tools.map((tool) => (
-          <button
-            class="my-tool-btn rounded border border-border bg-bg-card px-2.5 py-1 font-mono text-[11px] text-text-muted transition-all hover:border-green hover:text-green"
-            data-tool={tool.id}
-          >
-            {tool.name}
-          </button>
-        ))}
-        <button
-          id="clear-tools-filter"
-          class="hidden rounded border border-red-400/30 bg-red-400/10 px-2.5 py-1 font-mono text-[11px] text-red-400 transition-all hover:border-red-400"
-        >
-          clear
-        </button>
-      </div>
+  <!-- Section Cards Grid -->
+  <section class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+    <h2 class="mb-6 font-mono text-base font-semibold text-text-primary sm:text-lg sm:mb-8">
+      <span class="text-green">/</span>sections
+    </h2>
+
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <HubSectionCard
+        name={claudeCodeSection.name}
+        route={claudeCodeSection.route}
+        color={claudeCodeSection.color}
+        rgb={claudeCodeSection.colorRgb}
+        description={getToolById("claude-code")?.description}
+        latestRelease={releaseMap["claude-code"]?.latest}
+        releaseCount={releaseMap["claude-code"]?.count || 0}
+      />
+      <HubSectionCard
+        name={codexCliSection.name}
+        route={codexCliSection.route}
+        color={codexCliSection.color}
+        rgb={codexCliSection.colorRgb}
+        description={getToolById("codex-cli")?.description}
+        latestRelease={releaseMap["codex-cli"]?.latest}
+        releaseCount={releaseMap["codex-cli"]?.count || 0}
+      />
+      <HubSectionCard
+        name={MODELS_SECTION.name}
+        route={MODELS_SECTION.route}
+        color={MODELS_SECTION.color}
+        rgb={MODELS_SECTION.colorRgb}
+        description="Track AI model releases and capabilities."
+      />
+      <HubSectionCard
+        name={TOOLS_SECTION.name}
+        route={TOOLS_SECTION.route}
+        color={TOOLS_SECTION.color}
+        rgb={TOOLS_SECTION.colorRgb}
+        description="Cursor, Cline, Continue, and more."
+      />
     </div>
   </section>
 
-  <!-- Section 3: Latest Changes -->
-  <section class="relative mx-auto max-w-6xl overflow-hidden px-4 py-8 sm:px-6 sm:py-12">
-    <div class="mb-6 flex items-center justify-between sm:mb-8">
-      <h2 class="font-mono text-lg font-semibold text-text-primary sm:text-xl">
-        Latest Changes
-        <span class="mt-1 block h-0.5 w-12 rounded bg-green/50"></span>
+  <div class="green-divider"></div>
+
+  <!-- Recent Releases -->
+  <section class="below-fold mx-auto max-w-6xl px-4 pb-8 sm:px-6 sm:pb-12">
+    <div class="mb-4 flex items-center justify-between sm:mb-6">
+      <h2 class="font-mono text-base font-semibold text-green sm:text-lg">
+        <span class="text-green">/</span>recent_releases
       </h2>
       <span class="flex items-center gap-2 font-mono text-xs text-text-muted">
         <span class="pulse-dot inline-block h-1.5 w-1.5 rounded-full bg-green"></span>
         updated live from GitHub
       </span>
-    </div>
-
-    <div class="flex gap-3 overflow-x-auto pb-2 sm:grid sm:grid-cols-2 sm:overflow-visible sm:pb-0 lg:grid-cols-5">
-      {latestChangesTools.map(({ id, tool, release, highlights }) => (
-        <div class="min-w-[260px] flex-shrink-0 sm:min-w-0" data-latest-tool={id}>
-          {release && tool ? (
-            <a
-              href={`/tools/${id}`}
-              class="group flex h-full flex-col rounded-lg border border-border bg-bg-card p-4 transition-all duration-200 hover:border-green/40 hover:shadow-[0_0_12px_rgba(51,255,51,0.08)] sm:p-5"
-            >
-              <div class="flex items-center justify-between gap-2">
-                <span class="font-mono text-sm font-semibold text-text-primary">{tool.name}</span>
-                <span class="shrink-0 rounded border border-green/30 bg-green/10 px-2 py-0.5 font-mono text-xs text-green">
-                  {release.version}
-                </span>
-              </div>
-              <span class="mt-1 font-mono text-xs text-text-muted">
-                {relativeTime(release.date)}
-              </span>
-
-              <div class="my-3 border-t border-border"></div>
-
-              {release.name && release.name !== release.version && (
-                <p class="mb-2 truncate font-mono text-xs text-text-secondary">
-                  {release.name}
-                </p>
-              )}
-
-              {highlights.length > 0 ? (
-                <ul class="flex-1 space-y-1.5">
-                  {highlights.map((h) => (
-                    <li class="flex gap-2 font-mono text-[11px] leading-snug text-text-muted">
-                      <span class="shrink-0 text-green/70">&mdash;</span>
-                      <span class="line-clamp-2">{h}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p class="flex-1 font-mono text-[11px] text-text-muted/70">no release notes</p>
-              )}
-
-              <div class="mt-3 flex items-center justify-between">
-                <span class="font-mono text-[10px] text-text-muted">{tool.repo}</span>
-                <span class="text-green transition-transform duration-200 ease-out group-hover:translate-x-1.5 group-hover:text-green-bright">&rarr;</span>
-              </div>
-            </a>
-          ) : (
-            <div class="flex h-full flex-col items-center justify-center rounded-lg border border-dashed border-border bg-bg-card p-5">
-              <span class="font-mono text-xs text-text-muted">no data yet</span>
-            </div>
-          )}
-        </div>
-      ))}
-    </div>
-  </section>
-
-
-  <div class="green-divider"></div>
-
-  <!-- Section 4: Tools grid -->
-  <section id="all-tools" class="below-fold mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
-    <div class="mb-6 flex items-center justify-between sm:mb-8">
-      <h2 class="font-mono text-base font-semibold text-green sm:text-lg">
-        <span class="text-green">/</span>all_tools
-      </h2>
-      <span class="font-mono text-xs text-text-muted sm:text-sm">
-        <span class="text-green">[</span>{tools.length}<span class="text-green">]</span>
-      </span>
-    </div>
-
-    <!-- Category filter -->
-    <div class="mb-6 flex flex-wrap gap-2 font-mono text-xs" id="category-filters">
-      <button class="category-filter-btn rounded border border-green bg-green/10 px-3 py-1.5 text-green transition-all" data-category="all">All</button>
-      {categories.map((cat) => (
-        <button class="category-filter-btn rounded border border-border bg-bg-tertiary px-3 py-1.5 text-text-muted transition-all hover:border-green hover:text-green" data-category={cat}>
-          {cat === "cli" ? "CLI" : cat === "ide" ? "IDE" : cat === "ide-extension" ? "Extension" : cat === "harness" ? "Platform" : cat}
-        </button>
-      ))}
-    </div>
-
-    <div class="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 items-stretch reveal-stagger" id="tools-grid">
-      {tools.map((tool) => (
-        <div class="reveal tool-grid-item" data-category={tool.category}>
-          <ToolCard tool={tool} latestRelease={releaseMap[tool.id]} />
-        </div>
-      ))}
-    </div>
-  </section>
-
-  <div class="green-divider"></div>
-
-  <!-- Section 5: Get clwatch — dual install -->
-  <section class="below-fold border-y border-border py-12 sm:py-16">
-    <div class="mx-auto max-w-6xl px-4 sm:px-6">
-      <div class="mb-8">
-        <h2 class="font-mono text-xl font-semibold text-text-primary">Get clwatch</h2>
-        <p class="mt-1 font-sans text-sm text-text-secondary">Install once. Works for you and your AI agents.</p>
-      </div>
-
-      <div class="grid gap-6 md:grid-cols-2">
-        <!-- Left column — For Humans -->
-        <div class="flex flex-col">
-          <span class="mb-3 inline-flex w-fit items-center rounded-full border border-border bg-bg-card px-3 py-1 font-mono text-xs text-text-secondary">For Humans</span>
-
-          <div class="flex flex-1 flex-col rounded-lg border border-border bg-bg-card">
-            <div class="border-b border-border px-4 py-2 font-mono text-xs text-text-muted">
-              <span class="text-green/40">●●●</span> <span class="ml-2">install.sh</span>
-            </div>
-            <div class="flex flex-1 flex-col gap-0 p-4">
-              <!-- brew -->
-              <div class="clwatch-cmd-row group flex items-center justify-between rounded px-3 py-2 hover:bg-bg-tertiary/50">
-                <div class="font-mono text-sm">
-                  <span class="text-text-muted"># macOS / Linux</span><br/>
-                  <span class="text-text-primary">brew install clwatch</span>
-                </div>
-                <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-xs text-text-muted opacity-0 transition-all hover:text-green group-hover:opacity-100" data-copy="brew install clwatch">copy</button>
-              </div>
-              <!-- npm -->
-              <div class="clwatch-cmd-row group flex items-center justify-between rounded px-3 py-2 hover:bg-bg-tertiary/50">
-                <div class="font-mono text-sm">
-                  <span class="text-text-muted"># Anywhere (npm)</span><br/>
-                  <span class="text-text-primary">npm install -g clwatch</span>
-                </div>
-                <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-xs text-text-muted opacity-0 transition-all hover:text-green group-hover:opacity-100" data-copy="npm install -g clwatch">copy</button>
-              </div>
-              <!-- npx -->
-              <div class="clwatch-cmd-row group flex items-center justify-between rounded px-3 py-2 hover:bg-bg-tertiary/50">
-                <div class="font-mono text-sm">
-                  <span class="text-text-muted"># No install needed</span><br/>
-                  <span class="text-text-primary">npx clwatch diff</span>
-                </div>
-                <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-xs text-text-muted opacity-0 transition-all hover:text-green group-hover:opacity-100" data-copy="npx clwatch diff">copy</button>
-              </div>
-            </div>
-          </div>
-
-          <p class="mt-3 font-sans text-xs text-text-muted">Then run <code class="font-mono text-text-secondary">clwatch diff</code> to see what changed in your tools.</p>
-        </div>
-
-        <!-- Right column — For Agents -->
-        <div class="flex flex-col">
-          <span class="mb-3 inline-flex w-fit items-center rounded-full border border-cyan/30 bg-cyan/10 px-3 py-1 font-mono text-xs text-cyan">For Agents</span>
-
-          <div class="flex flex-1 flex-col rounded-lg border border-border bg-bg-card">
-            <div class="border-b border-border px-4 py-2 font-mono text-xs text-text-muted">
-              <span class="text-green/40">●●●</span> <span class="ml-2">agent-setup.sh</span>
-            </div>
-            <div class="flex flex-1 flex-col gap-0 p-4">
-              <!-- zero-install -->
-              <div class="clwatch-cmd-row group flex items-center justify-between rounded px-3 py-2 hover:bg-bg-tertiary/50">
-                <div class="font-mono text-sm">
-                  <span class="text-text-muted"># Zero-install — run directly in any agent</span><br/>
-                  <span class="text-text-primary">npx clwatch diff</span><br/>
-                  <span class="text-text-primary">uvx clwatch diff</span>
-                </div>
-                <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-xs text-text-muted opacity-0 transition-all hover:text-cyan group-hover:opacity-100" data-copy="npx clwatch diff">copy</button>
-              </div>
-              <!-- init -->
-              <div class="clwatch-cmd-row group flex items-center justify-between rounded px-3 py-2 hover:bg-bg-tertiary/50">
-                <div class="font-mono text-sm">
-                  <span class="text-text-muted"># Install the skill into your workspace</span><br/>
-                  <span class="text-text-primary">clwatch init</span>
-                </div>
-                <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-xs text-text-muted opacity-0 transition-all hover:text-cyan group-hover:opacity-100" data-copy="clwatch init">copy</button>
-              </div>
-              <!-- diff -->
-              <div class="clwatch-cmd-row group flex items-center justify-between rounded px-3 py-2 hover:bg-bg-tertiary/50">
-                <div class="font-mono text-sm">
-                  <span class="text-text-muted"># Check what changed</span><br/>
-                  <span class="text-text-primary">clwatch diff</span>
-                </div>
-                <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-xs text-text-muted opacity-0 transition-all hover:text-cyan group-hover:opacity-100" data-copy="clwatch diff">copy</button>
-              </div>
-              <!-- refresh -->
-              <div class="clwatch-cmd-row group flex items-center justify-between rounded px-3 py-2 hover:bg-bg-tertiary/50">
-                <div class="font-mono text-sm">
-                  <span class="text-text-muted"># Refresh your reference files</span><br/>
-                  <span class="text-text-primary">clwatch refresh claude-code</span>
-                </div>
-                <button class="copy-btn shrink-0 rounded px-2 py-1 font-mono text-xs text-text-muted opacity-0 transition-all hover:text-cyan group-hover:opacity-100" data-copy="clwatch refresh claude-code">copy</button>
-              </div>
-            </div>
-          </div>
-
-          <p class="mt-3 font-sans text-xs text-text-muted">Drop clwatch into any Claude Code, Codex CLI, Gemini CLI, or OpenClaw workspace. The skill auto-runs on session start and patches your configs when tools update.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="green-divider"></div>
-
-  <!-- Section 6: How it works -->
-  <section class="below-fold mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
-    <h2 class="reveal mb-6 font-mono text-lg text-green sm:mb-8">
-      <span class="text-green">&gt;</span> how it works
-    </h2>
-    <HowItWorks />
-  </section>
-
-  <div class="green-divider"></div>
-
-  <!-- Section 7: Recent releases -->
-  <section class="below-fold mx-auto max-w-6xl px-4 pb-8 sm:px-6 sm:pb-12">
-    <div class="reveal mb-4 flex items-center justify-between sm:mb-6">
-      <h2 class="font-mono text-base font-semibold text-green sm:text-lg">
-        <span class="text-green">/</span>recent_releases
-      </h2>
-      <a href="#all-tools" class="font-mono text-xs text-text-muted transition-colors hover:text-green">view all &rarr;</a>
     </div>
 
     {Object.keys(releaseMap).length > 0 ? (
@@ -378,22 +145,24 @@ const latestChangesTools = CLWATCH_TOOLS.map((id) => {
         </div>
         <div class="space-y-0 p-2 sm:p-3">
           {Object.entries(releaseMap)
-            .sort(([, a], [, b]) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            .sort(([, a], [, b]) => new Date(b.latest.date).getTime() - new Date(a.latest.date).getTime())
             .slice(0, 10)
-            .map(([toolId, release]) => {
-              const tool = tools.find((t) => t.id === toolId);
+            .map(([toolId, { latest: release }]) => {
+              const tool = getToolById(toolId);
+              const section = SECTIONS.find((s) => s.toolId === toolId);
               const date = new Date(release.date);
               const timestamp = date.toLocaleDateString("en-US", { month: "short", day: "2-digit" });
+              const href = section ? section.route : `/tools/${toolId}`;
               return tool ? (
                 <a
-                  href={`/tools/${toolId}`}
+                  href={href}
                   class="release-card block rounded border border-transparent px-2 py-2 font-mono text-xs transition-all hover:border-green hover:bg-bg-tertiary/50 sm:px-3 sm:text-sm"
                 >
                   <span class="text-text-muted">[{timestamp}]</span>
                   <span class="ml-2 text-green">{release.version}</span>
                   <span class="ml-2 text-cyan">{tool.name}</span>
                   {release.name !== release.version && (
-                    <span class="ml-2 hidden text-text-secondary sm:inline">━━ "{release.name}"</span>
+                    <span class="ml-2 hidden text-text-secondary sm:inline">--- "{release.name}"</span>
                   )}
                 </a>
               ) : null;
@@ -409,210 +178,42 @@ const latestChangesTools = CLWATCH_TOOLS.map((id) => {
     )}
   </section>
 
-  <!-- Section 8: Newsletter -->
-  <section class="below-fold mx-auto max-w-4xl px-4 pb-12 sm:px-6 sm:pb-16">
+  <div class="green-divider"></div>
+
+  <!-- Newsletter CTA -->
+  <section class="below-fold mx-auto max-w-4xl px-4 py-6 sm:px-6 sm:py-8">
+    <a href="/newsletter/" class="group flex items-center justify-between rounded-lg border border-green/20 bg-bg-card px-5 py-4 transition-all hover:border-green/40 hover:shadow-[0_0_16px_rgba(51,255,51,0.08)]">
+      <div>
+        <p class="font-mono text-sm font-semibold text-green">Weekly changelog digest</p>
+        <p class="mt-1 font-sans text-xs text-text-muted">Breaking changes, new features, and config updates — delivered every Monday.</p>
+      </div>
+      <span class="font-mono text-sm text-green opacity-0 transition-all group-hover:opacity-100 group-hover:translate-x-1">&rarr;</span>
+    </a>
+  </section>
+
+  <div class="green-divider"></div>
+
+  <!-- clwatch CTA -->
+  <section class="below-fold mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
     <div class="rounded-lg border border-border bg-bg-card">
       <div class="border-b border-border px-3 py-2 font-mono text-xs text-text-muted sm:px-4">
-        <span class="text-green">●●●</span> <span class="ml-2">newsletter.sh</span>
+        <span class="text-green">●●●</span> <span class="ml-2">clwatch.sh</span>
       </div>
       <div class="p-4 sm:p-6">
         <h3 class="font-mono text-base font-semibold text-green sm:text-lg">
-          <span class="text-green">#</span> weekly changelog digests
+          <span class="text-green">#</span> keep your configs current
         </h3>
         <p class="mt-2 font-mono text-xs text-text-secondary sm:text-sm">
-          <span class="text-text-muted">//</span> one email with the most important updates
+          <span class="text-text-muted">//</span> clwatch patches your agent configs when tools update
         </p>
-        <form id="newsletter-form" method="post" action="/api/subscribe" class="mt-4 flex flex-col gap-3 sm:flex-row">
-          <input
-            id="newsletter-email"
-            type="email"
-            name="email"
-            required
-            placeholder="your@email.com — get weekly AI tool updates"
-            class="w-full rounded border border-border bg-bg-tertiary px-4 py-3 font-mono text-sm text-text-primary outline-none transition-all focus:border-green focus:shadow-[0_0_8px_rgba(51,255,51,0.2)]"
-          />
-          <button
-            type="submit"
-            class="email-submit-btn rounded border border-accent bg-accent px-5 py-3 font-mono text-sm font-medium text-white transition-all hover:bg-accent-hover"
-          >
-            subscribe
-          </button>
-        </form>
-        <div id="newsletter-success" class="mt-4 hidden font-mono text-xs text-green">
-          ✓ subscribed. you'll get a digest when there's something worth reading.
+        <div class="mt-4 rounded bg-bg-tertiary px-4 py-3">
+          <pre class="font-mono text-sm text-text-secondary"><span class="text-green">$</span> npx clwatch diff
+<span class="text-green">$</span> clwatch refresh claude-code</pre>
         </div>
-        <div id="newsletter-error" class="mt-4 hidden font-mono text-xs text-red">
-          something broke. try again or just use the RSS feed.
-        </div>
+        <a href="/clwatch" class="mt-4 inline-block font-mono text-sm text-cyan transition-colors hover:text-cyan/80">
+          learn more &rarr;
+        </a>
       </div>
     </div>
   </section>
-
-  <script>
-    // Copy button logic for clwatch install section
-    document.querySelectorAll('.copy-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const text = btn.getAttribute('data-copy');
-        if (!text) return;
-        navigator.clipboard.writeText(text).then(() => {
-          const original = btn.textContent;
-          btn.textContent = '\u2713';
-          btn.classList.add('text-green');
-          setTimeout(() => {
-            btn.textContent = original;
-            btn.classList.remove('text-green');
-          }, 1500);
-        });
-      });
-    });
-
-    // Newsletter form
-    const newsletterForm = document.getElementById('newsletter-form');
-    const newsletterSuccess = document.getElementById('newsletter-success');
-    const newsletterError = document.getElementById('newsletter-error');
-    const emailInput = document.getElementById('newsletter-email') as HTMLInputElement;
-    const submitBtn = newsletterForm?.querySelector('.email-submit-btn') as HTMLButtonElement | null;
-
-    newsletterForm?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!emailInput?.value) return;
-
-      // Reset states
-      newsletterSuccess?.classList.add('hidden');
-      newsletterError?.classList.add('hidden');
-      if (submitBtn) {
-        submitBtn.textContent = '...';
-        submitBtn.disabled = true;
-      }
-
-      try {
-        const res = await fetch('/api/subscribe', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: emailInput.value }),
-        });
-        const data = await res.json();
-
-        if (data.ok) {
-          newsletterForm.style.display = 'none';
-          newsletterSuccess?.classList.remove('hidden');
-        } else {
-          newsletterError?.classList.remove('hidden');
-          if (submitBtn) {
-            submitBtn.textContent = 'subscribe';
-            submitBtn.disabled = false;
-          }
-        }
-      } catch {
-        newsletterError?.classList.remove('hidden');
-        if (submitBtn) {
-          submitBtn.textContent = 'subscribe';
-          submitBtn.disabled = false;
-        }
-      }
-    });
-
-    // Category filter logic
-    const filterBtns = document.querySelectorAll('.category-filter-btn');
-    const gridItems = document.querySelectorAll('.tool-grid-item');
-
-    filterBtns.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const category = btn.getAttribute('data-category');
-
-        // Update active button styles
-        filterBtns.forEach((b) => {
-          b.classList.remove('border-green', 'bg-green/10', 'text-green');
-          b.classList.add('border-border', 'bg-bg-tertiary', 'text-text-muted');
-        });
-        btn.classList.remove('border-border', 'bg-bg-tertiary', 'text-text-muted');
-        btn.classList.add('border-green', 'bg-green/10', 'text-green');
-
-        // Filter grid items
-        gridItems.forEach((item) => {
-          const el = item as HTMLElement;
-          if (category === 'all' || item.getAttribute('data-category') === category) {
-            el.style.display = '';
-          } else {
-            el.style.display = 'none';
-          }
-        });
-      });
-    });
-
-    // My Tools filter — persist to localStorage
-    (function() {
-      const STORAGE_KEY = 'changelogs:my-tools';
-      const btns = document.querySelectorAll('.my-tool-btn');
-      const clearBtn = document.getElementById('clear-tools-filter');
-      const gridItems = document.querySelectorAll('.tool-grid-item');
-      const latestCards = document.querySelectorAll('[data-latest-tool]');
-
-      let selected = [];
-      try { selected = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch {}
-
-      function applyFilter() {
-        const allActive = selected.length === 0;
-
-        // Toggle button styles
-        btns.forEach(b => {
-          const tid = b.getAttribute('data-tool');
-          if (selected.includes(tid)) {
-            b.classList.add('border-green', 'bg-green/10', 'text-green');
-            b.classList.remove('border-border', 'text-text-muted');
-          } else {
-            b.classList.remove('border-green', 'bg-green/10', 'text-green');
-            b.classList.add('border-border', 'text-text-muted');
-          }
-        });
-
-        // Show/hide clear button
-        if (clearBtn) clearBtn.classList.toggle('hidden', selected.length === 0);
-
-        // Filter grid
-        gridItems.forEach(item => {
-          const tid = item.getAttribute('data-category');
-          // tools grid doesn't have data-tool, check by tool name lookup
-          (item as HTMLElement).style.display = '';
-        });
-
-        // Filter latest changes cards
-        latestCards.forEach(card => {
-          const tid = card.getAttribute('data-latest-tool');
-          (card as HTMLElement).style.display = (allActive || selected.includes(tid)) ? '' : 'none';
-        });
-
-        // Filter tool grid items by tool name in the card
-        gridItems.forEach(item => {
-          const card = item.querySelector('a[href*="/tools/"]');
-          const href = card?.getAttribute('href') || '';
-          const toolId = href.split('/tools/')[1];
-          (item as HTMLElement).style.display = (allActive || selected.includes(toolId)) ? '' : 'none';
-        });
-      }
-
-      btns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const tid = btn.getAttribute('data-tool');
-          if (!tid) return;
-          if (selected.includes(tid)) {
-            selected = selected.filter(t => t !== tid);
-          } else {
-            selected.push(tid);
-          }
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(selected));
-          applyFilter();
-        });
-      });
-
-      clearBtn?.addEventListener('click', () => {
-        selected = [];
-        localStorage.removeItem(STORAGE_KEY);
-        applyFilter();
-      });
-
-      // Apply on load
-      applyFilter();
-    })();
-  </script>
 </BaseLayout>

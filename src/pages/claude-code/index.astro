@@ -1,0 +1,199 @@
+---
+import SectionLayout from "../../layouts/SectionLayout.astro";
+import ReleaseCard from "../../components/ReleaseCard.astro";
+import BreakingChangesSummary from "../../components/BreakingChangesSummary.astro";
+import { getSectionById } from "../../lib/sections";
+import { getToolById, getToolReleases, relativeTime } from "../../lib/releases";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
+const section = getSectionById("claude-code")!;
+const tool = getToolById("claude-code");
+const data = await getToolReleases("claude-code");
+const releases = data?.releases || [];
+const stableReleases = releases.filter((r) => !r.prerelease);
+const latestStable = stableReleases[0];
+const latestRelease = releases[0];
+
+let cs: any = {};
+try {
+  const raw = readFileSync(join(process.cwd(), "src/content/cheatsheets-json/claude-code.json"), "utf-8");
+  cs = JSON.parse(raw);
+} catch {}
+const dailyWorkflows = (cs.dailyWorkflows || []).slice(0, 4);
+const powerMoves = (cs.powerMoves || []).slice(0, 4);
+---
+
+<SectionLayout
+  section={section}
+  title="Claude Code — changelogs.info"
+  description="Track Claude Code releases, breaking changes, and config updates."
+  latestRelease={latestStable || latestRelease}
+  heroDescription={tool?.description}
+  repo={tool?.repo}
+>
+    <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+      {releases.length > 0 && (
+        <div class="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {latestStable && (
+            <div class="rounded-lg border bg-bg-card px-4 py-3" style={`border-color: rgba(${section.colorRgb}, 0.15);`}>
+              <p class="font-mono text-[10px] uppercase tracking-wider text-text-muted">latest</p>
+              <p class="mt-1 font-mono text-base font-bold" style={`color: ${section.color};`}>{latestStable.version}</p>
+            </div>
+          )}
+          <div class="rounded-lg border border-border bg-bg-card px-4 py-3">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-text-muted">releases</p>
+            <p class="mt-1 font-mono text-base font-bold text-cyan">{releases.length}</p>
+          </div>
+          <div class="rounded-lg border border-border bg-bg-card px-4 py-3">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-text-muted">stable</p>
+            <p class="mt-1 font-mono text-base font-bold text-text-primary">{stableReleases.length}</p>
+          </div>
+          {data?.lastUpdated && (
+            <div class="rounded-lg border border-border bg-bg-card px-4 py-3">
+              <p class="font-mono text-[10px] uppercase tracking-wider text-text-muted">updated</p>
+              <p class="mt-1 font-mono text-xs text-text-secondary">{relativeTime(data.lastUpdated)}</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      <div class="grid gap-8 lg:grid-cols-3">
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Quick Start -->
+          <div class="rounded-lg border bg-bg-card p-4 sm:p-5" style={`border-color: rgba(${section.colorRgb}, 0.2);`}>
+            <h2 class="mb-3 font-mono text-sm font-semibold" style={`color: ${section.color};`}>
+              <span class="opacity-60">#</span> quick_start
+            </h2>
+            <div class="space-y-2 rounded bg-bg-tertiary p-4">
+              <pre class="font-mono text-xs text-text-secondary"><span style={`color: ${section.color};`}>$</span> npx clwatch diff claude-code</pre>
+              <pre class="font-mono text-xs text-text-secondary"><span style={`color: ${section.color};`}>$</span> clwatch refresh claude-code</pre>
+              <pre class="font-mono text-xs text-text-secondary"><span style={`color: ${section.color};`}>$</span> claude --version</pre>
+            </div>
+          </div>
+
+          {(latestStable || latestRelease) && (
+            <div>
+              <h2 class="mb-4 font-mono text-sm uppercase tracking-wider text-text-muted">Latest Release</h2>
+              <ReleaseCard
+                release={latestStable || latestRelease!}
+                sectionColor={section.color}
+                sectionRgb={section.colorRgb}
+                toolId={section.id}
+              />
+            </div>
+          )}
+
+          {releases.length > 0 && (
+            <div>
+              <h2 class="mb-4 font-mono text-sm uppercase tracking-wider text-text-muted">Breaking Changes</h2>
+              <BreakingChangesSummary releases={releases} sectionColor={section.color} sectionRgb={section.colorRgb} />
+            </div>
+          )}
+        </div>
+
+        <div class="space-y-6">
+          <div class="rounded-lg border bg-bg-card p-4" style={`border-color: rgba(${section.colorRgb}, 0.2);`}>
+            <p class="font-mono text-xs font-semibold" style={`color: ${section.color};`}>clwatch</p>
+            <p class="mt-1 font-mono text-xs text-text-muted">Keep your config current:</p>
+            <pre class="mt-2 rounded bg-bg-tertiary px-3 py-2 font-mono text-xs text-text-secondary"><span style={`color: ${section.color};`}>$</span> clwatch diff claude-code</pre>
+            <a href="/clwatch" class="mt-2 inline-block font-mono text-xs text-cyan transition-colors hover:text-cyan/80">learn more &rarr;</a>
+          </div>
+
+          <div class="rounded-lg border border-border bg-bg-card p-4">
+            <p class="font-mono text-xs font-semibold text-text-primary mb-3">Quick Links</p>
+            <div class="space-y-2">
+              <a href="/claude-code/changelog/" class="block font-mono text-xs text-text-muted transition-colors hover:text-text-primary">
+                <span style={`color: ${section.color};`}>/</span> Full changelog
+              </a>
+              <a href="/claude-code/cheatsheet/" class="block font-mono text-xs text-text-muted transition-colors hover:text-text-primary">
+                <span style={`color: ${section.color};`}>/</span> Cheatsheet
+              </a>
+              <a href="/claude-code/configs/" class="block font-mono text-xs text-text-muted transition-colors hover:text-text-primary">
+                <span style={`color: ${section.color};`}>/</span> Configs
+              </a>
+              <a href="/claude-code/releases/" class="block font-mono text-xs text-text-muted transition-colors hover:text-text-primary">
+                <span style={`color: ${section.color};`}>/</span> All releases
+              </a>
+              {tool?.website && (
+                <a href={tool.website} target="_blank" rel="noopener noreferrer" class="block font-mono text-xs text-text-muted transition-colors hover:text-text-primary">
+                  <span style={`color: ${section.color};`}>/</span> Website &nearr;
+                </a>
+              )}
+              {tool?.repo && (
+                <a href={`https://github.com/${tool.repo}`} target="_blank" rel="noopener noreferrer" class="block font-mono text-xs text-text-muted transition-colors hover:text-text-primary">
+                  <span style={`color: ${section.color};`}>/</span> GitHub &nearr;
+                </a>
+              )}
+            </div>
+          </div>
+
+          {tool?.tags && tool.tags.length > 0 && (
+            <div class="flex flex-wrap gap-2">
+              {tool.tags.map((tag) => (
+                <span class="rounded border border-border/50 bg-bg-tertiary px-2 py-0.5 font-mono text-xs text-text-muted">#{tag}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <!-- Cheatsheet Preview -->
+      {(dailyWorkflows.length > 0 || powerMoves.length > 0) && (
+        <div class="mt-10 border-t pt-8" style={`border-color: rgba(${section.colorRgb}, 0.15);`}>
+          <div class="mb-6 flex items-center justify-between">
+            <h2 class="font-mono text-base font-semibold" style={`color: ${section.color};`}>
+              <span class="opacity-60">//</span> cheat_sheet
+            </h2>
+            <a href="/claude-code/cheatsheet/" class="font-mono text-xs transition-colors hover:opacity-80" style={`color: ${section.color};`}>
+              full cheatsheet &rarr;
+            </a>
+          </div>
+
+          {dailyWorkflows.length > 0 && (
+            <div class="mb-6">
+              <h3 class="mb-3 font-mono text-xs uppercase tracking-wider text-text-muted">Daily Workflows</h3>
+              <div class="space-y-2">
+                {dailyWorkflows.map((wf: any) => (
+                  <details class="group rounded-lg border border-border bg-bg-card transition-all">
+                    <summary class="flex cursor-pointer items-center justify-between px-4 py-3 font-mono text-sm text-text-primary hover:bg-bg-tertiary/50">
+                      <span>{wf.title}</span>
+                      <span class="text-text-muted transition-transform group-open:rotate-90">&rsaquo;</span>
+                    </summary>
+                    <div class="border-t border-border/30 px-4 py-3">
+                      <p class="mb-2 font-sans text-xs text-text-muted">{wf.description}</p>
+                      {wf.command && (
+                        <code class="block rounded bg-bg-tertiary px-3 py-2 font-mono text-xs" style={`color: ${section.color};`}>{wf.command}</code>
+                      )}
+                    </div>
+                  </details>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {powerMoves.length > 0 && (
+            <div>
+              <h3 class="mb-3 font-mono text-xs uppercase tracking-wider text-amber">Power Moves</h3>
+              <div class="grid gap-2 sm:grid-cols-2">
+                {powerMoves.map((pm: any) => (
+                  <details class="group rounded-lg border border-border bg-bg-card transition-all">
+                    <summary class="flex cursor-pointer items-center justify-between px-4 py-3 font-mono text-sm text-text-primary hover:bg-bg-tertiary/50">
+                      <span>{pm.title}</span>
+                      <span class="text-text-muted transition-transform group-open:rotate-90">&rsaquo;</span>
+                    </summary>
+                    <div class="border-t border-border/30 px-4 py-3">
+                      <p class="mb-2 font-sans text-xs text-text-muted">{pm.description}</p>
+                      {pm.command && (
+                        <code class="block rounded bg-bg-tertiary px-3 py-2 font-mono text-xs text-amber">{pm.command}</code>
+                      )}
+                    </div>
+                  </details>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+</SectionLayout>

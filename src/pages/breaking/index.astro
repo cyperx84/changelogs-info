@@ -1,0 +1,207 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getAllToolReleases, formatDate, relativeTime } from "../../lib/releases";
+import type { Release } from "../../lib/releases";
+import { SECTIONS, getSectionByToolId } from "../../lib/sections";
+
+interface BreakingEntry {
+  toolId: string;
+  toolName: string;
+  version: string;
+  date: string;
+  description: string;
+  sectionColor: string;
+  sectionRgb: string;
+  url: string;
+  tier: 1 | 2;
+}
+
+const breakingPatterns = /BREAKING|breaking change|removed|deprecated|incompatible|breaking:|migration required/i;
+const tier1Patterns = /breaking|config|deprecated|removed|migration|incompatible/i;
+
+function extractBreakingDescriptions(body: string): string[] {
+  const lines = body.split("\n");
+  const results: string[] = [];
+  let inBreaking = false;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (/breaking/i.test(trimmed) && /^#{1,4}\s/.test(trimmed)) {
+      inBreaking = true;
+      continue;
+    }
+    if (inBreaking && /^#{1,4}\s/.test(trimmed)) {
+      inBreaking = false;
+    }
+    if (inBreaking && /^[-*]\s+/.test(trimmed)) {
+      let clean = trimmed.replace(/^[-*]\s+/, "").replace(/\*\*/g, "").replace(/`/g, "").replace(/\[([^\]]*)\]\([^)]*\)/g, "$1").trim();
+      if (clean.length > 150) clean = clean.slice(0, 147) + "...";
+      if (clean.length > 5) results.push(clean);
+    }
+  }
+
+  if (results.length === 0) {
+    const bullets = lines.filter((l) => /^[-*]\s+/.test(l.trim()) && /breaking|removed|deprecated|migration|incompatible/i.test(l));
+    for (const b of bullets.slice(0, 5)) {
+      let clean = b.trim().replace(/^[-*]\s+/, "").replace(/\*\*/g, "").replace(/`/g, "").replace(/\[([^\]]*)\]\([^)]*\)/g, "$1").trim();
+      if (clean.length > 150) clean = clean.slice(0, 147) + "...";
+      if (clean.length > 5) results.push(clean);
+    }
+  }
+
+  return results;
+}
+
+const allReleases = await getAllToolReleases();
+const entries: BreakingEntry[] = [];
+
+for (const tr of allReleases) {
+  const section = getSectionByToolId(tr.tool.id);
+  const color = section?.color || "#8b949e";
+  const rgb = section?.colorRgb || "139, 148, 158";
+
+  for (const release of tr.releases) {
+    if (!release.body) continue;
+    const hasBreaking = breakingPatterns.test(release.body);
+    if (!hasBreaking) continue;
+
+    const descriptions = extractBreakingDescriptions(release.body);
+    const desc = descriptions.length > 0 ? descriptions.join(" | ") : "Contains breaking changes — see full changelog";
+    const isTier1 = tier1Patterns.test(release.body);
+
+    entries.push({
+      toolId: tr.tool.id,
+      toolName: tr.tool.name,
+      version: release.version,
+      date: release.date,
+      description: desc,
+      sectionColor: color,
+      sectionRgb: rgb,
+      url: release.url,
+      tier: isTier1 ? 1 : 2,
+    });
+  }
+}
+
+entries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+const toolIds = [...new Set(entries.map((e) => e.toolId))];
+---
+
+<BaseLayout title="Breaking Changes — changelogs.info" description="All breaking changes across AI coding tools, sorted by date.">
+  <section class="relative overflow-hidden border-b border-red/20" style="background: linear-gradient(135deg, rgba(255, 51, 51, 0.06) 0%, transparent 50%);">
+    <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+      <div class="max-w-2xl">
+        <div class="mb-3 flex items-center gap-3">
+          <span class="inline-block h-3 w-3 rounded-sm bg-red" style="box-shadow: 0 0 12px #ff3333;"></span>
+          <span class="font-mono text-xs uppercase tracking-widest text-text-muted">feed</span>
+        </div>
+        <h1 class="font-mono text-3xl font-bold text-red sm:text-4xl">/breaking</h1>
+        <p class="mt-3 font-sans text-sm leading-relaxed text-text-secondary sm:text-base">
+          Every breaking change across all tracked tools. Sorted newest first. Never miss a config-breaking update.
+        </p>
+        <p class="mt-2 font-mono text-xs text-text-muted">
+          {entries.length} breaking change{entries.length !== 1 ? "s" : ""} across {toolIds.length} tool{toolIds.length !== 1 ? "s" : ""}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
+    <!-- Filter buttons -->
+    <div class="mb-6 flex flex-wrap gap-2" id="breaking-filters">
+      <button class="filter-btn active rounded border border-red/40 bg-red/10 px-3 py-1.5 font-mono text-xs text-red transition-all" data-filter="all">
+        All ({entries.length})
+      </button>
+      {toolIds.map((tid) => {
+        const section = getSectionByToolId(tid);
+        const count = entries.filter((e) => e.toolId === tid).length;
+        const name = allReleases.find((tr) => tr.tool.id === tid)?.tool.name || tid;
+        return (
+          <button
+            class="filter-btn rounded border border-border bg-bg-card px-3 py-1.5 font-mono text-xs text-text-muted transition-all hover:border-current"
+            data-filter={tid}
+            data-color={section?.color || "#8b949e"}
+          >
+            {name} ({count})
+          </button>
+        );
+      })}
+    </div>
+
+    <!-- Breaking changes list -->
+    <div class="space-y-3" id="breaking-list">
+      {entries.map((entry) => (
+        <div
+          class="breaking-entry group rounded-lg border bg-bg-card p-4 transition-all duration-200 sm:p-5"
+          data-tool={entry.toolId}
+          style={`border-left: 3px solid ${entry.sectionColor}; border-color: rgba(${entry.sectionRgb}, 0.2); border-left-color: ${entry.sectionColor};`}
+        >
+          <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+            <span class="font-mono text-sm font-bold" style={`color: ${entry.sectionColor};`}>{entry.toolName}</span>
+            <span class="font-mono text-sm font-semibold text-text-primary">{entry.version}</span>
+            {entry.tier === 1 ? (
+              <span class="rounded border border-red bg-red/10 px-1.5 py-0.5 font-mono text-[10px] font-bold text-red">TIER 1</span>
+            ) : (
+              <span class="rounded border border-amber/40 bg-amber/10 px-1.5 py-0.5 font-mono text-[10px] text-amber">TIER 2</span>
+            )}
+            <span class="ml-auto font-mono text-xs text-text-muted">{formatDate(entry.date)}</span>
+            <span class="font-mono text-xs text-text-muted opacity-60">{relativeTime(entry.date)}</span>
+          </div>
+          <p class="mt-2 font-sans text-xs leading-relaxed text-text-secondary line-clamp-3">{entry.description}</p>
+          {entry.url && (
+            <a href={entry.url} target="_blank" rel="noopener noreferrer" class="mt-2 inline-block font-mono text-xs transition-colors hover:opacity-80" style={`color: ${entry.sectionColor};`}>
+              view release &nearr;
+            </a>
+          )}
+        </div>
+      ))}
+    </div>
+
+    {entries.length === 0 && (
+      <div class="rounded-lg border border-dashed border-border bg-bg-card p-8 text-center">
+        <p class="font-mono text-sm text-text-muted">&gt; No breaking changes detected. All clear.</p>
+      </div>
+    )}
+  </div>
+
+  <script>
+    document.addEventListener("astro:page-load", () => {
+      const filters = document.querySelectorAll<HTMLButtonElement>(".filter-btn");
+      const entries = document.querySelectorAll<HTMLElement>(".breaking-entry");
+
+      filters.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const filter = btn.dataset.filter;
+
+          filters.forEach((b) => {
+            b.classList.remove("active");
+            b.style.borderColor = "";
+            b.style.backgroundColor = "";
+            b.style.color = "";
+          });
+
+          btn.classList.add("active");
+          if (filter === "all") {
+            btn.style.borderColor = "rgba(255, 51, 51, 0.4)";
+            btn.style.backgroundColor = "rgba(255, 51, 51, 0.1)";
+            btn.style.color = "#ff3333";
+          } else {
+            const color = btn.dataset.color || "#8b949e";
+            btn.style.borderColor = color;
+            btn.style.backgroundColor = color + "1a";
+            btn.style.color = color;
+          }
+
+          entries.forEach((entry) => {
+            if (filter === "all" || entry.dataset.tool === filter) {
+              entry.style.display = "";
+            } else {
+              entry.style.display = "none";
+            }
+          });
+        });
+      });
+    });
+  </script>
+</BaseLayout>

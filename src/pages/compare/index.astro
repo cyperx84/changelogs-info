@@ -1,0 +1,199 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getAllToolReleases, formatDate } from "../../lib/releases";
+import type { ToolReleases } from "../../lib/releases";
+import { SECTIONS, getSectionByToolId } from "../../lib/sections";
+
+const allToolReleases = await getAllToolReleases();
+
+// Build tool data for client-side JS
+const toolData = allToolReleases.map((tr) => {
+  const section = getSectionByToolId(tr.tool.id);
+  return {
+    id: tr.tool.id,
+    name: tr.tool.name,
+    color: section?.color || "#8b949e",
+    rgb: section?.colorRgb || "139, 148, 158",
+    releases: tr.releases.slice(0, 30).map((r) => ({
+      version: r.version,
+      name: r.name,
+      date: r.date,
+      prerelease: r.prerelease,
+      url: r.url,
+    })),
+  };
+});
+
+const toolDataJson = JSON.stringify(toolData);
+---
+
+<BaseLayout title="Compare Tools — changelogs.info" description="Compare changelogs side-by-side across AI coding tools.">
+  <section class="relative overflow-hidden border-b border-cyan/20" style="background: linear-gradient(135deg, rgba(0, 255, 255, 0.04) 0%, transparent 50%);">
+    <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+      <div class="max-w-2xl">
+        <div class="mb-3 flex items-center gap-3">
+          <span class="inline-block h-3 w-3 rounded-sm bg-cyan" style="box-shadow: 0 0 12px #00ffff;"></span>
+          <span class="font-mono text-xs uppercase tracking-widest text-text-muted">interactive</span>
+        </div>
+        <h1 class="font-mono text-3xl font-bold text-cyan sm:text-4xl">/compare</h1>
+        <p class="mt-3 font-sans text-sm leading-relaxed text-text-secondary sm:text-base">
+          Select tools to compare their changelogs side by side. Spot same-day releases and track changes across your stack.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
+    <!-- Tool selector -->
+    <div class="mb-6 rounded-lg border border-border bg-bg-card p-4 sm:p-5">
+      <p class="mb-3 font-mono text-xs uppercase tracking-wider text-text-muted">Select tools to compare</p>
+      <div class="flex flex-wrap gap-2" id="tool-selector">
+        {toolData.map((t) => (
+          <label class="tool-checkbox flex cursor-pointer items-center gap-2 rounded border border-border bg-bg-tertiary px-3 py-2 font-mono text-xs text-text-muted transition-all hover:border-current" data-tool-id={t.id} data-color={t.color} data-rgb={t.rgb}>
+            <input type="checkbox" class="hidden" value={t.id} checked={t.id === "openclaw" || t.id === "claude-code"} />
+            <span class="inline-block h-2 w-2 rounded-sm" style={`background: ${t.color};`}></span>
+            {t.name}
+          </label>
+        ))}
+      </div>
+    </div>
+
+    <!-- Compare columns -->
+    <div id="compare-container" class="grid gap-4" style="grid-template-columns: repeat(2, 1fr);">
+    </div>
+
+    <div id="compare-empty" class="hidden rounded-lg border border-dashed border-border bg-bg-card p-8 text-center">
+      <p class="font-mono text-sm text-text-muted">&gt; Select at least one tool above to compare.</p>
+    </div>
+  </div>
+
+  <script define:vars={{ toolDataJson }}>
+    const TOOL_DATA = JSON.parse(toolDataJson);
+
+    function formatDateShort(dateStr) {
+      return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    }
+
+    function formatDateFull(dateStr) {
+      return new Date(dateStr).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+    }
+
+    function getDateKey(dateStr) {
+      return dateStr.split("T")[0];
+    }
+
+    function init() {
+      const container = document.getElementById("compare-container");
+      const emptyState = document.getElementById("compare-empty");
+      const checkboxes = document.querySelectorAll(".tool-checkbox input");
+      const labels = document.querySelectorAll(".tool-checkbox");
+
+      function getSelectedTools() {
+        const selected = [];
+        checkboxes.forEach((cb) => {
+          if (cb.checked) {
+            const tool = TOOL_DATA.find((t) => t.id === cb.value);
+            if (tool) selected.push(tool);
+          }
+        });
+        return selected;
+      }
+
+      function updateStyles() {
+        labels.forEach((label) => {
+          const cb = label.querySelector("input");
+          const color = label.dataset.color;
+          if (cb.checked) {
+            label.style.borderColor = color;
+            label.style.color = color;
+            label.style.backgroundColor = color + "1a";
+          } else {
+            label.style.borderColor = "";
+            label.style.color = "";
+            label.style.backgroundColor = "";
+          }
+        });
+      }
+
+      function render() {
+        const selected = getSelectedTools();
+        updateStyles();
+
+        if (selected.length === 0) {
+          container.style.display = "none";
+          emptyState.classList.remove("hidden");
+          return;
+        }
+
+        container.style.display = "grid";
+        emptyState.classList.add("hidden");
+        container.style.gridTemplateColumns = `repeat(${Math.min(selected.length, 4)}, 1fr)`;
+
+        // Collect all dates to find same-day releases
+        const dateToolMap = {};
+        selected.forEach((t) => {
+          t.releases.forEach((r) => {
+            const key = getDateKey(r.date);
+            if (!dateToolMap[key]) dateToolMap[key] = [];
+            dateToolMap[key].push(t.id);
+          });
+        });
+        const sameDayDates = new Set();
+        Object.entries(dateToolMap).forEach(([date, tools]) => {
+          if (tools.length > 1) sameDayDates.add(date);
+        });
+
+        container.innerHTML = selected.map((tool) => {
+          const releasesHtml = tool.releases.map((r) => {
+            const dateKey = getDateKey(r.date);
+            const isSameDay = sameDayDates.has(dateKey);
+            return `
+              <div class="rounded border px-3 py-2.5 transition-all ${isSameDay ? "border-amber/40 bg-amber/5" : "border-border"}" >
+                <div class="flex items-center gap-2">
+                  <span class="font-mono text-xs font-semibold" style="color: ${tool.color};">${r.version}</span>
+                  ${r.prerelease ? '<span class="rounded border border-amber/40 bg-amber/10 px-1 py-0 font-mono text-[9px] text-amber">pre</span>' : ""}
+                  ${isSameDay ? '<span class="rounded bg-amber/20 px-1 py-0 font-mono text-[9px] text-amber" title="Same-day release">sync</span>' : ""}
+                </div>
+                <div class="mt-1 font-mono text-[10px] text-text-muted">${formatDateFull(r.date)}</div>
+                ${r.name && r.name !== r.version ? `<p class="mt-1 font-mono text-[10px] text-text-secondary truncate">${r.name}</p>` : ""}
+              </div>
+            `;
+          }).join("");
+
+          return `
+            <div class="rounded-lg border bg-bg-card" style="border-color: rgba(${tool.rgb}, 0.2);">
+              <div class="sticky top-[57px] z-10 border-b bg-bg-card/95 backdrop-blur-sm px-4 py-3" style="border-color: rgba(${tool.rgb}, 0.2);">
+                <div class="flex items-center gap-2">
+                  <span class="inline-block h-2 w-2 rounded-sm" style="background: ${tool.color};"></span>
+                  <h3 class="font-mono text-sm font-bold" style="color: ${tool.color};">${tool.name}</h3>
+                  <span class="ml-auto font-mono text-[10px] text-text-muted">${tool.releases.length} releases</span>
+                </div>
+              </div>
+              <div class="space-y-1.5 p-3">
+                ${releasesHtml || '<p class="font-mono text-xs text-text-muted py-4 text-center">No releases</p>'}
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      checkboxes.forEach((cb) => {
+        cb.addEventListener("change", render);
+      });
+
+      labels.forEach((label) => {
+        label.addEventListener("click", (e) => {
+          if (e.target.tagName !== "INPUT") {
+            const cb = label.querySelector("input");
+            cb.checked = !cb.checked;
+            cb.dispatchEvent(new Event("change"));
+          }
+        });
+      });
+
+      render();
+    }
+
+    document.addEventListener("astro:page-load", init);
+  </script>
+</BaseLayout>

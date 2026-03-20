@@ -2,19 +2,25 @@
 import "../styles/global.css";
 import Search from "../components/Search.astro";
 import Haptics from "../components/Haptics.astro";
+import { ViewTransitions } from "astro:transitions";
+
+type SectionId = "openclaw" | "claude-code" | "codex-cli" | "models" | "tools";
 
 interface Props {
   title: string;
   description?: string;
+  section?: SectionId;
 }
 
-const { title, description = "Track changelogs for every major AI coding tool. clwatch keeps your agent configs and reference files automatically current." } = Astro.props;
+const { title, description = "Track changelogs for every major AI coding tool. clwatch keeps your agent configs and reference files automatically current.", section } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const currentPath = Astro.url.pathname;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" {...section ? {"data-section": section} : {}}>
   <head>
+    <ViewTransitions />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
@@ -73,9 +79,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
         <!-- Desktop Navigation -->
         <div class="hidden items-center gap-2 md:flex">
-          <a href="/" class="nav-link">Tools</a>
+          <a href="/openclaw/" class:list={["nav-link", { "nav-link-active": section === "openclaw" }]} style={section === "openclaw" ? "color: var(--section-color);" : ""}>OpenClaw</a>
+          <a href="/claude-code/" class:list={["nav-link", { "nav-link-active": section === "claude-code" }]} style={section === "claude-code" ? "color: var(--section-color);" : ""}>Claude Code</a>
+          <a href="/codex-cli/" class:list={["nav-link", { "nav-link-active": section === "codex-cli" }]} style={section === "codex-cli" ? "color: var(--section-color);" : ""}>Codex</a>
+          <a href="/models/" class:list={["nav-link", { "nav-link-active": section === "models" }]} style={section === "models" ? "color: var(--section-color);" : ""}>Models</a>
+          <a href="/tools/" class:list={["nav-link", { "nav-link-active": section === "tools" }]} style={section === "tools" ? "color: var(--section-color);" : ""}>Tools</a>
+          <a href="/breaking/" class="nav-link">Breaking</a>
+          <a href="/compare/" class="nav-link">Compare</a>
           <a href="/clwatch" class="nav-link">clwatch</a>
-          <a href="/cheatsheets" class="nav-link">cheatsheets</a>
           <a href="/feed/all.xml" class="nav-link" title="RSS feed" aria-label="RSS feed">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
               <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19.01 7.38 20 6.18 20C4.98 20 4 19.01 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
@@ -106,9 +117,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       <!-- Mobile Navigation Menu -->
       <div id="mobile-menu" class="mobile-menu hidden border-t border-border bg-bg-primary md:hidden">
         <div class="space-y-1 px-4 py-3">
-          <a href="/" class="mobile-nav-link">Tools</a>
+          <a href="/openclaw/" class="mobile-nav-link" style={section === "openclaw" ? "color: var(--section-color); border-left-color: var(--section-color);" : ""}>OpenClaw</a>
+          <a href="/claude-code/" class="mobile-nav-link" style={section === "claude-code" ? "color: var(--section-color); border-left-color: var(--section-color);" : ""}>Claude Code</a>
+          <a href="/codex-cli/" class="mobile-nav-link" style={section === "codex-cli" ? "color: var(--section-color); border-left-color: var(--section-color);" : ""}>Codex</a>
+          <a href="/models/" class="mobile-nav-link" style={section === "models" ? "color: var(--section-color); border-left-color: var(--section-color);" : ""}>Models</a>
+          <a href="/tools/" class="mobile-nav-link" style={section === "tools" ? "color: var(--section-color); border-left-color: var(--section-color);" : ""}>Tools</a>
+          <a href="/breaking/" class="mobile-nav-link">Breaking</a>
+          <a href="/compare/" class="mobile-nav-link">Compare</a>
           <a href="/clwatch" class="mobile-nav-link">clwatch</a>
-          <a href="/cheatsheets" class="mobile-nav-link">cheatsheets</a>
           <a href="/feed/all.xml" class="mobile-nav-link flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
               <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19.01 7.38 20 6.18 20C4.98 20 4 19.01 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
@@ -147,9 +163,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
             <a href="https://github.com/cyperx84/changelogs-info" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover transition-colors">src</a>
           </p>
           <div class="flex flex-wrap items-center gap-3 font-mono text-xs sm:gap-4">
-            <a href="/" class="footer-link">Tools</a>
+            <a href="/openclaw/" class="footer-link">OpenClaw</a>
+            <a href="/claude-code/" class="footer-link">Claude Code</a>
+            <a href="/codex-cli/" class="footer-link">Codex</a>
+            <a href="/breaking/" class="footer-link">Breaking</a>
+            <a href="/compare/" class="footer-link">Compare</a>
+            <a href="/newsletter/" class="footer-link">Newsletter</a>
             <a href="/clwatch" class="footer-link">clwatch</a>
-            <a href="/cheatsheets" class="footer-link">cheatsheets</a>
             <a href="/feed/all.xml" class="footer-link">RSS</a>
           </div>
         </div>
@@ -324,6 +344,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
       .nav-link:hover {
         color: var(--color-text-primary);
+      }
+
+      .nav-link-active {
+        color: var(--color-text-primary);
+        border-bottom: 2px solid currentColor;
+        border-radius: 0;
+        padding-bottom: calc(0.5rem - 2px);
       }
 
       /* CTA button */

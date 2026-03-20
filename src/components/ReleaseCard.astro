@@ -1,0 +1,98 @@
+---
+import type { Release } from "../lib/releases";
+import { formatDate, relativeTime } from "../lib/releases";
+
+interface Props {
+  release: Release;
+  sectionColor?: string;
+  sectionRgb?: string;
+  toolId?: string;
+  compact?: boolean;
+}
+
+const { release, sectionColor = "#33ff33", sectionRgb = "51, 255, 51", toolId, compact = false } = Astro.props;
+
+const breakingPatterns = /BREAKING|breaking change|removed|deprecated|incompatible|breaking:/i;
+const hasBreaking = release.body ? breakingPatterns.test(release.body) : false;
+
+// Tier classification
+const bodyLower = (release.body || "").toLowerCase();
+const isTier1 = hasBreaking || /\b(config|deprecated|removed|migration|incompatible)\b/i.test(bodyLower);
+
+// Extract first few highlights
+function getHighlights(body: string, max = 3): string[] {
+  if (!body) return [];
+  const lines = body.split("\n");
+  const highlights: string[] = [];
+  for (const line of lines) {
+    if (highlights.length >= max) break;
+    const trimmed = line.trim();
+    if (/^[-*]\s+/.test(trimmed) || /^###\s+/.test(trimmed)) {
+      let clean = trimmed.replace(/^[-*]\s+/, "").replace(/^###\s+/, "").replace(/\*\*/g, "").replace(/`/g, "").replace(/\[([^\]]*)\]\([^)]*\)/g, "$1").trim();
+      if (clean.length < 10) continue;
+      if (clean.length > 100) clean = clean.slice(0, 97) + "...";
+      highlights.push(clean);
+    }
+  }
+  return highlights;
+}
+
+const highlights = getHighlights(release.body || "");
+const detailHref = toolId ? `/${toolId}/changelog/` : undefined;
+---
+
+<div
+  class:list={[
+    "group rounded-lg border bg-bg-card p-4 transition-all duration-200 hover:shadow-[0_0_16px_rgba(var(--glow),0.12)] sm:p-5",
+    isTier1 && "ring-1 ring-red/20",
+  ]}
+  style={`border-color: rgba(${sectionRgb}, 0.15); border-left: 3px solid ${isTier1 ? "var(--color-red, #ff3333)" : sectionColor}; --glow: ${sectionRgb};`}
+>
+  <div class="flex items-start justify-between gap-2">
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="font-mono text-base font-bold" style={`color: ${sectionColor};`}>{release.version}</span>
+      {release.prerelease && (
+        <span class="rounded border border-amber/40 bg-amber/10 px-1.5 py-0.5 font-mono text-[10px] text-amber">pre</span>
+      )}
+      {hasBreaking && (
+        <span class="animate-pulse rounded border border-red bg-red/15 px-2 py-0.5 font-mono text-[10px] font-bold text-red shadow-[0_0_8px_rgba(255,51,51,0.2)]">BREAKING</span>
+      )}
+    </div>
+    <div class="flex items-center gap-2">
+      {isTier1 ? (
+        <span class="rounded-full border border-red/40 bg-red/10 px-2.5 py-0.5 font-mono text-[10px] font-bold text-red">Tier 1</span>
+      ) : (
+        <span class="rounded-full border border-cyan/30 px-2 py-0.5 font-mono text-[10px] text-cyan">Tier 2</span>
+      )}
+    </div>
+  </div>
+
+  <div class="mt-1.5 flex items-center gap-2 font-mono text-xs text-text-muted">
+    <span>{formatDate(release.date)}</span>
+    <span class="opacity-50">|</span>
+    <span>{relativeTime(release.date)}</span>
+  </div>
+
+  {release.name && release.name !== release.version && (
+    <p class="mt-2 font-mono text-sm text-text-secondary truncate">{release.name}</p>
+  )}
+
+  {!compact && highlights.length > 0 && (
+    <ul class="mt-3 space-y-1.5">
+      {highlights.map((h) => (
+        <li class="flex gap-2 font-mono text-[11px] leading-snug text-text-muted">
+          <span class="shrink-0" style={`color: ${isTier1 ? "var(--color-red, #ff3333)" : sectionColor}; opacity: 0.6;`}>&mdash;</span>
+          <span class="line-clamp-2">{h}</span>
+        </li>
+      ))}
+    </ul>
+  )}
+
+  {detailHref && (
+    <div class="mt-3 pt-2 border-t border-border/50">
+      <a href={detailHref} class="font-mono text-xs transition-colors hover:opacity-80" style={`color: ${sectionColor};`}>
+        full changelog &rarr;
+      </a>
+    </div>
+  )}
+</div>

@@ -1,0 +1,95 @@
+---
+import SectionLayout from "../../layouts/SectionLayout.astro";
+import ReleaseEntry from "../../components/ReleaseEntry.astro";
+import { getSectionById } from "../../lib/sections";
+import { getToolReleases } from "../../lib/releases";
+
+const section = getSectionById("openclaw")!;
+const data = await getToolReleases("openclaw");
+const releases = data?.releases || [];
+---
+
+<SectionLayout
+  section={section}
+  title="OpenClaw Changelog — changelogs.info"
+  description="Full changelog for OpenClaw releases."
+  showHero={false}
+>
+
+    <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
+      <div class="mb-8 flex flex-wrap items-center justify-between gap-3">
+        <h1 class="font-mono text-2xl font-bold" style={`color: ${section.color};`}>
+          <span style={`color: ${section.color};`}>/</span>changelog
+        </h1>
+        {releases.length > 5 && (
+          <div class="flex items-center gap-2">
+            <input
+              type="text"
+              id="release-filter"
+              placeholder="filter releases..."
+              class="w-48 rounded border border-border bg-bg-tertiary px-3 py-1.5 font-mono text-xs text-text-primary outline-none transition-all focus:border-green focus:shadow-[0_0_6px_rgba(51,255,51,0.15)] sm:w-56"
+            />
+            <div class="flex gap-1">
+              <button id="filter-stable" class="release-filter-btn rounded border border-border bg-bg-tertiary px-2 py-1 font-mono text-[10px] text-text-muted transition-all hover:border-green hover:text-green" data-filter="stable">stable</button>
+              <button id="filter-breaking" class="release-filter-btn rounded border border-border bg-bg-tertiary px-2 py-1 font-mono text-[10px] text-text-muted transition-all hover:border-red hover:text-red" data-filter="breaking">breaking</button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {releases.length > 0 ? (
+        <div id="releases-list">
+          {releases.map((release) => (
+            <div class="release-item" data-version={release.version} data-name={release.name?.toLowerCase()} data-prerelease={release.prerelease} data-body={release.body?.toLowerCase().slice(0, 500)}>
+              <ReleaseEntry release={release} toolId="openclaw" />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div class="rounded-lg border border-dashed border-border bg-bg-card p-8 text-center">
+          <p class="font-mono text-sm text-text-muted">&gt; no releases tracked yet.</p>
+        </div>
+      )}
+    </div>
+</SectionLayout>
+
+<script>
+  const filter = document.getElementById('release-filter') as HTMLInputElement;
+  const items = document.querySelectorAll('.release-item');
+  const stableBtn = document.getElementById('filter-stable');
+  const breakingBtn = document.getElementById('filter-breaking');
+  let activeFilter = '';
+
+  function applyFilters() {
+    const query = (filter?.value || '').toLowerCase();
+    items.forEach((el) => {
+      const version = el.getAttribute('data-version') || '';
+      const name = el.getAttribute('data-name') || '';
+      const body = el.getAttribute('data-body') || '';
+      const prerelease = el.getAttribute('data-prerelease') === 'true';
+      const textMatch = !query || version.includes(query) || name.includes(query) || body.includes(query);
+      let filterMatch = true;
+      if (activeFilter === 'stable') filterMatch = !prerelease;
+      if (activeFilter === 'breaking') filterMatch = body.includes('breaking');
+      (el as HTMLElement).style.display = textMatch && filterMatch ? '' : 'none';
+    });
+  }
+
+  filter?.addEventListener('input', applyFilters);
+
+  [stableBtn, breakingBtn].forEach((btn) => {
+    btn?.addEventListener('click', () => {
+      const f = btn.getAttribute('data-filter') || '';
+      if (activeFilter === f) {
+        activeFilter = '';
+        btn.classList.remove('border-green', 'text-green', 'border-red', 'text-red');
+      } else {
+        activeFilter = f;
+        document.querySelectorAll('.release-filter-btn').forEach((b) => b.classList.remove('border-green', 'text-green', 'border-red', 'text-red'));
+        if (f === 'stable') btn.classList.add('border-green', 'text-green');
+        if (f === 'breaking') btn.classList.add('border-red', 'text-red');
+      }
+      applyFilters();
+    });
+  });
+</script>

@@ -1,0 +1,116 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ToolCard from "../../components/ToolCard.astro";
+import { TOOLS_SECTION, SECTIONS } from "../../lib/sections";
+import { getTools, getAllToolReleases } from "../../lib/releases";
+import type { Release } from "../../lib/releases";
+
+const s = TOOLS_SECTION;
+const tools = getTools();
+const sectionToolIds = SECTIONS.map((sec) => sec.toolId);
+
+// Secondary tools = those not featured as primary sections
+const secondaryTools = tools.filter((t) => !sectionToolIds.includes(t.id));
+
+let releaseMap: Record<string, Release> = {};
+try {
+  const allReleases = await getAllToolReleases();
+  for (const tr of allReleases) {
+    const stable = tr.releases.find((r) => !r.prerelease);
+    if (stable) {
+      releaseMap[tr.tool.id] = stable;
+    } else if (tr.releases.length > 0) {
+      releaseMap[tr.tool.id] = tr.releases[0];
+    }
+  }
+} catch {}
+
+const toolDescriptions: Record<string, string> = {
+  cursor: "AI-first code editor built on VS Code with built-in LLM integration",
+  cline: "Autonomous coding agent that lives in your IDE",
+  continue: "Open-source AI code assistant for VS Code and JetBrains",
+  "roo-code": "AI coding assistant with multi-model support and custom modes",
+  windsurf: "AI-powered code editor by Codeium with Cascade agent",
+  "gemini-cli": "Google's AI coding assistant for the terminal",
+  opencode: "Open-source terminal AI coding tool with multi-provider support",
+};
+---
+
+<BaseLayout title="Tools — changelogs.info" description="All tracked AI coding tools." section="tools">
+  <section
+    class="relative overflow-hidden border-b"
+    style={`border-color: rgba(${s.colorRgb}, 0.2); background: linear-gradient(135deg, rgba(${s.colorRgb}, 0.05) 0%, transparent 60%);`}
+  >
+    <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+      <div class="max-w-2xl">
+        <div class="mb-3 flex items-center gap-3">
+          <span class="inline-block h-3 w-3 rounded-sm" style={`background: ${s.color}; box-shadow: 0 0 12px ${s.color};`}></span>
+          <span class="font-mono text-xs uppercase tracking-widest text-text-muted">section</span>
+        </div>
+        <h1 class="font-mono text-3xl font-bold sm:text-4xl" style={`color: ${s.color};`}>Tools</h1>
+        <p class="mt-3 font-sans text-sm leading-relaxed text-text-secondary sm:text-base">
+          IDE extensions, editors, and platforms tracked by changelogs.info. Every release, every breaking change.
+        </p>
+        <p class="mt-2 font-mono text-xs text-text-muted">
+          {secondaryTools.length} tool{secondaryTools.length !== 1 ? "s" : ""} tracked
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+    {secondaryTools.length > 0 ? (
+      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 items-stretch">
+        {secondaryTools.map((tool) => (
+          <div class="rounded-lg border border-border bg-bg-card p-4 sm:p-5 transition-all hover:border-text-muted/30">
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <div>
+                <a href={`/tools/${tool.id}/`} class="font-mono text-base font-bold text-text-primary transition-colors hover:text-cyan">
+                  {tool.name}
+                </a>
+                <p class="mt-1 font-sans text-xs text-text-muted leading-relaxed">
+                  {toolDescriptions[tool.id] || tool.description}
+                </p>
+              </div>
+            </div>
+
+            {releaseMap[tool.id] && (
+              <div class="mb-3 flex items-center gap-2 font-mono text-xs">
+                <span class="rounded bg-cyan/10 px-2 py-0.5 text-cyan">{releaseMap[tool.id].version}</span>
+                <span class="text-text-muted">
+                  {new Date(releaseMap[tool.id].date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                </span>
+              </div>
+            )}
+
+            <div class="flex items-center gap-3 pt-2 border-t border-border/30">
+              <a href={`/tools/${tool.id}/`} class="font-mono text-xs text-cyan transition-colors hover:text-cyan/80">
+                changelog &rarr;
+              </a>
+              {tool.repo && (
+                <a href={`https://github.com/${tool.repo}`} target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-text-muted transition-colors hover:text-text-secondary">
+                  github &nearr;
+                </a>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div class="rounded-lg border border-dashed border-border bg-bg-card p-8 text-center">
+        <p class="font-mono text-sm text-text-muted">&gt; no secondary tools tracked yet.</p>
+      </div>
+    )}
+
+    <!-- Primary sections reminder -->
+    <div class="mt-8 rounded-lg border border-border bg-bg-card p-5">
+      <p class="mb-3 font-mono text-xs font-semibold text-text-primary">Primary sections</p>
+      <p class="mb-4 font-sans text-xs text-text-muted">These tools have dedicated section pages with full changelog, cheatsheet, and config tracking:</p>
+      <div class="flex flex-wrap gap-3 font-mono text-xs">
+        <a href="/openclaw/" class="rounded border px-3 py-1.5 transition-all hover:bg-[#ff3333]/10" style="border-color: rgba(255, 51, 51, 0.3); color: #ff3333;">OpenClaw</a>
+        <a href="/claude-code/" class="rounded border px-3 py-1.5 transition-all hover:bg-[#ffb800]/10" style="border-color: rgba(255, 184, 0, 0.3); color: #ffb800;">Claude Code</a>
+        <a href="/codex-cli/" class="rounded border px-3 py-1.5 transition-all hover:bg-[#33ff33]/10" style="border-color: rgba(51, 255, 51, 0.3); color: #33ff33;">Codex CLI</a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,64 @@
+---
+import SectionLayout from "../../layouts/SectionLayout.astro";
+import { getSectionById } from "../../lib/sections";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
+const section = getSectionById("openclaw")!;
+
+let configs: any[] = [];
+try {
+  const raw = readFileSync(join(process.cwd(), "src/content/configs/openclaw.json"), "utf-8");
+  configs = JSON.parse(raw);
+} catch {}
+---
+
+<SectionLayout
+  section={section}
+  title="OpenClaw Configs — changelogs.info"
+  description="Configuration examples for OpenClaw."
+  showHero={false}
+>
+  <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
+    <h1 class="mb-2 font-mono text-2xl font-bold" style={`color: ${section.color};`}>
+      <span style={`color: ${section.color};`}>/</span>configs
+    </h1>
+    <p class="mb-8 font-sans text-sm text-text-muted">Configuration examples and templates for OpenClaw.</p>
+
+    {configs.length > 0 ? (
+      <div class="space-y-4">
+        {configs.map((cfg: any) => (
+          <details class="group rounded-lg border bg-bg-card transition-all" style={`border-color: rgba(${section.colorRgb}, 0.15);`}>
+            <summary class="flex cursor-pointer items-center justify-between px-5 py-4 hover:bg-bg-tertiary/30">
+              <div>
+                <h3 class="font-mono text-sm font-semibold text-text-primary">{cfg.name}</h3>
+                <p class="mt-1 font-sans text-xs text-text-muted">{cfg.description}</p>
+                {cfg.tags && (
+                  <div class="mt-2 flex flex-wrap gap-1.5">
+                    {cfg.tags.map((tag: string) => (
+                      <span class="rounded border border-border/50 bg-bg-tertiary px-1.5 py-0.5 font-mono text-[10px] text-text-muted">#{tag}</span>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <span class="shrink-0 ml-4 text-text-muted transition-transform group-open:rotate-90">&rsaquo;</span>
+            </summary>
+            <div class="border-t border-border/30">
+              <div class="relative">
+                <div class="absolute right-3 top-3 rounded border border-border bg-bg-secondary px-2 py-0.5 font-mono text-[10px] text-text-muted">{cfg.filename}</div>
+                <pre class="overflow-x-auto p-5 font-mono text-xs leading-relaxed text-text-secondary"><code>{cfg.content}</code></pre>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    ) : (
+      <div class="rounded-lg border border-dashed border-border bg-bg-card p-8 text-center">
+        <p class="font-mono text-base text-text-muted">&gt; Config examples coming soon.</p>
+        <p class="mt-3 font-sans text-xs text-text-muted">
+          In the meantime, check the <a href="https://github.com/AugmentCode/openclaw" target="_blank" rel="noopener noreferrer" class="text-cyan transition-colors hover:text-cyan/80">OpenClaw repo</a> for configuration docs.
+        </p>
+      </div>
+    )}
+  </div>
+</SectionLayout>

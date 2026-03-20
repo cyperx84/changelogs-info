@@ -48,11 +48,24 @@
   --color-red: #dc2626;
 }
 
+/* Section themes — applied via data-section attribute on <html> */
+[data-section="openclaw"] { --section-color: #ff3333; --section-accent: #ff6b6b; --section-dim: #991f1f; }
+[data-section="claude-code"] { --section-color: #ffb800; --section-accent: #ffd93d; --section-dim: #996f00; }
+[data-section="codex-cli"] { --section-color: #33ff33; --section-accent: #00ff41; --section-dim: #1f991f; }
+[data-section="models"] { --section-color: #a855f7; --section-accent: #c084fc; --section-dim: #6b21a8; }
+[data-section="tools"] { --section-color: #8b949e; --section-accent: #c9d1d9; --section-dim: #6e7681; }
+
 html {
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
   scroll-behavior: smooth;
   transition: background-color 200ms ease-out, color 200ms ease-out;
+}
+
+/* Smooth section theme transitions */
+html[data-section] {
+  transition: background-color 200ms ease-out, color 200ms ease-out,
+    --section-color 300ms ease, --section-accent 300ms ease, --section-dim 300ms ease;
 }
 
 body {
