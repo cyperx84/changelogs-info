@@ -786,7 +786,7 @@ const navLinks = [
           setTimeout(() => el.remove(), 1000);
         }
 
-        function enterLobsterMode() {
+        function enterLobsterMode(quiet = false) {
           lobsterActive = true;
           document.documentElement.setAttribute('data-lobster', 'true');
 
@@ -796,13 +796,17 @@ const navLinks = [
             resizeCanvas();
           }
 
-          // Spawn lobsters in waves
-          spawnLobsters(25);
-          setTimeout(() => spawnLobsters(15), 800);
-          setTimeout(() => spawnLobsters(10), 1600);
+          // Spawn lobsters — fewer on quiet restore
+          if (quiet) {
+            spawnLobsters(15);
+          } else {
+            spawnLobsters(25);
+            setTimeout(() => spawnLobsters(15), 800);
+            setTimeout(() => spawnLobsters(10), 1600);
+          }
 
-          // Show banner with slam animation
-          if (banner) {
+          // Show banner with slam animation (only on fresh activation)
+          if (banner && !quiet) {
             banner.style.display = 'block';
             banner.style.opacity = '1';
             requestAnimationFrame(() => {
@@ -873,7 +877,7 @@ const navLinks = [
 
           // Restore lobster mode if was active
           if (localStorage.getItem('lobster-mode') === 'true') {
-            enterLobsterMode();
+            enterLobsterMode(true);
           }
         });
       })();
