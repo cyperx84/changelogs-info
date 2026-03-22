@@ -11,7 +11,8 @@ const releases = data?.releases || [];
 const stableReleases = releases.filter((r) => !r.prerelease);
 const latestStable = stableReleases[0];
 const latestRelease = releases[0];
-const tldrReleases = releases.slice(0, 6);
+const latestForTldr = releases[0];
+const restReleases = releases.slice(1);
 
 const breakingCount = releases.filter((r) =>
   r.body?.toLowerCase().includes("breaking")
@@ -114,66 +115,80 @@ function getTldr(body: string): string[] {
       ))}
     </section>
 
-    <!-- TLDR Section -->
-    <section style="margin-bottom: 4rem;">
-      <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
-        <h2 class="oc-headline" style="font-size: 2.5rem; font-weight: 900; color: var(--oc-text); text-transform: uppercase; font-style: italic; letter-spacing: -0.02em; margin: 0;">
-          TL;DR
-        </h2>
-        <div style="flex: 1; height: 4px; background: var(--oc-border);"></div>
-        <span style="font-family: var(--oc-font-mono); font-size: 0.7rem; color: var(--oc-text-muted); text-transform: uppercase;">Last {tldrReleases.length} releases</span>
-      </div>
+    <!-- TLDR: Latest Release -->
+    {latestForTldr && (() => {
+      const breaking = isBreaking(latestForTldr.body);
+      const tldr = getTldr(latestForTldr.body || "");
+      const fallback = (latestForTldr.body || "").split("\n").filter(l => l.trim() && !l.startsWith("#")).slice(0, 2).map(l => l.replace(/^[\*\-]\s+/, "").trim());
+      const items = tldr.length > 0 ? tldr : fallback;
+      const latestRendered = renderBody(latestForTldr.body || "");
 
-      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-        {tldrReleases.map((release) => {
-          const breaking = isBreaking(release.body);
-          const tldr = getTldr(release.body || "");
-          // Fallback: first non-empty, non-heading line
-          const fallback = (release.body || "").split("\n").filter(l => l.trim() && !l.startsWith("#")).slice(0, 2).map(l => l.replace(/^[\*\-]\s+/, "").trim());
-          const items = tldr.length > 0 ? tldr : fallback;
+      return (
+        <section style="margin-bottom: 3rem;">
+          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+            <h2 class="oc-headline" style="font-size: 2.5rem; font-weight: 900; color: var(--oc-text); text-transform: uppercase; font-style: italic; letter-spacing: -0.02em; margin: 0;">
+              TL;DR
+            </h2>
+            <div style="flex: 1; height: 4px; background: var(--oc-border);"></div>
+            <span style="font-family: var(--oc-font-mono); font-size: 0.7rem; color: var(--oc-text-muted); text-transform: uppercase;">Latest Release</span>
+          </div>
 
-          return (
-            <div style={`padding: 1.25rem 1.5rem; border: 4px solid ${breaking ? 'var(--oc-primary)' : 'var(--oc-border)'}; background: ${breaking ? 'var(--oc-bg-surface)' : 'var(--oc-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--oc-primary);' : ''}`}>
-              <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
-                <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-                  <span class="oc-headline" style="font-size: 1.1rem; font-weight: 900; color: var(--oc-text); text-transform: uppercase;">{release.version}</span>
-                  {breaking && (
-                    <span style="background: var(--oc-primary); color: white; font-family: var(--oc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">BREAKING</span>
-                  )}
-                  {release.prerelease && (
-                    <span style="background: rgba(255,184,0,0.15); color: #ffb800; font-family: var(--oc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; border: 1px solid #ffb800;">PRE</span>
-                  )}
-                </div>
-                <span style="font-family: var(--oc-font-mono); font-size: 0.7rem; color: var(--oc-text-muted); white-space: nowrap;">{formatDate(release.date)}</span>
+          <!-- TLDR card -->
+          <div style={`padding: 1.5rem 2rem; border: 4px solid ${breaking ? 'var(--oc-primary)' : 'var(--oc-border)'}; background: ${breaking ? 'var(--oc-bg-surface)' : 'var(--oc-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--oc-primary);' : ''} margin-bottom: 2rem;`}>
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                <span class="oc-headline" style="font-size: 1.3rem; font-weight: 900; color: var(--oc-text); text-transform: uppercase;">{latestForTldr.version}</span>
+                {breaking && (
+                  <span style="background: var(--oc-primary); color: white; font-family: var(--oc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">BREAKING</span>
+                )}
+                {latestForTldr.prerelease && (
+                  <span style="background: rgba(255,184,0,0.15); color: #ffb800; font-family: var(--oc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; border: 1px solid #ffb800;">PRE</span>
+                )}
               </div>
-              {items.length > 0 && (
-                <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.3rem;">
-                  {items.map((item) => (
-                    <li style="display: flex; gap: 0.5rem; align-items: flex-start; font-family: var(--oc-font-body); font-size: 0.85rem; color: var(--oc-text-dim); line-height: 1.5;">
-                      <span style="color: var(--oc-primary-bright); flex-shrink: 0; font-weight: 700;">▸</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
+              <span style="font-family: var(--oc-font-mono); font-size: 0.7rem; color: var(--oc-text-muted); white-space: nowrap;">{formatDate(latestForTldr.date)}</span>
             </div>
-          );
-        })}
-      </div>
-    </section>
+            {items.length > 0 && (
+              <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.4rem;">
+                {items.map((item) => (
+                  <li style="display: flex; gap: 0.5rem; align-items: flex-start; font-family: var(--oc-font-body); font-size: 0.9rem; color: var(--oc-text-dim); line-height: 1.5;">
+                    <span style="color: var(--oc-primary-bright); flex-shrink: 0; font-weight: 700;">▸</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <!-- Full changelog of latest release -->
+          <div style={`padding: 2rem; border: 4px solid var(--oc-border); background: var(--oc-bg-surface);`}>
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.5rem;">
+              <h3 class="oc-headline" style="font-size: 1.5rem; font-weight: 900; text-transform: uppercase; margin: 0; color: var(--oc-text);">
+                {(latestForTldr.name || latestForTldr.version).replace(/^openclaw\s+/i, "")}
+              </h3>
+              <a href={latestForTldr.url} target="_blank" rel="noopener noreferrer" class="oc-headline" style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--oc-primary-bright); text-decoration: none;">↗ GitHub</a>
+            </div>
+            <div
+              class="changelog-body"
+              style="color: var(--oc-text-dim); font-size: 0.875rem; line-height: 1.7; font-family: var(--oc-font-body);"
+              set:html={latestRendered}
+            />
+          </div>
+        </section>
+      );
+    })()}
 
     <!-- Divider -->
     <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem;">
       <div style="flex: 1; height: 4px; background: var(--oc-border);"></div>
-      <span class="oc-headline" style="font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--oc-text-muted);">Full Changelog</span>
+      <span class="oc-headline" style="font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--oc-text-muted);">Previous Releases</span>
       <div style="flex: 1; height: 4px; background: var(--oc-border);"></div>
     </div>
 
-    <!-- Full Changelog (expandable) -->
+    <!-- Rest of Changelog (expandable) -->
     <section style="position: relative; padding-left: 3rem; border-left: 6px solid var(--oc-border); margin-bottom: 5rem;">
-      {releases.length > 0 ? (
+      {restReleases.length > 0 ? (
         <div style="display: flex; flex-direction: column; gap: 4rem;">
-          {releases.map((release, idx) => {
+          {restReleases.map((release, idx) => {
             const breaking = isBreaking(release.body);
             const renderedBody = renderBody(release.body || "");
             const isLong = (release.body || "").length > 600;
@@ -235,7 +250,7 @@ function getTldr(body: string): string[] {
                   </h3>
 
                   <div
-                    class={`changelog-body ${isLong && idx > 0 ? 'cl-collapsed' : ''}`}
+                    class={`changelog-body ${isLong ? 'cl-collapsed' : ''}`}
                     style={`color: ${breaking ? 'var(--oc-bg)' : 'var(--oc-text-dim)'}; font-size: 0.875rem; line-height: 1.7; font-family: var(--oc-font-body); overflow: hidden; position: relative;`}
                     set:html={renderedBody}
                   />
@@ -246,7 +261,7 @@ function getTldr(body: string): string[] {
                       style={`display: block; margin-top: 1rem; background: transparent; border: 2px solid ${breaking ? 'var(--oc-bg)' : 'var(--oc-border)'}; color: ${breaking ? 'var(--oc-bg)' : 'var(--oc-text)'}; padding: 0.5rem 1.25rem; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; transition: background 100ms; position: relative; overflow: visible;`}
                       onclick="this.previousElementSibling.classList.toggle('cl-collapsed'); this.textContent = this.textContent.includes('EXPAND') ? '▲ COLLAPSE' : '▼ EXPAND FULL CHANGELOG'"
                     >
-                      {idx === 0 ? '▲ COLLAPSE' : '▼ EXPAND FULL CHANGELOG'}
+                      ▼ EXPAND FULL CHANGELOG
                     </button>
                   )}
 
