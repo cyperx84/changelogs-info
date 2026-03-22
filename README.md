@@ -18,6 +18,13 @@ changelogs.info is a **static site + data pipeline** that tracks releases of AI 
 
 ### How it works
 
+### Content policy
+
+For tools with a real upstream `CHANGELOG.md`, changelogs.info prefers the canonical changelog section as the main body shown on tool pages. GitHub release posts are used primarily for release detection, metadata, and fallback content when the changelog file is missing, thin, or version matching fails.
+
+See: [`docs/content-policy.md`](docs/content-policy.md)
+
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  GitHub Actions (hourly cron)                               │

@@ -2,6 +2,8 @@
 
 ## Current priorities
 
+- [x] Establish canonical changelog-first content policy for tool homepages when `CHANGELOG.md` exists.
+- [ ] Apply canonical changelog-first behavior consistently across all future tool pages and changelog detail experiences.
 - [ ] Standardize full release-body presentation across all tool landing pages and changelog pages so mixed source formats feel consistent.
 - [ ] Review the new grouped-section renderer on OpenClaw, Claude Code, and Codex CLI in production and tune category heuristics where needed.
 - [ ] Harden the GitHub Actions pipeline against push races when multiple manual dispatches run close together.

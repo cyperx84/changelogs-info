@@ -114,6 +114,12 @@ changelogs.info
 6. **Tips** (curated) — hidden features, underdocumented capabilities
 7. **Pricing** (manual + scraped) — plans, costs, calculator
 
+### Changelog source-of-truth policy
+- Prefer the tool's canonical `CHANGELOG.md` (or equivalent official changelog document) as the primary body content shown on tool pages.
+- Use GitHub release posts mainly for release detection, metadata, linking, and fallback body content.
+- UI order should be: **TL;DR → canonical changelog section → secondary reference links**.
+- If the changelog file is missing, stubby, or cannot be matched to the version, fall back to the GitHub release body.
+
 ---
 
 ## 6. Data Pipeline
