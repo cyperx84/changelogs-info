@@ -37,10 +37,75 @@ function isBreaking(body: string = ""): boolean {
   return body.toLowerCase().includes("breaking");
 }
 
+
+function normalizeReleaseBody(body: string): string {
+  if (!body) return "";
+
+  let normalized = body.replace(/\r\n/g, "\n").trim();
+
+  normalized = normalized
+    .replace(/^\s*##\s*what'?s changed\s*$/gim, "## Changes")
+    .replace(/^\s*##\s*full changelog\s*$/gim, "")
+    .replace(/^\s*\*\*full changelog\*\*: ?\s*$/gim, "")
+    .replace(/^\s*full changelog:?\s*$/gim, "")
+    .replace(/^\s*important:?\s*$/gim, "## Important")
+    .replace(/^\s*summary:?\s*$/gim, "## Summary")
+    .replace(/^\s*notes:?\s*$/gim, "## Notes");
+
+  normalized = normalized.replace(/\n{3,}/g, "\n\n");
+
+  const lines = normalized.split("\n");
+  const cleaned: string[] = [];
+  let skipGithubBoilerplate = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmed = line.trim();
+
+    if (!trimmed) {
+      if (cleaned.length > 0 && cleaned[cleaned.length - 1] !== "") cleaned.push("");
+      continue;
+    }
+
+    if (/^\[?full changelog\]?[:：]?$/i.test(trimmed)) continue;
+    if (/^full changelog:?\s*https?:\/\//i.test(trimmed)) continue;
+    if (/^see full changelog/i.test(trimmed)) continue;
+    if (/^compare:/i.test(trimmed)) continue;
+
+    if (/^##\s*new contributors\s*$/i.test(trimmed)) {
+      skipGithubBoilerplate = true;
+      continue;
+    }
+    if (skipGithubBoilerplate) {
+      if (/^##\s+/.test(trimmed)) skipGithubBoilerplate = false;
+      else continue;
+    }
+
+    let nextLine = line
+      .replace(/\*\*full changelog\*\*:\s*https?:\/\/\S+/gi, "")
+      .replace(/\[full changelog\]\([^)]*\)/gi, "")
+      .replace(/\s+by\s+@\S+\s+in\s+https?:\/\/\S+/gi, "")
+      .replace(/\s+by\s+@\S+\s+in\s+#\d+/gi, "")
+      .replace(/\s+in\s+https?:\/\/\S+/gi, "")
+      .replace(/\s{2,}/g, " ")
+      .trimEnd();
+
+    if (/^[*-]\s+[^\s].*/.test(nextLine)) {
+      nextLine = nextLine.replace(/^([*-]\s+)(fix|feat|docs|test|chore|refactor|perf|style|ci|build|docker)(\([^)]*\))?:\s*/i, "$1$2: ");
+    }
+
+    cleaned.push(nextLine);
+  }
+
+  return cleaned.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+}
+
+
 function renderBody(body: string): string {
   if (!body) return "";
+  const normalizedBody = normalizeReleaseBody(body);
   marked.setOptions({ gfm: true, breaks: false });
-  let html = marked.parse(body) as string;
+  let html = marked.parse(normalizedBody) as string;
   html = html.replace(/<a href="(https:\/\/github\.com\/[^/]+\/[^/]+\/pull\/(\d+))"[^>]*>[^<]*<\/a>/g,
     '<a href="$1" target="_blank" rel="noopener noreferrer" class="cl-pr-link">#$2</a>');
   html = html.replace(/<a href="(https:\/\/github\.com\/[^/]+\/[^/]+\/issues\/(\d+))"[^>]*>[^<]*<\/a>/g,
@@ -208,7 +273,6 @@ function getTldr(body: string): string[] {
             </div>
             {summaryText ? (
               <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                <div style="font-family: var(--cx-font-mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--cx-text-muted);">AI Summary</div>
                 <p style="margin: 0; font-family: var(--cx-font-body); font-size: 1rem; color: var(--cx-text); line-height: 1.7; max-width: 60ch;">{summaryText}</p>
               </div>
             ) : items.length > 0 && (
