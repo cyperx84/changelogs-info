@@ -18,6 +18,15 @@ export async function onRequest(context) {
   const url = new URL(request.url);
   const hostname = url.hostname;
 
+  // Let static assets pass through untouched so root-relative files like
+  // /_astro/*, /pagefind/*, /favicon.svg, etc. still resolve on subdomains.
+  const staticPrefixes = ["/_astro/", "/pagefind/", "/fonts/", "/images/"];
+  const staticExact = new Set(["/favicon.svg", "/favicon.ico", "/robots.txt", "/sitemap-index.xml"]);
+
+  if (staticPrefixes.some((prefix) => url.pathname.startsWith(prefix)) || staticExact.has(url.pathname)) {
+    return context.next();
+  }
+
   // Determine which tool prefix this subdomain maps to
   let toolPrefix = null;
 
