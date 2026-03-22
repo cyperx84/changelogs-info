@@ -177,120 +177,164 @@ function getTldr(body: string): string[] {
       );
     })()}
 
-    <!-- Divider -->
-    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem;">
+    <!-- Previous 3 Releases -->
+    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
       <div style="flex: 1; height: 4px; background: var(--oc-border);"></div>
       <span class="oc-headline" style="font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--oc-text-muted);">Previous Releases</span>
       <div style="flex: 1; height: 4px; background: var(--oc-border);"></div>
     </div>
 
-    <!-- Rest of Changelog (expandable) -->
-    <section style="position: relative; padding-left: 3rem; border-left: 6px solid var(--oc-border); margin-bottom: 5rem;">
-      {restReleases.length > 0 ? (
-        <div style="display: flex; flex-direction: column; gap: 4rem;">
-          {restReleases.map((release, idx) => {
-            const breaking = isBreaking(release.body);
-            const renderedBody = renderBody(release.body || "");
-            const isLong = (release.body || "").length > 600;
-
-            return (
-              <article
-                class="cl-entry"
-                data-version={release.version.toLowerCase()}
-                data-name={(release.name || "").toLowerCase()}
-                data-body={(release.body || "").toLowerCase().slice(0, 800)}
-                data-prerelease={String(release.prerelease)}
-                data-breaking={String(breaking)}
-                style="position: relative;"
+    <section style="margin-bottom: 4rem; display: flex; flex-direction: column; gap: 1.25rem;">
+      {restReleases.slice(0, 3).map((release) => {
+        const breaking = isBreaking(release.body);
+        const renderedBody = renderBody(release.body || "");
+        const isLong = (release.body || "").length > 600;
+        return (
+          <div style={`padding: 1.5rem 2rem; border: 4px solid ${breaking ? 'var(--oc-primary)' : 'var(--oc-border)'}; background: ${breaking ? 'var(--oc-bg-surface)' : 'var(--oc-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--oc-primary);' : ''}`}>
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                <span class="oc-headline" style="font-size: 1.25rem; font-weight: 900; color: var(--oc-text); text-transform: uppercase;">{release.version}</span>
+                <span class="oc-headline" style="font-size: 0.75rem; font-weight: 700; color: var(--oc-text-dim);">{(release.name || "").replace(/^openclaw\s+/i, "")}</span>
+                {breaking && (
+                  <span style="background: var(--oc-primary); color: white; font-family: var(--oc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">BREAKING</span>
+                )}
+              </div>
+              <span style="font-family: var(--oc-font-mono); font-size: 0.7rem; color: var(--oc-text-muted); white-space: nowrap;">{formatDate(release.date)}</span>
+            </div>
+            <div
+              class={`changelog-body ${isLong ? 'cl-collapsed' : ''}`}
+              style="color: var(--oc-text-dim); font-size: 0.85rem; line-height: 1.7; font-family: var(--oc-font-body); overflow: hidden; position: relative;"
+              set:html={renderedBody}
+            />
+            {isLong && (
+              <button
+                class="cl-expand-btn oc-headline"
+                style="display: block; margin-top: 0.75rem; background: transparent; border: 2px solid var(--oc-border); color: var(--oc-text); padding: 0.4rem 1rem; font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; transition: background 100ms; position: relative; overflow: visible;"
+                onclick="this.previousElementSibling.classList.toggle('cl-collapsed'); this.textContent = this.textContent.includes('EXPAND') ? '▲ COLLAPSE' : '▼ EXPAND'"
               >
-                <!-- Timeline dot -->
-                <div
-                  style={`position: absolute; left: -3.9rem; top: 0.5rem; width: 3rem; height: 3rem; border: 4px solid var(--oc-border); display: flex; align-items: center; justify-content: center; background: ${breaking ? 'var(--oc-primary)' : 'var(--oc-border)'};`}
-                >
-                  <span style={`font-size: 0.8rem; ${breaking ? 'color:white;' : 'color: var(--oc-bg);'}`}>
-                    {breaking ? "⚡" : release.prerelease ? "β" : "●"}
-                  </span>
-                </div>
+                ▼ EXPAND
+              </button>
+            )}
+          </div>
+        );
+      })}
+      <a
+        href="/openclaw/changelog/"
+        class="oc-headline"
+        style="display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 900; text-transform: uppercase; color: var(--oc-primary-bright); font-style: italic; text-decoration: none; border-bottom: 2px solid var(--oc-primary-bright); padding-bottom: 2px; font-size: 0.85rem; align-self: flex-start;"
+      >
+        View all {releases.length} releases →
+      </a>
+    </section>
 
-                <!-- Entry header -->
-                <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: baseline; margin-bottom: 1rem;">
-                  <span
-                    class="oc-headline"
-                    style="font-size: 2rem; font-weight: 900; font-style: italic; letter-spacing: -0.02em; color: var(--oc-text);"
-                  >
-                    {release.version}
-                  </span>
-                  <span
-                    class="oc-headline"
-                    style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--oc-text-muted); letter-spacing: 0.05em;"
-                  >
-                    {formatDate(release.date)}
-                  </span>
-                  {breaking && (
-                    <span style="background: var(--oc-primary); color: white; padding: 0.2rem 0.75rem; font-family: var(--oc-font-headline); font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; border: 2px solid var(--oc-border);">
-                      BREAKING
-                    </span>
-                  )}
-                  {release.prerelease && (
-                    <span style="background: rgba(255,184,0,0.15); color: #ffb800; padding: 0.2rem 0.75rem; font-family: var(--oc-font-headline); font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; border: 2px solid #ffb800;">
-                      PRE-RELEASE
-                    </span>
-                  )}
-                </div>
-
-                <!-- Entry card -->
-                <div
-                  style={`padding: 2rem; border: 4px solid var(--oc-border); background: ${breaking ? 'var(--oc-border)' : 'var(--oc-bg-surface)'}; ${breaking ? 'border-right: 8px solid var(--oc-primary); border-bottom: 8px solid var(--oc-primary);' : ''}`}
-                >
-                  <h3
-                    class="oc-headline"
-                    style={`font-size: 1.5rem; font-weight: 900; text-transform: uppercase; margin: 0 0 1.5rem; letter-spacing: -0.01em; color: ${breaking ? 'var(--oc-bg)' : 'var(--oc-text)'};`}
-                  >
-                    {(release.name || release.version).replace(/^openclaw\s+/i, "")}
-                  </h3>
-
-                  <div
-                    class={`changelog-body ${isLong ? 'cl-collapsed' : ''}`}
-                    style={`color: ${breaking ? 'var(--oc-bg)' : 'var(--oc-text-dim)'}; font-size: 0.875rem; line-height: 1.7; font-family: var(--oc-font-body); overflow: hidden; position: relative;`}
-                    set:html={renderedBody}
-                  />
-
-                  {isLong && (
-                    <button
-                      class="cl-expand-btn oc-headline"
-                      style={`display: block; margin-top: 1rem; background: transparent; border: 2px solid ${breaking ? 'var(--oc-bg)' : 'var(--oc-border)'}; color: ${breaking ? 'var(--oc-bg)' : 'var(--oc-text)'}; padding: 0.5rem 1.25rem; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; transition: background 100ms; position: relative; overflow: visible;`}
-                      onclick="this.previousElementSibling.classList.toggle('cl-collapsed'); this.textContent = this.textContent.includes('EXPAND') ? '▲ COLLAPSE' : '▼ EXPAND FULL CHANGELOG'"
-                    >
-                      ▼ EXPAND FULL CHANGELOG
-                    </button>
-                  )}
-
-                  <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 2px solid var(--oc-border-dim);">
-                    <a
-                      href={release.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="oc-headline"
-                      style={`display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: ${breaking ? 'var(--oc-primary)' : 'var(--oc-primary-bright)'}; text-decoration: none; transition: opacity 150ms;`}
-                      onmouseover="this.style.opacity='0.7'"
-                      onmouseout="this.style.opacity='1'"
-                    >
-                      ↗ View on GitHub
-                    </a>
-                    <span style="font-family: var(--oc-font-mono); font-size: 0.65rem; color: var(--oc-text-muted);">
-                      #{idx + 1}
-                    </span>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
+    <!-- Quick Links -->
+    <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 4rem;">
+      <a href="/openclaw/changelog/" style="display: flex; align-items: center; gap: 0.75rem; padding: 1.25rem; border: 4px solid var(--oc-border); background: var(--oc-bg-card); text-decoration: none; transition: border-color 150ms, box-shadow 150ms;" onmouseover="this.style.borderColor='var(--oc-primary)';this.style.boxShadow='var(--oc-shadow-sm)'" onmouseout="this.style.borderColor='var(--oc-border)';this.style.boxShadow='none'">
+        <span style="font-size: 1.5rem;">📋</span>
+        <div>
+          <span class="oc-headline" style="display: block; font-weight: 900; font-size: 0.85rem; color: var(--oc-text); text-transform: uppercase;">Full Changelog</span>
+          <span style="font-family: var(--oc-font-mono); font-size: 0.65rem; color: var(--oc-text-muted);">{releases.length} releases</span>
         </div>
-      ) : (
-        <div style="padding: 3rem; border: 4px dashed var(--oc-border-dim); text-align: center;">
-          <p class="oc-headline" style="font-weight: 700; text-transform: uppercase; color: var(--oc-text-muted);">No releases tracked yet.</p>
+      </a>
+      <a href="/openclaw/cheatsheet/" style="display: flex; align-items: center; gap: 0.75rem; padding: 1.25rem; border: 4px solid var(--oc-border); background: var(--oc-bg-card); text-decoration: none; transition: border-color 150ms, box-shadow 150ms;" onmouseover="this.style.borderColor='var(--oc-primary)';this.style.boxShadow='var(--oc-shadow-sm)'" onmouseout="this.style.borderColor='var(--oc-border)';this.style.boxShadow='none'">
+        <span style="font-size: 1.5rem;">⚡</span>
+        <div>
+          <span class="oc-headline" style="display: block; font-weight: 900; font-size: 0.85rem; color: var(--oc-text); text-transform: uppercase;">Cheatsheet</span>
+          <span style="font-family: var(--oc-font-mono); font-size: 0.65rem; color: var(--oc-text-muted);">Commands & tips</span>
         </div>
-      )}
+      </a>
+      <a href="/openclaw/releases/" style="display: flex; align-items: center; gap: 0.75rem; padding: 1.25rem; border: 4px solid var(--oc-border); background: var(--oc-bg-card); text-decoration: none; transition: border-color 150ms, box-shadow 150ms;" onmouseover="this.style.borderColor='var(--oc-primary)';this.style.boxShadow='var(--oc-shadow-sm)'" onmouseout="this.style.borderColor='var(--oc-border)';this.style.boxShadow='none'">
+        <span style="font-size: 1.5rem;">📦</span>
+        <div>
+          <span class="oc-headline" style="display: block; font-weight: 900; font-size: 0.85rem; color: var(--oc-text); text-transform: uppercase;">All Releases</span>
+          <span style="font-family: var(--oc-font-mono); font-size: 0.65rem; color: var(--oc-text-muted);">Browse & filter</span>
+        </div>
+      </a>
+      <a href="/feed/all.xml" style="display: flex; align-items: center; gap: 0.75rem; padding: 1.25rem; border: 4px solid var(--oc-border); background: var(--oc-bg-card); text-decoration: none; transition: border-color 150ms, box-shadow 150ms;" onmouseover="this.style.borderColor='var(--oc-primary)';this.style.boxShadow='var(--oc-shadow-sm)'" onmouseout="this.style.borderColor='var(--oc-border)';this.style.boxShadow='none'">
+        <span style="font-size: 1.5rem;">📡</span>
+        <div>
+          <span class="oc-headline" style="display: block; font-weight: 900; font-size: 0.85rem; color: var(--oc-text); text-transform: uppercase;">RSS Feed</span>
+          <span style="font-family: var(--oc-font-mono); font-size: 0.65rem; color: var(--oc-text-muted);">Subscribe to updates</span>
+        </div>
+      </a>
+    </section>
+
+    <!-- Clwatch Section -->
+    <section style="margin-bottom: 4rem; border: 4px solid var(--oc-border); overflow: hidden;">
+      <div style="background: var(--oc-primary); padding: 2rem 2.5rem; display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; justify-content: space-between;">
+        <div style="max-width: 560px;">
+          <h2 class="oc-headline" style="font-size: 2.5rem; font-weight: 900; text-transform: uppercase; font-style: italic; letter-spacing: -0.02em; margin: 0 0 0.75rem; color: white; line-height: 1;">
+            Clwatch
+          </h2>
+          <p style="font-family: var(--oc-font-body); font-size: 1rem; color: rgba(255,255,255,0.85); margin: 0; line-height: 1.6;">
+            Monitor coding CLI releases in real-time. Track Claude Code, Codex CLI, Gemini CLI, and OpenClaw all in one dashboard. Get notified when new versions drop.
+          </p>
+        </div>
+        <a
+          href="/clwatch"
+          class="oc-headline"
+          style="background: white; color: var(--oc-primary); font-weight: 900; padding: 1rem 2rem; font-size: 1rem; border: 4px solid white; box-shadow: 6px 6px 0 rgba(0,0,0,0.3); text-decoration: none; text-transform: uppercase; font-style: italic; transition: transform 100ms, box-shadow 100ms; white-space: nowrap;"
+          onmouseover="this.style.transform='translate(2px,2px)';this.style.boxShadow='2px 2px 0 rgba(0,0,0,0.3)'"
+          onmouseout="this.style.transform='';this.style.boxShadow='6px 6px 0 rgba(0,0,0,0.3)'"
+        >
+          Launch Dashboard →
+        </a>
+      </div>
+      <div style="background: var(--oc-bg-card); padding: 1.5rem 2.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem;">
+        <div>
+          <span style="color: var(--oc-primary-bright); font-size: 1.25rem; display: block; margin-bottom: 0.25rem;">🔔</span>
+          <span class="oc-headline" style="font-weight: 800; font-size: 0.75rem; text-transform: uppercase; color: var(--oc-text); display: block; margin-bottom: 0.25rem;">Real-time Monitoring</span>
+          <span style="font-family: var(--oc-font-body); font-size: 0.75rem; color: var(--oc-text-dim); line-height: 1.4;">Polls GitHub releases and surfaces new versions the moment they drop.</span>
+        </div>
+        <div>
+          <span style="color: var(--oc-primary-bright); font-size: 1.25rem; display: block; margin-bottom: 0.25rem;">⚡</span>
+          <span class="oc-headline" style="font-weight: 800; font-size: 0.75rem; text-transform: uppercase; color: var(--oc-text); display: block; margin-bottom: 0.25rem;">Breaking Change Alerts</span>
+          <span style="font-family: var(--oc-font-body); font-size: 0.75rem; color: var(--oc-text-dim); line-height: 1.4;">Flags breaking changes so you know before upgrading.</span>
+        </div>
+        <div>
+          <span style="color: var(--oc-primary-bright); font-size: 1.25rem; display: block; margin-bottom: 0.25rem;">📊</span>
+          <span class="oc-headline" style="font-weight: 800; font-size: 0.75rem; text-transform: uppercase; color: var(--oc-text); display: block; margin-bottom: 0.25rem;">Multi-Tool Dashboard</span>
+          <span style="font-family: var(--oc-font-body); font-size: 0.75rem; color: var(--oc-text-dim); line-height: 1.4;">Claude Code, Codex, Gemini CLI, OpenCode — all tools in one view.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Newsletter / Subscribe -->
+    <section style="margin-bottom: 5rem; text-align: center; padding: 3rem 2rem; border: 4px solid var(--oc-border); background: var(--oc-bg-surface);">
+      <h2 class="oc-headline" style="font-size: 2rem; font-weight: 900; text-transform: uppercase; font-style: italic; letter-spacing: -0.02em; margin: 0 0 0.75rem; color: var(--oc-text);">
+        Stay in the Loop
+      </h2>
+      <p style="font-family: var(--oc-font-body); font-size: 0.95rem; color: var(--oc-text-dim); margin: 0 0 2rem; max-width: 480px; margin-left: auto; margin-right: auto; line-height: 1.5;">
+        Get notified when OpenClaw ships new releases. No spam — just changelogs.
+      </p>
+      <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; max-width: 500px; margin: 0 auto 1.5rem;">
+        <input
+          type="email"
+          placeholder="you@example.com"
+          style="flex: 1; min-width: 220px; padding: 0.85rem 1rem; border: 4px solid var(--oc-border); background: var(--oc-bg); color: var(--oc-text); font-family: var(--oc-font-mono); font-size: 0.85rem; outline: none; transition: border-color 150ms;"
+          onfocus="this.style.borderColor='var(--oc-primary)'"
+          onblur="this.style.borderColor='var(--oc-border)'"
+        />
+        <button
+          class="oc-headline"
+          style="background: var(--oc-primary); color: white; font-weight: 900; padding: 0.85rem 1.75rem; font-size: 0.85rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow-sm); cursor: pointer; text-transform: uppercase; font-style: italic; transition: transform 100ms, box-shadow 100ms; position: relative; overflow: visible;"
+          onmouseover="this.style.transform='translate(1px,1px)';this.style.boxShadow='none'"
+          onmouseout="this.style.transform='';this.style.boxShadow='var(--oc-shadow-sm)'"
+        >
+          Subscribe
+        </button>
+      </div>
+      <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
+        <a href="/feed/all.xml" style="display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--oc-font-mono); font-size: 0.75rem; color: var(--oc-text-dim); text-decoration: none; transition: color 150ms;" onmouseover="this.style.color='var(--oc-primary-bright)'" onmouseout="this.style.color='var(--oc-text-dim)'">
+          📡 RSS Feed
+        </a>
+        <a href={`https://github.com/${tool?.repo || "openclaw/openclaw"}`} target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--oc-font-mono); font-size: 0.75rem; color: var(--oc-text-dim); text-decoration: none; transition: color 150ms;" onmouseover="this.style.color='var(--oc-primary-bright)'" onmouseout="this.style.color='var(--oc-text-dim)'">
+          ⭐ Star on GitHub
+        </a>
+        <a href={`https://github.com/${tool?.repo || "openclaw/openclaw"}/releases.atom`} target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--oc-font-mono); font-size: 0.75rem; color: var(--oc-text-dim); text-decoration: none; transition: color 150ms;" onmouseover="this.style.color='var(--oc-primary-bright)'" onmouseout="this.style.color='var(--oc-text-dim)'">
+          🔖 GitHub Releases Atom
+        </a>
+      </div>
     </section>
   </div>
 
