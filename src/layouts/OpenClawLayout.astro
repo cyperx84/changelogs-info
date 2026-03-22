@@ -1,0 +1,1011 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description?: string;
+  currentPage?: string;
+}
+
+const {
+  title,
+  description = "Track OpenClaw releases, breaking changes, and config updates.",
+  currentPage = "",
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const navLinks = [
+  { label: "Changelog", href: "/openclaw/changelog/", key: "changelog" },
+  { label: "Cheatsheet", href: "/openclaw/cheatsheet/", key: "cheatsheet" },
+  { label: "Releases", href: "/openclaw/releases/", key: "releases" },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&family=Work+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&family=Work+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    </noscript>
+    <script defer data-domain="changelogs.info" src="https://plausible.io/js/script.js"></script>
+
+    <style is:global>
+      /* Font fallbacks to prevent CLS while Google Fonts load */
+      @font-face {
+        font-family: 'Space Grotesk Fallback';
+        src: local('Arial Black'), local('Arial');
+        size-adjust: 107%;
+        ascent-override: 95%;
+        descent-override: 22%;
+        line-gap-override: 0%;
+      }
+      @font-face {
+        font-family: 'Work Sans Fallback';
+        src: local('Helvetica Neue'), local('Arial');
+        size-adjust: 100%;
+        ascent-override: 96%;
+        descent-override: 24%;
+        line-gap-override: 0%;
+      }
+
+      /* OpenClaw Neo-Brutalist Theme */
+      :root {
+        --oc-header-bg: rgba(0, 0, 0, 0.85);
+        --oc-primary: #bc0100;
+        --oc-primary-bright: #eb0000;
+        --oc-bg: #000000;
+        --oc-bg-card: #111111;
+        --oc-bg-surface: #1a1a1a;
+        --oc-text: #ffffff;
+        --oc-text-dim: rgba(255, 255, 255, 0.6);
+        --oc-text-muted: rgba(255, 255, 255, 0.4);
+        --oc-border: #ffffff;
+        --oc-border-dim: rgba(255, 255, 255, 0.2);
+        --oc-shadow: 6px 6px 0px 0px rgba(255, 255, 255, 0.2);
+        --oc-shadow-sm: 4px 4px 0px 0px rgba(255, 255, 255, 0.2);
+        --oc-shadow-lg: 12px 12px 0px 0px rgba(255, 255, 255, 0.1);
+        --oc-shadow-red: 6px 6px 0px 0px rgba(188, 1, 0, 0.5);
+        --oc-font-headline: "Space Grotesk", "Space Grotesk Fallback", sans-serif;
+        --oc-font-body: "Work Sans", "Work Sans Fallback", sans-serif;
+        --oc-font-mono: "JetBrains Mono", ui-monospace, monospace;
+      }
+
+      [data-theme="light"] {
+        --oc-header-bg: rgba(251, 249, 244, 0.9);
+        --oc-primary: #bc0100;
+        --oc-primary-bright: #bc0100;
+        --oc-bg: #fbf9f4;
+        --oc-bg-card: #ffffff;
+        --oc-bg-surface: #eae8e3;
+        --oc-text: #1b1c19;
+        --oc-text-dim: rgba(27, 28, 25, 0.6);
+        --oc-text-muted: rgba(27, 28, 25, 0.4);
+        --oc-border: #000000;
+        --oc-border-dim: rgba(0, 0, 0, 0.2);
+        --oc-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
+        --oc-shadow-sm: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+        --oc-shadow-lg: 12px 12px 0px 0px rgba(188, 1, 0, 1);
+        --oc-shadow-red: 6px 6px 0px 0px rgba(188, 1, 0, 0.4);
+      }
+
+      html {
+        background-color: var(--oc-bg);
+        color: var(--oc-text);
+        font-family: var(--oc-font-body);
+        scroll-behavior: smooth;
+        transition: background-color 150ms ease-out, color 150ms ease-out;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Remove CRT scanline for openclaw */
+      body::before {
+        display: none;
+      }
+
+      /* Neo-brutalist: zero border-radius everywhere */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      /* Headline font utility */
+      .oc-headline {
+        font-family: var(--oc-font-headline);
+      }
+
+      /* Shadow utilities */
+      .oc-shadow {
+        box-shadow: var(--oc-shadow);
+      }
+      .oc-shadow-sm {
+        box-shadow: var(--oc-shadow-sm);
+      }
+      .oc-shadow-lg {
+        box-shadow: var(--oc-shadow-lg);
+      }
+      .oc-shadow-red {
+        box-shadow: var(--oc-shadow-red);
+      }
+
+      /* Border utilities using CSS vars */
+      .oc-border {
+        border: 4px solid var(--oc-border);
+      }
+      .oc-border-2 {
+        border: 2px solid var(--oc-border);
+      }
+      .oc-border-8 {
+        border: 8px solid var(--oc-border);
+      }
+
+      /* Card hover effect */
+      .oc-card-hover {
+        transition: transform 100ms ease, box-shadow 100ms ease;
+      }
+      .oc-card-hover:hover {
+        transform: translate(2px, 2px);
+        box-shadow: 2px 2px 0px 0px rgba(255, 255, 255, 0.2);
+      }
+      [data-theme="light"] .oc-card-hover:hover {
+        box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+      }
+
+      /* Override global CSS interference */
+      .oc-nav button::before,
+      .oc-nav a::before,
+      .oc-nav a::after {
+        content: none !important;
+        display: none !important;
+      }
+      .oc-nav a {
+        position: static;
+      }
+
+      /* Theme toggle hover */
+      #oc-theme-toggle:hover {
+        transform: translate(1px, 1px);
+        box-shadow: 2px 2px 0px 0px rgba(255, 255, 255, 0.2);
+      }
+      [data-theme="light"] #oc-theme-toggle:hover {
+        box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+      }
+
+      /* Changelog body — collapsed state */
+      .cl-collapsed {
+        max-height: 16rem;
+      }
+      .cl-collapsed::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 6rem;
+        background: linear-gradient(to bottom, transparent, var(--oc-bg-surface));
+        pointer-events: none;
+      }
+      /* Breaking card collapsed fade uses inverted bg */
+      [style*="border-right: 8px"] .cl-collapsed::after {
+        background: linear-gradient(to bottom, transparent, var(--oc-border));
+      }
+
+      /* Changelog body rendered markdown */
+      .changelog-body h2 {
+        font-family: var(--oc-font-headline);
+        font-weight: 900;
+        font-size: 1.15rem;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        margin: 1.5rem 0 0.75rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--oc-border-dim);
+      }
+      .changelog-body h3 {
+        font-family: var(--oc-font-headline);
+        font-weight: 700;
+        font-size: 1rem;
+        margin: 1.25rem 0 0.5rem;
+      }
+      .changelog-body ul {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 1rem;
+      }
+      .changelog-body li {
+        position: relative;
+        padding-left: 1.25rem;
+        margin-bottom: 0.35rem;
+        line-height: 1.6;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+      .changelog-body li::before {
+        content: "▸";
+        position: absolute;
+        left: 0;
+        color: var(--oc-primary-bright);
+        font-weight: 700;
+      }
+      .changelog-body code {
+        font-family: var(--oc-font-mono);
+        font-size: 0.8em;
+        background: var(--oc-bg);
+        padding: 0.15em 0.4em;
+        border: 1px solid var(--oc-border-dim);
+        word-break: break-word;
+      }
+      .changelog-body a {
+        color: var(--oc-primary-bright);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        word-break: break-all;
+        overflow-wrap: anywhere;
+      }
+      .changelog-body a:hover {
+        opacity: 0.8;
+      }
+      .changelog-body .cl-pr-link {
+        font-family: var(--oc-font-mono);
+        font-size: 0.8em;
+        font-weight: 700;
+        color: var(--oc-primary-bright);
+        text-decoration: none;
+        opacity: 0.6;
+        word-break: normal;
+      }
+      .changelog-body .cl-pr-link:hover {
+        opacity: 1;
+        text-decoration: underline;
+      }
+      .changelog-body p {
+        margin: 0 0 0.75rem;
+      }
+      .changelog-body pre {
+        background: var(--oc-bg);
+        border: 2px solid var(--oc-border-dim);
+        padding: 1rem;
+        overflow-x: auto;
+        margin: 0.75rem 0;
+        font-family: var(--oc-font-mono);
+        font-size: 0.8rem;
+        line-height: 1.5;
+      }
+      .changelog-body pre code {
+        background: none;
+        border: none;
+        padding: 0;
+      }
+      .changelog-body strong {
+        font-weight: 700;
+        color: var(--oc-text);
+      }
+
+      /* Commit type badges */
+      .cl-badge {
+        display: inline-block;
+        font-family: var(--oc-font-mono);
+        font-size: 0.55rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        padding: 0.1rem 0.4rem;
+        margin-right: 0.5rem;
+        vertical-align: middle;
+        border: 1.5px solid;
+        text-transform: uppercase;
+        line-height: 1.4;
+        flex-shrink: 0;
+      }
+      .cl-badge-fix {
+        color: #f97316;
+        border-color: #f97316;
+        background: rgba(249, 115, 22, 0.1);
+      }
+      .cl-badge-feat {
+        color: #22c55e;
+        border-color: #22c55e;
+        background: rgba(34, 197, 94, 0.1);
+      }
+      .cl-badge-docs {
+        color: #60a5fa;
+        border-color: #60a5fa;
+        background: rgba(96, 165, 250, 0.1);
+      }
+      .cl-badge-test {
+        color: #a78bfa;
+        border-color: #a78bfa;
+        background: rgba(167, 139, 250, 0.1);
+      }
+      .cl-badge-chore {
+        color: #94a3b8;
+        border-color: #94a3b8;
+        background: rgba(148, 163, 184, 0.08);
+      }
+      .cl-badge-ci {
+        color: #f472b6;
+        border-color: #f472b6;
+        background: rgba(244, 114, 182, 0.1);
+      }
+      .cl-badge-perf {
+        color: #fbbf24;
+        border-color: #fbbf24;
+        background: rgba(251, 191, 36, 0.1);
+      }
+      [data-theme="light"] .cl-badge-fix {
+        background: rgba(249, 115, 22, 0.08);
+      }
+      [data-theme="light"] .cl-badge-feat {
+        background: rgba(34, 197, 94, 0.08);
+      }
+      [data-theme="light"] .cl-badge-docs {
+        background: rgba(96, 165, 250, 0.08);
+      }
+
+      @media (max-width: 640px) {
+        .changelog-body h2 {
+          font-size: 1rem;
+          margin-top: 1.1rem;
+        }
+        .changelog-body h3 {
+          font-size: 0.92rem;
+        }
+        .changelog-body code,
+        .changelog-body pre {
+          font-size: 0.78rem;
+        }
+        .cl-badge {
+          font-size: 0.5rem;
+          margin-right: 0.35rem;
+        }
+      }
+
+      /* Performance: lazy-render below-fold entries */
+      .cl-entry:nth-child(n+4) {
+        content-visibility: auto;
+        contain-intrinsic-size: auto 400px;
+      }
+
+      /* Timeline spine */
+      .oc-timeline {
+        position: relative;
+        padding-left: 3rem;
+        border-left: 6px solid var(--oc-border);
+      }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--oc-bg);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--oc-primary);
+      }
+
+      /* Markdown content in release bodies */
+      .oc-release-body h1,
+      .oc-release-body h2,
+      .oc-release-body h3 {
+        font-family: var(--oc-font-headline);
+        font-weight: 800;
+        text-transform: uppercase;
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .oc-release-body h2 {
+        font-size: 1.1rem;
+        border-bottom: 2px solid var(--oc-primary);
+        padding-bottom: 0.25rem;
+        color: var(--oc-primary-bright);
+      }
+      .oc-release-body ul {
+        list-style: disc;
+        padding-left: 1.5rem;
+        margin: 0.5rem 0;
+      }
+      .oc-release-body li {
+        margin: 0.25rem 0;
+        font-size: 0.875rem;
+        color: var(--oc-text-dim);
+        line-height: 1.5;
+      }
+      .oc-release-body a {
+        color: var(--oc-primary-bright);
+        text-decoration: underline;
+      }
+      .oc-release-body code {
+        font-family: var(--oc-font-mono);
+        font-size: 0.8em;
+        background: rgba(255, 255, 255, 0.08);
+        padding: 0.1em 0.3em;
+      }
+      [data-theme="light"] .oc-release-body code {
+        background: rgba(0, 0, 0, 0.08);
+      }
+      .oc-release-body strong {
+        color: var(--oc-text);
+        font-weight: 700;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Theme init: runs before render to prevent flash -->
+    <script is:inline>
+      (function () {
+        const stored = localStorage.getItem("theme");
+        const theme =
+          stored ||
+          (window.matchMedia("(prefers-color-scheme: light)").matches
+            ? "light"
+            : "dark");
+        if (theme === "light") {
+          document.documentElement.setAttribute("data-theme", "light");
+        } else {
+          document.documentElement.removeAttribute("data-theme");
+        }
+      })();
+    </script>
+
+    <!-- Header -->
+    <header class="oc-nav" style="position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: var(--oc-header-bg); border-bottom: 4px solid var(--oc-border); box-shadow: var(--oc-shadow); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+      <div style="max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1.25rem; gap: 1rem;">
+        <!-- Left: brand -->
+        <div style="display: flex; align-items: center; gap: 1rem; flex-shrink: 0;">
+          <a href="/" class="oc-headline" style="font-weight: 700; color: var(--oc-text); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.15em; opacity: 0.5; text-decoration: none; display: none;" id="oc-hub-link">← HUB</a>
+          <a href="/openclaw/" class="oc-headline" style="color: var(--oc-primary-bright); font-size: 1.5rem; font-weight: 900; font-style: italic; letter-spacing: -0.03em; text-decoration: none; line-height: 1;">OpenClaw</a>
+        </div>
+
+        <!-- Center: desktop nav -->
+        <nav id="oc-desktop-nav" style="display: none; align-items: center; gap: 2rem;">
+          {navLinks.map((link) => (
+            <a
+              href={link.href}
+              class="oc-headline oc-nav-link"
+              style={`font-weight: 800; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em; text-decoration: none; padding-bottom: 4px; transition: color 100ms; ${
+                currentPage === link.key
+                  ? `color: var(--oc-primary-bright); border-bottom: 4px solid var(--oc-primary-bright);`
+                  : `color: var(--oc-text); opacity: 0.7;`
+              }`}
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+
+        <!-- Right: actions -->
+        <div style="display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0;">
+          <!-- Lobster Mode -->
+          <button
+            id="oc-lobster-btn"
+            aria-label="Toggle lobster mode"
+            style="background: transparent; border: 2px solid var(--oc-border); padding: 6px 10px; cursor: pointer; font-size: 11px; line-height: 1; transition: transform 200ms, box-shadow 100ms; position: relative; overflow: visible; box-shadow: var(--oc-shadow-sm);"
+            title="🦞 LOBSTER MODE"
+          >
+            🦞
+          </button>
+
+          <button
+            id="oc-theme-toggle"
+            aria-label="Toggle theme"
+            style="background: transparent; border: 2px solid var(--oc-border); padding: 6px 10px; color: var(--oc-text); cursor: pointer; box-shadow: var(--oc-shadow-sm); font-family: var(--oc-font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.05em; transition: box-shadow 100ms, transform 100ms; position: relative; overflow: visible;"
+          >
+            <span id="oc-theme-label">◐</span>
+          </button>
+
+          <!-- Hamburger (mobile only) -->
+          <button
+            id="oc-mobile-menu-btn"
+            aria-label="Toggle menu"
+            style="display: none; background: transparent; border: 2px solid var(--oc-border); padding: 8px; color: var(--oc-text); cursor: pointer; align-items: center; justify-content: center; position: relative; overflow: visible;"
+          >
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: block;">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile nav dropdown (inside header) -->
+      <div
+        id="oc-mobile-menu"
+        style="display: none; padding: 0.75rem 1.25rem 1.25rem; border-top: 2px solid var(--oc-border-dim); background: var(--oc-bg);"
+      >
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            class="oc-headline"
+            style={`display: block; font-weight: 800; text-transform: uppercase; font-size: 1rem; padding: 0.75rem 0; text-decoration: none; border-bottom: 2px solid var(--oc-border-dim); letter-spacing: 0.05em; ${
+              currentPage === link.key
+                ? `color: var(--oc-primary-bright);`
+                : `color: var(--oc-text); opacity: 0.75;`
+            }`}
+          >
+            {link.label}
+          </a>
+        ))}
+        <a href="/" class="oc-headline" style="display: block; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; padding: 0.75rem 0; text-decoration: none; color: var(--oc-text); opacity: 0.5; letter-spacing: 0.1em;">
+          ← changelogs.info
+        </a>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main style="padding-top: 73px;">
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer
+      style="border-top: 8px solid var(--oc-primary); background: var(--oc-bg); margin-top: 6rem; padding: 3rem 2rem;"
+    >
+      <div
+        style="max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1.5rem;"
+      >
+        <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+          <span
+            class="oc-headline"
+            style="font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--oc-text-dim);"
+          >
+            © {new Date().getFullYear()} changelogs.info / OpenClaw
+          </span>
+          <span
+            style="font-family: var(--oc-font-mono); font-size: 0.6rem; color: var(--oc-text-muted);"
+          >
+            DATA FROM OFFICIAL GITHUB RELEASES
+          </span>
+        </div>
+        <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+          <a
+            href="/"
+            class="oc-headline"
+            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--oc-text-dim); transition: color 150ms;"
+            onmouseover="this.style.color='#eb0000'"
+            onmouseout="this.style.color='var(--oc-text-dim)'"
+          >
+            Hub
+          </a>
+          <a
+            href="/openclaw/changelog/"
+            class="oc-headline"
+            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--oc-text-dim); transition: color 150ms;"
+            onmouseover="this.style.color='#eb0000'"
+            onmouseout="this.style.color='var(--oc-text-dim)'"
+          >
+            Changelog
+          </a>
+          <a
+            href="/openclaw/cheatsheet/"
+            class="oc-headline"
+            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--oc-text-dim); transition: color 150ms;"
+            onmouseover="this.style.color='#eb0000'"
+            onmouseout="this.style.color='var(--oc-text-dim)'"
+          >
+            Cheatsheet
+          </a>
+          <a
+            href="/openclaw/releases/"
+            class="oc-headline"
+            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--oc-text-dim); transition: color 150ms;"
+            onmouseover="this.style.color='#eb0000'"
+            onmouseout="this.style.color='var(--oc-text-dim)'"
+          >
+            Releases
+          </a>
+          <a
+            href={`https://github.com/openclaw/openclaw`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="oc-headline"
+            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--oc-text-dim); transition: color 150ms;"
+            onmouseover="this.style.color='#eb0000'"
+            onmouseout="this.style.color='var(--oc-text-dim)'"
+          >
+            GitHub ↗
+          </a>
+          <a
+            href="/feed/all.xml"
+            class="oc-headline"
+            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--oc-text-dim); transition: color 150ms;"
+            onmouseover="this.style.color='#eb0000'"
+            onmouseout="this.style.color='var(--oc-text-dim)'"
+          >
+            RSS
+          </a>
+        </div>
+        <div
+          style="font-family: var(--oc-font-mono); font-size: 0.65rem; color: var(--oc-text-muted); display: flex; align-items: center; gap: 0.5rem;"
+        >
+          <span style="color: var(--oc-primary);">▶</span>
+          ROOT@OPENCLAW: ~
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Theme toggle
+      const THEME_KEY = "theme";
+
+      function getTheme(): string {
+        return (
+          localStorage.getItem(THEME_KEY) ||
+          (window.matchMedia("(prefers-color-scheme: light)").matches
+            ? "light"
+            : "dark")
+        );
+      }
+
+      function applyTheme(theme: string) {
+        if (theme === "light") {
+          document.documentElement.setAttribute("data-theme", "light");
+        } else {
+          document.documentElement.removeAttribute("data-theme");
+        }
+      }
+
+      function updateLabel(theme: string) {
+        const label = document.getElementById("oc-theme-label");
+        if (label) label.textContent = theme === "light" ? "◑" : "◐";
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const current = getTheme();
+        updateLabel(current);
+        applyTheme(current);
+
+        const btn = document.getElementById("oc-theme-toggle");
+        btn?.addEventListener("click", () => {
+          const cur = getTheme();
+          const next = cur === "dark" ? "light" : "dark";
+          localStorage.setItem(THEME_KEY, next);
+          applyTheme(next);
+          updateLabel(next);
+        });
+
+        // Mobile menu
+        const menuBtn = document.getElementById("oc-mobile-menu-btn");
+        const mobileMenu = document.getElementById("oc-mobile-menu");
+        menuBtn?.addEventListener("click", () => {
+          const isOpen = mobileMenu?.style.display === "block";
+          if (mobileMenu) mobileMenu.style.display = isOpen ? "none" : "block";
+        });
+        mobileMenu?.querySelectorAll("a").forEach((a) => {
+          a.addEventListener("click", () => {
+            if (mobileMenu) mobileMenu.style.display = "none";
+          });
+        });
+
+        // Responsive: show/hide desktop nav and hamburger
+        function handleResize() {
+          const desktopNav = document.getElementById("oc-desktop-nav");
+          const mobileBtn = document.getElementById("oc-mobile-menu-btn");
+          const hubLink = document.getElementById("oc-hub-link");
+          const isDesktop = window.innerWidth >= 768;
+          if (desktopNav) desktopNav.style.display = isDesktop ? "flex" : "none";
+          if (mobileBtn) mobileBtn.style.display = isDesktop ? "none" : "flex";
+          if (hubLink) hubLink.style.display = isDesktop ? "inline" : "none";
+          if (isDesktop && mobileMenu) mobileMenu.style.display = "none";
+        }
+        handleResize();
+        window.addEventListener("resize", handleResize);
+      });
+    </script>
+
+    <!-- Lobster Mode -->
+    <canvas id="lobster-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9990; pointer-events: none; display: none;"></canvas>
+    <div id="lobster-banner" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); z-index: 9991; pointer-events: none; font-family: var(--oc-font-headline); font-weight: 900; font-size: clamp(2rem, 10vw, 8rem); color: #fff; text-shadow: 0 0 40px rgba(255,0,0,0.8), 0 0 80px rgba(255,0,0,0.4), 4px 4px 0 #000; text-transform: uppercase; font-style: italic; letter-spacing: -0.04em; text-align: center; width: 90vw; max-width: 800px; transition: transform 600ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 400ms;">🦞 LOBSTER MODE 🦞</div>
+
+    <style is:global>
+      /* Lobster Mode Theme Override */
+      [data-lobster="true"] {
+        --oc-primary: #ff1a1a !important;
+        --oc-primary-bright: #ff4444 !important;
+        --oc-bg: #1a0000 !important;
+        --oc-bg-card: #2a0000 !important;
+        --oc-bg-surface: #330000 !important;
+        --oc-text: #ffcccc !important;
+        --oc-text-dim: rgba(255, 180, 180, 0.7) !important;
+        --oc-text-muted: rgba(255, 150, 150, 0.5) !important;
+        --oc-border: #ff3333 !important;
+        --oc-border-dim: rgba(255, 50, 50, 0.3) !important;
+        --oc-shadow: 6px 6px 0px 0px rgba(255, 0, 0, 0.4) !important;
+        --oc-shadow-sm: 4px 4px 0px 0px rgba(255, 0, 0, 0.3) !important;
+        --oc-shadow-red: 6px 6px 0px 0px rgba(255, 0, 0, 0.6) !important;
+        --oc-header-bg: rgba(40, 0, 0, 0.92) !important;
+      }
+      [data-lobster="true"][data-theme="light"] {
+        --oc-bg: #fff0f0 !important;
+        --oc-bg-card: #ffe5e5 !important;
+        --oc-bg-surface: #ffd9d9 !important;
+        --oc-text: #4a0000 !important;
+        --oc-text-dim: rgba(100, 0, 0, 0.7) !important;
+        --oc-text-muted: rgba(100, 0, 0, 0.4) !important;
+        --oc-border: #cc0000 !important;
+        --oc-border-dim: rgba(200, 0, 0, 0.2) !important;
+        --oc-shadow: 6px 6px 0px 0px rgba(200, 0, 0, 0.5) !important;
+        --oc-shadow-sm: 4px 4px 0px 0px rgba(200, 0, 0, 0.4) !important;
+        --oc-header-bg: rgba(255, 230, 230, 0.92) !important;
+      }
+
+      /* Lobster mode animations */
+      @keyframes lobster-shake {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(-3deg); }
+        75% { transform: rotate(3deg); }
+      }
+      @keyframes lobster-pulse {
+        0%, 100% { text-shadow: 0 0 10px rgba(255,0,0,0.5); }
+        50% { text-shadow: 0 0 30px rgba(255,0,0,0.8), 0 0 60px rgba(255,0,0,0.3); }
+      }
+      @keyframes lobster-float {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        33% { transform: translateY(-8px) rotate(2deg); }
+        66% { transform: translateY(4px) rotate(-1deg); }
+      }
+      @keyframes lobster-border-march {
+        0% { background-position: 0 0, 100% 0, 0 100%, 0 0; }
+        100% { background-position: 40px 0, -40px 0, 0 -40px, 0 40px; }
+      }
+
+      [data-lobster="true"] .oc-nav {
+        animation: lobster-pulse 2s ease-in-out infinite;
+      }
+      [data-lobster="true"] #oc-lobster-btn {
+        animation: lobster-shake 0.5s ease-in-out infinite;
+        background: #ff1a1a !important;
+        border-color: #ff4444 !important;
+        box-shadow: 0 0 15px rgba(255,0,0,0.6) !important;
+      }
+      [data-lobster="true"] .oc-headline {
+        animation: lobster-float 3s ease-in-out infinite;
+      }
+      [data-lobster="true"] .oc-headline:nth-child(2n) {
+        animation-delay: 0.5s;
+      }
+      [data-lobster="true"] .oc-headline:nth-child(3n) {
+        animation-delay: 1s;
+      }
+
+      /* Marching ants border on cards */
+      [data-lobster="true"] [style*="border: 4px"] {
+        border-color: #ff3333 !important;
+        box-shadow: 0 0 20px rgba(255,0,0,0.2), inset 0 0 20px rgba(255,0,0,0.05) !important;
+      }
+
+      /* Cursor trail */
+      .lobster-trail {
+        position: fixed;
+        pointer-events: none;
+        z-index: 9989;
+        font-size: 1.5rem;
+        animation: lobster-trail-fade 1s ease-out forwards;
+        user-select: none;
+      }
+      @keyframes lobster-trail-fade {
+        0% { opacity: 1; transform: scale(1) rotate(0deg); }
+        50% { opacity: 0.6; transform: scale(1.3) rotate(180deg); }
+        100% { opacity: 0; transform: scale(0.3) rotate(360deg) translateY(-40px); }
+      }
+
+      /* Red scanline overlay */
+      [data-lobster="true"] body::before {
+        display: block !important;
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(255, 0, 0, 0.03),
+          rgba(255, 0, 0, 0.03) 1px,
+          transparent 1px,
+          transparent 3px
+        ) !important;
+        opacity: 0.15 !important;
+      }
+    </style>
+
+    <script>
+      // === LOBSTER MODE ===
+      (function() {
+        let lobsterActive = false;
+        let animFrame: number;
+        let lobsters: Array<{x: number; y: number; vx: number; vy: number; rot: number; vr: number; size: number; emoji: string; wobble: number; wobbleSpeed: number}> = [];
+        let trailThrottle = 0;
+
+        const LOBSTER_EMOJIS = ['🦞', '🦀', '🦐'];
+        const canvas = document.getElementById('lobster-canvas') as HTMLCanvasElement;
+        const ctx = canvas?.getContext('2d');
+        const banner = document.getElementById('lobster-banner');
+
+        function resizeCanvas() {
+          if (!canvas) return;
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+
+        function spawnLobsters(count: number) {
+          for (let i = 0; i < count; i++) {
+            lobsters.push({
+              x: Math.random() * window.innerWidth,
+              y: -50 - Math.random() * 400,
+              vx: (Math.random() - 0.5) * 3,
+              vy: 1.5 + Math.random() * 3,
+              rot: Math.random() * Math.PI * 2,
+              vr: (Math.random() - 0.5) * 0.08,
+              size: 20 + Math.random() * 30,
+              emoji: LOBSTER_EMOJIS[Math.floor(Math.random() * LOBSTER_EMOJIS.length)],
+              wobble: Math.random() * Math.PI * 2,
+              wobbleSpeed: 0.02 + Math.random() * 0.04
+            });
+          }
+        }
+
+        function animate() {
+          if (!ctx || !canvas) return;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          lobsters.forEach(l => {
+            l.wobble += l.wobbleSpeed;
+            l.x += l.vx + Math.sin(l.wobble) * 1.5;
+            l.y += l.vy;
+            l.rot += l.vr;
+
+            // Wrap horizontally
+            if (l.x < -60) l.x = canvas.width + 60;
+            if (l.x > canvas.width + 60) l.x = -60;
+
+            // Respawn at top when off bottom
+            if (l.y > canvas.height + 60) {
+              l.y = -60;
+              l.x = Math.random() * canvas.width;
+              l.vy = 1.5 + Math.random() * 3;
+            }
+
+            ctx.save();
+            ctx.translate(l.x, l.y);
+            ctx.rotate(l.rot);
+            ctx.font = `${l.size}px serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(l.emoji, 0, 0);
+            ctx.restore();
+          });
+
+          if (lobsterActive) {
+            animFrame = requestAnimationFrame(animate);
+          }
+        }
+
+        // Cursor trail
+        function addTrail(e: MouseEvent) {
+          if (!lobsterActive) return;
+          trailThrottle++;
+          if (trailThrottle % 3 !== 0) return;
+
+          const el = document.createElement('div');
+          el.className = 'lobster-trail';
+          el.textContent = LOBSTER_EMOJIS[Math.floor(Math.random() * LOBSTER_EMOJIS.length)];
+          el.style.left = e.clientX + 'px';
+          el.style.top = e.clientY + 'px';
+          document.body.appendChild(el);
+          setTimeout(() => el.remove(), 1000);
+        }
+
+        function enterLobsterMode(quiet = false) {
+          lobsterActive = true;
+          document.documentElement.setAttribute('data-lobster', 'true');
+
+          // Show canvas
+          if (canvas) {
+            canvas.style.display = 'block';
+            resizeCanvas();
+          }
+
+          // Spawn lobsters — fewer on quiet restore
+          if (quiet) {
+            spawnLobsters(15);
+          } else {
+            spawnLobsters(25);
+            setTimeout(() => spawnLobsters(15), 800);
+            setTimeout(() => spawnLobsters(10), 1600);
+          }
+
+          // Show banner with slam animation (only on fresh activation)
+          if (banner && !quiet) {
+            banner.style.display = 'block';
+            banner.style.opacity = '1';
+            requestAnimationFrame(() => {
+              banner.style.transform = 'translate(-50%, -50%) scale(1)';
+            });
+            setTimeout(() => {
+              banner.style.opacity = '0';
+              setTimeout(() => {
+                banner.style.display = 'none';
+                banner.style.transform = 'translate(-50%, -50%) scale(0)';
+              }, 500);
+            }, 2000);
+          }
+
+          // Start animation
+          animate();
+
+          // Cursor trail
+          document.addEventListener('mousemove', addTrail);
+
+          // Click to spawn more
+          document.addEventListener('click', clickSpawn);
+
+          localStorage.setItem('lobster-mode', 'true');
+        }
+
+        function clickSpawn() {
+          if (lobsterActive) spawnLobsters(5);
+        }
+
+        function exitLobsterMode() {
+          lobsterActive = false;
+          document.documentElement.removeAttribute('data-lobster');
+          cancelAnimationFrame(animFrame);
+          lobsters = [];
+
+          if (canvas) {
+            canvas.style.display = 'none';
+            if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+          }
+          if (banner) {
+            banner.style.display = 'none';
+            banner.style.transform = 'translate(-50%, -50%) scale(0)';
+          }
+
+          document.removeEventListener('mousemove', addTrail);
+          document.removeEventListener('click', clickSpawn);
+
+          // Clean up trail elements
+          document.querySelectorAll('.lobster-trail').forEach(el => el.remove());
+
+          localStorage.removeItem('lobster-mode');
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+          const lobsterBtn = document.getElementById('oc-lobster-btn');
+          lobsterBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (lobsterActive) {
+              exitLobsterMode();
+            } else {
+              enterLobsterMode();
+            }
+          });
+
+          window.addEventListener('resize', resizeCanvas);
+
+          // Restore lobster mode if was active
+          if (localStorage.getItem('lobster-mode') === 'true') {
+            enterLobsterMode(true);
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

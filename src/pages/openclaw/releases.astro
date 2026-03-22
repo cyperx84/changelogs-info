@@ -1,43 +1,250 @@
 ---
-import SectionLayout from "../../layouts/SectionLayout.astro";
-import ReleaseCard from "../../components/ReleaseCard.astro";
-import { getSectionById } from "../../lib/sections";
-import { getToolReleases } from "../../lib/releases";
+import OpenClawLayout from "../../layouts/OpenClawLayout.astro";
+import { getToolReleases, formatDate } from "../../lib/releases";
 
-const section = getSectionById("openclaw")!;
 const data = await getToolReleases("openclaw");
 const releases = data?.releases || [];
+const stableReleases = releases.filter((r) => !r.prerelease);
+const latestStable = stableReleases[0];
+
+// Classify release tier
+function getTier(release: any): { label: string; isBreaking: boolean; color: string } {
+  const body = (release.body || "").toLowerCase();
+  const isBreaking = body.includes("breaking");
+  const isMajor = release.version.match(/^v?\d+\.\d+\.0/);
+  if (isBreaking) return { label: "Tier 1: Breaking", isBreaking: true, color: "#bc0100" };
+  if (isMajor) return { label: "Tier 2: Feature", isBreaking: false, color: "#0071e8" };
+  return { label: "Tier 2: Feature", isBreaking: false, color: "#0071e8" };
+}
+
+const INITIAL_LOAD = 12;
+const initialReleases = stableReleases.slice(0, INITIAL_LOAD);
 ---
 
-<SectionLayout
-  section={section}
+<OpenClawLayout
   title="OpenClaw Releases — changelogs.info"
-  description="All OpenClaw releases."
-  showHero={false}
+  description="All OpenClaw releases. Version control and iteration history."
+  currentPage="releases"
 >
-  <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
-    <div class="mb-8 flex flex-wrap items-center justify-between gap-3">
-      <h1 class="font-mono text-2xl font-bold" style={`color: ${section.color};`}>
-        <span style={`color: ${section.color};`}>/</span>releases
-      </h1>
-      <span class="font-mono text-xs text-text-muted">{releases.length} releases</span>
+  <div style="max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 0;">
+
+    <!-- Header -->
+    <header
+      style="margin-bottom: 4rem; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1.5rem; border-left: 8px solid var(--oc-primary); padding-left: 2rem; padding-top: 1rem; padding-bottom: 1rem;"
+    >
+      <div>
+        <h1
+          class="oc-headline"
+          style="font-size: clamp(3rem, 8vw, 6rem); font-weight: 900; text-transform: uppercase; letter-spacing: -0.03em; line-height: 0.9; margin: 0 0 0.5rem; color: var(--oc-text);"
+        >
+          Releases
+        </h1>
+        <p
+          class="oc-headline"
+          style="font-size: 1.1rem; font-weight: 700; color: var(--oc-primary-bright); margin: 0; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.8;"
+        >
+          Version Control &amp; Iteration History
+        </p>
+      </div>
+      <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+        {latestStable && (
+          <div style="background: var(--oc-bg); color: var(--oc-text); padding: 0.5rem 1rem; font-family: var(--oc-font-headline); font-weight: 900; text-transform: uppercase; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; border: 2px solid var(--oc-border);">
+            <span style="color: var(--oc-primary-bright);">▶</span>
+            {latestStable.version}-STABLE
+          </div>
+        )}
+        <span style="font-family: var(--oc-font-mono); font-size: 0.75rem; color: var(--oc-text-muted);">
+          {releases.length} total releases
+        </span>
+      </div>
+    </header>
+
+    <!-- Release Grid -->
+    <section
+      id="releases-grid"
+      style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 3rem; margin-bottom: 4rem;"
+    >
+      {initialReleases.map((release) => {
+        const tier = getTier(release);
+        const bodyPreview = (release.body || "")
+          .replace(/\r\n/g, "\n")
+          .replace(/^#{1,3}\s[^\n]+\n?/gm, "")
+          .replace(/\[[^\]]+\]\([^)]+\)/g, "")
+          .replace(/\*\*([^*]+)\*\*/g, "$1")
+          .trim()
+          .slice(0, 180);
+
+        return (
+          <article
+            class="release-card"
+            style="position: relative; background: var(--oc-bg-surface); border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow); transition: transform 100ms, box-shadow 100ms; padding: 2rem; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;"
+            onclick={`window.open('${release.url}', '_blank')`}
+            onmouseover="this.style.transform='translate(2px,2px)';this.style.boxShadow='var(--oc-shadow-sm)'"
+            onmouseout="this.style.transform='';this.style.boxShadow='var(--oc-shadow)'"
+          >
+            <!-- Version badge (floating) -->
+            <div
+              style={`position: absolute; top: -1.5rem; left: -0.75rem; background: ${tier.isBreaking ? 'var(--oc-primary)' : '#0071e8'}; color: var(--oc-text); font-family: var(--oc-font-mono); font-weight: 700; padding: 0.35rem 0.75rem; font-size: 1.1rem; border: 4px solid var(--oc-border); z-index: 1;`}
+            >
+              {release.version}
+            </div>
+
+            <!-- Card content -->
+            <div style="margin-top: 1rem;">
+              <!-- Date + Tier -->
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem; gap: 0.5rem; flex-wrap: wrap;">
+                <span class="oc-headline" style="font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: var(--oc-text-muted);">
+                  {formatDate(release.date)}
+                </span>
+                <span
+                  style={`background: ${tier.color}; color: var(--oc-text); font-size: 0.6rem; font-family: var(--oc-font-headline); font-weight: 900; padding: 0.2rem 0.6rem; text-transform: uppercase; border: 2px solid var(--oc-border); white-space: nowrap;`}
+                >
+                  {tier.label}
+                </span>
+              </div>
+
+              <!-- Name -->
+              <h3
+                class="oc-headline"
+                style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; line-height: 1.2; margin: 0 0 1rem; color: var(--oc-text); letter-spacing: -0.01em;"
+              >
+                {(release.name || release.version).replace(/^openclaw\s+/i, "").slice(0, 60)}
+              </h3>
+
+              <!-- Body preview -->
+              {bodyPreview && (
+                <p style="font-family: var(--oc-font-body); font-size: 0.8rem; color: var(--oc-text-dim); margin: 0 0 1.5rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                  {bodyPreview}
+                </p>
+              )}
+            </div>
+
+            <!-- Card footer -->
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 2px solid var(--oc-border-dim);">
+              <a
+                href={release.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="oc-headline"
+                style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--oc-text); text-decoration: none; transition: color 100ms;"
+                onclick="event.stopPropagation()"
+                onmouseover="this.style.color='var(--oc-primary-bright)'"
+                onmouseout="this.style.color='var(--oc-text)'"
+              >
+                ↗ GitHub
+              </a>
+              <span style={`color: ${tier.isBreaking ? 'var(--oc-primary-bright)' : '#0071e8'}; font-size: 1.1rem;`}>
+                {tier.isBreaking ? "⚡" : "◎"}
+              </span>
+            </div>
+          </article>
+        );
+      })}
+    </section>
+
+    <!-- Hidden releases (loaded via JS) -->
+    <div id="releases-extra" style="display: none;">
+      {stableReleases.slice(INITIAL_LOAD).map((release) => {
+        const tier = getTier(release);
+        const bodyPreview = (release.body || "")
+          .replace(/\r\n/g, "\n")
+          .replace(/^#{1,3}\s[^\n]+\n?/gm, "")
+          .replace(/\[[^\]]+\]\([^)]+\)/g, "")
+          .replace(/\*\*([^*]+)\*\*/g, "$1")
+          .trim()
+          .slice(0, 180);
+
+        return (
+          <article
+            class="release-card extra-card"
+            style="position: relative; background: var(--oc-bg-surface); border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow); transition: transform 100ms, box-shadow 100ms; padding: 2rem; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;"
+            onclick={`window.open('${release.url}', '_blank')`}
+            onmouseover="this.style.transform='translate(2px,2px)';this.style.boxShadow='var(--oc-shadow-sm)'"
+            onmouseout="this.style.transform='';this.style.boxShadow='var(--oc-shadow)'"
+          >
+            <div
+              style={`position: absolute; top: -1.5rem; left: -0.75rem; background: ${tier.isBreaking ? 'var(--oc-primary)' : '#0071e8'}; color: var(--oc-text); font-family: var(--oc-font-mono); font-weight: 700; padding: 0.35rem 0.75rem; font-size: 1.1rem; border: 4px solid var(--oc-border); z-index: 1;`}
+            >
+              {release.version}
+            </div>
+            <div style="margin-top: 1rem;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem; gap: 0.5rem; flex-wrap: wrap;">
+                <span class="oc-headline" style="font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: var(--oc-text-muted);">{formatDate(release.date)}</span>
+                <span style={`background: ${tier.color}; color: var(--oc-text); font-size: 0.6rem; font-family: var(--oc-font-headline); font-weight: 900; padding: 0.2rem 0.6rem; text-transform: uppercase; border: 2px solid var(--oc-border); white-space: nowrap;`}>{tier.label}</span>
+              </div>
+              <h3 class="oc-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; line-height: 1.2; margin: 0 0 1rem; color: var(--oc-text);">{(release.name || release.version).replace(/^openclaw\s+/i, "").slice(0, 60)}</h3>
+              {bodyPreview && <p style="font-family: var(--oc-font-body); font-size: 0.8rem; color: var(--oc-text-dim); margin: 0 0 1.5rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">{bodyPreview}</p>}
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 2px solid var(--oc-border-dim);">
+              <a href={release.url} target="_blank" rel="noopener noreferrer" class="oc-headline" style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--oc-text); text-decoration: none;" onclick="event.stopPropagation()" onmouseover="this.style.color='var(--oc-primary-bright)'" onmouseout="this.style.color='var(--oc-text)'">↗ GitHub</a>
+              <span style={`color: ${tier.isBreaking ? 'var(--oc-primary-bright)' : '#0071e8'}; font-size: 1.1rem;`}>{tier.isBreaking ? "⚡" : "◎"}</span>
+            </div>
+          </article>
+        );
+      })}
     </div>
 
-    {releases.length > 0 ? (
-      <div class="space-y-4">
-        {releases.map((release) => (
-          <ReleaseCard
-            release={release}
-            sectionColor={section.color}
-            sectionRgb={section.colorRgb}
-            toolId={section.id}
-          />
-        ))}
+    <!-- Load more / pre-release toggle -->
+    <div style="text-align: center; margin-bottom: 4rem; display: flex; flex-direction: column; align-items: center; gap: 1.5rem;">
+      {stableReleases.length > INITIAL_LOAD && (
+        <button
+          id="load-more-btn"
+          class="oc-headline"
+          style="background: transparent; border: 4px solid var(--oc-border); color: var(--oc-text); padding: 1.25rem 3rem; font-size: 1.25rem; font-weight: 900; text-transform: uppercase; font-style: italic; letter-spacing: -0.01em; cursor: pointer; box-shadow: var(--oc-shadow); transition: transform 100ms, box-shadow 100ms;"
+          onmouseover="this.style.transform='translate(2px,2px)';this.style.boxShadow='var(--oc-shadow-sm)'"
+          onmouseout="this.style.transform='';this.style.boxShadow='var(--oc-shadow)'"
+        >
+          Load More ({stableReleases.length - INITIAL_LOAD} remaining)
+        </button>
+      )}
+
+      <!-- Subscribe CTA -->
+      <div style="width: 100%; max-width: 700px; display: flex; flex-wrap: wrap; gap: 0; align-items: center; justify-content: space-between; padding: 3rem; background: var(--oc-bg-surface); border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow); gap: 2rem; margin-top: 1rem;">
+        <div style="max-width: 32rem;">
+          <h2 class="oc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 0.75rem; color: var(--oc-text);">Stay Current</h2>
+          <p style="font-family: var(--oc-font-body); font-size: 0.9rem; color: var(--oc-text-dim); margin: 0; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">Get notified of every OpenClaw release via RSS or newsletter.</p>
+        </div>
+        <div style="display: flex; gap: 0;">
+          <a
+            href="/feed/all.xml"
+            class="oc-headline"
+            style="background: var(--oc-primary); color: var(--oc-text); padding: 1rem 2rem; font-size: 0.85rem; font-weight: 900; text-transform: uppercase; text-decoration: none; border: 4px solid var(--oc-border); transition: transform 100ms, box-shadow 100ms; box-shadow: var(--oc-shadow-sm);"
+            onmouseover="this.style.transform='translate(1px,1px)';this.style.boxShadow='none'"
+            onmouseout="this.style.transform='';this.style.boxShadow='var(--oc-shadow-sm)'"
+          >
+            RSS Feed
+          </a>
+          <a
+            href="/newsletter/"
+            class="oc-headline"
+            style="background: transparent; color: var(--oc-text); padding: 1rem 2rem; font-size: 0.85rem; font-weight: 900; text-transform: uppercase; text-decoration: none; border: 4px solid var(--oc-border); border-left: 0; transition: background 100ms;"
+            onmouseover="this.style.background='var(--oc-border-dim)'"
+            onmouseout="this.style.background='transparent'"
+          >
+            Newsletter
+          </a>
+        </div>
       </div>
-    ) : (
-      <div class="rounded-lg border border-dashed border-border bg-bg-card p-8 text-center">
-        <p class="font-mono text-sm text-text-muted">&gt; no releases tracked yet.</p>
-      </div>
-    )}
+    </div>
+
   </div>
-</SectionLayout>
+
+  <script>
+    const loadMoreBtn = document.getElementById("load-more-btn");
+    const extraEl = document.getElementById("releases-extra");
+    const grid = document.getElementById("releases-grid");
+
+    loadMoreBtn?.addEventListener("click", () => {
+      if (!extraEl || !grid) return;
+
+      // Move extra cards into the grid
+      const extras = extraEl.querySelectorAll(".extra-card");
+      extras.forEach((card) => {
+        grid.appendChild(card);
+      });
+
+      // Hide the button
+      loadMoreBtn.style.display = "none";
+    });
+  </script>
+</OpenClawLayout>
