@@ -106,7 +106,7 @@ const proTips = cs.proTips || [];
                 <li style="display: flex; align-items: flex-start; gap: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--oc-border-dim);">
                   <span style="color: var(--oc-primary-bright); flex-shrink: 0; font-size: 1rem; margin-top: 0.1rem;">☑</span>
                   <div style="flex: 1; min-width: 0;">
-                    <span style="font-family: var(--oc-font-mono); font-weight: 700; font-size: 0.8rem; color: var(--oc-text); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{wf.command}</span>
+                    <span class="cs-wf-command" style="font-family: var(--oc-font-mono); font-weight: 700; font-size: 0.8rem; color: var(--oc-text); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{wf.command}</span>
                     <span style="font-family: var(--oc-font-body); font-size: 0.75rem; color: var(--oc-text-dim); display: block; margin-top: 0.15rem; line-height: 1.3;">{wf.title}</span>
                   </div>
                 </li>
@@ -161,9 +161,9 @@ const proTips = cs.proTips || [];
             </h2>
             <div style="display: flex; flex-direction: column; gap: 0.75rem;">
               {slashCommands.map((cmd: any) => (
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--oc-border-dim); padding-bottom: 0.75rem; gap: 1rem;">
+                <div class="cs-slash-row" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--oc-border-dim); padding-bottom: 0.75rem; gap: 1rem;">
                   <span class="oc-headline" style="font-weight: 900; font-size: 0.9rem; color: var(--oc-text);">{cmd.command}</span>
-                  <span style="background: var(--oc-bg); color: var(--oc-text); font-family: var(--oc-font-mono); font-size: 0.65rem; padding: 0.2rem 0.5rem; flex-shrink: 0; max-width: 12rem; text-align: right; line-height: 1.3;">{cmd.description}</span>
+                  <span class="cs-slash-desc" style="background: var(--oc-bg); color: var(--oc-text); font-family: var(--oc-font-mono); font-size: 0.65rem; padding: 0.2rem 0.5rem; flex-shrink: 0; max-width: 12rem; text-align: right; line-height: 1.3;">{cmd.description}</span>
                 </div>
               ))}
             </div>
@@ -213,9 +213,9 @@ const proTips = cs.proTips || [];
           <h2 class="oc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--oc-text);">
             Power Moves
           </h2>
-          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+          <div class="cs-power-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
             {powerMoves.map((pm: any) => (
-              <div style="border: 2px solid var(--oc-border-dim); padding: 1.25rem;">
+              <div class="cs-power-card" style="border: 2px solid var(--oc-border-dim); padding: 1.25rem;">
                 <h3 class="oc-headline" style="font-size: 1rem; font-weight: 900; text-transform: uppercase; color: var(--oc-text); margin: 0 0 0.5rem; line-height: 1.2;">{pm.title}</h3>
                 <p style="font-family: var(--oc-font-body); font-size: 0.8rem; color: var(--oc-text-dim); margin: 0 0 0.75rem; line-height: 1.4;">{pm.description}</p>
                 {pm.command && (
@@ -257,6 +257,30 @@ const proTips = cs.proTips || [];
       }
       .oc-grid-6-6 {
         grid-template-columns: 1fr 1fr !important;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .cs-wf-command {
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
+        line-height: 1.45 !important;
+        word-break: break-word !important;
+      }
+      .cs-slash-row {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+      }
+      .cs-slash-desc {
+        max-width: 100% !important;
+        text-align: left !important;
+      }
+      .cs-power-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .cs-power-card {
+        padding: 1rem !important;
       }
     }
   </style>

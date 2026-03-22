@@ -111,6 +111,7 @@ function renderBody(body: string): string {
     {releases.length > 0 ? (
       <div
         id="cl-releases-list"
+        class="cl-list"
         style="position: relative; padding-left: 3rem; border-left: 6px solid var(--oc-border);"
       >
         {releases.map((release, idx) => {
@@ -131,6 +132,7 @@ function renderBody(body: string): string {
             >
               <!-- Timeline dot -->
               <div
+                class="cl-dot"
                 style={`position: absolute; left: -3.9rem; top: 0.5rem; width: 3rem; height: 3rem; border: 4px solid var(--oc-border); display: flex; align-items: center; justify-content: center; background: ${breaking ? 'var(--oc-primary)' : 'white'};`}
               >
                 <span style={`font-size: 0.8rem; ${breaking ? 'color:white;' : 'color:black;'}`}>
@@ -139,7 +141,7 @@ function renderBody(body: string): string {
               </div>
 
               <!-- Entry header -->
-              <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: baseline; margin-bottom: 1rem;">
+              <div class="cl-entry-header" style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: baseline; margin-bottom: 1rem;">
                 <span
                   class="oc-headline"
                   style="font-size: 2.25rem; font-weight: 900; font-style: italic; letter-spacing: -0.02em; color: var(--oc-text);"
@@ -166,11 +168,12 @@ function renderBody(body: string): string {
 
               <!-- Entry card -->
               <div
+                class="cl-entry-card"
                 style={`padding: 2rem; border: 4px solid var(--oc-border); background: ${breaking ? 'var(--oc-border)' : 'var(--oc-bg-surface)'}; ${breaking ? 'border-right: 8px solid var(--oc-primary); border-bottom: 8px solid var(--oc-primary);' : ''}`}
               >
                 <!-- Release name -->
                 <h3
-                  class="oc-headline"
+                  class="oc-headline cl-entry-title"
                   style={`font-size: 1.5rem; font-weight: 900; text-transform: uppercase; margin: 0 0 1.5rem; letter-spacing: -0.01em; color: ${breaking ? 'var(--oc-bg)' : 'var(--oc-text)'};`}
                 >
                   {(release.name || release.version).replace(/^openclaw\s+/i, "")}
@@ -194,7 +197,7 @@ function renderBody(body: string): string {
                 )}
 
                 <!-- Footer -->
-                <div style={`display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 2px solid var(--oc-border-dim);`}>
+                <div class="cl-entry-footer" style={`display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 2px solid var(--oc-border-dim);`}>
                   <a
                     href={release.url}
                     target="_blank"
@@ -255,6 +258,67 @@ function renderBody(body: string): string {
       ↑
     </button>
   </div>
+
+  <style is:global>
+    @media (max-width: 640px) {
+      .cl-list {
+        padding-left: 1.25rem !important;
+        border-left-width: 4px !important;
+      }
+      .cl-dot {
+        left: -1.85rem !important;
+        width: 1.4rem !important;
+        height: 1.4rem !important;
+        border-width: 2px !important;
+        top: 0.45rem !important;
+      }
+      .cl-dot span {
+        font-size: 0.55rem !important;
+      }
+      .cl-entry {
+        margin-bottom: 2.5rem !important;
+      }
+      .cl-entry-header {
+        gap: 0.5rem !important;
+        margin-bottom: 0.75rem !important;
+      }
+      .cl-entry-header > span:first-child {
+        font-size: 1.35rem !important;
+      }
+      .cl-entry-header > span:nth-child(2) {
+        font-size: 0.75rem !important;
+      }
+      .cl-entry-card {
+        padding: 1rem !important;
+      }
+      .cl-entry-title {
+        font-size: 1.1rem !important;
+        margin-bottom: 1rem !important;
+      }
+      .changelog-body {
+        font-size: 0.95rem !important;
+        line-height: 1.65 !important;
+      }
+      .changelog-body li {
+        padding-left: 1rem !important;
+        margin-bottom: 0.5rem !important;
+      }
+      .cl-entry-footer {
+        gap: 0.5rem !important;
+        align-items: flex-start !important;
+        flex-wrap: wrap !important;
+      }
+      #cl-load-more {
+        font-size: 0.75rem !important;
+        padding: 0.85rem !important;
+      }
+      #cl-scroll-top {
+        right: 1rem !important;
+        bottom: 1rem !important;
+        padding: 0.75rem !important;
+      }
+    }
+  </style>
 
   <script>
     const search = document.getElementById("cl-search") as HTMLInputElement;
