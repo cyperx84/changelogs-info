@@ -381,6 +381,16 @@ const navLinks = [
             <span id="oc-theme-label">◐</span>
           </button>
 
+          <!-- Lobster Mode -->
+          <button
+            id="oc-lobster-btn"
+            aria-label="Toggle lobster mode"
+            style="background: transparent; border: 2px solid var(--oc-border); padding: 6px 10px; cursor: pointer; font-size: 14px; transition: transform 200ms, box-shadow 100ms; position: relative; overflow: visible; box-shadow: var(--oc-shadow-sm);"
+            title="🦞 LOBSTER MODE"
+          >
+            🦞
+          </button>
+
           <!-- Hamburger (mobile only) -->
           <button
             id="oc-mobile-menu-btn"
@@ -577,6 +587,296 @@ const navLinks = [
         handleResize();
         window.addEventListener("resize", handleResize);
       });
+    </script>
+
+    <!-- Lobster Mode -->
+    <canvas id="lobster-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9990; pointer-events: none; display: none;"></canvas>
+    <div id="lobster-banner" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); z-index: 9991; pointer-events: none; font-family: var(--oc-font-headline); font-weight: 900; font-size: clamp(3rem, 12vw, 8rem); color: #fff; text-shadow: 0 0 40px rgba(255,0,0,0.8), 0 0 80px rgba(255,0,0,0.4), 4px 4px 0 #000; text-transform: uppercase; font-style: italic; letter-spacing: -0.04em; white-space: nowrap; transition: transform 600ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 400ms;">🦞 LOBSTER MODE 🦞</div>
+
+    <style is:global>
+      /* Lobster Mode Theme Override */
+      [data-lobster="true"] {
+        --oc-primary: #ff1a1a !important;
+        --oc-primary-bright: #ff4444 !important;
+        --oc-bg: #1a0000 !important;
+        --oc-bg-card: #2a0000 !important;
+        --oc-bg-surface: #330000 !important;
+        --oc-text: #ffcccc !important;
+        --oc-text-dim: rgba(255, 180, 180, 0.7) !important;
+        --oc-text-muted: rgba(255, 150, 150, 0.5) !important;
+        --oc-border: #ff3333 !important;
+        --oc-border-dim: rgba(255, 50, 50, 0.3) !important;
+        --oc-shadow: 6px 6px 0px 0px rgba(255, 0, 0, 0.4) !important;
+        --oc-shadow-sm: 4px 4px 0px 0px rgba(255, 0, 0, 0.3) !important;
+        --oc-shadow-red: 6px 6px 0px 0px rgba(255, 0, 0, 0.6) !important;
+        --oc-header-bg: rgba(40, 0, 0, 0.92) !important;
+      }
+      [data-lobster="true"][data-theme="light"] {
+        --oc-bg: #fff0f0 !important;
+        --oc-bg-card: #ffe5e5 !important;
+        --oc-bg-surface: #ffd9d9 !important;
+        --oc-text: #4a0000 !important;
+        --oc-text-dim: rgba(100, 0, 0, 0.7) !important;
+        --oc-text-muted: rgba(100, 0, 0, 0.4) !important;
+        --oc-border: #cc0000 !important;
+        --oc-border-dim: rgba(200, 0, 0, 0.2) !important;
+        --oc-shadow: 6px 6px 0px 0px rgba(200, 0, 0, 0.5) !important;
+        --oc-shadow-sm: 4px 4px 0px 0px rgba(200, 0, 0, 0.4) !important;
+        --oc-header-bg: rgba(255, 230, 230, 0.92) !important;
+      }
+
+      /* Lobster mode animations */
+      @keyframes lobster-shake {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(-3deg); }
+        75% { transform: rotate(3deg); }
+      }
+      @keyframes lobster-pulse {
+        0%, 100% { text-shadow: 0 0 10px rgba(255,0,0,0.5); }
+        50% { text-shadow: 0 0 30px rgba(255,0,0,0.8), 0 0 60px rgba(255,0,0,0.3); }
+      }
+      @keyframes lobster-float {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        33% { transform: translateY(-8px) rotate(2deg); }
+        66% { transform: translateY(4px) rotate(-1deg); }
+      }
+      @keyframes lobster-border-march {
+        0% { background-position: 0 0, 100% 0, 0 100%, 0 0; }
+        100% { background-position: 40px 0, -40px 0, 0 -40px, 0 40px; }
+      }
+
+      [data-lobster="true"] .oc-nav {
+        animation: lobster-pulse 2s ease-in-out infinite;
+      }
+      [data-lobster="true"] #oc-lobster-btn {
+        animation: lobster-shake 0.5s ease-in-out infinite;
+        background: #ff1a1a !important;
+        border-color: #ff4444 !important;
+        box-shadow: 0 0 15px rgba(255,0,0,0.6) !important;
+      }
+      [data-lobster="true"] .oc-headline {
+        animation: lobster-float 3s ease-in-out infinite;
+      }
+      [data-lobster="true"] .oc-headline:nth-child(2n) {
+        animation-delay: 0.5s;
+      }
+      [data-lobster="true"] .oc-headline:nth-child(3n) {
+        animation-delay: 1s;
+      }
+
+      /* Marching ants border on cards */
+      [data-lobster="true"] [style*="border: 4px"] {
+        border-color: #ff3333 !important;
+        box-shadow: 0 0 20px rgba(255,0,0,0.2), inset 0 0 20px rgba(255,0,0,0.05) !important;
+      }
+
+      /* Cursor trail */
+      .lobster-trail {
+        position: fixed;
+        pointer-events: none;
+        z-index: 9989;
+        font-size: 1.5rem;
+        animation: lobster-trail-fade 1s ease-out forwards;
+        user-select: none;
+      }
+      @keyframes lobster-trail-fade {
+        0% { opacity: 1; transform: scale(1) rotate(0deg); }
+        50% { opacity: 0.6; transform: scale(1.3) rotate(180deg); }
+        100% { opacity: 0; transform: scale(0.3) rotate(360deg) translateY(-40px); }
+      }
+
+      /* Red scanline overlay */
+      [data-lobster="true"] body::before {
+        display: block !important;
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(255, 0, 0, 0.03),
+          rgba(255, 0, 0, 0.03) 1px,
+          transparent 1px,
+          transparent 3px
+        ) !important;
+        opacity: 0.15 !important;
+      }
+    </style>
+
+    <script>
+      // === LOBSTER MODE ===
+      (function() {
+        let lobsterActive = false;
+        let animFrame: number;
+        let lobsters: Array<{x: number; y: number; vx: number; vy: number; rot: number; vr: number; size: number; emoji: string; wobble: number; wobbleSpeed: number}> = [];
+        let trailThrottle = 0;
+
+        const LOBSTER_EMOJIS = ['🦞', '🦀', '🦐'];
+        const canvas = document.getElementById('lobster-canvas') as HTMLCanvasElement;
+        const ctx = canvas?.getContext('2d');
+        const banner = document.getElementById('lobster-banner');
+
+        function resizeCanvas() {
+          if (!canvas) return;
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+
+        function spawnLobsters(count: number) {
+          for (let i = 0; i < count; i++) {
+            lobsters.push({
+              x: Math.random() * window.innerWidth,
+              y: -50 - Math.random() * 400,
+              vx: (Math.random() - 0.5) * 3,
+              vy: 1.5 + Math.random() * 3,
+              rot: Math.random() * Math.PI * 2,
+              vr: (Math.random() - 0.5) * 0.08,
+              size: 20 + Math.random() * 30,
+              emoji: LOBSTER_EMOJIS[Math.floor(Math.random() * LOBSTER_EMOJIS.length)],
+              wobble: Math.random() * Math.PI * 2,
+              wobbleSpeed: 0.02 + Math.random() * 0.04
+            });
+          }
+        }
+
+        function animate() {
+          if (!ctx || !canvas) return;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          lobsters.forEach(l => {
+            l.wobble += l.wobbleSpeed;
+            l.x += l.vx + Math.sin(l.wobble) * 1.5;
+            l.y += l.vy;
+            l.rot += l.vr;
+
+            // Wrap horizontally
+            if (l.x < -60) l.x = canvas.width + 60;
+            if (l.x > canvas.width + 60) l.x = -60;
+
+            // Respawn at top when off bottom
+            if (l.y > canvas.height + 60) {
+              l.y = -60;
+              l.x = Math.random() * canvas.width;
+              l.vy = 1.5 + Math.random() * 3;
+            }
+
+            ctx.save();
+            ctx.translate(l.x, l.y);
+            ctx.rotate(l.rot);
+            ctx.font = `${l.size}px serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(l.emoji, 0, 0);
+            ctx.restore();
+          });
+
+          if (lobsterActive) {
+            animFrame = requestAnimationFrame(animate);
+          }
+        }
+
+        // Cursor trail
+        function addTrail(e: MouseEvent) {
+          if (!lobsterActive) return;
+          trailThrottle++;
+          if (trailThrottle % 3 !== 0) return;
+
+          const el = document.createElement('div');
+          el.className = 'lobster-trail';
+          el.textContent = LOBSTER_EMOJIS[Math.floor(Math.random() * LOBSTER_EMOJIS.length)];
+          el.style.left = e.clientX + 'px';
+          el.style.top = e.clientY + 'px';
+          document.body.appendChild(el);
+          setTimeout(() => el.remove(), 1000);
+        }
+
+        function enterLobsterMode() {
+          lobsterActive = true;
+          document.documentElement.setAttribute('data-lobster', 'true');
+
+          // Show canvas
+          if (canvas) {
+            canvas.style.display = 'block';
+            resizeCanvas();
+          }
+
+          // Spawn lobsters in waves
+          spawnLobsters(25);
+          setTimeout(() => spawnLobsters(15), 800);
+          setTimeout(() => spawnLobsters(10), 1600);
+
+          // Show banner with slam animation
+          if (banner) {
+            banner.style.display = 'block';
+            banner.style.opacity = '1';
+            requestAnimationFrame(() => {
+              banner.style.transform = 'translate(-50%, -50%) scale(1)';
+            });
+            setTimeout(() => {
+              banner.style.opacity = '0';
+              setTimeout(() => {
+                banner.style.display = 'none';
+                banner.style.transform = 'translate(-50%, -50%) scale(0)';
+              }, 500);
+            }, 2000);
+          }
+
+          // Start animation
+          animate();
+
+          // Cursor trail
+          document.addEventListener('mousemove', addTrail);
+
+          // Click to spawn more
+          document.addEventListener('click', clickSpawn);
+
+          localStorage.setItem('lobster-mode', 'true');
+        }
+
+        function clickSpawn() {
+          if (lobsterActive) spawnLobsters(5);
+        }
+
+        function exitLobsterMode() {
+          lobsterActive = false;
+          document.documentElement.removeAttribute('data-lobster');
+          cancelAnimationFrame(animFrame);
+          lobsters = [];
+
+          if (canvas) {
+            canvas.style.display = 'none';
+            if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+          }
+          if (banner) {
+            banner.style.display = 'none';
+            banner.style.transform = 'translate(-50%, -50%) scale(0)';
+          }
+
+          document.removeEventListener('mousemove', addTrail);
+          document.removeEventListener('click', clickSpawn);
+
+          // Clean up trail elements
+          document.querySelectorAll('.lobster-trail').forEach(el => el.remove());
+
+          localStorage.removeItem('lobster-mode');
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+          const lobsterBtn = document.getElementById('oc-lobster-btn');
+          lobsterBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (lobsterActive) {
+              exitLobsterMode();
+            } else {
+              enterLobsterMode();
+            }
+          });
+
+          window.addEventListener('resize', resizeCanvas);
+
+          // Restore lobster mode if was active
+          if (localStorage.getItem('lobster-mode') === 'true') {
+            enterLobsterMode();
+          }
+        });
+      })();
     </script>
   </body>
 </html>
