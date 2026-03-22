@@ -1,6 +1,7 @@
 ---
 import OpenClawLayout from "../../layouts/OpenClawLayout.astro";
 import { getToolReleases, formatDate } from "../../lib/releases";
+import { marked } from "marked";
 
 const data = await getToolReleases("openclaw");
 const releases = data?.releases || [];
@@ -9,19 +10,14 @@ function isBreaking(body: string = ""): boolean {
   return body.toLowerCase().includes("breaking");
 }
 
-function formatReleaseBody(body: string): string {
-  // Convert markdown to simple HTML — just enough for readability
-  return body
-    .replace(/\r\n/g, "\n")
-    .replace(/^#{1,2}\s+(.+)$/gm, "<h2>$1</h2>")
-    .replace(/^#{3}\s+(.+)$/gm, "<h3>$1</h3>")
-    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
-    .replace(/`([^`]+)`/g, "<code>$1</code>")
-    .replace(/^[\*\-]\s+(.+)$/gm, "<li>$1</li>")
-    .replace(/(<li>.*<\/li>(\n|$))+/g, "<ul>$&</ul>")
-    .replace(/\n\n/g, "</p><p>")
-    .trim();
+function renderBody(body: string): string {
+  if (!body) return "";
+  // Configure marked for release notes
+  marked.setOptions({
+    gfm: true,
+    breaks: false,
+  });
+  return marked.parse(body) as string;
 }
 ---
 
@@ -99,8 +95,8 @@ function formatReleaseBody(body: string): string {
       >
         {releases.map((release, idx) => {
           const breaking = isBreaking(release.body);
-          const bodyLines = (release.body || "").split("\n").filter(Boolean);
-          const whatChanged = bodyLines.slice(0, 8).join("\n");
+          const renderedBody = renderBody(release.body || "");
+          const isLong = (release.body || "").length > 600;
 
           return (
             <article
@@ -149,42 +145,47 @@ function formatReleaseBody(body: string): string {
 
               <!-- Entry card -->
               <div
-                style={`padding: 2rem; border: 4px solid var(--oc-border); background: ${breaking ? 'white' : 'var(--oc-bg-surface)'}; ${breaking ? 'border-right: 8px solid var(--oc-primary); border-bottom: 8px solid var(--oc-primary);' : ''} transition: background 150ms; cursor: pointer;`}
-                onclick={`window.open('${release.url}', '_blank')`}
-                onmouseover={`this.style.background='${breaking ? '#f5f3ee' : '#222'}'`}
-                onmouseout={`this.style.background='${breaking ? 'white' : 'var(--oc-bg-surface)'}'`}
+                style={`padding: 2rem; border: 4px solid var(--oc-border); background: ${breaking ? 'var(--oc-border)' : 'var(--oc-bg-surface)'}; ${breaking ? 'border-right: 8px solid var(--oc-primary); border-bottom: 8px solid var(--oc-primary);' : ''}`}
               >
                 <!-- Release name -->
                 <h3
                   class="oc-headline"
-                  style={`font-size: 1.5rem; font-weight: 900; text-transform: uppercase; margin: 0 0 1rem; letter-spacing: -0.01em; color: ${breaking ? 'black' : 'white'};`}
+                  style={`font-size: 1.5rem; font-weight: 900; text-transform: uppercase; margin: 0 0 1.5rem; letter-spacing: -0.01em; color: ${breaking ? 'var(--oc-bg)' : 'var(--oc-text)'};`}
                 >
                   {(release.name || release.version).replace(/^openclaw\s+/i, "")}
                 </h3>
 
-                <!-- Truncated body -->
-                <div class="oc-release-body" style={`color: ${breaking ? 'var(--oc-text-dim)' : 'var(--oc-text-dim)'}; font-size: 0.875rem; line-height: 1.6;`}>
-                  {whatChanged.slice(0, 500)}
-                  {(release.body || "").length > 500 && (
-                    <span style="opacity: 0.4;">… <a href={release.url} target="_blank" rel="noopener noreferrer" style={`color: ${breaking ? 'var(--oc-primary)' : 'var(--oc-primary-bright)'}; text-decoration: underline;`} onclick="event.stopPropagation()">full release</a></span>
-                  )}
-                </div>
+                <!-- Full rendered body -->
+                <div
+                  class={`changelog-body ${isLong ? 'cl-collapsed' : ''}`}
+                  style={`color: ${breaking ? 'var(--oc-bg)' : 'var(--oc-text-dim)'}; font-size: 0.875rem; line-height: 1.7; font-family: var(--oc-font-body); overflow: hidden; position: relative;`}
+                  set:html={renderedBody}
+                />
+
+                {isLong && (
+                  <button
+                    class="cl-expand-btn oc-headline"
+                    style={`display: block; margin-top: 1rem; background: transparent; border: 2px solid ${breaking ? 'var(--oc-bg)' : 'var(--oc-border)'}; color: ${breaking ? 'var(--oc-bg)' : 'var(--oc-text)'}; padding: 0.5rem 1.25rem; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; transition: background 100ms;`}
+                    onclick="this.previousElementSibling.classList.toggle('cl-collapsed'); this.textContent = this.textContent.includes('EXPAND') ? '▲ COLLAPSE' : '▼ EXPAND FULL CHANGELOG'"
+                  >
+                    ▼ EXPAND FULL CHANGELOG
+                  </button>
+                )}
 
                 <!-- Footer -->
-                <div style={`display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 2px solid ${breaking ? 'var(--oc-border-dim)' : 'var(--oc-border-dim)'};`}>
+                <div style={`display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 2px solid var(--oc-border-dim);`}>
                   <a
                     href={release.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     class="oc-headline"
                     style={`display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: ${breaking ? 'var(--oc-primary)' : 'var(--oc-primary-bright)'}; text-decoration: none; transition: opacity 150ms;`}
-                    onclick="event.stopPropagation()"
                     onmouseover="this.style.opacity='0.7'"
                     onmouseout="this.style.opacity='1'"
                   >
                     ↗ View on GitHub
                   </a>
-                  <span style={`font-family: var(--oc-font-mono); font-size: 0.65rem; color: ${breaking ? 'rgba(0,0,0,0.3)' : 'var(--oc-text-muted)'};`}>
+                  <span style={`font-family: var(--oc-font-mono); font-size: 0.65rem; color: var(--oc-text-muted);`}>
                     #{idx + 1}
                   </span>
                 </div>
