@@ -34,12 +34,35 @@ const navLinks = [
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&family=Work+Sans:ital,wght@0,100..900;1,100..900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&family=Work+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap"
       rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
     />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&family=Work+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    </noscript>
     <script defer data-domain="changelogs.info" src="https://plausible.io/js/script.js"></script>
 
     <style is:global>
+      /* Font fallbacks to prevent CLS while Google Fonts load */
+      @font-face {
+        font-family: 'Space Grotesk Fallback';
+        src: local('Arial Black'), local('Arial');
+        size-adjust: 107%;
+        ascent-override: 95%;
+        descent-override: 22%;
+        line-gap-override: 0%;
+      }
+      @font-face {
+        font-family: 'Work Sans Fallback';
+        src: local('Helvetica Neue'), local('Arial');
+        size-adjust: 100%;
+        ascent-override: 96%;
+        descent-override: 24%;
+        line-gap-override: 0%;
+      }
+
       /* OpenClaw Neo-Brutalist Theme */
       :root {
         --oc-header-bg: rgba(0, 0, 0, 0.85);
@@ -57,9 +80,9 @@ const navLinks = [
         --oc-shadow-sm: 4px 4px 0px 0px rgba(255, 255, 255, 0.2);
         --oc-shadow-lg: 12px 12px 0px 0px rgba(255, 255, 255, 0.1);
         --oc-shadow-red: 6px 6px 0px 0px rgba(188, 1, 0, 0.5);
-        --oc-font-headline: "Space Grotesk", sans-serif;
-        --oc-font-body: "Work Sans", sans-serif;
-        --oc-font-mono: "JetBrains Mono", monospace;
+        --oc-font-headline: "Space Grotesk", "Space Grotesk Fallback", sans-serif;
+        --oc-font-body: "Work Sans", "Work Sans Fallback", sans-serif;
+        --oc-font-mono: "JetBrains Mono", ui-monospace, monospace;
       }
 
       [data-theme="light"] {
@@ -259,6 +282,12 @@ const navLinks = [
       .changelog-body strong {
         font-weight: 700;
         color: var(--oc-text);
+      }
+
+      /* Performance: lazy-render below-fold entries */
+      .cl-entry:nth-child(n+4) {
+        content-visibility: auto;
+        contain-intrinsic-size: auto 400px;
       }
 
       /* Timeline spine */

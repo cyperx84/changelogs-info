@@ -105,8 +105,6 @@ function getTldr(body: string): string[] {
       ].map((stat, i) => (
         <div
           style={`flex: 1; min-width: 120px; padding: 1rem 1.25rem; ${i < 3 ? 'border-right: 4px solid var(--oc-border);' : ''} background: var(--oc-bg-card); cursor: crosshair; transition: background 150ms;`}
-          onmouseover="this.style.background='var(--oc-primary)'"
-          onmouseout="this.style.background='var(--oc-bg-card)'"
           class="stats-cell"
         >
           <span style="display: block; color: var(--oc-text-muted); font-family: var(--oc-font-headline); font-weight: 700; text-transform: uppercase; font-size: 0.55rem; letter-spacing: 0.15em; margin-bottom: 0.25rem;">{stat.label}</span>
@@ -229,28 +227,28 @@ function getTldr(body: string): string[] {
 
     <!-- Quick Links -->
     <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 4rem;">
-      <a href="/openclaw/changelog/" style="display: flex; align-items: center; gap: 0.75rem; padding: 1.25rem; border: 4px solid var(--oc-border); background: var(--oc-bg-card); text-decoration: none; transition: border-color 150ms, box-shadow 150ms;" onmouseover="this.style.borderColor='var(--oc-primary)';this.style.boxShadow='var(--oc-shadow-sm)'" onmouseout="this.style.borderColor='var(--oc-border)';this.style.boxShadow='none'">
+      <a href="/openclaw/changelog/" class="oc-quick-link" style="display: flex; align-items: center; gap: 0.75rem; padding: 1.25rem; border: 4px solid var(--oc-border); background: var(--oc-bg-card); text-decoration: none;">
         <span style="font-size: 1.5rem;">📋</span>
         <div>
           <span class="oc-headline" style="display: block; font-weight: 900; font-size: 0.85rem; color: var(--oc-text); text-transform: uppercase;">Full Changelog</span>
           <span style="font-family: var(--oc-font-mono); font-size: 0.65rem; color: var(--oc-text-muted);">{releases.length} releases</span>
         </div>
       </a>
-      <a href="/openclaw/cheatsheet/" style="display: flex; align-items: center; gap: 0.75rem; padding: 1.25rem; border: 4px solid var(--oc-border); background: var(--oc-bg-card); text-decoration: none; transition: border-color 150ms, box-shadow 150ms;" onmouseover="this.style.borderColor='var(--oc-primary)';this.style.boxShadow='var(--oc-shadow-sm)'" onmouseout="this.style.borderColor='var(--oc-border)';this.style.boxShadow='none'">
+      <a href="/openclaw/cheatsheet/" class="oc-quick-link" style="display: flex; align-items: center; gap: 0.75rem; padding: 1.25rem; border: 4px solid var(--oc-border); background: var(--oc-bg-card); text-decoration: none;">
         <span style="font-size: 1.5rem;">⚡</span>
         <div>
           <span class="oc-headline" style="display: block; font-weight: 900; font-size: 0.85rem; color: var(--oc-text); text-transform: uppercase;">Cheatsheet</span>
           <span style="font-family: var(--oc-font-mono); font-size: 0.65rem; color: var(--oc-text-muted);">Commands & tips</span>
         </div>
       </a>
-      <a href="/openclaw/releases/" style="display: flex; align-items: center; gap: 0.75rem; padding: 1.25rem; border: 4px solid var(--oc-border); background: var(--oc-bg-card); text-decoration: none; transition: border-color 150ms, box-shadow 150ms;" onmouseover="this.style.borderColor='var(--oc-primary)';this.style.boxShadow='var(--oc-shadow-sm)'" onmouseout="this.style.borderColor='var(--oc-border)';this.style.boxShadow='none'">
+      <a href="/openclaw/releases/" class="oc-quick-link" style="display: flex; align-items: center; gap: 0.75rem; padding: 1.25rem; border: 4px solid var(--oc-border); background: var(--oc-bg-card); text-decoration: none;">
         <span style="font-size: 1.5rem;">📦</span>
         <div>
           <span class="oc-headline" style="display: block; font-weight: 900; font-size: 0.85rem; color: var(--oc-text); text-transform: uppercase;">All Releases</span>
           <span style="font-family: var(--oc-font-mono); font-size: 0.65rem; color: var(--oc-text-muted);">Browse & filter</span>
         </div>
       </a>
-      <a href="/feed/all.xml" style="display: flex; align-items: center; gap: 0.75rem; padding: 1.25rem; border: 4px solid var(--oc-border); background: var(--oc-bg-card); text-decoration: none; transition: border-color 150ms, box-shadow 150ms;" onmouseover="this.style.borderColor='var(--oc-primary)';this.style.boxShadow='var(--oc-shadow-sm)'" onmouseout="this.style.borderColor='var(--oc-border)';this.style.boxShadow='none'">
+      <a href="/feed/all.xml" class="oc-quick-link" style="display: flex; align-items: center; gap: 0.75rem; padding: 1.25rem; border: 4px solid var(--oc-border); background: var(--oc-bg-card); text-decoration: none;">
         <span style="font-size: 1.5rem;">📡</span>
         <div>
           <span class="oc-headline" style="display: block; font-weight: 900; font-size: 0.85rem; color: var(--oc-text); text-transform: uppercase;">RSS Feed</span>
@@ -339,8 +337,21 @@ function getTldr(body: string): string[] {
   </div>
 
   <style>
+    .stats-cell {
+      transition: background 150ms;
+    }
+    .stats-cell:hover {
+      background: var(--oc-primary) !important;
+    }
     .stats-cell:hover span:last-child {
       color: var(--oc-text) !important;
+    }
+    .oc-quick-link {
+      transition: border-color 150ms, box-shadow 150ms;
+    }
+    .oc-quick-link:hover {
+      border-color: var(--oc-primary) !important;
+      box-shadow: var(--oc-shadow-sm) !important;
     }
     @media (max-width: 640px) {
       section[style*="display: flex; flex-wrap: wrap; gap: 0;"] {
