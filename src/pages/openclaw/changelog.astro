@@ -12,12 +12,23 @@ function isBreaking(body: string = ""): boolean {
 
 function renderBody(body: string): string {
   if (!body) return "";
-  // Configure marked for release notes
-  marked.setOptions({
-    gfm: true,
-    breaks: false,
+  marked.setOptions({ gfm: true, breaks: false });
+  let html = marked.parse(body) as string;
+  // Inject type badges into list items based on conventional commit prefixes
+  html = html.replace(/<li>(.*?)<\/li>/gs, (match, content) => {
+    const text = content.toLowerCase();
+    let badge = '';
+    if (/^fix[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-fix">FIX</span>';
+    else if (/^feat[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-feat">FEAT</span>';
+    else if (/^docs[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-docs">DOCS</span>';
+    else if (/^test[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-test">TEST</span>';
+    else if (/^(refactor|chore)[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-chore">CHORE</span>';
+    else if (/^(ci|build|docker)[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-ci">CI</span>';
+    else if (/^(perf|style)[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-perf">PERF</span>';
+    else if (/^(android|ios|cli|docker):/.test(text)) badge = '<span class="cl-badge cl-badge-feat">PLAT</span>';
+    return `<li>${badge}${content}</li>`;
   });
-  return marked.parse(body) as string;
+  return html;
 }
 ---
 
