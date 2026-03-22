@@ -12,7 +12,7 @@ const stableReleases = releases.filter((r) => !r.prerelease);
 const latestStable = stableReleases[0];
 const latestRelease = releases[0];
 const latestForTldr = releases[0];
-const restReleases = releases.slice(1);
+const recentReleases = releases.slice(0, 3);
 
 const breakingCount = releases.filter((r) =>
   r.body?.toLowerCase().includes("breaking")
@@ -64,6 +64,9 @@ async function getCanonicalChangelogSection(version: string | undefined, fallbac
 }
 
 const latestCanonicalBody = await getCanonicalChangelogSection(latestForTldr?.version, latestForTldr?.body || "");
+const recentBodies = await Promise.all(
+  recentReleases.map((release) => getCanonicalChangelogSection(release.version, release.body || ""))
+);
 
 function isBreaking(body: string = ""): boolean {
   return body.toLowerCase().includes("breaking");
@@ -129,57 +132,7 @@ function normalizeReleaseBody(body: string): string {
     cleaned.push(nextLine);
   }
 
-  const structured = cleaned.join("\n").replace(/\n{3,}/g, "\n\n").trim();
-
-  const hasSubsections = /^###\s+/m.test(structured);
-  const bulletLines = structured.split("\n").filter((line) => /^[*-]\s+/.test(line.trim()));
-
-  if (hasSubsections || bulletLines.length < 4) return structured;
-
-  const categories = [
-    { title: "Breaking Changes", test: /^(breaking|break|deprecat|remove|migration|security)[:\s(]/i },
-    { title: "Features", test: /^(feat|feature|add|new|support|introduce)[:\s(]/i },
-    { title: "Fixes", test: /^(fix|bug|resolve|patch)[:\s(]/i },
-    { title: "Performance", test: /^(perf|performance|speed|optimi[sz]e)[:\s(]/i },
-    { title: "Docs", test: /^(docs|doc|readme)[:\s(]/i },
-    { title: "Tooling & CI", test: /^(ci|build|infra|tooling|deps|dependency|docker|workflow)[:\s(]/i },
-    { title: "Tests", test: /^(test|tests)[:\s(]/i },
-    { title: "Other", test: /.*/i },
-  ];
-
-  const groups = new Map(categories.map((category) => [category.title, [] as string[]]));
-  const prelude: string[] = [];
-
-  for (const line of structured.split("\n")) {
-    const trimmed = line.trim();
-    if (!trimmed) continue;
-    if (/^##\s+changes$/i.test(trimmed)) continue;
-
-    if (/^[*-]\s+/.test(trimmed)) {
-      const body = trimmed.replace(/^[*-]\s+/, "").trim();
-      const category = categories.find((entry) => entry.test.test(body)) || categories[categories.length - 1];
-      groups.get(category.title)?.push(`- ${body}`);
-    } else {
-      prelude.push(trimmed);
-    }
-  }
-
-  const groupedSections = categories
-    .map((category) => {
-      const items = groups.get(category.title) || [];
-      if (items.length === 0) return null;
-      return [`### ${category.title}`, ...items].join("\n");
-    })
-    .filter(Boolean);
-
-  if (groupedSections.length < 2) return structured;
-
-  return [
-    ...prelude,
-    prelude.length ? "" : null,
-    "## Changes",
-    ...groupedSections,
-  ].filter(Boolean).join("\n\n").trim();
+  return cleaned.join("\n").replace(/\n{3,}/g, "\n\n").trim();
 }
 
 
@@ -196,19 +149,6 @@ function renderBody(body: string): string {
   // Strip "by @username in" before PR links
   html = html.replace(/ by <a href="https:\/\/github\.com\/[^"]*"[^>]*>@[^<]+<\/a> in /g, ' ');
   html = html.replace(/ by @[\w-]+ in /g, ' ');
-  html = html.replace(/<li>(.*?)<\/li>/gs, (match, content) => {
-    const text = content.toLowerCase();
-    let badge = '';
-    if (/^fix[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-fix">FIX</span>';
-    else if (/^feat[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-feat">FEAT</span>';
-    else if (/^docs[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-docs">DOCS</span>';
-    else if (/^test[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-test">TEST</span>';
-    else if (/^(refactor|chore)[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-chore">CHORE</span>';
-    else if (/^(ci|build|docker)[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-ci">CI</span>';
-    else if (/^(perf|style)[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-perf">PERF</span>';
-    else if (/^(android|ios|cli|docker):/.test(text)) badge = '<span class="cl-badge cl-badge-feat">PLAT</span>';
-    return `<li>${badge}${content}</li>`;
-  });
   return html;
 }
 
@@ -411,14 +351,14 @@ function getTldr(body: string): string[] {
     <!-- Previous 3 Releases -->
     <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
       <div style="flex: 1; height: 4px; background: var(--oc-border);"></div>
-      <span class="oc-headline" style="font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--oc-text-muted);">Previous Releases</span>
+      <span class="oc-headline" style="font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--oc-text-muted);">Recent Changelog</span>
       <div style="flex: 1; height: 4px; background: var(--oc-border);"></div>
     </div>
 
     <section style="margin-bottom: 4rem; display: flex; flex-direction: column; gap: 1.25rem;">
-      {restReleases.slice(0, 3).map((release) => {
+      {recentReleases.map((release, idx) => {
         const breaking = isBreaking(release.body);
-        const renderedBody = renderBody(release.body || "");
+        const renderedBody = renderBody(recentBodies[idx] || release.body || "");
         const isLong = (release.body || "").length > 600;
         return (
           <div style={`padding: 1.5rem 2rem; border: 4px solid ${breaking ? 'var(--oc-primary)' : 'var(--oc-border)'}; background: ${breaking ? 'var(--oc-bg-surface)' : 'var(--oc-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--oc-primary);' : ''}`}>
