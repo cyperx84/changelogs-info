@@ -1,0 +1,494 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  currentPage?: string;
+}
+
+const {
+  title,
+  description = "Track OpenClaw releases, breaking changes, and config updates.",
+  currentPage = "",
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const navLinks = [
+  { label: "Changelog", href: "/openclaw/changelog/", key: "changelog" },
+  { label: "Cheatsheet", href: "/openclaw/cheatsheet/", key: "cheatsheet" },
+  { label: "Releases", href: "/openclaw/releases/", key: "releases" },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&family=Work+Sans:ital,wght@0,100..900;1,100..900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script defer data-domain="changelogs.info" src="https://plausible.io/js/script.js"></script>
+
+    <style is:global>
+      /* OpenClaw Neo-Brutalist Theme */
+      :root {
+        --oc-primary: #bc0100;
+        --oc-primary-bright: #eb0000;
+        --oc-bg: #000000;
+        --oc-bg-card: #111111;
+        --oc-bg-surface: #1a1a1a;
+        --oc-text: #ffffff;
+        --oc-text-dim: rgba(255, 255, 255, 0.6);
+        --oc-text-muted: rgba(255, 255, 255, 0.4);
+        --oc-border: #ffffff;
+        --oc-border-dim: rgba(255, 255, 255, 0.2);
+        --oc-shadow: 6px 6px 0px 0px rgba(255, 255, 255, 0.2);
+        --oc-shadow-sm: 4px 4px 0px 0px rgba(255, 255, 255, 0.2);
+        --oc-shadow-lg: 12px 12px 0px 0px rgba(255, 255, 255, 0.1);
+        --oc-shadow-red: 6px 6px 0px 0px rgba(188, 1, 0, 0.5);
+        --oc-font-headline: "Space Grotesk", sans-serif;
+        --oc-font-body: "Work Sans", sans-serif;
+        --oc-font-mono: "JetBrains Mono", monospace;
+      }
+
+      [data-theme="light"] {
+        --oc-primary: #bc0100;
+        --oc-primary-bright: #bc0100;
+        --oc-bg: #fbf9f4;
+        --oc-bg-card: #ffffff;
+        --oc-bg-surface: #eae8e3;
+        --oc-text: #1b1c19;
+        --oc-text-dim: rgba(27, 28, 25, 0.6);
+        --oc-text-muted: rgba(27, 28, 25, 0.4);
+        --oc-border: #000000;
+        --oc-border-dim: rgba(0, 0, 0, 0.2);
+        --oc-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
+        --oc-shadow-sm: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+        --oc-shadow-lg: 12px 12px 0px 0px rgba(188, 1, 0, 1);
+        --oc-shadow-red: 6px 6px 0px 0px rgba(188, 1, 0, 0.4);
+      }
+
+      html {
+        background-color: var(--oc-bg);
+        color: var(--oc-text);
+        font-family: var(--oc-font-body);
+        scroll-behavior: smooth;
+        transition: background-color 150ms ease-out, color 150ms ease-out;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Remove CRT scanline for openclaw */
+      body::before {
+        display: none;
+      }
+
+      /* Neo-brutalist: zero border-radius everywhere */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      /* Headline font utility */
+      .oc-headline {
+        font-family: var(--oc-font-headline);
+      }
+
+      /* Shadow utilities */
+      .oc-shadow {
+        box-shadow: var(--oc-shadow);
+      }
+      .oc-shadow-sm {
+        box-shadow: var(--oc-shadow-sm);
+      }
+      .oc-shadow-lg {
+        box-shadow: var(--oc-shadow-lg);
+      }
+      .oc-shadow-red {
+        box-shadow: var(--oc-shadow-red);
+      }
+
+      /* Border utilities using CSS vars */
+      .oc-border {
+        border: 4px solid var(--oc-border);
+      }
+      .oc-border-2 {
+        border: 2px solid var(--oc-border);
+      }
+      .oc-border-8 {
+        border: 8px solid var(--oc-border);
+      }
+
+      /* Card hover effect */
+      .oc-card-hover {
+        transition: transform 100ms ease, box-shadow 100ms ease;
+      }
+      .oc-card-hover:hover {
+        transform: translate(2px, 2px);
+        box-shadow: 2px 2px 0px 0px rgba(255, 255, 255, 0.2);
+      }
+      [data-theme="light"] .oc-card-hover:hover {
+        box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+      }
+
+      /* Timeline spine */
+      .oc-timeline {
+        position: relative;
+        padding-left: 3rem;
+        border-left: 6px solid var(--oc-border);
+      }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--oc-bg);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--oc-primary);
+      }
+
+      /* Markdown content in release bodies */
+      .oc-release-body h1,
+      .oc-release-body h2,
+      .oc-release-body h3 {
+        font-family: var(--oc-font-headline);
+        font-weight: 800;
+        text-transform: uppercase;
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .oc-release-body h2 {
+        font-size: 1.1rem;
+        border-bottom: 2px solid var(--oc-primary);
+        padding-bottom: 0.25rem;
+        color: var(--oc-primary-bright);
+      }
+      .oc-release-body ul {
+        list-style: disc;
+        padding-left: 1.5rem;
+        margin: 0.5rem 0;
+      }
+      .oc-release-body li {
+        margin: 0.25rem 0;
+        font-size: 0.875rem;
+        color: var(--oc-text-dim);
+        line-height: 1.5;
+      }
+      .oc-release-body a {
+        color: var(--oc-primary-bright);
+        text-decoration: underline;
+      }
+      .oc-release-body code {
+        font-family: var(--oc-font-mono);
+        font-size: 0.8em;
+        background: rgba(255, 255, 255, 0.08);
+        padding: 0.1em 0.3em;
+      }
+      [data-theme="light"] .oc-release-body code {
+        background: rgba(0, 0, 0, 0.08);
+      }
+      .oc-release-body strong {
+        color: var(--oc-text);
+        font-weight: 700;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Theme init: runs before render to prevent flash -->
+    <script is:inline>
+      (function () {
+        const stored = localStorage.getItem("theme");
+        const theme =
+          stored ||
+          (window.matchMedia("(prefers-color-scheme: light)").matches
+            ? "light"
+            : "dark");
+        if (theme === "light") {
+          document.documentElement.setAttribute("data-theme", "light");
+        } else {
+          document.documentElement.removeAttribute("data-theme");
+        }
+      })();
+    </script>
+
+    <!-- Header -->
+    <header
+      class="oc-header fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 backdrop-blur-xl"
+      style="background: rgba(0,0,0,0.85); border-bottom: 4px solid var(--oc-border); box-shadow: var(--oc-shadow);"
+    >
+      <div class="flex items-center gap-6">
+        <!-- Back to hub -->
+        <a
+          href="/"
+          class="oc-headline font-bold text-xs uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity"
+          style="color: var(--oc-text);"
+          title="changelogs.info"
+        >
+          ← Hub
+        </a>
+        <!-- Brand -->
+        <a
+          href="/openclaw/"
+          class="oc-headline text-2xl font-black italic tracking-tighter"
+          style="color: var(--oc-primary-bright);"
+        >
+          OpenClaw
+        </a>
+      </div>
+
+      <!-- Desktop nav -->
+      <nav class="hidden md:flex items-center gap-8">
+        {
+          navLinks.map((link) => (
+            <a
+              href={link.href}
+              class="oc-headline font-bold tracking-tighter uppercase text-sm transition-all duration-100 hover:translate-x-[2px] hover:translate-y-[2px]"
+              style={
+                currentPage === link.key
+                  ? `color: var(--oc-primary-bright); border-bottom: 4px solid var(--oc-primary-bright); padding-bottom: 2px;`
+                  : `color: var(--oc-text); opacity: 0.75;`
+              }
+            >
+              {link.label}
+            </a>
+          ))
+        }
+      </nav>
+
+      <!-- Right actions -->
+      <div class="flex items-center gap-3">
+        <!-- Theme toggle -->
+        <button
+          id="oc-theme-toggle"
+          aria-label="Toggle theme"
+          style="background: transparent; border: 2px solid var(--oc-border); padding: 6px 10px; color: var(--oc-text); cursor: pointer; box-shadow: var(--oc-shadow-sm); font-family: var(--oc-font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.05em; transition: box-shadow 100ms, transform 100ms;"
+          onmouseover="this.style.transform='translate(1px,1px)';this.style.boxShadow='2px 2px 0px 0px rgba(255,255,255,0.2)'"
+          onmouseout="this.style.transform='';this.style.boxShadow='var(--oc-shadow-sm)'"
+        >
+          <span id="oc-theme-label">◐</span>
+        </button>
+
+        <!-- Mobile menu -->
+        <button
+          id="oc-mobile-menu-btn"
+          class="md:hidden"
+          aria-label="Toggle menu"
+          style="background: transparent; border: 2px solid var(--oc-border); padding: 6px 10px; color: var(--oc-text); cursor: pointer;"
+        >
+          <svg
+            class="h-5 w-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Mobile nav -->
+    <div
+      id="oc-mobile-menu"
+      class="hidden fixed top-[73px] left-0 right-0 z-40 px-6 py-4 space-y-3 md:hidden"
+      style="background: var(--oc-bg); border-bottom: 4px solid var(--oc-border); box-shadow: var(--oc-shadow);"
+    >
+      {
+        navLinks.map((link) => (
+          <a
+            href={link.href}
+            class="block oc-headline font-bold tracking-tighter uppercase py-2"
+            style={
+              currentPage === link.key
+                ? `color: var(--oc-primary-bright);`
+                : `color: var(--oc-text); opacity: 0.75;`
+            }
+          >
+            {link.label}
+          </a>
+        ))
+      }
+      <a
+        href="/"
+        class="block oc-headline font-bold tracking-tighter uppercase py-2 opacity-50"
+        style="color: var(--oc-text);"
+      >
+        ← changelogs.info
+      </a>
+    </div>
+
+    <!-- Main content -->
+    <main style="padding-top: 73px;">
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer
+      style="border-top: 8px solid var(--oc-primary); background: #000000; margin-top: 6rem; padding: 3rem 2rem;"
+    >
+      <div
+        style="max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1.5rem;"
+      >
+        <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+          <span
+            class="oc-headline"
+            style="font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: rgba(255,255,255,0.7);"
+          >
+            © {new Date().getFullYear()} changelogs.info / OpenClaw
+          </span>
+          <span
+            style="font-family: var(--oc-font-mono); font-size: 0.6rem; color: rgba(255,255,255,0.3);"
+          >
+            DATA FROM OFFICIAL GITHUB RELEASES
+          </span>
+        </div>
+        <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+          <a
+            href="/"
+            class="oc-headline"
+            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); transition: color 150ms;"
+            onmouseover="this.style.color='#eb0000'"
+            onmouseout="this.style.color='rgba(255,255,255,0.5)'"
+          >
+            Hub
+          </a>
+          <a
+            href="/openclaw/changelog/"
+            class="oc-headline"
+            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); transition: color 150ms;"
+            onmouseover="this.style.color='#eb0000'"
+            onmouseout="this.style.color='rgba(255,255,255,0.5)'"
+          >
+            Changelog
+          </a>
+          <a
+            href="/openclaw/cheatsheet/"
+            class="oc-headline"
+            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); transition: color 150ms;"
+            onmouseover="this.style.color='#eb0000'"
+            onmouseout="this.style.color='rgba(255,255,255,0.5)'"
+          >
+            Cheatsheet
+          </a>
+          <a
+            href="/openclaw/releases/"
+            class="oc-headline"
+            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); transition: color 150ms;"
+            onmouseover="this.style.color='#eb0000'"
+            onmouseout="this.style.color='rgba(255,255,255,0.5)'"
+          >
+            Releases
+          </a>
+          <a
+            href={`https://github.com/openclaw/openclaw`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="oc-headline"
+            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); transition: color 150ms;"
+            onmouseover="this.style.color='#eb0000'"
+            onmouseout="this.style.color='rgba(255,255,255,0.5)'"
+          >
+            GitHub ↗
+          </a>
+          <a
+            href="/feed/all.xml"
+            class="oc-headline"
+            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); transition: color 150ms;"
+            onmouseover="this.style.color='#eb0000'"
+            onmouseout="this.style.color='rgba(255,255,255,0.5)'"
+          >
+            RSS
+          </a>
+        </div>
+        <div
+          style="font-family: var(--oc-font-mono); font-size: 0.65rem; color: rgba(255,255,255,0.3); display: flex; align-items: center; gap: 0.5rem;"
+        >
+          <span style="color: var(--oc-primary);">▶</span>
+          ROOT@OPENCLAW: ~
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Theme toggle
+      const THEME_KEY = "theme";
+
+      function getTheme(): string {
+        return (
+          localStorage.getItem(THEME_KEY) ||
+          (window.matchMedia("(prefers-color-scheme: light)").matches
+            ? "light"
+            : "dark")
+        );
+      }
+
+      function applyTheme(theme: string) {
+        if (theme === "light") {
+          document.documentElement.setAttribute("data-theme", "light");
+          // Also update header bg for light
+          const header = document.querySelector(".oc-header") as HTMLElement;
+          if (header)
+            header.style.background = "rgba(251,249,244,0.9)";
+        } else {
+          document.documentElement.removeAttribute("data-theme");
+          const header = document.querySelector(".oc-header") as HTMLElement;
+          if (header) header.style.background = "rgba(0,0,0,0.85)";
+        }
+      }
+
+      function updateLabel(theme: string) {
+        const label = document.getElementById("oc-theme-label");
+        if (label) label.textContent = theme === "light" ? "◑" : "◐";
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const current = getTheme();
+        updateLabel(current);
+        applyTheme(current);
+
+        const btn = document.getElementById("oc-theme-toggle");
+        btn?.addEventListener("click", () => {
+          const cur = getTheme();
+          const next = cur === "dark" ? "light" : "dark";
+          localStorage.setItem(THEME_KEY, next);
+          applyTheme(next);
+          updateLabel(next);
+        });
+
+        // Mobile menu
+        const menuBtn = document.getElementById("oc-mobile-menu-btn");
+        const mobileMenu = document.getElementById("oc-mobile-menu");
+        menuBtn?.addEventListener("click", () => {
+          mobileMenu?.classList.toggle("hidden");
+        });
+        mobileMenu?.querySelectorAll("a").forEach((a) => {
+          a.addEventListener("click", () =>
+            mobileMenu.classList.add("hidden")
+          );
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,208 +1,361 @@
 ---
-import SectionLayout from "../../layouts/SectionLayout.astro";
-import ReleaseCard from "../../components/ReleaseCard.astro";
-import BreakingChangesSummary from "../../components/BreakingChangesSummary.astro";
-import { getSectionById } from "../../lib/sections";
-import { getToolById, getToolReleases, relativeTime } from "../../lib/releases";
+import OpenClawLayout from "../../layouts/OpenClawLayout.astro";
+import { getToolById, getToolReleases, formatDate, relativeTime } from "../../lib/releases";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-const section = getSectionById("openclaw")!;
 const tool = getToolById("openclaw");
 const data = await getToolReleases("openclaw");
 const releases = data?.releases || [];
 const stableReleases = releases.filter((r) => !r.prerelease);
 const latestStable = stableReleases[0];
 const latestRelease = releases[0];
+const recentReleases = stableReleases.slice(0, 5);
 
-// Load cheatsheet for inline display
+// Breaking changes count (releases with "breaking" in body)
+const breakingCount = releases.filter((r) =>
+  r.body?.toLowerCase().includes("breaking")
+).length;
+
+// Cheatsheet data
 let cs: any = {};
 try {
-  const raw = readFileSync(join(process.cwd(), "src/content/cheatsheets-json/openclaw.json"), "utf-8");
+  const raw = readFileSync(
+    join(process.cwd(), "src/content/cheatsheets-json/openclaw.json"),
+    "utf-8"
+  );
   cs = JSON.parse(raw);
 } catch {}
-const dailyWorkflows = (cs.dailyWorkflows || []).slice(0, 4);
-const powerMoves = (cs.powerMoves || []).slice(0, 4);
+const dailyWorkflows = (cs.dailyWorkflows || []).slice(0, 3);
+const powerMoves = (cs.powerMoves || []).slice(0, 2);
+
+function getReleaseBadgeType(release: any): { label: string; isBreaking: boolean; isFeature: boolean } {
+  const body = (release.body || "").toLowerCase();
+  const name = (release.name || "").toLowerCase();
+  const isBreaking = body.includes("breaking") || name.includes("breaking");
+  const isFeature = body.includes("feat") || name.includes("feature");
+  if (isBreaking) return { label: "Breaking", isBreaking: true, isFeature: false };
+  if (isFeature) return { label: "Feature", isBreaking: false, isFeature: true };
+  return { label: "Fix", isBreaking: false, isFeature: false };
+}
+
+const displayVersion = latestStable?.version || latestRelease?.version || "—";
+const lastUpdatedAgo = data?.lastUpdated ? relativeTime(data.lastUpdated) : null;
 ---
 
-<SectionLayout
-  section={section}
+<OpenClawLayout
   title="OpenClaw — changelogs.info"
-  description="Track OpenClaw releases, breaking changes, and config updates."
-  latestRelease={latestStable || latestRelease}
-  heroDescription={tool?.description}
-  repo={tool?.repo}
+  description="Track OpenClaw releases, breaking changes, and config updates. Personal AI assistant platform — run your own AI on any device, any channel."
+  currentPage="home"
 >
+  <div style="max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 0;">
 
-    <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
-      <!-- Quick stats -->
-      {releases.length > 0 && (
-        <div class="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {latestStable && (
-            <div class="rounded-lg border bg-bg-card px-4 py-3" style={`border-color: rgba(${section.colorRgb}, 0.15);`}>
-              <p class="font-mono text-[10px] uppercase tracking-wider text-text-muted">latest</p>
-              <p class="mt-1 font-mono text-base font-bold" style={`color: ${section.color};`}>{latestStable.version}</p>
-            </div>
-          )}
-          <div class="rounded-lg border border-border bg-bg-card px-4 py-3">
-            <p class="font-mono text-[10px] uppercase tracking-wider text-text-muted">releases</p>
-            <p class="mt-1 font-mono text-base font-bold text-cyan">{releases.length}</p>
+    <!-- Hero Section -->
+    <section style="margin-bottom: 5rem; display: flex; flex-wrap: wrap; gap: 3rem; align-items: flex-start;">
+      <!-- Left: Text -->
+      <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 2rem;">
+        <!-- Latest update badge -->
+        {lastUpdatedAgo && (
+          <div style="display: inline-flex; align-items: center; gap: 0.75rem; background: var(--oc-primary); padding: 0.25rem 1rem; border: 2px solid var(--oc-border); box-shadow: var(--oc-shadow-sm); width: fit-content;">
+            <span class="oc-headline" style="font-weight: 900; color: white; font-style: italic; font-size: 0.8rem; letter-spacing: 0.05em;">LATEST UPDATE</span>
+            <span style="background: var(--oc-border); color: var(--oc-bg); padding: 0.1rem 0.5rem; font-family: var(--oc-font-mono); font-size: 0.75rem; font-weight: 700;">{lastUpdatedAgo}</span>
           </div>
-          <div class="rounded-lg border border-border bg-bg-card px-4 py-3">
-            <p class="font-mono text-[10px] uppercase tracking-wider text-text-muted">stable</p>
-            <p class="mt-1 font-mono text-base font-bold text-text-primary">{stableReleases.length}</p>
-          </div>
-          {data?.lastUpdated && (
-            <div class="rounded-lg border border-border bg-bg-card px-4 py-3">
-              <p class="font-mono text-[10px] uppercase tracking-wider text-text-muted">updated</p>
-              <p class="mt-1 font-mono text-xs text-text-secondary">{relativeTime(data.lastUpdated)}</p>
-            </div>
-          )}
-        </div>
-      )}
+        )}
 
-      <div class="grid gap-8 lg:grid-cols-3">
-        <!-- Main content -->
-        <div class="lg:col-span-2 space-y-6">
-          <!-- Quick Start -->
-          <div class="rounded-lg border bg-bg-card p-4 sm:p-5" style={`border-color: rgba(${section.colorRgb}, 0.2);`}>
-            <h2 class="mb-3 font-mono text-sm font-semibold" style={`color: ${section.color};`}>
-              <span class="opacity-60">#</span> quick_start
-            </h2>
-            <div class="space-y-2 rounded bg-bg-tertiary p-4">
-              <pre class="font-mono text-xs text-text-secondary"><span style={`color: ${section.color};`}>$</span> npx clwatch diff openclaw</pre>
-              <pre class="font-mono text-xs text-text-secondary"><span style={`color: ${section.color};`}>$</span> clwatch refresh openclaw</pre>
-              <pre class="font-mono text-xs text-text-secondary"><span style={`color: ${section.color};`}>$</span> openclaw doctor</pre>
-            </div>
-          </div>
+        <!-- Big title -->
+        <h1 class="oc-headline" style="font-size: clamp(4rem, 10vw, 7rem); font-weight: 900; tracking-tighter: tighter; color: white; text-transform: uppercase; line-height: 0.9; margin: 0;">
+          Open<span style="color: var(--oc-primary-bright);">Claw</span>
+        </h1>
 
-          <!-- Latest release card -->
-          {(latestStable || latestRelease) && (
-            <div>
-              <h2 class="mb-4 font-mono text-sm uppercase tracking-wider text-text-muted">Latest Release</h2>
-              <ReleaseCard
-                release={latestStable || latestRelease!}
-                sectionColor={section.color}
-                sectionRgb={section.colorRgb}
-                toolId={section.id}
-              />
-            </div>
-          )}
-
-          <!-- Breaking changes -->
-          {releases.length > 0 && (
-            <div>
-              <h2 class="mb-4 font-mono text-sm uppercase tracking-wider text-text-muted">Breaking Changes</h2>
-              <BreakingChangesSummary releases={releases} sectionColor={section.color} sectionRgb={section.colorRgb} />
-            </div>
-          )}
+        <!-- Version + description -->
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">
+          <span style="font-family: var(--oc-font-mono); font-size: 2rem; color: white; font-weight: 700; padding: 0.25rem 0.5rem; border-left: 4px solid var(--oc-primary);">
+            {displayVersion}
+          </span>
+          <p style="font-size: 1.1rem; color: var(--oc-text-dim); max-width: 32rem; line-height: 1.5; margin: 0; font-family: var(--oc-font-body);">
+            {tool?.description || "Personal AI assistant platform — run your own AI on any device, any channel."}
+          </p>
         </div>
 
-        <!-- Sidebar -->
-        <div class="space-y-6">
-          <!-- clwatch CTA -->
-          <div class="rounded-lg border bg-bg-card p-4" style={`border-color: rgba(${section.colorRgb}, 0.2);`}>
-            <p class="font-mono text-xs font-semibold" style={`color: ${section.color};`}>clwatch</p>
-            <p class="mt-1 font-mono text-xs text-text-muted">Keep your config current:</p>
-            <pre class="mt-2 rounded bg-bg-tertiary px-3 py-2 font-mono text-xs text-text-secondary"><span style={`color: ${section.color};`}>$</span> clwatch diff openclaw</pre>
-            <a href="/clwatch" class="mt-2 inline-block font-mono text-xs text-cyan transition-colors hover:text-cyan/80">learn more &rarr;</a>
-          </div>
-
-          <!-- Quick links -->
-          <div class="rounded-lg border border-border bg-bg-card p-4">
-            <p class="font-mono text-xs font-semibold text-text-primary mb-3">Quick Links</p>
-            <div class="space-y-2">
-              <a href="/openclaw/changelog/" class="block font-mono text-xs text-text-muted transition-colors hover:text-text-primary">
-                <span style={`color: ${section.color};`}>/</span> Full changelog
-              </a>
-              <a href="/openclaw/cheatsheet/" class="block font-mono text-xs text-text-muted transition-colors hover:text-text-primary">
-                <span style={`color: ${section.color};`}>/</span> Cheatsheet
-              </a>
-              <a href="/openclaw/configs/" class="block font-mono text-xs text-text-muted transition-colors hover:text-text-primary">
-                <span style={`color: ${section.color};`}>/</span> Configs
-              </a>
-              <a href="/openclaw/releases/" class="block font-mono text-xs text-text-muted transition-colors hover:text-text-primary">
-                <span style={`color: ${section.color};`}>/</span> All releases
-              </a>
-              {tool?.website && (
-                <a href={tool.website} target="_blank" rel="noopener noreferrer" class="block font-mono text-xs text-text-muted transition-colors hover:text-text-primary">
-                  <span style={`color: ${section.color};`}>/</span> Website &nearr;
-                </a>
-              )}
-              {tool?.repo && (
-                <a href={`https://github.com/${tool.repo}`} target="_blank" rel="noopener noreferrer" class="block font-mono text-xs text-text-muted transition-colors hover:text-text-primary">
-                  <span style={`color: ${section.color};`}>/</span> GitHub &nearr;
-                </a>
-              )}
-            </div>
-          </div>
-
-          {tool?.tags && tool.tags.length > 0 && (
-            <div class="flex flex-wrap gap-2">
-              {tool.tags.map((tag) => (
-                <span class="rounded border border-border/50 bg-bg-tertiary px-2 py-0.5 font-mono text-xs text-text-muted">#{tag}</span>
-              ))}
-            </div>
-          )}
+        <!-- CTA buttons -->
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+          <a
+            href={`https://github.com/${tool?.repo || "openclaw/openclaw"}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="oc-headline"
+            style="background: var(--oc-primary); color: white; font-weight: 900; padding: 1rem 2rem; font-size: 1.1rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow-red); text-decoration: none; text-transform: uppercase; font-style: italic; display: inline-block; transition: transform 100ms, box-shadow 100ms;"
+            onmouseover="this.style.transform='translate(1px,1px)';this.style.boxShadow='2px 2px 0px 0px rgba(188,1,0,0.4)'"
+            onmouseout="this.style.transform='';this.style.boxShadow='var(--oc-shadow-red)'"
+          >
+            View on GitHub
+          </a>
+          <a
+            href="/openclaw/changelog/"
+            class="oc-headline"
+            style="background: white; color: black; font-weight: 900; padding: 1rem 2rem; font-size: 1.1rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow); text-decoration: none; text-transform: uppercase; font-style: italic; display: inline-block; transition: transform 100ms, box-shadow 100ms;"
+            onmouseover="this.style.transform='translate(1px,1px)';this.style.boxShadow='var(--oc-shadow-sm)'"
+            onmouseout="this.style.transform='';this.style.boxShadow='var(--oc-shadow)'"
+          >
+            Full Changelog
+          </a>
         </div>
       </div>
 
-      <!-- Cheatsheet Preview -->
-      {(dailyWorkflows.length > 0 || powerMoves.length > 0) && (
-        <div class="mt-10 border-t pt-8" style={`border-color: rgba(${section.colorRgb}, 0.15);`}>
-          <div class="mb-6 flex items-center justify-between">
-            <h2 class="font-mono text-base font-semibold" style={`color: ${section.color};`}>
-              <span class="opacity-60">//</span> cheat_sheet
-            </h2>
-            <a href="/openclaw/cheatsheet/" class="font-mono text-xs transition-colors hover:opacity-80" style={`color: ${section.color};`}>
-              full cheatsheet &rarr;
-            </a>
-          </div>
-
-          {dailyWorkflows.length > 0 && (
-            <div class="mb-6">
-              <h3 class="mb-3 font-mono text-xs uppercase tracking-wider text-text-muted">Daily Workflows</h3>
-              <div class="space-y-2">
-                {dailyWorkflows.map((wf: any) => (
-                  <details class="group rounded-lg border border-border bg-bg-card transition-all">
-                    <summary class="flex cursor-pointer items-center justify-between px-4 py-3 font-mono text-sm text-text-primary hover:bg-bg-tertiary/50">
-                      <span>{wf.title}</span>
-                      <span class="text-text-muted transition-transform group-open:rotate-90">&rsaquo;</span>
-                    </summary>
-                    <div class="border-t border-border/30 px-4 py-3">
-                      <p class="mb-2 font-sans text-xs text-text-muted">{wf.description}</p>
-                      {wf.command && (
-                        <code class="block rounded bg-bg-tertiary px-3 py-2 font-mono text-xs" style={`color: ${section.color};`}>{wf.command}</code>
-                      )}
-                    </div>
-                  </details>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {powerMoves.length > 0 && (
-            <div>
-              <h3 class="mb-3 font-mono text-xs uppercase tracking-wider text-amber">Power Moves</h3>
-              <div class="grid gap-2 sm:grid-cols-2">
-                {powerMoves.map((pm: any) => (
-                  <details class="group rounded-lg border border-border bg-bg-card transition-all">
-                    <summary class="flex cursor-pointer items-center justify-between px-4 py-3 font-mono text-sm text-text-primary hover:bg-bg-tertiary/50">
-                      <span>{pm.title}</span>
-                      <span class="text-text-muted transition-transform group-open:rotate-90">&rsaquo;</span>
-                    </summary>
-                    <div class="border-t border-border/30 px-4 py-3">
-                      <p class="mb-2 font-sans text-xs text-text-muted">{pm.description}</p>
-                      {pm.command && (
-                        <code class="block rounded bg-bg-tertiary px-3 py-2 font-mono text-xs text-amber">{pm.command}</code>
-                      )}
-                    </div>
-                  </details>
-                ))}
-              </div>
-            </div>
-          )}
+      <!-- Right: Visual block -->
+      <div style="width: 100%; max-width: 320px; aspect-ratio: 1; position: relative; flex-shrink: 0;">
+        <div style="position: absolute; inset: 0; background: rgba(188,1,0,0.15); border: 4px solid var(--oc-primary); box-shadow: 12px 12px 0px 0px rgba(188,1,0,0.4);"></div>
+        <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+          <div class="oc-headline" style="font-size: 6rem; font-weight: 900; color: var(--oc-primary-bright); opacity: 0.15; text-transform: uppercase; user-select: none; transform: rotate(-15deg);">🦞</div>
         </div>
-      )}
+        <div style="position: absolute; bottom: -1rem; left: -1rem; background: black; border: 4px solid var(--oc-border); padding: 0.75rem 1rem; font-family: var(--oc-font-mono); color: var(--oc-primary-bright); font-weight: 700; font-size: 0.75rem;">
+          SYSTEM_INIT: READY
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Row -->
+    <section style="display: grid; grid-template-columns: repeat(2, 1fr); border: 4px solid var(--oc-border); margin-bottom: 5rem; background: rgba(255,255,255,0.03);">
+      {[
+        { label: "Active Version", value: displayVersion },
+        { label: "Total Releases", value: String(releases.length) },
+        { label: "Breaking Changes", value: String(breakingCount), red: true },
+        { label: "Last Updated", value: lastUpdatedAgo || "—" },
+      ].map((stat, i) => (
+        <div
+          style={`padding: 2rem; ${i < 3 ? `border-right: ${i === 1 || i === 3 ? '0' : '4'}px solid var(--oc-border);` : ''} ${i < 2 ? 'border-bottom: 4px solid var(--oc-border);' : ''} cursor: crosshair; transition: background 150ms;`}
+          onmouseover="this.style.background='var(--oc-primary)'"
+          onmouseout="this.style.background='transparent'"
+          class="stats-cell"
+        >
+          <span style="display: block; color: var(--oc-text-muted); font-family: var(--oc-font-headline); font-weight: 700; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 0.15em; margin-bottom: 0.5rem;">{stat.label}</span>
+          <span class="oc-headline" style={`display: block; font-size: 2.25rem; font-weight: 900; color: ${stat.red ? 'var(--oc-primary-bright)' : 'white'};`}>{stat.value}</span>
+        </div>
+      ))}
+    </section>
+
+    <!-- Main Content Grid -->
+    <div style="display: flex; flex-wrap: wrap; gap: 5rem; margin-bottom: 5rem;">
+
+      <!-- Timeline / Recent Releases -->
+      <div style="flex: 1; min-width: 280px; position: relative; padding-left: 3rem; border-left: 6px solid var(--oc-border);">
+        <h2 class="oc-headline" style="font-size: 2.5rem; font-weight: 900; color: white; margin: 0 0 3rem; text-transform: uppercase; font-style: italic; letter-spacing: -0.02em;">
+          Recent Releases
+        </h2>
+
+        <div style="display: flex; flex-direction: column; gap: 4rem;">
+          {recentReleases.map((release, idx) => {
+            const badge = getReleaseBadgeType(release);
+            const bodyPreview = (release.body || "").replace(/\r\n/g, "\n").replace(/#{1,3}\s[^\n]+\n?/g, "").replace(/\*\*[^*]+\*\*/g, "").replace(/\[[^\]]+\]\([^)]+\)/g, "").trim().slice(0, 200);
+            const tags = release.body?.toLowerCase().includes("security") ? ["#SECURITY"] :
+                         release.body?.toLowerCase().includes("fix") ? ["#BUGFIX"] :
+                         release.body?.toLowerCase().includes("feat") ? ["#FEATURE"] : [];
+            return (
+              <div style="position: relative;" class="release-entry">
+                <!-- Timeline dot -->
+                <div style={`position: absolute; left: -3.65rem; top: 1rem; width: 2.5rem; height: 2.5rem; border: 4px solid var(--oc-border); display: flex; align-items: center; justify-content: center; background: ${badge.isBreaking ? 'var(--oc-primary)' : 'white'};`}>
+                  <span style={`font-size: 0.9rem; ${badge.isBreaking ? 'color: white;' : 'color: black;'}`}>
+                    {badge.isBreaking ? "⚡" : "●"}
+                  </span>
+                </div>
+
+                <!-- Card -->
+                <div
+                  style={`padding: 2rem; box-shadow: ${badge.isBreaking ? '12px 12px 0px 0px rgba(188,1,0,1)' : 'var(--oc-shadow)'}; cursor: pointer; transition: transform 100ms, box-shadow 100ms; background: ${badge.isBreaking ? 'white' : 'var(--oc-bg-surface)'}; border: 4px solid var(--oc-border);`}
+                  onmouseover="this.style.transform='translate(1px,1px)';this.style.boxShadow='var(--oc-shadow-sm)'"
+                  onmouseout={`this.style.transform='';this.style.boxShadow='${badge.isBreaking ? '12px 12px 0px 0px rgba(188,1,0,1)' : 'var(--oc-shadow)'}'`}
+                >
+                  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; gap: 1rem; flex-wrap: wrap;">
+                    <div>
+                      {badge.isBreaking && (
+                        <span style="background: var(--oc-primary); color: white; font-family: var(--oc-font-mono); padding: 0.2rem 0.75rem; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; display: inline-block; margin-bottom: 0.5rem;">Breaking Change</span>
+                      )}
+                      <h3
+                        class="oc-headline"
+                        style={`font-size: 1.75rem; font-weight: 900; line-height: 1; text-transform: uppercase; margin: 0; color: ${badge.isBreaking ? 'black' : 'white'};`}
+                      >
+                        {release.version}: {(release.name || "").replace(/^openclaw\s+/i, "").toUpperCase() || "RELEASE"}
+                      </h3>
+                    </div>
+                    <span style={`font-family: var(--oc-font-mono); font-weight: 700; font-style: italic; font-size: 0.8rem; color: ${badge.isBreaking ? 'rgba(0,0,0,0.4)' : 'var(--oc-text-muted)'}; white-space: nowrap;`}>
+                      {formatDate(release.date)}
+                    </span>
+                  </div>
+
+                  {bodyPreview && (
+                    <p style={`font-family: var(--oc-font-body); font-size: 0.95rem; line-height: 1.6; margin: 0 0 1rem; color: ${badge.isBreaking ? 'rgba(0,0,0,0.8)' : 'var(--oc-text-dim)'};`}>
+                      {bodyPreview.slice(0, 180)}…
+                    </p>
+                  )}
+
+                  {tags.length > 0 && (
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                      {tags.map((tag) => (
+                        <span style={`border: 2px solid ${badge.isBreaking ? 'black' : 'var(--oc-border)'}; padding: 0.2rem 0.6rem; font-family: var(--oc-font-mono); font-size: 0.65rem; font-weight: 900; text-transform: uppercase; color: ${badge.isBreaking ? 'black' : 'var(--oc-text)'};`}>
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <!-- View all link -->
+        <div style="margin-top: 3rem;">
+          <a
+            href="/openclaw/changelog/"
+            class="oc-headline"
+            style="display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 900; text-transform: uppercase; color: var(--oc-primary-bright); font-style: italic; text-decoration: none; border-bottom: 2px solid var(--oc-primary-bright); padding-bottom: 2px;"
+          >
+            View full changelog →
+          </a>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside style="width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 2rem; flex-shrink: 0;">
+
+        <!-- Breaking changes alert -->
+        {breakingCount > 0 && (
+          <div style="background: black; border: 4px solid var(--oc-primary); padding: 1.5rem; position: relative; overflow: hidden;">
+            <div style="position: absolute; inset: 0; background: rgba(188,1,0,0.08); pointer-events: none;"></div>
+            <div style="position: relative; z-index: 1;">
+              <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--oc-primary-bright); margin-bottom: 1rem;">
+                <span style="font-size: 1.25rem;">⚠</span>
+                <span class="oc-headline" style="font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; font-size: 1rem;">Alert: Critical Shifts</span>
+              </div>
+              <p style="font-family: var(--oc-font-mono); font-size: 0.8rem; color: rgba(255,255,255,0.7); margin: 0 0 1rem; line-height: 1.5;">
+                {breakingCount} breaking {breakingCount === 1 ? 'change' : 'changes'} detected across release history. Check before upgrading.
+              </p>
+              <a
+                href="/openclaw/changelog/"
+                class="oc-headline"
+                style="display: block; width: 100%; background: var(--oc-primary); color: white; font-weight: 900; padding: 0.75rem; text-align: center; text-transform: uppercase; font-style: italic; font-size: 0.85rem; text-decoration: none; border: 2px solid var(--oc-border); box-shadow: var(--oc-shadow-sm); transition: transform 100ms, box-shadow 100ms;"
+                onmouseover="this.style.transform='translate(1px,1px)';this.style.boxShadow='1px 1px 0px 0px rgba(255,255,255,0.2)'"
+                onmouseout="this.style.transform='';this.style.boxShadow='var(--oc-shadow-sm)'"
+              >
+                View Changelog
+              </a>
+            </div>
+          </div>
+        )}
+
+        <!-- Cheatsheet preview -->
+        <div style="border: 4px solid var(--oc-border);">
+          <div style="background: var(--oc-border); padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
+            <h3 class="oc-headline" style="margin: 0; font-weight: 900; font-size: 1.1rem; text-transform: uppercase; color: var(--oc-bg);">Cheatsheet</h3>
+            <a href="/openclaw/cheatsheet/" style="color: var(--oc-bg); font-size: 1.2rem; text-decoration: none;">↗</a>
+          </div>
+          <div style="padding: 1.5rem; background: black; display: flex; flex-direction: column; gap: 1.5rem;">
+            {dailyWorkflows.length > 0 && (
+              <div>
+                <span style="color: var(--oc-primary-bright); font-family: var(--oc-font-mono); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 0.75rem; text-decoration: underline;">
+                  Daily Workflows
+                </span>
+                <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                  {dailyWorkflows.map((wf: any) => (
+                    <li style="display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">
+                      <span style="font-family: var(--oc-font-mono); font-size: 0.75rem; color: rgba(255,255,255,0.7); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;">{wf.command}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {powerMoves.length > 0 && (
+              <div>
+                <span style="color: var(--oc-primary-bright); font-family: var(--oc-font-mono); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 0.75rem; text-decoration: underline;">
+                  Power Moves
+                </span>
+                <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                  {powerMoves.map((pm: any) => (
+                    <li style="display: flex; gap: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">
+                      <span style="font-family: var(--oc-font-mono); font-size: 0.75rem; color: rgba(255,255,255,0.7); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;">{pm.title}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <!-- Quick start -->
+        <div style="background: black; border: 4px solid var(--oc-border); padding: 1.5rem; box-shadow: var(--oc-shadow);">
+          <h3 class="oc-headline" style="font-weight: 900; font-size: 1rem; text-transform: uppercase; color: var(--oc-primary-bright); margin: 0 0 1rem;">Quick Start</h3>
+          {(cs.quickStart?.steps || []).slice(0, 3).map((step: string) => (
+            <div style="display: flex; gap: 0.75rem; margin-bottom: 0.75rem; align-items: flex-start;">
+              <span style="color: var(--oc-primary-bright); font-family: var(--oc-font-mono); font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">▶</span>
+              <span style="font-family: var(--oc-font-mono); font-size: 0.75rem; color: rgba(255,255,255,0.7); line-height: 1.4;">{step}</span>
+            </div>
+          ))}
+          <a
+            href="/openclaw/cheatsheet/"
+            class="oc-headline"
+            style="display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.75rem; font-weight: 700; color: var(--oc-primary-bright); text-decoration: none; text-transform: uppercase; margin-top: 0.5rem; border-bottom: 1px solid var(--oc-primary);"
+          >
+            Full cheatsheet →
+          </a>
+        </div>
+
+        <!-- CTA: clwatch -->
+        <div
+          style="background: var(--oc-primary); padding: 2rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow); cursor: pointer; transition: background 200ms;"
+          onmouseover="this.style.background='white'"
+          onmouseout="this.style.background='var(--oc-primary)'"
+          class="cta-card"
+        >
+          <h4 class="oc-headline cta-title" style="font-weight: 900; color: white; font-size: 2rem; font-style: italic; text-transform: uppercase; line-height: 1.1; margin: 0 0 0.75rem; letter-spacing: -0.02em; transition: color 200ms;">
+            Enter the<br/>Clwatch
+          </h4>
+          <p class="cta-desc" style="color: rgba(255,255,255,0.8); font-family: var(--oc-font-body); font-size: 0.85rem; margin: 0 0 1.25rem; transition: color 200ms;">
+            Monitor releases in real-time. Keep your config files current automatically.
+          </p>
+          <a
+            href="/clwatch"
+            style="display: inline-flex; align-items: center; gap: 0.5rem; background: black; color: white; font-family: var(--oc-font-headline); font-weight: 900; padding: 0.75rem 1.5rem; text-transform: uppercase; text-decoration: none; font-size: 0.85rem; transition: background 200ms;"
+          >
+            Launch Dashboard →
+          </a>
+        </div>
+
+      </aside>
     </div>
-</SectionLayout>
+
+  </div>
+
+  <style>
+    @media (min-width: 640px) {
+      section[style*="grid-template-columns: repeat(2"] {
+        grid-template-columns: repeat(4, 1fr) !important;
+      }
+    }
+    .stats-cell:hover span:last-child {
+      color: white !important;
+    }
+    .cta-card:hover .cta-title {
+      color: black !important;
+    }
+    .cta-card:hover .cta-desc {
+      color: rgba(0,0,0,0.6) !important;
+    }
+    .release-entry:hover [style*="cursor: pointer"] {
+      transform: translate(1px, 1px);
+    }
+    @media (min-width: 768px) {
+      section[style*="grid-template-columns: repeat(2"] {
+        grid-template-columns: repeat(4, 1fr) !important;
+      }
+      section[style*="grid-template-columns: repeat(2"] > div:nth-child(1),
+      section[style*="grid-template-columns: repeat(2"] > div:nth-child(2),
+      section[style*="grid-template-columns: repeat(2"] > div:nth-child(3) {
+        border-right: 4px solid var(--oc-border) !important;
+        border-bottom: none !important;
+      }
+      section[style*="grid-template-columns: repeat(2"] > div {
+        border-bottom: none !important;
+      }
+    }
+  </style>
+</OpenClawLayout>
