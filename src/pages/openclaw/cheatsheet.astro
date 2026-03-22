@@ -62,30 +62,35 @@ const proTips = cs.proTips || [];
             <h2 class="oc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--oc-bg);">
               {quickStart.title || "Quick Start"}
             </h2>
-            <div style="display: flex; flex-direction: column; gap: 1rem;">
-              {quickStart.steps.map((step: string, i: number) => (
-                <div style="display: flex; gap: 1rem; align-items: flex-start;">
-                  <div style="background: var(--oc-bg); color: var(--oc-primary-bright); width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; font-family: var(--oc-font-mono); font-weight: 900; font-size: 0.75rem; flex-shrink: 0;">
-                    0{i + 1}
+            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+              {quickStart.steps.map((step: string, i: number) => {
+                // Extract command if present (openclaw ...)
+                const cmdMatch = step.match(/(openclaw\s+[\w\-]+(?:\s+[\w\-]+)*)/);
+                const cmd = cmdMatch?.[1];
+                // Extract label: everything before the colon, or the whole step if no command
+                const hasColon = step.includes(":");
+                const label = hasColon ? step.split(":")[0].trim() : step;
+                // Description: text after the command mention, or the part after colon without the command
+                const desc = !hasColon && !cmd ? step : undefined;
+
+                return (
+                  <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                    <div style="background: var(--oc-bg); color: var(--oc-primary-bright); width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; font-family: var(--oc-font-mono); font-weight: 900; font-size: 0.75rem; flex-shrink: 0;">
+                      {String(i + 1).padStart(2, '0')}
+                    </div>
+                    <div style="flex: 1; min-width: 0;">
+                      <p style="font-size: 0.8rem; font-weight: 700; margin: 0; color: var(--oc-bg); text-transform: uppercase; font-family: var(--oc-font-headline); letter-spacing: 0.05em; line-height: 1.4;">
+                        {label}
+                      </p>
+                      {cmd && (
+                        <div style="background: var(--oc-bg); color: var(--oc-primary-bright); font-family: var(--oc-font-mono); font-size: 0.75rem; padding: 0.4rem 0.75rem; border: 2px solid var(--oc-border); margin-top: 0.5rem; display: inline-block; max-width: 100%; overflow-x: auto; white-space: nowrap;">
+                          $ {cmd}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div>
-                    {step.includes(":") ? (
-                      <>
-                        <p style="font-size: 0.8rem; font-weight: 700; margin: 0 0 0.25rem; color: var(--oc-bg); text-transform: uppercase; font-family: var(--oc-font-headline); letter-spacing: 0.05em;">
-                          {step.split(":")[0].trim()}
-                        </p>
-                        {step.includes("openclaw ") && (
-                          <div style="background: var(--oc-bg); color: var(--oc-primary-bright); font-family: var(--oc-font-mono); font-size: 0.8rem; padding: 0.5rem 0.75rem; border: 2px solid var(--oc-border); margin-top: 0.25rem; display: inline-block;">
-                            $ {step.split(":").slice(1).join(":").trim().match(/openclaw\s+[\w\-\s]+/)?.[0] || step.split(":").slice(1).join(":").trim()}
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      <p style="font-size: 0.875rem; color: var(--oc-text-dim); margin: 0; line-height: 1.5; font-family: var(--oc-font-body);">{step}</p>
-                    )}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
