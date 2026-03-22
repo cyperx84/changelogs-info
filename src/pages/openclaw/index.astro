@@ -76,41 +76,88 @@ function getTldr(body: string): string[] {
   description="Track OpenClaw releases, breaking changes, and config updates. Personal AI assistant platform — run your own AI on any device, any channel."
   currentPage="home"
 >
+  <!-- Dot grid background -->
+  <div class="oc-dotgrid" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; opacity: 0.4;"></div>
+
   <div style="max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 0;">
 
-    <!-- Compact Hero -->
-    <section style="margin-bottom: 3rem; display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; justify-content: space-between;">
-      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-        <h1 class="oc-headline" style="font-size: clamp(3rem, 8vw, 5rem); font-weight: 900; color: var(--oc-text); text-transform: uppercase; line-height: 0.9; margin: 0;">
-          Open<span style="color: var(--oc-primary-bright);">Claw</span>
-        </h1>
-        <p style="font-size: 1rem; color: var(--oc-text-dim); max-width: 32rem; line-height: 1.5; margin: 0; font-family: var(--oc-font-body);">
-          {tool?.description || "Personal AI assistant platform — run your own AI on any device, any channel."}
-        </p>
-      </div>
-      <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
-        <div style="display: flex; flex-direction: column; gap: 0.25rem; text-align: right;">
-          <span style="font-family: var(--oc-font-mono); font-size: 1.75rem; color: var(--oc-text); font-weight: 700;">{displayVersion}</span>
-          {lastUpdatedAgo && (
-            <span style="font-family: var(--oc-font-mono); font-size: 0.7rem; color: var(--oc-text-muted); text-transform: uppercase;">Updated {lastUpdatedAgo}</span>
-          )}
+    <!-- Hero -->
+    <section class="oc-hero-section" style="margin-bottom: 3rem; display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: center;">
+      <div style="display: grid; grid-template-columns: 1fr auto; gap: 2.5rem; align-items: center;" class="oc-hero-grid">
+        <!-- Left: text + CTA -->
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <!-- Live badge -->
+          <div style="display: inline-flex; align-items: center; gap: 0.5rem; width: fit-content;">
+            <span class="oc-pulse-dot" style="width: 8px; height: 8px; background: #22c55e; display: inline-block;"></span>
+            <span style="font-family: var(--oc-font-mono); font-size: 0.65rem; color: var(--oc-text-muted); text-transform: uppercase; letter-spacing: 0.15em;">Tracking {releases.length} releases</span>
+          </div>
+
+          <h1 class="oc-headline oc-hero-title" style="font-size: clamp(3.5rem, 9vw, 6rem); font-weight: 900; color: var(--oc-text); text-transform: uppercase; line-height: 0.85; margin: 0; letter-spacing: -0.03em;">
+            Open<span style="color: var(--oc-primary-bright);">Claw</span>
+          </h1>
+
+          <p style="font-size: 1.05rem; color: var(--oc-text-dim); max-width: 28rem; line-height: 1.6; margin: 0; font-family: var(--oc-font-body);">
+            {tool?.description || "Personal AI assistant platform — run your own AI on any device, any channel."}
+          </p>
+
+          <!-- CTA row -->
+          <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.5rem;">
+            <a
+              href={`https://github.com/${tool?.repo || "openclaw/openclaw"}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="oc-headline oc-cta-btn"
+              style="background: var(--oc-primary); color: white; font-weight: 900; padding: 0.75rem 1.75rem; font-size: 0.85rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow-sm); text-decoration: none; text-transform: uppercase; font-style: italic;"
+            >
+              GitHub ↗
+            </a>
+            <a
+              href="/openclaw/changelog/"
+              class="oc-headline oc-cta-btn"
+              style="background: transparent; color: var(--oc-text); font-weight: 900; padding: 0.75rem 1.75rem; font-size: 0.85rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow-sm); text-decoration: none; text-transform: uppercase; font-style: italic;"
+            >
+              Changelog
+            </a>
+          </div>
         </div>
-        <a
-          href={`https://github.com/${tool?.repo || "openclaw/openclaw"}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="oc-headline"
-          style="background: var(--oc-primary); color: white; font-weight: 900; padding: 0.75rem 1.5rem; font-size: 0.9rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow-sm); text-decoration: none; text-transform: uppercase; font-style: italic; transition: transform 100ms, box-shadow 100ms;"
-          onmouseover="this.style.transform='translate(1px,1px)';this.style.boxShadow='none'"
-          onmouseout="this.style.transform='';this.style.boxShadow='var(--oc-shadow-sm)'"
-        >
-          GitHub ↗
-        </a>
+
+        <!-- Right: terminal card -->
+        <div class="oc-terminal-card" style="width: 320px; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow); flex-shrink: 0; overflow: hidden;">
+          <!-- Title bar -->
+          <div style="background: var(--oc-border); padding: 0.5rem 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+            <span style="width: 10px; height: 10px; background: var(--oc-primary); display: inline-block;"></span>
+            <span style="width: 10px; height: 10px; background: #ffb800; display: inline-block;"></span>
+            <span style="width: 10px; height: 10px; background: #22c55e; display: inline-block;"></span>
+            <span style="font-family: var(--oc-font-mono); font-size: 0.6rem; color: var(--oc-bg); margin-left: 0.5rem; text-transform: uppercase; font-weight: 700;">openclaw status</span>
+          </div>
+          <!-- Terminal body -->
+          <div style="background: var(--oc-bg); padding: 1rem; font-family: var(--oc-font-mono); font-size: 0.7rem; line-height: 1.8; color: var(--oc-text-dim);">
+            <div><span style="color: var(--oc-primary-bright);">❯</span> openclaw status</div>
+            <div style="margin-top: 0.5rem;">
+              <span style="color: #22c55e;">●</span> Gateway: <span style="color: #22c55e;">running</span>
+            </div>
+            <div>
+              <span style="color: #22c55e;">●</span> Version: <span style="color: var(--oc-text);">{displayVersion}</span>
+            </div>
+            <div>
+              <span style="color: #22c55e;">●</span> Releases: <span style="color: var(--oc-text);">{releases.length}</span> tracked
+            </div>
+            <div>
+              <span style="color: {breakingCount > 0 ? 'var(--oc-primary-bright)' : '#22c55e'};">{breakingCount > 0 ? '⚠' : '●'}</span> Breaking: <span style="color: {breakingCount > 0 ? 'var(--oc-primary-bright)' : 'var(--oc-text)'};">{breakingCount}</span>
+            </div>
+            <div>
+              <span style="color: #22c55e;">●</span> Updated: <span style="color: var(--oc-text);">{lastUpdatedAgo || "now"}</span>
+            </div>
+            <div style="margin-top: 0.5rem; color: var(--oc-text-muted);">
+              <span style="color: var(--oc-primary-bright);">❯</span> <span class="oc-cursor">_</span>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- Stats Bar -->
-    <section style="display: flex; flex-wrap: wrap; gap: 0; border: 4px solid var(--oc-border); margin-bottom: 3rem;">
+    <section class="oc-section-reveal" style="display: flex; flex-wrap: wrap; gap: 0; border: 4px solid var(--oc-border); margin-bottom: 3rem;">
       {[
         { label: "Releases", value: String(releases.length) },
         { label: "Breaking", value: String(breakingCount), red: true },
@@ -351,6 +398,62 @@ function getTldr(body: string): string[] {
   </div>
 
   <style>
+    /* Dot grid background */
+    .oc-dotgrid {
+      background-image: radial-gradient(circle, var(--oc-border-dim) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    /* Hero animations */
+    .oc-hero-title {
+      animation: oc-slide-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .oc-hero-section p {
+      animation: oc-slide-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+    }
+    .oc-terminal-card {
+      animation: oc-slide-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+    }
+    @keyframes oc-slide-in {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Terminal cursor blink */
+    .oc-cursor {
+      animation: oc-blink 1s step-end infinite;
+    }
+    @keyframes oc-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Live pulse dot */
+    .oc-pulse-dot {
+      animation: oc-pulse 2s ease-in-out infinite;
+    }
+    @keyframes oc-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* CTA button hover */
+    .oc-cta-btn {
+      transition: transform 100ms, box-shadow 100ms;
+    }
+    .oc-cta-btn:hover {
+      transform: translate(1px, 1px);
+      box-shadow: none !important;
+    }
+
+    /* Section reveal on scroll */
+    .oc-section-reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      animation: oc-slide-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+    }
+
+    /* Stats */
     .stats-cell {
       transition: background 150ms;
     }
@@ -360,6 +463,8 @@ function getTldr(body: string): string[] {
     .stats-cell:hover span:last-child {
       color: var(--oc-text) !important;
     }
+
+    /* Quick links */
     .oc-quick-link {
       transition: border-color 150ms, box-shadow 150ms;
     }
@@ -367,6 +472,17 @@ function getTldr(body: string): string[] {
       border-color: var(--oc-primary) !important;
       box-shadow: var(--oc-shadow-sm) !important;
     }
+
+    /* Responsive hero */
+    @media (max-width: 768px) {
+      .oc-hero-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .oc-terminal-card {
+        width: 100% !important;
+      }
+    }
+
     @media (max-width: 640px) {
       section[style*="display: flex; flex-wrap: wrap; gap: 0;"] {
         flex-direction: column !important;
@@ -377,6 +493,21 @@ function getTldr(body: string): string[] {
       }
       section[style*="display: flex; flex-wrap: wrap; gap: 0;"] > div:last-child {
         border-bottom: none !important;
+      }
+    }
+
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .oc-hero-title,
+      .oc-hero-section p,
+      .oc-terminal-card,
+      .oc-section-reveal {
+        animation: none !important;
+        opacity: 1;
+        transform: none;
+      }
+      .oc-cursor, .oc-pulse-dot {
+        animation: none !important;
       }
     }
   </style>
