@@ -149,6 +149,17 @@ const navLinks = [
         box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
       }
 
+      /* Override global CSS interference */
+      .oc-nav button::before,
+      .oc-nav a::before,
+      .oc-nav a::after {
+        content: none !important;
+        display: none !important;
+      }
+      .oc-nav a {
+        position: static;
+      }
+
       /* Theme toggle hover */
       #oc-theme-toggle:hover {
         transform: translate(1px, 1px);
@@ -335,112 +346,77 @@ const navLinks = [
     </script>
 
     <!-- Header -->
-    <header
-      class="oc-header fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 backdrop-blur-xl"
-      style="background: var(--oc-header-bg); border-bottom: 4px solid var(--oc-border); box-shadow: var(--oc-shadow);"
-    >
-      <div class="flex items-center gap-6">
-        <!-- Back to hub -->
-        <a
-          href="/"
-          class="oc-headline font-bold text-xs uppercase tracking-widest opacity-50 hover:opacity-100 transition-opacity"
-          style="color: var(--oc-text);"
-          title="changelogs.info"
-        >
-          ← Hub
-        </a>
-        <!-- Brand -->
-        <a
-          href="/openclaw/"
-          class="oc-headline text-2xl font-black italic tracking-tighter"
-          style="color: var(--oc-primary-bright);"
-        >
-          OpenClaw
-        </a>
-      </div>
+    <header class="oc-nav" style="position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: var(--oc-header-bg); border-bottom: 4px solid var(--oc-border); box-shadow: var(--oc-shadow); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+      <div style="max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1.25rem; gap: 1rem;">
+        <!-- Left: brand -->
+        <div style="display: flex; align-items: center; gap: 1rem; flex-shrink: 0;">
+          <a href="/" class="oc-headline" style="font-weight: 700; color: var(--oc-text); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.15em; opacity: 0.5; text-decoration: none; display: none;" id="oc-hub-link">← HUB</a>
+          <a href="/openclaw/" class="oc-headline" style="color: var(--oc-primary-bright); font-size: 1.5rem; font-weight: 900; font-style: italic; letter-spacing: -0.03em; text-decoration: none; line-height: 1;">OpenClaw</a>
+        </div>
 
-      <!-- Desktop nav -->
-      <nav class="hidden md:flex items-center gap-8">
-        {
-          navLinks.map((link) => (
+        <!-- Center: desktop nav -->
+        <nav id="oc-desktop-nav" style="display: none; align-items: center; gap: 2rem;">
+          {navLinks.map((link) => (
             <a
               href={link.href}
-              class="oc-headline font-bold tracking-tighter uppercase text-sm transition-all duration-100 hover:translate-x-[2px] hover:translate-y-[2px]"
-              style={
+              class="oc-headline oc-nav-link"
+              style={`font-weight: 800; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em; text-decoration: none; padding-bottom: 4px; transition: color 100ms; ${
                 currentPage === link.key
-                  ? `color: var(--oc-primary-bright); border-bottom: 4px solid var(--oc-primary-bright); padding-bottom: 2px;`
-                  : `color: var(--oc-text); opacity: 0.75;`
-              }
+                  ? `color: var(--oc-primary-bright); border-bottom: 4px solid var(--oc-primary-bright);`
+                  : `color: var(--oc-text); opacity: 0.7;`
+              }`}
             >
               {link.label}
             </a>
-          ))
-        }
-      </nav>
+          ))}
+        </nav>
 
-      <!-- Right actions -->
-      <div class="flex items-center gap-3">
-        <!-- Theme toggle -->
-        <button
-          id="oc-theme-toggle"
-          aria-label="Toggle theme"
-          style="background: transparent; border: 2px solid var(--oc-border); padding: 6px 10px; color: var(--oc-text); cursor: pointer; box-shadow: var(--oc-shadow-sm); font-family: var(--oc-font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.05em; transition: box-shadow 100ms, transform 100ms;"
-        >
-          <span id="oc-theme-label">◐</span>
-        </button>
-
-        <!-- Mobile menu -->
-        <button
-          id="oc-mobile-menu-btn"
-          class="md:hidden"
-          aria-label="Toggle menu"
-          style="background: transparent; border: 2px solid var(--oc-border); padding: 6px 10px; color: var(--oc-text); cursor: pointer;"
-        >
-          <svg
-            class="h-5 w-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+        <!-- Right: actions -->
+        <div style="display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0;">
+          <button
+            id="oc-theme-toggle"
+            aria-label="Toggle theme"
+            style="background: transparent; border: 2px solid var(--oc-border); padding: 6px 10px; color: var(--oc-text); cursor: pointer; box-shadow: var(--oc-shadow-sm); font-family: var(--oc-font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.05em; transition: box-shadow 100ms, transform 100ms; position: relative; overflow: visible;"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16"></path>
-          </svg>
-        </button>
-      </div>
-    </header>
+            <span id="oc-theme-label">◐</span>
+          </button>
 
-    <!-- Mobile nav -->
-    <div
-      id="oc-mobile-menu"
-      class="hidden fixed top-[73px] left-0 right-0 z-40 px-6 py-4 space-y-3 md:hidden"
-      style="background: var(--oc-bg); border-bottom: 4px solid var(--oc-border); box-shadow: var(--oc-shadow);"
-    >
-      {
-        navLinks.map((link) => (
+          <!-- Hamburger (mobile only) -->
+          <button
+            id="oc-mobile-menu-btn"
+            aria-label="Toggle menu"
+            style="display: flex; background: transparent; border: 2px solid var(--oc-border); padding: 8px; color: var(--oc-text); cursor: pointer; align-items: center; justify-content: center; position: relative; overflow: visible;"
+          >
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: block;">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile nav dropdown (inside header) -->
+      <div
+        id="oc-mobile-menu"
+        style="display: none; padding: 0.75rem 1.25rem 1.25rem; border-top: 2px solid var(--oc-border-dim); background: var(--oc-bg);"
+      >
+        {navLinks.map((link) => (
           <a
             href={link.href}
-            class="block oc-headline font-bold tracking-tighter uppercase py-2"
-            style={
+            class="oc-headline"
+            style={`display: block; font-weight: 800; text-transform: uppercase; font-size: 1rem; padding: 0.75rem 0; text-decoration: none; border-bottom: 2px solid var(--oc-border-dim); letter-spacing: 0.05em; ${
               currentPage === link.key
                 ? `color: var(--oc-primary-bright);`
                 : `color: var(--oc-text); opacity: 0.75;`
-            }
+            }`}
           >
             {link.label}
           </a>
-        ))
-      }
-      <a
-        href="/"
-        class="block oc-headline font-bold tracking-tighter uppercase py-2 opacity-50"
-        style="color: var(--oc-text);"
-      >
-        ← changelogs.info
-      </a>
-    </div>
+        ))}
+        <a href="/" class="oc-headline" style="display: block; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; padding: 0.75rem 0; text-decoration: none; color: var(--oc-text); opacity: 0.5; letter-spacing: 0.1em;">
+          ← changelogs.info
+        </a>
+      </div>
+    </header>
 
     <!-- Main content -->
     <main style="padding-top: 73px;">
@@ -578,13 +554,28 @@ const navLinks = [
         const menuBtn = document.getElementById("oc-mobile-menu-btn");
         const mobileMenu = document.getElementById("oc-mobile-menu");
         menuBtn?.addEventListener("click", () => {
-          mobileMenu?.classList.toggle("hidden");
+          const isOpen = mobileMenu?.style.display === "block";
+          if (mobileMenu) mobileMenu.style.display = isOpen ? "none" : "block";
         });
         mobileMenu?.querySelectorAll("a").forEach((a) => {
-          a.addEventListener("click", () =>
-            mobileMenu.classList.add("hidden")
-          );
+          a.addEventListener("click", () => {
+            if (mobileMenu) mobileMenu.style.display = "none";
+          });
         });
+
+        // Responsive: show/hide desktop nav and hamburger
+        function handleResize() {
+          const desktopNav = document.getElementById("oc-desktop-nav");
+          const mobileBtn = document.getElementById("oc-mobile-menu-btn");
+          const hubLink = document.getElementById("oc-hub-link");
+          const isDesktop = window.innerWidth >= 768;
+          if (desktopNav) desktopNav.style.display = isDesktop ? "flex" : "none";
+          if (mobileBtn) mobileBtn.style.display = isDesktop ? "none" : "flex";
+          if (hubLink) hubLink.style.display = isDesktop ? "inline" : "none";
+          if (isDesktop && mobileMenu) mobileMenu.style.display = "none";
+        }
+        handleResize();
+        window.addEventListener("resize", handleResize);
       });
     </script>
   </body>
