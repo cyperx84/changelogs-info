@@ -147,6 +147,33 @@ function normalizeReleaseBody(body: string): string {
 }
 
 
+
+function beautifyChangelogHtml(html: string): string {
+  return html
+    .replace(/<(li|p)>(?:<strong>)?(FIX|FEAT|DOCS|TEST|CHORE|REFACTOR|PERF|STYLE|CI|BUILD|SEC|SECURITY|BREAKING)(?:<\/strong>)?(?:\([^<)]*\))?:\s*/gi, (_, tag, type) => {
+      const palette: Record<string, string> = {
+        BREAKING: 'background: var(--cl-accent, var(--oc-primary, #eb0000)); color: #fff; border-color: var(--cl-accent, var(--oc-primary, #eb0000));',
+        FEAT: 'background: rgba(34,197,94,0.12); color: #22c55e; border-color: #22c55e;',
+        FIX: 'background: rgba(59,130,246,0.12); color: #60a5fa; border-color: #60a5fa;',
+        DOCS: 'background: rgba(168,85,247,0.12); color: #c084fc; border-color: #c084fc;',
+        PERF: 'background: rgba(245,158,11,0.12); color: #f59e0b; border-color: #f59e0b;',
+        REFACTOR: 'background: rgba(236,72,153,0.12); color: #f472b6; border-color: #f472b6;',
+        CI: 'background: rgba(6,182,212,0.12); color: #22d3ee; border-color: #22d3ee;',
+        BUILD: 'background: rgba(6,182,212,0.12); color: #22d3ee; border-color: #22d3ee;',
+        CHORE: 'background: rgba(148,163,184,0.12); color: #cbd5e1; border-color: #94a3b8;',
+        TEST: 'background: rgba(20,184,166,0.12); color: #2dd4bf; border-color: #2dd4bf;',
+        STYLE: 'background: rgba(244,114,182,0.12); color: #f9a8d4; border-color: #f9a8d4;',
+        SEC: 'background: rgba(239,68,68,0.12); color: #f87171; border-color: #f87171;',
+        SECURITY: 'background: rgba(239,68,68,0.12); color: #f87171; border-color: #f87171;'
+      };
+      const key = String(type).toUpperCase();
+      const style = palette[key] || 'background: rgba(255,255,255,0.06); color: currentColor; border-color: currentColor;';
+      return '<' + tag + '><span style="display:inline-flex;align-items:center;justify-content:center;min-width:3.9rem;padding:0.15rem 0.45rem;margin-right:0.55rem;border:1.5px solid currentColor;font-family:inherit;font-size:0.72em;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;vertical-align:middle;' + style + '">' + (key === 'SECURITY' ? 'SEC' : key) + '</span>';
+    })
+    .replace(/<li>/g, '<li style="margin:0 0 0.55rem 0;">')
+    .replace(/<ul>/g, '<ul style="display:flex;flex-direction:column;gap:0.15rem;padding-left:1.25rem;">');
+}
+
 function renderBody(body: string): string {
   if (!body) return "";
   const normalizedBody = normalizeReleaseBody(body);
@@ -158,7 +185,7 @@ function renderBody(body: string): string {
     '<a href="$1" target="_blank" rel="noopener noreferrer" class="cl-pr-link">#$2</a>');
   html = html.replace(/ by <a href="https:\/\/github\.com\/[^"]*"[^>]*>@[^<]+<\/a> in /g, ' ');
   html = html.replace(/ by @[\w-]+ in /g, ' ');
-  return html;
+  return beautifyChangelogHtml(html);
 }
 
 function getTldr(body: string): string[] {
