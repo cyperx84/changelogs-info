@@ -157,7 +157,7 @@ function renderBody(body: string): string {
 
                 <!-- Full rendered body -->
                 <div
-                  class={`changelog-body ${isLong ? 'cl-collapsed' : ''}`}
+                  class={`changelog-body ${isLong && idx > 0 ? 'cl-collapsed' : ''}`}
                   style={`color: ${breaking ? 'var(--oc-bg)' : 'var(--oc-text-dim)'}; font-size: 0.875rem; line-height: 1.7; font-family: var(--oc-font-body); overflow: hidden; position: relative;`}
                   set:html={renderedBody}
                 />
@@ -168,7 +168,7 @@ function renderBody(body: string): string {
                     style={`display: block; margin-top: 1rem; background: transparent; border: 2px solid ${breaking ? 'var(--oc-bg)' : 'var(--oc-border)'}; color: ${breaking ? 'var(--oc-bg)' : 'var(--oc-text)'}; padding: 0.5rem 1.25rem; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; transition: background 100ms;`}
                     onclick="this.previousElementSibling.classList.toggle('cl-collapsed'); this.textContent = this.textContent.includes('EXPAND') ? '▲ COLLAPSE' : '▼ EXPAND FULL CHANGELOG'"
                   >
-                    ▼ EXPAND FULL CHANGELOG
+                    {idx === 0 ? '▲ COLLAPSE' : '▼ EXPAND FULL CHANGELOG'}
                   </button>
                 )}
 
