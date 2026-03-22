@@ -1,6 +1,7 @@
 ---
 import OpenClawLayout from "../../layouts/OpenClawLayout.astro";
 import { getToolById, getToolReleases, formatDate, relativeTime } from "../../lib/releases";
+import { marked } from "marked";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -10,37 +11,49 @@ const releases = data?.releases || [];
 const stableReleases = releases.filter((r) => !r.prerelease);
 const latestStable = stableReleases[0];
 const latestRelease = releases[0];
-const recentReleases = stableReleases.slice(0, 5);
+const tldrReleases = releases.slice(0, 6);
 
-// Breaking changes count (releases with "breaking" in body)
 const breakingCount = releases.filter((r) =>
   r.body?.toLowerCase().includes("breaking")
 ).length;
 
-// Cheatsheet data
-let cs: any = {};
-try {
-  const raw = readFileSync(
-    join(process.cwd(), "src/content/cheatsheets-json/openclaw.json"),
-    "utf-8"
-  );
-  cs = JSON.parse(raw);
-} catch {}
-const dailyWorkflows = (cs.dailyWorkflows || []).slice(0, 3);
-const powerMoves = (cs.powerMoves || []).slice(0, 2);
-
-function getReleaseBadgeType(release: any): { label: string; isBreaking: boolean; isFeature: boolean } {
-  const body = (release.body || "").toLowerCase();
-  const name = (release.name || "").toLowerCase();
-  const isBreaking = body.includes("breaking") || name.includes("breaking");
-  const isFeature = body.includes("feat") || name.includes("feature");
-  if (isBreaking) return { label: "Breaking", isBreaking: true, isFeature: false };
-  if (isFeature) return { label: "Feature", isBreaking: false, isFeature: true };
-  return { label: "Fix", isBreaking: false, isFeature: false };
-}
-
 const displayVersion = latestStable?.version || latestRelease?.version || "—";
 const lastUpdatedAgo = data?.lastUpdated ? relativeTime(data.lastUpdated) : null;
+
+function isBreaking(body: string = ""): boolean {
+  return body.toLowerCase().includes("breaking");
+}
+
+function renderBody(body: string): string {
+  if (!body) return "";
+  marked.setOptions({ gfm: true, breaks: false });
+  return marked.parse(body) as string;
+}
+
+// Generate a short TLDR from the body
+function getTldr(body: string): string[] {
+  if (!body) return [];
+  const lines = body.split("\n").filter(Boolean);
+  const bullets: string[] = [];
+  for (const line of lines) {
+    // Match markdown list items and extract the key part
+    const match = line.match(/^[\*\-]\s+(.+)/);
+    if (match) {
+      let text = match[1]
+        .replace(/\*\*([^*]+)\*\*/g, "$1")  // strip bold
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")  // strip links
+        .replace(/`([^`]+)`/g, "$1")  // strip code
+        .replace(/\s+by\s+@\S+\s+in\s+https:\/\/\S+/g, "")  // strip PR refs
+        .trim();
+      if (text.length > 10 && !text.startsWith("http") && !text.startsWith("@")) {
+        // Truncate long items
+        if (text.length > 120) text = text.slice(0, 117) + "…";
+        bullets.push(text);
+      }
+    }
+  }
+  return bullets.slice(0, 5); // top 5 changes per release
+}
 ---
 
 <OpenClawLayout
@@ -48,312 +61,237 @@ const lastUpdatedAgo = data?.lastUpdated ? relativeTime(data.lastUpdated) : null
   description="Track OpenClaw releases, breaking changes, and config updates. Personal AI assistant platform — run your own AI on any device, any channel."
   currentPage="home"
 >
-  <div style="max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 0;">
+  <div style="max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 0;">
 
-    <!-- Hero Section -->
-    <section style="margin-bottom: 5rem; display: flex; flex-wrap: wrap; gap: 3rem; align-items: flex-start;">
-      <!-- Left: Text -->
-      <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 2rem;">
-        <!-- Latest update badge -->
-        {lastUpdatedAgo && (
-          <div style="display: inline-flex; align-items: center; gap: 0.75rem; background: var(--oc-primary); padding: 0.25rem 1rem; border: 2px solid var(--oc-border); box-shadow: var(--oc-shadow-sm); width: fit-content;">
-            <span class="oc-headline" style="font-weight: 900; color: var(--oc-text); font-style: italic; font-size: 0.8rem; letter-spacing: 0.05em;">LATEST UPDATE</span>
-            <span style="background: var(--oc-border); color: var(--oc-bg); padding: 0.1rem 0.5rem; font-family: var(--oc-font-mono); font-size: 0.75rem; font-weight: 700;">{lastUpdatedAgo}</span>
-          </div>
-        )}
-
-        <!-- Big title -->
-        <h1 class="oc-headline" style="font-size: clamp(4rem, 10vw, 7rem); font-weight: 900; tracking-tighter: tighter; color: var(--oc-text); text-transform: uppercase; line-height: 0.9; margin: 0;">
+    <!-- Compact Hero -->
+    <section style="margin-bottom: 3rem; display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; justify-content: space-between;">
+      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <h1 class="oc-headline" style="font-size: clamp(3rem, 8vw, 5rem); font-weight: 900; color: var(--oc-text); text-transform: uppercase; line-height: 0.9; margin: 0;">
           Open<span style="color: var(--oc-primary-bright);">Claw</span>
         </h1>
-
-        <!-- Version + description -->
-        <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">
-          <span style="font-family: var(--oc-font-mono); font-size: 2rem; color: var(--oc-text); font-weight: 700; padding: 0.25rem 0.5rem; border-left: 4px solid var(--oc-primary);">
-            {displayVersion}
-          </span>
-          <p style="font-size: 1.1rem; color: var(--oc-text-dim); max-width: 32rem; line-height: 1.5; margin: 0; font-family: var(--oc-font-body);">
-            {tool?.description || "Personal AI assistant platform — run your own AI on any device, any channel."}
-          </p>
-        </div>
-
-        <!-- CTA buttons -->
-        <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
-          <a
-            href={`https://github.com/${tool?.repo || "openclaw/openclaw"}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="oc-headline"
-            style="background: var(--oc-primary); color: white; font-weight: 900; padding: 1rem 2rem; font-size: 1.1rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow-red); text-decoration: none; text-transform: uppercase; font-style: italic; display: inline-block; transition: transform 100ms, box-shadow 100ms;"
-            onmouseover="this.style.transform='translate(1px,1px)';this.style.boxShadow='2px 2px 0px 0px rgba(188,1,0,0.4)'"
-            onmouseout="this.style.transform='';this.style.boxShadow='var(--oc-shadow-red)'"
-          >
-            View on GitHub
-          </a>
-          <a
-            href="/openclaw/changelog/"
-            class="oc-headline"
-            style="background: var(--oc-border); color: var(--oc-bg); font-weight: 900; padding: 1rem 2rem; font-size: 1.1rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow); text-decoration: none; text-transform: uppercase; font-style: italic; display: inline-block; transition: transform 100ms, box-shadow 100ms;"
-            onmouseover="this.style.transform='translate(1px,1px)';this.style.boxShadow='var(--oc-shadow-sm)'"
-            onmouseout="this.style.transform='';this.style.boxShadow='var(--oc-shadow)'"
-          >
-            Full Changelog
-          </a>
-        </div>
+        <p style="font-size: 1rem; color: var(--oc-text-dim); max-width: 32rem; line-height: 1.5; margin: 0; font-family: var(--oc-font-body);">
+          {tool?.description || "Personal AI assistant platform — run your own AI on any device, any channel."}
+        </p>
       </div>
-
-      <!-- Right: Visual block -->
-      <div style="width: 100%; max-width: 320px; aspect-ratio: 1; position: relative; flex-shrink: 0;">
-        <div style="position: absolute; inset: 0; background: rgba(188,1,0,0.15); border: 4px solid var(--oc-primary); box-shadow: 12px 12px 0px 0px rgba(188,1,0,0.4);"></div>
-        <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
-          <div class="oc-headline" style="font-size: 6rem; font-weight: 900; color: var(--oc-primary-bright); opacity: 0.15; text-transform: uppercase; user-select: none; transform: rotate(-15deg);">🦞</div>
+      <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+        <div style="display: flex; flex-direction: column; gap: 0.25rem; text-align: right;">
+          <span style="font-family: var(--oc-font-mono); font-size: 1.75rem; color: var(--oc-text); font-weight: 700;">{displayVersion}</span>
+          {lastUpdatedAgo && (
+            <span style="font-family: var(--oc-font-mono); font-size: 0.7rem; color: var(--oc-text-muted); text-transform: uppercase;">Updated {lastUpdatedAgo}</span>
+          )}
         </div>
-        <div style="position: absolute; bottom: -1rem; left: -1rem; background: var(--oc-bg); border: 4px solid var(--oc-border); padding: 0.75rem 1rem; font-family: var(--oc-font-mono); color: var(--oc-primary-bright); font-weight: 700; font-size: 0.75rem;">
-          SYSTEM_INIT: READY
-        </div>
+        <a
+          href={`https://github.com/${tool?.repo || "openclaw/openclaw"}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="oc-headline"
+          style="background: var(--oc-primary); color: white; font-weight: 900; padding: 0.75rem 1.5rem; font-size: 0.9rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow-sm); text-decoration: none; text-transform: uppercase; font-style: italic; transition: transform 100ms, box-shadow 100ms;"
+          onmouseover="this.style.transform='translate(1px,1px)';this.style.boxShadow='none'"
+          onmouseout="this.style.transform='';this.style.boxShadow='var(--oc-shadow-sm)'"
+        >
+          GitHub ↗
+        </a>
       </div>
     </section>
 
-    <!-- Stats Row -->
-    <section style="display: grid; grid-template-columns: repeat(2, 1fr); border: 4px solid var(--oc-border); margin-bottom: 5rem; background: var(--oc-bg-card);">
+    <!-- Stats Bar -->
+    <section style="display: flex; flex-wrap: wrap; gap: 0; border: 4px solid var(--oc-border); margin-bottom: 3rem;">
       {[
-        { label: "Active Version", value: displayVersion },
-        { label: "Total Releases", value: String(releases.length) },
-        { label: "Breaking Changes", value: String(breakingCount), red: true },
-        { label: "Last Updated", value: lastUpdatedAgo || "—" },
+        { label: "Releases", value: String(releases.length) },
+        { label: "Breaking", value: String(breakingCount), red: true },
+        { label: "Stable", value: String(stableReleases.length) },
+        { label: "Latest", value: displayVersion },
       ].map((stat, i) => (
         <div
-          style={`padding: 2rem; ${i < 3 ? `border-right: ${i === 1 || i === 3 ? '0' : '4'}px solid var(--oc-border);` : ''} ${i < 2 ? 'border-bottom: 4px solid var(--oc-border);' : ''} cursor: crosshair; transition: background 150ms;`}
+          style={`flex: 1; min-width: 120px; padding: 1rem 1.25rem; ${i < 3 ? 'border-right: 4px solid var(--oc-border);' : ''} background: var(--oc-bg-card); cursor: crosshair; transition: background 150ms;`}
           onmouseover="this.style.background='var(--oc-primary)'"
-          onmouseout="this.style.background='transparent'"
+          onmouseout="this.style.background='var(--oc-bg-card)'"
           class="stats-cell"
         >
-          <span style="display: block; color: var(--oc-text-muted); font-family: var(--oc-font-headline); font-weight: 700; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 0.15em; margin-bottom: 0.5rem;">{stat.label}</span>
-          <span class="oc-headline" style={`display: block; font-size: 2.25rem; font-weight: 900; color: ${stat.red ? 'var(--oc-primary-bright)' : 'var(--oc-text)'};`}>{stat.value}</span>
+          <span style="display: block; color: var(--oc-text-muted); font-family: var(--oc-font-headline); font-weight: 700; text-transform: uppercase; font-size: 0.55rem; letter-spacing: 0.15em; margin-bottom: 0.25rem;">{stat.label}</span>
+          <span class="oc-headline" style={`display: block; font-size: 1.5rem; font-weight: 900; color: ${stat.red ? 'var(--oc-primary-bright)' : 'var(--oc-text)'};`}>{stat.value}</span>
         </div>
       ))}
     </section>
 
-    <!-- Main Content Grid -->
-    <div style="display: flex; flex-wrap: wrap; gap: 5rem; margin-bottom: 5rem;">
-
-      <!-- Timeline / Recent Releases -->
-      <div style="flex: 1; min-width: 280px; position: relative; padding-left: 3rem; border-left: 6px solid var(--oc-border);">
-        <h2 class="oc-headline" style="font-size: 2.5rem; font-weight: 900; color: var(--oc-text); margin: 0 0 3rem; text-transform: uppercase; font-style: italic; letter-spacing: -0.02em;">
-          Recent Releases
+    <!-- TLDR Section -->
+    <section style="margin-bottom: 4rem;">
+      <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+        <h2 class="oc-headline" style="font-size: 2.5rem; font-weight: 900; color: var(--oc-text); text-transform: uppercase; font-style: italic; letter-spacing: -0.02em; margin: 0;">
+          TL;DR
         </h2>
+        <div style="flex: 1; height: 4px; background: var(--oc-border);"></div>
+        <span style="font-family: var(--oc-font-mono); font-size: 0.7rem; color: var(--oc-text-muted); text-transform: uppercase;">Last {tldrReleases.length} releases</span>
+      </div>
 
+      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        {tldrReleases.map((release) => {
+          const breaking = isBreaking(release.body);
+          const tldr = getTldr(release.body || "");
+          // Fallback: first non-empty, non-heading line
+          const fallback = (release.body || "").split("\n").filter(l => l.trim() && !l.startsWith("#")).slice(0, 2).map(l => l.replace(/^[\*\-]\s+/, "").trim());
+          const items = tldr.length > 0 ? tldr : fallback;
+
+          return (
+            <div style={`padding: 1.25rem 1.5rem; border: 4px solid ${breaking ? 'var(--oc-primary)' : 'var(--oc-border)'}; background: ${breaking ? 'var(--oc-bg-surface)' : 'var(--oc-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--oc-primary);' : ''}`}>
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                  <span class="oc-headline" style="font-size: 1.1rem; font-weight: 900; color: var(--oc-text); text-transform: uppercase;">{release.version}</span>
+                  {breaking && (
+                    <span style="background: var(--oc-primary); color: white; font-family: var(--oc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">BREAKING</span>
+                  )}
+                  {release.prerelease && (
+                    <span style="background: rgba(255,184,0,0.15); color: #ffb800; font-family: var(--oc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; border: 1px solid #ffb800;">PRE</span>
+                  )}
+                </div>
+                <span style="font-family: var(--oc-font-mono); font-size: 0.7rem; color: var(--oc-text-muted); white-space: nowrap;">{formatDate(release.date)}</span>
+              </div>
+              {items.length > 0 && (
+                <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.3rem;">
+                  {items.map((item) => (
+                    <li style="display: flex; gap: 0.5rem; align-items: flex-start; font-family: var(--oc-font-body); font-size: 0.85rem; color: var(--oc-text-dim); line-height: 1.5;">
+                      <span style="color: var(--oc-primary-bright); flex-shrink: 0; font-weight: 700;">▸</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </section>
+
+    <!-- Divider -->
+    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem;">
+      <div style="flex: 1; height: 4px; background: var(--oc-border);"></div>
+      <span class="oc-headline" style="font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--oc-text-muted);">Full Changelog</span>
+      <div style="flex: 1; height: 4px; background: var(--oc-border);"></div>
+    </div>
+
+    <!-- Full Changelog (expandable) -->
+    <section style="position: relative; padding-left: 3rem; border-left: 6px solid var(--oc-border); margin-bottom: 5rem;">
+      {releases.length > 0 ? (
         <div style="display: flex; flex-direction: column; gap: 4rem;">
-          {recentReleases.map((release, idx) => {
-            const badge = getReleaseBadgeType(release);
-            const bodyPreview = (release.body || "").replace(/\r\n/g, "\n").replace(/#{1,3}\s[^\n]+\n?/g, "").replace(/\*\*[^*]+\*\*/g, "").replace(/\[[^\]]+\]\([^)]+\)/g, "").trim().slice(0, 200);
-            const tags = release.body?.toLowerCase().includes("security") ? ["#SECURITY"] :
-                         release.body?.toLowerCase().includes("fix") ? ["#BUGFIX"] :
-                         release.body?.toLowerCase().includes("feat") ? ["#FEATURE"] : [];
+          {releases.map((release, idx) => {
+            const breaking = isBreaking(release.body);
+            const renderedBody = renderBody(release.body || "");
+            const isLong = (release.body || "").length > 600;
+
             return (
-              <div style="position: relative;" class="release-entry">
+              <article
+                class="cl-entry"
+                data-version={release.version.toLowerCase()}
+                data-name={(release.name || "").toLowerCase()}
+                data-body={(release.body || "").toLowerCase().slice(0, 800)}
+                data-prerelease={String(release.prerelease)}
+                data-breaking={String(breaking)}
+                style="position: relative;"
+              >
                 <!-- Timeline dot -->
-                <div style={`position: absolute; left: -3.65rem; top: 1rem; width: 2.5rem; height: 2.5rem; border: 4px solid var(--oc-border); display: flex; align-items: center; justify-content: center; background: ${badge.isBreaking ? 'var(--oc-primary)' : 'var(--oc-border)'};`}>
-                  <span style={`font-size: 0.9rem; ${badge.isBreaking ? 'color: white;' : 'color: var(--oc-bg);'}`}>
-                    {badge.isBreaking ? "⚡" : "●"}
+                <div
+                  style={`position: absolute; left: -3.9rem; top: 0.5rem; width: 3rem; height: 3rem; border: 4px solid var(--oc-border); display: flex; align-items: center; justify-content: center; background: ${breaking ? 'var(--oc-primary)' : 'var(--oc-border)'};`}
+                >
+                  <span style={`font-size: 0.8rem; ${breaking ? 'color:white;' : 'color: var(--oc-bg);'}`}>
+                    {breaking ? "⚡" : release.prerelease ? "β" : "●"}
                   </span>
                 </div>
 
-                <!-- Card -->
-                <div
-                  style={`padding: 2rem; box-shadow: ${badge.isBreaking ? '12px 12px 0px 0px rgba(188,1,0,1)' : 'var(--oc-shadow)'}; cursor: pointer; transition: transform 100ms, box-shadow 100ms; background: ${badge.isBreaking ? 'var(--oc-border)' : 'var(--oc-bg-surface)'}; border: 4px solid var(--oc-border);`}
-                  onmouseover="this.style.transform='translate(1px,1px)';this.style.boxShadow='var(--oc-shadow-sm)'"
-                  onmouseout={`this.style.transform='';this.style.boxShadow='${badge.isBreaking ? '12px 12px 0px 0px rgba(188,1,0,1)' : 'var(--oc-shadow)'}'`}
-                >
-                  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; gap: 1rem; flex-wrap: wrap;">
-                    <div>
-                      {badge.isBreaking && (
-                        <span style="background: var(--oc-primary); color: white; font-family: var(--oc-font-mono); padding: 0.2rem 0.75rem; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; display: inline-block; margin-bottom: 0.5rem;">Breaking Change</span>
-                      )}
-                      <h3
-                        class="oc-headline"
-                        style={`font-size: 1.75rem; font-weight: 900; line-height: 1; text-transform: uppercase; margin: 0; color: ${badge.isBreaking ? 'var(--oc-bg)' : 'var(--oc-text)'};`}
-                      >
-                        {release.version}: {(release.name || "").replace(/^openclaw\s+/i, "").toUpperCase() || "RELEASE"}
-                      </h3>
-                    </div>
-                    <span style={`font-family: var(--oc-font-mono); font-weight: 700; font-style: italic; font-size: 0.8rem; color: ${badge.isBreaking ? 'var(--oc-bg)' : 'var(--oc-text-muted)'}; white-space: nowrap; opacity: ${badge.isBreaking ? '0.5' : '1'};`}>
-                      {formatDate(release.date)}
+                <!-- Entry header -->
+                <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: baseline; margin-bottom: 1rem;">
+                  <span
+                    class="oc-headline"
+                    style="font-size: 2rem; font-weight: 900; font-style: italic; letter-spacing: -0.02em; color: var(--oc-text);"
+                  >
+                    {release.version}
+                  </span>
+                  <span
+                    class="oc-headline"
+                    style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--oc-text-muted); letter-spacing: 0.05em;"
+                  >
+                    {formatDate(release.date)}
+                  </span>
+                  {breaking && (
+                    <span style="background: var(--oc-primary); color: white; padding: 0.2rem 0.75rem; font-family: var(--oc-font-headline); font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; border: 2px solid var(--oc-border);">
+                      BREAKING
                     </span>
-                  </div>
-
-                  {bodyPreview && (
-                    <p style={`font-family: var(--oc-font-body); font-size: 0.95rem; line-height: 1.6; margin: 0 0 1rem; color: ${badge.isBreaking ? 'var(--oc-bg)' : 'var(--oc-text-dim)'};`}>
-                      {bodyPreview.slice(0, 180)}…
-                    </p>
                   )}
-
-                  {tags.length > 0 && (
-                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                      {tags.map((tag) => (
-                        <span style={`border: 2px solid ${badge.isBreaking ? 'var(--oc-bg)' : 'var(--oc-border)'}; padding: 0.2rem 0.6rem; font-family: var(--oc-font-mono); font-size: 0.65rem; font-weight: 900; text-transform: uppercase; color: ${badge.isBreaking ? 'var(--oc-bg)' : 'var(--oc-text)'};`}>
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
+                  {release.prerelease && (
+                    <span style="background: rgba(255,184,0,0.15); color: #ffb800; padding: 0.2rem 0.75rem; font-family: var(--oc-font-headline); font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; border: 2px solid #ffb800;">
+                      PRE-RELEASE
+                    </span>
                   )}
                 </div>
-              </div>
+
+                <!-- Entry card -->
+                <div
+                  style={`padding: 2rem; border: 4px solid var(--oc-border); background: ${breaking ? 'var(--oc-border)' : 'var(--oc-bg-surface)'}; ${breaking ? 'border-right: 8px solid var(--oc-primary); border-bottom: 8px solid var(--oc-primary);' : ''}`}
+                >
+                  <h3
+                    class="oc-headline"
+                    style={`font-size: 1.5rem; font-weight: 900; text-transform: uppercase; margin: 0 0 1.5rem; letter-spacing: -0.01em; color: ${breaking ? 'var(--oc-bg)' : 'var(--oc-text)'};`}
+                  >
+                    {(release.name || release.version).replace(/^openclaw\s+/i, "")}
+                  </h3>
+
+                  <div
+                    class={`changelog-body ${isLong && idx > 0 ? 'cl-collapsed' : ''}`}
+                    style={`color: ${breaking ? 'var(--oc-bg)' : 'var(--oc-text-dim)'}; font-size: 0.875rem; line-height: 1.7; font-family: var(--oc-font-body); overflow: hidden; position: relative;`}
+                    set:html={renderedBody}
+                  />
+
+                  {isLong && (
+                    <button
+                      class="cl-expand-btn oc-headline"
+                      style={`display: block; margin-top: 1rem; background: transparent; border: 2px solid ${breaking ? 'var(--oc-bg)' : 'var(--oc-border)'}; color: ${breaking ? 'var(--oc-bg)' : 'var(--oc-text)'}; padding: 0.5rem 1.25rem; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; transition: background 100ms; position: relative; overflow: visible;`}
+                      onclick="this.previousElementSibling.classList.toggle('cl-collapsed'); this.textContent = this.textContent.includes('EXPAND') ? '▲ COLLAPSE' : '▼ EXPAND FULL CHANGELOG'"
+                    >
+                      {idx === 0 ? '▲ COLLAPSE' : '▼ EXPAND FULL CHANGELOG'}
+                    </button>
+                  )}
+
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 2px solid var(--oc-border-dim);">
+                    <a
+                      href={release.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="oc-headline"
+                      style={`display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: ${breaking ? 'var(--oc-primary)' : 'var(--oc-primary-bright)'}; text-decoration: none; transition: opacity 150ms;`}
+                      onmouseover="this.style.opacity='0.7'"
+                      onmouseout="this.style.opacity='1'"
+                    >
+                      ↗ View on GitHub
+                    </a>
+                    <span style="font-family: var(--oc-font-mono); font-size: 0.65rem; color: var(--oc-text-muted);">
+                      #{idx + 1}
+                    </span>
+                  </div>
+                </div>
+              </article>
             );
           })}
         </div>
-
-        <!-- View all link -->
-        <div style="margin-top: 3rem;">
-          <a
-            href="/openclaw/changelog/"
-            class="oc-headline"
-            style="display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 900; text-transform: uppercase; color: var(--oc-primary-bright); font-style: italic; text-decoration: none; border-bottom: 2px solid var(--oc-primary-bright); padding-bottom: 2px;"
-          >
-            View full changelog →
-          </a>
+      ) : (
+        <div style="padding: 3rem; border: 4px dashed var(--oc-border-dim); text-align: center;">
+          <p class="oc-headline" style="font-weight: 700; text-transform: uppercase; color: var(--oc-text-muted);">No releases tracked yet.</p>
         </div>
-      </div>
-
-      <!-- Sidebar -->
-      <aside style="width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 2rem; flex-shrink: 0;">
-
-        <!-- Breaking changes alert -->
-        {breakingCount > 0 && (
-          <div style="background: var(--oc-bg); border: 4px solid var(--oc-primary); padding: 1.5rem; position: relative; overflow: hidden;">
-            <div style="position: absolute; inset: 0; background: rgba(188,1,0,0.08); pointer-events: none;"></div>
-            <div style="position: relative; z-index: 1;">
-              <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--oc-primary-bright); margin-bottom: 1rem;">
-                <span style="font-size: 1.25rem;">⚠</span>
-                <span class="oc-headline" style="font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; font-size: 1rem;">Alert: Critical Shifts</span>
-              </div>
-              <p style="font-family: var(--oc-font-mono); font-size: 0.8rem; color: var(--oc-text-dim); margin: 0 0 1rem; line-height: 1.5;">
-                {breakingCount} breaking {breakingCount === 1 ? 'change' : 'changes'} detected across release history. Check before upgrading.
-              </p>
-              <a
-                href="/openclaw/changelog/"
-                class="oc-headline"
-                style="display: block; width: 100%; background: var(--oc-primary); color: white; font-weight: 900; padding: 0.75rem; text-align: center; text-transform: uppercase; font-style: italic; font-size: 0.85rem; text-decoration: none; border: 2px solid var(--oc-border); box-shadow: var(--oc-shadow-sm); transition: transform 100ms, box-shadow 100ms;"
-                onmouseover="this.style.transform='translate(1px,1px)';this.style.boxShadow='1px 1px 0px 0px rgba(255,255,255,0.2)'"
-                onmouseout="this.style.transform='';this.style.boxShadow='var(--oc-shadow-sm)'"
-              >
-                View Changelog
-              </a>
-            </div>
-          </div>
-        )}
-
-        <!-- Cheatsheet preview -->
-        <div style="border: 4px solid var(--oc-border);">
-          <div style="background: var(--oc-border); padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
-            <h3 class="oc-headline" style="margin: 0; font-weight: 900; font-size: 1.1rem; text-transform: uppercase; color: var(--oc-bg);">Cheatsheet</h3>
-            <a href="/openclaw/cheatsheet/" style="color: var(--oc-bg); font-size: 1.2rem; text-decoration: none;">↗</a>
-          </div>
-          <div style="padding: 1.5rem; background: var(--oc-bg); display: flex; flex-direction: column; gap: 1.5rem;">
-            {dailyWorkflows.length > 0 && (
-              <div>
-                <span style="color: var(--oc-primary-bright); font-family: var(--oc-font-mono); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 0.75rem; text-decoration: underline;">
-                  Daily Workflows
-                </span>
-                <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
-                  {dailyWorkflows.map((wf: any) => (
-                    <li style="display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px solid var(--oc-border-dim); padding-bottom: 0.5rem;">
-                      <span style="font-family: var(--oc-font-mono); font-size: 0.75rem; color: var(--oc-text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;">{wf.command}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            {powerMoves.length > 0 && (
-              <div>
-                <span style="color: var(--oc-primary-bright); font-family: var(--oc-font-mono); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 0.75rem; text-decoration: underline;">
-                  Power Moves
-                </span>
-                <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
-                  {powerMoves.map((pm: any) => (
-                    <li style="display: flex; gap: 1rem; border-bottom: 1px solid var(--oc-border-dim); padding-bottom: 0.5rem;">
-                      <span style="font-family: var(--oc-font-mono); font-size: 0.75rem; color: var(--oc-text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;">{pm.title}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <!-- Quick start -->
-        <div style="background: var(--oc-bg); border: 4px solid var(--oc-border); padding: 1.5rem; box-shadow: var(--oc-shadow);">
-          <h3 class="oc-headline" style="font-weight: 900; font-size: 1rem; text-transform: uppercase; color: var(--oc-primary-bright); margin: 0 0 1rem;">Quick Start</h3>
-          {(cs.quickStart?.steps || []).slice(0, 3).map((step: string) => (
-            <div style="display: flex; gap: 0.75rem; margin-bottom: 0.75rem; align-items: flex-start;">
-              <span style="color: var(--oc-primary-bright); font-family: var(--oc-font-mono); font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">▶</span>
-              <span style="font-family: var(--oc-font-mono); font-size: 0.75rem; color: var(--oc-text-dim); line-height: 1.4;">{step}</span>
-            </div>
-          ))}
-          <a
-            href="/openclaw/cheatsheet/"
-            class="oc-headline"
-            style="display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.75rem; font-weight: 700; color: var(--oc-primary-bright); text-decoration: none; text-transform: uppercase; margin-top: 0.5rem; border-bottom: 1px solid var(--oc-primary);"
-          >
-            Full cheatsheet →
-          </a>
-        </div>
-
-        <!-- CTA: clwatch -->
-        <div
-          style="background: var(--oc-primary); padding: 2rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow); cursor: pointer; transition: background 200ms;"
-          onmouseover="this.style.background='var(--oc-border)'"
-          onmouseout="this.style.background='var(--oc-primary)'"
-          class="cta-card"
-        >
-          <h4 class="oc-headline cta-title" style="font-weight: 900; color: var(--oc-text); font-size: 2rem; font-style: italic; text-transform: uppercase; line-height: 1.1; margin: 0 0 0.75rem; letter-spacing: -0.02em; transition: color 200ms;">
-            Enter the<br/>Clwatch
-          </h4>
-          <p class="cta-desc" style="color: var(--oc-text-dim); font-family: var(--oc-font-body); font-size: 0.85rem; margin: 0 0 1.25rem; transition: color 200ms;">
-            Monitor releases in real-time. Keep your config files current automatically.
-          </p>
-          <a
-            href="/clwatch"
-            style="display: inline-flex; align-items: center; gap: 0.5rem; background: var(--oc-bg); color: white; font-family: var(--oc-font-headline); font-weight: 900; padding: 0.75rem 1.5rem; text-transform: uppercase; text-decoration: none; font-size: 0.85rem; transition: background 200ms;"
-          >
-            Launch Dashboard →
-          </a>
-        </div>
-
-      </aside>
-    </div>
-
+      )}
+    </section>
   </div>
 
   <style>
-    @media (min-width: 640px) {
-      section[style*="grid-template-columns: repeat(2"] {
-        grid-template-columns: repeat(4, 1fr) !important;
-      }
-    }
     .stats-cell:hover span:last-child {
       color: var(--oc-text) !important;
     }
-    .cta-card:hover .cta-title {
-      color: var(--oc-bg) !important;
-    }
-    .cta-card:hover .cta-desc {
-      color: rgba(0,0,0,0.6) !important;
-    }
-    .release-entry:hover [style*="cursor: pointer"] {
-      transform: translate(1px, 1px);
-    }
-    @media (min-width: 768px) {
-      section[style*="grid-template-columns: repeat(2"] {
-        grid-template-columns: repeat(4, 1fr) !important;
+    @media (max-width: 640px) {
+      section[style*="display: flex; flex-wrap: wrap; gap: 0;"] {
+        flex-direction: column !important;
       }
-      section[style*="grid-template-columns: repeat(2"] > div:nth-child(1),
-      section[style*="grid-template-columns: repeat(2"] > div:nth-child(2),
-      section[style*="grid-template-columns: repeat(2"] > div:nth-child(3) {
-        border-right: 4px solid var(--oc-border) !important;
-        border-bottom: none !important;
+      section[style*="display: flex; flex-wrap: wrap; gap: 0;"] > div {
+        border-right: none !important;
+        border-bottom: 4px solid var(--oc-border) !important;
       }
-      section[style*="grid-template-columns: repeat(2"] > div {
+      section[style*="display: flex; flex-wrap: wrap; gap: 0;"] > div:last-child {
         border-bottom: none !important;
       }
     }
