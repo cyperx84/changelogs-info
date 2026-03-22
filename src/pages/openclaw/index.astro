@@ -21,6 +21,18 @@ const breakingCount = releases.filter((r) =>
 const displayVersion = latestStable?.version || latestRelease?.version || "—";
 const lastUpdatedAgo = data?.lastUpdated ? relativeTime(data.lastUpdated) : null;
 
+function getPayloadTldr(toolId: string): string | null {
+  try {
+    const path = join(process.cwd(), "public", "api", "refs", `${toolId}.json`);
+    const payload = JSON.parse(readFileSync(path, "utf-8"));
+    return payload?.payload?.meta?.tldr ?? null;
+  } catch {
+    return null;
+  }
+}
+
+const llmTldr = getPayloadTldr("openclaw");
+
 function isBreaking(body: string = ""): boolean {
   return body.toLowerCase().includes("breaking");
 }
@@ -188,6 +200,7 @@ function getTldr(body: string): string[] {
       const tldr = getTldr(latestForTldr.body || "");
       const fallback = (latestForTldr.body || "").split("\n").filter(l => l.trim() && !l.startsWith("#")).slice(0, 2).map(l => l.replace(/^[\*\-]\s+/, "").trim());
       const items = tldr.length > 0 ? tldr : fallback;
+      const summaryText = llmTldr?.trim() || null;
       const latestRendered = renderBody(latestForTldr.body || "");
 
       return (
@@ -214,7 +227,12 @@ function getTldr(body: string): string[] {
               </div>
               <span style="font-family: var(--oc-font-mono); font-size: 0.7rem; color: var(--oc-text-muted); white-space: nowrap;">{formatDate(latestForTldr.date)}</span>
             </div>
-            {items.length > 0 && (
+            {summaryText ? (
+              <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <div style="font-family: var(--oc-font-mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--oc-text-muted);">AI Summary</div>
+                <p style="margin: 0; font-family: var(--oc-font-body); font-size: 1rem; color: var(--oc-text); line-height: 1.7; max-width: 60ch;">{summaryText}</p>
+              </div>
+            ) : items.length > 0 && (
               <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.4rem;">
                 {items.map((item) => (
                   <li style="display: flex; gap: 0.5rem; align-items: flex-start; font-family: var(--oc-font-body); font-size: 0.9rem; color: var(--oc-text-dim); line-height: 1.5;">
