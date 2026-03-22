@@ -1,10 +1,7 @@
 ---
-import SectionLayout from "../../layouts/SectionLayout.astro";
-import { getSectionById } from "../../lib/sections";
+import ClaudeCodeLayout from "../../layouts/ClaudeCodeLayout.astro";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-
-const section = getSectionById("claude-code")!;
 
 let configs: any[] = [];
 try {
@@ -13,52 +10,43 @@ try {
 } catch {}
 ---
 
-<SectionLayout
-  section={section}
+<ClaudeCodeLayout
   title="Claude Code Configs — changelogs.info"
-  description="Configuration examples for Claude Code."
-  showHero={false}
+  description="Configuration examples and templates for Claude Code."
+  currentPage="configs"
 >
-  <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
-    <h1 class="mb-2 font-mono text-2xl font-bold" style={`color: ${section.color};`}>
-      <span style={`color: ${section.color};`}>/</span>configs
-    </h1>
-    <p class="mb-8 font-sans text-sm text-text-muted">Configuration examples and templates for Claude Code.</p>
+  <div style="max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 0;">
+
+    <header style="margin-bottom: 3rem; border-left: 8px solid var(--cc-primary); padding-left: 2rem; padding-top: 1rem; padding-bottom: 1rem;">
+      <h1 class="cc-headline" style="font-size: clamp(2.5rem, 7vw, 5rem); font-weight: 900; text-transform: uppercase; letter-spacing: -0.03em; line-height: 0.9; margin: 0 0 0.5rem; color: var(--cc-text);">
+        Configs
+      </h1>
+      <p class="cc-headline" style="font-size: 1rem; font-weight: 700; color: var(--cc-primary-bright); margin: 0; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.8;">
+        Configuration Examples &amp; Templates
+      </p>
+    </header>
 
     {configs.length > 0 ? (
-      <div class="space-y-4">
+      <div style="display: flex; flex-direction: column; gap: 2rem; margin-bottom: 4rem;">
         {configs.map((cfg: any) => (
-          <details class="group rounded-lg border bg-bg-card transition-all" style={`border-color: rgba(${section.colorRgb}, 0.15);`}>
-            <summary class="flex cursor-pointer items-center justify-between px-5 py-4 hover:bg-bg-tertiary/30">
+          <div style="border: 4px solid var(--cc-border); background: var(--cc-bg-card); overflow: hidden; box-shadow: var(--cc-shadow);">
+            <div style="padding: 1.25rem 1.75rem; border-bottom: 2px solid var(--cc-border-dim); background: var(--cc-bg-surface); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
               <div>
-                <h3 class="font-mono text-sm font-semibold text-text-primary">{cfg.name}</h3>
-                <p class="mt-1 font-sans text-xs text-text-muted">{cfg.description}</p>
-                {cfg.tags && (
-                  <div class="mt-2 flex flex-wrap gap-1.5">
-                    {cfg.tags.map((tag: string) => (
-                      <span class="rounded border border-border/50 bg-bg-tertiary px-1.5 py-0.5 font-mono text-[10px] text-text-muted">#{tag}</span>
-                    ))}
-                  </div>
-                )}
+                <h2 class="cc-headline" style="font-size: 1.1rem; font-weight: 900; text-transform: uppercase; color: var(--cc-text); margin: 0;">{cfg.title || cfg.name}</h2>
+                {cfg.description && <p style="font-family: var(--cc-font-body); font-size: 0.8rem; color: var(--cc-text-dim); margin: 0.25rem 0 0;">{cfg.description}</p>}
               </div>
-              <span class="shrink-0 ml-4 text-text-muted transition-transform group-open:rotate-90">&rsaquo;</span>
-            </summary>
-            <div class="border-t border-border/30">
-              <div class="relative">
-                <div class="absolute right-3 top-3 rounded border border-border bg-bg-secondary px-2 py-0.5 font-mono text-[10px] text-text-muted">{cfg.filename}</div>
-                <pre class="overflow-x-auto p-5 font-mono text-xs leading-relaxed text-text-secondary"><code>{cfg.content}</code></pre>
-              </div>
+              {cfg.path && (
+                <span style="font-family: var(--cc-font-mono); font-size: 0.65rem; color: var(--cc-text-muted); background: var(--cc-bg); padding: 0.25rem 0.6rem; border: 1px solid var(--cc-border-dim);">{cfg.path}</span>
+              )}
             </div>
-          </details>
+            <pre style="margin: 0; padding: 1.5rem; background: var(--cc-bg); font-family: var(--cc-font-mono); font-size: 0.78rem; line-height: 1.7; color: var(--cc-primary-bright); overflow-x: auto; border-bottom: none;">{cfg.content || cfg.code || JSON.stringify(cfg, null, 2)}</pre>
+          </div>
         ))}
       </div>
     ) : (
-      <div class="rounded-lg border border-dashed border-border bg-bg-card p-8 text-center">
-        <p class="font-mono text-base text-text-muted">&gt; Config examples coming soon.</p>
-        <p class="mt-3 font-sans text-xs text-text-muted">
-          In the meantime, check the <a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank" rel="noopener noreferrer" class="text-cyan transition-colors hover:text-cyan/80">Claude Code docs</a> for configuration guidance.
-        </p>
+      <div style="padding: 4rem 2rem; border: 4px dashed var(--cc-border-dim); text-align: center; margin-bottom: 4rem;">
+        <p style="font-family: var(--cc-font-mono); color: var(--cc-text-muted); font-size: 0.85rem;">$ no config examples yet — check back after next scrape</p>
       </div>
     )}
   </div>
-</SectionLayout>
+</ClaudeCodeLayout>

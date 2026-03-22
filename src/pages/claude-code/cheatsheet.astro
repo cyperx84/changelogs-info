@@ -1,10 +1,7 @@
 ---
-import SectionLayout from "../../layouts/SectionLayout.astro";
-import { getSectionById } from "../../lib/sections";
+import ClaudeCodeLayout from "../../layouts/ClaudeCodeLayout.astro";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-
-const section = getSectionById("claude-code")!;
 
 let cs: any = {};
 try {
@@ -12,6 +9,7 @@ try {
   cs = JSON.parse(raw);
 } catch {}
 
+const quickStart = cs.quickStart || {};
 const dailyWorkflows = cs.dailyWorkflows || [];
 const powerMoves = cs.powerMoves || [];
 const gotchas = cs.gotchas || [];
@@ -20,106 +18,199 @@ const slashCommands = cs.slashCommands || [];
 const proTips = cs.proTips || [];
 ---
 
-<SectionLayout
-  section={section}
+<ClaudeCodeLayout
   title="Claude Code Cheat Sheet — changelogs.info"
-  description="The actually useful Claude Code cheat sheet."
-  showHero={false}
+  description="The actually useful Claude Code cheat sheet. Daily workflows, power moves, CLI flags, gotchas."
+  currentPage="cheatsheet"
 >
-    <div class="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
-      <h1 class="mb-2 font-mono text-2xl font-bold" style={`color: ${section.color};`}>Claude Code cheat sheet</h1>
-      <p class="mb-8 font-sans text-sm text-text-muted">The stuff you actually need.{cs.lastUpdated ? ` Updated ${cs.lastUpdated}.` : ""}</p>
+  <div style="max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 0;">
 
-      {dailyWorkflows.length > 0 && (
-        <section class="mb-10">
-          <h2 class="mb-4 font-mono text-base font-semibold" style={`color: ${section.color};`}><span style={`color: ${section.color};`}>//</span> daily_workflows</h2>
-          <div class="space-y-3">
-            {dailyWorkflows.map((wf: any) => (
-              <div class="group rounded-lg border border-border bg-bg-card p-4 transition-all">
-                <h3 class="mb-1 font-mono text-sm font-semibold text-text-primary">{wf.title}</h3>
-                <p class="mb-2 font-sans text-xs text-text-muted">{wf.description}</p>
-                {wf.command && (
-                  <div class="flex items-center justify-between gap-2 rounded bg-bg-tertiary px-3 py-2 overflow-x-auto">
-                    <code class="font-mono text-xs" style={`color: ${section.color};`}>{wf.command}</code>
+    <!-- Hero -->
+    <section style="margin-bottom: 4rem; position: relative;">
+      <div style="position: absolute; top: -3rem; left: -3rem; opacity: 0.04; pointer-events: none; font-size: 12rem; line-height: 1;">🧠</div>
+      <h1
+        class="cc-headline"
+        style="font-size: clamp(3.5rem, 10vw, 7rem); font-weight: 900; text-transform: uppercase; letter-spacing: -0.03em; line-height: 0.9; margin: 0 0 1rem; color: var(--cc-text);"
+      >
+        Cheat<span style="color: var(--cc-primary-bright);">Sheet</span>
+      </h1>
+      <p style="font-size: 1.1rem; max-width: 36rem; color: var(--cc-text-dim); line-height: 1.5; margin: 0; font-family: var(--cc-font-body); text-transform: uppercase; letter-spacing: 0.03em;">
+        The commands that matter. Claude Code muscle memory.
+      </p>
+      {cs.lastUpdated && (
+        <p style="font-family: var(--cc-font-mono); font-size: 0.7rem; color: var(--cc-text-muted); margin-top: 0.75rem;">
+          Last updated: {cs.lastUpdated}
+        </p>
+      )}
+    </section>
+
+    <!-- Bento grid -->
+    <div style="display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 4rem;">
+
+      <!-- Quick Start -->
+      {quickStart.steps && quickStart.steps.length > 0 && (
+        <div style="background: var(--cc-border); color: var(--cc-bg); padding: 2rem; border: 4px solid var(--cc-border); box-shadow: var(--cc-shadow);">
+          <h2 class="cc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--cc-bg);">
+            {quickStart.title || "Quick Start"}
+          </h2>
+          <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            {quickStart.steps.map((step: string, i: number) => {
+              const cmdMatch = step.match(/(claude\s+[\w\-\-]+(?:\s+[\w\-]+)*)/);
+              const cmd = cmdMatch?.[1];
+              const hasColon = step.includes(":");
+              const label = hasColon ? step.split(":")[0].trim() : step;
+
+              return (
+                <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                  <div style="background: var(--cc-bg); color: var(--cc-primary-bright); width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; font-family: var(--cc-font-mono); font-weight: 900; font-size: 0.75rem; flex-shrink: 0;">
+                    {String(i + 1).padStart(2, '0')}
+                  </div>
+                  <div style="flex: 1;">
+                    <div style="font-family: var(--cc-font-headline); font-weight: 800; font-size: 0.85rem; color: var(--cc-bg); text-transform: uppercase;">{label}</div>
+                    {cmd && (
+                      <div style="background: var(--cc-bg); color: var(--cc-primary-bright); font-family: var(--cc-font-mono); font-size: 0.75rem; padding: 0.4rem 0.75rem; margin-top: 0.4rem; display: inline-block;">
+                        <span style="opacity: 0.5;">$</span> {cmd}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      <!-- Daily Workflows + Power Moves -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;" class="cc-two-col">
+
+        {dailyWorkflows.length > 0 && (
+          <div style="border: 4px solid var(--cc-border); background: var(--cc-bg-card); padding: 2rem; box-shadow: var(--cc-shadow);">
+            <h2 class="cc-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--cc-primary-bright);">
+              Daily Workflows
+            </h2>
+            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+              {dailyWorkflows.map((wf: any) => (
+                <div style="border-left: 4px solid var(--cc-border-dim); padding-left: 1rem;">
+                  <div style="font-family: var(--cc-font-headline); font-weight: 800; font-size: 0.85rem; color: var(--cc-text); text-transform: uppercase; margin-bottom: 0.25rem;">{wf.title}</div>
+                  {wf.description && <p style="font-family: var(--cc-font-body); font-size: 0.8rem; color: var(--cc-text-dim); margin: 0 0 0.5rem;">{wf.description}</p>}
+                  {wf.command && (
+                    <div style="background: var(--cc-bg); border: 2px solid var(--cc-border-dim); padding: 0.5rem 0.75rem; font-family: var(--cc-font-mono); font-size: 0.75rem; color: var(--cc-primary-bright); overflow-x: auto;">
+                      <span style="opacity: 0.5;">$</span> {wf.command}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {powerMoves.length > 0 && (
+          <div style="border: 4px solid var(--cc-primary); background: var(--cc-bg-card); padding: 2rem; box-shadow: var(--cc-shadow);">
+            <h2 class="cc-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--cc-text);">
+              ⚡ Power Moves
+            </h2>
+            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+              {powerMoves.map((pm: any) => (
+                <div style="border: 2px solid var(--cc-primary-bright); padding: 1rem; background: rgba(245,158,11,0.05);">
+                  <div style="font-family: var(--cc-font-headline); font-weight: 800; font-size: 0.85rem; color: var(--cc-primary-bright); text-transform: uppercase; margin-bottom: 0.25rem;">{pm.title}</div>
+                  {pm.description && <p style="font-family: var(--cc-font-body); font-size: 0.8rem; color: var(--cc-text-dim); margin: 0 0 0.5rem;">{pm.description}</p>}
+                  {pm.command && (
+                    <div style="background: var(--cc-bg); border: 2px solid var(--cc-primary); padding: 0.5rem 0.75rem; font-family: var(--cc-font-mono); font-size: 0.75rem; color: var(--cc-primary-bright); overflow-x: auto;">
+                      <span style="opacity: 0.5;">$</span> {pm.command}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <!-- CLI Flags row -->
+      {cliFlags.length > 0 && (
+        <div style="border: 4px solid var(--cc-border); background: var(--cc-bg-surface); padding: 2rem; box-shadow: var(--cc-shadow);">
+          <h2 class="cc-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--cc-text);">
+            CLI Flags
+          </h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem;">
+            {cliFlags.map((flag: any) => (
+              <div style="background: var(--cc-bg); border: 2px solid var(--cc-border-dim); padding: 1rem;">
+                <div style="font-family: var(--cc-font-mono); font-size: 0.8rem; color: var(--cc-primary-bright); font-weight: 700; margin-bottom: 0.35rem;">{flag.flag || flag.command}</div>
+                <div style="font-family: var(--cc-font-body); font-size: 0.75rem; color: var(--cc-text-dim);">{flag.description}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- Slash Commands -->
+      {slashCommands.length > 0 && (
+        <div style="border: 4px solid var(--cc-primary); background: var(--cc-bg-card); padding: 2rem; box-shadow: var(--cc-shadow);">
+          <h2 class="cc-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--cc-primary-bright);">
+            / Slash Commands
+          </h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;">
+            {slashCommands.map((cmd: any) => (
+              <div style="background: var(--cc-bg); border: 2px solid var(--cc-border-dim); padding: 1rem;">
+                <code style="font-family: var(--cc-font-mono); font-size: 0.85rem; color: var(--cc-primary-bright); font-weight: 700; display: block; margin-bottom: 0.25rem;">{cmd.command || cmd.cmd}</code>
+                <span style="font-family: var(--cc-font-body); font-size: 0.75rem; color: var(--cc-text-dim);">{cmd.description}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- Gotchas -->
+      {gotchas.length > 0 && (
+        <div style="border: 4px solid var(--cc-border); background: rgba(245,158,11,0.04); padding: 2rem; box-shadow: var(--cc-shadow);">
+          <h2 class="cc-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--cc-text);">
+            ⚠ Gotchas
+          </h2>
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {gotchas.map((g: any) => (
+              <div style="border-left: 6px solid var(--cc-primary); padding: 1rem 1.25rem; background: var(--cc-bg);">
+                <div style="font-family: var(--cc-font-headline); font-weight: 800; font-size: 0.9rem; color: var(--cc-primary-bright); text-transform: uppercase; margin-bottom: 0.35rem;">{g.title}</div>
+                <p style="font-family: var(--cc-font-body); font-size: 0.82rem; color: var(--cc-text-dim); margin: 0;">{g.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- Pro Tips -->
+      {proTips.length > 0 && (
+        <div style="border: 4px solid var(--cc-border); background: var(--cc-bg-card); padding: 2rem; box-shadow: var(--cc-shadow);">
+          <h2 class="cc-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--cc-text);">
+            💡 Pro Tips
+          </h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;">
+            {proTips.map((tip: any) => (
+              <div style="background: var(--cc-bg); border: 2px solid var(--cc-border-dim); padding: 1rem;">
+                <div style="font-family: var(--cc-font-headline); font-weight: 800; font-size: 0.82rem; color: var(--cc-text); text-transform: uppercase; margin-bottom: 0.35rem;">{tip.title}</div>
+                <p style="font-family: var(--cc-font-body); font-size: 0.78rem; color: var(--cc-text-dim); margin: 0;">{tip.description}</p>
+                {tip.command && (
+                  <div style="background: var(--cc-bg-surface); font-family: var(--cc-font-mono); font-size: 0.72rem; color: var(--cc-primary-bright); padding: 0.4rem 0.6rem; margin-top: 0.5rem; overflow-x: auto;">
+                    {tip.command}
                   </div>
                 )}
               </div>
             ))}
           </div>
-        </section>
+        </div>
       )}
 
-      {powerMoves.length > 0 && (
-        <section class="mb-10">
-          <h2 class="mb-4 font-mono text-base font-semibold text-amber">power_moves</h2>
-          <div class="grid gap-3 sm:grid-cols-2">
-            {powerMoves.map((pm: any) => (
-              <div class="rounded-lg border border-border bg-bg-card p-4">
-                <h3 class="mb-1 font-mono text-sm font-semibold text-text-primary">{pm.title}</h3>
-                <p class="mb-2 font-sans text-xs text-text-muted">{pm.description}</p>
-                {pm.command && <code class="block rounded bg-bg-tertiary px-3 py-2 font-mono text-[11px] text-amber overflow-x-auto">{pm.command}</code>}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {gotchas.length > 0 && (
-        <section class="mb-10">
-          <h2 class="mb-4 font-mono text-base font-semibold text-red">common_gotchas</h2>
-          <div class="space-y-3">
-            {gotchas.map((g: any) => (
-              <div class="rounded-lg border border-red/20 bg-red/[0.03] p-4">
-                <h3 class="mb-1 font-mono text-sm font-semibold text-text-primary">{g.problem}</h3>
-                <p class="font-sans text-xs text-text-secondary">{g.solution}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {cliFlags.length > 0 && (
-        <section class="mb-10">
-          <h2 class="mb-4 font-mono text-base font-semibold" style={`color: ${section.color};`}>cli_flags</h2>
-          <div class="rounded-lg border border-border bg-bg-card divide-y divide-border/30 overflow-hidden">
-            {cliFlags.map((f: any) => (
-              <div class="flex flex-col gap-1 px-4 py-2.5 sm:flex-row sm:items-start sm:gap-4">
-                <code class="shrink-0 font-mono text-xs font-semibold sm:w-48" style={`color: ${section.color};`}>--{f.flag}{f.shorthand ? `, -${f.shorthand}` : ""}</code>
-                <p class="font-sans text-xs text-text-secondary">{f.description}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {slashCommands.length > 0 && (
-        <section class="mb-10">
-          <h2 class="mb-4 font-mono text-base font-semibold text-cyan">/ commands</h2>
-          <div class="grid gap-2 sm:grid-cols-2">
-            {slashCommands.map((cmd: any) => (
-              <div class="rounded border border-border bg-bg-card px-4 py-3">
-                <code class="font-mono text-sm font-semibold text-cyan">{cmd.command}</code>
-                <p class="mt-1 font-sans text-xs text-text-muted">{cmd.description}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {proTips.length > 0 && (
-        <section class="mb-10">
-          <h2 class="mb-4 font-mono text-base font-semibold text-amber">pro_tips</h2>
-          <div class="rounded-lg border border-amber/20 bg-amber/[0.03] p-5">
-            <ul class="grid gap-2 sm:grid-cols-2">
-              {proTips.map((tip: string) => (
-                <li class="flex gap-2 font-sans text-xs text-text-secondary">
-                  <span class="shrink-0 text-amber">&rsaquo;</span>
-                  <span>{tip}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
+      {/* Fallback if no data */}
+      {dailyWorkflows.length === 0 && powerMoves.length === 0 && cliFlags.length === 0 && (
+        <div style="border: 4px dashed var(--cc-border-dim); padding: 4rem 2rem; text-align: center;">
+          <p style="font-family: var(--cc-font-mono); color: var(--cc-text-muted); font-size: 0.85rem;">$ cheatsheet data not available — run scraper to populate</p>
+        </div>
       )}
     </div>
-</SectionLayout>
+  </div>
+
+  <style>
+    @media (max-width: 768px) {
+      .cc-two-col { grid-template-columns: 1fr !important; }
+    }
+  </style>
+</ClaudeCodeLayout>

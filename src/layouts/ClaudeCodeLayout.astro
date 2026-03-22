@@ -1,0 +1,814 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description?: string;
+  currentPage?: string;
+}
+
+const {
+  title,
+  description = "Track Claude Code releases, breaking changes, and config updates.",
+  currentPage = "",
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const navLinks = [
+  { label: "Changelog", href: "/claude-code/changelog/", key: "changelog" },
+  { label: "Cheatsheet", href: "/claude-code/cheatsheet/", key: "cheatsheet" },
+  { label: "Releases", href: "/claude-code/releases/", key: "releases" },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&family=Work+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&family=Work+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    </noscript>
+    <script defer data-domain="changelogs.info" src="https://plausible.io/js/script.js"></script>
+
+    <style is:global>
+      @font-face {
+        font-family: 'Space Grotesk Fallback';
+        src: local('Arial Black'), local('Arial');
+        size-adjust: 107%;
+        ascent-override: 95%;
+        descent-override: 22%;
+        line-gap-override: 0%;
+      }
+      @font-face {
+        font-family: 'Work Sans Fallback';
+        src: local('Helvetica Neue'), local('Arial');
+        size-adjust: 100%;
+        ascent-override: 96%;
+        descent-override: 24%;
+        line-gap-override: 0%;
+      }
+
+      /* Claude Code Amber Neo-Brutalist Theme */
+      :root {
+        --cc-header-bg: rgba(10, 6, 0, 0.9);
+        --cc-primary: #d97706;
+        --cc-primary-bright: #f59e0b;
+        --cc-accent: #fbbf24;
+        --cc-bg: #0a0600;
+        --cc-bg-card: #130d00;
+        --cc-bg-surface: #1c1400;
+        --cc-text: #fef9f0;
+        --cc-text-dim: rgba(254, 249, 240, 0.65);
+        --cc-text-muted: rgba(254, 249, 240, 0.4);
+        --cc-border: #f59e0b;
+        --cc-border-dim: rgba(245, 158, 11, 0.25);
+        --cc-shadow: 6px 6px 0px 0px rgba(245, 158, 11, 0.3);
+        --cc-shadow-sm: 4px 4px 0px 0px rgba(245, 158, 11, 0.25);
+        --cc-shadow-lg: 12px 12px 0px 0px rgba(245, 158, 11, 0.15);
+        --cc-font-headline: "Space Grotesk", "Space Grotesk Fallback", sans-serif;
+        --cc-font-body: "Work Sans", "Work Sans Fallback", sans-serif;
+        --cc-font-mono: "JetBrains Mono", ui-monospace, monospace;
+      }
+
+      [data-theme="light"] {
+        --cc-header-bg: rgba(255, 251, 235, 0.92);
+        --cc-primary: #d97706;
+        --cc-primary-bright: #b45309;
+        --cc-bg: #fffbeb;
+        --cc-bg-card: #ffffff;
+        --cc-bg-surface: #fef3c7;
+        --cc-text: #1c1400;
+        --cc-text-dim: rgba(28, 20, 0, 0.65);
+        --cc-text-muted: rgba(28, 20, 0, 0.4);
+        --cc-border: #1c1400;
+        --cc-border-dim: rgba(28, 20, 0, 0.2);
+        --cc-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
+        --cc-shadow-sm: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+        --cc-shadow-lg: 12px 12px 0px 0px rgba(0, 0, 0, 0.8);
+      }
+
+      /* Base reset for cc layout */
+      html[data-layout="claude-code"] {
+        background: var(--cc-bg);
+        color: var(--cc-text);
+      }
+      html[data-layout="claude-code"] body {
+        margin: 0;
+        padding: 0;
+        background: var(--cc-bg);
+        color: var(--cc-text);
+        font-family: var(--cc-font-body);
+        min-height: 100vh;
+      }
+
+      /* Scanline overlay base */
+      html[data-layout="claude-code"] body::before {
+        content: '';
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(245, 158, 11, 0.012),
+          rgba(245, 158, 11, 0.012) 1px,
+          transparent 1px,
+          transparent 4px
+        );
+        pointer-events: none;
+        z-index: 9998;
+        opacity: 0.6;
+        display: none;
+      }
+
+      /* Typography helpers */
+      .cc-headline {
+        font-family: var(--cc-font-headline);
+        font-weight: 900;
+      }
+
+      /* Badge styles */
+      .cl-badge {
+        display: inline-block;
+        font-family: var(--cc-font-mono);
+        font-size: 0.55rem;
+        font-weight: 700;
+        padding: 0.1rem 0.4rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-right: 0.4rem;
+        vertical-align: middle;
+      }
+      .cl-badge-fix { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+      .cl-badge-feat { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); }
+      .cl-badge-docs { background: rgba(217, 119, 6, 0.15); color: #d97706; border: 1px solid rgba(217, 119, 6, 0.3); }
+      .cl-badge-test { background: rgba(180, 83, 9, 0.15); color: #b45309; border: 1px solid rgba(180, 83, 9, 0.3); }
+      .cl-badge-chore { background: rgba(120, 53, 15, 0.15); color: #78350f; border: 1px solid rgba(120, 53, 15, 0.3); }
+      .cl-badge-ci { background: rgba(120, 53, 15, 0.1); color: #92400e; border: 1px solid rgba(120, 53, 15, 0.2); }
+      .cl-badge-perf { background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4); }
+
+      .cl-pr-link {
+        color: var(--cc-primary-bright) !important;
+        text-decoration: none;
+        font-family: var(--cc-font-mono);
+        font-size: 0.8em;
+        opacity: 0.7;
+        transition: opacity 150ms;
+      }
+      .cl-pr-link:hover { opacity: 1; }
+
+      /* Changelog body */
+      .changelog-body h1, .changelog-body h2, .changelog-body h3, .changelog-body h4 {
+        font-family: var(--cc-font-headline);
+        font-weight: 800;
+        text-transform: uppercase;
+        color: var(--cc-text);
+        margin: 1.5rem 0 0.75rem;
+        letter-spacing: -0.01em;
+      }
+      .changelog-body h1 { font-size: 1.3rem; }
+      .changelog-body h2 { font-size: 1.1rem; border-bottom: 2px solid var(--cc-border-dim); padding-bottom: 0.25rem; }
+      .changelog-body h3 { font-size: 0.95rem; color: var(--cc-primary-bright); }
+      .changelog-body p { margin: 0.75rem 0; }
+      .changelog-body ul { list-style: none; margin: 0.5rem 0; padding: 0; }
+      .changelog-body li { padding: 0.25rem 0; display: flex; align-items: flex-start; gap: 0.5rem; }
+      .changelog-body li::before { content: '▸'; color: var(--cc-primary-bright); flex-shrink: 0; font-weight: 700; }
+      .changelog-body code {
+        font-family: var(--cc-font-mono);
+        font-size: 0.85em;
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--cc-primary-bright);
+        padding: 0.1rem 0.35rem;
+        border: 1px solid rgba(245, 158, 11, 0.2);
+      }
+      .changelog-body pre {
+        background: var(--cc-bg-surface);
+        border: 2px solid var(--cc-border-dim);
+        padding: 1rem;
+        overflow-x: auto;
+        font-family: var(--cc-font-mono);
+        font-size: 0.8rem;
+      }
+      .changelog-body a {
+        color: var(--cc-primary-bright);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+        transition: border-color 150ms;
+      }
+      .changelog-body a:hover { border-color: var(--cc-primary-bright); }
+      .changelog-body strong { color: var(--cc-text); font-weight: 700; }
+
+      /* Collapsed changelog */
+      .cl-collapsed {
+        max-height: 180px;
+      }
+      .cl-collapsed::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        height: 80px;
+        background: linear-gradient(to bottom, transparent, var(--cc-bg-card));
+        pointer-events: none;
+      }
+
+      /* Apex Mode — Claude Code crazy mode */
+      [data-apex="true"] {
+        --cc-primary: #ff9500 !important;
+        --cc-primary-bright: #ffb830 !important;
+        --cc-bg: #0d0800 !important;
+        --cc-bg-card: #1a0f00 !important;
+        --cc-bg-surface: #261500 !important;
+        --cc-text: #fff8e0 !important;
+        --cc-text-dim: rgba(255, 240, 180, 0.7) !important;
+        --cc-text-muted: rgba(255, 220, 130, 0.5) !important;
+        --cc-border: #ff9500 !important;
+        --cc-border-dim: rgba(255, 149, 0, 0.3) !important;
+        --cc-shadow: 6px 6px 0px 0px rgba(255, 149, 0, 0.4) !important;
+        --cc-shadow-sm: 4px 4px 0px 0px rgba(255, 149, 0, 0.3) !important;
+        --cc-header-bg: rgba(25, 12, 0, 0.95) !important;
+      }
+      [data-apex="true"][data-theme="light"] {
+        --cc-bg: #fff8e0 !important;
+        --cc-bg-card: #fff3c4 !important;
+        --cc-bg-surface: #ffe8a0 !important;
+        --cc-text: #3d2000 !important;
+        --cc-text-dim: rgba(61, 32, 0, 0.7) !important;
+        --cc-text-muted: rgba(61, 32, 0, 0.4) !important;
+        --cc-border: #d97706 !important;
+        --cc-header-bg: rgba(255, 248, 220, 0.95) !important;
+      }
+
+      @keyframes apex-pulse {
+        0%, 100% { text-shadow: 0 0 10px rgba(255, 149, 0, 0.5); }
+        50% { text-shadow: 0 0 30px rgba(255, 149, 0, 0.9), 0 0 60px rgba(255, 200, 0, 0.3); }
+      }
+      @keyframes apex-shake {
+        0%, 100% { transform: rotate(0deg) scale(1); }
+        25% { transform: rotate(-2deg) scale(1.05); }
+        75% { transform: rotate(2deg) scale(0.95); }
+      }
+      @keyframes apex-float {
+        0%, 100% { transform: translateY(0) skewX(0deg); }
+        33% { transform: translateY(-6px) skewX(1deg); }
+        66% { transform: translateY(3px) skewX(-0.5deg); }
+      }
+      @keyframes apex-glow {
+        0%, 100% { box-shadow: 0 0 5px rgba(255, 149, 0, 0.3); }
+        50% { box-shadow: 0 0 25px rgba(255, 149, 0, 0.7), 0 0 50px rgba(255, 200, 0, 0.2); }
+      }
+      @keyframes apex-trail-fade {
+        0% { opacity: 1; transform: scale(1) rotate(0deg); }
+        50% { opacity: 0.6; transform: scale(1.4) rotate(90deg); }
+        100% { opacity: 0; transform: scale(0.2) rotate(180deg) translateY(-50px); }
+      }
+      @keyframes apex-spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      [data-apex="true"] .cc-nav-header {
+        animation: apex-pulse 2s ease-in-out infinite;
+      }
+      [data-apex="true"] #cc-apex-btn {
+        animation: apex-shake 0.6s ease-in-out infinite;
+        background: rgba(255, 149, 0, 0.15) !important;
+        border-color: #ff9500 !important;
+        box-shadow: 0 0 20px rgba(255, 149, 0, 0.6) !important;
+      }
+      [data-apex="true"] .cc-headline {
+        animation: apex-float 3s ease-in-out infinite;
+      }
+      [data-apex="true"] .cc-headline:nth-child(2n) { animation-delay: 0.4s; }
+      [data-apex="true"] .cc-headline:nth-child(3n) { animation-delay: 0.8s; }
+      [data-apex="true"] [style*="border:"] {
+        animation: apex-glow 2.5s ease-in-out infinite !important;
+        border-color: #ff9500 !important;
+      }
+      [data-apex="true"] body::before { display: block !important; }
+
+      .apex-trail {
+        position: fixed;
+        pointer-events: none;
+        z-index: 9989;
+        font-size: 1.4rem;
+        animation: apex-trail-fade 0.9s ease-out forwards;
+        user-select: none;
+      }
+
+      /* Nav */
+      .cc-nav-header {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 100;
+        background: var(--cc-header-bg);
+        backdrop-filter: blur(10px);
+        border-bottom: 4px solid var(--cc-border);
+      }
+      .cc-nav-inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 1.25rem;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
+      .cc-nav-logo {
+        font-family: var(--cc-font-headline);
+        font-weight: 900;
+        font-size: 1.05rem;
+        text-transform: uppercase;
+        letter-spacing: -0.02em;
+        color: var(--cc-text);
+        text-decoration: none;
+        flex-shrink: 0;
+        font-style: italic;
+      }
+      .cc-nav-logo span { color: var(--cc-primary-bright); }
+
+      /* CTA button */
+      .cc-cta-btn {
+        transition: transform 100ms, box-shadow 100ms;
+      }
+      .cc-cta-btn:hover {
+        transform: translate(1px, 1px);
+        box-shadow: none !important;
+      }
+
+      /* Quick link */
+      .cc-quick-link {
+        transition: border-color 150ms, box-shadow 150ms;
+      }
+      .cc-quick-link:hover {
+        border-color: var(--cc-primary) !important;
+        box-shadow: var(--cc-shadow-sm) !important;
+      }
+
+      /* Dot grid */
+      .cc-dotgrid {
+        background-image: radial-gradient(circle, var(--cc-border-dim) 1px, transparent 1px);
+        background-size: 24px 24px;
+      }
+
+      /* Cursor blink */
+      .cc-cursor {
+        animation: cc-blink 1s step-end infinite;
+      }
+      @keyframes cc-blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+      }
+
+      /* Pulse dot */
+      .cc-pulse-dot {
+        animation: cc-pulse 2s ease-in-out infinite;
+      }
+      @keyframes cc-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+      }
+
+      /* Hero animation */
+      .cc-hero-title {
+        animation: cc-slide-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+      .cc-hero-section p {
+        animation: cc-slide-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+      }
+      .cc-terminal-card {
+        animation: cc-slide-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+      }
+      @keyframes cc-slide-in {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .cc-section-reveal {
+        opacity: 0;
+        transform: translateY(16px);
+        animation: cc-slide-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+      }
+
+      /* Stats */
+      .cc-stats-cell {
+        transition: background 150ms;
+      }
+      .cc-stats-cell:hover {
+        background: var(--cc-primary) !important;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .cc-hero-grid { grid-template-columns: 1fr !important; }
+        .cc-terminal-card { width: 100% !important; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cc-hero-title, .cc-hero-section p, .cc-terminal-card, .cc-section-reveal {
+          animation: none !important;
+          opacity: 1;
+          transform: none;
+        }
+        .cc-cursor, .cc-pulse-dot { animation: none !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="cc-nav-header">
+      <div class="cc-nav-inner">
+        <!-- Logo -->
+        <a href="/claude-code/" class="cc-nav-logo">
+          Claude<span>Code</span>
+        </a>
+
+        <!-- Hub link (desktop) -->
+        <a
+          id="cc-hub-link"
+          href="/"
+          style="font-family: var(--cc-font-mono); font-size: 0.65rem; font-weight: 700; color: var(--cc-text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.1em; flex-shrink: 0; transition: color 150ms;"
+          onmouseover="this.style.color='var(--cc-primary-bright)'"
+          onmouseout="this.style.color='var(--cc-text-muted)'"
+        >
+          ← hub
+        </a>
+
+        <!-- Desktop nav -->
+        <nav
+          id="cc-desktop-nav"
+          style="display: flex; gap: 0; flex: 1; align-items: center;"
+        >
+          {navLinks.map((link) => (
+            <a
+              href={link.href}
+              class="cc-headline"
+              style={`font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; padding: 0.5rem 1rem; text-decoration: none; transition: color 150ms, background 150ms; ${
+                currentPage === link.key
+                  ? `color: var(--cc-primary-bright); border-bottom: 4px solid var(--cc-primary-bright); margin-bottom: -4px;`
+                  : `color: var(--cc-text); opacity: 0.7;`
+              }`}
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+
+        <!-- Right: actions -->
+        <div style="display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0;">
+          <!-- Apex Mode button -->
+          <button
+            id="cc-apex-btn"
+            aria-label="Toggle Apex Mode"
+            style="background: transparent; border: 2px solid var(--cc-border); padding: 6px 10px; cursor: pointer; font-size: 11px; line-height: 1; transition: transform 200ms, box-shadow 100ms; position: relative; overflow: visible; box-shadow: var(--cc-shadow-sm); font-family: var(--cc-font-mono); font-weight: 700; color: var(--cc-primary-bright);"
+            title="🧠 APEX MODE"
+          >
+            🧠
+          </button>
+
+          <button
+            id="cc-theme-toggle"
+            aria-label="Toggle theme"
+            style="background: transparent; border: 2px solid var(--cc-border); padding: 6px 10px; color: var(--cc-text); cursor: pointer; box-shadow: var(--cc-shadow-sm); font-family: var(--cc-font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.05em; transition: box-shadow 100ms, transform 100ms; position: relative; overflow: visible;"
+          >
+            <span id="cc-theme-label">◐</span>
+          </button>
+
+          <!-- Hamburger (mobile only) -->
+          <button
+            id="cc-mobile-menu-btn"
+            aria-label="Toggle menu"
+            style="display: none; background: transparent; border: 2px solid var(--cc-border); padding: 8px; color: var(--cc-text); cursor: pointer; align-items: center; justify-content: center; position: relative; overflow: visible;"
+          >
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: block;">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile nav dropdown -->
+      <div
+        id="cc-mobile-menu"
+        style="display: none; padding: 0.75rem 1.25rem 1.25rem; border-top: 2px solid var(--cc-border-dim); background: var(--cc-bg);"
+      >
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            class="cc-headline"
+            style={`display: block; font-weight: 800; text-transform: uppercase; font-size: 1rem; padding: 0.75rem 0; text-decoration: none; border-bottom: 2px solid var(--cc-border-dim); letter-spacing: 0.05em; ${
+              currentPage === link.key
+                ? `color: var(--cc-primary-bright);`
+                : `color: var(--cc-text); opacity: 0.75;`
+            }`}
+          >
+            {link.label}
+          </a>
+        ))}
+        <a href="/" class="cc-headline" style="display: block; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; padding: 0.75rem 0; text-decoration: none; color: var(--cc-text); opacity: 0.5; letter-spacing: 0.1em;">
+          ← changelogs.info
+        </a>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main style="padding-top: 64px;">
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer style="border-top: 8px solid var(--cc-primary); background: var(--cc-bg); margin-top: 6rem; padding: 3rem 2rem;">
+      <div style="max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1.5rem;">
+        <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+          <span class="cc-headline" style="font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--cc-text-dim);">
+            © {new Date().getFullYear()} changelogs.info / Claude Code
+          </span>
+          <span style="font-family: var(--cc-font-mono); font-size: 0.6rem; color: var(--cc-text-muted);">
+            DATA FROM OFFICIAL GITHUB RELEASES
+          </span>
+        </div>
+        <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+          {[
+            { label: "Hub", href: "/" },
+            { label: "Changelog", href: "/claude-code/changelog/" },
+            { label: "Cheatsheet", href: "/claude-code/cheatsheet/" },
+            { label: "Releases", href: "/claude-code/releases/" },
+            { label: "GitHub ↗", href: "https://github.com/anthropics/claude-code", external: true },
+            { label: "RSS", href: "/feed/all.xml" },
+          ].map((link) => (
+            <a
+              href={link.href}
+              target={link.external ? "_blank" : undefined}
+              rel={link.external ? "noopener noreferrer" : undefined}
+              class="cc-headline"
+              style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--cc-text-dim); text-decoration: none; transition: color 150ms;"
+              onmouseover={`this.style.color='var(--cc-primary-bright)'`}
+              onmouseout={`this.style.color='var(--cc-text-dim)'`}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+        <div style="font-family: var(--cc-font-mono); font-size: 0.65rem; color: var(--cc-text-muted); display: flex; align-items: center; gap: 0.5rem;">
+          <span style="color: var(--cc-primary);">▶</span>
+          CLAUDE-CODE: ~
+        </div>
+      </div>
+    </footer>
+
+    <!-- Apex Mode canvas + banner -->
+    <canvas id="apex-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9990; pointer-events: none; display: none;"></canvas>
+    <div id="apex-banner" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); z-index: 9991; pointer-events: none; font-family: var(--cc-font-headline); font-weight: 900; font-size: clamp(2rem, 10vw, 7rem); color: #fff; text-shadow: 0 0 40px rgba(255,149,0,0.9), 0 0 80px rgba(255,180,0,0.5), 4px 4px 0 #000; text-transform: uppercase; font-style: italic; letter-spacing: -0.04em; text-align: center; width: 90vw; max-width: 900px; transition: transform 600ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 400ms; line-height: 1.1;">🧠 APEX MODE 🧠<br><span style="font-size: 0.35em; opacity: 0.8; display: block; margin-top: 0.5rem;">CLAUDE CODE: MAXIMUM CAPACITY</span></div>
+
+    <script>
+      // === THEME TOGGLE ===
+      const CC_THEME_KEY = "cc-theme";
+
+      function getCCTheme(): string {
+        return (
+          localStorage.getItem(CC_THEME_KEY) ||
+          (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark")
+        );
+      }
+
+      function applyCCTheme(theme: string) {
+        document.documentElement.setAttribute("data-layout", "claude-code");
+        if (theme === "light") {
+          document.documentElement.setAttribute("data-theme", "light");
+        } else {
+          document.documentElement.removeAttribute("data-theme");
+        }
+      }
+
+      function updateCCLabel(theme: string) {
+        const label = document.getElementById("cc-theme-label");
+        if (label) label.textContent = theme === "light" ? "◑" : "◐";
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        document.documentElement.setAttribute("data-layout", "claude-code");
+        const current = getCCTheme();
+        updateCCLabel(current);
+        applyCCTheme(current);
+
+        const btn = document.getElementById("cc-theme-toggle");
+        btn?.addEventListener("click", () => {
+          const cur = getCCTheme();
+          const next = cur === "dark" ? "light" : "dark";
+          localStorage.setItem(CC_THEME_KEY, next);
+          applyCCTheme(next);
+          updateCCLabel(next);
+        });
+
+        // Mobile menu
+        const menuBtn = document.getElementById("cc-mobile-menu-btn");
+        const mobileMenu = document.getElementById("cc-mobile-menu");
+        menuBtn?.addEventListener("click", () => {
+          const isOpen = mobileMenu?.style.display === "block";
+          if (mobileMenu) mobileMenu.style.display = isOpen ? "none" : "block";
+        });
+        mobileMenu?.querySelectorAll("a").forEach((a) => {
+          a.addEventListener("click", () => {
+            if (mobileMenu) mobileMenu.style.display = "none";
+          });
+        });
+
+        function handleResize() {
+          const desktopNav = document.getElementById("cc-desktop-nav");
+          const mobileBtn = document.getElementById("cc-mobile-menu-btn");
+          const hubLink = document.getElementById("cc-hub-link");
+          const isDesktop = window.innerWidth >= 768;
+          if (desktopNav) desktopNav.style.display = isDesktop ? "flex" : "none";
+          if (mobileBtn) mobileBtn.style.display = isDesktop ? "none" : "flex";
+          if (hubLink) hubLink.style.display = isDesktop ? "inline" : "none";
+          if (isDesktop && mobileMenu) mobileMenu.style.display = "none";
+        }
+        handleResize();
+        window.addEventListener("resize", handleResize);
+      });
+    </script>
+
+    <!-- === APEX MODE === -->
+    <script>
+      (function() {
+        let apexActive = false;
+        let animFrame: number;
+        let particles: Array<{x: number; y: number; vx: number; vy: number; rot: number; vr: number; size: number; emoji: string; wobble: number; wobbleSpeed: number; glow: number}> = [];
+        let trailThrottle = 0;
+
+        const APEX_EMOJIS = ['🧠', '⚡', '🔥', '✨', '💡', '🤖', '∞', '◈'];
+        const canvas = document.getElementById('apex-canvas') as HTMLCanvasElement;
+        const ctx = canvas?.getContext('2d');
+        const banner = document.getElementById('apex-banner');
+
+        function resizeCanvas() {
+          if (!canvas) return;
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+
+        function spawnParticles(count: number) {
+          for (let i = 0; i < count; i++) {
+            particles.push({
+              x: Math.random() * window.innerWidth,
+              y: -50 - Math.random() * 300,
+              vx: (Math.random() - 0.5) * 2.5,
+              vy: 1 + Math.random() * 2.5,
+              rot: Math.random() * Math.PI * 2,
+              vr: (Math.random() - 0.5) * 0.06,
+              size: 16 + Math.random() * 28,
+              emoji: APEX_EMOJIS[Math.floor(Math.random() * APEX_EMOJIS.length)],
+              wobble: Math.random() * Math.PI * 2,
+              wobbleSpeed: 0.015 + Math.random() * 0.03,
+              glow: Math.random()
+            });
+          }
+        }
+
+        function animate() {
+          if (!ctx || !canvas) return;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          particles.forEach(p => {
+            p.wobble += p.wobbleSpeed;
+            p.glow = 0.5 + 0.5 * Math.sin(p.wobble * 2);
+            p.x += p.vx + Math.sin(p.wobble) * 1.2;
+            p.y += p.vy;
+            p.rot += p.vr;
+
+            if (p.x < -60) p.x = canvas.width + 60;
+            if (p.x > canvas.width + 60) p.x = -60;
+            if (p.y > canvas.height + 60) {
+              p.y = -60;
+              p.x = Math.random() * canvas.width;
+              p.vy = 1 + Math.random() * 2.5;
+            }
+
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.rot);
+            ctx.globalAlpha = 0.7 + 0.3 * p.glow;
+
+            // Amber glow effect
+            ctx.shadowColor = `rgba(255, 149, 0, ${p.glow * 0.6})`;
+            ctx.shadowBlur = p.size * 0.8;
+
+            ctx.font = `${p.size}px serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(p.emoji, 0, 0);
+            ctx.restore();
+          });
+
+          if (apexActive) {
+            animFrame = requestAnimationFrame(animate);
+          }
+        }
+
+        function addTrail(e: MouseEvent) {
+          const now = Date.now();
+          if (now - trailThrottle < 60) return;
+          trailThrottle = now;
+
+          const el = document.createElement('div');
+          el.className = 'apex-trail';
+          el.textContent = APEX_EMOJIS[Math.floor(Math.random() * 3)];
+          el.style.left = (e.clientX - 14) + 'px';
+          el.style.top = (e.clientY - 14) + 'px';
+          document.body.appendChild(el);
+          setTimeout(() => el.remove(), 1000);
+        }
+
+        function clickSpawn() {
+          if (apexActive) spawnParticles(6);
+        }
+
+        function enterApexMode(quiet = false) {
+          apexActive = true;
+          document.documentElement.setAttribute('data-apex', 'true');
+
+          if (canvas) {
+            canvas.style.display = 'block';
+            resizeCanvas();
+          }
+
+          if (quiet) {
+            spawnParticles(12);
+          } else {
+            spawnParticles(20);
+            setTimeout(() => spawnParticles(12), 700);
+            setTimeout(() => spawnParticles(8), 1400);
+          }
+
+          if (banner && !quiet) {
+            banner.style.display = 'block';
+            banner.style.opacity = '1';
+            requestAnimationFrame(() => {
+              banner.style.transform = 'translate(-50%, -50%) scale(1)';
+            });
+            setTimeout(() => {
+              banner.style.opacity = '0';
+              setTimeout(() => {
+                banner.style.display = 'none';
+                banner.style.transform = 'translate(-50%, -50%) scale(0)';
+              }, 500);
+            }, 2500);
+          }
+
+          animate();
+          document.addEventListener('mousemove', addTrail);
+          document.addEventListener('click', clickSpawn);
+          localStorage.setItem('cc-apex-mode', 'true');
+        }
+
+        function exitApexMode() {
+          apexActive = false;
+          document.documentElement.removeAttribute('data-apex');
+          cancelAnimationFrame(animFrame);
+          particles = [];
+
+          if (canvas) {
+            canvas.style.display = 'none';
+            if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+          }
+          if (banner) {
+            banner.style.display = 'none';
+            banner.style.transform = 'translate(-50%, -50%) scale(0)';
+          }
+
+          document.removeEventListener('mousemove', addTrail);
+          document.removeEventListener('click', clickSpawn);
+          document.querySelectorAll('.apex-trail').forEach(el => el.remove());
+          localStorage.removeItem('cc-apex-mode');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+          const apexBtn = document.getElementById('cc-apex-btn');
+          apexBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (apexActive) {
+              exitApexMode();
+            } else {
+              enterApexMode();
+            }
+          });
+
+          window.addEventListener('resize', resizeCanvas);
+
+          if (localStorage.getItem('cc-apex-mode') === 'true') {
+            enterApexMode(true);
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
