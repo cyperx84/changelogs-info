@@ -323,6 +323,71 @@ const navLinks = [
         background: rgba(51, 255, 51, 0.1) !important;
       }
 
+      /* Overclock Mode — Codex crazy mode */
+      [data-overclock="true"] {
+        --cx-primary: #00ff41;
+        --cx-primary-bright: #8cff66;
+        --cx-accent: #b6ff00;
+        --cx-border: #8cff66;
+        --cx-shadow: 6px 6px 0px 0px rgba(140, 255, 102, 0.4);
+        --cx-shadow-sm: 4px 4px 0px 0px rgba(140, 255, 102, 0.35);
+      }
+      [data-overclock="true"][data-theme="light"] {
+        --cx-bg: #f6fff2;
+        --cx-bg-card: #ffffff;
+        --cx-bg-surface: #e8ffe0;
+        --cx-text: #041106;
+        --cx-text-dim: rgba(4, 17, 6, 0.68);
+        --cx-text-muted: rgba(4, 17, 6, 0.42);
+        --cx-border: #041106;
+      }
+      @keyframes cx-overclock-pulse {
+        0%, 100% { box-shadow: var(--cx-shadow); transform: translate(0, 0); }
+        50% { box-shadow: 10px 10px 0px 0px rgba(140, 255, 102, 0.45); transform: translate(-2px, -2px); }
+      }
+      @keyframes cx-overclock-shake {
+        0%, 100% { transform: rotate(0deg); }
+        20% { transform: rotate(-4deg); }
+        40% { transform: rotate(4deg); }
+        60% { transform: rotate(-3deg); }
+        80% { transform: rotate(3deg); }
+      }
+      @keyframes cx-overclock-float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+      }
+      @keyframes cx-overclock-glow {
+        0%, 100% { filter: drop-shadow(0 0 0 rgba(140, 255, 102, 0)); }
+        50% { filter: drop-shadow(0 0 14px rgba(140, 255, 102, 0.7)); }
+      }
+      @keyframes cx-overclock-trail-fade {
+        from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        to { opacity: 0; transform: translate(-50%, -50%) scale(0.25); }
+      }
+      [data-overclock="true"] .cx-nav-header {
+        animation: cx-overclock-pulse 2s ease-in-out infinite;
+      }
+      [data-overclock="true"] #cx-overclock-btn {
+        animation: cx-overclock-shake 0.55s ease-in-out infinite;
+      }
+      [data-overclock="true"] .cx-headline {
+        animation: cx-overclock-float 2.8s ease-in-out infinite;
+      }
+      [data-overclock="true"] .cx-headline:nth-child(2n) { animation-delay: 0.35s; }
+      [data-overclock="true"] .cx-headline:nth-child(3n) { animation-delay: 0.7s; }
+      [data-overclock="true"] [style*="border:"] {
+        animation: cx-overclock-glow 2.3s ease-in-out infinite !important;
+      }
+      .cx-overclock-trail {
+        position: fixed;
+        pointer-events: none;
+        z-index: 9989;
+        font-family: var(--cx-font-mono);
+        color: #8cff66;
+        text-shadow: 0 0 12px rgba(140, 255, 102, 0.85);
+        animation: cx-overclock-trail-fade 0.8s ease-out forwards;
+      }
+
       /* Responsive */
       @media (max-width: 768px) {
         .cx-hero-grid { grid-template-columns: 1fr !important; }
@@ -374,6 +439,14 @@ const navLinks = [
 
         <!-- Right: actions -->
         <div style="display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0;">
+          <button
+            id="cx-overclock-btn"
+            aria-label="Toggle Overclock Mode"
+            style="background: transparent; border: 2px solid var(--cx-border); padding: 6px 10px; color: var(--cx-text); cursor: pointer; box-shadow: var(--cx-shadow-sm); font-family: var(--cx-font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.05em; transition: box-shadow 100ms, transform 100ms; position: relative; overflow: visible;"
+          >
+            &gt;_+
+          </button>
+
           <button
             id="cx-theme-toggle"
             aria-label="Toggle theme"
@@ -464,6 +537,9 @@ const navLinks = [
       </div>
     </footer>
 
+    <canvas id="cx-overclock-canvas" style="position: fixed; inset: 0; width: 100%; height: 100%; z-index: 9990; pointer-events: none; display: none;"></canvas>
+    <div id="cx-overclock-banner" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); z-index: 9991; pointer-events: none; font-family: var(--cx-font-headline); font-weight: 900; font-size: clamp(2rem, 10vw, 7rem); color: #d9ffcf; text-shadow: 0 0 35px rgba(0,255,65,0.95), 0 0 75px rgba(140,255,102,0.55), 4px 4px 0 #001a06; text-transform: uppercase; font-style: italic; letter-spacing: -0.04em; text-align: center; width: 90vw; max-width: 900px; transition: transform 600ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 400ms; line-height: 1.1;">&gt;_ OVERCLOCK MODE<br><span style="font-size: 0.32em; opacity: 0.82; display: block; margin-top: 0.55rem;">CODEX CLI // TERMINAL MELTDOWN</span></div>
+
     <script>
       // === THEME TOGGLE ===
       const CX_THEME_KEY = "cx-theme";
@@ -503,6 +579,130 @@ const navLinks = [
           applyCXTheme(next);
           updateCXLabel(next);
         });
+
+        let overclockActive = false;
+        let glyphs = [];
+        let trailThrottle = 0;
+        const canvas = document.getElementById("cx-overclock-canvas");
+        const ctx = canvas?.getContext?.("2d");
+        const banner = document.getElementById("cx-overclock-banner");
+        const glyphChoices = [">_", "$", "{}", "01", "</>", "::", "++", "//"];
+
+        function resizeCanvas() {
+          if (!canvas) return;
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+
+        function spawnGlyphs(count = 36) {
+          if (!canvas) return;
+          for (let i = 0; i < count; i += 1) {
+            glyphs.push({
+              x: Math.random() * canvas.width,
+              y: Math.random() * canvas.height,
+              vx: (Math.random() - 0.5) * 1.8,
+              vy: (Math.random() - 0.5) * 1.8,
+              rot: Math.random() * Math.PI * 2,
+              vr: (Math.random() - 0.5) * 0.08,
+              size: 18 + Math.random() * 22,
+              glyph: glyphChoices[Math.floor(Math.random() * glyphChoices.length)],
+            });
+          }
+        }
+
+        function drawGlyphs() {
+          if (!canvas || !ctx) return;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          glyphs.forEach((g) => {
+            ctx.save();
+            ctx.translate(g.x, g.y);
+            ctx.rotate(g.rot);
+            ctx.font = `900 ${g.size}px JetBrains Mono`;
+            ctx.fillStyle = "rgba(140,255,102,0.92)";
+            ctx.shadowColor = "rgba(0,255,65,0.7)";
+            ctx.shadowBlur = 18;
+            ctx.fillText(g.glyph, 0, 0);
+            ctx.restore();
+
+            g.x += g.vx;
+            g.y += g.vy;
+            g.rot += g.vr;
+
+            if (g.x < -40) g.x = canvas.width + 40;
+            if (g.x > canvas.width + 40) g.x = -40;
+            if (g.y < -40) g.y = canvas.height + 40;
+            if (g.y > canvas.height + 40) g.y = -40;
+          });
+
+          if (overclockActive) requestAnimationFrame(drawGlyphs);
+        }
+
+        function spawnTrail(x, y) {
+          const now = Date.now();
+          if (now - trailThrottle < 50) return;
+          trailThrottle = now;
+          const el = document.createElement("div");
+          el.className = "cx-overclock-trail";
+          el.textContent = glyphChoices[Math.floor(Math.random() * glyphChoices.length)];
+          el.style.left = `${x}px`;
+          el.style.top = `${y}px`;
+          el.style.fontSize = `${14 + Math.random() * 12}px`;
+          document.body.appendChild(el);
+          setTimeout(() => el.remove(), 820);
+        }
+
+        function setOverclock(active, quiet = false) {
+          if (!canvas || !banner) return;
+          overclockActive = active;
+          if (active) {
+            document.documentElement.setAttribute("data-overclock", "true");
+            canvas.style.display = "block";
+            resizeCanvas();
+            glyphs = [];
+            spawnGlyphs(quiet ? 14 : 42);
+            drawGlyphs();
+            localStorage.setItem("cx-overclock-mode", "true");
+            if (!quiet) {
+              banner.style.display = "block";
+              banner.style.opacity = "1";
+              banner.style.transform = "translate(-50%, -50%) scale(1)";
+              setTimeout(() => {
+                banner.style.opacity = "0";
+                banner.style.transform = "translate(-50%, -50%) scale(0.92)";
+                setTimeout(() => {
+                  banner.style.display = "none";
+                }, 420);
+              }, 1200);
+            }
+          } else {
+            document.documentElement.removeAttribute("data-overclock");
+            canvas.style.display = "none";
+            if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+            glyphs = [];
+            banner.style.display = "none";
+            document.querySelectorAll(".cx-overclock-trail").forEach((el) => el.remove());
+            localStorage.removeItem("cx-overclock-mode");
+          }
+        }
+
+        const overclockBtn = document.getElementById("cx-overclock-btn");
+        overclockBtn?.addEventListener("click", (e) => {
+          e.preventDefault();
+          setOverclock(!overclockActive);
+        });
+        window.addEventListener("resize", resizeCanvas);
+        window.addEventListener("mousemove", (e) => {
+          if (overclockActive) spawnTrail(e.clientX, e.clientY);
+        }, { passive: true });
+        window.addEventListener("click", (e) => {
+          if (overclockActive) {
+            spawnGlyphs(5);
+            spawnTrail(e.clientX, e.clientY);
+          }
+        }, { passive: true });
+        if (localStorage.getItem("cx-overclock-mode") === "true") setOverclock(true, true);
 
         // Mobile menu
         const menuBtn = document.getElementById("cx-mobile-menu-btn");
