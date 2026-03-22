@@ -12,7 +12,6 @@ const stableReleases = releases.filter((r) => !r.prerelease);
 const latestStable = stableReleases[0];
 const latestRelease = releases[0];
 const latestForTldr = releases[0];
-const recentReleases = releases.slice(0, 3);
 
 const breakingCount = releases.filter((r) =>
   r.body?.toLowerCase().includes("breaking")
@@ -33,42 +32,52 @@ function getPayloadTldr(toolId: string): string | null {
 
 const llmTldr = getPayloadTldr("codex-cli");
 
-async function getCanonicalChangelogSection(version: string | undefined, fallbackBody: string = ""): Promise<string> {
-  if (!version) return fallbackBody;
-
+async function getCanonicalChangelogEntries(): Promise<{ version: string; heading: string; body: string }[]> {
   try {
     const response = await fetch("https://raw.githubusercontent.com/openai/codex/main/CHANGELOG.md");
-    if (!response.ok) return fallbackBody;
+    if (!response.ok) return [];
 
     const changelog = await response.text();
-    if (/github releases/i.test(changelog) && changelog.split("\n").length < 20) return fallbackBody;
+    if (/github releases/i.test(changelog) && changelog.split("\n").length < 20) return [];
 
-    const escapedVersion = version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const sectionStartRegex = new RegExp(`^(#{1,3})\\s+(?:\\[v?${escapedVersion}\\]|v?${escapedVersion})(?:\\s|$)`, "m");
-    const match = sectionStartRegex.exec(changelog);
-    if (!match) return fallbackBody;
+    const lines = changelog.replace(/\r\n/g, "\n").split("\n");
+    const entries: { version: string; heading: string; body: string }[] = [];
+    let current: { heading: string; lines: string[] } | null = null;
 
-    const headerLevel = match[1].length;
-    const startIdx = match.index;
-    const afterHeader = changelog.slice(startIdx + match[0].length);
-    const nextSectionRegex = new RegExp(`^#{1,${headerLevel}}\\s+`, "m");
-    const nextMatch = nextSectionRegex.exec(afterHeader);
+    for (const line of lines) {
+      const headerMatch = line.match(/^(#{1,3})\s+(.*)$/);
+      if (headerMatch) {
+        const headingText = headerMatch[2].trim();
+        const versionMatch = headingText.match(/(?:^|[^\d])v?(\d+(?:\.\d+)+(?:[-+][A-Za-z0-9.-]+)?)/);
+        if (versionMatch) {
+          if (current) {
+            const version = current.heading.match(/(?:^|[^\d])v?(\d+(?:\.\d+)+(?:[-+][A-Za-z0-9.-]+)?)/)?.[1];
+            if (version) entries.push({ version, heading: current.heading, body: current.lines.join("\n").trim() });
+          }
+          current = { heading: headingText, lines: [line] };
+          continue;
+        }
+        if (current && headerMatch[1].length <= 3) {
+          const version = current.heading.match(/(?:^|[^\d])v?(\d+(?:\.\d+)+(?:[-+][A-Za-z0-9.-]+)?)/)?.[1];
+          if (version) entries.push({ version, heading: current.heading, body: current.lines.join("\n").trim() });
+          current = null;
+        }
+      }
+      if (current) current.lines.push(line);
+    }
 
-    const sectionContent = nextMatch
-      ? changelog.slice(startIdx, startIdx + match[0].length + nextMatch.index)
-      : changelog.slice(startIdx);
+    if (current) {
+      const version = current.heading.match(/(?:^|[^\d])v?(\d+(?:\.\d+)+(?:[-+][A-Za-z0-9.-]+)?)/)?.[1];
+      if (version) entries.push({ version, heading: current.heading, body: current.lines.join("\n").trim() });
+    }
 
-    const trimmed = sectionContent.trim();
-    return trimmed.length > 20 ? trimmed : fallbackBody;
+    return entries.filter((entry) => entry.body.length > 20).slice(0, 3);
   } catch {
-    return fallbackBody;
+    return [];
   }
 }
 
-const latestCanonicalBody = await getCanonicalChangelogSection(latestForTldr?.version, latestForTldr?.body || "");
-const recentBodies = await Promise.all(
-  recentReleases.map((release) => getCanonicalChangelogSection(release.version, release.body || ""))
-);
+const canonicalEntries = await getCanonicalChangelogEntries();
 
 function isBreaking(body: string = ""): boolean {
   return body.toLowerCase().includes("breaking");
@@ -192,7 +201,7 @@ function getTldr(body: string): string[] {
         <div style="display: flex; flex-direction: column; gap: 1.25rem;">
           <div style="display: inline-flex; align-items: center; gap: 0.5rem; width: fit-content;">
             <span class="cx-pulse-dot" style="width: 8px; height: 8px; background: #33ff33; display: inline-block;"></span>
-            <span style="font-family: var(--cx-font-mono); font-size: 0.65rem; color: var(--cx-text-muted); text-transform: uppercase; letter-spacing: 0.15em;">Tracking {releases.length} releases</span>
+            <span style="font-family: var(--cx-font-mono); font-size: 0.65rem; color: var(--cx-text-muted); text-transform: uppercase; letter-spacing: 0.15em;">Tracking {canonicalEntries.length} latest entries</span>
           </div>
 
           <h1 class="cx-headline cx-hero-title" style="font-size: clamp(3rem, 9vw, 5.5rem); font-weight: 900; color: var(--cx-text); text-transform: uppercase; line-height: 0.88; margin: 0; letter-spacing: -0.03em;">
@@ -275,7 +284,6 @@ function getTldr(body: string): string[] {
       const fallback = (latestForTldr.body || "").split("\n").filter(l => l.trim() && !l.startsWith("#")).slice(0, 2).map(l => l.replace(/^[\*\-]\s+/, "").trim());
       const items = tldr.length > 0 ? tldr : fallback;
       const summaryText = llmTldr?.trim() || null;
-      const latestRendered = renderBody(latestCanonicalBody || latestForTldr.body || "");
 
       return (
         <section style="margin-bottom: 3rem;">
@@ -311,16 +319,6 @@ function getTldr(body: string): string[] {
               </ul>
             )}
           </div>
-
-          <div style="padding: 2rem; border: 4px solid var(--cx-border); background: var(--cx-bg-surface);">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.5rem;">
-              <h3 class="cx-headline" style="font-size: 1.5rem; font-weight: 900; text-transform: uppercase; margin: 0; color: var(--cx-text);">
-                {(latestForTldr.name || latestForTldr.version).replace(/^codex[\s-]cli\s+/i, "")}
-              </h3>
-              <a href="https://github.com/openai/codex/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer" class="cx-headline" style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--cx-primary-bright); text-decoration: none;">↗ Changelog</a>
-            </div>
-            <div class="changelog-body" style="color: var(--cx-text-dim); font-size: 0.875rem; line-height: 1.7; font-family: var(--cx-font-body);" set:html={latestRendered} />
-          </div>
         </section>
       );
     })()}
@@ -333,16 +331,17 @@ function getTldr(body: string): string[] {
     </div>
 
     <section style="margin-bottom: 4rem; display: flex; flex-direction: column; gap: 1.25rem;">
-      {recentReleases.map((release, idx) => {
-        const breaking = isBreaking(release.body);
-        const renderedBody = renderBody(recentBodies[idx] || release.body || "");
-        const isLong = (release.body || "").length > 600;
+      {canonicalEntries.map((entry) => {
+        const release = releases.find((r) => r.version === entry.version) || latestForTldr;
+        const breaking = isBreaking(entry.body);
+        const renderedBody = renderBody(entry.body || "");
+        const isLong = (entry.body || "").length > 600;
         return (
           <div style={`padding: 1.5rem 2rem; border: 4px solid ${breaking ? 'var(--cx-primary)' : 'var(--cx-border)'}; background: ${breaking ? 'var(--cx-bg-surface)' : 'var(--cx-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--cx-primary);' : ''}`}>
             <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
               <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-                <span class="cx-headline" style="font-size: 1.25rem; font-weight: 900; color: var(--cx-text); text-transform: uppercase;">{release.version}</span>
-                <span class="cx-headline" style="font-size: 0.75rem; font-weight: 700; color: var(--cx-text-dim);">{(release.name || "").replace(/^codex[\s-]cli\s+/i, "")}</span>
+                <span class="cx-headline" style="font-size: 1.25rem; font-weight: 900; color: var(--cx-text); text-transform: uppercase;">{entry.version}</span>
+                <span class="cx-headline" style="font-size: 0.75rem; font-weight: 700; color: var(--cx-text-dim);">{entry.heading}</span>
                 {breaking && <span style="background: var(--cx-primary); color: var(--cx-bg); font-family: var(--cx-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">BREAKING</span>}
               </div>
               <span style="font-family: var(--cx-font-mono); font-size: 0.7rem; color: var(--cx-text-muted); white-space: nowrap;">{formatDate(release.date)}</span>
@@ -369,7 +368,7 @@ function getTldr(body: string): string[] {
         class="cx-headline"
         style="display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 900; text-transform: uppercase; color: var(--cx-primary-bright); font-style: italic; text-decoration: none; border-bottom: 2px solid var(--cx-primary-bright); padding-bottom: 2px; font-size: 0.85rem; align-self: flex-start;"
       >
-        View all {releases.length} releases →
+        View full changelog →
       </a>
     </section>
 
