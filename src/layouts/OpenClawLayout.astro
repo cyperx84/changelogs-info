@@ -40,6 +40,7 @@ const navLinks = [
     <style is:global>
       /* OpenClaw Neo-Brutalist Theme */
       :root {
+        --oc-header-bg: rgba(0, 0, 0, 0.85);
         --oc-primary: #bc0100;
         --oc-primary-bright: #eb0000;
         --oc-bg: #000000;
@@ -60,6 +61,7 @@ const navLinks = [
       }
 
       [data-theme="light"] {
+        --oc-header-bg: rgba(251, 249, 244, 0.9);
         --oc-primary: #bc0100;
         --oc-primary-bright: #bc0100;
         --oc-bg: #fbf9f4;
@@ -142,6 +144,15 @@ const navLinks = [
         box-shadow: 2px 2px 0px 0px rgba(255, 255, 255, 0.2);
       }
       [data-theme="light"] .oc-card-hover:hover {
+        box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+      }
+
+      /* Theme toggle hover */
+      #oc-theme-toggle:hover {
+        transform: translate(1px, 1px);
+        box-shadow: 2px 2px 0px 0px rgba(255, 255, 255, 0.2);
+      }
+      [data-theme="light"] #oc-theme-toggle:hover {
         box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
       }
 
@@ -232,7 +243,7 @@ const navLinks = [
     <!-- Header -->
     <header
       class="oc-header fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 backdrop-blur-xl"
-      style="background: rgba(0,0,0,0.85); border-bottom: 4px solid var(--oc-border); box-shadow: var(--oc-shadow);"
+      style="background: var(--oc-header-bg); border-bottom: 4px solid var(--oc-border); box-shadow: var(--oc-shadow);"
     >
       <div class="flex items-center gap-6">
         <!-- Back to hub -->
@@ -280,8 +291,6 @@ const navLinks = [
           id="oc-theme-toggle"
           aria-label="Toggle theme"
           style="background: transparent; border: 2px solid var(--oc-border); padding: 6px 10px; color: var(--oc-text); cursor: pointer; box-shadow: var(--oc-shadow-sm); font-family: var(--oc-font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.05em; transition: box-shadow 100ms, transform 100ms;"
-          onmouseover="this.style.transform='translate(1px,1px)';this.style.boxShadow='2px 2px 0px 0px rgba(255,255,255,0.2)'"
-          onmouseout="this.style.transform='';this.style.boxShadow='var(--oc-shadow-sm)'"
         >
           <span id="oc-theme-label">◐</span>
         </button>
@@ -346,7 +355,7 @@ const navLinks = [
 
     <!-- Footer -->
     <footer
-      style="border-top: 8px solid var(--oc-primary); background: #000000; margin-top: 6rem; padding: 3rem 2rem;"
+      style="border-top: 8px solid var(--oc-primary); background: var(--oc-bg); margin-top: 6rem; padding: 3rem 2rem;"
     >
       <div
         style="max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1.5rem;"
@@ -354,12 +363,12 @@ const navLinks = [
         <div style="display: flex; flex-direction: column; gap: 0.25rem;">
           <span
             class="oc-headline"
-            style="font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: rgba(255,255,255,0.7);"
+            style="font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--oc-text-dim);"
           >
             © {new Date().getFullYear()} changelogs.info / OpenClaw
           </span>
           <span
-            style="font-family: var(--oc-font-mono); font-size: 0.6rem; color: rgba(255,255,255,0.3);"
+            style="font-family: var(--oc-font-mono); font-size: 0.6rem; color: var(--oc-text-muted);"
           >
             DATA FROM OFFICIAL GITHUB RELEASES
           </span>
@@ -368,36 +377,36 @@ const navLinks = [
           <a
             href="/"
             class="oc-headline"
-            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); transition: color 150ms;"
+            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--oc-text-dim); transition: color 150ms;"
             onmouseover="this.style.color='#eb0000'"
-            onmouseout="this.style.color='rgba(255,255,255,0.5)'"
+            onmouseout="this.style.color='var(--oc-text-dim)'"
           >
             Hub
           </a>
           <a
             href="/openclaw/changelog/"
             class="oc-headline"
-            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); transition: color 150ms;"
+            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--oc-text-dim); transition: color 150ms;"
             onmouseover="this.style.color='#eb0000'"
-            onmouseout="this.style.color='rgba(255,255,255,0.5)'"
+            onmouseout="this.style.color='var(--oc-text-dim)'"
           >
             Changelog
           </a>
           <a
             href="/openclaw/cheatsheet/"
             class="oc-headline"
-            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); transition: color 150ms;"
+            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--oc-text-dim); transition: color 150ms;"
             onmouseover="this.style.color='#eb0000'"
-            onmouseout="this.style.color='rgba(255,255,255,0.5)'"
+            onmouseout="this.style.color='var(--oc-text-dim)'"
           >
             Cheatsheet
           </a>
           <a
             href="/openclaw/releases/"
             class="oc-headline"
-            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); transition: color 150ms;"
+            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--oc-text-dim); transition: color 150ms;"
             onmouseover="this.style.color='#eb0000'"
-            onmouseout="this.style.color='rgba(255,255,255,0.5)'"
+            onmouseout="this.style.color='var(--oc-text-dim)'"
           >
             Releases
           </a>
@@ -406,24 +415,24 @@ const navLinks = [
             target="_blank"
             rel="noopener noreferrer"
             class="oc-headline"
-            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); transition: color 150ms;"
+            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--oc-text-dim); transition: color 150ms;"
             onmouseover="this.style.color='#eb0000'"
-            onmouseout="this.style.color='rgba(255,255,255,0.5)'"
+            onmouseout="this.style.color='var(--oc-text-dim)'"
           >
             GitHub ↗
           </a>
           <a
             href="/feed/all.xml"
             class="oc-headline"
-            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); transition: color 150ms;"
+            style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--oc-text-dim); transition: color 150ms;"
             onmouseover="this.style.color='#eb0000'"
-            onmouseout="this.style.color='rgba(255,255,255,0.5)'"
+            onmouseout="this.style.color='var(--oc-text-dim)'"
           >
             RSS
           </a>
         </div>
         <div
-          style="font-family: var(--oc-font-mono); font-size: 0.65rem; color: rgba(255,255,255,0.3); display: flex; align-items: center; gap: 0.5rem;"
+          style="font-family: var(--oc-font-mono); font-size: 0.65rem; color: var(--oc-text-muted); display: flex; align-items: center; gap: 0.5rem;"
         >
           <span style="color: var(--oc-primary);">▶</span>
           ROOT@OPENCLAW: ~
@@ -447,14 +456,8 @@ const navLinks = [
       function applyTheme(theme: string) {
         if (theme === "light") {
           document.documentElement.setAttribute("data-theme", "light");
-          // Also update header bg for light
-          const header = document.querySelector(".oc-header") as HTMLElement;
-          if (header)
-            header.style.background = "rgba(251,249,244,0.9)";
         } else {
           document.documentElement.removeAttribute("data-theme");
-          const header = document.querySelector(".oc-header") as HTMLElement;
-          if (header) header.style.background = "rgba(0,0,0,0.85)";
         }
       }
 

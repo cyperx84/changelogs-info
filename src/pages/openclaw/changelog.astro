@@ -36,7 +36,7 @@ function formatReleaseBody(body: string): string {
     <section style="margin-bottom: 4rem;">
       <h1
         class="oc-headline"
-        style="font-size: clamp(3.5rem, 10vw, 7rem); font-weight: 900; text-transform: uppercase; font-style: italic; letter-spacing: -0.03em; line-height: 0.9; margin: 0 0 1.5rem; color: white;"
+        style="font-size: clamp(3.5rem, 10vw, 7rem); font-weight: 900; text-transform: uppercase; font-style: italic; letter-spacing: -0.03em; line-height: 0.9; margin: 0 0 1.5rem; color: var(--oc-text);"
       >
         Changelog
       </h1>
@@ -54,7 +54,7 @@ function formatReleaseBody(body: string): string {
               id="cl-search"
               type="text"
               placeholder="SEARCH RELEASES..."
-              style="width: 100%; background: black; border: 4px solid var(--oc-border); padding: 1rem; font-family: var(--oc-font-headline); font-weight: 700; text-transform: uppercase; color: white; font-size: 0.85rem; outline: none; box-shadow: var(--oc-shadow); transition: border-color 100ms;"
+              style="width: 100%; background: var(--oc-bg); border: 4px solid var(--oc-border); padding: 1rem; font-family: var(--oc-font-headline); font-weight: 700; text-transform: uppercase; color: var(--oc-text); font-size: 0.85rem; outline: none; box-shadow: var(--oc-shadow); transition: border-color 100ms;"
               onfocus="this.style.borderColor='var(--oc-primary-bright)'"
               onblur="this.style.borderColor='var(--oc-border)'"
             />
@@ -125,7 +125,7 @@ function formatReleaseBody(body: string): string {
               <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: baseline; margin-bottom: 1rem;">
                 <span
                   class="oc-headline"
-                  style="font-size: 2.25rem; font-weight: 900; font-style: italic; letter-spacing: -0.02em; color: white;"
+                  style="font-size: 2.25rem; font-weight: 900; font-style: italic; letter-spacing: -0.02em; color: var(--oc-text);"
                 >
                   {release.version}
                 </span>
@@ -136,7 +136,7 @@ function formatReleaseBody(body: string): string {
                   {formatDate(release.date)}
                 </span>
                 {breaking && (
-                  <span style="background: var(--oc-primary); color: white; padding: 0.2rem 0.75rem; font-family: var(--oc-font-headline); font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; border: 2px solid var(--oc-border);">
+                  <span style="background: var(--oc-primary); color: var(--oc-text); padding: 0.2rem 0.75rem; font-family: var(--oc-font-headline); font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; border: 2px solid var(--oc-border);">
                     BREAKING
                   </span>
                 )}
@@ -163,7 +163,7 @@ function formatReleaseBody(body: string): string {
                 </h3>
 
                 <!-- Truncated body -->
-                <div class="oc-release-body" style={`color: ${breaking ? 'rgba(0,0,0,0.75)' : 'var(--oc-text-dim)'}; font-size: 0.875rem; line-height: 1.6;`}>
+                <div class="oc-release-body" style={`color: ${breaking ? 'var(--oc-text-dim)' : 'var(--oc-text-dim)'}; font-size: 0.875rem; line-height: 1.6;`}>
                   {whatChanged.slice(0, 500)}
                   {(release.body || "").length > 500 && (
                     <span style="opacity: 0.4;">… <a href={release.url} target="_blank" rel="noopener noreferrer" style={`color: ${breaking ? 'var(--oc-primary)' : 'var(--oc-primary-bright)'}; text-decoration: underline;`} onclick="event.stopPropagation()">full release</a></span>
@@ -171,7 +171,7 @@ function formatReleaseBody(body: string): string {
                 </div>
 
                 <!-- Footer -->
-                <div style={`display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 2px solid ${breaking ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)'};`}>
+                <div style={`display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 2px solid ${breaking ? 'var(--oc-border-dim)' : 'var(--oc-border-dim)'};`}>
                   <a
                     href={release.url}
                     target="_blank"
@@ -211,7 +211,7 @@ function formatReleaseBody(body: string): string {
     <!-- Scroll to top FAB -->
     <button
       id="cl-scroll-top"
-      style="position: fixed; bottom: 2rem; right: 2rem; z-index: 60; background: white; color: black; padding: 1rem; border: 4px solid black; box-shadow: 6px 6px 0px 0px rgba(235,0,0,1); cursor: pointer; transition: transform 100ms, box-shadow 100ms; font-size: 1.25rem; opacity: 0; pointer-events: none; transition: opacity 200ms, transform 100ms, box-shadow 100ms;"
+      style="position: fixed; bottom: 2rem; right: 2rem; z-index: 60; background: var(--oc-border); color: var(--oc-bg); padding: 1rem; border: 4px solid var(--oc-border); box-shadow: 6px 6px 0px 0px rgba(235,0,0,1); cursor: pointer; transition: transform 100ms, box-shadow 100ms; font-size: 1.25rem; opacity: 0; pointer-events: none; transition: opacity 200ms, transform 100ms, box-shadow 100ms;"
       aria-label="Scroll to top"
       onmouseover="this.style.transform='translate(2px,2px)';this.style.boxShadow='none'"
       onmouseout="this.style.transform='';this.style.boxShadow='6px 6px 0px 0px rgba(235,0,0,1)'"

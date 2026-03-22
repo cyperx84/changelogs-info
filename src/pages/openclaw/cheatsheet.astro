@@ -33,7 +33,7 @@ const proTips = cs.proTips || [];
       <div style="position: absolute; top: -3rem; left: -3rem; opacity: 0.05; pointer-events: none; font-size: 12rem; line-height: 1;">▶</div>
       <h1
         class="oc-headline"
-        style="font-size: clamp(3.5rem, 10vw, 7rem); font-weight: 900; text-transform: uppercase; letter-spacing: -0.03em; line-height: 0.9; margin: 0 0 1rem; color: white;"
+        style="font-size: clamp(3.5rem, 10vw, 7rem); font-weight: 900; text-transform: uppercase; letter-spacing: -0.03em; line-height: 0.9; margin: 0 0 1rem; color: var(--oc-text);"
       >
         Cheat<span style="color: var(--oc-primary-bright);">Sheet</span>
       </h1>
@@ -55,33 +55,33 @@ const proTips = cs.proTips || [];
 
         <!-- Quick Start -->
         {quickStart.steps && quickStart.steps.length > 0 && (
-          <div style="background: white; color: black; padding: 2rem; border: 4px solid black; box-shadow: var(--oc-shadow); position: relative;">
-            <div style="position: absolute; left: -3.25rem; top: 1rem; background: var(--oc-primary); color: white; padding: 0.5rem; border: 2px solid black;">
+          <div style="background: var(--oc-border); color: var(--oc-bg); padding: 2rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow); position: relative;">
+            <div style="position: absolute; left: -3.25rem; top: 1rem; background: var(--oc-primary); color: var(--oc-text); padding: 0.5rem; border: 2px solid var(--oc-border);">
               <span style="font-size: 1rem;">⚡</span>
             </div>
-            <h2 class="oc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: black;">
+            <h2 class="oc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--oc-bg);">
               {quickStart.title || "Quick Start"}
             </h2>
             <div style="display: flex; flex-direction: column; gap: 1rem;">
               {quickStart.steps.map((step: string, i: number) => (
                 <div style="display: flex; gap: 1rem; align-items: flex-start;">
-                  <div style="background: black; color: var(--oc-primary-bright); width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; font-family: var(--oc-font-mono); font-weight: 900; font-size: 0.75rem; flex-shrink: 0;">
+                  <div style="background: var(--oc-bg); color: var(--oc-primary-bright); width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; font-family: var(--oc-font-mono); font-weight: 900; font-size: 0.75rem; flex-shrink: 0;">
                     0{i + 1}
                   </div>
                   <div>
                     {step.includes(":") ? (
                       <>
-                        <p style="font-size: 0.8rem; font-weight: 700; margin: 0 0 0.25rem; color: black; text-transform: uppercase; font-family: var(--oc-font-headline); letter-spacing: 0.05em;">
+                        <p style="font-size: 0.8rem; font-weight: 700; margin: 0 0 0.25rem; color: var(--oc-bg); text-transform: uppercase; font-family: var(--oc-font-headline); letter-spacing: 0.05em;">
                           {step.split(":")[0].trim()}
                         </p>
                         {step.includes("openclaw ") && (
-                          <div style="background: black; color: var(--oc-primary-bright); font-family: var(--oc-font-mono); font-size: 0.8rem; padding: 0.5rem 0.75rem; border: 2px solid black; margin-top: 0.25rem; display: inline-block;">
+                          <div style="background: var(--oc-bg); color: var(--oc-primary-bright); font-family: var(--oc-font-mono); font-size: 0.8rem; padding: 0.5rem 0.75rem; border: 2px solid var(--oc-border); margin-top: 0.25rem; display: inline-block;">
                             $ {step.split(":").slice(1).join(":").trim().match(/openclaw\s+[\w\-\s]+/)?.[0] || step.split(":").slice(1).join(":").trim()}
                           </div>
                         )}
                       </>
                     ) : (
-                      <p style="font-size: 0.875rem; color: rgba(0,0,0,0.75); margin: 0; line-height: 1.5; font-family: var(--oc-font-body);">{step}</p>
+                      <p style="font-size: 0.875rem; color: var(--oc-text-dim); margin: 0; line-height: 1.5; font-family: var(--oc-font-body);">{step}</p>
                     )}
                   </div>
                 </div>
@@ -93,15 +93,15 @@ const proTips = cs.proTips || [];
         <!-- Daily Workflows -->
         {dailyWorkflows.length > 0 && (
           <div style="background: var(--oc-bg-surface); color: var(--oc-text); padding: 2rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow);">
-            <h2 class="oc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: white;">
+            <h2 class="oc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--oc-text);">
               Daily Workflows
             </h2>
             <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1rem;">
               {dailyWorkflows.map((wf: any) => (
-                <li style="display: flex; align-items: flex-start; gap: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <li style="display: flex; align-items: flex-start; gap: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--oc-border-dim);">
                   <span style="color: var(--oc-primary-bright); flex-shrink: 0; font-size: 1rem; margin-top: 0.1rem;">☑</span>
                   <div style="flex: 1; min-width: 0;">
-                    <span style="font-family: var(--oc-font-mono); font-weight: 700; font-size: 0.8rem; color: white; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{wf.command}</span>
+                    <span style="font-family: var(--oc-font-mono); font-weight: 700; font-size: 0.8rem; color: var(--oc-text); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{wf.command}</span>
                     <span style="font-family: var(--oc-font-body); font-size: 0.75rem; color: var(--oc-text-dim); display: block; margin-top: 0.15rem; line-height: 1.3;">{wf.title}</span>
                   </div>
                 </li>
@@ -113,7 +113,7 @@ const proTips = cs.proTips || [];
 
       <!-- CLI Flags - full width table -->
       {cliFlags.length > 0 && (
-        <div style="background: black; border: 4px solid var(--oc-border); padding: 2rem; box-shadow: var(--oc-shadow); overflow-x: auto;">
+        <div style="background: var(--oc-bg); border: 4px solid var(--oc-border); padding: 2rem; box-shadow: var(--oc-shadow); overflow-x: auto;">
           <h2 class="oc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 2rem; color: var(--oc-primary-bright);">
             CLI Flags
           </h2>
@@ -127,14 +127,14 @@ const proTips = cs.proTips || [];
             </thead>
             <tbody style="font-family: var(--oc-font-mono); font-size: 0.85rem;">
               {cliFlags.map((f: any) => (
-                <tr style="border-bottom: 2px solid rgba(255,255,255,0.1); transition: background 100ms;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">
+                <tr style="border-bottom: 2px solid var(--oc-border-dim); transition: background 100ms;" onmouseover="this.style.background='var(--oc-border-dim)'" onmouseout="this.style.background='transparent'">
                   <td style="padding: 1rem 0.5rem; color: var(--oc-primary-bright); font-weight: 700; white-space: nowrap;">
                     --{f.flag}{f.shorthand ? `, -${f.shorthand}` : ""}
                   </td>
                   <td style="padding: 1rem 0.5rem; color: var(--oc-text-muted); white-space: nowrap;">
                     {f.shorthand ? `-${f.shorthand}` : "—"}
                   </td>
-                  <td style="padding: 1rem 0.5rem; color: rgba(255,255,255,0.75); line-height: 1.4;">
+                  <td style="padding: 1rem 0.5rem; color: var(--oc-text-dim); line-height: 1.4;">
                     {f.description}
                   </td>
                 </tr>
@@ -149,16 +149,16 @@ const proTips = cs.proTips || [];
 
         <!-- Slash Commands -->
         {slashCommands.length > 0 && (
-          <div style="background: var(--oc-primary); color: white; padding: 2rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow); position: relative; overflow: hidden;">
-            <div style="position: absolute; top: 1rem; right: 1rem; color: rgba(0,0,0,0.15); font-size: 4rem; pointer-events: none; user-select: none;">🔧</div>
-            <h2 class="oc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: white;">
+          <div style="background: var(--oc-primary); color: var(--oc-text); padding: 2rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow); position: relative; overflow: hidden;">
+            <div style="position: absolute; top: 1rem; right: 1rem; color: var(--oc-border-dim); font-size: 4rem; pointer-events: none; user-select: none;">🔧</div>
+            <h2 class="oc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--oc-text);">
               Slash Commands
             </h2>
             <div style="display: flex; flex-direction: column; gap: 0.75rem;">
               {slashCommands.map((cmd: any) => (
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(0,0,0,0.15); padding-bottom: 0.75rem; gap: 1rem;">
-                  <span class="oc-headline" style="font-weight: 900; font-size: 0.9rem; color: white;">{cmd.command}</span>
-                  <span style="background: black; color: white; font-family: var(--oc-font-mono); font-size: 0.65rem; padding: 0.2rem 0.5rem; flex-shrink: 0; max-width: 12rem; text-align: right; line-height: 1.3;">{cmd.description}</span>
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--oc-border-dim); padding-bottom: 0.75rem; gap: 1rem;">
+                  <span class="oc-headline" style="font-weight: 900; font-size: 0.9rem; color: var(--oc-text);">{cmd.command}</span>
+                  <span style="background: var(--oc-bg); color: var(--oc-text); font-family: var(--oc-font-mono); font-size: 0.65rem; padding: 0.2rem 0.5rem; flex-shrink: 0; max-width: 12rem; text-align: right; line-height: 1.3;">{cmd.description}</span>
                 </div>
               ))}
             </div>
@@ -167,17 +167,17 @@ const proTips = cs.proTips || [];
 
         <!-- Pro Tips -->
         {proTips.length > 0 && (
-          <div style="background: white; color: black; padding: 2rem; border: 4px solid black; box-shadow: var(--oc-shadow);">
-            <h2 class="oc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: black; display: flex; align-items: center; gap: 0.5rem;">
+          <div style="background: var(--oc-border); color: var(--oc-bg); padding: 2rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow);">
+            <h2 class="oc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--oc-bg); display: flex; align-items: center; gap: 0.5rem;">
               <span style="color: var(--oc-primary);">★</span> Pro Tips
             </h2>
             <div style="display: flex; flex-direction: column; gap: 1.25rem;">
               {(Array.isArray(proTips) ? proTips : []).map((tip: any) => (
                 <div style="display: flex; gap: 1rem; align-items: flex-start;">
-                  <div style="flex-shrink: 0; width: 2.5rem; height: 2.5rem; background: var(--oc-primary); display: flex; align-items: center; justify-content: center; color: white; border: 2px solid black;">
+                  <div style="flex-shrink: 0; width: 2.5rem; height: 2.5rem; background: var(--oc-primary); display: flex; align-items: center; justify-content: center; color: var(--oc-text); border: 2px solid var(--oc-border);">
                     <span style="font-size: 1rem;">💡</span>
                   </div>
-                  <p style="font-weight: 700; font-family: var(--oc-font-body); margin: 0; font-size: 0.875rem; line-height: 1.5; color: black;">
+                  <p style="font-weight: 700; font-family: var(--oc-font-body); margin: 0; font-size: 0.875rem; line-height: 1.5; color: var(--oc-bg);">
                     {typeof tip === "string" ? tip : tip.tip || JSON.stringify(tip)}
                   </p>
                 </div>
@@ -188,13 +188,13 @@ const proTips = cs.proTips || [];
 
         <!-- Power Moves (if no slash commands / pro tips, or always show) -->
         {powerMoves.length > 0 && slashCommands.length === 0 && (
-          <div style="background: var(--oc-primary); color: white; padding: 2rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow);">
+          <div style="background: var(--oc-primary); color: var(--oc-text); padding: 2rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow);">
             <h2 class="oc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; margin: 0 0 1.5rem;">Power Moves</h2>
             <div style="display: flex; flex-direction: column; gap: 1rem;">
               {powerMoves.map((pm: any) => (
-                <div style="border-bottom: 2px solid rgba(0,0,0,0.2); padding-bottom: 0.75rem;">
+                <div style="border-bottom: 2px solid var(--oc-border-dim); padding-bottom: 0.75rem;">
                   <span class="oc-headline" style="font-size: 0.85rem; font-weight: 900; display: block; margin-bottom: 0.25rem;">{pm.title}</span>
-                  <code style="font-family: var(--oc-font-mono); font-size: 0.75rem; color: rgba(255,255,255,0.8); word-break: break-all;">{pm.command}</code>
+                  <code style="font-family: var(--oc-font-mono); font-size: 0.75rem; color: var(--oc-text-dim); word-break: break-all;">{pm.command}</code>
                 </div>
               ))}
             </div>
@@ -205,16 +205,16 @@ const proTips = cs.proTips || [];
       <!-- Power Moves section (full, if they exist alongside commands) -->
       {powerMoves.length > 0 && slashCommands.length > 0 && (
         <div style="background: var(--oc-bg-surface); border: 4px solid var(--oc-border); padding: 2rem; box-shadow: var(--oc-shadow);">
-          <h2 class="oc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: white;">
+          <h2 class="oc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--oc-text);">
             Power Moves
           </h2>
           <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
             {powerMoves.map((pm: any) => (
               <div style="border: 2px solid var(--oc-border-dim); padding: 1.25rem;">
-                <h3 class="oc-headline" style="font-size: 1rem; font-weight: 900; text-transform: uppercase; color: white; margin: 0 0 0.5rem; line-height: 1.2;">{pm.title}</h3>
+                <h3 class="oc-headline" style="font-size: 1rem; font-weight: 900; text-transform: uppercase; color: var(--oc-text); margin: 0 0 0.5rem; line-height: 1.2;">{pm.title}</h3>
                 <p style="font-family: var(--oc-font-body); font-size: 0.8rem; color: var(--oc-text-dim); margin: 0 0 0.75rem; line-height: 1.4;">{pm.description}</p>
                 {pm.command && (
-                  <code style="display: block; background: black; padding: 0.5rem 0.75rem; font-family: var(--oc-font-mono); font-size: 0.75rem; color: var(--oc-primary-bright); word-break: break-all; border: 2px solid var(--oc-border-dim);">{pm.command}</code>
+                  <code style="display: block; background: var(--oc-bg); padding: 0.5rem 0.75rem; font-family: var(--oc-font-mono); font-size: 0.75rem; color: var(--oc-primary-bright); word-break: break-all; border: 2px solid var(--oc-border-dim);">{pm.command}</code>
                 )}
               </div>
             ))}
@@ -224,8 +224,8 @@ const proTips = cs.proTips || [];
 
       <!-- Gotchas - warning section -->
       {gotchas.length > 0 && (
-        <div style="background: #ffdad6; color: #93000a; padding: 3rem; border: 4px solid black; box-shadow: var(--oc-shadow); position: relative;">
-          <div style="position: absolute; right: -1.5rem; top: -1.5rem; background: var(--oc-primary); padding: 1rem; border: 4px solid black; color: white; transform: rotate(12deg);">
+        <div style="background: #ffdad6; color: #93000a; padding: 3rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow); position: relative;">
+          <div style="position: absolute; right: -1.5rem; top: -1.5rem; background: var(--oc-primary); padding: 1rem; border: 4px solid var(--oc-border); color: var(--oc-text); transform: rotate(12deg);">
             <span style="font-size: 2.5rem;">⚠</span>
           </div>
           <h2 class="oc-headline" style="font-size: 2rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 2rem; color: #93000a;">
