@@ -88,6 +88,44 @@ function getReleaseBody(evidenceContent: string, version: string): { body: strin
   return null;
 }
 
+/**
+ * Extract the changelog section for a specific version from a CHANGELOG.md file.
+ * Handles common formats: Keep-a-Changelog ([v1.2.3]), plain (## 1.2.3), CalVer (## 2026.3.13-1).
+ * Returns null if the version section is not found (pointer file, missing section, etc.).
+ */
+function extractChangelogSection(changelogContent: string, version: string): string | null {
+  const lines = changelogContent.split("\n");
+  // Detect pointer files: no version-like headers means it's just a redirect file
+  const versionHeaderPattern = /^#{1,3}\s+(?:\[?v?[\d.]+[\d.[\]-]*\]?|[\d]{4}\.[\d.]+)/;
+  const hasVersionHeaders = lines.some(l => versionHeaderPattern.test(l));
+  if (!hasVersionHeaders) return null;
+
+  // Escape special regex chars in version string
+  const escapedVersion = version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  // Match: ## [1.2.3], ## v1.2.3, ## 1.2.3, ## 2026.3.13-1 (with optional date suffix)
+  const sectionStartRegex = new RegExp(
+    `^(#{1,3})\\s+(?:\\[v?${escapedVersion}\\]|v?${escapedVersion})(?:\\s|$)`,
+    "m"
+  );
+  const match = sectionStartRegex.exec(changelogContent);
+  if (!match) return null;
+
+  const headerLevel = match[1].length; // number of # chars
+  const startIdx = match.index;
+  const afterHeader = changelogContent.slice(startIdx + match[0].length);
+
+  // Find next heading of same or higher level (fewer or equal # chars)
+  const nextSectionRegex = new RegExp(`^#{1,${headerLevel}}\\s+`, "m");
+  const nextMatch = nextSectionRegex.exec(afterHeader);
+
+  const sectionContent = nextMatch
+    ? changelogContent.slice(startIdx, startIdx + match[0].length + nextMatch.index)
+    : changelogContent.slice(startIdx);
+
+  const trimmed = sectionContent.trim();
+  return trimmed.length > 20 ? trimmed : null;
+}
+
 async function runTool(toolSlug: string, forceTier2: boolean): Promise<RunResult> {
   const result: RunResult = {
     tool: toolSlug,
@@ -186,15 +224,46 @@ async function runTool(toolSlug: string, forceTier2: boolean): Promise<RunResult
       console.log(`  📋 Manifest updated`);
     }
 
+    // Try to fetch changelog source (best-effort; used to prefer canonical content over release body)
+    const changelogSource = getSourcesForTool(toolSlug).find(s => s.role === "changelog");
+    let changelogContent: string | null = null;
+    if (changelogSource) {
+      try {
+        const changelogFetch = await fetchSource(changelogSource);
+        if (!changelogFetch.error && !changelogFetch.skipped && changelogFetch.statusCode === 200) {
+          storeEvidence(changelogFetch);
+          // Skip if the source is flagged as a pointer — or detect it at runtime via extractChangelogSection
+          if (!changelogSource.changelogIsPointer) {
+            changelogContent = changelogFetch.content;
+          } else {
+            // Still store the content; runtime detection in extractChangelogSection handles fallback
+            changelogContent = changelogFetch.content;
+          }
+        }
+      } catch (err) {
+        console.log(`  ℹ️  Changelog fetch skipped for ${toolSlug}: ${(err as Error).message}`);
+      }
+    }
+
     // Tier 2: LLM extraction
     const shouldRunTier2 = forceTier2 || diff.tier2Required;
     if (shouldRunTier2 && diff.detectedVersion) {
       const releaseInfo = getReleaseBody(fetchResult.content, diff.detectedVersion);
       if (releaseInfo && releaseInfo.body) {
+        // Prefer changelog section for canonical content; fall back to GitHub release body
+        let preferredBody = releaseInfo.body;
+        if (changelogContent) {
+          const changelogSection = extractChangelogSection(changelogContent, diff.detectedVersion);
+          if (changelogSection) {
+            preferredBody = changelogSection;
+            console.log(`  📄 Using changelog section for ${diff.detectedVersion} content`);
+          }
+        }
+
         const refreshInput: RefreshInput = {
           toolSlug,
           releaseVersion: diff.detectedVersion,
-          releaseBody: releaseInfo.body,
+          releaseBody: preferredBody,
           releaseDate: releaseInfo.date,
           currentPayload: payload,
           previousVersion: diff.previousVersion,

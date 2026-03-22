@@ -86,6 +86,11 @@ Full structured payload for a single tool. Available slugs: `claude-code`, `code
     "verification_status": "verified"
   },
   "payload": {
+    "meta": {
+      "latest_stable": "2.1.74",
+      "latest_release_date": "2026-03-12",
+      "tldr": "LLM-written summary of the latest release — see below"
+    },
     "features": [...],
     "commands": [...],
     "flags": [...],
@@ -96,6 +101,22 @@ Full structured payload for a single tool. Available slugs: `claude-code`, `code
   }
 }
 ```
+
+### TL;DR summary (`payload.meta.tldr`)
+
+An LLM-written plain-English summary of the most important changes in the latest release. Present after the first Tier 2 extraction run for supported tools (`claude-code`, `codex-cli`, `openclaw`). May be `null` or absent for tools without Tier 2 coverage.
+
+```json
+{
+  "payload": {
+    "meta": {
+      "tldr": "This release adds a new /memory command for persistent context, fixes a crash when CLAUDE_MODEL is unset, and deprecates the --no-cache flag in favor of --cache-control=none. No breaking changes."
+    }
+  }
+}
+```
+
+The summary is generated from the canonical changelog section when available, otherwise from the GitHub release body. It is refreshed on every version bump and on same-version release note edits.
 
 ### Features
 

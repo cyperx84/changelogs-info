@@ -7,6 +7,8 @@ export interface Source {
   format: "html" | "json" | "markdown" | "github_atom";
   pollIntervalMinutes: number;
   noisePatterns?: string[];
+  /** If true, the CHANGELOG.md is expected to be a pointer to GitHub releases rather than full content */
+  changelogIsPointer?: boolean;
 }
 
 export const sources: Source[] = [
@@ -41,6 +43,17 @@ export const sources: Source[] = [
     format: "json",
     pollIntervalMinutes: 30,
   },
+  {
+    toolSlug: "codex-cli",
+    role: "changelog",
+    url: "https://raw.githubusercontent.com/openai/codex/main/CHANGELOG.md",
+    official: true,
+    priority: 70,
+    format: "markdown",
+    pollIntervalMinutes: 60,
+    // This file may just be a pointer to GitHub releases; runtime detection handles fallback
+    changelogIsPointer: true,
+  },
 
   // gemini-cli
   {
@@ -73,6 +86,15 @@ export const sources: Source[] = [
     priority: 90,
     format: "json",
     pollIntervalMinutes: 30,
+  },
+  {
+    toolSlug: "openclaw",
+    role: "changelog",
+    url: "https://raw.githubusercontent.com/openclaw/openclaw/main/CHANGELOG.md",
+    official: true,
+    priority: 70,
+    format: "markdown",
+    pollIntervalMinutes: 60,
   },
 
   // cline

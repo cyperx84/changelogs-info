@@ -121,10 +121,11 @@ Return ONLY a valid JSON object (no markdown fences, no explanation) with these 
   "deprecated_commands": [{ "name": "/cmd", "replaced_by": "...", "deprecated_since": "${input.releaseVersion}", "source_url": "" }],
   "breaking_changes": [{ "id": "kebab-case-id", "version": "${input.releaseVersion}", "title": "...", "description": "...", "affected": [], "migration": "...", "source_url": "" }],
   "new_env_vars": [{ "name": "VAR_NAME", "purpose": "...", "status": "stable", "since": "${input.releaseVersion}", "source_url": "" }],
-  "meta_updates": { "latest_stable": "${input.releaseVersion}", "latest_release_date": "${input.releaseDate}" }
+  "meta_updates": { "latest_stable": "${input.releaseVersion}", "latest_release_date": "${input.releaseDate}" },
+  "tldr": "2-4 sentence plain-English summary of the most important changes for a developer deciding whether to upgrade. Highlight breaking changes, major new features, and notable fixes. Omit trivial patch details."
 }
 
-If a category has no items, use an empty array []. Return ONLY the JSON.`;
+If a category has no items, use an empty array []. The "tldr" field must always be a non-empty string. Return ONLY the JSON.`;
 }
 
 // ──────────────────────────────────────────────────────────────────────────────

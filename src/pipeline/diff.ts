@@ -130,9 +130,11 @@ export function computeDiff(
       { path: "generated_at", op: "replace", value: now },
     ];
   } else {
-    // Same version but content changed (e.g. release notes edited)
+    // Same version but content changed (e.g. release notes edited after publish)
     result.scope = "small";
     result.reasons.push("content_changed_same_version");
+    // Re-run Tier 2 so the TL;DR and extracted fields reflect the edited notes
+    result.tier2Required = true;
   }
 
   return result;

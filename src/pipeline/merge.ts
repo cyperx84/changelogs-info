@@ -60,6 +60,8 @@ export interface ExtractionResult {
     latest_stable: string;
     latest_release_date: string;
   };
+  /** LLM-written TL;DR of the most important changes in this release */
+  tldr?: string;
 }
 
 // Helper to safely get an array from a nested path
@@ -164,6 +166,9 @@ export function mergeExtraction(
   }
   if (extraction.meta_updates.latest_release_date) {
     setNested(payload, ["payload", "meta", "latest_release_date"], extraction.meta_updates.latest_release_date);
+  }
+  if (extraction.tldr) {
+    setNested(payload, ["payload", "meta", "tldr"], extraction.tldr);
   }
 
   // --- Update envelope ---
