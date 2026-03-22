@@ -14,6 +14,15 @@ function renderBody(body: string): string {
   if (!body) return "";
   marked.setOptions({ gfm: true, breaks: false });
   let html = marked.parse(body) as string;
+  // Shorten GitHub PR/issue links: full URL → #1234
+  html = html.replace(/<a href="(https:\/\/github\.com\/[^/]+\/[^/]+\/pull\/(\d+))"[^>]*>[^<]*<\/a>/g,
+    '<a href="$1" target="_blank" rel="noopener noreferrer" class="cl-pr-link">#$2</a>');
+  html = html.replace(/<a href="(https:\/\/github\.com\/[^/]+\/[^/]+\/issues\/(\d+))"[^>]*>[^<]*<\/a>/g,
+    '<a href="$1" target="_blank" rel="noopener noreferrer" class="cl-pr-link">#$2</a>');
+  // Strip "by @username in" before PR links
+  html = html.replace(/ by <a href="https:\/\/github\.com\/[^"]*"[^>]*>@[^<]+<\/a> in /g, ' ');
+  // Strip remaining "by @username in" plain text before links
+  html = html.replace(/ by @[\w-]+ in /g, ' ');
   // Inject type badges into list items based on conventional commit prefixes
   html = html.replace(/<li>(.*?)<\/li>/gs, (match, content) => {
     const text = content.toLowerCase();
