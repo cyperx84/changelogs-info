@@ -33,6 +33,40 @@ function getPayloadTldr(toolId: string): string | null {
 
 const llmTldr = getPayloadTldr("codex-cli");
 
+async function getCanonicalChangelogSection(version: string | undefined, fallbackBody: string = ""): Promise<string> {
+  if (!version) return fallbackBody;
+
+  try {
+    const response = await fetch("https://raw.githubusercontent.com/openai/codex/main/CHANGELOG.md");
+    if (!response.ok) return fallbackBody;
+
+    const changelog = await response.text();
+    if (/github releases/i.test(changelog) && changelog.split("\n").length < 20) return fallbackBody;
+
+    const escapedVersion = version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const sectionStartRegex = new RegExp(`^(#{1,3})\\s+(?:\\[v?${escapedVersion}\\]|v?${escapedVersion})(?:\\s|$)`, "m");
+    const match = sectionStartRegex.exec(changelog);
+    if (!match) return fallbackBody;
+
+    const headerLevel = match[1].length;
+    const startIdx = match.index;
+    const afterHeader = changelog.slice(startIdx + match[0].length);
+    const nextSectionRegex = new RegExp(`^#{1,${headerLevel}}\\s+`, "m");
+    const nextMatch = nextSectionRegex.exec(afterHeader);
+
+    const sectionContent = nextMatch
+      ? changelog.slice(startIdx, startIdx + match[0].length + nextMatch.index)
+      : changelog.slice(startIdx);
+
+    const trimmed = sectionContent.trim();
+    return trimmed.length > 20 ? trimmed : fallbackBody;
+  } catch {
+    return fallbackBody;
+  }
+}
+
+const latestCanonicalBody = await getCanonicalChangelogSection(latestForTldr?.version, latestForTldr?.body || "");
+
 function isBreaking(body: string = ""): boolean {
   return body.toLowerCase().includes("breaking");
 }
@@ -300,7 +334,7 @@ function getTldr(body: string): string[] {
       const fallback = (latestForTldr.body || "").split("\n").filter(l => l.trim() && !l.startsWith("#")).slice(0, 2).map(l => l.replace(/^[\*\-]\s+/, "").trim());
       const items = tldr.length > 0 ? tldr : fallback;
       const summaryText = llmTldr?.trim() || null;
-      const latestRendered = renderBody(latestForTldr.body || "");
+      const latestRendered = renderBody(latestCanonicalBody || latestForTldr.body || "");
 
       return (
         <section style="margin-bottom: 3rem;">
@@ -342,7 +376,7 @@ function getTldr(body: string): string[] {
               <h3 class="cx-headline" style="font-size: 1.5rem; font-weight: 900; text-transform: uppercase; margin: 0; color: var(--cx-text);">
                 {(latestForTldr.name || latestForTldr.version).replace(/^codex[\s-]cli\s+/i, "")}
               </h3>
-              <a href={latestForTldr.url} target="_blank" rel="noopener noreferrer" class="cx-headline" style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--cx-primary-bright); text-decoration: none;">↗ GitHub</a>
+              <a href="https://github.com/openai/codex/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer" class="cx-headline" style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--cx-primary-bright); text-decoration: none;">↗ Changelog</a>
             </div>
             <div class="changelog-body" style="color: var(--cx-text-dim); font-size: 0.875rem; line-height: 1.7; font-family: var(--cx-font-body);" set:html={latestRendered} />
           </div>
