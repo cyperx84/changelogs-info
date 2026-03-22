@@ -2,10 +2,15 @@
  * Cloudflare Pages Middleware
  *
  * Subdomain routing:
- *   openclaw.changelogs.info/* → /openclaw/* (serves the same Pages deployment)
+ *   openclaw.changelogs.info/*   → /openclaw/* 
+ *   claude-code.changelogs.info/* → /claude-code/*
+ *   codex.changelogs.info/*      → /codex-cli/*
+ *   codex-cli.changelogs.info/*  → /codex-cli/*
  *
  * Path-based routing still works for local dev:
- *   changelogs.info/openclaw/* → unchanged
+ *   changelogs.info/openclaw/*     → unchanged
+ *   changelogs.info/claude-code/*  → unchanged
+ *   changelogs.info/codex-cli/*    → unchanged
  */
 
 export async function onRequest(context) {
@@ -13,23 +18,35 @@ export async function onRequest(context) {
   const url = new URL(request.url);
   const hostname = url.hostname;
 
-  // Route openclaw subdomain to /openclaw/* path
+  // Determine which tool prefix this subdomain maps to
+  let toolPrefix = null;
+
   if (hostname === "openclaw.changelogs.info") {
+    toolPrefix = "/openclaw";
+  } else if (hostname === "claude-code.changelogs.info") {
+    toolPrefix = "/claude-code";
+  } else if (
+    hostname === "codex.changelogs.info" ||
+    hostname === "codex-cli.changelogs.info"
+  ) {
+    toolPrefix = "/codex-cli";
+  }
+
+  if (toolPrefix) {
     let newPathname;
 
     if (url.pathname === "/" || url.pathname === "") {
-      newPathname = "/openclaw/";
-    } else if (url.pathname.startsWith("/openclaw")) {
-      // Already has /openclaw prefix — pass through
+      newPathname = toolPrefix + "/";
+    } else if (url.pathname.startsWith(toolPrefix)) {
+      // Already has the correct prefix — pass through
       newPathname = url.pathname;
     } else {
-      newPathname = "/openclaw" + url.pathname;
+      newPathname = toolPrefix + url.pathname;
     }
 
     const newUrl = new URL(url.toString());
     newUrl.pathname = newPathname;
 
-    // Fetch from the assets with the rewritten URL
     const newRequest = new Request(newUrl.toString(), {
       method: request.method,
       headers: request.headers,

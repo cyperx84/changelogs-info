@@ -1,0 +1,535 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description?: string;
+  currentPage?: string;
+}
+
+const {
+  title,
+  description = "Track Codex CLI releases, breaking changes, and config updates.",
+  currentPage = "",
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const navLinks = [
+  { label: "Changelog", href: "/codex-cli/changelog/", key: "changelog" },
+  { label: "Cheatsheet", href: "/codex-cli/cheatsheet/", key: "cheatsheet" },
+  { label: "Releases", href: "/codex-cli/releases/", key: "releases" },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&family=Work+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&family=Work+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    </noscript>
+    <script defer data-domain="changelogs.info" src="https://plausible.io/js/script.js"></script>
+
+    <style is:global>
+      @font-face {
+        font-family: 'Space Grotesk Fallback';
+        src: local('Arial Black'), local('Arial');
+        size-adjust: 107%;
+        ascent-override: 95%;
+        descent-override: 22%;
+        line-gap-override: 0%;
+      }
+      @font-face {
+        font-family: 'Work Sans Fallback';
+        src: local('Helvetica Neue'), local('Arial');
+        size-adjust: 100%;
+        ascent-override: 96%;
+        descent-override: 24%;
+        line-gap-override: 0%;
+      }
+
+      /* Codex CLI Terminal Green Neo-Brutalist Theme */
+      :root {
+        --cx-header-bg: rgba(0, 10, 2, 0.92);
+        --cx-primary: #00c851;
+        --cx-primary-bright: #33ff33;
+        --cx-accent: #00ff41;
+        --cx-bg: #000a02;
+        --cx-bg-card: #001204;
+        --cx-bg-surface: #001a06;
+        --cx-text: #e0ffe8;
+        --cx-text-dim: rgba(200, 255, 220, 0.65);
+        --cx-text-muted: rgba(180, 255, 200, 0.4);
+        --cx-border: #33ff33;
+        --cx-border-dim: rgba(51, 255, 51, 0.2);
+        --cx-shadow: 6px 6px 0px 0px rgba(51, 255, 51, 0.25);
+        --cx-shadow-sm: 4px 4px 0px 0px rgba(51, 255, 51, 0.2);
+        --cx-shadow-lg: 12px 12px 0px 0px rgba(51, 255, 51, 0.12);
+        --cx-font-headline: "Space Grotesk", "Space Grotesk Fallback", sans-serif;
+        --cx-font-body: "JetBrains Mono", ui-monospace, monospace;
+        --cx-font-mono: "JetBrains Mono", ui-monospace, monospace;
+      }
+
+      [data-theme="light"] {
+        --cx-header-bg: rgba(240, 255, 244, 0.92);
+        --cx-primary: #00a83e;
+        --cx-primary-bright: #007a2e;
+        --cx-bg: #f0fff4;
+        --cx-bg-card: #ffffff;
+        --cx-bg-surface: #dcffe8;
+        --cx-text: #001a06;
+        --cx-text-dim: rgba(0, 26, 6, 0.65);
+        --cx-text-muted: rgba(0, 26, 6, 0.4);
+        --cx-border: #001a06;
+        --cx-border-dim: rgba(0, 26, 6, 0.2);
+        --cx-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
+        --cx-shadow-sm: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+        --cx-shadow-lg: 12px 12px 0px 0px rgba(0, 0, 0, 0.8);
+      }
+
+      /* Base */
+      html[data-layout="codex"] {
+        background: var(--cx-bg);
+        color: var(--cx-text);
+      }
+      html[data-layout="codex"] body {
+        margin: 0;
+        padding: 0;
+        background: var(--cx-bg);
+        color: var(--cx-text);
+        font-family: var(--cx-font-body);
+        min-height: 100vh;
+      }
+
+      /* CRT scanlines overlay (always subtle) */
+      html[data-layout="codex"] body::before {
+        content: '';
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(0, 255, 65, 0.015),
+          rgba(0, 255, 65, 0.015) 1px,
+          transparent 1px,
+          transparent 3px
+        );
+        pointer-events: none;
+        z-index: 9998;
+        opacity: 0.8;
+      }
+
+      /* Typography */
+      .cx-headline {
+        font-family: var(--cx-font-headline);
+        font-weight: 900;
+      }
+
+      /* Badge styles */
+      .cl-badge {
+        display: inline-block;
+        font-family: var(--cx-font-mono);
+        font-size: 0.55rem;
+        font-weight: 700;
+        padding: 0.1rem 0.4rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-right: 0.4rem;
+        vertical-align: middle;
+      }
+      .cl-badge-fix { background: rgba(51, 255, 51, 0.1); color: #33ff33; border: 1px solid rgba(51, 255, 51, 0.3); }
+      .cl-badge-feat { background: rgba(0, 200, 81, 0.12); color: #00c851; border: 1px solid rgba(0, 200, 81, 0.3); }
+      .cl-badge-docs { background: rgba(0, 255, 65, 0.08); color: #00ff41; border: 1px solid rgba(0, 255, 65, 0.2); }
+      .cl-badge-test { background: rgba(0, 168, 62, 0.1); color: #00a83e; border: 1px solid rgba(0, 168, 62, 0.2); }
+      .cl-badge-chore { background: rgba(0, 100, 30, 0.1); color: #00641e; border: 1px solid rgba(0, 100, 30, 0.2); }
+      .cl-badge-ci { background: rgba(0, 80, 20, 0.08); color: #005014; border: 1px solid rgba(0, 80, 20, 0.15); }
+      .cl-badge-perf { background: rgba(51, 255, 51, 0.15); color: #33ff33; border: 1px solid rgba(51, 255, 51, 0.35); }
+
+      .cl-pr-link {
+        color: var(--cx-primary-bright) !important;
+        text-decoration: none;
+        font-family: var(--cx-font-mono);
+        font-size: 0.8em;
+        opacity: 0.7;
+        transition: opacity 150ms;
+      }
+      .cl-pr-link:hover { opacity: 1; }
+
+      /* Changelog body */
+      .changelog-body h1, .changelog-body h2, .changelog-body h3, .changelog-body h4 {
+        font-family: var(--cx-font-headline);
+        font-weight: 800;
+        text-transform: uppercase;
+        color: var(--cx-text);
+        margin: 1.5rem 0 0.75rem;
+        letter-spacing: -0.01em;
+      }
+      .changelog-body h1 { font-size: 1.3rem; }
+      .changelog-body h2 { font-size: 1.1rem; border-bottom: 2px solid var(--cx-border-dim); padding-bottom: 0.25rem; }
+      .changelog-body h3 { font-size: 0.95rem; color: var(--cx-primary-bright); }
+      .changelog-body p { margin: 0.75rem 0; }
+      .changelog-body ul { list-style: none; margin: 0.5rem 0; padding: 0; }
+      .changelog-body li { padding: 0.25rem 0; display: flex; align-items: flex-start; gap: 0.5rem; }
+      .changelog-body li::before { content: '>'; color: var(--cx-primary-bright); flex-shrink: 0; font-weight: 700; font-family: var(--cx-font-mono); }
+      .changelog-body code {
+        font-family: var(--cx-font-mono);
+        font-size: 0.85em;
+        background: rgba(51, 255, 51, 0.08);
+        color: var(--cx-primary-bright);
+        padding: 0.1rem 0.35rem;
+        border: 1px solid rgba(51, 255, 51, 0.2);
+      }
+      .changelog-body pre {
+        background: var(--cx-bg-surface);
+        border: 2px solid var(--cx-border-dim);
+        padding: 1rem;
+        overflow-x: auto;
+        font-family: var(--cx-font-mono);
+        font-size: 0.8rem;
+      }
+      .changelog-body a {
+        color: var(--cx-primary-bright);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(51, 255, 51, 0.3);
+        transition: border-color 150ms;
+      }
+      .changelog-body a:hover { border-color: var(--cx-primary-bright); }
+      .changelog-body strong { color: var(--cx-text); font-weight: 700; }
+
+      /* Collapsed changelog */
+      .cl-collapsed {
+        max-height: 180px;
+      }
+      .cl-collapsed::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        height: 80px;
+        background: linear-gradient(to bottom, transparent, var(--cx-bg-card));
+        pointer-events: none;
+      }
+
+      /* Nav */
+      .cx-nav-header {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 100;
+        background: var(--cx-header-bg);
+        backdrop-filter: blur(10px);
+        border-bottom: 4px solid var(--cx-border);
+      }
+      .cx-nav-inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 1.25rem;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
+      .cx-nav-logo {
+        font-family: var(--cx-font-headline);
+        font-weight: 900;
+        font-size: 1.05rem;
+        text-transform: uppercase;
+        letter-spacing: -0.02em;
+        color: var(--cx-text);
+        text-decoration: none;
+        flex-shrink: 0;
+        font-style: italic;
+      }
+      .cx-nav-logo span { color: var(--cx-primary-bright); }
+
+      /* Dot grid */
+      .cx-dotgrid {
+        background-image: radial-gradient(circle, var(--cx-border-dim) 1px, transparent 1px);
+        background-size: 24px 24px;
+      }
+
+      /* Cursor blink */
+      .cx-cursor {
+        animation: cx-blink 1s step-end infinite;
+      }
+      @keyframes cx-blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+      }
+
+      /* Pulse dot */
+      .cx-pulse-dot {
+        animation: cx-pulse 2s ease-in-out infinite;
+      }
+      @keyframes cx-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+      }
+
+      /* CTA button */
+      .cx-cta-btn {
+        transition: transform 100ms, box-shadow 100ms;
+      }
+      .cx-cta-btn:hover {
+        transform: translate(1px, 1px);
+        box-shadow: none !important;
+      }
+
+      /* Quick link */
+      .cx-quick-link {
+        transition: border-color 150ms, box-shadow 150ms;
+      }
+      .cx-quick-link:hover {
+        border-color: var(--cx-primary) !important;
+        box-shadow: var(--cx-shadow-sm) !important;
+      }
+
+      /* Hero animation */
+      .cx-hero-title {
+        animation: cx-slide-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+      .cx-hero-section p {
+        animation: cx-slide-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+      }
+      .cx-terminal-card {
+        animation: cx-slide-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+      }
+      @keyframes cx-slide-in {
+        from { opacity: 0; transform: translateY(18px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .cx-section-reveal {
+        opacity: 0;
+        transform: translateY(16px);
+        animation: cx-slide-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+      }
+
+      /* Stats */
+      .cx-stats-cell {
+        transition: background 150ms;
+      }
+      .cx-stats-cell:hover {
+        background: rgba(51, 255, 51, 0.1) !important;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .cx-hero-grid { grid-template-columns: 1fr !important; }
+        .cx-terminal-card { width: 100% !important; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cx-hero-title, .cx-hero-section p, .cx-terminal-card, .cx-section-reveal {
+          animation: none !important; opacity: 1; transform: none;
+        }
+        .cx-cursor, .cx-pulse-dot { animation: none !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="cx-nav-header">
+      <div class="cx-nav-inner">
+        <!-- Logo -->
+        <a href="/codex-cli/" class="cx-nav-logo">
+          Codex<span>CLI</span>
+        </a>
+
+        <!-- Hub link (desktop) -->
+        <a
+          id="cx-hub-link"
+          href="/"
+          style="font-family: var(--cx-font-mono); font-size: 0.65rem; font-weight: 700; color: var(--cx-text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.1em; flex-shrink: 0; transition: color 150ms;"
+          onmouseover="this.style.color='var(--cx-primary-bright)'"
+          onmouseout="this.style.color='var(--cx-text-muted)'"
+        >
+          ← hub
+        </a>
+
+        <!-- Desktop nav -->
+        <nav id="cx-desktop-nav" style="display: flex; gap: 0; flex: 1; align-items: center;">
+          {navLinks.map((link) => (
+            <a
+              href={link.href}
+              class="cx-headline"
+              style={`font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; padding: 0.5rem 1rem; text-decoration: none; transition: color 150ms, background 150ms; ${
+                currentPage === link.key
+                  ? `color: var(--cx-primary-bright); border-bottom: 4px solid var(--cx-primary-bright); margin-bottom: -4px;`
+                  : `color: var(--cx-text); opacity: 0.7;`
+              }`}
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+
+        <!-- Right: actions -->
+        <div style="display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0;">
+          <button
+            id="cx-theme-toggle"
+            aria-label="Toggle theme"
+            style="background: transparent; border: 2px solid var(--cx-border); padding: 6px 10px; color: var(--cx-text); cursor: pointer; box-shadow: var(--cx-shadow-sm); font-family: var(--cx-font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.05em; transition: box-shadow 100ms, transform 100ms; position: relative; overflow: visible;"
+          >
+            <span id="cx-theme-label">◐</span>
+          </button>
+
+          <!-- Hamburger (mobile only) -->
+          <button
+            id="cx-mobile-menu-btn"
+            aria-label="Toggle menu"
+            style="display: none; background: transparent; border: 2px solid var(--cx-border); padding: 8px; color: var(--cx-text); cursor: pointer; align-items: center; justify-content: center; position: relative; overflow: visible;"
+          >
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: block;">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile nav dropdown -->
+      <div
+        id="cx-mobile-menu"
+        style="display: none; padding: 0.75rem 1.25rem 1.25rem; border-top: 2px solid var(--cx-border-dim); background: var(--cx-bg);"
+      >
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            class="cx-headline"
+            style={`display: block; font-weight: 800; text-transform: uppercase; font-size: 1rem; padding: 0.75rem 0; text-decoration: none; border-bottom: 2px solid var(--cx-border-dim); letter-spacing: 0.05em; ${
+              currentPage === link.key
+                ? `color: var(--cx-primary-bright);`
+                : `color: var(--cx-text); opacity: 0.75;`
+            }`}
+          >
+            {link.label}
+          </a>
+        ))}
+        <a href="/" class="cx-headline" style="display: block; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; padding: 0.75rem 0; text-decoration: none; color: var(--cx-text); opacity: 0.5; letter-spacing: 0.1em;">
+          ← changelogs.info
+        </a>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main style="padding-top: 64px;">
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer style="border-top: 8px solid var(--cx-primary); background: var(--cx-bg); margin-top: 6rem; padding: 3rem 2rem;">
+      <div style="max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1.5rem;">
+        <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+          <span class="cx-headline" style="font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--cx-text-dim);">
+            © {new Date().getFullYear()} changelogs.info / Codex CLI
+          </span>
+          <span style="font-family: var(--cx-font-mono); font-size: 0.6rem; color: var(--cx-text-muted);">
+            DATA FROM OFFICIAL GITHUB RELEASES
+          </span>
+        </div>
+        <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+          {[
+            { label: "Hub", href: "/" },
+            { label: "Changelog", href: "/codex-cli/changelog/" },
+            { label: "Cheatsheet", href: "/codex-cli/cheatsheet/" },
+            { label: "Releases", href: "/codex-cli/releases/" },
+            { label: "GitHub ↗", href: "https://github.com/openai/codex", external: true },
+            { label: "RSS", href: "/feed/all.xml" },
+          ].map((link) => (
+            <a
+              href={link.href}
+              target={link.external ? "_blank" : undefined}
+              rel={link.external ? "noopener noreferrer" : undefined}
+              class="cx-headline"
+              style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--cx-text-dim); text-decoration: none; transition: color 150ms;"
+              onmouseover={`this.style.color='var(--cx-primary-bright)'`}
+              onmouseout={`this.style.color='var(--cx-text-dim)'`}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+        <div style="font-family: var(--cx-font-mono); font-size: 0.65rem; color: var(--cx-text-muted); display: flex; align-items: center; gap: 0.5rem;">
+          <span style="color: var(--cx-primary);">$</span>
+          CODEX-CLI: ~
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // === THEME TOGGLE ===
+      const CX_THEME_KEY = "cx-theme";
+
+      function getCXTheme(): string {
+        return (
+          localStorage.getItem(CX_THEME_KEY) ||
+          (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark")
+        );
+      }
+
+      function applyCXTheme(theme: string) {
+        document.documentElement.setAttribute("data-layout", "codex");
+        if (theme === "light") {
+          document.documentElement.setAttribute("data-theme", "light");
+        } else {
+          document.documentElement.removeAttribute("data-theme");
+        }
+      }
+
+      function updateCXLabel(theme: string) {
+        const label = document.getElementById("cx-theme-label");
+        if (label) label.textContent = theme === "light" ? "◑" : "◐";
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        document.documentElement.setAttribute("data-layout", "codex");
+        const current = getCXTheme();
+        updateCXLabel(current);
+        applyCXTheme(current);
+
+        const btn = document.getElementById("cx-theme-toggle");
+        btn?.addEventListener("click", () => {
+          const cur = getCXTheme();
+          const next = cur === "dark" ? "light" : "dark";
+          localStorage.setItem(CX_THEME_KEY, next);
+          applyCXTheme(next);
+          updateCXLabel(next);
+        });
+
+        // Mobile menu
+        const menuBtn = document.getElementById("cx-mobile-menu-btn");
+        const mobileMenu = document.getElementById("cx-mobile-menu");
+        menuBtn?.addEventListener("click", () => {
+          const isOpen = mobileMenu?.style.display === "block";
+          if (mobileMenu) mobileMenu.style.display = isOpen ? "none" : "block";
+        });
+        mobileMenu?.querySelectorAll("a").forEach((a) => {
+          a.addEventListener("click", () => {
+            if (mobileMenu) mobileMenu.style.display = "none";
+          });
+        });
+
+        function handleResize() {
+          const desktopNav = document.getElementById("cx-desktop-nav");
+          const mobileBtn = document.getElementById("cx-mobile-menu-btn");
+          const hubLink = document.getElementById("cx-hub-link");
+          const isDesktop = window.innerWidth >= 768;
+          if (desktopNav) desktopNav.style.display = isDesktop ? "flex" : "none";
+          if (mobileBtn) mobileBtn.style.display = isDesktop ? "none" : "flex";
+          if (hubLink) hubLink.style.display = isDesktop ? "inline" : "none";
+          if (isDesktop && mobileMenu) mobileMenu.style.display = "none";
+        }
+        handleResize();
+        window.addEventListener("resize", handleResize);
+      });
+    </script>
+  </body>
+</html>
