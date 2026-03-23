@@ -209,6 +209,7 @@ function stableStringify(value) {
 async function main() {
   const summaries = [];
   let changedCount = 0;
+  let failureCount = 0;
 
   for (const tool of selectedTools) {
     const filePath = join(root, tool.file);
@@ -224,22 +225,37 @@ async function main() {
       }
     }
 
-    const nextData = await callLLM(tool, currentRaw, sourcePayloads);
-    const nextRaw = stableStringify(nextData);
-    const changed = nextRaw !== currentRaw;
+    try {
+      const nextData = await callLLM(tool, currentRaw, sourcePayloads);
+      const nextRaw = stableStringify(nextData);
+      const changed = nextRaw !== currentRaw;
 
-    summaries.push({
-      tool: tool.id,
-      changed,
-      file: tool.file,
-      lastUpdated: nextData.lastUpdated,
-    });
+      summaries.push({
+        tool: tool.id,
+        changed,
+        file: tool.file,
+        lastUpdated: nextData.lastUpdated,
+        status: 'ok',
+      });
 
-    if (changed) {
-      changedCount += 1;
-      if (!dryRun) {
-        writeFileSync(filePath, nextRaw);
+      if (changed) {
+        changedCount += 1;
+        if (!dryRun) {
+          writeFileSync(filePath, nextRaw);
+        }
       }
+    } catch (error) {
+      failureCount += 1;
+      const fallbackData = JSON.parse(currentRaw);
+      summaries.push({
+        tool: tool.id,
+        changed: false,
+        file: tool.file,
+        lastUpdated: fallbackData.lastUpdated,
+        status: 'error',
+        error: error.message,
+      });
+      console.error(`[cheatsheets:refresh] ${tool.id} failed: ${error.message}`);
     }
   }
 
@@ -247,12 +263,17 @@ async function main() {
     mkdirSync(dirname(summaryFile), { recursive: true });
     const lines = ['## Cheatsheet refresh summary', ''];
     for (const item of summaries) {
-      lines.push(`- ${item.tool}: ${item.changed ? 'updated' : 'no change'} (${item.file})`);
+      const statusSuffix = item.status === 'error' ? ` — skipped (${item.error})` : '';
+      lines.push(`- ${item.tool}: ${item.changed ? 'updated' : 'no change'} (${item.file})${statusSuffix}`);
+    }
+    if (failureCount > 0) {
+      lines.push('');
+      lines.push(`Failures skipped: ${failureCount}`);
     }
     writeFileSync(summaryFile, `${lines.join('\n')}\n`);
   }
 
-  console.log(JSON.stringify({ changedCount, summaries }, null, 2));
+  console.log(JSON.stringify({ changedCount, failureCount, summaries }, null, 2));
 }
 
 main().catch((error) => {
