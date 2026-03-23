@@ -81,6 +81,68 @@ function validateCheatsheetShape(data, toolId) {
   }
 }
 
+async function postChatCompletion({ apiUrl, apiKey, model, messages }) {
+  const body = {
+    model,
+    temperature: 0.2,
+    messages,
+  };
+
+  const res = await fetch(apiUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+      'HTTP-Referer': 'https://changelogs.info',
+      'X-Title': 'changelogs.info cheatsheet refresh',
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`LLM call failed ${res.status}: ${text}`);
+  }
+
+  const json = await res.json();
+  const content = json?.choices?.[0]?.message?.content;
+  if (!content || typeof content !== 'string') {
+    throw new Error('LLM response missing content');
+  }
+
+  return content;
+}
+
+function parseAndValidateCheatsheet(content, toolId) {
+  const parsed = JSON.parse(extractJson(content));
+  validateCheatsheetShape(parsed, toolId);
+  return parsed;
+}
+
+async function repairJson({ apiUrl, apiKey, model, tool, brokenContent }) {
+  const messages = [
+    {
+      role: 'system',
+      content: 'Repair malformed JSON for a software cheatsheet. Return valid JSON only. Do not add commentary or markdown fences. Preserve meaning; only fix syntax/escaping/structure.',
+    },
+    {
+      role: 'user',
+      content: [
+        `Fix this malformed JSON for tool id ${tool.id}.`,
+        'Requirements:',
+        '- Return one valid JSON object only.',
+        '- Keep the tool field exactly unchanged.',
+        '- Do not invent new facts.',
+        '- Repair syntax only unless structure is obviously broken.',
+        '',
+        brokenContent,
+      ].join('\n'),
+    },
+  ];
+
+  return postChatCompletion({ apiUrl, apiKey, model, messages });
+}
+
 async function callLLM(tool, currentJson, sources) {
   const apiKey = process.env.LLM_API_KEY || process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
@@ -119,40 +181,25 @@ async function callLLM(tool, currentJson, sources) {
     sources.map((source, index) => `SOURCE ${index + 1}: ${source.url}\n${source.content}`).join('\n\n'),
   ].join('\n');
 
-  const body = {
-    model,
-    temperature: 0.2,
-    messages: [
-      { role: 'system', content: system },
-      { role: 'user', content: user },
-    ],
-  };
+  const messages = [
+    { role: 'system', content: system },
+    { role: 'user', content: user },
+  ];
 
-  const res = await fetch(apiUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-      'HTTP-Referer': 'https://changelogs.info',
-      'X-Title': 'changelogs.info cheatsheet refresh',
-    },
-    body: JSON.stringify(body),
-  });
+  const content = await postChatCompletion({ apiUrl, apiKey, model, messages });
 
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`LLM call failed ${res.status}: ${text}`);
+  try {
+    return parseAndValidateCheatsheet(content, tool.id);
+  } catch (error) {
+    const repairedContent = await repairJson({
+      apiUrl,
+      apiKey,
+      model,
+      tool,
+      brokenContent: content,
+    });
+    return parseAndValidateCheatsheet(repairedContent, tool.id);
   }
-
-  const json = await res.json();
-  const content = json?.choices?.[0]?.message?.content;
-  if (!content || typeof content !== 'string') {
-    throw new Error('LLM response missing content');
-  }
-
-  const parsed = JSON.parse(extractJson(content));
-  validateCheatsheetShape(parsed, tool.id);
-  return parsed;
 }
 
 function stableStringify(value) {
