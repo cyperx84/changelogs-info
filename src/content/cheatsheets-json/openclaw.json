@@ -1,6 +1,6 @@
 {
   "tool": "openclaw",
-  "lastUpdated": "2026-03-14",
+  "lastUpdated": "2026-03-23",
   "quickStart": {
     "title": "Get productive in 30 seconds",
     "steps": [
@@ -56,7 +56,7 @@
     },
     {
       "title": "Inspect which skills are actually ready",
-      "description": "Don’t guess. This shows which skills are available and which are blocked by missing binaries, env vars, or dependencies.",
+      "description": "Don't guess. This shows which skills are available and which are blocked by missing binaries, env vars, or dependencies.",
       "command": "openclaw skills check",
       "tags": ["skills", "debugging", "readiness"]
     },
@@ -88,7 +88,7 @@
     },
     {
       "title": "Secure multi-user inboxes with per-sender DM isolation",
-      "description": "Set session.dmScope to per-channel-peer (or per-account-channel-peer in multi-account setups) so different people don’t silently share the same DM session history.",
+      "description": "Set session.dmScope to per-channel-peer (or per-account-channel-peer in multi-account setups) so different people don't silently share the same DM session history.",
       "command": "openclaw config set session.dmScope \"per-channel-peer\"",
       "why": "This is one of the highest-value safety settings. Shared main-session DMs are convenient for one owner, but risky for shared inboxes."
     },
@@ -106,7 +106,7 @@
     },
     {
       "title": "Direct config surgery instead of manual JSON editing",
-      "description": "Use config get/set/unset/validate for repeatable, scriptable changes. It’s much safer than hand-editing a big JSON5 file, especially remotely.",
+      "description": "Use config get/set/unset/validate for repeatable, scriptable changes. It's much safer than hand-editing a big JSON5 file, especially remotely.",
       "command": "openclaw config validate && openclaw config set channels.telegram.linkPreview false",
       "why": "You get validation, automation, and less typo-driven downtime."
     },
@@ -115,6 +115,30 @@
       "description": "After updates or weird behavior, run doctor before chasing ghosts. It repairs service/config mismatches and warns about insecure or outdated patterns.",
       "command": "openclaw update && openclaw doctor",
       "why": "Most production pain is boring drift: env overrides, stale services, missing deps, migrated config keys. Doctor is designed for exactly that."
+    },
+    {
+      "title": "Install and manage ClawHub skills from CLI",
+      "description": "OpenClaw now has native ClawHub integration: search, install, and update skills directly without going to the website.",
+      "command": "openclaw skills search <query> && openclaw skills install <name> && openclaw skills list",
+      "why": "Replaces manual download + copy. Tracked installs means 'openclaw skills update' keeps everything current."
+    },
+    {
+      "title": "Attach browser tools to your real signed-in browser",
+      "description": "Set userDataDir to point at your actual Chrome/Brave/Edge profile. Lets browser tools act in your real logged-in sessions instead of a fresh sandbox.",
+      "command": "openclaw config set browser.profiles.user.userDataDir \"~/Library/Application Support/Google/Chrome\"",
+      "why": "Game-changer for automating web apps that require real auth. No more re-logging in a sandboxed session."
+    },
+    {
+      "title": "Use /btw for quick side questions without polluting session context",
+      "description": "Ask a meta question about the session, cron schedule, skill behavior, or anything else without that Q&A becoming part of future conversation context.",
+      "command": "/btw how is my heartbeat.md being used right now?",
+      "why": "Keeps your session context tight. Side Q&A shouldn't inflate the prompt on every future message."
+    },
+    {
+      "title": "Security audit your config before going live",
+      "description": "Run the security audit with --fix to tighten defaults automatically before opening a new channel to users.",
+      "command": "openclaw security audit --deep --fix",
+      "why": "Catches DM policy misconfigs, open allowlists, insecure tool profiles, and state permission issues before users hit them."
     }
   ],
   "gotchas": [
@@ -140,7 +164,7 @@
     },
     {
       "problem": "Signal setup is much harder than Telegram/Discord.",
-      "solution": "That’s normal. Signal depends on signal-cli and a linked or registered account. Use a separate bot number if you want a clean bot identity and to avoid loop protection issues.",
+      "solution": "That's normal. Signal depends on signal-cli and a linked or registered account. Use a separate bot number if you want a clean bot identity and to avoid loop protection issues.",
       "severity": "annoying"
     },
     {
@@ -154,7 +178,7 @@
       "severity": "annoying"
     },
     {
-      "problem": "A skill shows up in list but doesn’t actually work.",
+      "problem": "A skill shows up in list but doesn't actually work.",
       "solution": "Run openclaw skills check or openclaw skills info <name>. A skill can exist but be ineligible because required binaries, env vars, or platform deps are missing.",
       "severity": "annoying"
     },
@@ -165,7 +189,27 @@
     },
     {
       "problem": "You expected one workspace but actually launched a different profile/state dir.",
-      "solution": "Be explicit with --profile and know that OPENCLAW_STATE_DIR / OPENCLAW_CONFIG_PATH fully change where state lives. Mixed profiles are a common source of ‘missing sessions’ and ‘wrong token’ confusion.",
+      "solution": "Be explicit with --profile and know that OPENCLAW_STATE_DIR / OPENCLAW_CONFIG_PATH fully change where state lives. Mixed profiles are a common source of 'missing sessions' and 'wrong token' confusion.",
+      "severity": "subtle"
+    },
+    {
+      "problem": "Plugins install from npm when you wanted ClawHub (or vice versa).",
+      "solution": "As of latest: bare 'openclaw plugins install <pkg>' prefers ClawHub first, falls back to npm. Use 'openclaw plugins install clawhub:<pkg>' to be explicit. Use 'openclaw plugins marketplace list clawhub' to browse first.",
+      "severity": "annoying"
+    },
+    {
+      "problem": "Browser automation can't attach to your real logged-in Chrome/Brave session.",
+      "solution": "Set browser.profiles.<name>.userDataDir to the browser's actual user data directory. OpenClaw now supports Chrome DevTools attach mode so it can use your existing profile instead of starting a fresh one.",
+      "severity": "annoying"
+    },
+    {
+      "problem": "Directives like /think or /fast do nothing for some users in a group.",
+      "solution": "Directives only work for authorized senders. Set commands.allowFrom or ensure the sender is in the channel allowlist. Unauthorized senders see directives as plain text silently — this is intentional.",
+      "severity": "subtle"
+    },
+    {
+      "problem": "Inline command shortcuts (/status, /whoami) are not working mid-message.",
+      "solution": "Inline shortcuts only work for allowlisted/authorized senders. They strip the command and continue processing the rest of the message. Unauthorized users get them treated as plain text.",
       "severity": "subtle"
     }
   ],
@@ -274,12 +318,40 @@
       "description": "Have an isolated cron run deliver its result to a chat target instead of staying internal.",
       "example": "openclaw cron add --name \"Status\" --cron \"0 7 * * *\" --session isolated --message \"Summarize today\" --announce --channel telegram --to 123456789",
       "useCase": "Push scheduled reports directly to yourself."
+    },
+    {
+      "flag": "--tag main",
+      "shorthand": null,
+      "description": "Install from the main git branch instead of latest npm release.",
+      "example": "openclaw update --tag main",
+      "useCase": "Get unreleased features or bug fixes before they hit npm."
+    },
+    {
+      "flag": "--allow-exec",
+      "shorthand": null,
+      "description": "Permit exec-based secret providers during secrets audit/configure/apply flows.",
+      "example": "openclaw secrets audit --allow-exec",
+      "useCase": "Required when your secrets are backed by exec providers (e.g., 1Password CLI, custom scripts)."
+    },
+    {
+      "flag": "--dry-run",
+      "shorthand": null,
+      "description": "Preview what secrets apply would do without writing anything.",
+      "example": "openclaw secrets apply --from plan.json --dry-run",
+      "useCase": "Safe way to verify a secrets migration plan before committing it."
+    },
+    {
+      "flag": "--fix",
+      "shorthand": null,
+      "description": "Automatically apply safe security fixes: tighten defaults, fix state/config permissions.",
+      "example": "openclaw security audit --fix",
+      "useCase": "Use after setup or before adding users to a new channel."
     }
   ],
   "slashCommands": [
     {
       "command": "/status",
-      "description": "The everyday health check from chat. Fast way to see whether the agent is reachable and what state it’s in.",
+      "description": "The everyday health check from chat. Fast way to see whether the agent is reachable and what state it's in.",
       "whenToUse": "First thing when something feels off."
     },
     {
@@ -323,9 +395,69 @@
       "whenToUse": "Approve gated shell/tool actions without going back to terminal."
     },
     {
-      "command": "/reset or /new",
-      "description": "Start a fresh conversational branch/session state.",
-      "whenToUse": "When the current thread has too much baggage."
+      "command": "/btw <question>",
+      "description": "Ask an ephemeral side question about the current session without changing future session context. Gets a quick inline answer then the session continues as normal.",
+      "whenToUse": "Quick tool-less side questions: 'how does my cron schedule work?' without polluting thread history."
+    },
+    {
+      "command": "/think <level>",
+      "description": "Set extended thinking depth: off, minimal, low, medium, high, xhigh. Aliases: /thinking, /t. Persists for the session unless sent inline with a message (then one-shot).",
+      "whenToUse": "Hard reasoning tasks. Use xhigh sparingly - it's expensive."
+    },
+    {
+      "command": "/fast on|off|status",
+      "description": "Toggle fast mode (routes to faster/cheaper model variant). Persists for the session. Omit arg to see current state.",
+      "whenToUse": "Drop to fast mode for quick lookups; switch back for complex work."
+    },
+    {
+      "command": "/reasoning on|off|stream",
+      "description": "Toggle visible reasoning traces. 'stream' shows live Telegram draft reasoning. Avoid in group chats - it may expose internal reasoning to everyone.",
+      "whenToUse": "Debugging unexpected model behavior. Keep off in production group channels."
+    },
+    {
+      "command": "/context detail",
+      "description": "Show per-file + per-tool + per-skill + system prompt size breakdown of what's using tokens in this session.",
+      "whenToUse": "When the session feels slow or expensive. Find what's bloating the context window."
+    },
+    {
+      "command": "/usage cost",
+      "description": "Print a local cost summary from OpenClaw session logs. '/usage tokens|full' adds per-response token footers.",
+      "whenToUse": "Budget tracking without leaving chat."
+    },
+    {
+      "command": "/exec host=sandbox|gateway|node security=deny|allowlist|full ask=off|on-miss|always",
+      "description": "Set exec tool permissions for the session. Send '/exec' with no args to see current settings.",
+      "whenToUse": "Before running elevated tasks or locking down a session to read-only."
+    },
+    {
+      "command": "/skill <name> [input]",
+      "description": "Run any installed skill by name directly from chat.",
+      "whenToUse": "When native skill slash commands aren't registered or you want a one-liner."
+    },
+    {
+      "command": "/compact [instructions]",
+      "description": "Compact the current session context (text-only). Optionally pass custom compaction instructions.",
+      "whenToUse": "Long sessions eating too much context. Compacts history in-place."
+    },
+    {
+      "command": "/queue <mode>",
+      "description": "Control message queuing with options like debounce:2s cap:25 drop:summarize. Send '/queue' to see current state.",
+      "whenToUse": "Bursty group chats or high-volume inboxes. Prevents model from getting hammered."
+    },
+    {
+      "command": "/kill <id|#|all>",
+      "description": "Immediately abort one or all running sub-agents. No confirmation prompt.",
+      "whenToUse": "Runaway subagent or task you need to cancel now."
+    },
+    {
+      "command": "/steer <id|#> <message>",
+      "description": "Steer a running sub-agent: injects message mid-run if possible, otherwise aborts and restarts. Alias: /tell.",
+      "whenToUse": "Redirect a subagent without killing it."
+    },
+    {
+      "command": "/reset or /new [model]",
+      "description": "Start a fresh session branch. Optionally pass a model name/alias to switch on start.",
+      "whenToUse": "When the current thread has too much baggage or you want a clean context."
     }
   ],
   "config": [
@@ -345,7 +477,7 @@
       "key": "agents.defaults.workspace",
       "description": "Default workspace root where AGENTS.md, SOUL.md, USER.md, MEMORY.md, and memory/ live.",
       "default": "~/.openclaw/workspace",
-      "recommended": "Keep it stable and backed up; treat it as the assistant’s home directory"
+      "recommended": "Keep it stable and backed up; treat it as the assistant's home directory"
     },
     {
       "key": "channels.telegram.dmPolicy",
@@ -418,19 +550,42 @@
       "description": "Environment override for the active config file path.",
       "default": "$OPENCLAW_STATE_DIR/openclaw.json",
       "recommended": "Use only intentionally; accidental overrides are a classic source of confusion"
+    },
+    {
+      "key": "browser.profiles.<name>.userDataDir",
+      "description": "Point browser tools at a real Chrome/Brave/Edge user data directory to attach to your existing logged-in browser session instead of a fresh sandbox.",
+      "default": "Not set (uses OpenClaw-managed sandbox)",
+      "recommended": "Set to your real Chrome profile path for browser automations that need real auth. E.g. ~/Library/Application Support/Google/Chrome"
+    },
+    {
+      "key": "commands.bash",
+      "description": "Enables ! <cmd> and /bash <cmd> to run host shell commands from chat. Requires tools.elevated allowlists to be configured.",
+      "default": "false",
+      "recommended": "Enable only for owner-only channels; combine with commands.allowFrom to restrict who can run shell commands"
+    },
+    {
+      "key": "commands.mcp",
+      "description": "Enables /mcp command for managing OpenClaw MCP server config from chat.",
+      "default": "false",
+      "recommended": "Enable for power users who manage MCP servers remotely"
     }
   ],
   "proTips": [
     "Use the dashboard first. It proves gateway + auth + model + workspace before you waste time debugging Telegram/Discord/Signal setup.",
     "Telegram is usually the fastest real chat channel to get working; Signal is the slowest. Use that ordering unless privacy is your top constraint.",
     "Create one agent per durable role, not per mood: coding, alerts, family, research. Routing becomes much easier to reason about.",
-    "Use openclaw agents list --bindings whenever routing feels mysterious. Most ‘wrong agent replied’ bugs are just binding precedence misunderstandings.",
+    "Use openclaw agents list --bindings whenever routing feels mysterious. Most 'wrong agent replied' bugs are just binding precedence misunderstandings.",
     "Memory is just Markdown plus an index. If you want the assistant to truly remember something, have it write it to MEMORY.md or memory/YYYY-MM-DD.md.",
-    "Prefer heartbeat for batch awareness checks and cron for exact-time tasks. If you schedule everything as cron, you’ll waste tokens and clutter sessions.",
+    "Prefer heartbeat for batch awareness checks and cron for exact-time tasks. If you schedule everything as cron, you'll waste tokens and clutter sessions.",
     "For multi-user or public-ish contexts, keep mention gating on and tool policy tight. OpenClaw is powerful enough that sloppy defaults become security problems fast.",
-    "Use openclaw config validate before restarting after config changes. It’s faster than discovering a typo via downtime.",
+    "Use openclaw config validate before restarting after config changes. It's faster than discovering a typo via downtime.",
     "If status looks wrong after an edit, suspect profile/state/env mismatch before suspecting the model. OPENCLAW_STATE_DIR and OPENCLAW_CONFIG_PATH can make you debug the wrong installation.",
-    "After upgrades, run openclaw doctor. It is intentionally the boring fix-everything command."
+    "After upgrades, run openclaw doctor. It is intentionally the boring fix-everything command.",
+    "Directives (/think, /fast, /model, /exec) work silently for authorized senders and do nothing for unauthorized ones. If a directive feels ignored, check your allowlist — no error is shown.",
+    "Use /btw for meta questions about the session: what's in context, how cron is configured, etc. It doesn't pollute future session history.",
+    "openclaw plugins install now prefers ClawHub before npm for known package names. Use 'clawhub:<pkg>' prefix to be explicit.",
+    "Browser tools can now attach to your real Chrome/Brave/Edge profile via userDataDir config. No more sandboxed re-auth for browser automations.",
+    "Run 'openclaw security audit --deep --fix' before opening any agent to new users. Catches open DM policies, insecure allowlists, and permission issues automatically."
   ],
   "resources": [
     {

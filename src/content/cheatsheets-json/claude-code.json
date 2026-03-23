@@ -1,13 +1,13 @@
 {
   "tool": "claude-code",
-  "lastUpdated": "2026-03-14",
+  "lastUpdated": "2026-03-23",
   "quickStart": {
     "title": "Get productive in 30 seconds",
     "steps": [
       "From your repo root, run `claude` for interactive work or `claude -p \"your task\"` for one-shot/headless work.",
       "For anything non-trivial, start with a verification target: tell Claude what command proves success, like `npm test`, `pnpm lint`, or a screenshot comparison.",
       "Use `@path/to/file` to point Claude at the exact file instead of describing it vaguely.",
-      "For bigger changes, enter Plan Mode first with `/plan` or `claude --permission-mode plan` so Claude explores before editing.",
+      "For bigger changes, enter Plan Mode first with `/plan` or `--permission-mode plan` so Claude explores before editing.",
       "After changes, ask Claude to run the relevant tests, summarize risks, and create the commit or PR if you want the full workflow handled."
     ]
   },
@@ -49,10 +49,16 @@
       "tags": ["resume", "daily", "context-saving"]
     },
     {
-      "title": "Review a PR you already created",
-      "description": "Claude can re-open context linked to a PR and continue from there.",
-      "command": "claude --from-pr 123",
-      "tags": ["git", "pr", "resume"]
+      "title": "Review PR comments and fix issues",
+      "description": "Pull PR review comments directly into the session, then have Claude address them.",
+      "command": "claude\n/pr-comments 123\n\"Address all unresolved review comments, run tests, and commit the fixes.\"",
+      "tags": ["git", "pr", "review"]
+    },
+    {
+      "title": "Ask a side question without polluting the thread",
+      "description": "Use /btw to get a quick answer mid-session without it becoming part of the conversation history.",
+      "command": "/btw What's the difference between useEffect and useLayoutEffect here?",
+      "tags": ["everyday", "context", "quick"]
     },
     {
       "title": "Use Claude like a Unix tool",
@@ -82,21 +88,27 @@
     },
     {
       "title": "Create a project CLAUDE.md that actually helps",
-      "description": "Run `/init`, keep the file short, and store only the things Claude cannot infer: build commands, test rules, repo conventions, dangerous areas, and team expectations.",
+      "description": "Run `/init` (or set CLAUDE_CODE_NEW_INIT=true for an interactive setup that also covers skills, hooks, and personal memory). Keep the file short: build commands, test rules, repo conventions, dangerous areas.",
       "command": "/init",
       "why": "A concise CLAUDE.md compounds over time; a bloated one gets ignored and pollutes every session."
     },
     {
       "title": "Use subagents for specialist work",
-      "description": "Create a debugger, reviewer, or API designer subagent so research and implementation happen in separate context windows.",
+      "description": "Create a debugger, reviewer, or API designer subagent so research and implementation happen in separate context windows. Use `isolation: \"worktree\"` to give each subagent its own git worktree.",
       "command": "/agents",
       "why": "Subagents preserve main-session context, reduce noise, and can be constrained to the exact tools/models needed."
     },
     {
-      "title": "Use `opusplan` or higher effort only when the problem deserves it",
-      "description": "Keep everyday coding on Sonnet, but raise effort or use Opus planning for architecture, migrations, or stubborn bugs.",
-      "command": "claude --model opusplan --effort high",
-      "why": "This matches compute to task complexity instead of paying a speed/cost penalty on every prompt."
+      "title": "Use hooks for rules that must happen every time",
+      "description": "Wire up shell commands, HTTP endpoints, or LLM prompts to hook events. Key events: PreToolUse (block/modify before a tool runs), PostToolUse (run linters/tests after edits), SubagentStart/Stop (scope or clean up subagents), SessionStart, Stop, PreCompact/PostCompact.",
+      "command": "/hooks",
+      "why": "CLAUDE.md is advisory; hooks are deterministic. That's the difference between 'usually' and 'always'."
+    },
+    {
+      "title": "Use worktrees for isolated feature work",
+      "description": "Start Claude in an isolated git worktree so main-branch state is never touched during experiments.",
+      "command": "claude --worktree \"Implement rate limiter on a clean branch without touching main\"",
+      "why": "Worktrees let you run parallel Claude sessions on the same repo without conflicts. Each subagent can also use worktree isolation."
     },
     {
       "title": "Compact before the session gets dumb",
@@ -106,21 +118,21 @@
     },
     {
       "title": "Use headless mode in scripts and CI",
-      "description": "For repeatable automation, call Claude with `-p`, structured output, turn limits, and a budget ceiling.",
-      "command": "claude -p --output-format json --max-turns 3 --max-budget-usd 2.00 \"Review this diff for security regressions and output JSON with severity, file, and recommendation.\"",
-      "why": "This makes Claude reliable in automation instead of interactive-only."
+      "description": "For repeatable automation, call Claude with `-p`, structured output, turn limits, and a budget ceiling. Use `--bare` to skip hook/plugin/skill discovery for faster scripted calls.",
+      "command": "claude --bare -p --output-format json --max-turns 3 --max-budget-usd 2.00 \"Review this diff for security regressions and output JSON with severity, file, and recommendation.\"",
+      "why": "This makes Claude reliable in automation instead of interactive-only. --bare removes startup overhead that only matters for interactive sessions."
     },
     {
-      "title": "Kick off long work in the cloud, then continue from anywhere",
-      "description": "Start a web session for long-running tasks or enable remote control for a local session you want to pick up from mobile or browser later.",
-      "command": "claude --remote \"Implement the rate limiter, run tests, and pause only if you hit an architectural decision.\"",
-      "why": "You don’t have to keep a laptop session open for long autonomous tasks."
+      "title": "Enable remote control to pick up from browser or mobile",
+      "description": "Make your local terminal session available for remote control from claude.ai or the Claude app. Or start a standalone remote-control server without a local session.",
+      "command": "/remote-control\n# or from CLI without a local session:\nclaude remote-control --name \"My Project\"",
+      "why": "You don't have to keep a laptop session open for long autonomous tasks. Continue from any device."
     },
     {
-      "title": "Use hooks for rules that must happen every time",
-      "description": "If a formatter, linter, or safety check is non-negotiable, enforce it with hooks instead of repeating yourself in prompts.",
-      "command": "/hooks",
-      "why": "CLAUDE.md is advisory; hooks are deterministic. That’s the difference between 'usually' and 'always'."
+      "title": "Raise effort only when the problem deserves it",
+      "description": "Keep everyday coding on default. Use `/effort high` for architecture or stubborn bugs. `/effort max` is session-only and requires Opus 4.6.",
+      "command": "/effort high",
+      "why": "This matches compute to task complexity instead of paying a speed/cost penalty on every prompt."
     }
   ],
   "gotchas": [
@@ -156,7 +168,7 @@
     },
     {
       "problem": "Resuming work means re-explaining everything.",
-      "solution": "Use `-c`, `-r <session>`, or `--from-pr <number>` to reopen the existing session context instead of creating a brand-new chat.",
+      "solution": "Use `-c`, `-r <session>`, or `/pr-comments <PR>` to reopen the existing session context instead of creating a brand-new chat.",
       "severity": "medium"
     },
     {
@@ -170,8 +182,8 @@
       "severity": "annoying"
     },
     {
-      "problem": "Multiple installations conflict and you get weird version behavior.",
-      "solution": "Check `which -a claude` and remove duplicate npm/Homebrew/native installs. Anthropic recommends the native installer path.",
+      "problem": "Hooks block or behave unexpectedly.",
+      "solution": "Use `claude --debug \"hooks\"` to trace hook events. Check `/hooks` in the TUI or run `claude doctor` to verify hook config is loading.",
       "severity": "medium"
     }
   ],
@@ -182,6 +194,13 @@
       "description": "Run headless: Claude completes the task and exits instead of opening the interactive TUI.",
       "example": "claude -p \"Explain this function\"",
       "useCase": "Use in scripts, CI, one-shot analysis, and quick answers without starting a full session."
+    },
+    {
+      "flag": "--bare",
+      "shorthand": "",
+      "description": "Minimal scripted mode: skips hook discovery, skills, plugins, MCP, auto-memory, and CLAUDE.md loading. Requires ANTHROPIC_API_KEY or apiKeyHelper. Use with -p for fast scripted calls.",
+      "example": "claude --bare -p \"Summarize these logs\"",
+      "useCase": "CI automation and scripted pipelines where startup time matters and interactive features are not needed. Added v2.1.81."
     },
     {
       "flag": "--continue",
@@ -205,18 +224,32 @@
       "useCase": "Use `plan` for safe research before edits, especially in unfamiliar repos or risky changes."
     },
     {
+      "flag": "--worktree",
+      "shorthand": "-w",
+      "description": "Start Claude in an isolated git worktree so all changes happen on a clean branch without touching your working tree.",
+      "example": "claude --worktree \"Implement the feature and open a PR\"",
+      "useCase": "Safe experimentation and parallel feature work. Subagents can also use `isolation: \"worktree\"` in their config."
+    },
+    {
       "flag": "--model",
       "shorthand": "",
-      "description": "Choose the model or model alias for the session, such as `sonnet`, `opus`, `haiku`, or `opusplan`.",
-      "example": "claude --model opusplan",
+      "description": "Choose the model for the session. Use model names or aliases like `sonnet`, `opus`, `haiku`.",
+      "example": "claude --model opus",
       "useCase": "Use stronger models for planning, architecture, or hard bugs; keep everyday work on faster defaults."
     },
     {
       "flag": "--effort",
       "shorthand": "",
-      "description": "Adjust adaptive reasoning depth for the current session: `low`, `medium`, `high`, or `max` on Opus 4.6.",
+      "description": "Adjust adaptive reasoning depth for the session: `low`, `medium`, `high` (persist across sessions), or `max` (current session only, requires Opus 4.6).",
       "example": "claude --effort high \"Trace the real root cause of this flaky test\"",
-      "useCase": "Use when the problem is genuinely hard; don’t spend extra latency/cost on routine edits."
+      "useCase": "Use when the problem is genuinely hard; don't spend extra latency/cost on routine edits."
+    },
+    {
+      "flag": "--agent",
+      "shorthand": "",
+      "description": "Use a named preconfigured agent for the current session, overriding the default agent setting.",
+      "example": "claude --agent my-reviewer",
+      "useCase": "Activate a project-specific agent persona without having to specify it in settings each time."
     },
     {
       "flag": "--add-dir",
@@ -233,11 +266,25 @@
       "useCase": "Great for reducing permission fatigue while still avoiding full permission bypass."
     },
     {
+      "flag": "--tools",
+      "shorthand": "",
+      "description": "Restrict which tools are available in the session (different from allowedTools which controls permissions).",
+      "example": "claude --tools Read Write \"Bash(git *)\"",
+      "useCase": "Use to create tightly scoped sessions where Claude can only use specific tools."
+    },
+    {
       "flag": "--dangerously-skip-permissions",
       "shorthand": "",
-      "description": "Skip all permission prompts entirely.",
+      "description": "Skip all permission prompts entirely. Use `--allow-dangerously-skip-permissions` to enable it as an option without activating immediately (composable with --permission-mode).",
       "example": "claude --dangerously-skip-permissions",
       "useCase": "Only for tightly sandboxed or disposable environments where full autonomy is worth the risk."
+    },
+    {
+      "flag": "--append-system-prompt",
+      "shorthand": "",
+      "description": "Append custom text to the end of the default system prompt for the session.",
+      "example": "claude --append-system-prompt \"Always use TypeScript. Prefer functional style.\"",
+      "useCase": "Add per-run rules without modifying CLAUDE.md or creating a new agent config."
     },
     {
       "flag": "--agents",
@@ -247,11 +294,11 @@
       "useCase": "Handy for temporary specialist agents in automation or experiments without creating files."
     },
     {
-      "flag": "--json-schema",
+      "flag": "--output-format",
       "shorthand": "",
-      "description": "Force headless output to match a JSON Schema after the agent finishes its work.",
-      "example": "claude -p --json-schema '{\"type\":\"object\",\"properties\":{\"risks\":{\"type\":\"array\"}}}' \"Analyze this diff\"",
-      "useCase": "Best for machine-readable automation, structured reviews, or downstream tooling."
+      "description": "Set output format for headless (-p) mode: `text`, `json`, or `stream-json`.",
+      "example": "claude -p --output-format json \"Analyze this diff\"",
+      "useCase": "Use `json` for machine-readable automation, `stream-json` for real-time processing in pipelines."
     },
     {
       "flag": "--max-turns",
@@ -268,16 +315,9 @@
       "useCase": "Use in automation to stop costs from drifting upward on open-ended tasks."
     },
     {
-      "flag": "--remote",
-      "shorthand": "",
-      "description": "Start a new Claude Code web session on claude.ai with the provided task description.",
-      "example": "claude --remote \"Refactor the report generator and open a PR\"",
-      "useCase": "Great for long-running autonomous work you want to monitor from browser or mobile."
-    },
-    {
       "flag": "--chrome",
       "shorthand": "",
-      "description": "Enable Chrome integration for web automation, screenshots, and UI debugging.",
+      "description": "Enable Chrome browser integration for web automation, screenshots, and UI debugging.",
       "example": "claude --chrome",
       "useCase": "Use for front-end debugging, visual verification, and end-to-end browser tasks."
     }
@@ -285,7 +325,7 @@
   "slashCommands": [
     {
       "command": "/init",
-      "description": "Generate or improve a project CLAUDE.md based on the current repo.",
+      "description": "Generate or improve a project CLAUDE.md based on the current repo. Set CLAUDE_CODE_NEW_INIT=true for an interactive flow that also sets up skills, hooks, and personal memory.",
       "example": "/init",
       "tip": "Run this early in a new repo, then trim aggressively so only high-value instructions remain."
     },
@@ -303,9 +343,27 @@
     },
     {
       "command": "/context",
-      "description": "Show current context usage and warnings about heavy history.",
+      "description": "Visualize current context usage as a colored grid. Shows optimization suggestions for context-heavy tools, memory bloat, and capacity warnings.",
       "example": "/context",
-      "tip": "Check this before long sessions get sloppy; it’s an early warning system for degraded performance."
+      "tip": "Check this before long sessions get sloppy; it's an early warning system for degraded performance."
+    },
+    {
+      "command": "/btw",
+      "description": "Ask a quick side question without adding it to the conversation history or affecting the main task.",
+      "example": "/btw What's the difference between useEffect and useLayoutEffect?",
+      "tip": "Use this whenever you have a quick clarifying question mid-session that doesn't belong in the thread."
+    },
+    {
+      "command": "/hooks",
+      "description": "View and manage hook configurations for tool events (PreToolUse, PostToolUse, SubagentStart, Stop, etc.).",
+      "example": "/hooks",
+      "tip": "Hooks are deterministic guardrails. Wire up formatters, linters, or safety checks here instead of relying on prompts."
+    },
+    {
+      "command": "/remote-control",
+      "description": "Make the current local session available for remote control from claude.ai or the Claude mobile app.",
+      "example": "/remote-control",
+      "tip": "Use this when you start a session locally and want to hand off to mobile, or pick it up from another device."
     },
     {
       "command": "/permissions",
@@ -314,32 +372,50 @@
       "tip": "Allowlist safe repeat commands like test/lint/git read operations to avoid approval fatigue."
     },
     {
-      "command": "/model",
-      "description": "Switch models during a session and, where supported, adjust effort level.",
-      "example": "/model opus",
-      "tip": "Switch up only for genuinely hard reasoning tasks; keep default or Sonnet for routine coding."
-    },
-    {
-      "command": "/effort",
-      "description": "Change adaptive reasoning depth for the current model.",
-      "example": "/effort high",
-      "tip": "This is often a better move than switching models when the task just needs deeper thought, not a whole new workflow."
-    },
-    {
       "command": "/agents",
       "description": "Create, inspect, and manage custom subagents.",
       "example": "/agents",
       "tip": "Make a read-only reviewer or debugger first; they pay off quickly and keep your main context clean."
     },
     {
+      "command": "/plugin",
+      "description": "Manage Claude Code plugins: install, uninstall, list, and reload.",
+      "example": "/plugin install <name>@<marketplace>",
+      "tip": "Plugins can ship hooks, skills, MCP servers, and agents together as a unit."
+    },
+    {
+      "command": "/pr-comments",
+      "description": "Fetch and display comments from a GitHub pull request. Auto-detects the PR for the current branch, or pass a PR URL or number. Requires the `gh` CLI.",
+      "example": "/pr-comments 123",
+      "tip": "Follow up immediately with 'Address all unresolved review comments' to action them in one flow."
+    },
+    {
+      "command": "/branch",
+      "description": "Create a branch (fork) of the current conversation at this point. Alias: /fork.",
+      "example": "/branch try-different-approach",
+      "tip": "Use when you want to explore an alternative approach without losing your current thread."
+    },
+    {
+      "command": "/model",
+      "description": "Switch models during a session. For supported models, use left/right arrows to adjust effort level inline.",
+      "example": "/model opus",
+      "tip": "Switch up only for genuinely hard reasoning tasks; keep default or Sonnet for routine coding."
+    },
+    {
+      "command": "/effort",
+      "description": "Change adaptive reasoning depth. `low`/`medium`/`high` persist across sessions; `max` is current session only (Opus 4.6). `auto` resets to model default.",
+      "example": "/effort high",
+      "tip": "Often a better move than switching models when the task just needs deeper thought."
+    },
+    {
       "command": "/memory",
-      "description": "Manage CLAUDE.md memory files and auto-memory behavior.",
+      "description": "Manage CLAUDE.md memory files and auto-memory behavior. View, edit, or disable auto-memory entries.",
       "example": "/memory",
       "tip": "If Claude repeats the same mistakes across sessions, fix your memory instead of re-explaining manually every time."
     },
     {
       "command": "/diff",
-      "description": "Open an interactive diff viewer for uncommitted changes and Claude’s per-turn edits.",
+      "description": "Open an interactive diff viewer for uncommitted changes and Claude's per-turn edits. Use arrows to browse files and turns.",
       "example": "/diff",
       "tip": "Use this before commit/PR creation so you catch broad or unintended edits early."
     },
@@ -351,15 +427,9 @@
     },
     {
       "command": "/clear",
-      "description": "Start fresh and clear conversation history.",
+      "description": "Start fresh and clear conversation history. Aliases: /reset, /new.",
       "example": "/clear",
       "tip": "For a truly messy session, sometimes a clean restart beats trying to salvage bloated context."
-    },
-    {
-      "command": "/fast",
-      "description": "Toggle fast mode on or off.",
-      "example": "/fast on",
-      "tip": "Use when you want quicker answers for exploration or iteration and can trade a bit of depth for speed."
     },
     {
       "command": "/doctor",
@@ -373,13 +443,13 @@
       "key": "model",
       "description": "Default model or alias for Claude Code sessions.",
       "default": "default",
-      "recommended": "Use `sonnet` for daily work, or `opusplan` if you regularly do heavy planning before coding."
+      "recommended": "Use `sonnet` for daily work, or `opus` if you regularly do heavy planning before coding."
     },
     {
       "key": "effortLevel",
-      "description": "Persistent adaptive reasoning level for supported models.",
+      "description": "Persistent adaptive reasoning level. `low`/`medium`/`high` persist. `max` is session-only on Opus 4.6.",
       "default": "model default",
-      "recommended": "Set to `medium` for general use; bump to `high` only if you routinely do complex debugging or architecture."
+      "recommended": "Set to `medium` for general use; bump to `high` via /effort only when you routinely do complex debugging or architecture."
     },
     {
       "key": "permissions.defaultMode",
@@ -419,7 +489,7 @@
     },
     {
       "key": "statusLine",
-      "description": "Custom status line configuration for showing context, costs, or git state.",
+      "description": "Custom status line configuration for showing context, costs, rate limits, or git state. As of v2.1.80, supports rate_limits field with used_percentage and resets_at.",
       "default": "unset",
       "recommended": "Set one up if you use Claude heavily; seeing context pressure in real time helps you compact before performance drops."
     },
@@ -436,11 +506,15 @@
     "Prefer `@file` references over repo-wide exploration when you already know the area involved.",
     "When a session starts drifting, check `/context` and compact before quality drops noticeably.",
     "A short, repo-specific CLAUDE.md beats a giant handbook. Include only what Claude cannot infer from code.",
-    "If you repeat the same instruction every day, move it into CLAUDE.md, rules, a hook, or a subagent.",
-    "Use `/diff` before asking for a commit or PR; it’s the fastest way to catch accidental broad edits.",
+    "If you repeat the same instruction every day, move it into CLAUDE.md, a `.claude/rules/` file, a hook, or a subagent.",
+    "Use `/diff` before asking for a commit or PR; it's the fastest way to catch accidental broad edits.",
     "`claude -c` is one of the most useful daily commands. Resuming context is often better than starting over.",
-    "Headless mode becomes much more powerful when paired with `--json-schema`, `--max-turns`, and `--max-budget-usd`.",
+    "Headless mode becomes much more powerful when paired with `--output-format json`, `--max-turns`, and `--max-budget-usd`.",
     "Subagents are not just for teams. A personal debugger or code-reviewer agent can keep your main conversation far cleaner.",
+    "Use `/btw` for quick side questions mid-session — it answers without adding noise to the main conversation thread.",
+    "Hooks fire deterministically at lifecycle points (PreToolUse, PostToolUse, Stop, etc.). Use them for formatters and safety checks instead of relying on prompts.",
+    "Use `--bare` with `-p` in scripts and CI — it skips hook/skill/plugin discovery for faster startup when you don't need interactive features.",
+    "/remote-control lets you hand off a local session to claude.ai or your phone mid-task without losing context.",
     "If Claude is repeatedly violating a rule, the problem is often instruction quality or context overload, not model capability.",
     "Use stronger models or higher effort selectively. The fastest workflow is usually Sonnet for execution plus better prompts, not always Opus."
   ],
@@ -474,16 +548,24 @@
       "url": "https://code.claude.com/docs/en/sub-agents"
     },
     {
+      "title": "Hooks Reference",
+      "url": "https://code.claude.com/docs/en/hooks"
+    },
+    {
       "title": "Settings",
       "url": "https://code.claude.com/docs/en/settings"
+    },
+    {
+      "title": "Remote Control",
+      "url": "https://code.claude.com/docs/en/remote-control"
     },
     {
       "title": "Troubleshooting",
       "url": "https://code.claude.com/docs/en/troubleshooting"
     },
     {
-      "title": "GitHub Repository README",
-      "url": "https://github.com/anthropics/claude-code"
+      "title": "GitHub Repository CHANGELOG",
+      "url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "tool": "codex-cli",
-  "lastUpdated": "2026-03-14",
+  "lastUpdated": "2026-03-23",
   "quickStart": {
     "title": "Get productive in 30 seconds",
     "steps": [
@@ -65,6 +65,12 @@
       "description": "Use JSONL output when another script needs progress events and the final answer. Pair it with a file for the last assistant message.",
       "command": "codex exec --json -o /tmp/codex-last.txt \"summarize the CI failure and propose the smallest fix\"",
       "tags": ["ci", "automation", "json"]
+    },
+    {
+      "title": "Launch a Codex Cloud task from the terminal",
+      "description": "Triage, start, and apply Codex Cloud tasks without leaving the terminal. Use --attempts for best-of-N runs on important tasks.",
+      "command": "codex cloud exec --env ENV_ID \"implement the feature described in the issue\"\ncodex cloud exec --env ENV_ID --attempts 3 \"fix the bug with three candidate solutions\"",
+      "tags": ["cloud", "automation", "remote"]
     }
   ],
   "powerMoves": [
@@ -106,9 +112,9 @@
     },
     {
       "title": "Multi-agent for bounded parallel work",
-      "description": "Enable experimental multi-agent and split a large task into explorer/reviewer/worker roles or one agent per review category.",
-      "command": "codex  # enable Multi-agents via /experimental, then ask Codex to spawn one agent per concern",
-      "why": "Useful when a task is naturally parallel. Power users use it for exploration, review, and evidence gathering—not for every tiny change."
+      "description": "Subagents are enabled by default. Ask Codex to spawn one agent per concern (e.g. explorer, reviewer, worker) and wait for consolidated results. Define custom agents as TOML files in `.codex/agents/` (project) or `~/.codex/agents/` (global).",
+      "command": "codex  # ask: 'Spawn one agent per review point, wait for all, summarize'\n# Custom agent: .codex/agents/reviewer.toml with name/description/developer_instructions",
+      "why": "Useful when a task is naturally parallel. Power users use it for exploration, review, and evidence gathering—not for every tiny change. Each subagent consumes its own tokens, so use intentionally."
     },
     {
       "title": "Device auth + copied auth cache for remote boxes",
@@ -140,7 +146,7 @@
     },
     {
       "problem": "Beginners overuse `--yolo` / danger-full-access.",
-      "solution": "Prefer workspace-write plus `--add-dir` and selective config changes. Use dangerous full access only inside an externally sandboxed environment you trust.",
+      "solution": "Prefer workspace-write plus `--add-dir` and selective config changes. Use dangerous full access only inside an externally sandboxed environment you trust. Note: `--yolo` also defaults web search to live results instead of cached.",
       "severity": "high"
     },
     {
@@ -161,6 +167,11 @@
     {
       "problem": "Running Codex in the wrong directory causes bad edits or irrelevant reasoning.",
       "solution": "Use `--cd` explicitly and check `/status` before asking for multi-file work.",
+      "severity": "medium"
+    },
+    {
+      "problem": "Subagent approval prompts from inactive threads can interrupt your main thread.",
+      "solution": "When an approval overlay appears showing a thread label, press `o` to open that thread and review it before approving or rejecting. In non-interactive/exec flows, actions needing new approval fail and surface the error back to the parent.",
       "severity": "medium"
     },
     {
@@ -326,8 +337,13 @@
     },
     {
       "command": "/agent",
-      "description": "Switches between active agent threads in multi-agent mode.",
-      "whenToUse": "When parallel agents are running and you need to inspect or steer one."
+      "description": "Switches between active agent threads in multi-agent mode. Approval requests from inactive threads surface as an overlay showing the source thread label.",
+      "whenToUse": "When parallel agents are running and you need to inspect, steer, or approve from a specific thread."
+    },
+    {
+      "command": "/statusline",
+      "description": "Configures which metadata appears in the TUI footer interactively.",
+      "whenToUse": "When you want to customize what status info you see in the footer without editing config."
     },
     {
       "command": "/init",
@@ -377,9 +393,14 @@
       "whyItMatters": "Useful for harder debugging, planning, and review tasks."
     },
     {
-      "key": "[features].multi_agent",
-      "example": "[features]\nmulti_agent = true",
-      "whyItMatters": "Unlocks parallel sub-agents for exploration, review, and batch analysis."
+      "key": "[agents]",
+      "example": "[agents]\nmax_threads = 6\nmax_depth = 1",
+      "whyItMatters": "Controls concurrent subagent thread cap (default 6) and nesting depth (default 1). Increase max_depth only if you need recursive delegation—deeper nesting compounds token usage and latency."
+    },
+    {
+      "key": "codex features (subcommand)",
+      "example": "codex features list\ncodex features enable unified_exec\ncodex features disable shell_snapshot",
+      "whyItMatters": "Inspect and toggle experimental feature flags. Writes to ~/.codex/config.toml (or profile if --profile is active). Replaces manual [features] edits for flags."
     },
     {
       "key": "[features].shell_snapshot",
@@ -468,8 +489,8 @@
       "url": "https://developers.openai.com/codex/learn/best-practices"
     },
     {
-      "title": "Multi-Agent Workflows",
-      "url": "https://developers.openai.com/codex/multi-agent"
+      "title": "Subagents (Multi-Agent Workflows)",
+      "url": "https://developers.openai.com/codex/subagents"
     },
     {
       "title": "Codex SDK",
