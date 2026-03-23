@@ -66,6 +66,17 @@ function isBreaking(body: string = ""): boolean {
   return body.toLowerCase().includes("breaking");
 }
 
+const PRIORITY_PREFIXES = ["BREAKING", "SEC", "FEAT", "PERF"];
+const MINOR_PREFIXES = ["FIX", "TEST", "CHORE", "CI", "BUILD", "STYLE"];
+
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
 
 function normalizeReleaseBody(body: string): string {
   if (!body) return "";
@@ -79,16 +90,14 @@ function normalizeReleaseBody(body: string): string {
     .replace(/^\s*full changelog:?\s*$/gim, "")
     .replace(/^\s*important:?\s*$/gim, "## Important")
     .replace(/^\s*summary:?\s*$/gim, "## Summary")
-    .replace(/^\s*notes:?\s*$/gim, "## Notes");
-
-  normalized = normalized.replace(/\n{3,}/g, "\n\n");
+    .replace(/^\s*notes:?\s*$/gim, "## Notes")
+    .replace(/\n{3,}/g, "\n\n");
 
   const lines = normalized.split("\n");
   const cleaned: string[] = [];
   let skipGithubBoilerplate = false;
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
+  for (const line of lines) {
     const trimmed = line.trim();
 
     if (!trimmed) {
@@ -120,7 +129,7 @@ function normalizeReleaseBody(body: string): string {
       .trimEnd();
 
     if (/^[*-]\s+[^\s].*/.test(nextLine)) {
-      nextLine = nextLine.replace(/^([*-]\s+)(fix|feat|docs|test|chore|refactor|perf|style|ci|build|docker)(\([^)]*\))?:\s*/i, "$1$2: ");
+      nextLine = nextLine.replace(/^([*-]\s+)(fix|feat|docs|test|chore|refactor|perf|style|ci|build|docker|sec|security|breaking)(\([^)]*\))?:\s*/i, "$1$2: ");
     }
 
     cleaned.push(nextLine);
@@ -129,73 +138,143 @@ function normalizeReleaseBody(body: string): string {
   return cleaned.join("\n").replace(/\n{3,}/g, "\n\n").trim();
 }
 
-
-
-function beautifyChangelogHtml(html: string): string {
-  return html
-    .replace(/<(li|p)>(?:<strong>)?(FIX|FEAT|DOCS|TEST|CHORE|REFACTOR|PERF|STYLE|CI|BUILD|SEC|SECURITY|BREAKING)(?:<\/strong>)?(?:\([^<)]*\))?:\s*/gi, (_, tag, type) => {
-      const palette: Record<string, string> = {
-        BREAKING: 'background: var(--cl-accent, var(--oc-primary, #eb0000)); color: #fff; border-color: var(--cl-accent, var(--oc-primary, #eb0000));',
-        FEAT: 'background: rgba(34,197,94,0.12); color: #22c55e; border-color: #22c55e;',
-        FIX: 'background: rgba(59,130,246,0.12); color: #60a5fa; border-color: #60a5fa;',
-        DOCS: 'background: rgba(168,85,247,0.12); color: #c084fc; border-color: #c084fc;',
-        PERF: 'background: rgba(245,158,11,0.12); color: #f59e0b; border-color: #f59e0b;',
-        REFACTOR: 'background: rgba(236,72,153,0.12); color: #f472b6; border-color: #f472b6;',
-        CI: 'background: rgba(6,182,212,0.12); color: #22d3ee; border-color: #22d3ee;',
-        BUILD: 'background: rgba(6,182,212,0.12); color: #22d3ee; border-color: #22d3ee;',
-        CHORE: 'background: rgba(148,163,184,0.12); color: #cbd5e1; border-color: #94a3b8;',
-        TEST: 'background: rgba(20,184,166,0.12); color: #2dd4bf; border-color: #2dd4bf;',
-        STYLE: 'background: rgba(244,114,182,0.12); color: #f9a8d4; border-color: #f9a8d4;',
-        SEC: 'background: rgba(239,68,68,0.12); color: #f87171; border-color: #f87171;',
-        SECURITY: 'background: rgba(239,68,68,0.12); color: #f87171; border-color: #f87171;'
-      };
-      const key = String(type).toUpperCase();
-      const style = palette[key] || 'background: rgba(255,255,255,0.06); color: currentColor; border-color: currentColor;';
-      return '<' + tag + '><span style="display:inline-flex;align-items:center;justify-content:center;min-width:3.9rem;padding:0.15rem 0.45rem;margin-right:0.55rem;border:1.5px solid currentColor;font-family:inherit;font-size:0.72em;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;vertical-align:middle;' + style + '">' + (key === 'SECURITY' ? 'SEC' : key) + '</span>';
-    })
-    .replace(/<li>/g, '<li style="margin:0 0 0.55rem 0;">')
-    .replace(/<ul>/g, '<ul style="display:flex;flex-direction:column;gap:0.15rem;padding-left:1.25rem;">');
+function stripMarkdown(text: string): string {
+  return text
+    .replace(/\*\*([^*]+)\*\*/g, "$1")
+    .replace(/__([^_]+)__/g, "$1")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/\s+by\s+@\S+\s+in\s+https?:\/\/\S+/gi, "")
+    .replace(/\s+by\s+@\S+\s+in\s+#\d+/gi, "")
+    .replace(/\s+in\s+https?:\/\/\S+/gi, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
 }
 
-function renderBody(body: string): string {
-  if (!body) return "";
-  const normalizedBody = normalizeReleaseBody(body);
-  marked.setOptions({ gfm: true, breaks: false });
-  let html = marked.parse(normalizedBody) as string;
-  // Shorten GitHub PR/issue links: full URL → #1234
-  html = html.replace(/<a href="(https:\/\/github\.com\/[^/]+\/[^/]+\/pull\/(\d+))"[^>]*>[^<]*<\/a>/g,
-    '<a href="$1" target="_blank" rel="noopener noreferrer" class="cl-pr-link">#$2</a>');
-  html = html.replace(/<a href="(https:\/\/github\.com\/[^/]+\/[^/]+\/issues\/(\d+))"[^>]*>[^<]*<\/a>/g,
-    '<a href="$1" target="_blank" rel="noopener noreferrer" class="cl-pr-link">#$2</a>');
-  // Strip "by @username in" before PR links
-  html = html.replace(/ by <a href="https:\/\/github\.com\/[^"]*"[^>]*>@[^<]+<\/a> in /g, ' ');
-  html = html.replace(/ by @[\w-]+ in /g, ' ');
-  return beautifyChangelogHtml(html);
+type ParsedItem = { prefix: string | null; content: string; raw: string };
+type ParsedSection = { heading: string; items: ParsedItem[] };
+
+function classifyLine(text: string): { prefix: string | null; content: string } {
+  const cleaned = stripMarkdown(text).replace(/^[*-]\s+/, "").trim();
+  const match = cleaned.match(/^(BREAKING|SECURITY|SEC|FEAT|FIX|DOCS|TEST|CHORE|REFACTOR|PERF|STYLE|CI|BUILD|OTHER)(\([^)]*\))?:\s*(.+)$/i);
+  if (!match) return { prefix: null, content: cleaned };
+  const prefix = match[1].toUpperCase() === "SECURITY" ? "SEC" : match[1].toUpperCase();
+  return { prefix, content: match[3].trim() || cleaned };
 }
 
-// Generate a short TLDR from the body
-function getTldr(body: string): string[] {
-  if (!body) return [];
-  const lines = body.split("\n").filter(Boolean);
-  const bullets: string[] = [];
-  for (const line of lines) {
-    // Match markdown list items and extract the key part
-    const match = line.match(/^[\*\-]\s+(.+)/);
-    if (match) {
-      let text = match[1]
-        .replace(/\*\*([^*]+)\*\*/g, "$1")  // strip bold
-        .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")  // strip links
-        .replace(/`([^`]+)`/g, "$1")  // strip code
-        .replace(/\s+by\s+@\S+\s+in\s+https:\/\/\S+/g, "")  // strip PR refs
-        .trim();
-      if (text.length > 10 && !text.startsWith("http") && !text.startsWith("@")) {
-        // Truncate long items
-        if (text.length > 120) text = text.slice(0, 117) + "…";
-        bullets.push(text);
-      }
+function parseChangelog(body: string): ParsedSection[] {
+  const normalized = normalizeReleaseBody(body);
+  if (!normalized) return [];
+
+  const lines = normalized.split("\n");
+  const sections: ParsedSection[] = [];
+  let current: ParsedSection | null = null;
+
+  const ensureDefaultSection = () => {
+    if (!current) {
+      current = { heading: "Changes", items: [] };
+      sections.push(current);
     }
+  };
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    if (/^##\s+/.test(trimmed)) continue;
+
+    const headingMatch = trimmed.match(/^###\s+(.+)$/);
+    if (headingMatch) {
+      current = { heading: stripMarkdown(headingMatch[1]), items: [] };
+      sections.push(current);
+      continue;
+    }
+
+    if (/^[*-]\s+/.test(trimmed)) {
+      ensureDefaultSection();
+      const parsed = classifyLine(trimmed);
+      if (parsed.content) current!.items.push({ ...parsed, raw: trimmed });
+      continue;
+    }
+
+    if (/^(BREAKING|SECURITY|SEC|FEAT|FIX|DOCS|TEST|CHORE|REFACTOR|PERF|STYLE|CI|BUILD|OTHER)(\([^)]*\))?:\s+/i.test(trimmed)) {
+      ensureDefaultSection();
+      const parsed = classifyLine(`- ${trimmed}`);
+      if (parsed.content) current!.items.push({ ...parsed, raw: trimmed });
+      continue;
+    }
+
+    ensureDefaultSection();
+    current!.items.push({ prefix: null, content: stripMarkdown(trimmed), raw: trimmed });
   }
-  return bullets.slice(0, 5); // top 5 changes per release
+
+  return sections.filter((section) => section.items.length > 0);
+}
+
+function renderPrefix(prefix: string | null): string {
+  if (!prefix) return "";
+  const palette: Record<string, string> = {
+    BREAKING: "background: var(--oc-primary); color: #fff; border-color: var(--oc-primary);",
+    FEAT: "background: rgba(34,197,94,0.12); color: #22c55e; border-color: #22c55e;",
+    FIX: "background: rgba(59,130,246,0.12); color: #60a5fa; border-color: #60a5fa;",
+    DOCS: "background: rgba(168,85,247,0.12); color: #c084fc; border-color: #c084fc;",
+    PERF: "background: rgba(245,158,11,0.12); color: #f59e0b; border-color: #f59e0b;",
+    REFACTOR: "background: rgba(236,72,153,0.12); color: #f472b6; border-color: #f472b6;",
+    CI: "background: rgba(6,182,212,0.12); color: #22d3ee; border-color: #22d3ee;",
+    BUILD: "background: rgba(6,182,212,0.12); color: #22d3ee; border-color: #22d3ee;",
+    CHORE: "background: rgba(148,163,184,0.12); color: #cbd5e1; border-color: #94a3b8;",
+    TEST: "background: rgba(20,184,166,0.12); color: #2dd4bf; border-color: #2dd4bf;",
+    STYLE: "background: rgba(244,114,182,0.12); color: #f9a8d4; border-color: #f9a8d4;",
+    SEC: "background: rgba(239,68,68,0.12); color: #f87171; border-color: #f87171;",
+  };
+  const style = palette[prefix] || "background: rgba(255,255,255,0.06); color: currentColor; border-color: currentColor;";
+  return `<span style="display:inline-flex;align-items:center;justify-content:center;min-width:3.35rem;padding:0.12rem 0.45rem;border:1.5px solid currentColor;font-family:inherit;font-size:0.68em;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;vertical-align:middle;flex-shrink:0;${style}">${escapeHtml(prefix)}</span>`;
+}
+
+function renderChangelogItem(item: ParsedItem): string {
+  return `<li style="display:flex;gap:0.7rem;align-items:flex-start;line-height:1.6;">${renderPrefix(item.prefix)}<span style="display:block;min-width:0;">${escapeHtml(item.content)}</span></li>`;
+}
+
+function renderChangelogSection(title: string, items: ParsedItem[], emphasized = false): string {
+  if (items.length === 0) return "";
+  return `<div style="padding:1rem 1.1rem; border:3px solid var(--oc-border); background:${emphasized ? 'var(--oc-bg-surface)' : 'transparent'};">`
+    + `<div style="font-family:inherit;font-size:0.72rem;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:var(--oc-text-muted);margin-bottom:0.85rem;">${escapeHtml(title)}</div>`
+    + `<ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0.7rem;">${items.map(renderChangelogItem).join("")}</ul>`
+    + `</div>`;
+}
+
+function buildChangelogCard(body: string): string {
+  const sections = parseChangelog(body);
+  const allItems = sections.flatMap((section) => section.items.map((item) => ({ ...item, heading: section.heading })));
+
+  const highlights = allItems.filter((item) => item.prefix && PRIORITY_PREFIXES.includes(item.prefix)).slice(0, 4);
+  const notable = allItems
+    .filter((item) => !highlights.includes(item))
+    .filter((item) => !item.prefix || !MINOR_PREFIXES.includes(item.prefix) || item.prefix === "DOCS" || item.prefix === "REFACTOR")
+    .slice(0, 6);
+  const used = new Set([...highlights, ...notable]);
+  const overflow = allItems.filter((item) => !used.has(item));
+
+  const overflowHtml = overflow.length === 0
+    ? ""
+    : `<details style="border:3px solid var(--oc-border);padding:0.95rem 1.1rem;background:transparent;"><summary style="cursor:pointer;font-family:inherit;font-size:0.78rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;color:var(--oc-text);">Show all changes <span style="color:var(--oc-text-muted);">(${overflow.length} more)</span></summary><div style="display:flex;flex-direction:column;gap:1rem;margin-top:1rem;">${sections.map((section) => {
+        const sectionItems = overflow.filter((item) => item.heading === section.heading);
+        if (sectionItems.length === 0) return "";
+        return `<div><div style="font-family:inherit;font-size:0.72rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;color:var(--oc-text-muted);margin-bottom:0.65rem;">${escapeHtml(section.heading)}</div><ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0.65rem;">${sectionItems.map(renderChangelogItem).join("")}</ul></div>`;
+      }).join("")}</div></details>`;
+
+  const fallback = sections.length > 0 && highlights.length === 0 && notable.length === 0
+    ? renderChangelogSection(sections[0].heading, sections[0].items.slice(0, 6), false)
+    : "";
+
+  return `<div style="display:flex;flex-direction:column;gap:1rem;">${renderChangelogSection("Highlights", highlights, true)}${renderChangelogSection("Notable changes", notable, false)}${fallback}${overflowHtml}</div>`;
+}
+
+function getTldr(body: string): string[] {
+  return parseChangelog(body)
+    .flatMap((section) => section.items)
+    .map((item) => item.content)
+    .filter(Boolean)
+    .slice(0, 5);
 }
 ---
 
@@ -363,14 +442,12 @@ function getTldr(body: string): string[] {
       {canonicalEntries.map((entry) => {
         const release = releases.find((r) => r.version === entry.version) || latestForTldr;
         const breaking = isBreaking(entry.body);
-        const renderedBody = renderBody(entry.body || "");
-        const isLong = (entry.body || "").length > 600;
+        const renderedBody = buildChangelogCard(entry.body || "");
         return (
           <div style={`padding: 1.5rem 2rem; border: 4px solid ${breaking ? 'var(--oc-primary)' : 'var(--oc-border)'}; background: ${breaking ? 'var(--oc-bg-surface)' : 'var(--oc-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--oc-primary);' : ''}`}>
-            <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
               <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
                 <span class="oc-headline" style="font-size: 1.25rem; font-weight: 900; color: var(--oc-text); text-transform: uppercase;">{entry.version}</span>
-                <span class="oc-headline" style="font-size: 0.75rem; font-weight: 700; color: var(--oc-text-dim);">{entry.heading}</span>
                 {breaking && (
                   <span style="background: var(--oc-primary); color: white; font-family: var(--oc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">BREAKING</span>
                 )}
@@ -378,19 +455,10 @@ function getTldr(body: string): string[] {
               <span style="font-family: var(--oc-font-mono); font-size: 0.7rem; color: var(--oc-text-muted); white-space: nowrap;">{formatDate(release.date)}</span>
             </div>
             <div
-              class={`changelog-body ${isLong ? 'cl-collapsed' : ''}`}
-              style="color: var(--oc-text-dim); font-size: 0.85rem; line-height: 1.7; font-family: var(--oc-font-body); overflow: hidden; position: relative;"
+              class="changelog-body"
+              style="color: var(--oc-text-dim); font-size: 0.92rem; line-height: 1.7; font-family: var(--oc-font-body);"
               set:html={renderedBody}
             />
-            {isLong && (
-              <button
-                class="cl-expand-btn oc-headline"
-                style="display: block; margin-top: 0.75rem; background: transparent; border: 2px solid var(--oc-border); color: var(--oc-text); padding: 0.4rem 1rem; font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; transition: background 100ms; position: relative; overflow: visible;"
-                onclick="this.previousElementSibling.classList.toggle('cl-collapsed'); this.textContent = this.textContent.includes('EXPAND') ? '▲ COLLAPSE' : '▼ EXPAND'"
-              >
-                ▼ EXPAND
-              </button>
-            )}
           </div>
         );
       })}
