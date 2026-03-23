@@ -232,24 +232,26 @@ const navLinks = [
         border-bottom: 4px solid var(--cx-border);
       }
       .cx-nav-inner {
-        max-width: 1280px;
+        max-width: 1400px;
         margin: 0 auto;
-        padding: 0 1.25rem;
-        height: 60px;
+        padding: 0.75rem 1.25rem;
+        min-height: 60px;
         display: flex;
         align-items: center;
-        gap: 1.5rem;
+        justify-content: space-between;
+        gap: 1rem;
       }
       .cx-nav-logo {
         font-family: var(--cx-font-headline);
         font-weight: 900;
-        font-size: 1.05rem;
+        font-size: 1.5rem;
         text-transform: uppercase;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.03em;
         color: var(--cx-text);
         text-decoration: none;
         flex-shrink: 0;
         font-style: italic;
+        line-height: 1;
       }
       .cx-nav-logo span { color: var(--cx-primary-bright); }
 
@@ -328,6 +330,18 @@ const navLinks = [
         .cx-hero-grid { grid-template-columns: 1fr !important; }
         .cx-terminal-card { width: 100% !important; }
       }
+      @media (min-width: 769px) {
+        #cx-hub-link {
+          display: inline-flex !important;
+        }
+        #cx-desktop-nav {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          flex: 1 1 auto !important;
+          gap: 2rem !important;
+        }
+      }
       @media (prefers-reduced-motion: reduce) {
         .cx-hero-title, .cx-hero-section p, .cx-terminal-card, .cx-section-reveal {
           animation: none !important; opacity: 1; transform: none;
@@ -339,24 +353,26 @@ const navLinks = [
   <body>
     <header class="cx-nav-header">
       <div class="cx-nav-inner">
-        <!-- Logo -->
-        <a href="/codex-cli/" class="cx-nav-logo">
-          Codex<span>CLI</span>
-        </a>
+        <div style="display: flex; align-items: center; gap: 1rem; flex-shrink: 0;">
+          <!-- Hub link (desktop) -->
+          <a
+            id="cx-hub-link"
+            href="/"
+            style="font-family: var(--cx-font-mono); font-size: 0.65rem; font-weight: 700; color: var(--cx-text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.1em; flex-shrink: 0; transition: color 150ms; display: none;"
+            onmouseover="this.style.color='var(--cx-primary-bright)'"
+            onmouseout="this.style.color='var(--cx-text-muted)'"
+          >
+            ← hub
+          </a>
 
-        <!-- Hub link (desktop) -->
-        <a
-          id="cx-hub-link"
-          href="/"
-          style="font-family: var(--cx-font-mono); font-size: 0.65rem; font-weight: 700; color: var(--cx-text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.1em; flex-shrink: 0; transition: color 150ms;"
-          onmouseover="this.style.color='var(--cx-primary-bright)'"
-          onmouseout="this.style.color='var(--cx-text-muted)'"
-        >
-          ← hub
-        </a>
+          <!-- Logo -->
+          <a href="/codex-cli/" class="cx-nav-logo">
+            Codex<span>CLI</span>
+          </a>
+        </div>
 
         <!-- Desktop nav -->
-        <nav id="cx-desktop-nav" style="display: flex; gap: 0; flex: 1; align-items: center;">
+        <nav id="cx-desktop-nav" style="display: none; align-items: center; gap: 2rem;">
           {navLinks.map((link) => (
             <a
               href={link.href}
@@ -420,7 +436,7 @@ const navLinks = [
     </header>
 
     <!-- Main content -->
-    <main style="padding-top: 64px;">
+    <main style="padding-top: 73px;">
       <slot />
     </main>
 

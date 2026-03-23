@@ -317,24 +317,26 @@ const navLinks = [
         border-bottom: 4px solid var(--cc-border);
       }
       .cc-nav-inner {
-        max-width: 1280px;
+        max-width: 1400px;
         margin: 0 auto;
-        padding: 0 1.25rem;
-        height: 60px;
+        padding: 0.75rem 1.25rem;
+        min-height: 60px;
         display: flex;
         align-items: center;
-        gap: 1.5rem;
+        justify-content: space-between;
+        gap: 1rem;
       }
       .cc-nav-logo {
         font-family: var(--cc-font-headline);
         font-weight: 900;
-        font-size: 1.05rem;
+        font-size: 1.5rem;
         text-transform: uppercase;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.03em;
         color: var(--cc-text);
         text-decoration: none;
         flex-shrink: 0;
         font-style: italic;
+        line-height: 1;
       }
       .cc-nav-logo span { color: var(--cc-primary-bright); }
 
@@ -414,6 +416,18 @@ const navLinks = [
         .cc-hero-grid { grid-template-columns: 1fr !important; }
         .cc-terminal-card { width: 100% !important; }
       }
+      @media (min-width: 769px) {
+        #cc-hub-link {
+          display: inline-flex !important;
+        }
+        #cc-desktop-nav {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          flex: 1 1 auto !important;
+          gap: 2rem !important;
+        }
+      }
       @media (prefers-reduced-motion: reduce) {
         .cc-hero-title, .cc-hero-section p, .cc-terminal-card, .cc-section-reveal {
           animation: none !important;
@@ -427,26 +441,28 @@ const navLinks = [
   <body>
     <header class="cc-nav-header">
       <div class="cc-nav-inner">
-        <!-- Logo -->
-        <a href="/claude-code/" class="cc-nav-logo">
-          Claude<span>Code</span>
-        </a>
+        <div style="display: flex; align-items: center; gap: 1rem; flex-shrink: 0;">
+          <!-- Hub link (desktop) -->
+          <a
+            id="cc-hub-link"
+            href="/"
+            style="font-family: var(--cc-font-mono); font-size: 0.65rem; font-weight: 700; color: var(--cc-text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.1em; flex-shrink: 0; transition: color 150ms; display: none;"
+            onmouseover="this.style.color='var(--cc-primary-bright)'"
+            onmouseout="this.style.color='var(--cc-text-muted)'"
+          >
+            ← hub
+          </a>
 
-        <!-- Hub link (desktop) -->
-        <a
-          id="cc-hub-link"
-          href="/"
-          style="font-family: var(--cc-font-mono); font-size: 0.65rem; font-weight: 700; color: var(--cc-text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.1em; flex-shrink: 0; transition: color 150ms;"
-          onmouseover="this.style.color='var(--cc-primary-bright)'"
-          onmouseout="this.style.color='var(--cc-text-muted)'"
-        >
-          ← hub
-        </a>
+          <!-- Logo -->
+          <a href="/claude-code/" class="cc-nav-logo">
+            Claude<span>Code</span>
+          </a>
+        </div>
 
         <!-- Desktop nav -->
         <nav
           id="cc-desktop-nav"
-          style="display: flex; gap: 0; flex: 1; align-items: center;"
+          style="display: none; align-items: center; gap: 2rem;"
         >
           {navLinks.map((link) => (
             <a
@@ -521,7 +537,7 @@ const navLinks = [
     </header>
 
     <!-- Main content -->
-    <main style="padding-top: 64px;">
+    <main style="padding-top: 73px;">
       <slot />
     </main>
 
