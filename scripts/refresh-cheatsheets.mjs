@@ -8,49 +8,8 @@ const toolArgIndex = args.findIndex((arg) => arg === '--tool');
 const onlyTool = toolArgIndex >= 0 ? args[toolArgIndex + 1] : null;
 const summaryPathArgIndex = args.findIndex((arg) => arg === '--summary-file');
 const summaryFile = summaryPathArgIndex >= 0 ? args[summaryPathArgIndex + 1] : null;
-
-const tools = [
-  {
-    id: 'openclaw',
-    name: 'OpenClaw',
-    file: 'src/content/cheatsheets-json/openclaw.json',
-    docs: [
-      'https://raw.githubusercontent.com/openclaw/openclaw/main/README.md',
-      'https://raw.githubusercontent.com/openclaw/openclaw/main/CHANGELOG.md',
-      'https://docs.openclaw.ai/cli/commands',
-      'https://docs.openclaw.ai/slash-commands',
-      'https://docs.openclaw.ai/configuration',
-    ],
-  },
-  {
-    id: 'claude-code',
-    name: 'Claude Code',
-    file: 'src/content/cheatsheets-json/claude-code.json',
-    docs: [
-      'https://raw.githubusercontent.com/anthropics/claude-code/main/README.md',
-      'https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md',
-      'https://docs.anthropic.com/en/docs/claude-code/overview',
-      'https://docs.anthropic.com/en/docs/claude-code/cli-reference',
-      'https://docs.anthropic.com/en/docs/claude-code/slash-commands',
-      'https://docs.anthropic.com/en/docs/claude-code/hooks',
-      'https://docs.anthropic.com/en/docs/claude-code/sub-agents',
-      'https://docs.anthropic.com/en/docs/claude-code/github-actions',
-    ],
-  },
-  {
-    id: 'codex-cli',
-    name: 'Codex CLI',
-    file: 'src/content/cheatsheets-json/codex-cli.json',
-    docs: [
-      'https://raw.githubusercontent.com/openai/codex/main/README.md',
-      'https://raw.githubusercontent.com/openai/codex/main/docs/config.md',
-      'https://raw.githubusercontent.com/openai/codex/main/docs/advanced.md',
-      'https://raw.githubusercontent.com/openai/codex/main/docs/sandbox.md',
-      'https://raw.githubusercontent.com/openai/codex/main/docs/cloud.md',
-      'https://raw.githubusercontent.com/openai/codex/main/docs/subagents.md',
-    ],
-  },
-];
+const toolsConfigPath = join(root, 'scripts', 'cheatsheet-tools.json');
+const tools = JSON.parse(readFileSync(toolsConfigPath, 'utf8'));
 
 const selectedTools = onlyTool ? tools.filter((tool) => tool.id === onlyTool) : tools;
 if (onlyTool && selectedTools.length === 0) {
@@ -207,7 +166,6 @@ async function main() {
   for (const tool of selectedTools) {
     const filePath = join(root, tool.file);
     const currentRaw = readFileSync(filePath, 'utf8');
-    const currentData = JSON.parse(currentRaw);
 
     const sourcePayloads = [];
     for (const url of tool.docs) {
