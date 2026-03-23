@@ -1,128 +1,119 @@
-name: Cheatsheet Detection
+name: Detect cheatsheet source changes
 
 on:
   schedule:
-    # Every Sunday at 2 AM UTC
-    - cron: '0 2 * * 0'
+    - cron: '0 2 * * 1'
   workflow_dispatch:
+    inputs:
+      tool:
+        description: 'Specific tool slug (leave empty for all)'
+        required: false
+
+permissions:
+  contents: read
+  issues: write
 
 jobs:
-  detect:
+  detect-cheatsheet-source-changes:
     runs-on: ubuntu-latest
-    name: Detect cheatsheet updates
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
-          fetch-depth: 0
+          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
           cache: 'pnpm'
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run detection script
-        run: npx tsx scripts/detect-cheatsheet-updates.ts
-        continue-on-error: true
-
-      - name: Check for detected updates
-        id: check_updates
+      - name: Detect source changes
+        id: detect
         run: |
-          if [ -f scripts/detection-report.json ]; then
-            ITEM_COUNT=$(jq '.toolReports | length' scripts/detection-report.json)
-            if [ "$ITEM_COUNT" -gt 0 ]; then
-              echo "has_updates=true" >> $GITHUB_OUTPUT
-              echo "tool_count=$ITEM_COUNT" >> $GITHUB_OUTPUT
-            else
-              echo "has_updates=false" >> $GITHUB_OUTPUT
-            fi
-          else
-            echo "has_updates=false" >> $GITHUB_OUTPUT
-          fi
+          TOOL="${{ github.event.inputs.tool }}"
+          ARGS="--summary-file .github/tmp/cheatsheet-source-detection.md --report-file .github/tmp/cheatsheet-source-detection.json"
+          [ -n "$TOOL" ] && ARGS="$ARGS --tool $TOOL"
+          pnpm cheatsheets:detect -- $ARGS
 
-      - name: Create issue for cheatsheet updates
-        if: steps.check_updates.outputs.has_updates == 'true'
+      - name: Expose detection outputs
+        id: outputs
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const report = JSON.parse(fs.readFileSync('.github/tmp/cheatsheet-source-detection.json', 'utf8'));
+          const out = process.env.GITHUB_OUTPUT;
+          fs.appendFileSync(out, `has_changes=${report.hasChanges}\n`);
+          fs.appendFileSync(out, `changed_tools=${report.changedTools.join(',')}\n`);
+          fs.appendFileSync(out, `checked_tools=${report.checkedTools.join(',')}\n`);
+          NODE
+
+      - name: Upload detection artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: cheatsheet-source-detection-${{ github.run_id }}
+          path: |
+            .github/tmp/cheatsheet-source-detection.md
+            .github/tmp/cheatsheet-source-detection.json
+
+      - name: Create or update source-change issue
+        if: steps.outputs.outputs.has_changes == 'true'
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
-            const report = JSON.parse(fs.readFileSync('scripts/detection-report.json', 'utf8'));
+            const report = JSON.parse(fs.readFileSync('.github/tmp/cheatsheet-source-detection.json', 'utf8'));
+            const summary = fs.readFileSync('.github/tmp/cheatsheet-source-detection.md', 'utf8');
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const title = `Cheatsheet source changes detected`;
+            const body = [
+              '## Cheatsheet source changes detected',
+              '',
+              `Changed tools: ${report.changedTools.join(', ')}`,
+              `Checked tools: ${report.checkedTools.join(', ')}`,
+              '',
+              'Suggested next step:',
+              `- Run the manual \`Refresh cheatsheets\` workflow${report.changedTools.length === 1 ? ` for \`${report.changedTools[0]}\`` : ' for the changed tool(s) only'}.`,
+              '',
+              `Workflow run: ${runUrl}`,
+              '',
+              summary,
+            ].join('\n');
 
-            // Build issue body
-            let body = `# 📋 Cheatsheet Updates Needed\n\n`;
-            body += `Automated detection found **${report.toolReports.length}** tool(s) with potential cheatsheet updates.\n\n`;
-            body += `⚠️ **Note:** These are automatically detected from release notes and may require manual review.\n\n`;
-
-            for (const tool of report.toolReports) {
-              body += `## ${tool.tool}\n\n`;
-
-              const byType = {};
-              for (const item of tool.detectedItems) {
-                if (!byType[item.type]) byType[item.type] = [];
-                byType[item.type].push(item);
-              }
-
-              for (const [type, items] of Object.entries(byType)) {
-                body += `### ${type} (${items.length})\n\n`;
-                for (const item of items) {
-                  const confidence = Math.round(item.confidence * 100);
-                  body += `- \`${item.name}\` (${item.release}, confidence: ${confidence}%)\n`;
-                }
-                body += '\n';
-              }
-
-              // Link to cheatsheet
-              body += `[📖 View cheatsheet](https://changelogs.info/tools/${tool.tool}/cheatsheet)\n\n`;
-            }
-
-            body += `---\n\n`;
-            body += `**Action Items:**\n`;
-            body += `1. Review detected items in the cheatsheet files\n`;
-            body += `2. Update \`src/content/cheatsheets-json/{tool}.json\` with new items\n`;
-            body += `3. Set accurate \`added\` dates (YYYY-MM-DD format)\n`;
-            body += `4. Update descriptions where needed\n`;
-            body += `5. Mark this issue as resolved when complete\n\n`;
-            body += `Report generated: ${new Date().toISOString()}\n`;
-
-            // Check if issue already exists for today
-            const issues = await github.rest.issues.listForRepo({
+            const { data: issues } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              labels: 'cheatsheet,needs-review',
               state: 'open',
+              labels: 'cheatsheet-source-change',
+              per_page: 20,
             });
 
-            const today = new Date().toISOString().split('T')[0];
-            const existingIssue = issues.data.find(issue =>
-              issue.title.includes(today) ||
-              issue.created_at.includes(today)
-            );
+            const existing = issues.find((issue) => issue.title === title);
 
-            if (!existingIssue) {
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body,
+              });
+            } else {
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: `Cheatsheet updates needed for ${today}`,
-                body: body,
-                labels: ['cheatsheet', 'needs-review', 'automated'],
+                title,
+                body,
+                labels: ['cheatsheet-source-change', 'automated'],
               });
-              console.log('✅ Issue created');
-            } else {
-              console.log('ℹ️  Issue already exists for today');
             }
 
-      - name: Comment if up to date
-        if: steps.check_updates.outputs.has_updates == 'false'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            console.log('✅ All cheatsheets appear to be up to date!');
+      - name: No source changes
+        if: steps.outputs.outputs.has_changes != 'true'
+        run: cat .github/tmp/cheatsheet-source-detection.md

@@ -1,8 +1,6 @@
 name: Refresh cheatsheets
 
 on:
-  schedule:
-    - cron: '0 2 * * 1'
   workflow_dispatch:
     inputs:
       tool:
@@ -54,6 +52,14 @@ jobs:
           [ "$DRY_RUN" = "true" ] && ARGS="$ARGS --dry-run"
           pnpm cheatsheets:refresh -- $ARGS
 
+      - name: Refresh source state baseline
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        run: |
+          TOOL="${{ github.event.inputs.tool }}"
+          ARGS="--write-state"
+          [ -n "$TOOL" ] && ARGS="$ARGS --tool $TOOL"
+          pnpm cheatsheets:detect -- $ARGS
+
       - name: Validate cheatsheet JSON
         if: ${{ github.event.inputs.dry_run != 'true' }}
         run: |
@@ -64,17 +70,19 @@ jobs:
         id: changes
         if: ${{ github.event.inputs.dry_run != 'true' }}
         run: |
-          if git diff --quiet src/content/cheatsheets-json/; then
+          if git diff --quiet src/content/cheatsheets-json/ scripts/cheatsheet-source-state.json; then
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
           else
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
             echo "changed_files<<EOF" >> "$GITHUB_OUTPUT"
-            git diff --name-only src/content/cheatsheets-json/ >> "$GITHUB_OUTPUT"
+            git diff --name-only src/content/cheatsheets-json/ scripts/cheatsheet-source-state.json >> "$GITHUB_OUTPUT"
             echo "EOF" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Create pull request
+        id: pr
         if: ${{ github.event.inputs.dry_run != 'true' && steps.changes.outputs.has_changes == 'true' }}
+        continue-on-error: true
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -86,6 +94,16 @@ jobs:
           labels: |
             documentation
             automated
+
+      - name: PR fallback summary
+        if: ${{ github.event.inputs.dry_run != 'true' && steps.changes.outputs.has_changes == 'true' && steps.pr.outcome == 'failure' }}
+        run: |
+          echo 'Pull request creation was blocked by repository permissions.' >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Changed files:' >> "$GITHUB_STEP_SUMMARY"
+          echo '${{ steps.changes.outputs.changed_files }}' >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          cat .github/tmp/cheatsheet-refresh-summary.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: No changes
         if: ${{ github.event.inputs.dry_run != 'true' && steps.changes.outputs.has_changes == 'false' }}
