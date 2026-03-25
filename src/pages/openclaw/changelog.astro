@@ -155,7 +155,7 @@ function renderBody(body: string): string {
                   {formatDate(release.date)}
                 </span>
                 {breaking && (
-                  <span style="background: var(--oc-primary); color: var(--oc-text); padding: 0.2rem 0.75rem; font-family: var(--oc-font-headline); font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; border: 2px solid var(--oc-border);">
+                  <span style="background: var(--oc-primary); color: var(--oc-text-on-accent); padding: 0.2rem 0.75rem; font-family: var(--oc-font-headline); font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; border: 2px solid var(--oc-border);">
                     BREAKING
                   </span>
                 )}
@@ -169,12 +169,12 @@ function renderBody(body: string): string {
               <!-- Entry card -->
               <div
                 class="cl-entry-card"
-                style={`padding: 2rem; border: 4px solid var(--oc-border); background: ${breaking ? 'var(--oc-border)' : 'var(--oc-bg-surface)'}; ${breaking ? 'border-right: 8px solid var(--oc-primary); border-bottom: 8px solid var(--oc-primary);' : ''}`}
+                style={`padding: 2rem; border: 4px solid var(--oc-border); background: ${breaking ? 'var(--oc-bg-breaking)' : 'var(--oc-bg-surface)'}; ${breaking ? 'border-right: 8px solid var(--oc-primary); border-bottom: 8px solid var(--oc-primary); box-shadow: 8px 8px 0 0 var(--oc-bg-breaking-soft);' : ''}`}
               >
                 <!-- Release name -->
                 <h3
                   class="oc-headline cl-entry-title"
-                  style={`font-size: 1.5rem; font-weight: 900; text-transform: uppercase; margin: 0 0 1.5rem; letter-spacing: -0.01em; color: ${breaking ? 'var(--oc-bg)' : 'var(--oc-text)'};`}
+                  style={`font-size: 1.5rem; font-weight: 900; text-transform: uppercase; margin: 0 0 1.5rem; letter-spacing: -0.01em; color: ${breaking ? 'var(--oc-text-on-accent)' : 'var(--oc-text)'};`}
                 >
                   {(release.name || release.version).replace(/^openclaw\s+/i, "")}
                 </h3>
@@ -182,14 +182,14 @@ function renderBody(body: string): string {
                 <!-- Full rendered body -->
                 <div
                   class={`changelog-body ${isLong && idx > 0 ? 'cl-collapsed' : ''}`}
-                  style={`color: ${breaking ? 'var(--oc-bg)' : 'var(--oc-text-dim)'}; font-size: 0.875rem; line-height: 1.7; font-family: var(--oc-font-body); overflow: hidden; position: relative;`}
+                  style={`color: ${breaking ? 'var(--oc-text-on-accent)' : 'var(--oc-text-dim)'}; font-size: 0.875rem; line-height: 1.7; font-family: var(--oc-font-body); overflow: hidden; position: relative;`}
                   set:html={renderedBody}
                 />
 
                 {isLong && (
                   <button
                     class="cl-expand-btn oc-headline"
-                    style={`display: block; margin-top: 1rem; background: transparent; border: 2px solid ${breaking ? 'var(--oc-bg)' : 'var(--oc-border)'}; color: ${breaking ? 'var(--oc-bg)' : 'var(--oc-text)'}; padding: 0.5rem 1.25rem; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; transition: background 100ms;`}
+                    style={`display: block; margin-top: 1rem; background: transparent; border: 2px solid ${breaking ? 'var(--oc-text-on-accent)' : 'var(--oc-border)'}; color: ${breaking ? 'var(--oc-text-on-accent)' : 'var(--oc-text)'}; padding: 0.5rem 1.25rem; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; transition: background 100ms;`}
                     onclick="this.previousElementSibling.classList.toggle('cl-collapsed'); this.textContent = this.textContent.includes('EXPAND') ? '▲ COLLAPSE' : '▼ EXPAND FULL CHANGELOG'"
                   >
                     {idx === 0 ? '▲ COLLAPSE' : '▼ EXPAND FULL CHANGELOG'}
