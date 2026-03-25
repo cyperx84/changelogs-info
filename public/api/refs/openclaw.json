@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.3.23",
-  "generated_at": "2026-03-25T16:30:07.082Z",
+  "version": "2026.3.24",
+  "generated_at": "2026-03-25T17:26:09.436Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,12 +14,16 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.3.23",
-    "to_version": "2026.3.23",
+    "from_version": "2026.3.24",
+    "to_version": "2026.3.24",
     "new_features": [],
     "new_commands": [],
-    "new_flags": [],
-    "new_env_vars": [],
+    "new_flags": [
+      "--container"
+    ],
+    "new_env_vars": [
+      "OPENCLAW_CONTAINER"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -40,13 +44,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.3.23",
-      "latest_release_date": "2026-03-23",
+      "latest_stable": "2026.3.24",
+      "latest_release_date": "2026-03-25",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release adds standard (pay-as-you-go) DashScope endpoints for China and global Qwen API keys in ModelStudio/Qwen. The Control UI has been updated with a refined Knot theme, consolidated button primitives, and improved accessibility. Bundled plugin runtime sidecars are now shipped in the npm package again, fixing global install failures. Channel auth now works for single-channel setups and on-demand channel installs. Several fixes address issues with OpenAI token persistence, operator scopes in the Control UI, and plugin API compatibility. Additionally, fixes are included for browser start regressions, agent web search provider selection, Mistral token limits, and ClawHub authentication on macOS."
+      "tldr": "This release enhances Gateway/OpenAI compatibility with new endpoints and model override forwarding. Agent tool selection is improved with live availability indicators in the Control UI. Microsoft Teams integration is upgraded to the official SDK, adding AI-agent UX best practices like streaming replies and welcome cards. Bundled skills now offer one-click install recipes for missing dependencies. A new `--container` flag and `OPENCLAW_CONTAINER` environment variable allow running commands inside Docker or Podman containers. Several fixes address issues with outbound media access, gateway restarts, Docker setup, channel startup, secret handling, WhatsApp group echoes, Telegram forum topics, Discord gateway supervision, and Slack runtime defaults."
     },
     "features": [
       {
@@ -536,10 +540,18 @@
           "description": "Requires RPC for gateway status.",
           "since": "2026.3.13",
           "source_url": ""
+        },
+        {
+          "flag": "--container",
+          "description": "Run `openclaw` commands inside a running Docker or Podman OpenClaw container.",
+          "since": "2026.3.24",
+          "source_url": ""
         }
       ],
       "deprecated": [],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--container"
+      ]
     },
     "env_vars": [
       {
@@ -547,6 +559,13 @@
         "purpose": "Pin gateway and CLI containers to a chosen IANA timezone instead of inheriting the daemon default.",
         "status": "stable",
         "since": "2026.3.13",
+        "source_url": ""
+      },
+      {
+        "name": "OPENCLAW_CONTAINER",
+        "purpose": "Run `openclaw` commands inside a running Docker or Podman OpenClaw container.",
+        "status": "stable",
+        "since": "2026.3.24",
         "source_url": ""
       }
     ],
