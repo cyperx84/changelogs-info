@@ -29,7 +29,7 @@ function renderBody(body: string): string {
     let badge = '';
     if (/^fix[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-fix">FIX</span>';
     else if (/^feat[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-feat">FEAT</span>';
-    else if (/^docs[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-docs">DOCS</span>';
+    else if (/^docs[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-docs">DOCs</span>';
     else if (/^test[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-test">TEST</span>';
     else if (/^(refactor|chore)[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-chore">CHORE</span>';
     else if (/^(ci|build|docker)[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-ci">CI</span>';
@@ -41,388 +41,503 @@ function renderBody(body: string): string {
 }
 ---
 
+<style>
+  /* === Changelog Page === */
+
+  /* Search */
+  .cl-search-wrap {
+    width: 100%;
+    max-width: 320px;
+  }
+  .cl-search-inner {
+    position: relative;
+  }
+  .cl-search-input {
+    width: 100%;
+    background: var(--oc-bg);
+    border: 4px solid var(--oc-border);
+    padding: 1rem;
+    font-family: var(--oc-font-headline);
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--oc-text);
+    font-size: 0.85rem;
+    outline: none;
+    box-shadow: var(--oc-shadow);
+    transition: border-color 100ms, box-shadow 100ms;
+  }
+  .cl-search-input::placeholder {
+    color: var(--oc-text-muted);
+    font-size: 0.85rem;
+  }
+  .cl-search-input:focus {
+    border-color: var(--oc-primary);
+    box-shadow: 6px 6px 0 0 var(--oc-primary);
+  }
+  .cl-search-icon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--oc-text-muted);
+    font-size: 1rem;
+    pointer-events: none;
+  }
+
+  /* Filter pills */
+  .cl-filter-btn {
+    background: transparent;
+    border: 2px solid var(--oc-border-dim);
+    padding: 0.3rem 0.75rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--oc-text-muted);
+    cursor: pointer;
+    transition: all 100ms;
+  }
+  .cl-filter-btn:hover {
+    border-color: var(--oc-border);
+    color: var(--oc-text);
+    background: var(--oc-bg-surface);
+  }
+  .cl-filter-btn.is-active {
+    border-color: var(--oc-primary);
+    color: var(--oc-text);
+    background: var(--oc-bg-surface);
+  }
+  .cl-filter-btn:focus-visible {
+    outline: 3px solid var(--oc-primary);
+    outline-offset: 2px;
+  }
+
+  /* Timeline */
+  .cl-timeline {
+    position: relative;
+    padding-left: 3rem;
+    border-left: 6px solid var(--oc-border);
+  }
+
+  /* Timeline dot */
+  .cl-dot {
+    position: absolute;
+    left: -3.9rem;
+    top: 0.5rem;
+    width: 3rem;
+    height: 3rem;
+    border: 4px solid var(--oc-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--oc-bg-card);
+    transition: border-color 150ms;
+  }
+  .cl-dot--breaking {
+    background: var(--oc-primary);
+    border-color: var(--oc-primary);
+  }
+  .cl-dot__icon {
+    font-size: 0.8rem;
+    color: var(--oc-primary-bright);
+  }
+  .cl-dot--breaking .cl-dot__icon {
+    color: #fff;
+  }
+
+  /* Header */
+  .cl-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: baseline;
+    margin-bottom: 1rem;
+  }
+  .cl-header__version {
+    font-size: 2.25rem;
+    font-weight: 900;
+    font-style: italic;
+    letter-spacing: -0.02em;
+    color: var(--oc-text);
+  }
+  .cl-header__date {
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--oc-text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* Badges */
+  .cl-label {
+    display: inline-block;
+    padding: 0.2rem 0.75rem;
+    font-family: var(--oc-font-headline);
+    font-size: 0.7rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .cl-label--breaking {
+    background: var(--oc-primary);
+    color: var(--oc-text-on-accent);
+  }
+  .cl-label--prerelease {
+    background: transparent;
+    color: var(--oc-primary);
+    border: 2px solid var(--oc-primary);
+  }
+
+  /* Entry card */
+  .cl-card {
+    padding: 2rem;
+    background: var(--oc-bg-card);
+    border: 4px solid var(--oc-border-dim);
+    transition: border-color 150ms, box-shadow 150ms;
+  }
+  .cl-card:hover {
+    border-color: var(--oc-border);
+  }
+  .cl-card--breaking {
+    border-left: 8px solid var(--oc-primary);
+  }
+  .cl-card--breaking:hover {
+    box-shadow: 4px 4px 0 0 var(--oc-primary);
+  }
+
+  /* Entry title */
+  .cl-card__title {
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin: 0 0 1.5rem;
+    letter-spacing: -0.01em;
+    color: var(--oc-text);
+  }
+
+  /* Entry body */
+  .cl-card__body {
+    color: var(--oc-text-dim);
+    font-size: 0.875rem;
+    line-height: 1.7;
+    font-family: var(--oc-font-body);
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Expand button */
+  .cl-expand-btn {
+    display: block;
+    margin-top: 1rem;
+    background: transparent;
+    border: 2px solid var(--oc-border);
+    color: var(--oc-text);
+    padding: 0.5rem 1.25rem;
+    font-size: 0.7rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: background 100ms, transform 100ms;
+  }
+  .cl-expand-btn:hover {
+    background: var(--oc-bg-surface);
+    transform: translate(-1px, -1px);
+  }
+  .cl-expand-btn:focus-visible {
+    outline: 3px solid var(--oc-primary);
+    outline-offset: 2px;
+  }
+
+  /* Footer */
+  .cl-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 2px solid var(--oc-border-dim);
+  }
+  .cl-footer__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--oc-primary-bright);
+    text-decoration: none;
+    transition: opacity 150ms, gap 150ms;
+  }
+  .cl-footer__link:hover {
+    opacity: 0.7;
+    gap: 0.75rem;
+  }
+  .cl-footer__link:focus-visible {
+    outline: 2px solid var(--oc-primary);
+    outline-offset: 2px;
+  }
+  .cl-footer__num {
+    font-family: var(--oc-font-mono);
+    font-size: 0.65rem;
+    color: var(--oc-text-muted);
+  }
+
+  /* Scroll to top */
+  #cl-scroll-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 60;
+    background: var(--oc-border);
+    color: var(--oc-bg);
+    padding: 1rem;
+    border: 4px solid var(--oc-border);
+    box-shadow: 6px 6px 0px 0px rgba(235,0,0,1);
+    cursor: pointer;
+    font-size: 1.25rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms, transform 100ms, box-shadow 100ms;
+  }
+  #cl-scroll-top.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  #cl-scroll-top:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0px 0px rgba(235,0,0,1);
+  }
+  #cl-scroll-top:focus-visible {
+    outline: 3px solid var(--oc-primary);
+    outline-offset: 2px;
+  }
+
+  /* Hero */
+  .cl-hero__title {
+    font-size: clamp(3.5rem, 10vw, 7rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    font-style: italic;
+    letter-spacing: -0.03em;
+    line-height: 0.9;
+    margin: 0 0 1.5rem;
+    color: var(--oc-text);
+  }
+  .cl-hero__sub {
+    font-family: var(--oc-font-body);
+    font-size: 1.1rem;
+    max-width: 32rem;
+    color: var(--oc-text-dim);
+    line-height: 1.6;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .cl-hero__actions {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+</style>
+
 <OpenClawLayout
   title="OpenClaw Changelog — changelogs.info"
   description="Full changelog for OpenClaw. Every release, every breaking change, every fix."
   currentPage="changelog"
 >
   <div style="max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 0;">
-
-    <!-- Hero -->
     <section style="margin-bottom: 4rem;">
-      <h1
-        class="oc-headline"
-        style="font-size: clamp(3.5rem, 10vw, 7rem); font-weight: 900; text-transform: uppercase; font-style: italic; letter-spacing: -0.03em; line-height: 0.9; margin: 0 0 1.5rem; color: var(--oc-text);"
-      >
-        Changelog
-      </h1>
-      <div style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: flex-end; justify-content: space-between;">
-        <p style="font-family: var(--oc-font-body); font-size: 1.1rem; max-width: 32rem; color: var(--oc-text-dim); line-height: 1.6; margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">
-          Every OpenClaw release. Bolted straight to the record.
-        </p>
-        <!-- Search -->
-        <div style="width: 100%; max-width: 320px;">
-          <label class="oc-headline" style="display: block; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--oc-primary-bright); margin-bottom: 0.5rem;">
-            Filter updates
-          </label>
-          <div style="position: relative;">
+      <h1 class="cl-hero__title">Changelog</h1>
+      <p class="cl-hero__sub">Every release, every breaking change, every fix.</p>
+      <div class="cl-hero__actions">
+        <div class="cl-search-wrap">
+          <div class="cl-search-inner">
             <input
-              id="cl-search"
               type="text"
-              placeholder="SEARCH RELEASES..."
-              style="width: 100%; background: var(--oc-bg); border: 4px solid var(--oc-border); padding: 1rem; font-family: var(--oc-font-headline); font-weight: 700; text-transform: uppercase; color: var(--oc-text); font-size: 0.85rem; outline: none; box-shadow: var(--oc-shadow); transition: border-color 100ms;"
-              onfocus="this.style.borderColor='var(--oc-primary-bright)'"
-              onblur="this.style.borderColor='var(--oc-border)'"
+              id="cl-search"
+              class="cl-search-input"
+              placeholder="Search releases..."
+              autocomplete="off"
+              spellcheck="false"
             />
-            <span style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--oc-text-muted); font-size: 1rem;">⌕</span>
+            <span class="cl-search-icon">⌕</span>
           </div>
-          <!-- Filter pills -->
-          <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem;">
-            <button
-              id="cl-filter-stable"
-              class="oc-headline"
-              data-filter="stable"
-              style="background: transparent; border: 2px solid var(--oc-border-dim); padding: 0.3rem 0.75rem; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--oc-text-muted); cursor: pointer; transition: all 100ms;"
-            >
-              Stable
-            </button>
-            <button
-              id="cl-filter-breaking"
-              class="oc-headline"
-              data-filter="breaking"
-              style="background: transparent; border: 2px solid var(--oc-border-dim); padding: 0.3rem 0.75rem; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--oc-text-muted); cursor: pointer; transition: all 100ms;"
-            >
-              Breaking
-            </button>
-            <button
-              id="cl-filter-prerelease"
-              class="oc-headline"
-              data-filter="prerelease"
-              style="background: transparent; border: 2px solid var(--oc-border-dim); padding: 0.3rem 0.75rem; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--oc-text-muted); cursor: pointer; transition: all 100ms;"
-            >
-              Pre-release
-            </button>
-          </div>
+        </div>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button id="cl-filter-all" class="cl-filter-btn">All</button>
+          <button id="cl-filter-breaking" class="cl-filter-btn">Breaking</button>
+          <button id="cl-filter-prerelease" class="cl-filter-btn">Pre-release</button>
         </div>
       </div>
     </section>
 
-    <!-- Timeline -->
-    {releases.length > 0 ? (
-      <div
-        id="cl-releases-list"
-        class="cl-list"
-        style="position: relative; padding-left: 3rem; border-left: 6px solid var(--oc-border);"
-      >
-        {releases.map((release, idx) => {
-          const breaking = isBreaking(release.body);
-          const renderedBody = renderBody(release.body || "");
-          const isLong = (release.body || "").length > 600;
-
-          return (
-            <article
-              class="cl-entry"
-              data-version={release.version.toLowerCase()}
-              data-name={(release.name || "").toLowerCase()}
-              data-body={(release.body || "").toLowerCase().slice(0, 800)}
-              data-prerelease={String(release.prerelease)}
-              data-breaking={String(breaking)}
-              data-index={idx}
-              style={`position: relative; margin-bottom: 5rem; ${idx >= 10 ? 'display: none;' : ''}`}
-            >
-              <!-- Timeline dot -->
-              <div
-                class="cl-dot"
-                style={`position: absolute; left: -3.9rem; top: 0.5rem; width: 3rem; height: 3rem; border: 4px solid var(--oc-border); display: flex; align-items: center; justify-content: center; background: ${breaking ? 'var(--oc-primary)' : 'white'};`}
-              >
-                <span style={`font-size: 0.8rem; ${breaking ? 'color:white;' : 'color:black;'}`}>
-                  {breaking ? "⚡" : release.prerelease ? "β" : "●"}
-                </span>
-              </div>
-
-              <!-- Entry header -->
-              <div class="cl-entry-header" style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: baseline; margin-bottom: 1rem;">
-                <span
-                  class="oc-headline"
-                  style="font-size: 2.25rem; font-weight: 900; font-style: italic; letter-spacing: -0.02em; color: var(--oc-text);"
-                >
-                  {release.version}
-                </span>
-                <span
-                  class="oc-headline"
-                  style="font-size: 1rem; font-weight: 700; text-transform: uppercase; color: var(--oc-text-muted); letter-spacing: 0.05em;"
-                >
-                  {formatDate(release.date)}
-                </span>
-                {breaking && (
-                  <span style="background: var(--oc-primary); color: var(--oc-text-on-accent); padding: 0.2rem 0.75rem; font-family: var(--oc-font-headline); font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; border: 2px solid var(--oc-border);">
-                    BREAKING
-                  </span>
-                )}
-                {release.prerelease && (
-                  <span style="background: rgba(255,184,0,0.15); color: #ffb800; padding: 0.2rem 0.75rem; font-family: var(--oc-font-headline); font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; border: 2px solid #ffb800;">
-                    PRE-RELEASE
-                  </span>
-                )}
-              </div>
-
-              <!-- Entry card -->
-              <div
-                class="cl-entry-card"
-                style={`padding: 2rem; border: 4px solid var(--oc-border); background: ${breaking ? 'var(--oc-bg-breaking)' : 'var(--oc-bg-surface)'}; ${breaking ? 'border-right: 8px solid var(--oc-primary); border-bottom: 8px solid var(--oc-primary); box-shadow: 8px 8px 0 0 var(--oc-bg-breaking-soft);' : ''}`}
-              >
-                <!-- Release name -->
-                <h3
-                  class="oc-headline cl-entry-title"
-                  style={`font-size: 1.5rem; font-weight: 900; text-transform: uppercase; margin: 0 0 1.5rem; letter-spacing: -0.01em; color: ${breaking ? 'var(--oc-text-on-accent)' : 'var(--oc-text)'};`}
-                >
-                  {(release.name || release.version).replace(/^openclaw\s+/i, "")}
-                </h3>
-
-                <!-- Full rendered body -->
-                <div
-                  class={`changelog-body ${isLong && idx > 0 ? 'cl-collapsed' : ''}`}
-                  style={`color: ${breaking ? 'var(--oc-text-on-accent)' : 'var(--oc-text-dim)'}; font-size: 0.875rem; line-height: 1.7; font-family: var(--oc-font-body); overflow: hidden; position: relative;`}
-                  set:html={renderedBody}
-                />
-
-                {isLong && (
-                  <button
-                    class="cl-expand-btn oc-headline"
-                    style={`display: block; margin-top: 1rem; background: transparent; border: 2px solid ${breaking ? 'var(--oc-text-on-accent)' : 'var(--oc-border)'}; color: ${breaking ? 'var(--oc-text-on-accent)' : 'var(--oc-text)'}; padding: 0.5rem 1.25rem; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; transition: background 100ms;`}
-                    onclick="this.previousElementSibling.classList.toggle('cl-collapsed'); this.textContent = this.textContent.includes('EXPAND') ? '▲ COLLAPSE' : '▼ EXPAND FULL CHANGELOG'"
-                  >
-                    {idx === 0 ? '▲ COLLAPSE' : '▼ EXPAND FULL CHANGELOG'}
-                  </button>
-                )}
-
-                <!-- Footer -->
-                <div class="cl-entry-footer" style={`display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 2px solid var(--oc-border-dim);`}>
-                  <a
-                    href={release.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="oc-headline"
-                    style={`display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: ${breaking ? 'var(--oc-primary)' : 'var(--oc-primary-bright)'}; text-decoration: none; transition: opacity 150ms;`}
-                    onmouseover="this.style.opacity='0.7'"
-                    onmouseout="this.style.opacity='1'"
-                  >
-                    ↗ View on GitHub
-                  </a>
-                  <span style={`font-family: var(--oc-font-mono); font-size: 0.65rem; color: var(--oc-text-muted);`}>
-                    #{idx + 1}
-                  </span>
-                </div>
-              </div>
-            </article>
-          );
-        })}
-
-        <!-- Load More -->
-        {releases.length > 10 && (
-          <button
-            id="cl-load-more"
-            class="oc-headline"
-            style="display: block; width: 100%; margin-top: 2rem; background: var(--oc-bg-surface); border: 4px solid var(--oc-border); color: var(--oc-text); padding: 1rem; font-size: 0.85rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; box-shadow: var(--oc-shadow-sm); transition: transform 100ms, box-shadow 100ms; position: relative; overflow: visible;"
-            onmouseover="this.style.transform='translate(1px,1px)';this.style.boxShadow='none'"
-            onmouseout="this.style.transform='';this.style.boxShadow='var(--oc-shadow-sm)'"
-          >
-            Load More Releases ({releases.length - 10} remaining)
-          </button>
-        )}
-
-        <!-- Empty state -->
-        <div id="cl-empty" style="display: none; padding: 3rem; border: 4px dashed var(--oc-border-dim); text-align: center;">
-          <p class="oc-headline" style="font-weight: 700; text-transform: uppercase; color: var(--oc-text-muted);">
-            No releases match your filter.
-          </p>
-        </div>
-      </div>
-    ) : (
-      <div style="padding: 3rem; border: 4px dashed var(--oc-border-dim); text-align: center;">
-        <p class="oc-headline" style="font-weight: 700; text-transform: uppercase; color: var(--oc-text-muted);">
-          No releases tracked yet.
-        </p>
-      </div>
-    )}
-
-    <!-- Scroll to top FAB -->
-    <button
-      id="cl-scroll-top"
-      style="position: fixed; bottom: 2rem; right: 2rem; z-index: 60; background: var(--oc-border); color: var(--oc-bg); padding: 1rem; border: 4px solid var(--oc-border); box-shadow: 6px 6px 0px 0px rgba(235,0,0,1); cursor: pointer; transition: transform 100ms, box-shadow 100ms; font-size: 1.25rem; opacity: 0; pointer-events: none; transition: opacity 200ms, transform 100ms, box-shadow 100ms;"
-      aria-label="Scroll to top"
-      onmouseover="this.style.transform='translate(2px,2px)';this.style.boxShadow='none'"
-      onmouseout="this.style.transform='';this.style.boxShadow='6px 6px 0px 0px rgba(235,0,0,1)'"
-      onclick="window.scrollTo({top:0,behavior:'smooth'})"
+    <section
+      class="cl-timeline"
+      id="cl-timeline"
+      aria-label="Release timeline"
     >
-      ↑
-    </button>
+      {releases.map((release, idx) => {
+        const breaking = isBreaking(release.body);
+        const renderedBody = renderBody(release.body || "");
+        const isLong = (release.body || "").length > 600;
+
+        return (
+          <article
+            class="cl-entry"
+            data-version={release.version.toLowerCase()}
+            data-name={(release.name || "").toLowerCase()}
+            data-body={(release.body || "").toLowerCase().slice(0, 800)}
+            data-prerelease={String(release.prerelease)}
+            data-breaking={String(breaking)}
+            data-index={idx}
+            style={`position: relative; margin-bottom: 3rem; ${idx >= 10 ? 'display: none;' : ''}`}
+          >
+            <div class={`cl-dot ${breaking ? 'cl-dot--breaking' : ''}`}>
+              <span class="cl-dot__icon">
+                {breaking ? "⚡" : release.prerelease ? "β" : "●"}
+              </span>
+            </div>
+
+            <div class="cl-header">
+              <span class="oc-headline cl-header__version">
+                {release.version}
+              </span>
+              <span class="oc-headline cl-header__date">
+                {formatDate(release.date)}
+              </span>
+              {breaking && (
+                <span class="cl-label cl-label--breaking">Breaking</span>
+              )}
+              {release.prerelease && (
+                <span class="cl-label cl-label--prerelease">Pre-release</span>
+              )}
+            </div>
+
+            <div class={`cl-card ${breaking ? 'cl-card--breaking' : ''}`}>
+              <h3 class="oc-headline cl-card__title">
+                {(release.name || release.version).replace(/^openclaw\s+/i, "")}
+              </h3>
+
+              <div
+                class={`changelog-body ${isLong && idx > 0 ? 'cl-collapsed' : ''} cl-card__body`}
+                set:html={renderedBody}
+              />
+
+              {isLong && (
+                <button
+                  class="cl-expand-btn oc-headline"
+                  data-expand-target={idx}
+                >
+                  {idx === 0 ? '▲ Collapse' : '▼ Expand Full Changelog'}
+                </button>
+              )}
+
+              <div class="cl-footer">
+                <a
+                  href={release.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="cl-footer__link oc-headline"
+                >
+                  ↗ View on GitHub
+                </a>
+                <span class="cl-footer__num">#{idx + 1}</span>
+              </div>
+            </div>
+          </article>
+        );
+      })}
+
+      <p class="oc-headline" style="font-weight: 700; text-transform: uppercase; color: var(--oc-text-muted);">
+        — {releases.length} releases tracked —
+      </p>
+    </section>
+
+    <div style="padding: 3rem; border: 4px dashed var(--oc-border-dim); text-align: center;">
+      <p class="oc-headline" style="font-weight: 700; text-transform: uppercase; color: var(--oc-text-muted);">
+        Looking for older releases?
+      </p>
+      <p style="color: var(--oc-text-dim); font-size: 0.875rem; margin-top: 0.5rem;">
+        <a href="https://github.com/openclaw/openclaw/releases" target="_blank" rel="noopener noreferrer" style="color: var(--oc-primary-bright);">View all releases on GitHub →</a>
+      </p>
+    </div>
   </div>
 
-  <style is:global>
-    @media (max-width: 640px) {
-      .cl-list {
-        padding-left: 1.25rem !important;
-        border-left-width: 4px !important;
-      }
-      .cl-dot {
-        left: -1.85rem !important;
-        width: 1.4rem !important;
-        height: 1.4rem !important;
-        border-width: 2px !important;
-        top: 0.45rem !important;
-      }
-      .cl-dot span {
-        font-size: 0.55rem !important;
-      }
-      .cl-entry {
-        margin-bottom: 2.5rem !important;
-      }
-      .cl-entry-header {
-        gap: 0.5rem !important;
-        margin-bottom: 0.75rem !important;
-      }
-      .cl-entry-header > span:first-child {
-        font-size: 1.35rem !important;
-      }
-      .cl-entry-header > span:nth-child(2) {
-        font-size: 0.75rem !important;
-      }
-      .cl-entry-card {
-        padding: 1rem !important;
-      }
-      .cl-entry-title {
-        font-size: 1.1rem !important;
-        margin-bottom: 1rem !important;
-      }
-      .changelog-body {
-        font-size: 0.95rem !important;
-        line-height: 1.65 !important;
-      }
-      .changelog-body li {
-        padding-left: 1rem !important;
-        margin-bottom: 0.5rem !important;
-      }
-      .cl-entry-footer {
-        gap: 0.5rem !important;
-        align-items: flex-start !important;
-        flex-wrap: wrap !important;
-      }
-      #cl-load-more {
-        font-size: 0.75rem !important;
-        padding: 0.85rem !important;
-      }
-      #cl-scroll-top {
-        right: 1rem !important;
-        bottom: 1rem !important;
-        padding: 0.75rem !important;
-      }
-    }
-  </style>
+  <button id="cl-scroll-top" aria-label="Scroll to top">↑</button>
 
   <script>
-    const search = document.getElementById("cl-search") as HTMLInputElement;
-    const entries = document.querySelectorAll<HTMLElement>(".cl-entry");
-    const emptyState = document.getElementById("cl-empty");
-    const stableBtn = document.getElementById("cl-filter-stable");
+    // Search
+    const searchInput = document.getElementById("cl-search");
+    const allEntries = document.querySelectorAll<HTMLElement>(".cl-entry");
+
+    searchInput?.addEventListener("input", (e) => {
+      const q = (e.target as HTMLInputElement).value.toLowerCase();
+      allEntries.forEach((entry) => {
+        const version = entry.dataset.version || "";
+        const name = entry.dataset.name || "";
+        const body = entry.dataset.body || "";
+        const match = version.includes(q) || name.includes(q) || body.includes(q);
+        (entry as HTMLElement).style.display = match || q === "" ? "" : "none";
+      });
+    });
+
+    // Filters
+    let activeFilter = "all";
     const breakingBtn = document.getElementById("cl-filter-breaking");
     const prereleaseBtn = document.getElementById("cl-filter-prerelease");
+    const allFilterBtn = document.getElementById("cl-filter-all");
+
+    // Set initial active state
+    allFilterBtn?.classList.add("is-active");
+
+    function applyFilter(filter: string) {
+      activeFilter = filter;
+      allEntries.forEach((entry) => {
+        const isBreaking = entry.dataset.breaking === "true";
+        const isPrerelease = entry.dataset.prerelease === "true";
+        let show = true;
+        if (filter === "breaking") show = isBreaking;
+        else if (filter === "prerelease") show = isPrerelease;
+        (entry as HTMLElement).style.display = show ? "" : "none";
+      });
+      // Update active button state
+      breakingBtn?.classList.toggle("is-active", filter === "breaking");
+      prereleaseBtn?.classList.toggle("is-active", filter === "prerelease");
+      allFilterBtn?.classList.toggle("is-active", filter === "all");
+    }
+
+    breakingBtn?.addEventListener("click", () => applyFilter("breaking"));
+    prereleaseBtn?.addEventListener("click", () => applyFilter("prerelease"));
+    allFilterBtn?.addEventListener("click", () => applyFilter("all"));
+
+    // Expand/collapse (event delegation)
+    document.addEventListener("click", (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLElement>(".cl-expand-btn");
+      if (!btn) return;
+      const body = btn.previousElementSibling as HTMLElement;
+      body?.classList.toggle("cl-collapsed");
+      btn.textContent = body?.classList.contains("cl-collapsed")
+        ? "▼ Expand Full Changelog"
+        : "▲ Collapse";
+    });
+
+    // Scroll to top
     const scrollTopBtn = document.getElementById("cl-scroll-top");
-    let activeFilter = "";
-
-    function filterEntries() {
-      const query = (search?.value || "").toLowerCase().trim();
-      const isFiltering = query || activeFilter;
-      let visible = 0;
-
-      entries.forEach((el) => {
-        const idx = parseInt(el.dataset.index || "0");
-        const version = el.dataset.version || "";
-        const name = el.dataset.name || "";
-        const body = el.dataset.body || "";
-        const prerelease = el.dataset.prerelease === "true";
-        const breaking = el.dataset.breaking === "true";
-
-        const textMatch =
-          !query ||
-          version.includes(query) ||
-          name.includes(query) ||
-          body.includes(query);
-
-        let filterMatch = true;
-        if (activeFilter === "stable") filterMatch = !prerelease;
-        if (activeFilter === "breaking") filterMatch = breaking;
-        if (activeFilter === "prerelease") filterMatch = prerelease;
-
-        // When filtering/searching, show all matching entries regardless of pagination
-        const paginationHidden = !allLoaded && !isFiltering && idx >= 10;
-        const show = textMatch && filterMatch && !paginationHidden;
-        el.style.display = show ? "" : "none";
-        if (show) visible++;
-      });
-
-      if (emptyState) emptyState.style.display = visible === 0 ? "block" : "none";
-      // Hide Load More when filtering
-      if (loadMoreBtn) loadMoreBtn.style.display = (isFiltering || allLoaded) ? "none" : "block";
-    }
-
-    search?.addEventListener("input", filterEntries);
-
-    function resetFilterBtns() {
-      [stableBtn, breakingBtn, prereleaseBtn].forEach((btn) => {
-        if (btn) {
-          (btn as HTMLElement).style.background = "transparent";
-          (btn as HTMLElement).style.borderColor = "var(--oc-border-dim)";
-          (btn as HTMLElement).style.color = "var(--oc-text-muted)";
-        }
-      });
-    }
-
-    function activateBtn(btn: HTMLElement | null) {
-      if (btn) {
-        btn.style.background = "var(--oc-primary)";
-        btn.style.borderColor = "var(--oc-primary)";
-        btn.style.color = "white";
-      }
-    }
-
-    [stableBtn, breakingBtn, prereleaseBtn].forEach((btn) => {
-      btn?.addEventListener("click", () => {
-        const f = btn.getAttribute("data-filter") || "";
-        if (activeFilter === f) {
-          activeFilter = "";
-          resetFilterBtns();
-        } else {
-          activeFilter = f;
-          resetFilterBtns();
-          activateBtn(btn as HTMLElement);
-        }
-        filterEntries();
-      });
+    scrollTopBtn?.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
     });
 
-    // Load More
-    const loadMoreBtn = document.getElementById("cl-load-more");
-    let allLoaded = false;
-    loadMoreBtn?.addEventListener("click", () => {
-      entries.forEach((el) => {
-        el.style.display = "";
-      });
-      loadMoreBtn.style.display = "none";
-      allLoaded = true;
-      filterEntries(); // re-apply any active filters
-    });
-
-    // Scroll to top button
+    // Show/hide scroll button
     window.addEventListener("scroll", () => {
-      if (scrollTopBtn) {
-        if (window.scrollY > 400) {
-          scrollTopBtn.style.opacity = "1";
-          scrollTopBtn.style.pointerEvents = "auto";
-        } else {
-          scrollTopBtn.style.opacity = "0";
-          scrollTopBtn.style.pointerEvents = "none";
-        }
+      if (!scrollTopBtn) return;
+      if (window.scrollY > 600) {
+        scrollTopBtn.style.opacity = "1";
+        scrollTopBtn.classList.add("is-visible");
+      } else {
+        scrollTopBtn.style.opacity = "0";
+        scrollTopBtn.classList.remove("is-visible");
       }
     }, { passive: true });
   </script>
