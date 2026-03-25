@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.81",
-  "generated_at": "2026-03-25T05:31:56.052Z",
+  "version": "2.1.83",
+  "generated_at": "2026-03-25T06:26:12.355Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,15 +14,25 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.81",
-    "to_version": "2.1.81",
-    "new_features": [],
+    "from_version": "2.1.83",
+    "to_version": "2.1.83",
+    "new_features": [
+      "managed-settings-drop-in-directory",
+      "reactive-environment-management-hooks",
+      "transcript-search",
+      "initial-prompt-in-agent-frontmatter",
+      "pasted-image-chips"
+    ],
     "new_commands": [],
     "new_flags": [
-      "--bare"
+      "--mcp-config"
     ],
-    "new_env_vars": [],
-    "deprecated_commands": [],
+    "new_env_vars": [
+      "CLAUDE_CODE_SUBPROCESS_ENV_SCRUB"
+    ],
+    "deprecated_commands": [
+      "/status"
+    ],
     "deprecated_flags": [],
     "breaking_changes": []
   },
@@ -41,12 +51,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.81",
-      "latest_release_date": "2026-03-20",
+      "latest_stable": "2.1.83",
+      "latest_release_date": "2026-03-25",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces the `--bare` flag for faster scripted calls, bypassing hooks and requiring an API key. Channel servers can now relay tool approval prompts to your phone. Multiple authentication issues have been resolved, including concurrent sessions and voice mode failures. The release also fixes issues with the structured-outputs beta header, channel bypasses, Node.js 18 crashes, and plugin hook blocking. Plugin freshness is improved by re-cloning ref-tracked plugins on every load. Line-by-line response streaming is disabled on Windows due to rendering issues."
+      "tldr": "This release introduces a `managed-settings.d/` directory for easier policy management and `CwdChanged` and `FileChanged` hooks for reactive environment management. Transcript search is now available via `/` in transcript mode. Agents can now define an `initialPrompt` in their frontmatter. The `CLAUDE_CODE_SUBPROCESS_ENV_SCRUB` environment variable helps secure subprocess environments. Several UI freezes and hangs have been resolved, including issues with large file diffs, voice input startup, and MCP config fetching. The release also fixes several bugs related to plugin hooks, queued commands, and scrollback behavior."
     },
     "features": [
       {
@@ -407,6 +417,51 @@
         "status": "stable",
         "since": "2.1.81",
         "description": "Channel servers that declare the permission capability can forward tool approval prompts to your phone.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "managed-settings-drop-in-directory",
+        "name": "Managed Settings Drop-in Directory",
+        "status": "stable",
+        "since": "2.1.83",
+        "description": "Added `managed-settings.d/` drop-in directory alongside `managed-settings.json`, letting separate teams deploy independent policy fragments that merge alphabetically.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "reactive-environment-management-hooks",
+        "name": "Reactive Environment Management Hooks",
+        "status": "stable",
+        "since": "2.1.83",
+        "description": "Added `CwdChanged` and `FileChanged` hook events for reactive environment management (e.g., direnv).",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "transcript-search",
+        "name": "Transcript Search",
+        "status": "stable",
+        "since": "2.1.83",
+        "description": "Added transcript search — press `/` in transcript mode (`Ctrl+O`) to search, `n`/`N` to step through matches.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "initial-prompt-in-agent-frontmatter",
+        "name": "Initial Prompt in Agent Frontmatter",
+        "status": "stable",
+        "since": "2.1.83",
+        "description": "Agents can now declare `initialPrompt` in frontmatter to auto-submit a first turn.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "pasted-image-chips",
+        "name": "Pasted Image Chips",
+        "status": "stable",
+        "since": "2.1.83",
+        "description": "Pasted images now insert an `[Image #N]` chip at the cursor so you can reference them positionally in your prompt.",
         "key_details": [],
         "source_url": ""
       }
@@ -873,6 +928,12 @@
           "description": "Skips hooks, LSP, plugin sync, and skill directory walks for scripted `-p` calls; requires `ANTHROPIC_API_KEY` or an `apiKeyHelper` via `--settings` (OAuth and keychain auth disabled); auto-memory fully disabled",
           "since": "2.1.81",
           "source_url": ""
+        },
+        {
+          "flag": "--mcp-config",
+          "description": "CLI flag for MCP config.",
+          "since": "2.1.83",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -886,7 +947,7 @@
         }
       ],
       "new_since_previous": [
-        "--bare"
+        "--mcp-config"
       ]
     },
     "env_vars": [
@@ -950,6 +1011,13 @@
         "purpose": "Add a custom entry to the `/model` picker, with optional `_NAME` and `_DESCRIPTION` suffixed vars for display",
         "status": "stable",
         "since": "2.1.78",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_SUBPROCESS_ENV_SCRUB",
+        "purpose": "Strip Anthropic and cloud provider credentials from subprocess environments (Bash tool, hooks, MCP stdio servers).",
+        "status": "stable",
+        "since": "2.1.83",
         "source_url": ""
       }
     ],
@@ -1052,6 +1120,12 @@
         "name": "/fork",
         "replaced_by": "/branch",
         "deprecated_since": "2.1.77",
+        "source_url": ""
+      },
+      {
+        "name": "/status",
+        "replaced_by": "N/A",
+        "deprecated_since": "2.1.83",
         "source_url": ""
       }
     ],
