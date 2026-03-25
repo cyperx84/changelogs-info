@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.83",
-  "generated_at": "2026-03-25T07:25:17.228Z",
+  "generated_at": "2026-03-25T06:26:12.355Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -19,22 +19,16 @@
     "new_features": [
       "managed-settings-drop-in-directory",
       "reactive-environment-management-hooks",
-      "sandbox-fail-if-unavailable",
-      "disable-deep-link-registration",
       "transcript-search",
-      "readline-alias-for-external-editor",
-      "image-chips-in-prompts",
       "initial-prompt-in-agent-frontmatter",
-      "plugin-options-available-externally",
-      "claude-can-reference-pasted-image-paths"
+      "pasted-image-chips"
     ],
     "new_commands": [],
     "new_flags": [
       "--mcp-config"
     ],
     "new_env_vars": [
-      "CLAUDE_CODE_SUBPROCESS_ENV_SCRUB",
-      "CLAUDE_CODE_DISABLE_NONSTREAMING_FALLBACK"
+      "CLAUDE_CODE_SUBPROCESS_ENV_SCRUB"
     ],
     "deprecated_commands": [
       "/status"
@@ -62,7 +56,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces managed settings drop-in directories for easier policy management and reactive environment management hooks for tools like direnv. A new `sandbox.failIfUnavailable` setting ensures sandboxed execution or an error. Transcript search is now available with `/` in transcript mode. Plugin options can now be configured externally with sensitive values securely stored. The release also includes numerous fixes, including addressing hangs with large diffs, startup freezes with voice input, and issues with remote sessions and plugin hooks. The non-streaming fallback can now be disabled via `CLAUDE_CODE_DISABLE_NONSTREAMING_FALLBACK`. Finally, the deprecated `TaskOutput` tool should be replaced with `Read` on the background task's output file."
+      "tldr": "This release introduces a `managed-settings.d/` directory for easier policy management and `CwdChanged` and `FileChanged` hooks for reactive environment management. Transcript search is now available via `/` in transcript mode. Agents can now define an `initialPrompt` in their frontmatter. The `CLAUDE_CODE_SUBPROCESS_ENV_SCRUB` environment variable helps secure subprocess environments. Several UI freezes and hangs have been resolved, including issues with large file diffs, voice input startup, and MCP config fetching. The release also fixes several bugs related to plugin hooks, queued commands, and scrollback behavior."
     },
     "features": [
       {
@@ -468,60 +462,6 @@
         "status": "stable",
         "since": "2.1.83",
         "description": "Pasted images now insert an `[Image #N]` chip at the cursor so you can reference them positionally in your prompt.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "sandbox-fail-if-unavailable",
-        "name": "Sandbox Fail If Unavailable Setting",
-        "status": "stable",
-        "since": "2.1.83",
-        "description": "Added `sandbox.failIfUnavailable` setting to exit with an error when sandbox is enabled but cannot start, instead of running unsandboxed.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "disable-deep-link-registration",
-        "name": "Disable Deep Link Registration Setting",
-        "status": "stable",
-        "since": "2.1.83",
-        "description": "Added `disableDeepLinkRegistration` setting to prevent `claude-cli://` protocol handler registration.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "readline-alias-for-external-editor",
-        "name": "Readline Alias for External Editor",
-        "status": "stable",
-        "since": "2.1.83",
-        "description": "Added `Ctrl+X Ctrl+E` as an alias for opening the external editor (readline-native binding; `Ctrl+G` still works).",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "image-chips-in-prompts",
-        "name": "Image Chips in Prompts",
-        "status": "stable",
-        "since": "2.1.83",
-        "description": "Pasted images now insert an `[Image #N]` chip at the cursor so you can reference them positionally in your prompt.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "plugin-options-available-externally",
-        "name": "Plugin Options Available Externally",
-        "status": "stable",
-        "since": "2.1.83",
-        "description": "Plugin options (`manifest.userConfig`) now available externally — plugins can prompt for configuration at enable time, with `sensitive: true` values stored in keychain (macOS) or protected credentials file (other platforms).",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "claude-can-reference-pasted-image-paths",
-        "name": "Claude Can Reference Pasted Image Paths",
-        "status": "stable",
-        "since": "2.1.83",
-        "description": "Claude can now reference the on-disk path of clipboard-pasted images for file operations.",
         "key_details": [],
         "source_url": ""
       }
@@ -1079,13 +1019,6 @@
         "status": "stable",
         "since": "2.1.83",
         "source_url": ""
-      },
-      {
-        "name": "CLAUDE_CODE_DISABLE_NONSTREAMING_FALLBACK",
-        "purpose": "Disable the non-streaming fallback when streaming fails",
-        "status": "stable",
-        "since": "2.1.83",
-        "source_url": ""
       }
     ],
     "models": [
@@ -1192,12 +1125,6 @@
       {
         "name": "/status",
         "replaced_by": "N/A",
-        "deprecated_since": "2.1.83",
-        "source_url": ""
-      },
-      {
-        "name": "/status",
-        "replaced_by": null,
         "deprecated_since": "2.1.83",
         "source_url": ""
       }
