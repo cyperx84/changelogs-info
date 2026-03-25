@@ -1,219 +1,170 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import HubSectionCard from "../components/HubSectionCard.astro";
-import { SECTIONS, MODELS_SECTION, TOOLS_SECTION } from "../lib/sections";
-import { getToolById, getToolReleases, getAllToolReleases, relativeTime } from "../lib/releases";
-import type { Release } from "../lib/releases";
+import HubLayout from "../layouts/HubLayout.astro";
+import { getAllToolReleases } from "../lib/releases";
 
-// Load release data for all sections
-const openclawSection = SECTIONS.find((s) => s.id === "openclaw")!;
-const openclawData = await getToolReleases("openclaw");
-const openclawReleases = openclawData?.releases || [];
-const openclawLatest = openclawReleases.find((r) => !r.prerelease) || openclawReleases[0];
-const openclawTool = getToolById("openclaw");
+let releaseMap: Record<string, any> = {};
+let toolData: Record<string, any> = {};
 
-// Load latest releases for section cards
-let releaseMap: Record<string, { latest: Release; count: number }> = {};
 try {
   const allReleases = await getAllToolReleases();
   for (const tr of allReleases) {
     if (tr.releases.length === 0) continue;
-    const stable = tr.releases.find((r) => !r.prerelease);
+    const stable = tr.releases.find((r: any) => !r.prerelease);
+    const latest = stable || tr.releases[0];
     releaseMap[tr.tool.id] = {
-      latest: stable || tr.releases[0],
+      version: latest.version,
+      date: latest.date,
+      body: latest.body || "",
       count: tr.releases.length,
     };
+    toolData[tr.tool.id] = tr.tool;
   }
-} catch {}
+} catch (e) {
+  // fallback: empty
+}
 
-const claudeCodeSection = SECTIONS.find((s) => s.id === "claude-code")!;
-const codexCliSection = SECTIONS.find((s) => s.id === "codex-cli")!;
+const tools = [
+  {
+    id: "openclaw",
+    name: "OpenClaw",
+    icon: "⬡",
+    desc: "Agent orchestration framework. Gateway, plugins, fleet management.",
+    tag: "Agent Framework",
+    class: "hub-card--openclaw",
+    href: "/openclaw/",
+    latest: releaseMap["openclaw"],
+  },
+  {
+    id: "claude-code",
+    name: "Claude Code",
+    icon: "C",
+    desc: "Anthropic's official CLI. Pair programming, agents, skills, hooks.",
+    tag: "AI Coding",
+    class: "hub-card--claude",
+    href: "/claude-code/",
+    latest: releaseMap["claude-code"],
+  },
+  {
+    id: "codex-cli",
+    name: "Codex CLI",
+    icon: "$",
+    desc: "OpenAI's terminal-native coding agent. Fast, stateless, extensible.",
+    tag: "AI Coding",
+    class: "hub-card--codex",
+    href: "/codex-cli/",
+    latest: releaseMap["codex-cli"],
+  },
+  {
+    id: "models",
+    name: "AI Models",
+    icon: "◈",
+    desc: "Every model, every provider. Track releases across 12 AI companies.",
+    tag: "Coming Soon",
+    class: "hub-card--models",
+    href: "/models/",
+    latest: null,
+  },
+];
+
+function formatDate(dateStr: string): string {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+function getTldr(body: string): string {
+  if (!body) return "No summary available yet.";
+  const lines = body.split("\n").filter(l => l.trim() && !l.includes("<!--") && !l.includes("* *" ));
+  const bullets = lines.filter(l => /^[-\u2022*]/.test(l.trim()));
+  if (bullets.length === 0) return body.slice(0, 120) + "…";
+  return bullets.slice(0, 2).map(l => l.replace(/^[-\u2022*]\s*/, "").replace(/`([^`]+)`/g, "$1")).join(" · ") + ".";
+}
 ---
 
-<BaseLayout title="changelogs.info — AI Coding Tool Changelog Tracker">
-  <!-- OpenClaw Hero -->
-  <section
-    class="relative overflow-hidden border-b"
-    style={`border-color: rgba(${openclawSection.colorRgb}, 0.2); background: linear-gradient(135deg, rgba(${openclawSection.colorRgb}, 0.06) 0%, transparent 50%);`}
-  >
-    <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
-      <div class="max-w-2xl">
-        <div class="mb-4 flex items-center gap-3">
-          <span
-            class="inline-block h-3 w-3 rounded-sm"
-            style={`background: ${openclawSection.color}; box-shadow: 0 0 16px ${openclawSection.color};`}
-          ></span>
-          <span class="font-mono text-xs uppercase tracking-widest text-text-muted">featured</span>
-        </div>
+<HubLayout title="changelogs.info — Every AI Tool. Every Release.">
 
-        <h1 class="font-mono text-3xl font-bold sm:text-4xl md:text-5xl">
-          <span style={`color: ${openclawSection.color};`}>What changed?</span>
-        </h1>
-
-        <p class="mt-4 font-sans text-sm leading-relaxed text-text-secondary sm:text-base max-w-lg">
-          changelogs.info tracks every major AI coding tool. clwatch patches your agent configs when things change &mdash; automatically.
-        </p>
-
-        {openclawLatest && (
-          <div class="mt-6 inline-flex items-center gap-3 rounded-lg border px-4 py-2.5 font-mono text-sm" style={`border-color: rgba(${openclawSection.colorRgb}, 0.3); background: rgba(${openclawSection.colorRgb}, 0.08);`}>
-            <a href="/openclaw/" class="font-semibold transition-colors hover:opacity-80" style={`color: ${openclawSection.color};`}>OpenClaw</a>
-            <span class="text-text-muted">|</span>
-            <span style={`color: ${openclawSection.color};`}>{openclawLatest.version}</span>
-            <span class="text-text-muted">|</span>
-            <span class="text-text-secondary text-xs">{relativeTime(openclawLatest.date)}</span>
-          </div>
-        )}
-
-        <div class="mt-6 flex flex-wrap gap-3 font-mono text-xs sm:text-sm">
-          <a
-            href="/openclaw/"
-            class="rounded border px-4 py-2 font-medium transition-all hover:shadow-[0_0_12px_rgba(255,51,51,0.15)]"
-            style={`border-color: ${openclawSection.color}; background: rgba(${openclawSection.colorRgb}, 0.1); color: ${openclawSection.color};`}
-          >
-            Explore OpenClaw
-          </a>
-          <a href="/clwatch" class="rounded border border-border bg-transparent px-4 py-2 text-text-muted transition-all hover:border-green/50 hover:text-green">
-            /clwatch docs
-          </a>
-        </div>
-      </div>
+  <!-- Hero -->
+  <section class="hub-hero">
+    <div class="hub-hero__eyebrow">
+      <span class="hub-hero__eyebrow-dot"></span>
+      Live changelog tracker
     </div>
-  </section>
-
-  <div class="green-divider"></div>
-
-  <!-- Section Cards Grid -->
-  <section class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
-    <h2 class="mb-6 font-mono text-base font-semibold text-text-primary sm:text-lg sm:mb-8">
-      <span class="text-green">/</span>sections
-    </h2>
-
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <HubSectionCard
-        name={claudeCodeSection.name}
-        route={claudeCodeSection.route}
-        color={claudeCodeSection.color}
-        rgb={claudeCodeSection.colorRgb}
-        description={getToolById("claude-code")?.description}
-        latestRelease={releaseMap["claude-code"]?.latest}
-        releaseCount={releaseMap["claude-code"]?.count || 0}
-      />
-      <HubSectionCard
-        name={codexCliSection.name}
-        route={codexCliSection.route}
-        color={codexCliSection.color}
-        rgb={codexCliSection.colorRgb}
-        description={getToolById("codex-cli")?.description}
-        latestRelease={releaseMap["codex-cli"]?.latest}
-        releaseCount={releaseMap["codex-cli"]?.count || 0}
-      />
-      <HubSectionCard
-        name={MODELS_SECTION.name}
-        route={MODELS_SECTION.route}
-        color={MODELS_SECTION.color}
-        rgb={MODELS_SECTION.colorRgb}
-        description="Track AI model releases and capabilities."
-      />
-      <HubSectionCard
-        name={TOOLS_SECTION.name}
-        route={TOOLS_SECTION.route}
-        color={TOOLS_SECTION.color}
-        rgb={TOOLS_SECTION.colorRgb}
-        description="Cursor, Cline, Continue, and more."
-      />
-    </div>
-  </section>
-
-  <div class="green-divider"></div>
-
-  <!-- Recent Releases -->
-  <section class="below-fold mx-auto max-w-6xl px-4 pb-8 sm:px-6 sm:pb-12">
-    <div class="mb-4 flex items-center justify-between sm:mb-6">
-      <h2 class="font-mono text-base font-semibold text-green sm:text-lg">
-        <span class="text-green">/</span>recent_releases
-      </h2>
-      <span class="flex items-center gap-2 font-mono text-xs text-text-muted">
-        <span class="pulse-dot inline-block h-1.5 w-1.5 rounded-full bg-green"></span>
-        updated live from GitHub
+    <h1 class="hub-hero__title">
+      Every tool.<br/>
+      <span class="hub-hero__title-accent">Every release.</span>
+    </h1>
+    <p class="hub-hero__sub">
+      The definitive record of AI coding tools. OpenClaw, Claude Code, Codex CLI — and every major model release — tracked and updated automatically.
+    </p>
+    <div class="hub-hero__badges">
+      <span class="hub-hero__badge">
+        <span class="hub-hero__badge-dot"></span>
+        {Object.keys(releaseMap).length} tools tracked
+      </span>
+      <span class="hub-hero__badge">
+        <span class="hub-hero__badge-dot"></span>
+        Official GitHub releases
+      </span>
+      <span class="hub-hero__badge">
+        <span class="hub-hero__badge-dot"></span>
+        Auto-updated hourly
       </span>
     </div>
-
-    {Object.keys(releaseMap).length > 0 ? (
-      <div class="rounded-lg border border-border bg-bg-card">
-        <div class="border-b border-border px-3 py-2 font-mono text-xs text-text-muted sm:px-4">
-          <span class="text-green">●●●</span> <span class="ml-2">release.log</span>
-        </div>
-        <div class="space-y-0 p-2 sm:p-3">
-          {Object.entries(releaseMap)
-            .sort(([, a], [, b]) => new Date(b.latest.date).getTime() - new Date(a.latest.date).getTime())
-            .slice(0, 10)
-            .map(([toolId, { latest: release }]) => {
-              const tool = getToolById(toolId);
-              const section = SECTIONS.find((s) => s.toolId === toolId);
-              const date = new Date(release.date);
-              const timestamp = date.toLocaleDateString("en-US", { month: "short", day: "2-digit" });
-              const href = section ? section.route : `/tools/${toolId}`;
-              return tool ? (
-                <a
-                  href={href}
-                  class="release-card block rounded border border-transparent px-2 py-2 font-mono text-xs transition-all hover:border-green hover:bg-bg-tertiary/50 sm:px-3 sm:text-sm"
-                >
-                  <span class="text-text-muted">[{timestamp}]</span>
-                  <span class="ml-2 text-green">{release.version}</span>
-                  <span class="ml-2 text-cyan">{tool.name}</span>
-                  {release.name !== release.version && (
-                    <span class="ml-2 hidden text-text-secondary sm:inline">--- "{release.name}"</span>
-                  )}
-                </a>
-              ) : null;
-            })}
-        </div>
-      </div>
-    ) : (
-      <div class="rounded-lg border border-dashed border-border bg-bg-card p-6 sm:p-8">
-        <p class="font-mono text-xs text-text-muted sm:text-sm">
-          <span class="text-red">ERROR:</span> no release data loaded
-        </p>
-      </div>
-    )}
   </section>
 
-  <div class="green-divider"></div>
-
-  <!-- Newsletter CTA -->
-  <section class="below-fold mx-auto max-w-4xl px-4 py-6 sm:px-6 sm:py-8">
-    <a href="/newsletter/" class="group flex items-center justify-between rounded-lg border border-green/20 bg-bg-card px-5 py-4 transition-all hover:border-green/40 hover:shadow-[0_0_16px_rgba(51,255,51,0.08)]">
-      <div>
-        <p class="font-mono text-sm font-semibold text-green">Weekly changelog digest</p>
-        <p class="mt-1 font-sans text-xs text-text-muted">Breaking changes, new features, and config updates — delivered every Monday.</p>
-      </div>
-      <span class="font-mono text-sm text-green opacity-0 transition-all group-hover:opacity-100 group-hover:translate-x-1">&rarr;</span>
-    </a>
+  <!-- 4-card grid -->
+  <section class="hub-grid-section">
+    <div class="hub-section-label">Choose your tool</div>
+    <div class="hub-grid">
+      {tools.map(tool => (
+        <a href={tool.href} class={`hub-card ${tool.class}`}>
+          <div class="hub-card__glow"></div>
+          <div class="hub-card__top">
+            <div class="hub-card__icon">{tool.icon}</div>
+            <span class="hub-card__arrow">↗</span>
+          </div>
+          <div class="hub-card__name">{tool.name}</div>
+          <div class="hub-card__desc">{tool.desc}</div>
+          {tool.latest ? (
+            <>
+              <div class="hub-card__tldr">"{getTldr(tool.latest.body)}"</div>
+              <div class="hub-card__meta">
+                <span class="hub-card__tag">{tool.tag}</span>
+                <span class="hub-card__version">v{tool.latest.version} · {formatDate(tool.latest.date)}</span>
+              </div>
+            </>
+          ) : (
+            <div class="hub-card__meta">
+              <span class="hub-card__tag">{tool.tag}</span>
+              <span class="hub-card__version">Launching soon</span>
+            </div>
+          )}
+        </a>
+      ))}
+    </div>
   </section>
 
-  <div class="green-divider"></div>
-
-  <!-- clwatch CTA -->
-  <section class="below-fold mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
-    <div class="rounded-lg border border-border bg-bg-card">
-      <div class="border-b border-border px-3 py-2 font-mono text-xs text-text-muted sm:px-4">
-        <span class="text-green">●●●</span> <span class="ml-2">clwatch.sh</span>
+  <!-- Blog placeholder -->
+  <section class="hub-blog-section">
+    <div class="hub-section-label">Changelog Dispatches</div>
+    <div class="hub-blog-card">
+      <div class="hub-blog-card__bg"></div>
+      <div class="hub-blog-card__left">
+        <span class="hub-blog-card__left-icon">✍</span>
       </div>
-      <div class="p-4 sm:p-6">
-        <h3 class="font-mono text-base font-semibold text-green sm:text-lg">
-          <span class="text-green">#</span> keep your configs current
-        </h3>
-        <p class="mt-2 font-mono text-xs text-text-secondary sm:text-sm">
-          <span class="text-text-muted">//</span> clwatch patches your agent configs when tools update
+      <div class="hub-blog-card__right">
+        <div class="hub-blog-card__eyebrow">Coming soon</div>
+        <h2 class="hub-blog-card__title">The changelog dispatches</h2>
+        <p class="hub-blog-card__desc">
+          Human-readable summaries of major releases, migration guides, and deep dives — written automatically when significant versions drop.
         </p>
-        <div class="mt-4 rounded bg-bg-tertiary px-4 py-3">
-          <pre class="font-mono text-sm text-text-secondary"><span class="text-green">$</span> npx clwatch diff
-<span class="text-green">$</span> clwatch refresh claude-code</pre>
-        </div>
-        <a href="/clwatch" class="mt-4 inline-block font-mono text-sm text-cyan transition-colors hover:text-cyan/80">
-          learn more &rarr;
+      </div>
+      <div class="hub-blog-card__cta">
+        <a href="#" class="hub-blog-card__btn" onclick="return false;">
+          Notify me ↗
         </a>
       </div>
     </div>
   </section>
-</BaseLayout>
+
+</HubLayout>
