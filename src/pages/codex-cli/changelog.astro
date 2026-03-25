@@ -41,52 +41,40 @@ function renderBody(body: string): string {
   description="Full changelog for Codex CLI. Every release, every breaking change, every fix."
   currentPage="changelog"
 >
-  <div style="max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 0;">
+  <div class="cl-wrapper">
 
-    <section style="margin-bottom: 4rem;">
-      <h1
-        class="cx-headline"
-        style="font-size: clamp(3.5rem, 10vw, 7rem); font-weight: 900; text-transform: uppercase; font-style: italic; letter-spacing: -0.03em; line-height: 0.9; margin: 0 0 1.5rem; color: var(--cx-text);"
-      >
-        Changelog
-      </h1>
-      <div style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: flex-end; justify-content: space-between;">
-        <p style="font-family: var(--cx-font-body); font-size: 1.1rem; max-width: 32rem; color: var(--cx-text-dim); line-height: 1.6; margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">
-          Every Codex CLI release. Straight to the terminal record.
-        </p>
-        <div style="width: 100%; max-width: 320px;">
-          <label class="cx-headline" style="display: block; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--cx-primary-bright); margin-bottom: 0.5rem;">
-            Filter updates
-          </label>
-          <div style="position: relative;">
-            <input
-              id="cl-search"
-              type="text"
-              placeholder="SEARCH RELEASES..."
-              style="width: 100%; background: var(--cx-bg); border: 4px solid var(--cx-border); padding: 1rem; font-family: var(--cx-font-mono); font-weight: 700; text-transform: uppercase; color: var(--cx-text); font-size: 0.85rem; outline: none; box-shadow: var(--cx-shadow); transition: border-color 100ms;"
-              onfocus="this.style.borderColor='var(--cx-primary-bright)'"
-              onblur="this.style.borderColor='var(--cx-border)'"
-            />
-            <span style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--cx-text-muted); font-size: 1rem;">⌕</span>
+    <!-- Hero -->
+    <section class="cl-hero">
+      <h1 class="cx-headline cl-hero__title">Changelog</h1>
+      <div class="cl-hero__row">
+        <p class="cl-hero__sub">Every Codex CLI release. Straight to the terminal record.</p>
+        <div class="cl-hero__filters">
+          <label class="cx-headline cl-filter-label">Filter updates</label>
+          <div class="cl-search-wrap">
+            <div class="cl-search-inner">
+              <input
+                id="cl-search"
+                type="text"
+                placeholder="SEARCH RELEASES..."
+                class="cl-search-input"
+                autocomplete="off"
+                spellcheck="false"
+              />
+              <span class="cl-search-icon">⌕</span>
+            </div>
           </div>
-          <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem;">
-            {["stable", "breaking", "prerelease"].map((f) => (
-              <button
-                id={`cl-filter-${f}`}
-                class="cx-headline"
-                data-filter={f}
-                style="background: transparent; border: 2px solid var(--cx-border-dim); padding: 0.3rem 0.75rem; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--cx-text-muted); cursor: pointer; transition: all 100ms;"
-              >
-                {f === "prerelease" ? "Pre" : f.charAt(0).toUpperCase() + f.slice(1)}
-              </button>
-            ))}
+          <div class="cl-filter-group">
+            <button id="cl-filter-stable" class="cx-headline cl-filter-btn" data-filter="stable">Stable</button>
+            <button id="cl-filter-breaking" class="cx-headline cl-filter-btn" data-filter="breaking">Breaking</button>
+            <button id="cl-filter-prerelease" class="cx-headline cl-filter-btn" data-filter="prerelease">Pre-release</button>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- Timeline -->
     {releases.length > 0 ? (
-      <div id="cl-releases-list" style="position: relative; padding-left: 3rem; border-left: 6px solid var(--cx-border);">
+      <div class="cl-timeline" id="cl-timeline">
         {releases.map((release, idx) => {
           const breaking = isBreaking(release.body);
           const renderedBody = renderBody(release.body || "");
@@ -94,69 +82,47 @@ function renderBody(body: string): string {
 
           return (
             <article
-              class="cl-entry"
+              class={`cl-entry${breaking ? ' cl-entry--breaking' : ''}`}
               data-version={release.version.toLowerCase()}
               data-name={(release.name || "").toLowerCase()}
               data-body={(release.body || "").toLowerCase().slice(0, 800)}
               data-prerelease={String(release.prerelease)}
               data-breaking={String(breaking)}
               data-index={idx}
-              style={`position: relative; margin-bottom: 5rem; ${idx >= 10 ? 'display: none;' : ''}`}
             >
-              <div style={`position: absolute; left: -3.9rem; top: 0.5rem; width: 3rem; height: 3rem; border: 4px solid var(--cx-border); display: flex; align-items: center; justify-content: center; background: ${breaking ? 'var(--cx-primary)' : 'var(--cx-bg-card)'};`}>
-                <span style={`font-family: var(--cx-font-mono); font-size: 0.75rem; color: ${breaking ? 'var(--cx-bg)' : 'var(--cx-primary-bright)'};`}>
-                  {breaking ? "!" : release.prerelease ? "β" : "$"}
-                </span>
+              <div class={`cl-dot${breaking ? ' cl-dot--breaking' : ''}`}>
+                <span class="cl-dot__icon">{breaking ? "!" : release.prerelease ? "β" : "$"}</span>
               </div>
 
-              <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: baseline; margin-bottom: 1rem;">
-                <span class="cx-headline" style="font-size: 2.25rem; font-weight: 900; font-style: italic; letter-spacing: -0.02em; color: var(--cx-text);">
-                  {release.version}
-                </span>
-                <span style="font-family: var(--cx-font-mono); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--cx-text-muted);">
-                  {formatDate(release.date)}
-                </span>
-                {breaking && (
-                  <span style="background: var(--cx-primary); color: var(--cx-bg); padding: 0.2rem 0.75rem; font-family: var(--cx-font-mono); font-size: 0.7rem; font-weight: 900; text-transform: uppercase; border: 2px solid var(--cx-border);">
-                    BREAKING
-                  </span>
-                )}
-                {release.prerelease && (
-                  <span style="background: rgba(51,255,51,0.1); color: #33ff33; padding: 0.2rem 0.75rem; font-family: var(--cx-font-mono); font-size: 0.7rem; font-weight: 900; text-transform: uppercase; border: 2px solid #33ff33;">
-                    PRE-RELEASE
-                  </span>
-                )}
+              <div class="cl-header">
+                <span class="cx-headline cl-header__version">{release.version}</span>
+                <span class="cl-header__date">{formatDate(release.date)}</span>
+                {breaking && <span class="cl-label cl-label--breaking">Breaking</span>}
+                {release.prerelease && <span class="cl-label cl-label--prerelease">Pre-release</span>}
               </div>
 
-              <div style={`padding: 2rem; border: 4px solid var(--cx-border); background: ${breaking ? 'rgba(51,255,51,0.04)' : 'var(--cx-bg-surface)'}; ${breaking ? 'border-left: 8px solid var(--cx-primary);' : ''}`}>
-                <h3 class="cx-headline" style="font-size: 1.5rem; font-weight: 900; text-transform: uppercase; margin: 0 0 1.5rem; color: var(--cx-text);">
+              <div class={`cl-card${breaking ? ' cl-card--breaking' : ''}`}>
+                <h3 class="cx-headline cl-card__title">
                   {(release.name || release.version).replace(/^codex[\s-]cli\s+/i, "")}
                 </h3>
 
                 <div
-                  class={`changelog-body ${isLong && idx > 0 ? 'cl-collapsed' : ''}`}
-                  style="color: var(--cx-text-dim); font-size: 0.875rem; line-height: 1.7; font-family: var(--cx-font-body); overflow: hidden; position: relative;"
+                  class={`changelog-body cl-card__body${isLong && idx > 0 ? ' cl-collapsed' : ''}`}
                   set:html={renderedBody}
                 />
 
                 {isLong && (
-                  <button
-                    class="cl-expand-btn cx-headline"
-                    style="display: block; margin-top: 1rem; background: transparent; border: 2px solid var(--cx-border); color: var(--cx-text); padding: 0.5rem 1.25rem; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; transition: background 100ms;"
-                    onclick="this.previousElementSibling.classList.toggle('cl-collapsed'); this.textContent = this.textContent.includes('EXPAND') ? '▲ COLLAPSE' : '▼ EXPAND FULL CHANGELOG'"
-                  >
+                  <button class="cl-expand-btn cx-headline">
                     {idx === 0 ? '▲ COLLAPSE' : '▼ EXPAND FULL CHANGELOG'}
                   </button>
                 )}
 
-                <div style="display: flex; justify-content: flex-end; margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--cx-border-dim);">
+                <div class="cl-card__footer">
                   <a
                     href={release.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    style="font-family: var(--cx-font-mono); font-size: 0.65rem; color: var(--cx-text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.1em; transition: color 150ms;"
-                    onmouseover="this.style.color='var(--cx-primary-bright)'"
-                    onmouseout="this.style.color='var(--cx-text-muted)'"
+                    class="cl-gh-link"
                   >
                     ↗ GitHub
                   </a>
@@ -167,31 +133,418 @@ function renderBody(body: string): string {
         })}
 
         {releases.length > 10 && (
-          <div style="margin-bottom: 4rem;">
-            <button
-              id="cl-load-more"
-              class="cx-headline"
-              style="background: transparent; border: 4px solid var(--cx-border); color: var(--cx-text); padding: 1rem 2.5rem; font-size: 0.85rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; font-style: italic; transition: background 100ms;"
-              onmouseover="this.style.background='rgba(51,255,51,0.1)'"
-              onmouseout="this.style.background='transparent'"
-            >
+          <div class="cl-load-more-wrap">
+            <button id="cl-load-more" class="cx-headline cl-load-more-btn">
               Load {releases.length - 10} More Releases ▼
             </button>
           </div>
         )}
       </div>
     ) : (
-      <div style="padding: 4rem 2rem; border: 4px dashed var(--cx-border-dim); text-align: center;">
-        <p style="font-family: var(--cx-font-mono); color: var(--cx-text-muted);">$ no releases tracked yet</p>
+      <div class="cl-empty">
+        <p class="cx-headline">$ no releases tracked yet</p>
       </div>
     )}
 
-    <button
-      id="cl-scroll-top"
-      style="position: fixed; bottom: 2rem; right: 2rem; background: var(--cx-primary); color: var(--cx-bg); border: 4px solid var(--cx-border); padding: 0.75rem; cursor: pointer; font-size: 1rem; box-shadow: var(--cx-shadow); opacity: 0; pointer-events: none; transition: opacity 200ms; z-index: 50; font-family: var(--cx-font-mono);"
-      onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
-    >↑</button>
+    <!-- Scroll to top -->
+    <button id="cl-scroll-top" class="cl-scroll-top" aria-label="Scroll to top">↑</button>
   </div>
+
+  <style>
+    /* Layout */
+    .cl-wrapper {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 0;
+    }
+
+    /* Hero */
+    .cl-hero {
+      margin-bottom: 4rem;
+    }
+    .cl-hero__title {
+      font-size: clamp(3.5rem, 10vw, 7rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      font-style: italic;
+      letter-spacing: -0.03em;
+      line-height: 0.9;
+      margin: 0 0 1.5rem;
+      color: var(--cx-text);
+      animation: cx-enter 0.4s ease-out both;
+    }
+    .cl-hero__row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      align-items: flex-end;
+      justify-content: space-between;
+      animation: cx-enter 0.4s ease-out 0.1s both;
+    }
+    .cl-hero__sub {
+      font-family: var(--cx-font-body);
+      font-size: 1.1rem;
+      max-width: 32rem;
+      color: var(--cx-text-dim);
+      line-height: 1.6;
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .cl-hero__filters {
+      width: 100%;
+      max-width: 320px;
+    }
+    .cl-filter-label {
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--cx-primary-bright);
+      margin-bottom: 0.5rem;
+    }
+    @keyframes cx-enter {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Search */
+    .cl-search-wrap { position: relative; }
+    .cl-search-inner { position: relative; }
+    .cl-search-input {
+      width: 100%;
+      background: var(--cx-bg);
+      border: 4px solid var(--cx-border);
+      padding: 1rem;
+      font-family: var(--cx-font-mono);
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--cx-text);
+      font-size: 0.85rem;
+      outline: none;
+      box-shadow: var(--cx-shadow);
+      transition: border-color 100ms;
+    }
+    .cl-search-input::placeholder {
+      color: var(--cx-text-muted);
+    }
+    .cl-search-input:focus {
+      border-color: var(--cx-primary-bright);
+      box-shadow: var(--cx-shadow), 0 0 0 2px rgba(0, 200, 81, 0.2);
+    }
+    .cl-search-icon {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--cx-text-muted);
+      font-size: 1rem;
+      pointer-events: none;
+    }
+
+    /* Filter buttons */
+    .cl-filter-group {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    .cl-filter-btn {
+      background: transparent;
+      border: 2px solid var(--cx-border-dim);
+      padding: 0.3rem 0.75rem;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--cx-text-muted);
+      cursor: pointer;
+      transition: background 100ms, border-color 100ms, color 100ms, transform 100ms;
+    }
+    .cl-filter-btn:hover {
+      border-color: var(--cx-primary);
+      color: var(--cx-primary-bright);
+    }
+    .cl-filter-btn:focus-visible {
+      outline: 2px solid var(--cx-primary);
+      outline-offset: 2px;
+    }
+    .cl-filter-btn.is-active {
+      background: var(--cx-primary);
+      border-color: var(--cx-primary);
+      color: var(--cx-bg);
+    }
+
+    /* Timeline */
+    .cl-timeline {
+      position: relative;
+      padding-left: 3rem;
+      border-left: 6px solid var(--cx-border);
+      animation: cx-enter 0.4s ease-out 0.2s both;
+    }
+
+    /* Entry */
+    .cl-entry {
+      position: relative;
+      margin-bottom: 3rem;
+    }
+    .cl-entry[data-index] {
+      display: block;
+    }
+    .cl-entry[data-index][style*="display: none"] {
+      display: none;
+    }
+
+    /* Dot */
+    .cl-dot {
+      position: absolute;
+      left: -3.9rem;
+      top: 0.5rem;
+      width: 3rem;
+      height: 3rem;
+      border: 4px solid var(--cx-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--cx-bg-card);
+      transition: border-color 150ms, background 150ms;
+    }
+    .cl-dot--breaking {
+      background: var(--cx-primary);
+      border-color: var(--cx-primary);
+    }
+    .cl-dot__icon {
+      font-family: var(--cx-font-mono);
+      font-size: 0.75rem;
+      color: var(--cx-primary-bright);
+    }
+    .cl-dot--breaking .cl-dot__icon {
+      color: var(--cx-bg);
+    }
+
+    /* Header */
+    .cl-header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: baseline;
+      margin-bottom: 1rem;
+    }
+    .cl-header__version {
+      font-size: 2.25rem;
+      font-weight: 900;
+      font-style: italic;
+      letter-spacing: -0.02em;
+      color: var(--cx-text);
+    }
+    .cl-header__date {
+      font-family: var(--cx-font-mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--cx-text-muted);
+    }
+
+    /* Badges */
+    .cl-label {
+      padding: 0.2rem 0.75rem;
+      font-size: 0.7rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .cl-label--breaking {
+      background: var(--cx-primary);
+      color: var(--cx-bg);
+    }
+    .cl-label--prerelease {
+      background: transparent;
+      color: var(--cx-primary);
+      border: 2px solid var(--cx-primary);
+    }
+
+    /* Card */
+    .cl-card {
+      padding: 2rem;
+      border: 4px solid var(--cx-border);
+      background: var(--cx-bg-surface);
+      transition: border-color 150ms, box-shadow 150ms;
+    }
+    .cl-card:hover {
+      border-color: var(--cx-border);
+    }
+    .cl-card--breaking {
+      border-left: 8px solid var(--cx-primary);
+    }
+    .cl-card--breaking:hover {
+      box-shadow: var(--cx-shadow), 0 0 0 1px rgba(0, 200, 81, 0.3);
+    }
+    .cl-card__title {
+      font-size: 1.5rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin: 0 0 1.5rem;
+      color: var(--cx-text);
+    }
+    .cl-card__body {
+      color: var(--cx-text-dim);
+      font-size: 0.875rem;
+      line-height: 1.7;
+      font-family: var(--cx-font-body);
+    }
+
+    /* Collapsed */
+    .cl-collapsed {
+      max-height: 12rem;
+      overflow: hidden;
+      position: relative;
+    }
+    .cl-collapsed::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4rem;
+      background: linear-gradient(to bottom, transparent, var(--cx-bg-surface));
+      pointer-events: none;
+    }
+
+    /* Expand button */
+    .cl-expand-btn {
+      display: block;
+      margin-top: 1rem;
+      background: transparent;
+      border: 2px solid var(--cx-border);
+      color: var(--cx-text);
+      padding: 0.5rem 1.25rem;
+      font-size: 0.7rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: background 100ms, color 100ms, transform 100ms;
+    }
+    .cl-expand-btn:hover {
+      background: var(--cx-primary);
+      border-color: var(--cx-primary);
+      color: var(--cx-bg);
+      transform: translateY(-1px);
+    }
+    .cl-expand-btn:focus-visible {
+      outline: 2px solid var(--cx-primary);
+      outline-offset: 2px;
+    }
+
+    /* Footer */
+    .cl-card__footer {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--cx-border-dim);
+    }
+    .cl-gh-link {
+      font-family: var(--cx-font-mono);
+      font-size: 0.65rem;
+      color: var(--cx-text-muted);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      transition: color 150ms;
+    }
+    .cl-gh-link:hover {
+      color: var(--cx-primary-bright);
+    }
+    .cl-gh-link:focus-visible {
+      outline: 2px solid var(--cx-primary);
+      outline-offset: 2px;
+    }
+
+    /* Load more */
+    .cl-load-more-wrap {
+      margin-bottom: 4rem;
+    }
+    .cl-load-more-btn {
+      background: transparent;
+      border: 4px solid var(--cx-border);
+      color: var(--cx-text);
+      padding: 1rem 2.5rem;
+      font-size: 0.85rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      font-style: italic;
+      transition: background 100ms, color 100ms, transform 100ms;
+    }
+    .cl-load-more-btn:hover {
+      background: rgba(0, 200, 81, 0.15);
+      border-color: var(--cx-primary);
+      color: var(--cx-primary-bright);
+      transform: translateY(-2px);
+    }
+    .cl-load-more-btn:focus-visible {
+      outline: 2px solid var(--cx-primary);
+      outline-offset: 2px;
+    }
+
+    /* Empty state */
+    .cl-empty {
+      padding: 4rem 2rem;
+      border: 4px dashed var(--cx-border-dim);
+      text-align: center;
+    }
+    .cl-empty p {
+      font-family: var(--cx-font-mono);
+      color: var(--cx-text-muted);
+      margin: 0;
+    }
+
+    /* Scroll to top */
+    .cl-scroll-top {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--cx-primary);
+      color: var(--cx-bg);
+      border: 4px solid var(--cx-border);
+      padding: 0.75rem;
+      cursor: pointer;
+      font-size: 1rem;
+      box-shadow: var(--cx-shadow);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 200ms, transform 100ms;
+      z-index: 50;
+      font-family: var(--cx-font-mono);
+    }
+    .cl-scroll-top:hover {
+      transform: translateY(-2px);
+    }
+    .cl-scroll-top:focus-visible {
+      outline: 2px solid var(--cx-primary);
+      outline-offset: 2px;
+    }
+
+    /* Badge colors */
+    .cl-badge-fix { background: #f97316; color: white; padding: 0.1rem 0.4rem; font-size: 0.65rem; font-weight: 900; margin-right: 0.4rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .cl-badge-feat { background: #22c55e; color: white; padding: 0.1rem 0.4rem; font-size: 0.65rem; font-weight: 900; margin-right: 0.4rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .cl-badge-docs { background: #60a5fa; color: white; padding: 0.1rem 0.4rem; font-size: 0.65rem; font-weight: 900; margin-right: 0.4rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .cl-badge-test { background: #a78bfa; color: white; padding: 0.1rem 0.4rem; font-size: 0.65rem; font-weight: 900; margin-right: 0.4rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .cl-badge-chore { background: #94a3b8; color: white; padding: 0.1rem 0.4rem; font-size: 0.65rem; font-weight: 900; margin-right: 0.4rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .cl-badge-ci { background: #f472b6; color: white; padding: 0.1rem 0.4rem; font-size: 0.65rem; font-weight: 900; margin-right: 0.4rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .cl-badge-perf { background: #fbbf24; color: black; padding: 0.1rem 0.4rem; font-size: 0.65rem; font-weight: 900; margin-right: 0.4rem; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* Light theme badge adjustments */
+    [data-theme="light"] .cl-badge-fix { background: #ea580c; }
+    [data-theme="light"] .cl-badge-feat { background: #16a34a; }
+    [data-theme="light"] .cl-badge-docs { background: #2563eb; }
+    [data-theme="light"] .cl-badge-test { background: #7c3aed; }
+    [data-theme="light"] .cl-badge-chore { background: #64748b; }
+    [data-theme="light"] .cl-badge-ci { background: #db2777; }
+    [data-theme="light"] .cl-badge-perf { background: #d97706; }
+  </style>
 
   <script>
     const entries = Array.from(document.querySelectorAll('.cl-entry')) as HTMLElement[];
@@ -200,10 +553,14 @@ function renderBody(body: string): string {
     const breakingBtn = document.getElementById('cl-filter-breaking');
     const prereleaseBtn = document.getElementById('cl-filter-prerelease');
     const scrollTopBtn = document.getElementById('cl-scroll-top');
+    const loadMoreBtn = document.getElementById('cl-load-more');
 
     let activeFilter = '';
     let searchQuery = '';
     let allLoaded = entries.length <= 10;
+
+    // Set initial active state
+    stableBtn?.classList.add('is-active');
 
     function filterEntries() {
       entries.forEach((entry, idx) => {
@@ -213,11 +570,17 @@ function renderBody(body: string): string {
         const prerelease = entry.dataset.prerelease === 'true';
         const breaking = entry.dataset.breaking === 'true';
 
-        const matchesSearch = !searchQuery || version.includes(searchQuery) || name.includes(searchQuery) || body.includes(searchQuery);
-        const matchesFilter = activeFilter === '' ||
+        const matchesSearch = !searchQuery ||
+          version.includes(searchQuery) ||
+          name.includes(searchQuery) ||
+          body.includes(searchQuery);
+
+        const matchesFilter =
+          activeFilter === '' ||
           (activeFilter === 'stable' && !prerelease) ||
           (activeFilter === 'breaking' && breaking) ||
           (activeFilter === 'prerelease' && prerelease);
+
         const withinLoadLimit = allLoaded || idx < 10;
 
         entry.style.display = (matchesSearch && matchesFilter && withinLoadLimit) ? '' : 'none';
@@ -230,34 +593,21 @@ function renderBody(body: string): string {
       filterEntries();
     });
 
-    function resetBtns() {
-      [stableBtn, breakingBtn, prereleaseBtn].forEach(btn => {
-        if (btn) {
-          (btn as HTMLElement).style.background = 'transparent';
-          (btn as HTMLElement).style.borderColor = 'var(--cx-border-dim)';
-          (btn as HTMLElement).style.color = 'var(--cx-text-muted)';
-        }
-      });
+    function applyFilter(filter: string) {
+      activeFilter = filter === activeFilter ? '' : filter;
+      filterEntries();
+      stableBtn?.classList.toggle('is-active', activeFilter === 'stable');
+      breakingBtn?.classList.toggle('is-active', activeFilter === 'breaking');
+      prereleaseBtn?.classList.toggle('is-active', activeFilter === 'prerelease');
     }
 
-    [stableBtn, breakingBtn, prereleaseBtn].forEach(btn => {
-      btn?.addEventListener('click', () => {
-        const f = (btn as HTMLElement).getAttribute('data-filter') || '';
-        if (activeFilter === f) { activeFilter = ''; resetBtns(); }
-        else {
-          activeFilter = f;
-          resetBtns();
-          (btn as HTMLElement).style.background = 'var(--cx-primary)';
-          (btn as HTMLElement).style.borderColor = 'var(--cx-primary)';
-          (btn as HTMLElement).style.color = 'var(--cx-bg)';
-        }
-        filterEntries();
-      });
-    });
+    stableBtn?.addEventListener('click', () => applyFilter('stable'));
+    breakingBtn?.addEventListener('click', () => applyFilter('breaking'));
+    prereleaseBtn?.addEventListener('click', () => applyFilter('prerelease'));
 
-    document.getElementById('cl-load-more')?.addEventListener('click', function() {
+    loadMoreBtn?.addEventListener('click', () => {
       allLoaded = true;
-      this.style.display = 'none';
+      if (loadMoreBtn) loadMoreBtn.style.display = 'none';
       filterEntries();
     });
 
@@ -267,5 +617,18 @@ function renderBody(body: string): string {
         scrollTopBtn.style.pointerEvents = window.scrollY > 400 ? 'auto' : 'none';
       }
     }, { passive: true });
+
+    // Expand/collapse (event delegation)
+    document.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest('.cl-expand-btn');
+      if (!btn) return;
+      const body = btn.previousElementSibling as HTMLElement;
+      if (body) {
+        body.classList.toggle('cl-collapsed');
+        btn.textContent = body.classList.contains('cl-collapsed')
+          ? '▼ EXPAND FULL CHANGELOG'
+          : '▲ COLLAPSE';
+      }
+    });
   </script>
 </CodexLayout>
