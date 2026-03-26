@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.83",
-  "generated_at": "2026-03-26T00:31:13.621Z",
+  "version": "2.1.84",
+  "generated_at": "2026-03-26T01:36:54.934Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,31 +14,25 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.83",
-    "to_version": "2.1.83",
+    "from_version": "2.1.84",
+    "to_version": "2.1.84",
     "new_features": [
-      "managed-settings-drop-in-directory",
-      "reactive-environment-management-hooks",
-      "sandbox-fail-if-unavailable",
-      "disable-deep-link-registration",
-      "transcript-search",
-      "readline-alias-for-external-editor",
-      "image-chips-in-prompts",
-      "initial-prompt-in-agent-frontmatter",
-      "plugin-options-available-externally",
-      "claude-can-reference-pasted-image-paths"
+      "powershell-tool-preview",
+      "taskcreated-hook",
+      "worktreecreate-http-hook-support",
+      "allowedchannelplugins-managed-setting",
+      "api-request-id-header",
+      "idle-return-prompt"
     ],
     "new_commands": [],
-    "new_flags": [
-      "--mcp-config"
-    ],
+    "new_flags": [],
     "new_env_vars": [
-      "CLAUDE_CODE_SUBPROCESS_ENV_SCRUB",
-      "CLAUDE_CODE_DISABLE_NONSTREAMING_FALLBACK"
+      "ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL_SUPPORTS",
+      "ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL_NAME",
+      "ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL_DESCRIPTION",
+      "CLAUDE_STREAM_IDLE_TIMEOUT_MS"
     ],
-    "deprecated_commands": [
-      "/status"
-    ],
+    "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
   },
@@ -57,12 +51,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.83",
-      "latest_release_date": "2026-03-25",
+      "latest_stable": "2.1.84",
+      "latest_release_date": "2026-03-26",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Version 2.1.83 introduces several new features and improvements. Managed settings can now be deployed as independent fragments using a drop-in directory. Reactive environment management is enhanced with new hook events. A new setting allows the tool to exit with an error if the sandbox is unavailable. Transcript search is now available via `/` in transcript mode. Plugin options can now be configured externally at enable time. This release also includes numerous bug fixes, including fixes for hangs, UI freezes, and issues with voice mode and remote control sessions. The `TaskOutput` tool is deprecated in favor of using `Read` on the background task's output file path."
+      "tldr": "This release introduces a PowerShell tool preview for Windows and several environment variables for customizing model selection and streaming timeouts. Deep links now open in your preferred terminal, and rules/skills paths accept YAML lists of globs. An idle-return prompt now nudges users to `/clear` after extended inactivity. Several fixes address issues with voice mode, keyboard input, workflow subagents, and terminal rendering. Startup performance has been improved, especially for MCP servers, and Remote Control now provides more specific blocking reasons."
     },
     "features": [
       {
@@ -522,6 +516,60 @@
         "status": "stable",
         "since": "2.1.83",
         "description": "Claude can now reference the on-disk path of clipboard-pasted images for file operations.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "powershell-tool-preview",
+        "name": "PowerShell Tool",
+        "status": "experimental",
+        "since": "2.1.84",
+        "description": "Added PowerShell tool for Windows as an opt-in preview.",
+        "key_details": [],
+        "source_url": "https://code.claude.com/docs/en/tools-reference#powershell-tool"
+      },
+      {
+        "id": "taskcreated-hook",
+        "name": "TaskCreated Hook",
+        "status": "stable",
+        "since": "2.1.84",
+        "description": "Added `TaskCreated` hook that fires when a task is created via `TaskCreate`",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "worktreecreate-http-hook-support",
+        "name": "WorktreeCreate HTTP Hook Support",
+        "status": "stable",
+        "since": "2.1.84",
+        "description": "Added `WorktreeCreate` hook support for `type: \"http\"` — return the created worktree path via `hookSpecificOutput.worktreePath` in the response JSON",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "allowedchannelplugins-managed-setting",
+        "name": "Allowed Channel Plugins Managed Setting",
+        "status": "stable",
+        "since": "2.1.84",
+        "description": "Added `allowedChannelPlugins` managed setting for team/enterprise admins to define a channel plugin allowlist",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "api-request-id-header",
+        "name": "API Request ID Header",
+        "status": "stable",
+        "since": "2.1.84",
+        "description": "Added `x-client-request-id` header to API requests for debugging timeouts",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "idle-return-prompt",
+        "name": "Idle Return Prompt",
+        "status": "stable",
+        "since": "2.1.84",
+        "description": "Added idle-return prompt that nudges users returning after 75+ minutes to `/clear`, reducing unnecessary token re-caching on stale sessions",
         "key_details": [],
         "source_url": ""
       }
@@ -1006,9 +1054,7 @@
           "source_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
         }
       ],
-      "new_since_previous": [
-        "--mcp-config"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
@@ -1085,6 +1131,34 @@
         "purpose": "Disable the non-streaming fallback when streaming fails",
         "status": "stable",
         "since": "2.1.83",
+        "source_url": ""
+      },
+      {
+        "name": "ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL_SUPPORTS",
+        "purpose": "Override effort/thinking capability detection for pinned default models for 3p (Bedrock, Vertex, Foundry)",
+        "status": "stable",
+        "since": "2.1.84",
+        "source_url": ""
+      },
+      {
+        "name": "ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL_NAME",
+        "purpose": "Customize the `/model` picker label",
+        "status": "stable",
+        "since": "2.1.84",
+        "source_url": ""
+      },
+      {
+        "name": "ANTHROPIC_DEFAULT_{OPUS,SONNET,HAIKU}_MODEL_DESCRIPTION",
+        "purpose": "Customize the `/model` picker label",
+        "status": "stable",
+        "since": "2.1.84",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_STREAM_IDLE_TIMEOUT_MS",
+        "purpose": "Configure the streaming idle watchdog threshold (default 90s)",
+        "status": "stable",
+        "since": "2.1.84",
         "source_url": ""
       }
     ],
