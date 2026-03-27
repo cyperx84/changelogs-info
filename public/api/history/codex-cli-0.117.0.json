@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.117.0",
-  "generated_at": "2026-03-27T00:31:27.236Z",
+  "generated_at": "2026-03-26T23:09:17.169Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -17,18 +17,23 @@
     "from_version": "0.117.0",
     "to_version": "0.117.0",
     "new_features": [
-      "plugins-workflow-v2",
-      "sub-agents-path-based-addresses-v2",
-      "app-server-client-shell-commands-v2",
-      "smoother-image-workflows-v2",
-      "prompt-history-recall-app-server-tui-v2"
+      "plugins-workflow",
+      "sub-agents-path-based-addresses",
+      "terminal-title-picker",
+      "app-server-client-shell-commands",
+      "smoother-image-workflows",
+      "prompt-history-recall-app-server-tui"
     ],
-    "new_commands": [],
+    "new_commands": [
+      "/title"
+    ],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "legacy-artifact-tool-removal"
+    ]
   },
   "payload": {
     "meta": {
@@ -52,7 +57,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release introduces first-class plugin workflows, allowing Codex to sync product-scoped plugins at startup, browse them in `/plugins`, and install/remove them with clearer auth. Sub-agents now use readable path-based addresses for multi-agent v2 workflows. App-server clients can send `!` shell commands and watch filesystem changes. Image workflows are smoother with image URLs in code mode and persistent image-generation history. Prompt history recall now works in the app-server TUI. The app-server-backed TUI is now enabled by default, and the plugin/app rollout flags have been flipped on in normal builds. The legacy artifact tool and the old `read_file` and `grep_files` handlers have been removed."
+      "tldr": "This release introduces first-class plugin support with TUI browsing and easier installation, and sub-agents now use readable path-based addresses for multi-agent v2 workflows. The `/title` command now works in both TUIs, and app-server clients can send shell commands and watch filesystem changes. Image workflows are smoother with image URLs in code mode and persistent generation history. The legacy artifact tool and related handlers have been removed, requiring migration to alternative file access methods. The app-server-backed TUI is now enabled by default."
     },
     "features": [
       {
@@ -519,51 +524,6 @@
       {
         "id": "prompt-history-recall-app-server-tui",
         "name": "Prompt History Recall in App-server TUI",
-        "status": "stable",
-        "since": "0.117.0",
-        "description": "Prompt history recall now works in the app-server TUI, including across sessions.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "plugins-workflow-v2",
-        "name": "Plugins Workflow V2",
-        "status": "stable",
-        "since": "0.117.0",
-        "description": "Codex can now sync product-scoped plugins at startup, browse them in `/plugins`, and install or remove them with clearer auth/setup handling.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "sub-agents-path-based-addresses-v2",
-        "name": "Sub-agents Path-Based Addresses V2",
-        "status": "stable",
-        "since": "0.117.0",
-        "description": "Sub-agents now use readable path-based addresses like `/root/agent_a`, with structured inter-agent messaging and agent listing for multi-agent v2 workflows.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "app-server-client-shell-commands-v2",
-        "name": "App-server Client Shell Commands V2",
-        "status": "stable",
-        "since": "0.117.0",
-        "description": "App-server clients can now send `!` shell commands, watch filesystem changes, and connect to remote websocket servers with bearer-token auth.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "smoother-image-workflows-v2",
-        "name": "Smoother Image Workflows V2",
-        "status": "stable",
-        "since": "0.117.0",
-        "description": "Image workflows got smoother: `view_image` now returns image URLs for code mode, generated images are reopenable from the TUI, and image-generation history survives resume.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "prompt-history-recall-app-server-tui-v2",
-        "name": "Prompt History Recall App-Server TUI V2",
         "status": "stable",
         "since": "0.117.0",
         "description": "Prompt history recall now works in the app-server TUI, including across sessions.",
