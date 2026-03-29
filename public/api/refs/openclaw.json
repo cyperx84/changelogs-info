@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.3.24",
-  "generated_at": "2026-03-29T00:32:57.482Z",
+  "version": "2026.3.28",
+  "generated_at": "2026-03-29T01:36:24.007Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,19 +14,34 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.3.24",
-    "to_version": "2026.3.24",
-    "new_features": [],
-    "new_commands": [],
+    "from_version": "2026.3.28",
+    "to_version": "2026.3.28",
+    "new_features": [
+      "image-generation-provider",
+      "async-require-approval-hooks",
+      "slack-upload-file-action",
+      "file-first-sends",
+      "matrix-tts-voice-bubbles",
+      "openclaw-config-schema",
+      "tavily-client-source-header",
+      "gateway-backed-channel-mcp-bridge"
+    ],
+    "new_commands": [
+      "/approve"
+    ],
     "new_flags": [
+      "--cli-backend-logs",
       "--container"
     ],
-    "new_env_vars": [
-      "OPENCLAW_CONTAINER"
-    ],
+    "new_env_vars": [],
     "deprecated_commands": [],
-    "deprecated_flags": [],
-    "breaking_changes": []
+    "deprecated_flags": [
+      "--claude-cli-logs"
+    ],
+    "breaking_changes": [
+      "remove-qwen-portal-auth",
+      "drop-old-config-migrations"
+    ]
   },
   "payload": {
     "meta": {
@@ -44,13 +59,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.3.24",
-      "latest_release_date": "2026-03-25",
+      "latest_stable": "2026.3.28",
+      "latest_release_date": "2026-03-29",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release enhances Gateway/OpenAI compatibility with new endpoints and model override forwarding. Agent tool availability is improved with a live \"Available Right Now\" section in the Control UI. Microsoft Teams integration is upgraded to the official SDK with AI-agent UX best practices. One-click install recipes are added for bundled skills, and the Control UI gets status-filter tabs and detailed skill dialogs. Several security fixes address potential vulnerabilities related to media dispatch, gateway config, chat provenance, exec approvals, Feishu uploads, dotenv handling, media parsing, path resolution, and OpenShell mirroring. Docker setup is improved to avoid pre-start namespace loops, and Telegram forum topic routing is recovered."
+      "tldr": "This release removes the deprecated Qwen portal auth, requiring migration to Model Studio. It also drops automatic config migrations older than two months, potentially causing validation failures for very old configurations. The xAI provider is moved to the Responses API with first-class `x_search` and auto-enabled plugin. MiniMax adds image generation with aspect ratio control. Plugins gain async `requireApproval` hooks for pausing tool execution. Several fixes address issues with Telegram message splitting, Discord reconnects, OpenAI Codex image tools, and more, improving stability and functionality across various channels and providers."
     },
     "features": [
       {
@@ -365,6 +380,78 @@
         "description": "Added timezone support to Docker using the OPENCLAW_TZ environment variable.",
         "key_details": [],
         "source_url": "https://github.com/openclaw/openclaw/pull/34119"
+      },
+      {
+        "id": "image-generation-provider",
+        "name": "Image Generation Provider",
+        "status": "stable",
+        "since": "2026.3.28",
+        "description": "Adds an image generation provider for the `image-01` model, supporting generate and image-to-image editing with aspect ratio control.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "async-require-approval-hooks",
+        "name": "Async requireApproval Hooks",
+        "status": "stable",
+        "since": "2026.3.28",
+        "description": "Adds async `requireApproval` to `before_tool_call` hooks, letting plugins pause tool execution and prompt the user for approval via various channels.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "slack-upload-file-action",
+        "name": "Slack upload-file action",
+        "status": "stable",
+        "since": "2026.3.28",
+        "description": "Adds an explicit `upload-file` Slack action that routes file uploads through the existing Slack upload transport, with optional filename/title/comment overrides for channels and DMs.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "file-first-sends",
+        "name": "File-first sends",
+        "status": "stable",
+        "since": "2026.3.28",
+        "description": "Unifies file-first sends on the canonical `upload-file` action by adding explicit support for Microsoft Teams and Google Chat, and by exposing BlueBubbles file sends through `upload-file` while keeping the legacy `sendAttachment` alias.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "matrix-tts-voice-bubbles",
+        "name": "Matrix TTS voice bubbles",
+        "status": "stable",
+        "since": "2026.3.28",
+        "description": "Sends auto-TTS replies as native Matrix voice bubbles instead of generic audio attachments.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "openclaw-config-schema",
+        "name": "openclaw config schema",
+        "status": "stable",
+        "since": "2026.3.28",
+        "description": "Adds `openclaw config schema` to print the generated JSON schema for `openclaw.json`.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "tavily-client-source-header",
+        "name": "Tavily client source header",
+        "status": "stable",
+        "since": "2026.3.28",
+        "description": "Marks outbound API requests with `X-Client-Source: openclaw` so Tavily can attribute OpenClaw-originated traffic.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "gateway-backed-channel-mcp-bridge",
+        "name": "Gateway-backed channel MCP bridge",
+        "status": "stable",
+        "since": "2026.3.28",
+        "description": "Adds a Gateway-backed channel MCP bridge with Codex/Claude-facing conversation tools, Claude channel notifications, and safer stdio bridge lifecycle handling for reconnects and routed session discovery.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -503,6 +590,14 @@
         "since": "2026.3.13",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "/approve",
+        "syntax": "/approve",
+        "description": "Handles both exec and plugin approvals with automatic fallback.",
+        "since": "2026.3.28",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -546,10 +641,25 @@
           "description": "Run `openclaw` commands inside a running Docker or Podman OpenClaw container.",
           "since": "2026.3.24",
           "source_url": ""
+        },
+        {
+          "flag": "--cli-backend-logs",
+          "description": "Replaces `gateway run --claude-cli-logs` with generic `--cli-backend-logs` while keeping the old flag as a compatibility alias.",
+          "since": "2026.3.28",
+          "source_url": ""
         }
       ],
-      "deprecated": [],
+      "deprecated": [
+        {
+          "flag": "--claude-cli-logs",
+          "replaced_by": "--cli-backend-logs",
+          "deprecated_since": "2026.3.28",
+          "removed_in": null,
+          "source_url": ""
+        }
+      ],
       "new_since_previous": [
+        "--cli-backend-logs",
         "--container"
       ]
     },
@@ -755,6 +865,28 @@
         "affected": [],
         "migration": "No migration needed.",
         "source_url": "https://github.com/smol-ai/OpenClaw/issues/44247"
+      },
+      {
+        "id": "remove-qwen-portal-auth",
+        "version": "2026.3.28",
+        "title": "Providers/Qwen: remove the deprecated `qwen-portal-auth` OAuth integration",
+        "description": "The `qwen-portal-auth` OAuth integration for `portal.qwen.ai` has been removed.",
+        "affected": [
+          "Qwen users using `portal.qwen.ai`"
+        ],
+        "migration": "Migrate to Model Studio with `openclaw onboard --auth-choice modelstudio-api-key`.",
+        "source_url": ""
+      },
+      {
+        "id": "drop-old-config-migrations",
+        "version": "2026.3.28",
+        "title": "Config/Doctor: drop automatic config migrations older than two months",
+        "description": "Automatic config migrations older than two months have been dropped. Very old legacy keys now fail validation instead of being rewritten on load or by `openclaw doctor`.",
+        "affected": [
+          "Users with very old OpenClaw configurations"
+        ],
+        "migration": "Manually update your configuration to the latest schema.",
+        "source_url": ""
       }
     ],
     "deprecations": [],
