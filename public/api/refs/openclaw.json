@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.3.28",
-  "generated_at": "2026-03-29T05:36:06.148Z",
+  "generated_at": "2026-03-29T07:25:48.042Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -17,14 +17,17 @@
     "from_version": "2026.3.28",
     "to_version": "2026.3.28",
     "new_features": [
+      "x-search",
       "image-generation-provider",
-      "async-require-approval",
+      "async-require-approval-hooks",
       "current-conversation-acp-binds",
       "slack-upload-file-action",
       "file-first-sends",
       "matrix-tts-voice-bubbles",
       "openclaw-config-schema",
-      "tavily-client-source-header"
+      "plugin-runtime-runheartbeatonce",
+      "tavily-client-source-header",
+      "matrix-streaming"
     ],
     "new_commands": [],
     "new_flags": [
@@ -37,7 +40,7 @@
     ],
     "breaking_changes": [
       "qwen-portal-auth-removal",
-      "drop-old-config-migrations"
+      "config-doctor-migration-removal"
     ]
   },
   "payload": {
@@ -62,7 +65,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release removes the deprecated Qwen portal auth, requiring migration to Model Studio. It introduces first-class `x_search` support and auto-enables the xAI plugin for Grok users. Async `requireApproval` hooks allow plugins to pause tool execution for user approval via various channels. The `upload-file` Slack action simplifies file uploads, and file-first sends are unified with explicit support for Microsoft Teams and Google Chat.  Legacy config migrations older than two months are dropped, potentially requiring manual updates.  Several fixes address issues in Agents, Google models, OpenAI Codex, WhatsApp, Telegram, Mistral, and other areas, improving stability and functionality across various platforms."
+      "tldr": "This release removes the deprecated Qwen portal auth, requiring migration to Model Studio. It also drops automatic config migrations older than two months, potentially causing validation failures for very old configurations. xAI integration is improved with first-class `x_search` and auto-enabled plugin. Async `requireApproval` hooks are added for plugins, and the `/approve` command now handles both exec and plugin approvals. File uploads are unified under the `upload-file` action, with added support for Microsoft Teams and Google Chat. Several fixes address issues with agents, models, and various channels like Telegram, Discord, and Matrix."
     },
     "features": [
       {
@@ -512,6 +515,15 @@
         "description": "Plugins can now pause tool execution and prompt the user for approval via the exec approval overlay, Telegram buttons, Discord interactions, or the `/approve` command.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "matrix-streaming",
+        "name": "Matrix Streaming",
+        "status": "stable",
+        "since": "2026.3.28",
+        "description": "Add `streaming: \"partial\"` draft replies that stay on a single editable preview message, stop preview streaming once text no longer fits one Matrix event, and clear stale previews before media-only finals.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -710,6 +722,13 @@
         }
       ],
       "deprecated": [
+        {
+          "flag": "--claude-cli-logs",
+          "replaced_by": "--cli-backend-logs",
+          "deprecated_since": "2026.3.28",
+          "removed_in": null,
+          "source_url": ""
+        },
         {
           "flag": "--claude-cli-logs",
           "replaced_by": "--cli-backend-logs",
@@ -988,6 +1007,17 @@
           "Users with very old OpenClaw configurations"
         ],
         "migration": "Manually update your configuration to the latest schema.",
+        "source_url": ""
+      },
+      {
+        "id": "config-doctor-migration-removal",
+        "version": "2026.3.28",
+        "title": "Config Doctor Migration Removal",
+        "description": "Automatic config migrations older than two months have been dropped; very old legacy keys now fail validation instead of being rewritten on load or by `openclaw doctor`.",
+        "affected": [
+          "Users with very old openclaw.json configurations"
+        ],
+        "migration": "Manually update your `openclaw.json` to conform to the latest schema.",
         "source_url": ""
       }
     ],
