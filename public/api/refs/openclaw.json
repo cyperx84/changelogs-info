@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.3.28",
-  "generated_at": "2026-03-29T12:12:37.325Z",
+  "generated_at": "2026-03-29T23:11:12.604Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -17,10 +17,15 @@
     "from_version": "2026.3.28",
     "to_version": "2026.3.28",
     "new_features": [
-      "image-generation",
-      "current-conversation-acp-binds-discord-bluebubbles-imessage",
+      "x-search",
+      "image-generation-provider-minimax",
+      "async-requireapproval-before-tool-call-hooks",
       "upload-file-slack-action",
-      "openclaw-config-schema"
+      "file-first-sends-microsoft-teams-google-chat",
+      "matrix-tts-voice-bubbles",
+      "openclaw-config-schema",
+      "tavily-client-source-header",
+      "matrix-streaming-partial-draft-replies"
     ],
     "new_commands": [],
     "new_flags": [
@@ -33,7 +38,7 @@
     ],
     "breaking_changes": [
       "remove-qwen-portal-auth",
-      "drop-automatic-config-migrations"
+      "drop-old-config-migrations"
     ]
   },
   "payload": {
@@ -58,7 +63,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release removes the deprecated Qwen portal authentication, requiring migration to Model Studio. It also drops automatic config migrations older than two months, potentially causing validation failures for very old configurations. The xAI provider is now part of the Responses API with first-class `x_search` support, and the Grok web-search plugin offers optional `x_search` setup during onboarding. Async `requireApproval` is added to `before_tool_call` hooks, allowing plugins to pause tool execution for user approval. A new `upload-file` Slack action is available, and file sends are unified for Microsoft Teams and Google Chat. Finally, the `openclaw config schema` command is added to print the generated JSON schema for `openclaw.json`."
+      "tldr": "This release removes the deprecated Qwen OAuth integration, requiring migration to Model Studio. It also drops automatic config migrations older than two months, potentially causing validation failures for very old configs. The xAI provider gains first-class `x_search` support, and MiniMax now supports image generation. Plugins can now use async `requireApproval` in `before_tool_call` hooks, and the `/approve` command handles both exec and plugin approvals. Microsoft Teams and Google Chat now support file-first sends, and Matrix TTS replies are sent as native voice bubbles. Finally, the `openclaw config schema` command is added to print the JSON schema for `openclaw.json`."
     },
     "features": [
       {
@@ -580,6 +585,42 @@
         "description": "Adds current-conversation ACP binds for Discord, BlueBubbles, and iMessage so `/acp spawn codex --bind here` can turn the current chat into a Codex-backed workspace without creating a child thread.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "image-generation-provider-minimax",
+        "name": "Image Generation Provider for MiniMax",
+        "status": "stable",
+        "since": "2026.3.28",
+        "description": "Adds image generation provider for `image-01` model, supporting generate and image-to-image editing with aspect ratio control.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "async-requireapproval-before-tool-call-hooks",
+        "name": "Async requireApproval in before_tool_call hooks",
+        "status": "stable",
+        "since": "2026.3.28",
+        "description": "Adds async `requireApproval` to `before_tool_call` hooks, letting plugins pause tool execution and prompt the user for approval.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "file-first-sends-microsoft-teams-google-chat",
+        "name": "File-first sends for Microsoft Teams and Google Chat",
+        "status": "stable",
+        "since": "2026.3.28",
+        "description": "Adds explicit support for Microsoft Teams and Google Chat to the canonical `upload-file` action.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "matrix-streaming-partial-draft-replies",
+        "name": "Matrix streaming partial draft replies",
+        "status": "stable",
+        "since": "2026.3.28",
+        "description": "Adds `streaming: \"partial\"` draft replies that stay on a single editable preview message, stop preview streaming once text no longer fits one Matrix event, and clear stale previews before media-only finals.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -778,6 +819,13 @@
         }
       ],
       "deprecated": [
+        {
+          "flag": "--claude-cli-logs",
+          "replaced_by": "--cli-backend-logs",
+          "deprecated_since": "2026.3.28",
+          "removed_in": null,
+          "source_url": ""
+        },
         {
           "flag": "--claude-cli-logs",
           "replaced_by": "--cli-backend-logs",
