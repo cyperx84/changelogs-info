@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.3.28",
-  "generated_at": "2026-03-29T03:07:16.229Z",
+  "generated_at": "2026-03-29T01:36:24.007Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -17,21 +17,21 @@
     "from_version": "2026.3.28",
     "to_version": "2026.3.28",
     "new_features": [
-      "x-search",
       "image-generation-provider",
       "async-require-approval-hooks",
-      "current-conversation-acp-binds",
-      "gemini-cli-backend-support",
       "slack-upload-file-action",
-      "microsoft-teams-google-chat-file-support",
+      "file-first-sends",
+      "matrix-tts-voice-bubbles",
       "openclaw-config-schema",
-      "plugin-runtime-runheartbeatonce",
-      "pnpm-docs-check-links-anchors",
+      "tavily-client-source-header",
       "gateway-backed-channel-mcp-bridge"
     ],
-    "new_commands": [],
+    "new_commands": [
+      "/approve"
+    ],
     "new_flags": [
-      "--cli-backend-logs"
+      "--cli-backend-logs",
+      "--container"
     ],
     "new_env_vars": [],
     "deprecated_commands": [],
@@ -65,7 +65,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release removes the deprecated Qwen portal auth and drops automatic config migrations older than two months, potentially requiring manual config updates. The bundled xAI provider now features first-class `x_search` and auto-enables the xAI plugin. MiniMax gains an image generation provider, and plugins can now use async `requireApproval` hooks for tool execution. The `openclaw config schema` command is added to print the JSON schema for `openclaw.json`. Several fixes address issues with agents, models, and various channel integrations, including Telegram, Discord, and Matrix. The `gateway run --claude-cli-logs` flag is deprecated in favor of `--cli-backend-logs`."
+      "tldr": "This release removes the deprecated Qwen portal auth, requiring migration to Model Studio. It also drops automatic config migrations older than two months, potentially causing validation failures for very old configurations. The xAI provider is moved to the Responses API with first-class `x_search` and auto-enabled plugin. MiniMax adds image generation with aspect ratio control. Plugins gain async `requireApproval` hooks for pausing tool execution. Several fixes address issues with Telegram message splitting, Discord reconnects, OpenAI Codex image tools, and more, improving stability and functionality across various channels and providers."
     },
     "features": [
       {
@@ -452,60 +452,6 @@
         "description": "Adds a Gateway-backed channel MCP bridge with Codex/Claude-facing conversation tools, Claude channel notifications, and safer stdio bridge lifecycle handling for reconnects and routed session discovery.",
         "key_details": [],
         "source_url": ""
-      },
-      {
-        "id": "x-search",
-        "name": "x_search",
-        "status": "stable",
-        "since": "2026.3.28",
-        "description": "Adds first-class `x_search` to the bundled xAI provider via the Responses API, and auto-enables the xAI plugin from owned web-search and tool config.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "current-conversation-acp-binds",
-        "name": "Current-Conversation ACP Binds",
-        "status": "stable",
-        "since": "2026.3.28",
-        "description": "Adds current-conversation ACP binds for Discord, BlueBubbles, and iMessage so `/acp spawn codex --bind here` can turn the current chat into a Codex-backed workspace without creating a child thread.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "gemini-cli-backend-support",
-        "name": "Gemini CLI Backend Support",
-        "status": "stable",
-        "since": "2026.3.28",
-        "description": "Adds bundled Gemini CLI backend support and moves bundled Claude CLI, Codex CLI, and Gemini CLI inference defaults onto the plugin surface.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "microsoft-teams-google-chat-file-support",
-        "name": "Microsoft Teams and Google Chat File Support",
-        "status": "stable",
-        "since": "2026.3.28",
-        "description": "Adds explicit support for Microsoft Teams and Google Chat file-first sends on the canonical `upload-file` action.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "plugin-runtime-runheartbeatonce",
-        "name": "Plugin Runtime runHeartbeatOnce",
-        "status": "stable",
-        "since": "2026.3.28",
-        "description": "Exposes `runHeartbeatOnce` in the plugin runtime `system` namespace so plugins can trigger a single heartbeat cycle with an explicit delivery target override.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "pnpm-docs-check-links-anchors",
-        "name": "pnpm docs:check-links:anchors",
-        "status": "stable",
-        "since": "2026.3.28",
-        "description": "Adds `pnpm docs:check-links:anchors` for Mintlify anchor validation while keeping `scripts/docs-link-audit.mjs` as the stable link-audit entrypoint.",
-        "key_details": [],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -710,17 +656,11 @@
           "deprecated_since": "2026.3.28",
           "removed_in": null,
           "source_url": ""
-        },
-        {
-          "flag": "--claude-cli-logs",
-          "replaced_by": "--cli-backend-logs",
-          "deprecated_since": "2026.3.28",
-          "removed_in": null,
-          "source_url": ""
         }
       ],
       "new_since_previous": [
-        "--cli-backend-logs"
+        "--cli-backend-logs",
+        "--container"
       ]
     },
     "env_vars": [
