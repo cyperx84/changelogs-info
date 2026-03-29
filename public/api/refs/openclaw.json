@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.3.28",
-  "generated_at": "2026-03-29T11:10:15.554Z",
+  "generated_at": "2026-03-29T12:12:37.325Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -17,10 +17,10 @@
     "from_version": "2026.3.28",
     "to_version": "2026.3.28",
     "new_features": [
-      "responses-api",
-      "async-requireapproval-before-tool-call",
+      "image-generation",
+      "current-conversation-acp-binds-discord-bluebubbles-imessage",
       "upload-file-slack-action",
-      "background-tasks-lifecycle-records"
+      "openclaw-config-schema"
     ],
     "new_commands": [],
     "new_flags": [
@@ -32,8 +32,8 @@
       "--claude-cli-logs"
     ],
     "breaking_changes": [
-      "qwen-portal-auth-removal",
-      "config-doctor-automatic-config-migrations"
+      "remove-qwen-portal-auth",
+      "drop-automatic-config-migrations"
     ]
   },
   "payload": {
@@ -58,7 +58,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release removes the deprecated Qwen portal auth, requiring migration to Model Studio. It also drops automatic config migrations older than two months, potentially causing validation failures for very old configurations. The xAI provider is now part of the Responses API, with automatic Grok web-search plugin setup during onboarding. Plugins gain async `requireApproval` hooks for pausing tool execution, and the `/approve` command now handles both exec and plugin approvals. File sending is unified with the `upload-file` action, now supporting Microsoft Teams and Google Chat. Finally, the `openclaw config schema` command is added to print the JSON schema for `openclaw.json`."
+      "tldr": "This release removes the deprecated Qwen portal authentication, requiring migration to Model Studio. It also drops automatic config migrations older than two months, potentially causing validation failures for very old configurations. The xAI provider is now part of the Responses API with first-class `x_search` support, and the Grok web-search plugin offers optional `x_search` setup during onboarding. Async `requireApproval` is added to `before_tool_call` hooks, allowing plugins to pause tool execution for user approval. A new `upload-file` Slack action is available, and file sends are unified for Microsoft Teams and Google Chat. Finally, the `openclaw config schema` command is added to print the generated JSON schema for `openclaw.json`."
     },
     "features": [
       {
@@ -562,6 +562,24 @@
         "description": "Keep durable lifecycle records for ACP/subagent spawned work and deliver ACP completion/failure updates through the real requester chat path instead of session-only stream events.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "image-generation",
+        "name": "Image Generation",
+        "status": "stable",
+        "since": "2026.3.28",
+        "description": "Adds image generation provider for `image-01` model, supporting generate and image-to-image editing with aspect ratio control.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "current-conversation-acp-binds-discord-bluebubbles-imessage",
+        "name": "Current Conversation ACP Binds for Discord, BlueBubbles, and iMessage",
+        "status": "stable",
+        "since": "2026.3.28",
+        "description": "Adds current-conversation ACP binds for Discord, BlueBubbles, and iMessage so `/acp spawn codex --bind here` can turn the current chat into a Codex-backed workspace without creating a child thread.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -760,6 +778,13 @@
         }
       ],
       "deprecated": [
+        {
+          "flag": "--claude-cli-logs",
+          "replaced_by": "--cli-backend-logs",
+          "deprecated_since": "2026.3.28",
+          "removed_in": null,
+          "source_url": ""
+        },
         {
           "flag": "--claude-cli-logs",
           "replaced_by": "--cli-backend-logs",
@@ -1090,6 +1115,17 @@
         "description": "Automatic config migrations older than two months have been dropped. Very old legacy keys now fail validation instead of being rewritten on load or by `openclaw doctor`.",
         "affected": [
           "Users with very old OpenClaw configurations"
+        ],
+        "migration": "Manually update your configuration to the latest schema.",
+        "source_url": ""
+      },
+      {
+        "id": "drop-automatic-config-migrations",
+        "version": "2026.3.28",
+        "title": "Config/Doctor: drop automatic config migrations older than two months",
+        "description": "Automatic config migrations older than two months have been dropped; very old legacy keys now fail validation instead of being rewritten on load or by `openclaw doctor`.",
+        "affected": [
+          "Users with very old openclaw configurations"
         ],
         "migration": "Manually update your configuration to the latest schema.",
         "source_url": ""
