@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.3.28",
-  "generated_at": "2026-03-29T03:07:16.229Z",
+  "generated_at": "2026-03-29T04:52:47.353Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -18,15 +18,12 @@
     "to_version": "2026.3.28",
     "new_features": [
       "x-search",
-      "image-generation-provider",
-      "async-require-approval-hooks",
+      "async-require-approval",
       "current-conversation-acp-binds",
-      "gemini-cli-backend-support",
       "slack-upload-file-action",
-      "microsoft-teams-google-chat-file-support",
+      "file-first-sends",
+      "matrix-tts-voice-bubbles",
       "openclaw-config-schema",
-      "plugin-runtime-runheartbeatonce",
-      "pnpm-docs-check-links-anchors",
       "gateway-backed-channel-mcp-bridge"
     ],
     "new_commands": [],
@@ -39,8 +36,8 @@
       "--claude-cli-logs"
     ],
     "breaking_changes": [
-      "remove-qwen-portal-auth",
-      "drop-old-config-migrations"
+      "qwen-portal-auth-removal",
+      "config-doctor-automatic-migrations"
     ]
   },
   "payload": {
@@ -65,7 +62,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release removes the deprecated Qwen portal auth and drops automatic config migrations older than two months, potentially requiring manual config updates. The bundled xAI provider now features first-class `x_search` and auto-enables the xAI plugin. MiniMax gains an image generation provider, and plugins can now use async `requireApproval` hooks for tool execution. The `openclaw config schema` command is added to print the JSON schema for `openclaw.json`. Several fixes address issues with agents, models, and various channel integrations, including Telegram, Discord, and Matrix. The `gateway run --claude-cli-logs` flag is deprecated in favor of `--cli-backend-logs`."
+      "tldr": "This release introduces first-class x_search integration and async `requireApproval` hooks for plugins, enabling user approval prompts via various channels. The deprecated Qwen portal auth is removed, requiring migration to Model Studio.  Current-conversation ACP binds are added for easier workspace creation. File handling is unified with the `upload-file` action now supporting Microsoft Teams and Google Chat.  Automatic config migrations older than two months are dropped, potentially requiring manual config updates for older installations. Several fixes address issues with agents, message delivery, and plugin compatibility across different platforms."
     },
     "features": [
       {
@@ -506,6 +503,15 @@
         "description": "Adds `pnpm docs:check-links:anchors` for Mintlify anchor validation while keeping `scripts/docs-link-audit.mjs` as the stable link-audit entrypoint.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "async-require-approval",
+        "name": "Async requireApproval hooks",
+        "status": "stable",
+        "since": "2026.3.28",
+        "description": "Plugins can now pause tool execution and prompt the user for approval via the exec approval overlay, Telegram buttons, Discord interactions, or the `/approve` command.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -704,6 +710,13 @@
         }
       ],
       "deprecated": [
+        {
+          "flag": "--claude-cli-logs",
+          "replaced_by": "--cli-backend-logs",
+          "deprecated_since": "2026.3.28",
+          "removed_in": null,
+          "source_url": ""
+        },
         {
           "flag": "--claude-cli-logs",
           "replaced_by": "--cli-backend-logs",
@@ -939,6 +952,28 @@
       },
       {
         "id": "drop-old-config-migrations",
+        "version": "2026.3.28",
+        "title": "Config/Doctor: drop automatic config migrations older than two months",
+        "description": "Automatic config migrations older than two months have been dropped. Very old legacy keys now fail validation instead of being rewritten on load or by `openclaw doctor`.",
+        "affected": [
+          "Users with very old OpenClaw configurations"
+        ],
+        "migration": "Manually update your configuration to the latest schema.",
+        "source_url": ""
+      },
+      {
+        "id": "qwen-portal-auth-removal",
+        "version": "2026.3.28",
+        "title": "Providers/Qwen: remove the deprecated `qwen-portal-auth` OAuth integration",
+        "description": "The deprecated `qwen-portal-auth` OAuth integration for `portal.qwen.ai` has been removed.",
+        "affected": [
+          "Qwen users using `portal.qwen.ai`"
+        ],
+        "migration": "Migrate to Model Studio with `openclaw onboard --auth-choice modelstudio-api-key`.",
+        "source_url": ""
+      },
+      {
+        "id": "config-doctor-automatic-migrations",
         "version": "2026.3.28",
         "title": "Config/Doctor: drop automatic config migrations older than two months",
         "description": "Automatic config migrations older than two months have been dropped. Very old legacy keys now fail validation instead of being rewritten on load or by `openclaw doctor`.",
