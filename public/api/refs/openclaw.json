@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.3.28",
-  "generated_at": "2026-03-29T23:11:12.604Z",
+  "generated_at": "2026-03-30T00:33:11.330Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -18,16 +18,21 @@
     "to_version": "2026.3.28",
     "new_features": [
       "x-search",
-      "image-generation-provider-minimax",
-      "async-requireapproval-before-tool-call-hooks",
+      "cli-backend-logs",
       "upload-file-slack-action",
       "file-first-sends-microsoft-teams-google-chat",
-      "matrix-tts-voice-bubbles",
       "openclaw-config-schema",
+      "matrix-tts-voice-bubbles",
+      "gateway-backed-channel-mcp-bridge",
+      "current-conversation-acp-binds-discord-bluebubbles-imessage",
+      "plugin-runtime-runheartbeatonce",
+      "background-tasks-lifecycle-records",
       "tavily-client-source-header",
       "matrix-streaming-partial-draft-replies"
     ],
-    "new_commands": [],
+    "new_commands": [
+      "openclaw config schema"
+    ],
     "new_flags": [
       "--cli-backend-logs"
     ],
@@ -37,8 +42,8 @@
       "--claude-cli-logs"
     ],
     "breaking_changes": [
-      "remove-qwen-portal-auth",
-      "drop-old-config-migrations"
+      "qwen-portal-auth-removal",
+      "config-migration-removal"
     ]
   },
   "payload": {
@@ -63,7 +68,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release removes the deprecated Qwen OAuth integration, requiring migration to Model Studio. It also drops automatic config migrations older than two months, potentially causing validation failures for very old configs. The xAI provider gains first-class `x_search` support, and MiniMax now supports image generation. Plugins can now use async `requireApproval` in `before_tool_call` hooks, and the `/approve` command handles both exec and plugin approvals. Microsoft Teams and Google Chat now support file-first sends, and Matrix TTS replies are sent as native voice bubbles. Finally, the `openclaw config schema` command is added to print the JSON schema for `openclaw.json`."
+      "tldr": "This release removes the deprecated Qwen portal auth and old config migrations, requiring users to migrate to Model Studio and update legacy configurations. It introduces first-class x_search integration, a generic CLI backend logs flag, and an upload-file Slack action. MiniMax image generation is now supported, and plugins can now use async requireApproval hooks. File-first sends are unified with explicit support for Microsoft Teams and Google Chat, and Matrix TTS replies are now sent as native voice bubbles. Several fixes address issues with agents, providers, and various channels, improving stability and functionality."
     },
     "features": [
       {
@@ -621,6 +626,15 @@
         "description": "Adds `streaming: \"partial\"` draft replies that stay on a single editable preview message, stop preview streaming once text no longer fits one Matrix event, and clear stale previews before media-only finals.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "cli-backend-logs",
+        "name": "CLI Backend Logs",
+        "status": "stable",
+        "since": "2026.3.28",
+        "description": "Generic --cli-backend-logs flag to replace gateway run --claude-cli-logs for viewing CLI backend logs.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -767,6 +781,14 @@
         "since": "2026.3.28",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "openclaw config schema",
+        "syntax": "openclaw config schema",
+        "description": "Prints the generated JSON schema for openclaw.json.",
+        "since": "2026.3.28",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -819,6 +841,13 @@
         }
       ],
       "deprecated": [
+        {
+          "flag": "--claude-cli-logs",
+          "replaced_by": "--cli-backend-logs",
+          "deprecated_since": "2026.3.28",
+          "removed_in": null,
+          "source_url": ""
+        },
         {
           "flag": "--claude-cli-logs",
           "replaced_by": "--cli-backend-logs",
@@ -1176,6 +1205,17 @@
           "Users with very old openclaw configurations"
         ],
         "migration": "Manually update your configuration to the latest schema.",
+        "source_url": ""
+      },
+      {
+        "id": "config-migration-removal",
+        "version": "2026.3.28",
+        "title": "Config Migration Removal",
+        "description": "Automatic config migrations older than two months have been dropped. Very old legacy keys now fail validation instead of being rewritten on load or by `openclaw doctor`.",
+        "affected": [
+          "Users with very old openclaw.json configurations"
+        ],
+        "migration": "Manually update your openclaw.json configuration to the latest schema.",
         "source_url": ""
       }
     ],
