@@ -2,15 +2,18 @@
 import "../styles/global.css";
 import "../styles/view-transitions.css";
 import { ViewTransitions } from "astro:transitions";
+import SharedNav from "../components/SharedNav.astro";
 
 interface Props {
   title?: string;
   description?: string;
+  currentSection?: string;
 }
 
 const {
   title = "changelogs.info — AI Tool Changelog Tracker",
-  description = "Track every major AI coding tool. OpenClaw, Claude Code, Codex CLI, and AI models — all in one place."
+  description = "Track every major AI coding tool. OpenClaw, Claude Code, Codex CLI, and AI models — all in one place.",
+  currentSection = "hub"
 } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
@@ -38,29 +41,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="author" content="CyperX" />
   </head>
   <body>
-    <nav class="hub-nav" transition:name="nav">
-      <div class="hub-nav__inner">
-        <a href="/" class="hub-nav__brand">
-          <span class="hub-nav__brand-text">changelogs</span><span class="hub-nav__brand-dot">.info</span>
-        </a>
-        <div class="hub-nav__links">
-          <a href="/openclaw/" class="hub-nav__link hub-nav__link--tool">OpenClaw</a>
-          <a href="/claude-code/" class="hub-nav__link hub-nav__link--tool">Claude Code</a>
-          <a href="/codex-cli/" class="hub-nav__link hub-nav__link--tool">Codex</a>
-          <a href="/gemini-cli/" class="hub-nav__link hub-nav__link--tool">Gemini</a>
-          <a href="/models/" class="hub-nav__link hub-nav__link--tool">Models</a>
-          <a href="/feed/all.xml" class="hub-nav__link hub-nav__link--rss" title="RSS">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19.01 7.38 20 6.18 20C4.98 20 4 19.01 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/></svg>
-          </a>
-          <button id="hub-theme-btn" class="hub-nav__btn" aria-label="Toggle theme" title="Toggle theme">
-            <span id="hub-theme-icon">◐</span>
-          </button>
-          <button id="hub-insane-btn" class="hub-nav__btn hub-nav__btn--insane" aria-label="Toggle Insane Mode" title="🔥 INSANE MODE">
-            🔥
-          </button>
-        </div>
-      </div>
-    </nav>
+    <SharedNav currentSection={currentSection} />
 
     <main>
       <slot />
@@ -101,28 +82,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       })();
     </script>
 
-    <!-- Hub Theme Cycling + Insane Mode -->
+    <!-- Insane Mode only (theme handled by SharedNav) -->
     <script is:inline>
       document.addEventListener('DOMContentLoaded', function() {
-        var THEME_KEY = 'theme';
         var INSANE_KEY = 'hub-insane';
-        var themeOrder = ['dark', 'light', 'insane'];
-        function getCurrentTheme() {
-          var t = localStorage.getItem(THEME_KEY);
-          return t || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-        }
-        function isInsane() {
-          return localStorage.getItem(INSANE_KEY) === 'true';
-        }
-        function applyTheme(theme) {
-          if (theme === 'light') {
-            document.documentElement.setAttribute('data-theme', 'light');
-          } else {
-            document.documentElement.removeAttribute('data-theme');
-          }
-          localStorage.setItem(THEME_KEY, theme);
-          updateThemeIcon(theme);
-        }
+        function isInsane() { return localStorage.getItem(INSANE_KEY) === 'true'; }
         function startInsaneNoise() {
           var canvas = document.getElementById('hub-noise-canvas');
           if (!canvas) return;
@@ -130,18 +94,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
           canvas.height = Math.min(window.innerHeight, 450);
           var ctx = canvas.getContext('2d');
           function drawNoise() {
-            if (!document.documentElement.hasAttribute('data-hub-insane')) {
-              ctx.clearRect(0, 0, canvas.width, canvas.height);
-              return;
-            }
+            if (!document.documentElement.hasAttribute('data-hub-insane')) { ctx.clearRect(0,0,canvas.width,canvas.height); return; }
             var imgData = ctx.createImageData(canvas.width, canvas.height);
             var data = imgData.data;
             for (var i = 0; i < data.length; i += 4) {
               var v = Math.random() > 0.97 ? Math.random() * 60 : 0;
-              data[i] = v * 0.2;
-              data[i+1] = v * 0.5;
-              data[i+2] = v * 1.2;
-              data[i+3] = v > 0 ? v * 3 : 0;
+              data[i] = v * 0.2; data[i+1] = v * 0.5; data[i+2] = v * 1.2; data[i+3] = v > 0 ? v * 3 : 0;
             }
             ctx.putImageData(imgData, 0, 0);
             requestAnimationFrame(drawNoise);
@@ -152,79 +110,22 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
           if (insane) {
             document.documentElement.setAttribute('data-hub-insane', 'true');
             localStorage.setItem(INSANE_KEY, 'true');
-            showInsaneBanner();
+            var banner = document.getElementById('hub-insane-banner');
+            if (banner) {
+              banner.style.display = 'block';
+              requestAnimationFrame(function() { banner.style.transform = 'translate(-50%,-50%) scale(1)'; banner.style.opacity = '1'; });
+              setTimeout(function() { banner.style.transform = 'translate(-50%,-50%) scale(0)'; banner.style.opacity = '0'; setTimeout(function(){banner.style.display='none';},400); }, 1800);
+            }
             startInsaneNoise();
           } else {
             document.documentElement.removeAttribute('data-hub-insane');
             localStorage.setItem(INSANE_KEY, 'false');
           }
-          updateInsaneBtn(insane);
         }
-        function updateThemeIcon(theme) {
-          var icon = document.getElementById('hub-theme-icon');
-          if (!icon) return;
-          if (isInsane()) { icon.textContent = '🔥'; return; }
-          icon.textContent = theme === 'light' ? '◑' : '◐';
-        }
-        function updateInsaneBtn(insane) {
-          var btn = document.getElementById('hub-insane-btn');
-          if (!btn) return;
-          btn.style.background = insane ? 'var(--hub-primary)' : '';
-          btn.style.borderColor = insane ? 'var(--hub-primary)' : '';
-        }
-        function showInsaneBanner() {
-          var banner = document.getElementById('hub-insane-banner');
-          if (!banner) return;
-          banner.style.display = 'block';
-          // Trigger animation
-          requestAnimationFrame(function() {
-            banner.style.transform = 'translate(-50%, -50%) scale(1)';
-            banner.style.opacity = '1';
-          });
-          setTimeout(function() {
-            banner.style.transform = 'translate(-50%, -50%) scale(0)';
-            banner.style.opacity = '0';
-            setTimeout(function() { banner.style.display = 'none'; }, 400);
-          }, 1800);
-        }
-        // Theme button — cycles dark → light → insane
-        var themeBtn = document.getElementById('hub-theme-btn');
-        if (themeBtn) {
-          themeBtn.addEventListener('click', function() {
-            var cur = getCurrentTheme();
-            if (isInsane()) {
-              applyInsane(false);
-            }
-            applyTheme(cur === 'dark' ? 'light' : 'dark');
-          });
-        }
-        // Insane Mode button — direct toggle
-        var insaneBtn = document.getElementById('hub-insane-btn');
-        if (insaneBtn) {
-          insaneBtn.addEventListener('click', function() {
-            applyInsane(!isInsane());
-          });
-        }
-        // Keyboard shortcut: Ctrl+Shift+H toggle light/dark
+        if (isInsane()) { startInsaneNoise(); }
         document.addEventListener('keydown', function(e) {
-          if (e.ctrlKey && e.shiftKey && e.key === 'H') {
-            e.preventDefault();
-            var cur = getCurrentTheme();
-            if (isInsane()) {
-              applyInsane(false);
-            }
-            applyTheme(cur === 'dark' ? 'light' : 'dark');
-          }
-          // Ctrl+Shift+I toggle insane directly
-          if (e.ctrlKey && e.shiftKey && e.key === 'I') {
-            e.preventDefault();
-            applyInsane(!isInsane());
-          }
+          if (e.ctrlKey && e.shiftKey && e.key === 'I') { e.preventDefault(); applyInsane(!isInsane()); }
         });
-        // Init UI state
-        updateThemeIcon(getCurrentTheme());
-        updateInsaneBtn(isInsane());
-        if (isInsane()) startInsaneNoise();
       });
     </script>
 

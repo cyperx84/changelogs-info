@@ -1,0 +1,242 @@
+---
+interface Props {
+  currentSection?: string;
+}
+
+const { currentSection = "hub" } = Astro.props;
+
+const sections = [
+  { label: "OpenClaw", href: "/openclaw/", key: "openclaw", color: "#eb0000" },
+  { label: "Claude Code", href: "/claude-code/", key: "claude-code", color: "#d97706" },
+  { label: "Codex", href: "/codex-cli/", key: "codex", color: "#10b981" },
+  { label: "Gemini", href: "/gemini-cli/", key: "gemini", color: "#3b82f6" },
+  { label: "Models", href: "/models/", key: "models", color: "#0091f7" },
+];
+---
+
+<header class="shared-nav" data-current={currentSection}>
+  <div class="shared-nav__inner">
+    <a href="/" class="shared-nav__brand">
+      changelogs<span class="shared-nav__dot">.</span>info
+    </a>
+
+    <nav class="shared-nav__links" id="shared-desktop-nav">
+      {sections.map((s) => (
+        <a
+          href={s.href}
+          class={`shared-nav__link ${currentSection === s.key ? "shared-nav__link--active" : ""}`}
+          style={currentSection === s.key ? `--active-color: ${s.color};` : ""}
+        >
+          {s.label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="shared-nav__actions">
+      <button id="shared-theme-toggle" class="shared-nav__btn" aria-label="Toggle theme">
+        <span id="shared-theme-label">◐</span>
+      </button>
+      <button id="shared-mobile-btn" class="shared-nav__hamburger" aria-label="Menu">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile dropdown -->
+  <div id="shared-mobile-menu" class="shared-nav__mobile">
+    {sections.map((s) => (
+      <a
+        href={s.href}
+        class={`shared-nav__mobile-link ${currentSection === s.key ? "shared-nav__mobile-link--active" : ""}`}
+      >
+        {s.label}
+      </a>
+    ))}
+  </div>
+</header>
+
+<script is:inline>
+  (function() {
+    // Init theme from localStorage
+    var stored = localStorage.getItem("theme");
+    if (stored === "light") {
+      document.documentElement.setAttribute("data-theme", "light");
+    }
+
+    // Theme toggle
+    var btn = document.getElementById("shared-theme-toggle");
+    var label = document.getElementById("shared-theme-label");
+    function updateIcon() {
+      var isLight = document.documentElement.getAttribute("data-theme") === "light";
+      if (label) label.textContent = isLight ? "☀" : "◐";
+    }
+    updateIcon();
+    if (btn) {
+      btn.addEventListener("click", function() {
+        var isLight = document.documentElement.getAttribute("data-theme") === "light";
+        if (isLight) {
+          document.documentElement.removeAttribute("data-theme");
+          localStorage.setItem("theme", "dark");
+        } else {
+          document.documentElement.setAttribute("data-theme", "light");
+          localStorage.setItem("theme", "light");
+        }
+        updateIcon();
+      });
+    }
+
+    // Mobile menu
+    var mobileBtn = document.getElementById("shared-mobile-btn");
+    var mobileMenu = document.getElementById("shared-mobile-menu");
+    if (mobileBtn && mobileMenu) {
+      mobileBtn.addEventListener("click", function() {
+        var open = mobileMenu.style.display === "flex";
+        mobileMenu.style.display = open ? "none" : "flex";
+      });
+    }
+  })();
+</script>
+
+<style>
+  .shared-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 4px solid var(--sn-border, #ffffff);
+    background: var(--sn-bg, rgba(0,0,0,0.85));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: var(--sn-shadow, 6px 6px 0px 0px rgba(255,255,255,0.2));
+  }
+  .shared-nav__inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.25rem;
+    gap: 1rem;
+  }
+  .shared-nav__brand {
+    font-family: "Space Grotesk", sans-serif;
+    font-weight: 900;
+    font-size: 1.1rem;
+    color: var(--sn-text, #ffffff);
+    text-decoration: none;
+    letter-spacing: -0.03em;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .shared-nav__dot {
+    color: var(--sn-primary, #0091f7);
+  }
+  .shared-nav__links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .shared-nav__link {
+    font-family: "Space Grotesk", sans-serif;
+    font-weight: 800;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    color: var(--sn-text-dim, rgba(255,255,255,0.6));
+    padding-bottom: 4px;
+    transition: color 100ms;
+    white-space: nowrap;
+  }
+  .shared-nav__link:hover {
+    color: var(--sn-text, #ffffff);
+  }
+  .shared-nav__link--active {
+    color: var(--active-color, var(--sn-primary, #0091f7));
+    border-bottom: 4px solid var(--active-color, var(--sn-primary, #0091f7));
+  }
+  .shared-nav__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+  .shared-nav__btn {
+    background: transparent;
+    border: 2px solid var(--sn-border, #ffffff);
+    padding: 6px 10px;
+    color: var(--sn-text, #ffffff);
+    cursor: pointer;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    font-weight: 700;
+    box-shadow: var(--sn-shadow-sm, 4px 4px 0px 0px rgba(255,255,255,0.2));
+    transition: box-shadow 100ms, transform 100ms;
+  }
+  .shared-nav__btn:hover {
+    transform: translate(1px, 1px);
+    box-shadow: 2px 2px 0px 0px var(--sn-border, #ffffff);
+  }
+  .shared-nav__hamburger {
+    display: none;
+    background: transparent;
+    border: 2px solid var(--sn-border, #ffffff);
+    padding: 8px;
+    color: var(--sn-text, #ffffff);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+  }
+  .shared-nav__mobile {
+    display: none;
+    flex-direction: column;
+    padding: 0.75rem 1.25rem 1.25rem;
+    border-top: 2px solid var(--sn-border-dim, rgba(255,255,255,0.2));
+  }
+  .shared-nav__mobile-link {
+    font-family: "Space Grotesk", sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    text-transform: uppercase;
+    padding: 0.75rem 0;
+    text-decoration: none;
+    border-bottom: 2px solid var(--sn-border-dim, rgba(255,255,255,0.2));
+    letter-spacing: 0.05em;
+    color: var(--sn-text-dim, rgba(255,255,255,0.6));
+  }
+  .shared-nav__mobile-link--active {
+    color: var(--sn-primary, #0091f7);
+  }
+
+  /* Light mode */
+  :root[data-theme="light"] .shared-nav {
+    --sn-bg: rgba(251, 249, 244, 0.9);
+    --sn-text: #0a0a0a;
+    --sn-text-dim: rgba(10, 10, 10, 0.6);
+    --sn-border: #0a0a0a;
+    --sn-border-dim: rgba(10, 10, 10, 0.2);
+    --sn-shadow: 6px 6px 0px 0px rgba(10, 10, 10, 0.15);
+    --sn-shadow-sm: 4px 4px 0px 0px rgba(10, 10, 10, 0.15);
+  }
+
+  /* Hub (homepage) dark mode defaults */
+  :root:not([data-theme="light"]) .shared-nav {
+    --sn-bg: rgba(0, 0, 0, 0.85);
+    --sn-text: #ffffff;
+    --sn-text-dim: rgba(255, 255, 255, 0.6);
+    --sn-border: #ffffff;
+    --sn-border-dim: rgba(255, 255, 255, 0.2);
+    --sn-shadow: 6px 6px 0px 0px rgba(255, 255, 255, 0.2);
+    --sn-shadow-sm: 4px 4px 0px 0px rgba(255, 255, 255, 0.2);
+  }
+
+  @media (max-width: 768px) {
+    .shared-nav__links {
+      display: none;
+    }
+    .shared-nav__hamburger {
+      display: flex;
+    }
+  }
+</style>
