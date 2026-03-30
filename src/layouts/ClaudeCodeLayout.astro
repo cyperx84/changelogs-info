@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import "../styles/view-transitions.css";
 import { ViewTransitions } from "astro:transitions";
+import SharedNav from "../components/SharedNav.astro";
 
 interface Props {
   title: string;
@@ -281,9 +282,7 @@ const navLinks = [
         to { transform: rotate(360deg); }
       }
 
-      [data-apex="true"] .cc-nav-header {
-        animation: apex-pulse 2s ease-in-out infinite;
-      }
+
       [data-apex="true"] #cc-apex-btn {
         animation: apex-shake 0.6s ease-in-out infinite;
         background: rgba(255, 149, 0, 0.15) !important;
@@ -311,14 +310,7 @@ const navLinks = [
       }
 
       /* Nav */
-      .cc-nav-header {
-        position: fixed;
-        top: 0; left: 0; right: 0;
-        z-index: 100;
-        background: var(--cc-header-bg);
-        backdrop-filter: blur(10px);
-        border-bottom: 4px solid var(--cc-border);
-      }
+
       .cc-nav-inner {
         max-width: 1400px;
         margin: 0 auto;
@@ -419,211 +411,75 @@ const navLinks = [
         .cc-hero-grid { grid-template-columns: 1fr !important; }
         .cc-terminal-card { width: 100% !important; }
       }
-      @media (min-width: 769px) {
-        #cc-hub-link {
-          display: inline-flex !important;
-        }
-        #cc-desktop-nav {
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-          flex: 1 1 auto !important;
-          gap: 2rem !important;
-        }
+
+      /* Sub-nav */
+      .cc-subnav {
+        background: var(--cc-bg-surface, var(--cc-bg));
+        border-bottom: 2px solid var(--cc-border-dim, var(--cc-border));
+        position: sticky;
+        top: 56px;
+        z-index: 49;
       }
-      /* Cross-tool nav bar */
-      .cc-cross-nav {
-        background: var(--cc-bg-surface);
-        border-bottom: 2px solid var(--cc-border-dim);
-        padding: 0;
-      }
-      .cc-cross-nav__inner {
+      .cc-subnav__inner {
         max-width: 1400px;
         margin: 0 auto;
-        padding: 0.35rem 1.25rem;
         display: flex;
         align-items: center;
-        gap: 0.15rem;
-        flex-wrap: wrap;
+        gap: 1.5rem;
+        padding: 0.5rem 1.25rem;
       }
-      .cc-cross-nav__link {
-        font-family: var(--cc-font-mono);
-        font-size: 0.65rem;
+      .cc-subnav__brand {
+        font-family: var(--cc-font-headline);
+        font-weight: 900;
+        font-size: 1rem;
+        color: var(--cc-primary-bright, var(--cc-primary));
+        font-style: italic;
+        letter-spacing: -0.03em;
+      }
+      .cc-subnav__link {
+        font-family: var(--cc-font-headline);
         font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--cc-text-muted);
-        text-decoration: none;
-        padding: 0.2rem 0.5rem;
-        transition: color 150ms;
-      }
-      .cc-cross-nav__link:hover {
-        color: var(--cc-text);
-      }
-      .cc-cross-nav__link--active {
-        color: var(--cc-primary-bright) !important;
-      }
-      .cc-cross-nav__sep {
-        color: var(--cc-text-muted);
-        font-size: 0.55rem;
-        user-select: none;
-      }
-      @media (max-width: 768px) {
-        .cc-cross-nav { display: none; }
-      }
-
-      .cc-mobile-cross-label {
-        font-family: var(--cc-font-mono);
-        font-size: 0.6rem;
-        color: var(--cc-text-muted);
-        padding: 0.5rem 0 0.25rem;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-      }
-      .cc-mobile-cross-link {
-        display: block;
-        font-family: var(--cc-font-mono);
-        font-size: 0.8rem;
-        font-weight: 700;
+        font-size: 0.75rem;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        padding: 0.5rem 0;
         text-decoration: none;
-        color: var(--cc-text-muted);
-        transition: color 150ms;
-      }
-      .cc-mobile-cross-link:hover {
         color: var(--cc-text);
+        opacity: 0.6;
+        padding-bottom: 2px;
+        transition: color 100ms, opacity 100ms;
       }
-
-      @media (prefers-reduced-motion: reduce) {
-        .cc-hero-title, .cc-hero-section p, .cc-terminal-card, .cc-section-reveal {
-          animation: none !important;
-          opacity: 1;
-          transform: none;
-        }
-        .cc-cursor, .cc-pulse-dot { animation: none !important; }
+      .cc-subnav__link:hover {
+        opacity: 1;
+        color: var(--cc-primary-bright, var(--cc-primary));
+      }
+      .cc-subnav__link--active {
+        color: var(--cc-primary-bright, var(--cc-primary));
+        opacity: 1;
+        border-bottom: 3px solid var(--cc-primary-bright, var(--cc-primary));
       }
     </style>
   </head>
   <body>
-    <header class="cc-nav-header" transition:name="nav">
-      <div class="cc-nav-inner">
-        <div style="display: flex; align-items: center; gap: 1rem; flex-shrink: 0;">
-          <!-- Hub link (desktop) -->
-          <a
-            id="cc-hub-link"
-            href="/"
-            style="font-family: var(--cc-font-mono); font-size: 0.65rem; font-weight: 700; color: var(--cc-text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.1em; flex-shrink: 0; transition: color 150ms; display: none;"
-            onmouseover="this.style.color='var(--cc-primary-bright)'"
-            onmouseout="this.style.color='var(--cc-text-muted)'"
-          >
-            ← hub
-          </a>
+        <!-- Shared top nav -->
+    <SharedNav currentSection="claude-code" />
 
-          <!-- Logo -->
-          <a href="/claude-code/" class="cc-nav-logo">
-            Claude<span>Code</span>
-          </a>
-        </div>
-
-        <!-- Desktop nav -->
-        <nav
-          id="cc-desktop-nav"
-          style="display: none; align-items: center; gap: 2rem;"
-        >
-          {navLinks.map((link) => (
-            <a
-              href={link.href}
-              class="cc-headline"
-              style={`font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; padding: 0.5rem 1rem; text-decoration: none; transition: color 150ms, background 150ms; ${
-                currentPage === link.key
-                  ? `color: var(--cc-primary-bright); border-bottom: 4px solid var(--cc-primary-bright); margin-bottom: -4px;`
-                  : `color: var(--cc-text); opacity: 0.7;`
-              }`}
-            >
-              {link.label}
-            </a>
-          ))}
-        </nav>
-
-        <!-- Right: actions -->
-        <div style="display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0;">
-          <!-- Apex Mode button -->
-          <button
-            id="cc-apex-btn"
-            aria-label="Toggle Apex Mode"
-            style="background: transparent; border: 2px solid var(--cc-border); padding: 6px 10px; cursor: pointer; font-size: 11px; line-height: 1; transition: transform 200ms, box-shadow 100ms; position: relative; overflow: visible; box-shadow: var(--cc-shadow-sm); font-family: var(--cc-font-mono); font-weight: 700; color: var(--cc-primary-bright);"
-            title="🧠 APEX MODE"
-          >
-            🧠
-          </button>
-
-          <button
-            id="cc-theme-toggle"
-            aria-label="Toggle theme"
-            style="background: transparent; border: 2px solid var(--cc-border); padding: 6px 10px; color: var(--cc-text); cursor: pointer; box-shadow: var(--cc-shadow-sm); font-family: var(--cc-font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.05em; transition: box-shadow 100ms, transform 100ms; position: relative; overflow: visible;"
-          >
-            <span id="cc-theme-label">◐</span>
-          </button>
-
-          <!-- Hamburger (mobile only) -->
-          <button
-            id="cc-mobile-menu-btn"
-            aria-label="Toggle menu"
-            style="display: none; background: transparent; border: 2px solid var(--cc-border); padding: 8px; color: var(--cc-text); cursor: pointer; align-items: center; justify-content: center; position: relative; overflow: visible;"
-          >
-            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: block;">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Mobile nav dropdown -->
-      <div
-        id="cc-mobile-menu"
-        style="display: none; padding: 0.75rem 1.25rem 1.25rem; border-top: 2px solid var(--cc-border-dim); background: var(--cc-bg);"
-      >
+    <!-- Claude Code sub-nav -->
+    <div class="cc-subnav">
+      <div class="cc-subnav__inner">
+        <span class="cc-subnav__brand">Claude Code</span>
         {navLinks.map((link) => (
           <a
             href={link.href}
-            class="cc-headline"
-            style={`display: block; font-weight: 800; text-transform: uppercase; font-size: 1rem; padding: 0.75rem 0; text-decoration: none; border-bottom: 2px solid var(--cc-border-dim); letter-spacing: 0.05em; ${
-              currentPage === link.key
-                ? `color: var(--cc-primary-bright);`
-                : `color: var(--cc-text); opacity: 0.75;`
-            }`}
+            class={`cc-subnav__link ${currentPage === link.key ? "cc-subnav__link--active" : ""}`}
           >
             {link.label}
           </a>
         ))}
-        <a href="/" class="cc-headline" style="display: block; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; padding: 0.75rem 0; text-decoration: none; color: var(--cc-text); opacity: 0.5; letter-spacing: 0.1em;">
-          ← changelogs.info
-        </a>
-        <div class="cc-mobile-cross-label">// other tools</div>
-        <a href="/openclaw/" class="cc-mobile-cross-link">OpenClaw</a>
-        <a href="/codex-cli/" class="cc-mobile-cross-link">Codex</a>
-        <a href="/gemini-cli/" class="cc-mobile-cross-link">Gemini</a>
-        <a href="/models/" class="cc-mobile-cross-link">Models</a>
-      </div>
-    </header>
-
-    <!-- Cross-tool nav -->
-    <div class="cc-cross-nav">
-      <div class="cc-cross-nav__inner">
-        <a href="/" class="cc-cross-nav__link">changelogs.info</a>
-        <span class="cc-cross-nav__sep">·</span>
-        <a href="/openclaw/" class="cc-cross-nav__link">OpenClaw</a>
-        <a href="/claude-code/" class="cc-cross-nav__link cc-cross-nav__link--active">Claude Code</a>
-        <a href="/codex-cli/" class="cc-cross-nav__link">Codex</a>
-        <a href="/gemini-cli/" class="cc-cross-nav__link">Gemini</a>
-        <a href="/models/" class="cc-cross-nav__link">Models</a>
       </div>
     </div>
 
     <!-- Main content -->
-    <main style="padding-top: 73px;">
+    <main>
       <slot />
     </main>
 
@@ -671,73 +527,7 @@ const navLinks = [
     <canvas id="apex-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9990; pointer-events: none; display: none;"></canvas>
     <div id="apex-banner" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); z-index: 9991; pointer-events: none; font-family: var(--cc-font-headline); font-weight: 900; font-size: clamp(2rem, 10vw, 7rem); color: #fff; text-shadow: 0 0 40px rgba(255,149,0,0.9), 0 0 80px rgba(255,180,0,0.5), 4px 4px 0 #000; text-transform: uppercase; font-style: italic; letter-spacing: -0.04em; text-align: center; width: 90vw; max-width: 900px; transition: transform 600ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 400ms; line-height: 1.1;">🧠 APEX MODE 🧠<br><span style="font-size: 0.35em; opacity: 0.8; display: block; margin-top: 0.5rem;">CLAUDE CODE: MAXIMUM CAPACITY</span></div>
 
-    <script>
-      // === THEME TOGGLE ===
-      const CC_THEME_KEY = "theme";
-
-      function getCCTheme(): string {
-        return (
-          localStorage.getItem(CC_THEME_KEY) ||
-          (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark")
-        );
-      }
-
-      function applyCCTheme(theme: string) {
-        document.documentElement.setAttribute("data-layout", "claude-code");
-        if (theme === "light") {
-          document.documentElement.setAttribute("data-theme", "light");
-        } else {
-          document.documentElement.removeAttribute("data-theme");
-        }
-      }
-
-      function updateCCLabel(theme: string) {
-        const label = document.getElementById("cc-theme-label");
-        if (label) label.textContent = theme === "light" ? "◑" : "◐";
-      }
-
-      document.addEventListener("DOMContentLoaded", () => {
-        document.documentElement.setAttribute("data-layout", "claude-code");
-        const current = getCCTheme();
-        updateCCLabel(current);
-        applyCCTheme(current);
-
-        const btn = document.getElementById("cc-theme-toggle");
-        btn?.addEventListener("click", () => {
-          const cur = getCCTheme();
-          const next = cur === "dark" ? "light" : "dark";
-          localStorage.setItem(CC_THEME_KEY, next);
-          applyCCTheme(next);
-          updateCCLabel(next);
-        });
-
-        // Mobile menu
-        const menuBtn = document.getElementById("cc-mobile-menu-btn");
-        const mobileMenu = document.getElementById("cc-mobile-menu");
-        menuBtn?.addEventListener("click", () => {
-          const isOpen = mobileMenu?.style.display === "block";
-          if (mobileMenu) mobileMenu.style.display = isOpen ? "none" : "block";
-        });
-        mobileMenu?.querySelectorAll("a").forEach((a) => {
-          a.addEventListener("click", () => {
-            if (mobileMenu) mobileMenu.style.display = "none";
-          });
-        });
-
-        function handleResize() {
-          const desktopNav = document.getElementById("cc-desktop-nav");
-          const mobileBtn = document.getElementById("cc-mobile-menu-btn");
-          const hubLink = document.getElementById("cc-hub-link");
-          const isDesktop = window.innerWidth >= 768;
-          if (desktopNav) desktopNav.style.display = isDesktop ? "flex" : "none";
-          if (mobileBtn) mobileBtn.style.display = isDesktop ? "none" : "flex";
-          if (hubLink) hubLink.style.display = isDesktop ? "inline" : "none";
-          if (isDesktop && mobileMenu) mobileMenu.style.display = "none";
-        }
-        handleResize();
-        window.addEventListener("resize", handleResize);
-      });
-    </script>
+    
 
     <!-- === APEX MODE === -->
     <script>

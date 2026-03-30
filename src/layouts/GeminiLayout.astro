@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import "../styles/view-transitions.css";
 import { ViewTransitions } from "astro:transitions";
+import SharedNav from "../components/SharedNav.astro";
 
 interface Props {
   title: string;
@@ -226,14 +227,7 @@ const navLinks = [
       }
 
       /* Nav */
-      .gc-nav-header {
-        position: fixed;
-        top: 0; left: 0; right: 0;
-        z-index: 100;
-        background: var(--gc-header-bg);
-        backdrop-filter: blur(10px);
-        border-bottom: 4px solid var(--gc-border);
-      }
+
       .gc-nav-inner {
         max-width: 1400px;
         margin: 0 auto;
@@ -333,196 +327,75 @@ const navLinks = [
         .gc-hero-grid { grid-template-columns: 1fr !important; }
         .gc-terminal-card { width: 100% !important; }
       }
-      @media (min-width: 769px) {
-        #gc-hub-link {
-          display: inline-flex !important;
-        }
-        #gc-desktop-nav {
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-          flex: 1 1 auto !important;
-          gap: 2rem !important;
-        }
+
+      /* Sub-nav */
+      .gc-subnav {
+        background: var(--gc-bg-surface, var(--gc-bg));
+        border-bottom: 2px solid var(--gc-border-dim, var(--gc-border));
+        position: sticky;
+        top: 56px;
+        z-index: 49;
       }
-      /* Cross-tool nav bar */
-      .gc-cross-nav {
-        background: var(--gc-bg-surface);
-        border-bottom: 2px solid var(--gc-border-dim);
-        padding: 0;
-      }
-      .gc-cross-nav__inner {
+      .gc-subnav__inner {
         max-width: 1400px;
         margin: 0 auto;
-        padding: 0.35rem 1.25rem;
         display: flex;
         align-items: center;
-        gap: 0.15rem;
-        flex-wrap: wrap;
+        gap: 1.5rem;
+        padding: 0.5rem 1.25rem;
       }
-      .gc-cross-nav__link {
-        font-family: var(--gc-font-mono);
-        font-size: 0.65rem;
+      .gc-subnav__brand {
+        font-family: var(--gc-font-headline);
+        font-weight: 900;
+        font-size: 1rem;
+        color: var(--gc-primary-bright, var(--gc-primary));
+        font-style: italic;
+        letter-spacing: -0.03em;
+      }
+      .gc-subnav__link {
+        font-family: var(--gc-font-headline);
         font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--gc-text-muted);
-        text-decoration: none;
-        padding: 0.2rem 0.5rem;
-        transition: color 150ms;
-      }
-      .gc-cross-nav__link:hover {
-        color: var(--gc-text);
-      }
-      .gc-cross-nav__link--active {
-        color: var(--gc-primary-bright) !important;
-      }
-      .gc-cross-nav__sep {
-        color: var(--gc-text-muted);
-        font-size: 0.55rem;
-        user-select: none;
-      }
-      @media (max-width: 768px) {
-        .gc-cross-nav { display: none; }
-      }
-
-      .gc-mobile-cross-label {
-        font-family: var(--gc-font-mono);
-        font-size: 0.6rem;
-        color: var(--gc-text-muted);
-        padding: 0.5rem 0 0.25rem;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-      }
-      .gc-mobile-cross-link {
-        display: block;
-        font-family: var(--gc-font-mono);
-        font-size: 0.8rem;
-        font-weight: 700;
+        font-size: 0.75rem;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        padding: 0.5rem 0;
         text-decoration: none;
-        color: var(--gc-text-muted);
-        transition: color 150ms;
-      }
-      .gc-mobile-cross-link:hover {
         color: var(--gc-text);
+        opacity: 0.6;
+        padding-bottom: 2px;
+        transition: color 100ms, opacity 100ms;
       }
-
-      @media (prefers-reduced-motion: reduce) {
-        .gc-hero-title, .gc-hero-section p, .gc-terminal-card, .gc-section-reveal {
-          animation: none !important; opacity: 1; transform: none;
-        }
-        .gc-cursor, .gc-pulse-dot { animation: none !important; }
+      .gc-subnav__link:hover {
+        opacity: 1;
+        color: var(--gc-primary-bright, var(--gc-primary));
+      }
+      .gc-subnav__link--active {
+        color: var(--gc-primary-bright, var(--gc-primary));
+        opacity: 1;
+        border-bottom: 3px solid var(--gc-primary-bright, var(--gc-primary));
       }
     </style>
   </head>
   <body>
-    <header class="gc-nav-header" transition:name="nav">
-      <div class="gc-nav-inner">
-        <div style="display: flex; align-items: center; gap: 1rem; flex-shrink: 0;">
-          <!-- Hub link (desktop) -->
-          <a
-            id="gc-hub-link"
-            href="/"
-            style="font-family: var(--gc-font-mono); font-size: 0.65rem; font-weight: 700; color: var(--gc-text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.1em; flex-shrink: 0; transition: color 150ms; display: none;"
-            onmouseover="this.style.color='var(--gc-primary-bright)'"
-            onmouseout="this.style.color='var(--gc-text-muted)'"
-          >
-            ← hub
-          </a>
+        <!-- Shared top nav -->
+    <SharedNav currentSection="gemini-cli" />
 
-          <!-- Logo -->
-          <a href="/gemini-cli/" class="gc-nav-logo">
-            Gemini<span>CLI</span>
-          </a>
-        </div>
-
-        <!-- Desktop nav -->
-        <nav id="gc-desktop-nav" style="display: none; align-items: center; gap: 2rem;">
-          {navLinks.map((link) => (
-            <a
-              href={link.href}
-              class="gc-headline"
-              style={`font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; padding: 0.5rem 1rem; text-decoration: none; transition: color 150ms, background 150ms; ${
-                currentPage === link.key
-                  ? `color: var(--gc-primary-bright); border-bottom: 4px solid var(--gc-primary-bright); margin-bottom: -4px;`
-                  : `color: var(--gc-text); opacity: 0.7;`
-              }`}
-            >
-              {link.label}
-            </a>
-          ))}
-        </nav>
-
-        <!-- Right: actions -->
-        <div style="display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0;">
-          <button
-            id="gc-theme-toggle"
-            aria-label="Toggle theme"
-            style="background: transparent; border: 2px solid var(--gc-border); padding: 6px 10px; color: var(--gc-text); cursor: pointer; box-shadow: var(--gc-shadow-sm); font-family: var(--gc-font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.05em; transition: box-shadow 100ms, transform 100ms; position: relative; overflow: visible;"
-          >
-            <span id="gc-theme-label">◐</span>
-          </button>
-
-          <!-- Hamburger (mobile only) -->
-          <button
-            id="gc-mobile-menu-btn"
-            aria-label="Toggle menu"
-            style="display: none; background: transparent; border: 2px solid var(--gc-border); padding: 8px; color: var(--gc-text); cursor: pointer; align-items: center; justify-content: center; position: relative; overflow: visible;"
-          >
-            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: block;">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Mobile nav dropdown -->
-      <div
-        id="gc-mobile-menu"
-        style="display: none; padding: 0.75rem 1.25rem 1.25rem; border-top: 2px solid var(--gc-border-dim); background: var(--gc-bg);"
-      >
+    <!-- Gemini sub-nav -->
+    <div class="gc-subnav">
+      <div class="gc-subnav__inner">
+        <span class="gc-subnav__brand">Gemini</span>
         {navLinks.map((link) => (
           <a
             href={link.href}
-            class="gc-headline"
-            style={`display: block; font-weight: 800; text-transform: uppercase; font-size: 1rem; padding: 0.75rem 0; text-decoration: none; border-bottom: 2px solid var(--gc-border-dim); letter-spacing: 0.05em; ${
-              currentPage === link.key
-                ? `color: var(--gc-primary-bright);`
-                : `color: var(--gc-text); opacity: 0.75;`
-            }`}
+            class={`gc-subnav__link ${currentPage === link.key ? "gc-subnav__link--active" : ""}`}
           >
             {link.label}
           </a>
         ))}
-        <a href="/" class="gc-headline" style="display: block; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; padding: 0.75rem 0; text-decoration: none; color: var(--gc-text); opacity: 0.5; letter-spacing: 0.1em;">
-          ← changelogs.info
-        </a>
-        <div class="gc-mobile-cross-label">// other tools</div>
-        <a href="/openclaw/" class="gc-mobile-cross-link">OpenClaw</a>
-        <a href="/claude-code/" class="gc-mobile-cross-link">Claude Code</a>
-        <a href="/codex-cli/" class="gc-mobile-cross-link">Codex</a>
-        <a href="/models/" class="gc-mobile-cross-link">Models</a>
-      </div>
-    </header>
-
-    <!-- Cross-tool nav -->
-    <div class="gc-cross-nav">
-      <div class="gc-cross-nav__inner">
-        <a href="/" class="gc-cross-nav__link">changelogs.info</a>
-        <span class="gc-cross-nav__sep">·</span>
-        <a href="/openclaw/" class="gc-cross-nav__link">OpenClaw</a>
-        <a href="/claude-code/" class="gc-cross-nav__link">Claude Code</a>
-        <a href="/codex-cli/" class="gc-cross-nav__link">Codex</a>
-        <a href="/gemini-cli/" class="gc-cross-nav__link gc-cross-nav__link--active">Gemini</a>
-        <a href="/models/" class="gc-cross-nav__link">Models</a>
       </div>
     </div>
 
     <!-- Main content -->
-    <main style="padding-top: 73px;">
+    <main>
       <slot />
     </main>
 
@@ -566,72 +439,6 @@ const navLinks = [
       </div>
     </footer>
 
-    <script>
-      // === THEME TOGGLE ===
-      const GC_THEME_KEY = "theme";
-
-      function getGCTheme(): string {
-        return (
-          localStorage.getItem(GC_THEME_KEY) ||
-          (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark")
-        );
-      }
-
-      function applyGCTheme(theme: string) {
-        document.documentElement.setAttribute("data-layout", "gemini");
-        if (theme === "light") {
-          document.documentElement.setAttribute("data-theme", "light");
-        } else {
-          document.documentElement.removeAttribute("data-theme");
-        }
-      }
-
-      function updateGCLabel(theme: string) {
-        const label = document.getElementById("gc-theme-label");
-        if (label) label.textContent = theme === "light" ? "◑" : "◐";
-      }
-
-      document.addEventListener("DOMContentLoaded", () => {
-        document.documentElement.setAttribute("data-layout", "gemini");
-        const current = getGCTheme();
-        updateGCLabel(current);
-        applyGCTheme(current);
-
-        const btn = document.getElementById("gc-theme-toggle");
-        btn?.addEventListener("click", () => {
-          const cur = getGCTheme();
-          const next = cur === "dark" ? "light" : "dark";
-          localStorage.setItem(GC_THEME_KEY, next);
-          applyGCTheme(next);
-          updateGCLabel(next);
-        });
-
-        // Mobile menu
-        const menuBtn = document.getElementById("gc-mobile-menu-btn");
-        const mobileMenu = document.getElementById("gc-mobile-menu");
-        menuBtn?.addEventListener("click", () => {
-          const isOpen = mobileMenu?.style.display === "block";
-          if (mobileMenu) mobileMenu.style.display = isOpen ? "none" : "block";
-        });
-        mobileMenu?.querySelectorAll("a").forEach((a) => {
-          a.addEventListener("click", () => {
-            if (mobileMenu) mobileMenu.style.display = "none";
-          });
-        });
-
-        function handleResize() {
-          const desktopNav = document.getElementById("gc-desktop-nav");
-          const mobileBtn = document.getElementById("gc-mobile-menu-btn");
-          const hubLink = document.getElementById("gc-hub-link");
-          const isDesktop = window.innerWidth >= 768;
-          if (desktopNav) desktopNav.style.display = isDesktop ? "flex" : "none";
-          if (mobileBtn) mobileBtn.style.display = isDesktop ? "none" : "flex";
-          if (hubLink) hubLink.style.display = isDesktop ? "inline" : "none";
-          if (isDesktop && mobileMenu) mobileMenu.style.display = "none";
-        }
-        handleResize();
-        window.addEventListener("resize", handleResize);
-      });
-    </script>
+    
   </body>
 </html>
