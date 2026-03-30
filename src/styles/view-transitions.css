@@ -1,0 +1,24 @@
+/* Neo-brutalist page transitions */
+@keyframes brutal-slide-out {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(-20px) scale(0.98); clip-path: inset(0 0 100% 0); }
+}
+
+@keyframes brutal-slide-in {
+  from { opacity: 0; transform: translateY(30px) scale(0.97); clip-path: inset(100% 0 0 0); }
+  to { opacity: 1; transform: translateY(0) scale(1); clip-path: inset(0); }
+}
+
+::view-transition-old(root) {
+  animation: brutal-slide-out 0.25s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+::view-transition-new(root) {
+  animation: brutal-slide-in 0.4s cubic-bezier(0, 0, 0.2, 1) forwards;
+  animation-delay: 0.1s;
+}
+
+/* Persist nav across transitions */
+::view-transition-group(nav) {
+  animation-duration: 0s;
+}

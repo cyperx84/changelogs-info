@@ -1,5 +1,7 @@
 ---
 import "../styles/global.css";
+import "../styles/view-transitions.css";
+import { ViewTransitions } from "astro:transitions";
 
 interface Props {
   title: string;
@@ -42,6 +44,7 @@ const navLinks = [
     <noscript>
       <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&family=Work+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
     </noscript>
+    <ViewTransitions />
     <script defer data-domain="changelogs.info" src="https://plausible.io/js/script.js"></script>
 
     <style is:global>
@@ -342,6 +345,71 @@ const navLinks = [
           gap: 2rem !important;
         }
       }
+      /* Cross-tool nav bar */
+      .cx-cross-nav {
+        background: var(--cx-bg-surface);
+        border-bottom: 2px solid var(--cx-border-dim);
+        padding: 0;
+      }
+      .cx-cross-nav__inner {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0.35rem 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.15rem;
+        flex-wrap: wrap;
+      }
+      .cx-cross-nav__link {
+        font-family: var(--cx-font-mono);
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--cx-text-muted);
+        text-decoration: none;
+        padding: 0.2rem 0.5rem;
+        transition: color 150ms;
+      }
+      .cx-cross-nav__link:hover {
+        color: var(--cx-text);
+      }
+      .cx-cross-nav__link--active {
+        color: var(--cx-primary-bright) !important;
+      }
+      .cx-cross-nav__sep {
+        color: var(--cx-text-muted);
+        font-size: 0.55rem;
+        user-select: none;
+      }
+      @media (max-width: 768px) {
+        .cx-cross-nav { display: none; }
+      }
+
+      .cx-mobile-cross-label {
+        font-family: var(--cx-font-mono);
+        font-size: 0.6rem;
+        color: var(--cx-text-muted);
+        padding: 0.5rem 0 0.25rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+      .cx-mobile-cross-link {
+        display: block;
+        font-family: var(--cx-font-mono);
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 0.5rem 0;
+        text-decoration: none;
+        color: var(--cx-text-muted);
+        transition: color 150ms;
+      }
+      .cx-mobile-cross-link:hover {
+        color: var(--cx-text);
+      }
+
       @media (prefers-reduced-motion: reduce) {
         .cx-hero-title, .cx-hero-section p, .cx-terminal-card, .cx-section-reveal {
           animation: none !important; opacity: 1; transform: none;
@@ -351,7 +419,7 @@ const navLinks = [
     </style>
   </head>
   <body>
-    <header class="cx-nav-header">
+    <header class="cx-nav-header" transition:name="nav">
       <div class="cx-nav-inner">
         <div style="display: flex; align-items: center; gap: 1rem; flex-shrink: 0;">
           <!-- Hub link (desktop) -->
@@ -432,8 +500,26 @@ const navLinks = [
         <a href="/" class="cx-headline" style="display: block; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; padding: 0.75rem 0; text-decoration: none; color: var(--cx-text); opacity: 0.5; letter-spacing: 0.1em;">
           ← changelogs.info
         </a>
+        <div class="cx-mobile-cross-label">// other tools</div>
+        <a href="/openclaw/" class="cx-mobile-cross-link">OpenClaw</a>
+        <a href="/claude-code/" class="cx-mobile-cross-link">Claude Code</a>
+        <a href="/gemini-cli/" class="cx-mobile-cross-link">Gemini</a>
+        <a href="/models/" class="cx-mobile-cross-link">Models</a>
       </div>
     </header>
+
+    <!-- Cross-tool nav -->
+    <div class="cx-cross-nav">
+      <div class="cx-cross-nav__inner">
+        <a href="/" class="cx-cross-nav__link">changelogs.info</a>
+        <span class="cx-cross-nav__sep">·</span>
+        <a href="/openclaw/" class="cx-cross-nav__link">OpenClaw</a>
+        <a href="/claude-code/" class="cx-cross-nav__link">Claude Code</a>
+        <a href="/codex-cli/" class="cx-cross-nav__link cx-cross-nav__link--active">Codex</a>
+        <a href="/gemini-cli/" class="cx-cross-nav__link">Gemini</a>
+        <a href="/models/" class="cx-cross-nav__link">Models</a>
+      </div>
+    </div>
 
     <!-- Main content -->
     <main style="padding-top: 73px;">

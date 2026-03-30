@@ -1,5 +1,7 @@
 ---
 import "../styles/global.css";
+import "../styles/view-transitions.css";
+import { ViewTransitions } from "astro:transitions";
 
 interface Props {
   title: string;
@@ -42,6 +44,7 @@ const navLinks = [
     <noscript>
       <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&family=Work+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
     </noscript>
+    <ViewTransitions />
     <script defer data-domain="changelogs.info" src="https://plausible.io/js/script.js"></script>
 
     <style is:global>
@@ -370,6 +373,71 @@ const navLinks = [
         background: rgba(96, 165, 250, 0.08);
       }
 
+      /* Cross-tool nav bar */
+      .oc-cross-nav {
+        background: var(--oc-bg-surface);
+        border-bottom: 2px solid var(--oc-border-dim);
+        padding: 0;
+      }
+      .oc-cross-nav__inner {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0.35rem 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.15rem;
+        flex-wrap: wrap;
+      }
+      .oc-cross-nav__link {
+        font-family: var(--oc-font-mono);
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--oc-text-muted);
+        text-decoration: none;
+        padding: 0.2rem 0.5rem;
+        transition: color 150ms;
+      }
+      .oc-cross-nav__link:hover {
+        color: var(--oc-text);
+      }
+      .oc-cross-nav__link--active {
+        color: var(--oc-primary-bright) !important;
+      }
+      .oc-cross-nav__sep {
+        color: var(--oc-text-muted);
+        font-size: 0.55rem;
+        user-select: none;
+      }
+      @media (max-width: 768px) {
+        .oc-cross-nav { display: none; }
+      }
+
+      .oc-mobile-cross-label {
+        font-family: var(--oc-font-mono);
+        font-size: 0.6rem;
+        color: var(--oc-text-muted);
+        padding: 0.5rem 0 0.25rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+      .oc-mobile-cross-link {
+        display: block;
+        font-family: var(--oc-font-mono);
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 0.5rem 0;
+        text-decoration: none;
+        color: var(--oc-text-muted);
+        transition: color 150ms;
+      }
+      .oc-mobile-cross-link:hover {
+        color: var(--oc-text);
+      }
+
       @media (max-width: 640px) {
         .changelog-body h2 {
           font-size: 1rem;
@@ -479,7 +547,7 @@ const navLinks = [
     </script>
 
     <!-- Header -->
-    <header class="oc-nav" style="position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: var(--oc-header-bg); border-bottom: 4px solid var(--oc-border); box-shadow: var(--oc-shadow); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+    <header class="oc-nav" transition:name="nav" style="position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: var(--oc-header-bg); border-bottom: 4px solid var(--oc-border); box-shadow: var(--oc-shadow); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
       <div style="max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1.25rem; gap: 1rem;">
         <!-- Left: brand -->
         <div style="display: flex; align-items: center; gap: 1rem; flex-shrink: 0;">
@@ -558,8 +626,26 @@ const navLinks = [
         <a href="/" class="oc-headline" style="display: block; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; padding: 0.75rem 0; text-decoration: none; color: var(--oc-text); opacity: 0.5; letter-spacing: 0.1em;">
           ← changelogs.info
         </a>
+        <div class="oc-mobile-cross-label">// other tools</div>
+        <a href="/claude-code/" class="oc-mobile-cross-link">Claude Code</a>
+        <a href="/codex-cli/" class="oc-mobile-cross-link">Codex</a>
+        <a href="/gemini-cli/" class="oc-mobile-cross-link">Gemini</a>
+        <a href="/models/" class="oc-mobile-cross-link">Models</a>
       </div>
     </header>
+
+    <!-- Cross-tool nav -->
+    <div class="oc-cross-nav">
+      <div class="oc-cross-nav__inner">
+        <a href="/" class="oc-cross-nav__link">changelogs.info</a>
+        <span class="oc-cross-nav__sep">·</span>
+        <a href="/openclaw/" class="oc-cross-nav__link oc-cross-nav__link--active">OpenClaw</a>
+        <a href="/claude-code/" class="oc-cross-nav__link">Claude Code</a>
+        <a href="/codex-cli/" class="oc-cross-nav__link">Codex</a>
+        <a href="/gemini-cli/" class="oc-cross-nav__link">Gemini</a>
+        <a href="/models/" class="oc-cross-nav__link">Models</a>
+      </div>
+    </div>
 
     <!-- Main content -->
     <main style="padding-top: 73px;">

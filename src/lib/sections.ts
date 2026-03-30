@@ -55,15 +55,27 @@ export const SECTIONS: Section[] = [
       { label: "Releases", href: "/codex-cli/releases/" },
     ],
   },
+  {
+    id: "models",
+    name: "Models",
+    route: "/models/",
+    toolId: "models",
+    color: "#a855f7",
+    accent: "#c084fc",
+    colorRgb: "168, 85, 247",
+    subNav: [],
+  },
 ];
 
 export const MODELS_SECTION = {
   id: "models",
   name: "Models",
   route: "/models/",
+  toolId: "models",
   color: "#a855f7",
   accent: "#c084fc",
   colorRgb: "168, 85, 247",
+  subNav: [],
 };
 
 export const TOOLS_SECTION = {

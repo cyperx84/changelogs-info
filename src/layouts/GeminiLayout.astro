@@ -1,0 +1,637 @@
+---
+import "../styles/global.css";
+import "../styles/view-transitions.css";
+import { ViewTransitions } from "astro:transitions";
+
+interface Props {
+  title: string;
+  description?: string;
+  currentPage?: string;
+}
+
+const {
+  title,
+  description = "Track Gemini CLI releases, breaking changes, and config updates.",
+  currentPage = "",
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const navLinks = [
+  { label: "Changelog", href: "/gemini-cli/changelog/", key: "changelog" },
+  { label: "Cheatsheet", href: "/gemini-cli/cheatsheet/", key: "cheatsheet" },
+  { label: "Releases", href: "/gemini-cli/releases/", key: "releases" },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&family=Work+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&family=Work+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    </noscript>
+    <ViewTransitions />
+    <script defer data-domain="changelogs.info" src="https://plausible.io/js/script.js"></script>
+
+    <style is:global>
+      @font-face {
+        font-family: 'Space Grotesk Fallback';
+        src: local('Arial Black'), local('Arial');
+        size-adjust: 107%;
+        ascent-override: 95%;
+        descent-override: 22%;
+        line-gap-override: 0%;
+      }
+      @font-face {
+        font-family: 'Work Sans Fallback';
+        src: local('Helvetica Neue'), local('Arial');
+        size-adjust: 100%;
+        ascent-override: 96%;
+        descent-override: 24%;
+        line-gap-override: 0%;
+      }
+
+      /* Gemini CLI Google Blue Neo-Brutalist Theme */
+      :root {
+        --gc-header-bg: rgba(0, 10, 26, 0.92);
+        --gc-primary: #4285f4;
+        --gc-primary-bright: #669df6;
+        --gc-accent: #8ab4f8;
+        --gc-bg: #000a1a;
+        --gc-bg-card: #001230;
+        --gc-bg-surface: #001a45;
+        --gc-text: #e0f0ff;
+        --gc-text-dim: rgba(200, 230, 255, 0.65);
+        --gc-text-muted: rgba(180, 220, 255, 0.4);
+        --gc-border: #4285f4;
+        --gc-border-dim: rgba(66, 133, 244, 0.2);
+        --gc-shadow: 6px 6px 0px 0px rgba(66, 133, 244, 0.25);
+        --gc-shadow-sm: 4px 4px 0px 0px rgba(66, 133, 244, 0.2);
+        --gc-shadow-lg: 12px 12px 0px 0px rgba(66, 133, 244, 0.12);
+        --gc-font-headline: "Space Grotesk", "Space Grotesk Fallback", sans-serif;
+        --gc-font-body: "JetBrains Mono", ui-monospace, monospace;
+        --gc-font-mono: "JetBrains Mono", ui-monospace, monospace;
+      }
+
+      [data-theme="light"] {
+        --gc-header-bg: rgba(240, 246, 255, 0.92);
+        --gc-primary: #1a73e8;
+        --gc-primary-bright: #174ea6;
+        --gc-bg: #f0f6ff;
+        --gc-bg-card: #ffffff;
+        --gc-bg-surface: #dce8ff;
+        --gc-text: #001a45;
+        --gc-text-dim: rgba(0, 26, 69, 0.65);
+        --gc-text-muted: rgba(0, 26, 69, 0.4);
+        --gc-border: #001a45;
+        --gc-border-dim: rgba(0, 26, 69, 0.2);
+        --gc-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
+        --gc-shadow-sm: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+        --gc-shadow-lg: 12px 12px 0px 0px rgba(0, 0, 0, 0.8);
+      }
+
+      /* Base */
+      html[data-layout="gemini"] {
+        background: var(--gc-bg);
+        color: var(--gc-text);
+      }
+      html[data-layout="gemini"] body {
+        margin: 0;
+        padding: 0;
+        background: var(--gc-bg);
+        color: var(--gc-text);
+        font-family: var(--gc-font-body);
+        min-height: 100vh;
+      }
+
+      /* CRT scanlines overlay (always subtle) */
+      html[data-layout="gemini"] body::before {
+        content: '';
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(66, 133, 244, 0.015),
+          rgba(66, 133, 244, 0.015) 1px,
+          transparent 1px,
+          transparent 3px
+        );
+        pointer-events: none;
+        z-index: 9998;
+        opacity: 0.8;
+      }
+
+      /* Typography */
+      .gc-headline {
+        font-family: var(--gc-font-headline);
+        font-weight: 900;
+      }
+
+      /* Badge styles */
+      .cl-badge {
+        display: inline-block;
+        font-family: var(--gc-font-mono);
+        font-size: 0.55rem;
+        font-weight: 700;
+        padding: 0.1rem 0.4rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-right: 0.4rem;
+        vertical-align: middle;
+      }
+      .cl-badge-fix { background: rgba(66, 133, 244, 0.1); color: #669df6; border: 1px solid rgba(66, 133, 244, 0.3); }
+      .cl-badge-feat { background: rgba(66, 133, 244, 0.12); color: #4285f4; border: 1px solid rgba(66, 133, 244, 0.3); }
+      .cl-badge-docs { background: rgba(138, 180, 248, 0.08); color: #8ab4f8; border: 1px solid rgba(138, 180, 248, 0.2); }
+      .cl-badge-test { background: rgba(26, 115, 232, 0.1); color: #1a73e8; border: 1px solid rgba(26, 115, 232, 0.2); }
+      .cl-badge-chore { background: rgba(66, 133, 244, 0.1); color: #4285f4; border: 1px solid rgba(66, 133, 244, 0.2); }
+      .cl-badge-ci { background: rgba(66, 133, 244, 0.08); color: #4285f4; border: 1px solid rgba(66, 133, 244, 0.15); }
+      .cl-badge-perf { background: rgba(102, 157, 246, 0.15); color: #669df6; border: 1px solid rgba(102, 157, 246, 0.35); }
+
+      .cl-pr-link {
+        color: var(--gc-primary-bright) !important;
+        text-decoration: none;
+        font-family: var(--gc-font-mono);
+        font-size: 0.8em;
+        opacity: 0.7;
+        transition: opacity 150ms;
+      }
+      .cl-pr-link:hover { opacity: 1; }
+
+      /* Changelog body */
+      .changelog-body h1, .changelog-body h2, .changelog-body h3, .changelog-body h4 {
+        font-family: var(--gc-font-headline);
+        font-weight: 800;
+        text-transform: uppercase;
+        color: var(--gc-text);
+        margin: 1.5rem 0 0.75rem;
+        letter-spacing: -0.01em;
+      }
+      .changelog-body h1 { font-size: 1.3rem; }
+      .changelog-body h2 { font-size: 1.1rem; border-bottom: 2px solid var(--gc-border-dim); padding-bottom: 0.25rem; }
+      .changelog-body h3 { font-size: 0.95rem; color: var(--gc-primary-bright); }
+      .changelog-body p { margin: 0.75rem 0; }
+      .changelog-body ul { list-style: none; margin: 0.5rem 0; padding: 0; }
+      .changelog-body li { padding: 0.25rem 0; display: flex; align-items: flex-start; gap: 0.5rem; }
+      .changelog-body li::before { content: '›'; color: var(--gc-primary-bright); flex-shrink: 0; font-weight: 700; font-family: var(--gc-font-mono); }
+      .changelog-body code {
+        font-family: var(--gc-font-mono);
+        font-size: 0.85em;
+        background: rgba(66, 133, 244, 0.08);
+        color: var(--gc-primary-bright);
+        padding: 0.1rem 0.35rem;
+        border: 1px solid rgba(66, 133, 244, 0.2);
+      }
+      .changelog-body pre {
+        background: var(--gc-bg-surface);
+        border: 2px solid var(--gc-border-dim);
+        padding: 1rem;
+        overflow-x: auto;
+        font-family: var(--gc-font-mono);
+        font-size: 0.8rem;
+      }
+      .changelog-body a {
+        color: var(--gc-primary-bright);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(66, 133, 244, 0.3);
+        transition: border-color 150ms;
+      }
+      .changelog-body a:hover { border-color: var(--gc-primary-bright); }
+      .changelog-body strong { color: var(--gc-text); font-weight: 700; }
+
+      /* Collapsed changelog */
+      .cl-collapsed {
+        max-height: 180px;
+      }
+      .cl-collapsed::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        height: 80px;
+        background: linear-gradient(to bottom, transparent, var(--gc-bg-card));
+        pointer-events: none;
+      }
+
+      /* Nav */
+      .gc-nav-header {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 100;
+        background: var(--gc-header-bg);
+        backdrop-filter: blur(10px);
+        border-bottom: 4px solid var(--gc-border);
+      }
+      .gc-nav-inner {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0.75rem 1.25rem;
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .gc-nav-logo {
+        font-family: var(--gc-font-headline);
+        font-weight: 900;
+        font-size: 1.5rem;
+        text-transform: uppercase;
+        letter-spacing: -0.03em;
+        color: var(--gc-text);
+        text-decoration: none;
+        flex-shrink: 0;
+        font-style: italic;
+        line-height: 1;
+      }
+      .gc-nav-logo span { color: var(--gc-primary-bright); }
+
+      /* Dot grid */
+      .gc-dotgrid {
+        background-image: radial-gradient(circle, var(--gc-border-dim) 1px, transparent 1px);
+        background-size: 24px 24px;
+      }
+
+      /* Cursor blink */
+      .gc-cursor {
+        animation: gc-blink 1s step-end infinite;
+      }
+      @keyframes gc-blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+      }
+
+      /* Pulse dot */
+      .gc-pulse-dot {
+        animation: gc-pulse 2s ease-in-out infinite;
+      }
+      @keyframes gc-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+      }
+
+      /* CTA button */
+      .gc-cta-btn {
+        transition: transform 100ms, box-shadow 100ms;
+      }
+      .gc-cta-btn:hover {
+        transform: translate(1px, 1px);
+        box-shadow: none !important;
+      }
+
+      /* Quick link */
+      .gc-quick-link {
+        transition: border-color 150ms, box-shadow 150ms;
+      }
+      .gc-quick-link:hover {
+        border-color: var(--gc-primary) !important;
+        box-shadow: var(--gc-shadow-sm) !important;
+      }
+
+      /* Hero animation */
+      .gc-hero-title {
+        animation: gc-slide-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+      .gc-hero-section p {
+        animation: gc-slide-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+      }
+      .gc-terminal-card {
+        animation: gc-slide-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+      }
+      @keyframes gc-slide-in {
+        from { opacity: 0; transform: translateY(18px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .gc-section-reveal {
+        opacity: 0;
+        transform: translateY(16px);
+        animation: gc-slide-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+      }
+
+      /* Stats */
+      .gc-stats-cell {
+        transition: background 150ms;
+      }
+      .gc-stats-cell:hover {
+        background: rgba(66, 133, 244, 0.1) !important;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .gc-hero-grid { grid-template-columns: 1fr !important; }
+        .gc-terminal-card { width: 100% !important; }
+      }
+      @media (min-width: 769px) {
+        #gc-hub-link {
+          display: inline-flex !important;
+        }
+        #gc-desktop-nav {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          flex: 1 1 auto !important;
+          gap: 2rem !important;
+        }
+      }
+      /* Cross-tool nav bar */
+      .gc-cross-nav {
+        background: var(--gc-bg-surface);
+        border-bottom: 2px solid var(--gc-border-dim);
+        padding: 0;
+      }
+      .gc-cross-nav__inner {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0.35rem 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.15rem;
+        flex-wrap: wrap;
+      }
+      .gc-cross-nav__link {
+        font-family: var(--gc-font-mono);
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--gc-text-muted);
+        text-decoration: none;
+        padding: 0.2rem 0.5rem;
+        transition: color 150ms;
+      }
+      .gc-cross-nav__link:hover {
+        color: var(--gc-text);
+      }
+      .gc-cross-nav__link--active {
+        color: var(--gc-primary-bright) !important;
+      }
+      .gc-cross-nav__sep {
+        color: var(--gc-text-muted);
+        font-size: 0.55rem;
+        user-select: none;
+      }
+      @media (max-width: 768px) {
+        .gc-cross-nav { display: none; }
+      }
+
+      .gc-mobile-cross-label {
+        font-family: var(--gc-font-mono);
+        font-size: 0.6rem;
+        color: var(--gc-text-muted);
+        padding: 0.5rem 0 0.25rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+      .gc-mobile-cross-link {
+        display: block;
+        font-family: var(--gc-font-mono);
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 0.5rem 0;
+        text-decoration: none;
+        color: var(--gc-text-muted);
+        transition: color 150ms;
+      }
+      .gc-mobile-cross-link:hover {
+        color: var(--gc-text);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .gc-hero-title, .gc-hero-section p, .gc-terminal-card, .gc-section-reveal {
+          animation: none !important; opacity: 1; transform: none;
+        }
+        .gc-cursor, .gc-pulse-dot { animation: none !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="gc-nav-header" transition:name="nav">
+      <div class="gc-nav-inner">
+        <div style="display: flex; align-items: center; gap: 1rem; flex-shrink: 0;">
+          <!-- Hub link (desktop) -->
+          <a
+            id="gc-hub-link"
+            href="/"
+            style="font-family: var(--gc-font-mono); font-size: 0.65rem; font-weight: 700; color: var(--gc-text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.1em; flex-shrink: 0; transition: color 150ms; display: none;"
+            onmouseover="this.style.color='var(--gc-primary-bright)'"
+            onmouseout="this.style.color='var(--gc-text-muted)'"
+          >
+            ← hub
+          </a>
+
+          <!-- Logo -->
+          <a href="/gemini-cli/" class="gc-nav-logo">
+            Gemini<span>CLI</span>
+          </a>
+        </div>
+
+        <!-- Desktop nav -->
+        <nav id="gc-desktop-nav" style="display: none; align-items: center; gap: 2rem;">
+          {navLinks.map((link) => (
+            <a
+              href={link.href}
+              class="gc-headline"
+              style={`font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; padding: 0.5rem 1rem; text-decoration: none; transition: color 150ms, background 150ms; ${
+                currentPage === link.key
+                  ? `color: var(--gc-primary-bright); border-bottom: 4px solid var(--gc-primary-bright); margin-bottom: -4px;`
+                  : `color: var(--gc-text); opacity: 0.7;`
+              }`}
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+
+        <!-- Right: actions -->
+        <div style="display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0;">
+          <button
+            id="gc-theme-toggle"
+            aria-label="Toggle theme"
+            style="background: transparent; border: 2px solid var(--gc-border); padding: 6px 10px; color: var(--gc-text); cursor: pointer; box-shadow: var(--gc-shadow-sm); font-family: var(--gc-font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.05em; transition: box-shadow 100ms, transform 100ms; position: relative; overflow: visible;"
+          >
+            <span id="gc-theme-label">◐</span>
+          </button>
+
+          <!-- Hamburger (mobile only) -->
+          <button
+            id="gc-mobile-menu-btn"
+            aria-label="Toggle menu"
+            style="display: none; background: transparent; border: 2px solid var(--gc-border); padding: 8px; color: var(--gc-text); cursor: pointer; align-items: center; justify-content: center; position: relative; overflow: visible;"
+          >
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: block;">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile nav dropdown -->
+      <div
+        id="gc-mobile-menu"
+        style="display: none; padding: 0.75rem 1.25rem 1.25rem; border-top: 2px solid var(--gc-border-dim); background: var(--gc-bg);"
+      >
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            class="gc-headline"
+            style={`display: block; font-weight: 800; text-transform: uppercase; font-size: 1rem; padding: 0.75rem 0; text-decoration: none; border-bottom: 2px solid var(--gc-border-dim); letter-spacing: 0.05em; ${
+              currentPage === link.key
+                ? `color: var(--gc-primary-bright);`
+                : `color: var(--gc-text); opacity: 0.75;`
+            }`}
+          >
+            {link.label}
+          </a>
+        ))}
+        <a href="/" class="gc-headline" style="display: block; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; padding: 0.75rem 0; text-decoration: none; color: var(--gc-text); opacity: 0.5; letter-spacing: 0.1em;">
+          ← changelogs.info
+        </a>
+        <div class="gc-mobile-cross-label">// other tools</div>
+        <a href="/openclaw/" class="gc-mobile-cross-link">OpenClaw</a>
+        <a href="/claude-code/" class="gc-mobile-cross-link">Claude Code</a>
+        <a href="/codex-cli/" class="gc-mobile-cross-link">Codex</a>
+        <a href="/models/" class="gc-mobile-cross-link">Models</a>
+      </div>
+    </header>
+
+    <!-- Cross-tool nav -->
+    <div class="gc-cross-nav">
+      <div class="gc-cross-nav__inner">
+        <a href="/" class="gc-cross-nav__link">changelogs.info</a>
+        <span class="gc-cross-nav__sep">·</span>
+        <a href="/openclaw/" class="gc-cross-nav__link">OpenClaw</a>
+        <a href="/claude-code/" class="gc-cross-nav__link">Claude Code</a>
+        <a href="/codex-cli/" class="gc-cross-nav__link">Codex</a>
+        <a href="/gemini-cli/" class="gc-cross-nav__link gc-cross-nav__link--active">Gemini</a>
+        <a href="/models/" class="gc-cross-nav__link">Models</a>
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <main style="padding-top: 73px;">
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer style="border-top: 8px solid var(--gc-primary); background: var(--gc-bg); margin-top: 6rem; padding: 3rem 2rem;">
+      <div style="max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1.5rem;">
+        <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+          <span class="gc-headline" style="font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--gc-text-dim);">
+            © {new Date().getFullYear()} changelogs.info / Gemini CLI
+          </span>
+          <span style="font-family: var(--gc-font-mono); font-size: 0.6rem; color: var(--gc-text-muted);">
+            DATA FROM OFFICIAL GITHUB RELEASES
+          </span>
+        </div>
+        <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+          {[
+            { label: "Hub", href: "/" },
+            { label: "Changelog", href: "/gemini-cli/changelog/" },
+            { label: "Cheatsheet", href: "/gemini-cli/cheatsheet/" },
+            { label: "Releases", href: "/gemini-cli/releases/" },
+            { label: "GitHub ↗", href: "https://github.com/google-gemini/gemini-cli", external: true },
+            { label: "RSS", href: "/feed/all.xml" },
+          ].map((link) => (
+            <a
+              href={link.href}
+              target={link.external ? "_blank" : undefined}
+              rel={link.external ? "noopener noreferrer" : undefined}
+              class="gc-headline"
+              style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gc-text-dim); text-decoration: none; transition: color 150ms;"
+              onmouseover={`this.style.color='var(--gc-primary-bright)'`}
+              onmouseout={`this.style.color='var(--gc-text-dim)'`}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+        <div style="font-family: var(--gc-font-mono); font-size: 0.65rem; color: var(--gc-text-muted); display: flex; align-items: center; gap: 0.5rem;">
+          <span style="color: var(--gc-primary);">›</span>
+          GEMINI-CLI: ~
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // === THEME TOGGLE ===
+      const GC_THEME_KEY = "gc-theme";
+
+      function getGCTheme(): string {
+        return (
+          localStorage.getItem(GC_THEME_KEY) ||
+          (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark")
+        );
+      }
+
+      function applyGCTheme(theme: string) {
+        document.documentElement.setAttribute("data-layout", "gemini");
+        if (theme === "light") {
+          document.documentElement.setAttribute("data-theme", "light");
+        } else {
+          document.documentElement.removeAttribute("data-theme");
+        }
+      }
+
+      function updateGCLabel(theme: string) {
+        const label = document.getElementById("gc-theme-label");
+        if (label) label.textContent = theme === "light" ? "◑" : "◐";
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        document.documentElement.setAttribute("data-layout", "gemini");
+        const current = getGCTheme();
+        updateGCLabel(current);
+        applyGCTheme(current);
+
+        const btn = document.getElementById("gc-theme-toggle");
+        btn?.addEventListener("click", () => {
+          const cur = getGCTheme();
+          const next = cur === "dark" ? "light" : "dark";
+          localStorage.setItem(GC_THEME_KEY, next);
+          applyGCTheme(next);
+          updateGCLabel(next);
+        });
+
+        // Mobile menu
+        const menuBtn = document.getElementById("gc-mobile-menu-btn");
+        const mobileMenu = document.getElementById("gc-mobile-menu");
+        menuBtn?.addEventListener("click", () => {
+          const isOpen = mobileMenu?.style.display === "block";
+          if (mobileMenu) mobileMenu.style.display = isOpen ? "none" : "block";
+        });
+        mobileMenu?.querySelectorAll("a").forEach((a) => {
+          a.addEventListener("click", () => {
+            if (mobileMenu) mobileMenu.style.display = "none";
+          });
+        });
+
+        function handleResize() {
+          const desktopNav = document.getElementById("gc-desktop-nav");
+          const mobileBtn = document.getElementById("gc-mobile-menu-btn");
+          const hubLink = document.getElementById("gc-hub-link");
+          const isDesktop = window.innerWidth >= 768;
+          if (desktopNav) desktopNav.style.display = isDesktop ? "flex" : "none";
+          if (mobileBtn) mobileBtn.style.display = isDesktop ? "none" : "flex";
+          if (hubLink) hubLink.style.display = isDesktop ? "inline" : "none";
+          if (isDesktop && mobileMenu) mobileMenu.style.display = "none";
+        }
+        handleResize();
+        window.addEventListener("resize", handleResize);
+      });
+    </script>
+  </body>
+</html>

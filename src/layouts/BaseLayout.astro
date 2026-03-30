@@ -3,16 +3,18 @@ import "../styles/global.css";
 import Search from "../components/Search.astro";
 import Haptics from "../components/Haptics.astro";
 import { ViewTransitions } from "astro:transitions";
+import "../styles/view-transitions.css";
 
-type SectionId = "openclaw" | "claude-code" | "codex-cli" | "models" | "tools";
+type SectionId = "openclaw" | "claude-code" | "codex-cli" | "gemini-cli" | "models" | "tools";
 
 interface Props {
   title: string;
   description?: string;
   section?: SectionId;
+  bodyClass?: string;
 }
 
-const { title, description = "Track changelogs for every major AI coding tool. clwatch keeps your agent configs and reference files automatically current.", section } = Astro.props;
+const { title, description = "Track changelogs for every major AI coding tool. clwatch keeps your agent configs and reference files automatically current.", section, bodyClass = "" } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const currentPath = Astro.url.pathname;
 ---
@@ -70,11 +72,159 @@ const currentPath = Astro.url.pathname;
     <link rel="dns-prefetch" href="https://plausible.io" />
     <script defer data-domain="changelogs.info" src="https://plausible.io/js/script.js"></script>
   </head>
-  <body class="min-h-screen bg-bg-primary text-text-primary">
-    <nav id="main-nav" class="sticky top-0 z-50 border-b border-border bg-bg-primary/95 backdrop-blur-xl transition-all duration-200">
+  <style is:global>
+    /* ============================================
+       Neo-Brutalist Nav — BaseLayout (theme-aware)
+       ============================================ */
+    :root {
+      --nav-bg: #f8fbff;
+      --nav-border: #0a0a0a;
+      --nav-text: #0a0a0a;
+      --nav-text-dim: #555;
+      --nav-link-hover-bg: #0a0a0a;
+      --nav-link-hover-text: #ffffff;
+      --nav-brand-green: #33ff33;
+      --nav-toggle-border: #0a0a0a;
+    }
+    [data-theme="dark"],
+    :root:not([data-theme="light"]) {
+      --nav-bg: #0a0a0a;
+      --nav-border: #ffffff;
+      --nav-text: #ffffff;
+      --nav-text-dim: #aaa;
+      --nav-link-hover-bg: #ffffff;
+      --nav-link-hover-text: #0a0a0a;
+      --nav-brand-green: #33ff33;
+      --nav-toggle-border: #ffffff;
+    }
+    #main-nav {
+      background-color: var(--nav-bg) !important;
+      border-bottom: 4px solid var(--nav-border) !important;
+    }
+    /* Brand link — hub-style bold mono brand */
+    html body .nav-brand-link {
+      font-family: var(--font-mono) !important;
+      font-size: 1.1rem !important;
+      font-weight: 700 !important;
+      letter-spacing: -0.02em !important;
+      color: var(--nav-text) !important;
+      text-decoration: none !important;
+      transition: opacity 80ms ease !important;
+    }
+    html body .nav-brand-link:hover {
+      opacity: 0.8 !important;
+    }
+    html body .nav-brand-link .brand-text {
+      color: var(--nav-text) !important;
+    }
+    html body .nav-brand-link .brand-dot {
+      color: var(--nav-brand-green) !important;
+    }
+    /* Nav links — hub-style uppercase + bold */
+    html body .nav-link {
+      font-family: var(--font-mono) !important;
+      font-size: 0.8rem !important;
+      font-weight: 700 !important;
+      color: var(--nav-text-dim) !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.05em !important;
+      padding: 0.4rem 0.75rem !important;
+      border-radius: 0 !important;
+      border: 2px solid transparent !important;
+      min-height: unset !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      transition: border-color 80ms, color 80ms !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      text-decoration: none !important;
+    }
+    html body .nav-link:hover {
+      color: var(--nav-text) !important;
+      border-color: var(--nav-border) !important;
+      background-color: transparent !important;
+    }
+    html body .nav-link-active {
+      color: var(--nav-text) !important;
+      border-bottom: 2px solid var(--nav-brand-green) !important;
+      border-radius: 0 !important;
+      padding-bottom: calc(0.4rem - 2px) !important;
+    }
+    html body .theme-toggle {
+      color: var(--nav-text-dim) !important;
+      padding: 0.375rem 0.5rem;
+      border-radius: 0 !important;
+      border: 2px solid var(--nav-toggle-border) !important;
+      background: transparent !important;
+      cursor: pointer;
+      min-width: 44px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 80ms ease;
+      box-shadow: none !important;
+    }
+    html body .theme-toggle:hover {
+      color: var(--nav-link-hover-text) !important;
+      background-color: var(--nav-link-hover-bg) !important;
+      border-color: var(--nav-link-hover-bg) !important;
+      transform: none !important;
+    }
+    html body .theme-toggle svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+    html body .mobile-menu-btn {
+      color: var(--nav-text-dim) !important;
+      padding: 0.5rem;
+      border-radius: 0 !important;
+      border: 2px solid var(--nav-toggle-border) !important;
+      min-width: 44px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent !important;
+      cursor: pointer;
+      box-shadow: none !important;
+    }
+    html body .mobile-menu-btn:hover {
+      color: var(--nav-link-hover-text) !important;
+      background-color: var(--nav-link-hover-bg) !important;
+    }
+    html body .mobile-menu-btn svg {
+      transition: none !important;
+    }
+    html body .mobile-nav-link {
+      display: block;
+      padding: 0.75rem 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      color: var(--nav-text-dim) !important;
+      border-radius: 0 !important;
+      border-left: 4px solid transparent !important;
+      border-bottom: 1px solid var(--nav-border) !important;
+      min-height: 44px;
+      background: transparent !important;
+      transition: all 80ms ease;
+    }
+    html body .mobile-nav-link:hover {
+      color: var(--nav-text-dim) !important;
+      border-left-color: var(--nav-brand-green) !important;
+      background-color: transparent !important;
+      padding-left: 1.125rem;
+    }
+    html body #mobile-menu {
+      background-color: var(--nav-bg) !important;
+      border-top: 4px solid var(--nav-border) !important;
+    }
+  </style>
+  <body class={`min-h-screen bg-bg-primary text-text-primary ${bodyClass}`}>
+    <nav id="main-nav" class="sticky top-0 z-50" transition:name="nav">
       <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-        <a href="/" class="font-mono text-base font-bold tracking-tight transition-opacity hover:opacity-80">
-          <span class="text-text-primary">changelogs</span><span class="text-green">.info</span>
+        <a href="/" class="nav-brand-link">
+          <span class="brand-text">changelogs</span><span class="brand-dot">.info</span>
         </a>
 
         <!-- Desktop Navigation -->
@@ -82,11 +232,8 @@ const currentPath = Astro.url.pathname;
           <a href="/openclaw/" class:list={["nav-link", { "nav-link-active": section === "openclaw" }]} style={section === "openclaw" ? "color: var(--section-color);" : ""}>OpenClaw</a>
           <a href="/claude-code/" class:list={["nav-link", { "nav-link-active": section === "claude-code" }]} style={section === "claude-code" ? "color: var(--section-color);" : ""}>Claude Code</a>
           <a href="/codex-cli/" class:list={["nav-link", { "nav-link-active": section === "codex-cli" }]} style={section === "codex-cli" ? "color: var(--section-color);" : ""}>Codex</a>
+          <a href="/gemini-cli/" class:list={["nav-link", { "nav-link-active": section === "gemini-cli" }]} style={section === "gemini-cli" ? "color: var(--section-color);" : ""}>Gemini</a>
           <a href="/models/" class:list={["nav-link", { "nav-link-active": section === "models" }]} style={section === "models" ? "color: var(--section-color);" : ""}>Models</a>
-          <a href="/tools/" class:list={["nav-link", { "nav-link-active": section === "tools" }]} style={section === "tools" ? "color: var(--section-color);" : ""}>Tools</a>
-          <a href="/breaking/" class="nav-link">Breaking</a>
-          <a href="/compare/" class="nav-link">Compare</a>
-          <a href="/clwatch" class="nav-link">clwatch</a>
           <a href="/feed/all.xml" class="nav-link" title="RSS feed" aria-label="RSS feed">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
               <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19.01 7.38 20 6.18 20C4.98 20 4 19.01 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
@@ -120,11 +267,8 @@ const currentPath = Astro.url.pathname;
           <a href="/openclaw/" class="mobile-nav-link" style={section === "openclaw" ? "color: var(--section-color); border-left-color: var(--section-color);" : ""}>OpenClaw</a>
           <a href="/claude-code/" class="mobile-nav-link" style={section === "claude-code" ? "color: var(--section-color); border-left-color: var(--section-color);" : ""}>Claude Code</a>
           <a href="/codex-cli/" class="mobile-nav-link" style={section === "codex-cli" ? "color: var(--section-color); border-left-color: var(--section-color);" : ""}>Codex</a>
+          <a href="/gemini-cli/" class="mobile-nav-link" style={section === "gemini-cli" ? "color: var(--section-color); border-left-color: var(--section-color);" : ""}>Gemini</a>
           <a href="/models/" class="mobile-nav-link" style={section === "models" ? "color: var(--section-color); border-left-color: var(--section-color);" : ""}>Models</a>
-          <a href="/tools/" class="mobile-nav-link" style={section === "tools" ? "color: var(--section-color); border-left-color: var(--section-color);" : ""}>Tools</a>
-          <a href="/breaking/" class="mobile-nav-link">Breaking</a>
-          <a href="/compare/" class="mobile-nav-link">Compare</a>
-          <a href="/clwatch" class="mobile-nav-link">clwatch</a>
           <a href="/feed/all.xml" class="mobile-nav-link flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
               <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19.01 7.38 20 6.18 20C4.98 20 4 19.01 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/>
@@ -166,6 +310,7 @@ const currentPath = Astro.url.pathname;
             <a href="/openclaw/" class="footer-link">OpenClaw</a>
             <a href="/claude-code/" class="footer-link">Claude Code</a>
             <a href="/codex-cli/" class="footer-link">Codex</a>
+            <a href="/gemini-cli/" class="footer-link">Gemini</a>
             <a href="/breaking/" class="footer-link">Breaking</a>
             <a href="/compare/" class="footer-link">Compare</a>
             <a href="/newsletter/" class="footer-link">Newsletter</a>

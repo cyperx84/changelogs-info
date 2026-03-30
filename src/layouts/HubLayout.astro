@@ -1,5 +1,7 @@
 ---
 import "../styles/global.css";
+import "../styles/view-transitions.css";
+import { ViewTransitions } from "astro:transitions";
 
 interface Props {
   title?: string;
@@ -25,6 +27,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Work+Sans:ital,wght@0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Work+Sans:ital,wght@0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" /></noscript>
+    <ViewTransitions />
     <title>{title}</title>
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -35,7 +38,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="author" content="CyperX" />
   </head>
   <body>
-    <nav class="hub-nav">
+    <nav class="hub-nav" transition:name="nav">
       <div class="hub-nav__inner">
         <a href="/" class="hub-nav__brand">
           <span class="hub-nav__brand-text">changelogs</span><span class="hub-nav__brand-dot">.info</span>
@@ -44,10 +47,17 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
           <a href="/openclaw/" class="hub-nav__link">OpenClaw</a>
           <a href="/claude-code/" class="hub-nav__link">Claude Code</a>
           <a href="/codex-cli/" class="hub-nav__link">Codex</a>
+          <a href="/gemini-cli/" class="hub-nav__link">Gemini</a>
           <a href="/models/" class="hub-nav__link">Models</a>
           <a href="/feed/all.xml" class="hub-nav__link hub-nav__link--rss" title="RSS">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19.01 7.38 20 6.18 20C4.98 20 4 19.01 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/></svg>
           </a>
+          <button id="hub-theme-btn" class="hub-nav__btn" aria-label="Toggle theme" title="Toggle theme">
+            <span id="hub-theme-icon">◐</span>
+          </button>
+          <button id="hub-insane-btn" class="hub-nav__btn hub-nav__btn--insane" aria-label="Toggle Insane Mode" title="🔥 INSANE MODE">
+            🔥
+          </button>
         </div>
       </div>
     </nav>
@@ -60,12 +70,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       <div class="hub-footer__inner">
         <div class="hub-footer__brand">
           <span class="hub-footer__brand-text">changelogs</span><span class="hub-footer__brand-dot">.info</span>
-          <span class="hub-footer__tagline">Every tool. Every release. One record.</span>
+          <span class="hub-footer__tagline">AI tools shipping faster than docs get updated. We try anyway.</span>
         </div>
         <div class="hub-footer__links">
           <a href="/openclaw/" class="hub-footer__link">OpenClaw</a>
           <a href="/claude-code/" class="hub-footer__link">Claude Code</a>
           <a href="/codex-cli/" class="hub-footer__link">Codex</a>
+          <a href="/gemini-cli/" class="hub-footer__link">Gemini</a>
           <a href="/models/" class="hub-footer__link">Models</a>
           <a href="/feed/all.xml" class="hub-footer__link">RSS</a>
         </div>
@@ -74,53 +85,216 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     </footer>
 
     <script is:inline>
-      (function() {
-        const stored = localStorage.getItem('hub-theme') || 'light';
-        if (stored === 'dark') document.documentElement.setAttribute('data-hub-theme', 'dark');
+      (function () {
+        var storedTheme = localStorage.getItem('hub-theme');
+        var storedInsane = localStorage.getItem('hub-insane');
+        var theme = storedTheme || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        if (theme === 'light') {
+          document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+        // Insane Mode: stored separately
+        if (storedInsane === 'true') {
+          document.documentElement.setAttribute('data-hub-insane', 'true');
+        }
       })();
     </script>
-  </body>
+
+    <!-- Hub Theme Cycling + Insane Mode -->
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', function() {
+        var THEME_KEY = 'hub-theme';
+        var INSANE_KEY = 'hub-insane';
+        var themeOrder = ['dark', 'light', 'insane'];
+        function getCurrentTheme() {
+          var t = localStorage.getItem(THEME_KEY);
+          return t || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        }
+        function isInsane() {
+          return localStorage.getItem(INSANE_KEY) === 'true';
+        }
+        function applyTheme(theme) {
+          if (theme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+          } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+          }
+          localStorage.setItem(THEME_KEY, theme);
+          updateThemeIcon(theme);
+        }
+        function startInsaneNoise() {
+          var canvas = document.getElementById('hub-noise-canvas');
+          if (!canvas) return;
+          canvas.width = Math.min(window.innerWidth, 800);
+          canvas.height = Math.min(window.innerHeight, 450);
+          var ctx = canvas.getContext('2d');
+          function drawNoise() {
+            if (!document.documentElement.hasAttribute('data-hub-insane')) {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              return;
+            }
+            var imgData = ctx.createImageData(canvas.width, canvas.height);
+            var data = imgData.data;
+            for (var i = 0; i < data.length; i += 4) {
+              var v = Math.random() > 0.97 ? Math.random() * 60 : 0;
+              data[i] = v * 0.2;
+              data[i+1] = v * 0.5;
+              data[i+2] = v * 1.2;
+              data[i+3] = v > 0 ? v * 3 : 0;
+            }
+            ctx.putImageData(imgData, 0, 0);
+            requestAnimationFrame(drawNoise);
+          }
+          drawNoise();
+        }
+        function applyInsane(insane) {
+          if (insane) {
+            document.documentElement.setAttribute('data-hub-insane', 'true');
+            localStorage.setItem(INSANE_KEY, 'true');
+            showInsaneBanner();
+            startInsaneNoise();
+          } else {
+            document.documentElement.removeAttribute('data-hub-insane');
+            localStorage.setItem(INSANE_KEY, 'false');
+          }
+          updateInsaneBtn(insane);
+        }
+        function updateThemeIcon(theme) {
+          var icon = document.getElementById('hub-theme-icon');
+          if (!icon) return;
+          if (isInsane()) { icon.textContent = '🔥'; return; }
+          icon.textContent = theme === 'light' ? '◑' : '◐';
+        }
+        function updateInsaneBtn(insane) {
+          var btn = document.getElementById('hub-insane-btn');
+          if (!btn) return;
+          btn.style.background = insane ? 'var(--hub-primary)' : '';
+          btn.style.borderColor = insane ? 'var(--hub-primary)' : '';
+        }
+        function showInsaneBanner() {
+          var banner = document.getElementById('hub-insane-banner');
+          if (!banner) return;
+          banner.style.display = 'block';
+          // Trigger animation
+          requestAnimationFrame(function() {
+            banner.style.transform = 'translate(-50%, -50%) scale(1)';
+            banner.style.opacity = '1';
+          });
+          setTimeout(function() {
+            banner.style.transform = 'translate(-50%, -50%) scale(0)';
+            banner.style.opacity = '0';
+            setTimeout(function() { banner.style.display = 'none'; }, 400);
+          }, 1800);
+        }
+        // Theme button — cycles dark → light → insane
+        var themeBtn = document.getElementById('hub-theme-btn');
+        if (themeBtn) {
+          themeBtn.addEventListener('click', function() {
+            var cur = getCurrentTheme();
+            if (isInsane()) {
+              applyInsane(false);
+            }
+            applyTheme(cur === 'dark' ? 'light' : 'dark');
+          });
+        }
+        // Insane Mode button — direct toggle
+        var insaneBtn = document.getElementById('hub-insane-btn');
+        if (insaneBtn) {
+          insaneBtn.addEventListener('click', function() {
+            applyInsane(!isInsane());
+          });
+        }
+        // Keyboard shortcut: Ctrl+Shift+H toggle light/dark
+        document.addEventListener('keydown', function(e) {
+          if (e.ctrlKey && e.shiftKey && e.key === 'H') {
+            e.preventDefault();
+            var cur = getCurrentTheme();
+            if (isInsane()) {
+              applyInsane(false);
+            }
+            applyTheme(cur === 'dark' ? 'light' : 'dark');
+          }
+          // Ctrl+Shift+I toggle insane directly
+          if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+            e.preventDefault();
+            applyInsane(!isInsane());
+          }
+        });
+        // Init UI state
+        updateThemeIcon(getCurrentTheme());
+        updateInsaneBtn(isInsane());
+        if (isInsane()) startInsaneNoise();
+      });
+    </script>
+
+    <!-- Insane Mode canvas + banner -->
+    <canvas id="hub-noise-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:9990;pointer-events:none;display:none;"></canvas>
+    <div id="hub-insane-banner" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);opacity:0;z-index:9991;pointer-events:none;font-family:var(--hub-font-head);font-weight:900;font-size:clamp(2rem,10vw,8rem);color:#fff;text-shadow:0 0 40px rgba(0,200,255,0.9),0 0 80px rgba(255,0,200,0.4),0 0 120px rgba(0,255,200,0.3),6px 6px 0 #000;text-transform:uppercase;letter-spacing:-0.04em;text-align:center;width:90vw;max-width:900px;transition:transform 500ms cubic-bezier(0.34,1.56,0.64,1),opacity 300ms;">🔥 INSANE MODE 🔥</div>
+
+
 </html>
 
 <style is:global>
-  /* Hub color system — cyan-blue light theme, 2026 aesthetic */
+  /* Hub color system — neo-brutalist, matches subdomain language */
+  /* Default: LIGHT theme */
   :root {
     --hub-bg: #f8fbff;
     --hub-bg-card: #ffffff;
     --hub-bg-surface: #e8f4fd;
     --hub-bg-surface-2: #dceefb;
-    --hub-text: #0c1a2e;
-    --hub-text-dim: #3d5a73;
-    --hub-text-muted: #7a9ab0;
+    --hub-text: #0a0a0a;
+    --hub-text-dim: #3a3a3a;
+    --hub-text-muted: #6a6a6a;
     --hub-primary: #0091f7;
     --hub-primary-hover: #007bc9;
     --hub-primary-bright: #00b0ff;
-    --hub-border: rgba(0, 145, 247, 0.2);
-    --hub-border-strong: rgba(0, 145, 247, 0.5);
-    --hub-shadow: 0 0 0 2px rgba(0, 145, 247, 0.15);
-    --hub-shadow-card: 0 2px 12px rgba(0, 20, 50, 0.08);
-    --hub-shadow-card-hover: 0 8px 32px rgba(0, 145, 247, 0.18);
+    --hub-border: #0a0a0a;
+    --hub-border-dim: rgba(10, 10, 10, 0.2);
+    --hub-shadow: 0 0 0 2px rgba(10, 10, 10, 0.1);
+    --hub-shadow-card: 6px 6px 0px 0px rgba(10, 10, 10, 0.9);
+    --hub-shadow-card-hover: 8px 8px 0px 0px rgba(10, 10, 10, 1);
     --hub-font-head: 'Space Grotesk', sans-serif;
     --hub-font-body: 'Work Sans', sans-serif;
     --hub-font-mono: 'JetBrains Mono', monospace;
   }
 
-  [data-hub-theme="dark"] {
-    --hub-bg: #060d14;
-    --hub-bg-card: #0c1a2a;
-    --hub-bg-surface: #0f2035;
-    --hub-bg-surface-2: #152840;
-    --hub-text: #e8f4ff;
-    --hub-text-dim: #7eb8e0;
-    --hub-text-muted: #4a80aa;
+  /* Explicit LIGHT theme */
+  [data-theme="light"] {
+    --hub-bg: #f8fbff;
+    --hub-bg-card: #ffffff;
+    --hub-bg-surface: #e8f4fd;
+    --hub-bg-surface-2: #dceefb;
+    --hub-text: #0a0a0a;
+    --hub-text-dim: #3a3a3a;
+    --hub-text-muted: #6a6a6a;
+    --hub-primary: #0091f7;
+    --hub-primary-hover: #007bc9;
+    --hub-primary-bright: #00b0ff;
+    --hub-border: #0a0a0a;
+    --hub-border-dim: rgba(10, 10, 10, 0.2);
+    --hub-shadow: 0 0 0 2px rgba(10, 10, 10, 0.1);
+    --hub-shadow-card: 6px 6px 0px 0px rgba(10, 10, 10, 0.9);
+    --hub-shadow-card-hover: 8px 8px 0px 0px rgba(10, 10, 10, 1);
+  }
+
+  /* DARK theme */
+  [data-theme="dark"] {
+    --hub-bg: #0a0a0a;
+    --hub-bg-card: #111111;
+    --hub-bg-surface: #1a1a1a;
+    --hub-bg-surface-2: #222222;
+    --hub-text: #f0f0f0;
+    --hub-text-dim: #b0b0b0;
+    --hub-text-muted: #707070;
     --hub-primary: #00b0ff;
     --hub-primary-hover: #38c0ff;
     --hub-primary-bright: #60d0ff;
-    --hub-border: rgba(0, 176, 255, 0.2);
-    --hub-border-strong: rgba(0, 176, 255, 0.5);
-    --hub-shadow: 0 0 0 2px rgba(0, 176, 255, 0.25);
-    --hub-shadow-card: 0 2px 12px rgba(0, 0, 0, 0.4);
-    --hub-shadow-card-hover: 0 8px 32px rgba(0, 176, 255, 0.2);
+    --hub-border: #f0f0f0;
+    --hub-border-dim: rgba(240, 240, 240, 0.2);
+    --hub-shadow: 0 0 0 2px rgba(240, 240, 240, 0.1);
+    --hub-shadow-card: 6px 6px 0px 0px rgba(240, 240, 240, 0.15);
+    --hub-shadow-card-hover: 8px 8px 0px 0px rgba(240, 240, 240, 0.2);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -129,8 +303,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     scroll-behavior: smooth;
   }
 
-  body {
-    background: var(--hub-bg);
+  html body {
+    background-color: var(--hub-bg);
     color: var(--hub-text);
     font-family: var(--hub-font-body);
     line-height: 1.6;
@@ -139,36 +313,55 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   }
 
   ::selection {
-    background: rgba(0, 145, 247, 0.2);
-    color: var(--hub-text);
+    background: var(--hub-primary);
+    color: #ffffff;
   }
 
   :focus-visible {
-    outline: 2px solid var(--hub-primary);
-    outline-offset: 3px;
+    outline: 3px solid var(--hub-primary);
+    outline-offset: 2px;
   }
 
   /* Scrollbar */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: var(--hub-bg); }
-  ::-webkit-scrollbar-thumb { background: var(--hub-border-strong); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb { background: var(--hub-border); border-radius: 0; }
   ::-webkit-scrollbar-thumb:hover { background: var(--hub-primary); }
 </style>
 
-<style>
+<style is:global>
   /* ── NAV ── */
+  [data-theme] .hub-nav,
   .hub-nav {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(248, 251, 255, 0.88);
-    backdrop-filter: blur(16px) saturate(1.4);
-    -webkit-backdrop-filter: blur(16px) saturate(1.4);
-    border-bottom: 1px solid var(--hub-border);
+    background-color: var(--hub-bg-card) !important;
+    border-bottom: 4px solid var(--hub-border);
+    box-shadow: var(--hub-shadow-card);
   }
-  [data-hub-theme="dark"] .hub-nav {
-    background: rgba(6, 13, 20, 0.88);
+  [data-theme] .hub-nav__link,
+  .hub-nav__link {
+    font-family: var(--hub-font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--hub-text) !important;
+    text-decoration: none;
+    padding: 0.4rem 0.75rem;
+    border: 2px solid transparent;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: border-color 100ms, color 100ms, background 100ms;
   }
+  [data-theme] .hub-nav__link:hover,
+  .hub-nav__link:hover {
+    color: var(--hub-primary) !important;
+    border-color: var(--hub-border);
+  }
+  [data-theme] .hub-nav__brand-text,
+  .hub-nav__brand-text { color: var(--hub-text) !important; }
+  [data-theme] .hub-nav__brand-dot,
+  .hub-nav__brand-dot { color: var(--hub-primary) !important; }
   .hub-nav__inner {
     max-width: 1280px;
     margin: 0 auto;
@@ -184,8 +377,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     text-decoration: none;
     letter-spacing: -0.02em;
   }
-  .hub-nav__brand-text { color: var(--hub-text); }
-  .hub-nav__brand-dot { color: var(--hub-primary); }
   .hub-nav__links {
     display: flex;
     align-items: center;
@@ -194,17 +385,18 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   .hub-nav__link {
     font-family: var(--hub-font-mono);
     font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--hub-text-dim);
+    font-weight: 700;
+    color: var(--hub-text);
     text-decoration: none;
     padding: 0.4rem 0.75rem;
-    border-radius: 6px;
-    transition: color 150ms, background 150ms;
-    letter-spacing: 0.02em;
+    border: 2px solid transparent;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: border-color 100ms, color 100ms, background 100ms;
   }
   .hub-nav__link:hover {
     color: var(--hub-primary);
-    background: var(--hub-bg-surface);
+    border-color: var(--hub-border);
   }
   .hub-nav__link--rss {
     display: flex;
@@ -213,10 +405,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   }
 
   /* ── FOOTER ── */
+  [data-theme] .hub-footer,
   .hub-footer {
-    border-top: 1px solid var(--hub-border);
-    background: var(--hub-bg-card);
+    border-top: 4px solid var(--hub-border);
+    background-color: var(--hub-bg-card) !important;
     margin-top: 6rem;
+    box-shadow: 0 -4px 0 0 var(--hub-border);
   }
   .hub-footer__inner {
     max-width: 1280px;
@@ -281,33 +475,33 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     align-items: center;
     gap: 0.5rem;
     font-family: var(--hub-font-mono);
-    font-size: 0.72rem;
-    font-weight: 500;
+    font-size: 0.75rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.2em;
     color: var(--hub-primary);
     margin-bottom: 1.5rem;
     animation: hub-enter 0.5s ease-out both;
   }
   .hub-hero__eyebrow-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
+    width: 8px;
+    height: 8px;
     background: var(--hub-primary);
     animation: hub-pulse 2s ease-in-out infinite;
   }
   @keyframes hub-pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
   }
   .hub-hero__title {
     font-family: var(--hub-font-head);
-    font-size: clamp(3rem, 8vw, 6rem);
-    font-weight: 800;
+    font-size: clamp(3.5rem, 9vw, 7rem);
+    font-weight: 900;
     letter-spacing: -0.04em;
-    line-height: 0.92;
+    line-height: 0.88;
     color: var(--hub-text);
-    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
     animation: hub-enter 0.5s ease-out 0.1s both;
   }
   .hub-hero__title-accent {
@@ -315,8 +509,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     display: block;
   }
   .hub-hero__sub {
-    font-family: var(--hub-font-body);
-    font-size: 1.1rem;
+    font-family: var(--hub-font-mono);
+    font-size: 0.95rem;
     color: var(--hub-text-dim);
     max-width: 520px;
     margin: 0 auto 2rem;
@@ -330,23 +524,24 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     flex-wrap: wrap;
     animation: hub-enter 0.5s ease-out 0.3s both;
   }
+  [data-theme] .hub-hero__badge,
   .hub-hero__badge {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
     font-family: var(--hub-font-mono);
     font-size: 0.72rem;
-    font-weight: 500;
-    color: var(--hub-text-dim);
-    background: var(--hub-bg-surface);
-    border: 1px solid var(--hub-border);
-    padding: 0.3rem 0.75rem;
-    border-radius: 100px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--hub-text) !important;
+    background-color: var(--hub-bg-surface) !important;
+    border: 2px solid var(--hub-border);
+    padding: 0.35rem 0.85rem;
   }
   .hub-hero__badge-dot {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
+    width: 6px;
+    height: 6px;
     background: var(--hub-primary);
   }
   @keyframes hub-enter {
@@ -387,11 +582,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     display: block;
     text-decoration: none;
     background: var(--hub-bg-card);
-    border: 1px solid var(--hub-border);
-    border-radius: 12px;
+    border: 4px solid var(--hub-border);
+    border-radius: 0;
     padding: 1.75rem;
     box-shadow: var(--hub-shadow-card);
-    transition: box-shadow 200ms, border-color 200ms, transform 200ms;
+    transition: transform 100ms, box-shadow 100ms;
     position: relative;
     overflow: hidden;
     animation: hub-enter 0.5s ease-out both;
@@ -401,9 +596,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   .hub-card:nth-child(3) { animation-delay: 0.45s; }
   .hub-card:nth-child(4) { animation-delay: 0.5s; }
   .hub-card:hover {
+    transform: translate(-3px, -3px);
     box-shadow: var(--hub-shadow-card-hover);
-    border-color: var(--hub-primary);
-    transform: translateY(-3px);
   }
   .hub-card__glow {
     position: absolute;
@@ -411,12 +605,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     right: -40px;
     width: 120px;
     height: 120px;
-    border-radius: 50%;
-    opacity: 0.06;
-    transition: opacity 200ms;
+    opacity: 0.08;
+    transition: opacity 150ms;
     pointer-events: none;
   }
-  .hub-card:hover .hub-card__glow { opacity: 0.12; }
+  .hub-card:hover .hub-card__glow { opacity: 0.15; }
   .hub-card--openclaw .hub-card__glow { background: #eb0000; }
   .hub-card--claude .hub-card__glow { background: #f59e0b; }
   .hub-card--codex .hub-card__glow { background: #00c851; }
@@ -430,21 +623,20 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   .hub-card__icon {
     width: 40px;
     height: 40px;
-    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.1rem;
-    font-weight: 800;
+    font-weight: 900;
     font-family: var(--hub-font-head);
-    border: 1px solid var(--hub-border);
+    border: 3px solid var(--hub-border);
   }
   .hub-card--openclaw .hub-card__icon { background: #eb0000; color: white; border-color: #eb0000; }
   .hub-card--claude .hub-card__icon { background: #f59e0b; color: white; border-color: #f59e0b; }
   .hub-card--codex .hub-card__icon { background: #00c851; color: white; border-color: #00c851; }
   .hub-card--models .hub-card__icon { background: var(--hub-primary); color: white; border-color: var(--hub-primary); }
   .hub-card__arrow {
-    font-size: 1rem;
+    font-size: 1.2rem;
     color: var(--hub-text-muted);
     transition: color 150ms, transform 150ms;
   }
@@ -454,29 +646,29 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   }
   .hub-card__name {
     font-family: var(--hub-font-head);
-    font-size: 1.4rem;
-    font-weight: 700;
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
     color: var(--hub-text);
     letter-spacing: -0.02em;
     margin-bottom: 0.4rem;
   }
   .hub-card__desc {
     font-family: var(--hub-font-body);
-    font-size: 0.85rem;
-    color: var(--hub-text-dim);
+    font-size: 0.95rem;
+    color: var(--hub-text);
     line-height: 1.5;
     margin-bottom: 1.25rem;
+    font-weight: 400;
   }
   .hub-card__tldr {
     font-family: var(--hub-font-mono);
     font-size: 0.72rem;
     color: var(--hub-text-muted);
     background: var(--hub-bg-surface);
-    border: 1px solid var(--hub-border);
+    border: 2px solid var(--hub-border-dim);
     padding: 0.5rem 0.75rem;
-    border-radius: 8px;
     line-height: 1.5;
-    font-style: italic;
   }
   .hub-card__meta {
     display: flex;
@@ -484,7 +676,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     gap: 0.75rem;
     margin-top: 1rem;
     padding-top: 0.75rem;
-    border-top: 1px solid var(--hub-border);
+    border-top: 2px solid var(--hub-border-dim);
   }
   .hub-card__tag {
     font-family: var(--hub-font-mono);
@@ -493,7 +685,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     text-transform: uppercase;
     letter-spacing: 0.08em;
     padding: 0.15rem 0.5rem;
-    border-radius: 4px;
+    
   }
   .hub-card--openclaw .hub-card__tag { background: rgba(235,0,0,0.1); color: #c50000; }
   .hub-card--claude .hub-card__tag { background: rgba(245,158,11,0.1); color: #b27200; }
@@ -612,5 +804,250 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     .hub-blog-card { flex-direction: column; align-items: flex-start; padding: 1.75rem; gap: 1.25rem; }
     .hub-blog-card__cta { width: 100%; }
     .hub-blog-card__btn { width: 100%; justify-content: center; }
+  }
+
+  /* ── NAV BUTTONS (theme toggle + insane) ── */
+  .hub-nav__btn {
+    background: transparent;
+    border: 2px solid var(--hub-border);
+    color: var(--hub-text);
+    cursor: pointer;
+    font-family: var(--hub-font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.35rem 0.6rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--hub-shadow-card);
+    transition: box-shadow 100ms, transform 100ms, border-color 100ms;
+    margin-left: 0.25rem;
+  }
+  .hub-nav__btn:hover {
+    border-color: var(--hub-primary);
+    transform: translate(-2px, -2px);
+    box-shadow: var(--hub-shadow-card-hover);
+  }
+  .hub-nav__btn--insane {
+    font-size: 0.9rem;
+    padding: 0.3rem 0.5rem;
+  }
+
+  /* ── INSANE MODE 🔥 ── */
+  [data-hub-insane="true"] {
+    --hub-bg: #000000 !important;
+    --hub-bg-card: #0a0010 !important;
+    --hub-bg-surface: #150020 !important;
+    --hub-bg-surface-2: #1a0030 !important;
+    --hub-text: #f0f0ff !important;
+    --hub-text-dim: #c080ff !important;
+    --hub-text-muted: #8040cc !important;
+    --hub-primary: #00ffcc !important;
+    --hub-primary-hover: #00e0b0 !important;
+    --hub-primary-bright: #ff00ff !important;
+    --hub-border: #ff00ff !important;
+    --hub-border-dim: rgba(255, 0, 255, 0.3) !important;
+    --hub-shadow-card: 6px 6px 0px 0px rgba(255, 0, 255, 0.6) !important;
+    --hub-shadow-card-hover: 10px 10px 0px 0px rgba(0, 255, 200, 0.8) !important;
+  }
+  [data-hub-insane="true"][data-theme="light"] {
+    --hub-bg: #0a0010 !important;
+    --hub-bg-card: #150020 !important;
+    --hub-bg-surface: #1a0030 !important;
+    --hub-text: #f0f0ff !important;
+    --hub-text-dim: #c080ff !important;
+    --hub-primary: #ff00ff !important;
+    --hub-border: #ff00ff !important;
+    --hub-shadow-card: 6px 6px 0px 0px rgba(200, 0, 255, 0.5) !important;
+  }
+
+  /* Insane Mode: scanlines overlay */
+  [data-hub-insane="true"]::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.15) 2px,
+      rgba(0, 0, 0, 0.15) 4px
+    );
+    pointer-events: none;
+    z-index: 9989;
+    animation: insane-scanline 8s linear infinite;
+  }
+
+  /* Insane Mode: glitch text effect on headings */
+  [data-hub-insane="true"] .hub-hero__title {
+    animation: insane-glitch 3s infinite !important;
+    text-shadow:
+      0 0 20px rgba(0, 255, 200, 0.9),
+      0 0 40px rgba(255, 0, 255, 0.6),
+      4px 4px 0 rgba(0, 200, 255, 0.8),
+      -4px -2px 0 rgba(255, 0, 100, 0.5) !important;
+  }
+
+  [data-hub-insane="true"] .hub-nav {
+    animation: insane-nav-pulse 1.5s ease-in-out infinite !important;
+  }
+
+  [data-hub-insane="true"] .hub-card:hover {
+    box-shadow: 10px 10px 0px 0px rgba(0, 255, 200, 0.8) !important;
+    transform: translate(-4px, -4px) !important;
+  }
+
+  /* Insane Mode: noise canvas active */
+  [data-hub-insane="true"] #hub-noise-canvas {
+    display: block !important;
+  }
+
+  /* Insane Mode: hero accent glow */
+  [data-hub-insane="true"] .hub-hero__title-accent {
+    color: #ff00ff !important;
+    text-shadow: 0 0 30px rgba(255, 0, 255, 0.9), 0 0 60px rgba(0, 255, 200, 0.5) !important;
+    animation: insane-pulse 0.8s ease-in-out infinite alternate !important;
+  }
+
+  /* Insane Mode: text glitch on ALL text — pseudo-element color shift */
+  [data-hub-insane="true"] h1,
+  [data-hub-insane="true"] h2,
+  [data-hub-insane="true"] h3,
+  [data-hub-insane="true"] p,
+  [data-hub-insane="true"] a,
+  [data-hub-insane="true"] span,
+  [data-hub-insane="true"] li {
+    text-shadow:
+      0 0 8px rgba(0, 255, 200, 0.4),
+      0 0 16px rgba(255, 0, 255, 0.2);
+    animation: insane-text-glitch 4s steps(1) infinite;
+  }
+
+  /* Insane Mode: card micro-movements — alive, not shaking */
+  [data-hub-insane="true"] .hub-card,
+  [data-hub-insane="true"] .brutal-card {
+    animation: insane-card-drift 6s ease-in-out infinite !important;
+  }
+  [data-hub-insane="true"] .hub-card:nth-child(2n),
+  [data-hub-insane="true"] .brutal-card:nth-child(2n) {
+    animation-delay: -2s !important;
+    animation-direction: reverse !important;
+  }
+  [data-hub-insane="true"] .hub-card:nth-child(3n),
+  [data-hub-insane="true"] .brutal-card:nth-child(3n) {
+    animation-delay: -4s !important;
+    animation-duration: 7s !important;
+  }
+
+  /* Insane Mode: CRT flicker on scanlines overlay */
+  [data-hub-insane="true"]::after {
+    animation: insane-scanline 8s linear infinite, insane-crt-flicker 0.15s steps(2) infinite !important;
+  }
+
+  /* Insane Mode: chromatic aberration on images/icons */
+  [data-hub-insane="true"] img,
+  [data-hub-insane="true"] svg,
+  [data-hub-insane="true"] .hub-card__icon,
+  [data-hub-insane="true"] .brutal-card__icon {
+    filter: drop-shadow(2px 0 0 rgba(255, 0, 100, 0.5)) drop-shadow(-2px 0 0 rgba(0, 200, 255, 0.5));
+  }
+
+  /* Insane Mode: border pulse between magenta and cyan */
+  [data-hub-insane="true"] .hub-card,
+  [data-hub-insane="true"] .brutal-card,
+  [data-hub-insane="true"] .hub-footer {
+    animation: insane-border-pulse 2s ease-in-out infinite, insane-card-drift 6s ease-in-out infinite !important;
+  }
+
+  /* Insane Mode: glitch tear — horizontal band shift */
+  [data-hub-insane="true"] body::before {
+    content: '';
+    position: fixed;
+    left: 0;
+    right: 0;
+    height: 4px;
+    top: 50%;
+    z-index: 9995;
+    pointer-events: none;
+    background: rgba(0, 255, 200, 0.15);
+    animation: insane-tear 8s steps(1) infinite;
+  }
+
+  /* Insane Mode animations */
+  @keyframes insane-scanline {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100px; }
+  }
+  @keyframes insane-glitch {
+    0%, 90%, 100% { transform: translate(0, 0) skewX(0deg); }
+    91% { transform: translate(-4px, 0) skewX(-2deg); }
+    93% { transform: translate(4px, 0) skewX(2deg); }
+    95% { transform: translate(-2px, 2px) skewX(0deg); }
+    97% { transform: translate(2px, -2px) skewX(-1deg); }
+  }
+  @keyframes insane-nav-pulse {
+    0%, 100% { box-shadow: var(--hub-shadow-card); }
+    50% { box-shadow: 0 0 20px rgba(255, 0, 255, 0.4), 6px 6px 0 rgba(0, 255, 200, 0.3); }
+  }
+  @keyframes insane-pulse {
+    0% { text-shadow: 0 0 20px rgba(255, 0, 255, 0.9), 0 0 40px rgba(0, 255, 200, 0.5); }
+    100% { text-shadow: 0 0 40px rgba(0, 255, 200, 1), 0 0 80px rgba(255, 0, 255, 0.7); }
+  }
+
+  /* Text glitch — random color shift flicker */
+  @keyframes insane-text-glitch {
+    0%, 92%, 100% {
+      text-shadow: 0 0 8px rgba(0, 255, 200, 0.4), 0 0 16px rgba(255, 0, 255, 0.2);
+    }
+    93% {
+      text-shadow: -2px 0 #ff00ff, 2px 0 #00ffc8, 0 0 20px rgba(255, 0, 255, 0.6);
+    }
+    95% {
+      text-shadow: 2px 0 #00ffc8, -2px 0 #ff0066, 0 0 12px rgba(0, 255, 200, 0.5);
+    }
+    97% {
+      text-shadow: -1px 1px #ff00ff, 1px -1px #00ffc8;
+    }
+  }
+
+  /* Card micro-drift — subtle alive movement */
+  @keyframes insane-card-drift {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(0.5px, -0.5px) rotate(0.15deg); }
+    50% { transform: translate(-0.5px, 0.5px) rotate(-0.2deg); }
+    75% { transform: translate(0.3px, 0.3px) rotate(0.1deg); }
+  }
+
+  /* CRT flicker — opacity dips */
+  @keyframes insane-crt-flicker {
+    0%, 100% { opacity: 0.15; }
+    50% { opacity: 0.12; }
+    75% { opacity: 0.17; }
+  }
+
+  /* Border pulse between magenta and cyan */
+  @keyframes insane-border-pulse {
+    0%, 100% { border-color: #ff00ff; }
+    50% { border-color: #00ffc8; }
+  }
+
+  /* Glitch tear — horizontal band shift */
+  @keyframes insane-tear {
+    0%, 88%, 92%, 100% {
+      clip-path: inset(0 0 100% 0);
+      transform: translateX(0);
+    }
+    89% {
+      clip-path: inset(30% 0 65% 0);
+      transform: translateX(10px);
+    }
+    90% {
+      clip-path: inset(45% 0 50% 0);
+      transform: translateX(-15px);
+    }
+    91% {
+      clip-path: inset(20% 0 75% 0);
+      transform: translateX(8px);
+    }
   }
 </style>

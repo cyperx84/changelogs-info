@@ -1,0 +1,186 @@
+---
+import GeminiLayout from "../../layouts/GeminiLayout.astro";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
+let cs: any = {};
+try {
+  const raw = readFileSync(join(process.cwd(), "src/content/cheatsheets-json/gemini-cli.json"), "utf-8");
+  cs = JSON.parse(raw);
+} catch {}
+
+const quickStart = cs.quickStart || {};
+const dailyWorkflows = cs.dailyWorkflows || [];
+const powerMoves = cs.powerMoves || [];
+const gotchas = cs.gotchas || [];
+const cliFlags = cs.cliFlags || [];
+const proTips = cs.proTips || [];
+---
+
+<GeminiLayout
+  title="Gemini CLI Cheat Sheet — changelogs.info"
+  description="The actually useful Gemini CLI cheat sheet. Flags, workflows, power moves."
+  currentPage="cheatsheet"
+>
+  <div style="max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 0;">
+
+    <section style="margin-bottom: 4rem; position: relative;">
+      <div style="position: absolute; top: -2rem; left: -2rem; opacity: 0.03; pointer-events: none; font-size: 10rem; line-height: 1; font-family: var(--gc-font-mono); color: var(--gc-primary);">›</div>
+      <h1
+        class="gc-headline"
+        style="font-size: clamp(3.5rem, 10vw, 7rem); font-weight: 900; text-transform: uppercase; letter-spacing: -0.03em; line-height: 0.9; margin: 0 0 1rem; color: var(--gc-text);"
+      >
+        Cheat<span style="color: var(--gc-primary-bright);">Sheet</span>
+      </h1>
+      <p style="font-size: 1.1rem; max-width: 36rem; color: var(--gc-text-dim); line-height: 1.5; margin: 0; font-family: var(--gc-font-body); text-transform: uppercase; letter-spacing: 0.03em;">
+        Gemini CLI muscle memory. The flags that matter.
+      </p>
+      {cs.lastUpdated && (
+        <p style="font-family: var(--gc-font-mono); font-size: 0.7rem; color: var(--gc-text-muted); margin-top: 0.75rem;">
+          Last updated: {cs.lastUpdated}
+        </p>
+      )}
+    </section>
+
+    <div style="display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 4rem;">
+
+      {quickStart.steps && quickStart.steps.length > 0 && (
+        <div style="background: var(--gc-primary); color: var(--gc-bg); padding: 2rem; border: 4px solid var(--gc-border); box-shadow: var(--gc-shadow);">
+          <h2 class="gc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; margin: 0 0 1.5rem; color: var(--gc-bg);">
+            {quickStart.title || "Quick Start"}
+          </h2>
+          <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            {quickStart.steps.map((step: string, i: number) => {
+              const cmdMatch = step.match(/(gemini\s+[\w\-\-]+(?:\s+[\w\-"']+)*)/);
+              const cmd = cmdMatch?.[1];
+              const hasColon = step.includes(":");
+              const label = hasColon ? step.split(":")[0].trim() : step;
+              return (
+                <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                  <div style="background: var(--gc-bg); color: var(--gc-primary-bright); width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; font-family: var(--gc-font-mono); font-weight: 900; font-size: 0.75rem; flex-shrink: 0;">
+                    {String(i + 1).padStart(2, '0')}
+                  </div>
+                  <div style="flex: 1;">
+                    <div style="font-family: var(--gc-font-headline); font-weight: 800; font-size: 0.85rem; color: var(--gc-bg); text-transform: uppercase;">{label}</div>
+                    {cmd && (
+                      <div style="background: var(--gc-bg); color: var(--gc-primary-bright); font-family: var(--gc-font-mono); font-size: 0.75rem; padding: 0.4rem 0.75rem; margin-top: 0.4rem; display: inline-block;">
+                        <span style="opacity: 0.5;">›</span> {cmd}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;" class="gc-two-col">
+        {dailyWorkflows.length > 0 && (
+          <div style="border: 4px solid var(--gc-border); background: var(--gc-bg-card); padding: 2rem; box-shadow: var(--gc-shadow);">
+            <h2 class="gc-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; margin: 0 0 1.5rem; color: var(--gc-primary-bright);">
+              Daily Workflows
+            </h2>
+            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+              {dailyWorkflows.map((wf: any) => (
+                <div style="border-left: 4px solid var(--gc-border-dim); padding-left: 1rem;">
+                  <div style="font-family: var(--gc-font-headline); font-weight: 800; font-size: 0.85rem; color: var(--gc-text); text-transform: uppercase; margin-bottom: 0.25rem;">{wf.title}</div>
+                  {wf.description && <p style="font-family: var(--gc-font-body); font-size: 0.8rem; color: var(--gc-text-dim); margin: 0 0 0.5rem;">{wf.description}</p>}
+                  {wf.command && (
+                    <div style="background: var(--gc-bg); border: 2px solid var(--gc-border-dim); padding: 0.5rem 0.75rem; font-family: var(--gc-font-mono); font-size: 0.75rem; color: var(--gc-primary-bright); overflow-x: auto;">
+                      <span style="opacity: 0.5;">›</span> {wf.command}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {powerMoves.length > 0 && (
+          <div style="border: 4px solid var(--gc-primary); background: var(--gc-bg-card); padding: 2rem; box-shadow: var(--gc-shadow);">
+            <h2 class="gc-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; margin: 0 0 1.5rem; color: var(--gc-text);">
+              ⚡ Power Moves
+            </h2>
+            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+              {powerMoves.map((pm: any) => (
+                <div style="border: 2px solid var(--gc-primary-bright); padding: 1rem; background: rgba(66,133,244,0.04);">
+                  <div style="font-family: var(--gc-font-headline); font-weight: 800; font-size: 0.85rem; color: var(--gc-primary-bright); text-transform: uppercase; margin-bottom: 0.25rem;">{pm.title}</div>
+                  {pm.description && <p style="font-family: var(--gc-font-body); font-size: 0.8rem; color: var(--gc-text-dim); margin: 0 0 0.5rem;">{pm.description}</p>}
+                  {pm.command && (
+                    <div style="background: var(--gc-bg); border: 2px solid var(--gc-primary); padding: 0.5rem 0.75rem; font-family: var(--gc-font-mono); font-size: 0.75rem; color: var(--gc-primary-bright); overflow-x: auto;">
+                      <span style="opacity: 0.5;">›</span> {pm.command}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {cliFlags.length > 0 && (
+        <div style="border: 4px solid var(--gc-border); background: var(--gc-bg-surface); padding: 2rem; box-shadow: var(--gc-shadow);">
+          <h2 class="gc-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; margin: 0 0 1.5rem; color: var(--gc-text);">
+            CLI Flags
+          </h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem;">
+            {cliFlags.map((flag: any) => (
+              <div style="background: var(--gc-bg); border: 2px solid var(--gc-border-dim); padding: 1rem;">
+                <div style="font-family: var(--gc-font-mono); font-size: 0.8rem; color: var(--gc-primary-bright); font-weight: 700; margin-bottom: 0.35rem;">{flag.flag || flag.command}</div>
+                <div style="font-family: var(--gc-font-body); font-size: 0.75rem; color: var(--gc-text-dim);">{flag.description}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {gotchas.length > 0 && (
+        <div style="border: 4px solid var(--gc-border); background: rgba(66,133,244,0.02); padding: 2rem; box-shadow: var(--gc-shadow);">
+          <h2 class="gc-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; margin: 0 0 1.5rem; color: var(--gc-text);">
+            ! Gotchas
+          </h2>
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {gotchas.map((g: any) => (
+              <div style="border-left: 6px solid var(--gc-primary); padding: 1rem 1.25rem; background: var(--gc-bg);">
+                <div style="font-family: var(--gc-font-headline); font-weight: 800; font-size: 0.9rem; color: var(--gc-primary-bright); text-transform: uppercase; margin-bottom: 0.35rem;">{g.title}</div>
+                <p style="font-family: var(--gc-font-body); font-size: 0.82rem; color: var(--gc-text-dim); margin: 0;">{g.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {proTips.length > 0 && (
+        <div style="border: 4px solid var(--gc-border); background: var(--gc-bg-card); padding: 2rem; box-shadow: var(--gc-shadow);">
+          <h2 class="gc-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; margin: 0 0 1.5rem; color: var(--gc-text);">
+            Pro Tips
+          </h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;">
+            {proTips.map((tip: any) => (
+              <div style="background: var(--gc-bg); border: 2px solid var(--gc-border-dim); padding: 1rem;">
+                <div style="font-family: var(--gc-font-headline); font-weight: 800; font-size: 0.82rem; color: var(--gc-text); text-transform: uppercase; margin-bottom: 0.35rem;">{tip.title}</div>
+                <p style="font-family: var(--gc-font-body); font-size: 0.78rem; color: var(--gc-text-dim); margin: 0;">{tip.description}</p>
+                {tip.command && (
+                  <div style="background: var(--gc-bg-surface); font-family: var(--gc-font-mono); font-size: 0.72rem; color: var(--gc-primary-bright); padding: 0.4rem 0.6rem; margin-top: 0.5rem; overflow-x: auto;">{tip.command}</div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {dailyWorkflows.length === 0 && powerMoves.length === 0 && cliFlags.length === 0 && (
+        <div style="border: 4px dashed var(--gc-border-dim); padding: 4rem 2rem; text-align: center;">
+          <p style="font-family: var(--gc-font-mono); color: var(--gc-text-muted); font-size: 0.85rem;">› cheatsheet data not available — run scraper to populate</p>
+        </div>
+      )}
+    </div>
+  </div>
+
+  <style>
+    @media (max-width: 768px) {
+      .gc-two-col { grid-template-columns: 1fr !important; }
+    }
+  </style>
+</GeminiLayout>

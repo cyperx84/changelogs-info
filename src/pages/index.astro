@@ -1,9 +1,8 @@
 ---
 import HubLayout from "../layouts/HubLayout.astro";
-import { getAllToolReleases } from "../lib/releases";
+import { getTools, getAllToolReleases } from "../lib/releases";
 
 let releaseMap: Record<string, any> = {};
-let toolData: Record<string, any> = {};
 
 try {
   const allReleases = await getAllToolReleases();
@@ -17,54 +16,55 @@ try {
       body: latest.body || "",
       count: tr.releases.length,
     };
-    toolData[tr.tool.id] = tr.tool;
   }
 } catch (e) {
   // fallback: empty
 }
 
-const tools = [
-  {
-    id: "openclaw",
-    name: "OpenClaw",
-    icon: "⬡",
-    desc: "Agent orchestration framework. Gateway, plugins, fleet management.",
-    tag: "Agent Framework",
-    class: "hub-card--openclaw",
-    href: "/openclaw/",
-    latest: releaseMap["openclaw"],
-  },
-  {
-    id: "claude-code",
-    name: "Claude Code",
-    icon: "C",
-    desc: "Anthropic's official CLI. Pair programming, agents, skills, hooks.",
-    tag: "AI Coding",
-    class: "hub-card--claude",
-    href: "/claude-code/",
-    latest: releaseMap["claude-code"],
-  },
-  {
-    id: "codex-cli",
-    name: "Codex CLI",
-    icon: "$",
-    desc: "OpenAI's terminal-native coding agent. Fast, stateless, extensible.",
-    tag: "AI Coding",
-    class: "hub-card--codex",
-    href: "/codex-cli/",
-    latest: releaseMap["codex-cli"],
-  },
-  {
-    id: "models",
-    name: "AI Models",
-    icon: "◈",
-    desc: "Every model, every provider. Track releases across 12 AI companies.",
-    tag: "Coming Soon",
-    class: "hub-card--models",
-    href: "/models/",
-    latest: null,
-  },
-];
+const FEATURED_IDS = ["openclaw", "claude-code", "codex-cli", "gemini-cli"];
+const allTools = getTools();
+const featuredTools = FEATURED_IDS.map(id => allTools.find(t => t.id === id)).filter(Boolean);
+const otherTools = allTools.filter(t => !FEATURED_IDS.includes(t.id));
+
+const toolColors: Record<string, { bg: string; text: string; glow: string }> = {
+  "openclaw":    { bg: "#eb0000", text: "#ffffff", glow: "#eb0000" },
+  "claude-code": { bg: "#f59e0b", text: "#ffffff", glow: "#f59e0b" },
+  "codex-cli":   { bg: "#00c851", text: "#ffffff", glow: "#00c851" },
+  "gemini-cli":  { bg: "#4285f4", text: "#ffffff", glow: "#4285f4" },
+  "cursor":      { bg: "#f59e0b", text: "#ffffff", glow: "#f59e0b" },
+  "windsurf":    { bg: "#06b6d4", text: "#ffffff", glow: "#06b6d4" },
+  "cline":       { bg: "#a855f7", text: "#ffffff", glow: "#a855f7" },
+  "continue":    { bg: "#2563eb", text: "#ffffff", glow: "#2563eb" },
+  "opencode":    { bg: "#0ea5e9", text: "#ffffff", glow: "#0ea5e9" },
+  "roo-code":    { bg: "#fb923c", text: "#ffffff", glow: "#fb923c" },
+};
+
+const categoryLabels: Record<string, string> = {
+  "cli": "AI CLI",
+  "ide": "AI IDE",
+  "ide-extension": "IDE Extension",
+  "harness": "Agent Framework",
+};
+
+const toolIcons: Record<string, string> = {
+  "openclaw":    "⬡",
+  "claude-code": "C",
+  "codex-cli":   "$",
+  "gemini-cli":  "G",
+  "cursor":      "↗",
+  "windsurf":    "~",
+  "cline":       "»",
+  "continue":    "▶",
+  "opencode":    "○",
+  "roo-code":    "R",
+};
+
+const featuredLinks: Record<string, string> = {
+  "openclaw":    "/openclaw/",
+  "claude-code": "/claude-code/",
+  "codex-cli":   "/codex-cli/",
+  "gemini-cli":  "/gemini-cli/",
+};
 
 function formatDate(dateStr: string): string {
   if (!dateStr) return "";
@@ -74,97 +74,977 @@ function formatDate(dateStr: string): string {
 
 function getTldr(body: string): string {
   if (!body) return "No summary available yet.";
-  const lines = body.split("\n").filter(l => l.trim() && !l.includes("<!--") && !l.includes("* *" ));
+  const lines = body.split("\n").filter(l => l.trim() && !l.includes("<!--") && !l.includes("* *"));
   const bullets = lines.filter(l => /^[-\u2022*]/.test(l.trim()));
   if (bullets.length === 0) return body.slice(0, 120) + "…";
   return bullets.slice(0, 2).map(l => l.replace(/^[-\u2022*]\s*/, "").replace(/`([^`]+)`/g, "$1")).join(" · ") + ".";
 }
+
+const totalReleases = Object.values(releaseMap).reduce((sum: number, r: any) => sum + (r.count || 0), 0);
+
+// Harness-specific bullet prefixes
+const harnessPrefix: Record<string, string> = {
+  "openclaw": "▸",
+  "claude-code": "▸",
+  "codex-cli": ">",
+  "gemini-cli": "›",
+};
 ---
 
 <HubLayout title="changelogs.info — Every AI Tool. Every Release.">
 
-  <!-- Hero -->
-  <section class="hub-hero">
-    <div class="hub-hero__eyebrow">
-      <span class="hub-hero__eyebrow-dot"></span>
-      Live changelog tracker
-    </div>
-    <h1 class="hub-hero__title">
-      Every tool.<br/>
-      <span class="hub-hero__title-accent">Every release.</span>
-    </h1>
-    <p class="hub-hero__sub">
-      The definitive record of AI coding tools. OpenClaw, Claude Code, Codex CLI — and every major model release — tracked and updated automatically.
-    </p>
-    <div class="hub-hero__badges">
-      <span class="hub-hero__badge">
-        <span class="hub-hero__badge-dot"></span>
-        {Object.keys(releaseMap).length} tools tracked
-      </span>
-      <span class="hub-hero__badge">
-        <span class="hub-hero__badge-dot"></span>
-        Official GitHub releases
-      </span>
-      <span class="hub-hero__badge">
-        <span class="hub-hero__badge-dot"></span>
-        Auto-updated hourly
-      </span>
-    </div>
-  </section>
+  <!-- SVG Grain Filter -->
+  <svg class="brutal-grain-svg" aria-hidden="true">
+    <filter id="brutal-grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+      <feColorMatrix type="saturate" values="0" />
+      <feBlend in="SourceGraphic" mode="multiply" />
+    </filter>
+  </svg>
+  <div class="brutal-grain-overlay" aria-hidden="true"></div>
 
-  <!-- 4-card grid -->
-  <section class="hub-grid-section">
-    <div class="hub-section-label">Choose your tool</div>
-    <div class="hub-grid">
-      {tools.map(tool => (
-        <a href={tool.href} class={`hub-card ${tool.class}`}>
-          <div class="hub-card__glow"></div>
-          <div class="hub-card__top">
-            <div class="hub-card__icon">{tool.icon}</div>
-            <span class="hub-card__arrow">↗</span>
-          </div>
-          <div class="hub-card__name">{tool.name}</div>
-          <div class="hub-card__desc">{tool.desc}</div>
-          {tool.latest ? (
-            <>
-              <div class="hub-card__tldr">"{getTldr(tool.latest.body)}"</div>
-              <div class="hub-card__meta">
-                <span class="hub-card__tag">{tool.tag}</span>
-                <span class="hub-card__version">v{tool.latest.version} · {formatDate(tool.latest.date)}</span>
-              </div>
-            </>
-          ) : (
-            <div class="hub-card__meta">
-              <span class="hub-card__tag">{tool.tag}</span>
-              <span class="hub-card__version">Launching soon</span>
-            </div>
-          )}
-        </a>
-      ))}
-    </div>
-  </section>
-
-  <!-- Blog placeholder -->
-  <section class="hub-blog-section">
-    <div class="hub-section-label">Changelog Dispatches</div>
-    <div class="hub-blog-card">
-      <div class="hub-blog-card__bg"></div>
-      <div class="hub-blog-card__left">
-        <span class="hub-blog-card__left-icon">✍</span>
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="brutal-hero">
+    <div class="brutal-hero__inner">
+      <div class="brutal-hero__eyebrow">
+        <span class="brutal-hero__pulse"></span>
+        LIVE CHANGELOG TRACKER
       </div>
-      <div class="hub-blog-card__right">
-        <div class="hub-blog-card__eyebrow">Coming soon</div>
-        <h2 class="hub-blog-card__title">The changelog dispatches</h2>
-        <p class="hub-blog-card__desc">
+
+      <h1 class="brutal-hero__title" aria-label="Too many tools. Too many changes.">
+        <span class="brutal-glitch" data-text="TOO">TOO</span>
+        <span class="brutal-glitch brutal-glitch--amber" data-text="MANY">MANY</span>
+        <span class="brutal-glitch brutal-glitch--green" data-text="TOOLS.">TOOLS.</span>
+        <br />
+        <span class="brutal-glitch brutal-glitch--blue" data-text="TOO">TOO</span>
+        <span class="brutal-glitch brutal-glitch--violet" data-text="MANY">MANY</span>
+        <span class="brutal-glitch" data-text="CHANGES.">CHANGES.</span>
+      </h1>
+
+      <p class="brutal-hero__sub">
+        AI coding tools shipping faster than documentation gets updated.
+      </p>
+
+      <div class="brutal-hero__stats">
+        <span class="brutal-stat brutal-stat--red">
+          <span class="brutal-stat__num">{allTools.length}</span>
+          <span class="brutal-stat__label">tools tracked</span>
+        </span>
+        <span class="brutal-stat brutal-stat--amber">
+          <span class="brutal-stat__num">{totalReleases}+</span>
+          <span class="brutal-stat__label">releases indexed</span>
+        </span>
+        <span class="brutal-stat brutal-stat--green">
+          <span class="brutal-stat__num">⚡</span>
+          <span class="brutal-stat__label">auto-updated hourly</span>
+        </span>
+        <span class="brutal-stat brutal-stat--blue">
+          <span class="brutal-stat__num">♾</span>
+          <span class="brutal-stat__label">official sources</span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skewed divider -->
+  <div class="brutal-divider brutal-divider--1" aria-hidden="true"></div>
+
+  <!-- ═══════════════════ FEATURED TOOLS ═══════════════════ -->
+  <section class="brutal-section brutal-section--featured">
+    <div class="brutal-section__label">
+      <span class="brutal-section__label-line"></span>
+      FEATURED TOOLS
+      <span class="brutal-section__label-line"></span>
+    </div>
+
+    <div class="brutal-grid brutal-grid--featured">
+      {featuredTools.map((tool, i) => {
+        const color = toolColors[tool!.id] || { bg: "#0091f7", text: "#ffffff", glow: "#0091f7" };
+        const icon = toolIcons[tool!.id] || tool!.name.charAt(0);
+        const tag = categoryLabels[tool!.category] || tool!.category;
+        const latest = releaseMap[tool!.id];
+        const href = featuredLinks[tool!.id] || `/tools/${tool!.id}/`;
+        const prefix = harnessPrefix[tool!.id] || "·";
+        const harnessClass = `brutal-card--${tool!.id}`;
+
+        return (
+          <a
+            href={href}
+            class={`brutal-card brutal-card--featured ${harnessClass} brutal-scroll-reveal`}
+            style={`--card-accent: ${color.bg}; --card-glow: ${color.glow}; --reveal-delay: ${i * 0.12}s;`}
+            transition:name={tool!.id + '-card'}
+          >
+            {tool!.id === "claude-code" && <div class="brutal-card__scanlines" aria-hidden="true"></div>}
+            <div class="brutal-card__border-glow" aria-hidden="true"></div>
+            <div class="brutal-card__header">
+              <div class="brutal-card__icon" style={`background: ${color.bg}; color: ${color.text};`}>
+                {icon}
+              </div>
+              <span class="brutal-card__tag" style={`border-color: ${color.bg}; color: ${color.bg};`}>{tag}</span>
+              <span class="brutal-card__arrow">↗</span>
+            </div>
+            <h3 class="brutal-card__name">{tool!.name}</h3>
+            <p class="brutal-card__desc">{tool!.description}</p>
+            {latest ? (
+              <>
+                <div class="brutal-card__tldr">
+                  <span class="brutal-card__prefix">{prefix}</span> {getTldr(latest.body)}
+                </div>
+                <div class="brutal-card__footer">
+                  <span class="brutal-card__version">v{latest.version}</span>
+                  <span class="brutal-card__date">{formatDate(latest.date)}</span>
+                  <span class="brutal-card__count">{latest.count} releases</span>
+                </div>
+              </>
+            ) : (
+              <div class="brutal-card__footer">
+                <span class="brutal-card__version">—</span>
+              </div>
+            )}
+          </a>
+        );
+      })}
+
+      <!-- Models card -->
+      <a
+        href="/models/"
+        class="brutal-card brutal-card--featured brutal-card--models brutal-scroll-reveal"
+        style="--card-accent: #8b5cf6; --card-glow: #8b5cf6; --reveal-delay: 0.48s;"
+      >
+        <div class="brutal-card__border-glow" aria-hidden="true"></div>
+        <div class="brutal-card__header">
+          <div class="brutal-card__icon" style="background: linear-gradient(135deg, #8b5cf6, #a78bfa); color: #fff;">
+            ◆
+          </div>
+          <span class="brutal-card__tag" style="border-color: #8b5cf6; color: #8b5cf6;">AI Models</span>
+          <span class="brutal-card__arrow">↗</span>
+        </div>
+        <h3 class="brutal-card__name">Models</h3>
+        <p class="brutal-card__desc">Track AI model releases across Anthropic, OpenAI, Google, and more.</p>
+        <div class="brutal-card__tldr">
+          <span class="brutal-card__prefix">◆</span> 9 providers · Claude, GPT, Gemini, Kimi, GLM, DeepSeek, Mistral, Grok
+        </div>
+        <div class="brutal-card__footer">
+          <span class="brutal-card__version">Multi-provider</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Skewed divider -->
+  <div class="brutal-divider brutal-divider--2" aria-hidden="true"></div>
+
+  <!-- ═══════════════════ ALSO TRACKED ═══════════════════ -->
+  {otherTools.length > 0 && (
+    <section class="brutal-section brutal-section--other">
+      <div class="brutal-section__label">
+        <span class="brutal-section__label-line"></span>
+        ALSO TRACKED
+        <span class="brutal-section__label-line"></span>
+      </div>
+
+      <div class="brutal-grid brutal-grid--other">
+        {otherTools.map((tool, i) => {
+          const color = toolColors[tool.id] || { bg: "#0091f7", text: "#ffffff", glow: "#0091f7" };
+          const icon = toolIcons[tool.id] || tool.name.charAt(0);
+          const tag = categoryLabels[tool.category] || tool.category;
+          const latest = releaseMap[tool.id];
+          return (
+            <a
+              href={`/tools/${tool.id}/`}
+              class="brutal-card brutal-card--compact brutal-scroll-reveal"
+              style={`--card-accent: ${color.bg}; --card-glow: ${color.glow}; --reveal-delay: ${i * 0.08}s;`}
+            >
+              <div class="brutal-card__icon brutal-card__icon--sm" style={`background: ${color.bg}; color: ${color.text};`}>
+                {icon}
+              </div>
+              <div class="brutal-card--compact__body">
+                <span class="brutal-card__name brutal-card__name--sm">{tool.name}</span>
+                <span class="brutal-card__tag brutal-card__tag--inline" style={`border-color: ${color.bg}; color: ${color.bg};`}>{tag}</span>
+                {latest && <span class="brutal-card__version brutal-card__version--sm">v{latest.version}</span>}
+              </div>
+              <span class="brutal-card__arrow">↗</span>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+  )}
+
+  <!-- Skewed divider -->
+  <div class="brutal-divider brutal-divider--3" aria-hidden="true"></div>
+
+  <!-- ═══════════════════ CHANGELOG DISPATCHES ═══════════════════ -->
+  <section class="brutal-section brutal-section--dispatches">
+    <div class="brutal-section__label">
+      <span class="brutal-section__label-line"></span>
+      CHANGELOG DISPATCHES
+      <span class="brutal-section__label-line"></span>
+    </div>
+
+    <div class="brutal-dispatch brutal-scroll-reveal" style="--reveal-delay: 0s;">
+      <div class="brutal-dispatch__diagonal" aria-hidden="true"></div>
+      <div class="brutal-dispatch__content">
+        <span class="brutal-dispatch__icon">✍</span>
+        <div class="brutal-dispatch__eyebrow">COMING SOON</div>
+        <h2 class="brutal-dispatch__title">The changelog dispatches</h2>
+        <p class="brutal-dispatch__desc">
           Human-readable summaries of major releases, migration guides, and deep dives — written automatically when significant versions drop.
         </p>
-      </div>
-      <div class="hub-blog-card__cta">
-        <a href="#" class="hub-blog-card__btn" onclick="return false;">
-          Notify me ↗
-        </a>
+        <span class="brutal-dispatch__btn">Notify me ↗</span>
       </div>
     </div>
   </section>
 
 </HubLayout>
+
+<style is:global>
+  /* ══════════════════════════════════════════════════════════
+     @property — animatable custom properties for gradient shifts
+     ══════════════════════════════════════════════════════════ */
+  @property --brutal-hue {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+  @property --brutal-bg-hue {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     SVG Grain Overlay
+     ══════════════════════════════════════════════════════════ */
+  .brutal-grain-svg {
+    position: absolute;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+  .brutal-grain-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.035;
+    filter: url(#brutal-grain);
+    animation: brutal-grain-shift 0.5s steps(4) infinite;
+    mix-blend-mode: overlay;
+  }
+  [data-theme="light"] .brutal-grain-overlay {
+    opacity: 0.025;
+  }
+  @keyframes brutal-grain-shift {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(-2px, 2px); }
+    50% { transform: translate(2px, -2px); }
+    75% { transform: translate(-1px, -1px); }
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     Color-shifting page background
+     ══════════════════════════════════════════════════════════ */
+  [data-theme="dark"] .brutal-hero {
+    background:
+      linear-gradient(
+        calc(135deg + var(--brutal-bg-hue)),
+        hsl(calc(0 + var(--brutal-bg-hue) / 1) 80% 8%) 0%,
+        hsl(calc(30 + var(--brutal-bg-hue) / 1) 60% 6%) 25%,
+        hsl(calc(120 + var(--brutal-bg-hue) / 1) 50% 5%) 50%,
+        hsl(calc(220 + var(--brutal-bg-hue) / 1) 60% 7%) 75%,
+        hsl(calc(270 + var(--brutal-bg-hue) / 1) 50% 6%) 100%
+      );
+    animation: brutal-bg-cycle 20s linear infinite;
+  }
+  [data-theme="light"] .brutal-hero {
+    background:
+      linear-gradient(
+        calc(135deg + var(--brutal-bg-hue)),
+        hsl(calc(0 + var(--brutal-bg-hue) / 1) 90% 97%) 0%,
+        hsl(calc(40 + var(--brutal-bg-hue) / 1) 85% 95%) 25%,
+        hsl(calc(140 + var(--brutal-bg-hue) / 1) 70% 96%) 50%,
+        hsl(calc(220 + var(--brutal-bg-hue) / 1) 80% 96%) 75%,
+        hsl(calc(280 + var(--brutal-bg-hue) / 1) 70% 96%) 100%
+      );
+    animation: brutal-bg-cycle 20s linear infinite;
+  }
+  @keyframes brutal-bg-cycle {
+    from { --brutal-bg-hue: 0deg; }
+    to { --brutal-bg-hue: 360deg; }
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     HERO SECTION
+     ══════════════════════════════════════════════════════════ */
+  .brutal-hero {
+    position: relative;
+    padding: clamp(3rem, 8vw, 7rem) 1.5rem clamp(4rem, 10vw, 8rem);
+    text-align: center;
+    overflow: hidden;
+  }
+  .brutal-hero__inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .brutal-hero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.4rem 1rem;
+    border: 2px solid var(--hub-border, #333);
+    border-radius: 0;
+    margin-bottom: 2rem;
+    color: var(--hub-text-secondary, #aaa);
+  }
+  .brutal-hero__pulse {
+    width: 8px;
+    height: 8px;
+    background: #00c851;
+    border-radius: 50%;
+    animation: brutal-pulse 2s ease-in-out infinite;
+  }
+  @keyframes brutal-pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0, 200, 81, 0.4); }
+    50% { opacity: 0.6; box-shadow: 0 0 0 6px rgba(0, 200, 81, 0); }
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     HEROIC TYPOGRAPHY + GLITCH
+     ══════════════════════════════════════════════════════════ */
+  .brutal-hero__title {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: clamp(2.8rem, 9vw, 7.5rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin: 0 0 1.5rem;
+    color: var(--hub-text-primary, #fff);
+  }
+
+  .brutal-glitch {
+    position: relative;
+    display: inline-block;
+    color: #eb0000;
+    animation: brutal-glitch-color 8s steps(1) infinite;
+  }
+  .brutal-glitch--amber { color: #f59e0b; animation-delay: -2s; }
+  .brutal-glitch--green { color: #00c851; animation-delay: -4s; }
+  .brutal-glitch--blue  { color: #4285f4; animation-delay: -6s; }
+  .brutal-glitch--violet { color: #8b5cf6; animation-delay: -3s; }
+
+  @keyframes brutal-glitch-color {
+    0%   { color: #eb0000; }
+    25%  { color: #f59e0b; }
+    50%  { color: #00c851; }
+    75%  { color: #4285f4; }
+    100% { color: #eb0000; }
+  }
+
+  /* Glitch pseudo-elements */
+  .brutal-glitch::before,
+  .brutal-glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  .brutal-glitch::before {
+    color: #00c851;
+    animation: brutal-glitch-shift-1 3s steps(2) infinite;
+    clip-path: inset(20% 0 60% 0);
+    text-shadow: -2px 0 #f59e0b;
+  }
+  .brutal-glitch::after {
+    color: #4285f4;
+    animation: brutal-glitch-shift-2 2.5s steps(3) infinite;
+    clip-path: inset(60% 0 10% 0);
+    text-shadow: 2px 0 #eb0000;
+  }
+  @keyframes brutal-glitch-shift-1 {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(-3px, 1px); }
+    40% { transform: translate(2px, -1px); }
+    60% { transform: translate(-1px, 2px); }
+    80% { transform: translate(3px, 0); }
+  }
+  @keyframes brutal-glitch-shift-2 {
+    0%, 100% { transform: translate(0); }
+    25% { transform: translate(2px, -2px); }
+    50% { transform: translate(-3px, 1px); }
+    75% { transform: translate(1px, 2px); }
+  }
+
+  .brutal-hero__sub {
+    font-family: 'Work Sans', sans-serif;
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: var(--hub-text-secondary, #999);
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.6;
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     STAT BADGES
+     ══════════════════════════════════════════════════════════ */
+  .brutal-hero__stats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+  .brutal-stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+    border: 3px solid;
+    box-shadow: 4px 4px 0 currentColor;
+    font-weight: 600;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .brutal-stat:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 currentColor;
+  }
+  .brutal-stat--red   { color: #eb0000; border-color: #eb0000; }
+  .brutal-stat--amber { color: #f59e0b; border-color: #f59e0b; }
+  .brutal-stat--green { color: #00c851; border-color: #00c851; }
+  .brutal-stat--blue  { color: #4285f4; border-color: #4285f4; }
+  .brutal-stat__num { font-weight: 800; font-size: 1rem; }
+  .brutal-stat__label { opacity: 0.85; }
+
+  [data-theme="light"] .brutal-stat {
+    background: #fff;
+  }
+  [data-theme="dark"] .brutal-stat {
+    background: rgba(0,0,0,0.4);
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     DIAGONAL SECTION DIVIDERS
+     ══════════════════════════════════════════════════════════ */
+  .brutal-divider {
+    height: 60px;
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+  }
+  .brutal-divider--1 {
+    background: var(--hub-bg, #111);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 40%);
+    margin-top: -30px;
+  }
+  .brutal-divider--2 {
+    background: var(--hub-bg, #111);
+    clip-path: polygon(0 0, 100% 60%, 100% 100%, 0 100%);
+    margin-bottom: -30px;
+  }
+  .brutal-divider--3 {
+    background: var(--hub-bg, #111);
+    clip-path: polygon(0 40%, 100% 0, 100% 100%, 0 100%);
+    margin-bottom: -30px;
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     SECTIONS
+     ══════════════════════════════════════════════════════════ */
+  .brutal-section {
+    position: relative;
+    padding: clamp(2rem, 5vw, 4rem) 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .brutal-section__label {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--hub-text-secondary, #888);
+    margin-bottom: 2rem;
+  }
+  .brutal-section__label-line {
+    flex: 1;
+    height: 2px;
+    background: var(--hub-border, #333);
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     SCROLL-DRIVEN REVEAL ANIMATIONS
+     ══════════════════════════════════════════════════════════ */
+  .brutal-scroll-reveal {
+    animation: brutal-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 30%;
+    animation-delay: var(--reveal-delay, 0s);
+  }
+  @keyframes brutal-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(40px) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     FEATURED GRID
+     ══════════════════════════════════════════════════════════ */
+  .brutal-grid--featured {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  @media (min-width: 640px) {
+    .brutal-grid--featured {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1060px) {
+    .brutal-grid--featured {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    /* Make first 2 cards span wider for asymmetry */
+    .brutal-grid--featured .brutal-card:nth-child(1) {
+      grid-row: span 1;
+    }
+    .brutal-grid--featured .brutal-card:nth-child(5) {
+      grid-column: 2 / 4;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     CARD BASE — NEO-BRUTALIST
+     ══════════════════════════════════════════════════════════ */
+  .brutal-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 1.75rem;
+    border: 4px solid var(--hub-border, #333);
+    background: var(--hub-card-bg, #1a1a1a);
+    text-decoration: none;
+    color: var(--hub-text-primary, #fff);
+    overflow: hidden;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.2s ease,
+                border-color 0.2s ease;
+    box-shadow: 6px 6px 0 var(--hub-border, #333);
+  }
+  [data-theme="light"] .brutal-card {
+    background: #fff;
+    border-color: #222;
+    box-shadow: 6px 6px 0 #222;
+  }
+
+  .brutal-card:hover {
+    transform: translate(-4px, -4px) rotate(-0.5deg) scale(1.02);
+    box-shadow: 10px 10px 0 var(--card-accent, var(--hub-border, #333));
+    border-color: var(--card-accent, var(--hub-border));
+    z-index: 10;
+  }
+  .brutal-card:active {
+    transform: translate(0) rotate(0) scale(0.99);
+    box-shadow: 2px 2px 0 var(--card-accent);
+  }
+
+  /* Border glow on hover */
+  .brutal-card__border-glow {
+    position: absolute;
+    inset: -2px;
+    opacity: 0;
+    border-radius: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    box-shadow: inset 0 0 20px var(--card-glow, transparent),
+                0 0 30px color-mix(in srgb, var(--card-glow, transparent) 30%, transparent);
+  }
+  .brutal-card:hover .brutal-card__border-glow {
+    opacity: 1;
+  }
+
+  /* Card header */
+  .brutal-card__header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  .brutal-card__icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border: 3px solid currentColor;
+    flex-shrink: 0;
+  }
+  .brutal-card__icon--sm {
+    width: 34px;
+    height: 34px;
+    font-size: 0.9rem;
+    border-width: 2px;
+  }
+  .brutal-card__tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    border: 2px solid;
+  }
+  .brutal-card__tag--inline {
+    font-size: 0.6rem;
+    padding: 0.1rem 0.4rem;
+  }
+  .brutal-card__arrow {
+    margin-left: auto;
+    font-size: 1.2rem;
+    opacity: 0.4;
+    transition: opacity 0.2s, transform 0.2s, color 0.2s;
+    color: var(--hub-text-secondary);
+  }
+  .brutal-card:hover .brutal-card__arrow {
+    opacity: 1;
+    transform: translate(2px, -2px);
+    color: var(--card-accent);
+  }
+
+  /* Card body */
+  .brutal-card__name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+  }
+  .brutal-card__name--sm {
+    font-size: 1.1rem;
+    margin-bottom: 0;
+  }
+  .brutal-card__desc {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--hub-text-secondary, #999);
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+  }
+  .brutal-card__tldr {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.85rem;
+    color: var(--hub-text-secondary, #aaa);
+    line-height: 1.5;
+    padding: 0.75rem;
+    border-left: 3px solid var(--card-accent, var(--hub-border));
+    margin-bottom: 1rem;
+    background: color-mix(in srgb, var(--card-accent, #333) 5%, transparent);
+  }
+  .brutal-card__prefix {
+    color: var(--card-accent);
+    font-weight: 700;
+  }
+  .brutal-card__footer {
+    margin-top: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    padding-top: 0.75rem;
+    border-top: 2px dashed var(--hub-border, #333);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--hub-text-secondary, #888);
+  }
+  .brutal-card__version {
+    font-weight: 600;
+    color: var(--card-accent);
+  }
+  .brutal-card__version--sm {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--hub-text-secondary);
+  }
+  .brutal-card__count {
+    margin-left: auto;
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     PER-HARNESS CARD THEMES
+     ══════════════════════════════════════════════════════════ */
+
+  /* OpenClaw — red, italic headline */
+  .brutal-card--openclaw .brutal-card__name {
+    font-style: italic;
+    color: #eb0000;
+  }
+  .brutal-card--openclaw .brutal-card__icon {
+    border-color: #eb0000;
+  }
+
+  /* Claude Code — amber, CRT scanlines */
+  .brutal-card--claude-code .brutal-card__name {
+    color: #f59e0b;
+  }
+  .brutal-card--claude-code .brutal-card__icon {
+    border-color: #f59e0b;
+  }
+  .brutal-card__scanlines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(245, 158, 11, 0.03) 2px,
+      rgba(245, 158, 11, 0.03) 4px
+    );
+  }
+  [data-theme="light"] .brutal-card__scanlines {
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(245, 158, 11, 0.06) 2px,
+      rgba(245, 158, 11, 0.06) 4px
+    );
+  }
+
+  /* Codex CLI — green terminal theme */
+  .brutal-card--codex-cli {
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .brutal-card--codex-cli .brutal-card__name {
+    color: #00c851;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .brutal-card--codex-cli .brutal-card__desc {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+  }
+  .brutal-card--codex-cli .brutal-card__icon {
+    border-color: #00c851;
+  }
+  .brutal-card--codex-cli .brutal-card__tldr {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+  }
+
+  /* Gemini CLI — blue, clean modern */
+  .brutal-card--gemini-cli .brutal-card__name {
+    color: #4285f4;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .brutal-card--gemini-cli .brutal-card__icon {
+    border-color: #4285f4;
+    border-radius: 8px;
+  }
+
+  /* Models — violet gradient */
+  .brutal-card--models .brutal-card__name {
+    background: linear-gradient(135deg, #8b5cf6, #a78bfa, #c4b5fd);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .brutal-card--models .brutal-card__icon {
+    border-radius: 50%;
+    border-color: #8b5cf6;
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     OTHER TOOLS GRID (compact)
+     ══════════════════════════════════════════════════════════ */
+  .brutal-grid--other {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  @media (min-width: 500px) {
+    .brutal-grid--other {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 900px) {
+    .brutal-grid--other {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .brutal-card--compact {
+    flex-direction: row;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    gap: 0.75rem;
+    box-shadow: 4px 4px 0 var(--hub-border, #333);
+    border-width: 3px;
+  }
+  .brutal-card--compact:hover {
+    transform: translate(-3px, -3px) scale(1.02);
+    box-shadow: 7px 7px 0 var(--card-accent, var(--hub-border));
+  }
+  .brutal-card--compact__body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     DISPATCH / BLOG CARD
+     ══════════════════════════════════════════════════════════ */
+  .brutal-dispatch {
+    position: relative;
+    border: 4px solid var(--hub-border, #333);
+    background: var(--hub-card-bg, #1a1a1a);
+    box-shadow: 8px 8px 0 var(--hub-border, #333);
+    overflow: hidden;
+    padding: 2.5rem 2rem;
+  }
+  [data-theme="light"] .brutal-dispatch {
+    background: #fff;
+    border-color: #222;
+    box-shadow: 8px 8px 0 #222;
+  }
+  .brutal-dispatch__diagonal {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg,
+      rgba(235, 0, 0, 0.05) 0%,
+      rgba(245, 158, 11, 0.05) 25%,
+      rgba(0, 200, 81, 0.05) 50%,
+      rgba(66, 133, 244, 0.05) 75%,
+      rgba(139, 92, 246, 0.05) 100%
+    );
+    clip-path: polygon(0 0, 100% 0, 100% 70%, 0 100%);
+    pointer-events: none;
+  }
+  .brutal-dispatch__content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .brutal-dispatch__icon {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 1rem;
+  }
+  .brutal-dispatch__eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--hub-text-secondary);
+    margin-bottom: 0.75rem;
+  }
+  .brutal-dispatch__title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 800;
+    margin: 0 0 0.75rem;
+    color: var(--hub-text-primary);
+  }
+  .brutal-dispatch__desc {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--hub-text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+  .brutal-dispatch__btn {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.6rem 1.5rem;
+    border: 3px solid var(--hub-text-primary, #fff);
+    color: var(--hub-text-primary, #fff);
+    box-shadow: 4px 4px 0 var(--hub-text-primary, #fff);
+    transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+    cursor: pointer;
+  }
+  .brutal-dispatch__btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--hub-text-primary);
+    background: color-mix(in srgb, var(--hub-text-primary, #fff) 10%, transparent);
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     REDUCED MOTION
+     ══════════════════════════════════════════════════════════ */
+  @media (prefers-reduced-motion: reduce) {
+    .brutal-glitch::before,
+    .brutal-glitch::after {
+      display: none;
+    }
+    .brutal-glitch,
+    .brutal-glitch--amber,
+    .brutal-glitch--green,
+    .brutal-glitch--blue,
+    .brutal-glitch--violet {
+      animation: none;
+    }
+    .brutal-grain-overlay {
+      animation: none;
+    }
+    .brutal-hero {
+      animation: none !important;
+    }
+    .brutal-scroll-reveal {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+    .brutal-hero__pulse {
+      animation: none;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     MOBILE REFINEMENTS
+     ══════════════════════════════════════════════════════════ */
+  @media (max-width: 639px) {
+    .brutal-hero__title {
+      font-size: clamp(2.2rem, 12vw, 4rem);
+    }
+    .brutal-hero__stats {
+      flex-direction: column;
+      align-items: center;
+    }
+    .brutal-stat {
+      width: 100%;
+      justify-content: center;
+    }
+    .brutal-card--featured {
+      padding: 1.25rem;
+    }
+  }
+</style>
