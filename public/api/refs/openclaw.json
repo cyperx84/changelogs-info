@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.3.28",
-  "generated_at": "2026-03-30T00:33:11.330Z",
+  "generated_at": "2026-03-30T01:37:33.958Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -18,21 +18,16 @@
     "to_version": "2026.3.28",
     "new_features": [
       "x-search",
-      "cli-backend-logs",
+      "image-generation-provider-minimax",
+      "async-requireapproval-before-tool-call-hooks",
+      "current-conversation-acp-binds-discord-bluebubbles-imessage",
       "upload-file-slack-action",
       "file-first-sends-microsoft-teams-google-chat",
-      "openclaw-config-schema",
       "matrix-tts-voice-bubbles",
-      "gateway-backed-channel-mcp-bridge",
-      "current-conversation-acp-binds-discord-bluebubbles-imessage",
-      "plugin-runtime-runheartbeatonce",
-      "background-tasks-lifecycle-records",
-      "tavily-client-source-header",
-      "matrix-streaming-partial-draft-replies"
+      "matrix-streaming-partial-draft-replies",
+      "gateway-backed-channel-mcp-bridge"
     ],
-    "new_commands": [
-      "openclaw config schema"
-    ],
+    "new_commands": [],
     "new_flags": [
       "--cli-backend-logs"
     ],
@@ -43,7 +38,7 @@
     ],
     "breaking_changes": [
       "qwen-portal-auth-removal",
-      "config-migration-removal"
+      "drop-old-config-migrations"
     ]
   },
   "payload": {
@@ -68,7 +63,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release removes the deprecated Qwen portal auth and old config migrations, requiring users to migrate to Model Studio and update legacy configurations. It introduces first-class x_search integration, a generic CLI backend logs flag, and an upload-file Slack action. MiniMax image generation is now supported, and plugins can now use async requireApproval hooks. File-first sends are unified with explicit support for Microsoft Teams and Google Chat, and Matrix TTS replies are now sent as native voice bubbles. Several fixes address issues with agents, providers, and various channels, improving stability and functionality."
+      "tldr": "This release removes the deprecated Qwen portal auth and drops old config migrations, potentially requiring migration for users with older configurations. It introduces first-class x_search integration for xAI, an image generation provider for MiniMax, and async `requireApproval` hooks for plugins. File uploads are unified under the `upload-file` action with support for Microsoft Teams and Google Chat, and Matrix TTS replies are now sent as native voice bubbles. The release also includes numerous bug fixes and improvements across various platforms and features, including better error handling, improved message delivery, and enhanced plugin support."
     },
     "features": [
       {
@@ -841,6 +836,13 @@
         }
       ],
       "deprecated": [
+        {
+          "flag": "--claude-cli-logs",
+          "replaced_by": "--cli-backend-logs",
+          "deprecated_since": "2026.3.28",
+          "removed_in": null,
+          "source_url": ""
+        },
         {
           "flag": "--claude-cli-logs",
           "replaced_by": "--cli-backend-logs",
