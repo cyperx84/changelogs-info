@@ -44,11 +44,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
           <span class="hub-nav__brand-text">changelogs</span><span class="hub-nav__brand-dot">.info</span>
         </a>
         <div class="hub-nav__links">
-          <a href="/openclaw/" class="hub-nav__link">OpenClaw</a>
-          <a href="/claude-code/" class="hub-nav__link">Claude Code</a>
-          <a href="/codex-cli/" class="hub-nav__link">Codex</a>
-          <a href="/gemini-cli/" class="hub-nav__link">Gemini</a>
-          <a href="/models/" class="hub-nav__link">Models</a>
+          <a href="/openclaw/" class="hub-nav__link hub-nav__link--tool">OpenClaw</a>
+          <a href="/claude-code/" class="hub-nav__link hub-nav__link--tool">Claude Code</a>
+          <a href="/codex-cli/" class="hub-nav__link hub-nav__link--tool">Codex</a>
+          <a href="/gemini-cli/" class="hub-nav__link hub-nav__link--tool">Gemini</a>
+          <a href="/models/" class="hub-nav__link hub-nav__link--tool">Models</a>
           <a href="/feed/all.xml" class="hub-nav__link hub-nav__link--rss" title="RSS">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19.01 7.38 20 6.18 20C4.98 20 4 19.01 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/></svg>
           </a>
@@ -86,13 +86,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
     <script is:inline>
       (function () {
-        var storedTheme = localStorage.getItem('hub-theme');
+        var storedTheme = localStorage.getItem('theme');
         var storedInsane = localStorage.getItem('hub-insane');
         var theme = storedTheme || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
         if (theme === 'light') {
           document.documentElement.setAttribute('data-theme', 'light');
         } else {
-          document.documentElement.setAttribute('data-theme', 'dark');
+          document.documentElement.removeAttribute('data-theme');
         }
         // Insane Mode: stored separately
         if (storedInsane === 'true') {
@@ -104,7 +104,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <!-- Hub Theme Cycling + Insane Mode -->
     <script is:inline>
       document.addEventListener('DOMContentLoaded', function() {
-        var THEME_KEY = 'hub-theme';
+        var THEME_KEY = 'theme';
         var INSANE_KEY = 'hub-insane';
         var themeOrder = ['dark', 'light', 'insane'];
         function getCurrentTheme() {
@@ -118,7 +118,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
           if (theme === 'light') {
             document.documentElement.setAttribute('data-theme', 'light');
           } else {
-            document.documentElement.setAttribute('data-theme', 'dark');
+            document.documentElement.removeAttribute('data-theme');
           }
           localStorage.setItem(THEME_KEY, theme);
           updateThemeIcon(theme);
@@ -278,8 +278,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     --hub-shadow-card-hover: 8px 8px 0px 0px rgba(10, 10, 10, 1);
   }
 
-  /* DARK theme */
-  [data-theme="dark"] {
+  /* DARK theme — default, no data-theme attribute */
+  :root:not([data-theme="light"]) {
     --hub-bg: #0a0a0a;
     --hub-bg-card: #111111;
     --hub-bg-surface: #1a1a1a;
@@ -368,7 +368,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     padding: 1rem 2rem;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 1.5rem;
   }
   .hub-nav__brand {
     font-family: var(--hub-font-mono);
