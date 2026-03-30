@@ -13,7 +13,6 @@ const sections = [
   { label: "Kilocode", href: "/kilocode/", key: "kilocode", color: "#CCFF33" },
   { label: "Models", href: "/models/", key: "models", color: "#0091f7" },
 ];
-
 ---
 
 <header class="shared-nav" data-current={currentSection}>
@@ -63,36 +62,37 @@ const sections = [
 </header>
 
 <script is:inline>
-  (function() {
-    // Init theme from localStorage
+  function __initSharedNav() {
     var stored = localStorage.getItem("theme");
     if (stored === "light") {
       document.documentElement.setAttribute("data-theme", "light");
     }
 
-    // Theme toggle (desktop)
-    var btn = document.getElementById("shared-theme-toggle");
-    var label = document.getElementById("shared-theme-label");
     function updateIcon() {
+      var label = document.getElementById("shared-theme-label");
       var isLight = document.documentElement.getAttribute("data-theme") === "light";
-      if (label) label.textContent = isLight ? "☀" : "◐";
+      if (label) label.textContent = isLight ? "\u2600" : "\u25D0";
+      // Also update mobile theme button text
+      var mBtn = document.getElementById("shared-mobile-theme");
+      if (mBtn) mBtn.textContent = (isLight ? "\u2600" : "\u25D0") + " Toggle theme";
     }
     updateIcon();
-    if (btn) {
-      btn.addEventListener("click", function() {
-        var isLight = document.documentElement.getAttribute("data-theme") === "light";
-        if (isLight) {
-          document.documentElement.removeAttribute("data-theme");
-          localStorage.setItem("theme", "dark");
-        } else {
-          document.documentElement.setAttribute("data-theme", "light");
-          localStorage.setItem("theme", "light");
-        }
-        updateIcon();
-      });
+
+    function toggleTheme() {
+      var isLight = document.documentElement.getAttribute("data-theme") === "light";
+      if (isLight) {
+        document.documentElement.removeAttribute("data-theme");
+        localStorage.setItem("theme", "dark");
+      } else {
+        document.documentElement.setAttribute("data-theme", "light");
+        localStorage.setItem("theme", "light");
+      }
+      updateIcon();
     }
 
-    // Mobile hamburger
+    var btn = document.getElementById("shared-theme-toggle");
+    if (btn) btn.addEventListener("click", toggleTheme);
+
     var mobileBtn = document.getElementById("shared-mobile-btn");
     var mobileMenu = document.getElementById("shared-mobile-menu");
     if (mobileBtn && mobileMenu) {
@@ -107,20 +107,13 @@ const sections = [
       });
     }
 
-    // Mobile theme toggle
     var mobileThemeBtn = document.getElementById("shared-mobile-theme");
-    if (mobileThemeBtn) {
-      mobileThemeBtn.addEventListener("click", function() {
-        var isLight = document.documentElement.getAttribute("data-theme") === "light";
-        if (isLight) {
-          document.documentElement.removeAttribute("data-theme");
-          localStorage.setItem("theme", "dark");
-        } else {
-          document.documentElement.setAttribute("data-theme", "light");
-          localStorage.setItem("theme", "light");
-        }
-        updateIcon();
-      });
-    }
-  })();
+    if (mobileThemeBtn) mobileThemeBtn.addEventListener("click", toggleTheme);
+  }
+
+  // Run immediately
+  __initSharedNav();
+
+  // Re-run after Astro ViewTransitions page swap
+  document.addEventListener("astro:after-swap", __initSharedNav);
 </script>
