@@ -13,6 +13,7 @@ const sections = [
   { label: "Kilocode", href: "/kilocode/", key: "kilocode", color: "#CCFF33" },
   { label: "Models", href: "/models/", key: "models", color: "#0091f7" },
 ];
+
 ---
 
 <header class="shared-nav" data-current={currentSection}>
@@ -55,7 +56,7 @@ const sections = [
         {s.label}
       </a>
     ))}
-    <button id="shared-mobile-theme" class="shared-nav__mobile-link" style="background:none;border:none;cursor:pointer;text-align:left;color:inherit;font:inherit;width:100%;">
+    <button id="shared-mobile-theme" class="shared-nav__mobile-link shared-nav__mobile-theme-btn">
       ◐ Toggle theme
     </button>
   </div>
@@ -69,7 +70,7 @@ const sections = [
       document.documentElement.setAttribute("data-theme", "light");
     }
 
-    // Theme toggle
+    // Theme toggle (desktop)
     var btn = document.getElementById("shared-theme-toggle");
     var label = document.getElementById("shared-theme-label");
     function updateIcon() {
@@ -91,7 +92,7 @@ const sections = [
       });
     }
 
-    // Mobile menu
+    // Mobile hamburger
     var mobileBtn = document.getElementById("shared-mobile-btn");
     var mobileMenu = document.getElementById("shared-mobile-menu");
     if (mobileBtn && mobileMenu) {
@@ -99,7 +100,6 @@ const sections = [
         var open = mobileMenu.style.display === "flex";
         mobileMenu.style.display = open ? "none" : "flex";
       });
-      // Auto-close on link click
       mobileMenu.querySelectorAll("a").forEach(function(link) {
         link.addEventListener("click", function() {
           mobileMenu.style.display = "none";
@@ -124,163 +124,3 @@ const sections = [
     }
   })();
 </script>
-
-<style is:global>
-  .shared-nav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    border-bottom: 4px solid var(--sn-border, #ffffff);
-    background: var(--sn-bg, rgba(0,0,0,0.85));
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow: var(--sn-shadow, 6px 6px 0px 0px rgba(255,255,255,0.2));
-  }
-  .shared-nav__inner {
-    max-width: 1400px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 1.25rem;
-    gap: 1rem;
-  }
-  .shared-nav__brand {
-    font-family: "Space Grotesk", sans-serif;
-    font-weight: 900;
-    font-size: 1.1rem;
-    color: var(--sn-text, #ffffff);
-    text-decoration: none;
-    letter-spacing: -0.03em;
-    flex-shrink: 0;
-    white-space: nowrap;
-  }
-  .shared-nav__dot {
-    color: var(--sn-primary, #0091f7);
-  }
-  .shared-nav__links {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-  }
-  .shared-nav__link {
-    font-family: "Space Grotesk", sans-serif;
-    font-weight: 800;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    text-decoration: none;
-    color: var(--sn-text-dim, rgba(255,255,255,0.6));
-    padding-bottom: 4px;
-    transition: color 100ms;
-    white-space: nowrap;
-  }
-  .shared-nav__link:hover {
-    color: var(--sn-text, #ffffff);
-  }
-  .shared-nav__link--active {
-    color: var(--active-color, var(--sn-primary, #0091f7));
-    border-bottom: 4px solid var(--active-color, var(--sn-primary, #0091f7));
-  }
-  .shared-nav__actions {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-shrink: 0;
-  }
-  .shared-nav__btn {
-    background: transparent;
-    border: 2px solid var(--sn-border, #ffffff);
-    padding: 6px 10px;
-    color: var(--sn-text, #ffffff);
-    cursor: pointer;
-    font-family: "JetBrains Mono", monospace;
-    font-size: 11px;
-    font-weight: 700;
-    box-shadow: var(--sn-shadow-sm, 4px 4px 0px 0px rgba(255,255,255,0.2));
-    transition: box-shadow 100ms, transform 100ms;
-    min-width: 40px;
-    min-height: 40px;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-  }
-  .shared-nav__btn:hover {
-    transform: translate(1px, 1px);
-    box-shadow: 2px 2px 0px 0px var(--sn-border, #ffffff);
-  }
-  .shared-nav__btn:active {
-    transform: translate(1px, 1px);
-    box-shadow: none;
-  }
-  .shared-nav__hamburger {
-    display: none;
-    background: transparent;
-    border: 2px solid var(--sn-border, #ffffff);
-    padding: 8px;
-    color: var(--sn-text, #ffffff);
-    cursor: pointer;
-    align-items: center;
-    justify-content: center;
-    min-width: 40px;
-    min-height: 40px;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-  }
-  .shared-nav__hamburger:active {
-    transform: scale(0.95);
-  }
-  .shared-nav__mobile {
-    display: none;
-    flex-direction: column;
-    padding: 0.75rem 1.25rem 1.25rem;
-    border-top: 2px solid var(--sn-border-dim, rgba(255,255,255,0.2));
-    background: var(--sn-bg, rgba(0,0,0,0.95));
-    position: relative;
-    z-index: 99;
-  }
-  .shared-nav__mobile-link {
-    font-family: "Space Grotesk", sans-serif;
-    font-weight: 800;
-    font-size: 1rem;
-    text-transform: uppercase;
-    padding: 0.75rem 0;
-    text-decoration: none;
-    border-bottom: 2px solid var(--sn-border-dim, rgba(255,255,255,0.2));
-    letter-spacing: 0.05em;
-    color: var(--sn-text-dim, rgba(255,255,255,0.6));
-  }
-  .shared-nav__mobile-link--active {
-    color: var(--sn-primary, #0091f7);
-  }
-
-  /* Light mode */
-  :root[data-theme="light"] .shared-nav {
-    --sn-bg: rgba(251, 249, 244, 0.9);
-    --sn-text: #0a0a0a;
-    --sn-text-dim: rgba(10, 10, 10, 0.6);
-    --sn-border: #0a0a0a;
-    --sn-border-dim: rgba(10, 10, 10, 0.2);
-    --sn-shadow: 6px 6px 0px 0px rgba(10, 10, 10, 0.15);
-    --sn-shadow-sm: 4px 4px 0px 0px rgba(10, 10, 10, 0.15);
-  }
-
-  /* Hub (homepage) dark mode defaults */
-  :root:not([data-theme="light"]) .shared-nav {
-    --sn-bg: rgba(0, 0, 0, 0.85);
-    --sn-text: #ffffff;
-    --sn-text-dim: rgba(255, 255, 255, 0.6);
-    --sn-border: #ffffff;
-    --sn-border-dim: rgba(255, 255, 255, 0.2);
-    --sn-shadow: 6px 6px 0px 0px rgba(255, 255, 255, 0.2);
-    --sn-shadow-sm: 4px 4px 0px 0px rgba(255, 255, 255, 0.2);
-  }
-
-  @media (max-width: 768px) {
-    .shared-nav__links {
-      display: none;
-    }
-    .shared-nav__hamburger {
-      display: flex;
-    }
-  }
-</style>
