@@ -10,6 +10,7 @@ const sections = [
   { label: "Claude Code", href: "/claude-code/", key: "claude-code", color: "#d97706" },
   { label: "Codex", href: "/codex-cli/", key: "codex", color: "#10b981" },
   { label: "Gemini", href: "/gemini-cli/", key: "gemini", color: "#3b82f6" },
+  { label: "Kilocode", href: "/kilocode/", key: "kilocode", color: "#CCFF33" },
   { label: "Models", href: "/models/", key: "models", color: "#0091f7" },
 ];
 ---
@@ -20,7 +21,7 @@ const sections = [
       changelogs<span class="shared-nav__dot">.</span>info
     </a>
 
-    <nav class="shared-nav__links" id="shared-desktop-nav">
+    <nav class="shared-nav__links" id="shared-desktop-nav" aria-label="Main navigation">
       {sections.map((s) => (
         <a
           href={s.href}
@@ -105,7 +106,7 @@ const sections = [
   })();
 </script>
 
-<style>
+<style is:global>
   .shared-nav {
     position: sticky;
     top: 0;
@@ -179,10 +180,18 @@ const sections = [
     font-weight: 700;
     box-shadow: var(--sn-shadow-sm, 4px 4px 0px 0px rgba(255,255,255,0.2));
     transition: box-shadow 100ms, transform 100ms;
+    min-width: 40px;
+    min-height: 40px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
   .shared-nav__btn:hover {
     transform: translate(1px, 1px);
     box-shadow: 2px 2px 0px 0px var(--sn-border, #ffffff);
+  }
+  .shared-nav__btn:active {
+    transform: translate(1px, 1px);
+    box-shadow: none;
   }
   .shared-nav__hamburger {
     display: none;
@@ -193,12 +202,22 @@ const sections = [
     cursor: pointer;
     align-items: center;
     justify-content: center;
+    min-width: 40px;
+    min-height: 40px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .shared-nav__hamburger:active {
+    transform: scale(0.95);
   }
   .shared-nav__mobile {
     display: none;
     flex-direction: column;
     padding: 0.75rem 1.25rem 1.25rem;
     border-top: 2px solid var(--sn-border-dim, rgba(255,255,255,0.2));
+    background: var(--sn-bg, rgba(0,0,0,0.95));
+    position: relative;
+    z-index: 99;
   }
   .shared-nav__mobile-link {
     font-family: "Space Grotesk", sans-serif;
