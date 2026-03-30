@@ -55,6 +55,9 @@ const sections = [
         {s.label}
       </a>
     ))}
+    <button id="shared-mobile-theme" class="shared-nav__mobile-link" style="background:none;border:none;cursor:pointer;text-align:left;color:inherit;font:inherit;width:100%;">
+      ◐ Toggle theme
+    </button>
   </div>
 </header>
 
@@ -101,6 +104,22 @@ const sections = [
         link.addEventListener("click", function() {
           mobileMenu.style.display = "none";
         });
+      });
+    }
+
+    // Mobile theme toggle
+    var mobileThemeBtn = document.getElementById("shared-mobile-theme");
+    if (mobileThemeBtn) {
+      mobileThemeBtn.addEventListener("click", function() {
+        var isLight = document.documentElement.getAttribute("data-theme") === "light";
+        if (isLight) {
+          document.documentElement.removeAttribute("data-theme");
+          localStorage.setItem("theme", "dark");
+        } else {
+          document.documentElement.setAttribute("data-theme", "light");
+          localStorage.setItem("theme", "light");
+        }
+        updateIcon();
       });
     }
   })();
