@@ -213,7 +213,7 @@ function parseChangelog(body: string): ParsedSection[] {
 function renderPrefix(prefix: string | null): string {
   if (!prefix) return "";
   const palette: Record<string, string> = {
-    BREAKING: "background: var(--cc-primary); color: #fff; border-color: var(--cc-primary);",
+    BREAKING: "background: var(--kc-primary); color: #fff; border-color: var(--kc-primary);",
     FEAT: "background: rgba(34,197,94,0.12); color: #22c55e; border-color: #22c55e;",
     FIX: "background: rgba(59,130,246,0.12); color: #60a5fa; border-color: #60a5fa;",
     DOCS: "background: rgba(168,85,247,0.12); color: #c084fc; border-color: #c084fc;",
@@ -236,8 +236,8 @@ function renderChangelogItem(item: ParsedItem): string {
 
 function renderChangelogSection(title: string, items: ParsedItem[], emphasized = false): string {
   if (items.length === 0) return "";
-  return `<div style="padding:1rem 1.1rem; border:3px solid var(--cc-border); background:${emphasized ? 'var(--cc-bg-surface)' : 'transparent'};">`
-    + `<div style="font-family:inherit;font-size:0.72rem;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:var(--cc-text-muted);margin-bottom:0.85rem;">${escapeHtml(title)}</div>`
+  return `<div style="padding:1rem 1.1rem; border:3px solid var(--kc-border); background:${emphasized ? 'var(--kc-bg-surface)' : 'transparent'};">`
+    + `<div style="font-family:inherit;font-size:0.72rem;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:var(--kc-text-muted);margin-bottom:0.85rem;">${escapeHtml(title)}</div>`
     + `<ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0.7rem;">${items.map(renderChangelogItem).join("")}</ul>`
     + `</div>`;
 }
@@ -256,10 +256,10 @@ function buildChangelogCard(body: string): string {
 
   const overflowHtml = overflow.length === 0
     ? ""
-    : `<details style="border:3px solid var(--cc-border);padding:0.95rem 1.1rem;background:transparent;"><summary style="cursor:pointer;font-family:inherit;font-size:0.78rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;color:var(--cc-text);">Show all changes <span style="color:var(--cc-text-muted);">(${overflow.length} more)</span></summary><div style="display:flex;flex-direction:column;gap:1rem;margin-top:1rem;">${sections.map((section) => {
+    : `<details style="border:3px solid var(--kc-border);padding:0.95rem 1.1rem;background:transparent;"><summary style="cursor:pointer;font-family:inherit;font-size:0.78rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;color:var(--kc-text);">Show all changes <span style="color:var(--kc-text-muted);">(${overflow.length} more)</span></summary><div style="display:flex;flex-direction:column;gap:1rem;margin-top:1rem;">${sections.map((section) => {
         const sectionItems = overflow.filter((item) => item.heading === section.heading);
         if (sectionItems.length === 0) return "";
-        return `<div><div style="font-family:inherit;font-size:0.72rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;color:var(--cc-text-muted);margin-bottom:0.65rem;">${escapeHtml(section.heading)}</div><ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0.65rem;">${sectionItems.map(renderChangelogItem).join("")}</ul></div>`;
+        return `<div><div style="font-family:inherit;font-size:0.72rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;color:var(--kc-text-muted);margin-bottom:0.65rem;">${escapeHtml(section.heading)}</div><ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0.65rem;">${sectionItems.map(renderChangelogItem).join("")}</ul></div>`;
       }).join("")}</div></details>`;
 
   const fallback = sections.length > 0 && highlights.length === 0 && notable.length === 0
@@ -295,14 +295,14 @@ function getTldr(body: string): string[] {
         <div style="display: flex; flex-direction: column; gap: 1.25rem;">
           <div style="display: inline-flex; align-items: center; gap: 0.5rem; width: fit-content;">
             <span class="cc-pulse-dot" style="width: 8px; height: 8px; background: #f59e0b; display: inline-block;"></span>
-            <span style="font-family: var(--cc-font-mono); font-size: 0.65rem; color: var(--cc-text-muted); text-transform: uppercase; letter-spacing: 0.15em;">Tracking {canonicalEntries.length} latest entries</span>
+            <span style="font-family: var(--kc-font-mono); font-size: 0.65rem; color: var(--kc-text-muted); text-transform: uppercase; letter-spacing: 0.15em;">Tracking {canonicalEntries.length} latest entries</span>
           </div>
 
-          <h1 class="cc-headline cc-hero-title" style="font-size: clamp(3rem, 9vw, 5.5rem); font-weight: 900; color: var(--cc-text); text-transform: uppercase; line-height: 0.88; margin: 0; letter-spacing: -0.03em;">
-            Claude<br><span style="color: var(--cc-primary-bright);">Code</span>
+          <h1 class="cc-headline cc-hero-title" style="font-size: clamp(3rem, 9vw, 5.5rem); font-weight: 900; color: var(--kc-text); text-transform: uppercase; line-height: 0.88; margin: 0; letter-spacing: -0.03em;">
+            Claude<br><span style="color: var(--kc-primary-bright);">Code</span>
           </h1>
 
-          <p style="font-size: 1.05rem; color: var(--cc-text-dim); max-width: 28rem; line-height: 1.6; margin: 0; font-family: var(--cc-font-body);">
+          <p style="font-size: 1.05rem; color: var(--kc-text-dim); max-width: 28rem; line-height: 1.6; margin: 0; font-family: var(--kc-font-body);">
             {tool?.description || "Anthropic's agentic coding tool — run AI in your terminal, build and fix code autonomously."}
           </p>
 
@@ -312,14 +312,14 @@ function getTldr(body: string): string[] {
               target="_blank"
               rel="noopener noreferrer"
               class="cc-headline cc-cta-btn"
-              style="background: var(--cc-primary); color: white; font-weight: 900; padding: 0.75rem 1.75rem; font-size: 0.85rem; border: 4px solid var(--cc-border); box-shadow: var(--cc-shadow-sm); text-decoration: none; text-transform: uppercase; font-style: italic;"
+              style="background: var(--kc-primary); color: white; font-weight: 900; padding: 0.75rem 1.75rem; font-size: 0.85rem; border: 4px solid var(--kc-border); box-shadow: var(--kc-shadow-sm); text-decoration: none; text-transform: uppercase; font-style: italic;"
             >
               GitHub ↗
             </a>
             <a
               href="/kilocode/changelog/"
               class="cc-headline cc-cta-btn"
-              style="background: transparent; color: var(--cc-text); font-weight: 900; padding: 0.75rem 1.75rem; font-size: 0.85rem; border: 4px solid var(--cc-border); box-shadow: var(--cc-shadow-sm); text-decoration: none; text-transform: uppercase; font-style: italic;"
+              style="background: transparent; color: var(--kc-text); font-weight: 900; padding: 0.75rem 1.75rem; font-size: 0.85rem; border: 4px solid var(--kc-border); box-shadow: var(--kc-shadow-sm); text-decoration: none; text-transform: uppercase; font-style: italic;"
             >
               Changelog
             </a>
@@ -327,29 +327,29 @@ function getTldr(body: string): string[] {
         </div>
 
         <!-- Right: terminal card -->
-        <div class="cc-terminal-card" style="width: 320px; border: 4px solid var(--cc-border); box-shadow: var(--cc-shadow); flex-shrink: 0; overflow: hidden;">
-          <div style="background: var(--cc-border); padding: 0.5rem 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
-            <span style="width: 10px; height: 10px; background: var(--cc-primary); display: inline-block;"></span>
+        <div class="cc-terminal-card" style="width: 320px; border: 4px solid var(--kc-border); box-shadow: var(--kc-shadow); flex-shrink: 0; overflow: hidden;">
+          <div style="background: var(--kc-border); padding: 0.5rem 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+            <span style="width: 10px; height: 10px; background: var(--kc-primary); display: inline-block;"></span>
             <span style="width: 10px; height: 10px; background: #ffb800; display: inline-block;"></span>
             <span style="width: 10px; height: 10px; background: #22c55e; display: inline-block;"></span>
-            <span style="font-family: var(--cc-font-mono); font-size: 0.6rem; color: var(--cc-bg); margin-left: 0.5rem; text-transform: uppercase; font-weight: 700;">claude --status</span>
+            <span style="font-family: var(--kc-font-mono); font-size: 0.6rem; color: var(--kc-bg); margin-left: 0.5rem; text-transform: uppercase; font-weight: 700;">kilocode --status</span>
           </div>
-          <div style="background: var(--cc-bg); padding: 1rem; font-family: var(--cc-font-mono); font-size: 0.7rem; line-height: 1.8; color: var(--cc-text-dim);">
-            <div><span style="color: var(--cc-primary-bright);">$</span> claude --version</div>
+          <div style="background: var(--kc-bg); padding: 1rem; font-family: var(--kc-font-mono); font-size: 0.7rem; line-height: 1.8; color: var(--kc-text-dim);">
+            <div><span style="color: var(--kc-primary-bright);">$</span> kilocode --version</div>
             <div style="margin-top: 0.5rem;">
-              <span style="color: var(--cc-primary-bright);">●</span> Version: <span style="color: var(--cc-text);">{displayVersion}</span>
+              <span style="color: var(--kc-primary-bright);">●</span> Version: <span style="color: var(--kc-text);">{displayVersion}</span>
             </div>
             <div>
-              <span style="color: #22c55e;">●</span> Releases: <span style="color: var(--cc-text);">{releases.length}</span> tracked
+              <span style="color: #22c55e;">●</span> Releases: <span style="color: var(--kc-text);">{releases.length}</span> tracked
             </div>
             <div>
-              <span style="color: {breakingCount > 0 ? 'var(--cc-primary-bright)' : '#22c55e'};">{breakingCount > 0 ? '⚠' : '●'}</span> Breaking: <span style="color: {breakingCount > 0 ? 'var(--cc-primary-bright)' : 'var(--cc-text)'};">{breakingCount}</span>
+              <span style="color: {breakingCount > 0 ? 'var(--kc-primary-bright)' : '#22c55e'};">{breakingCount > 0 ? '⚠' : '●'}</span> Breaking: <span style="color: {breakingCount > 0 ? 'var(--kc-primary-bright)' : 'var(--kc-text)'};">{breakingCount}</span>
             </div>
             <div>
-              <span style="color: #22c55e;">●</span> Updated: <span style="color: var(--cc-text);">{lastUpdatedAgo || "now"}</span>
+              <span style="color: #22c55e;">●</span> Updated: <span style="color: var(--kc-text);">{lastUpdatedAgo || "now"}</span>
             </div>
-            <div style="margin-top: 0.5rem; color: var(--cc-text-muted);">
-              <span style="color: var(--cc-primary-bright);">$</span> <span class="cc-cursor">_</span>
+            <div style="margin-top: 0.5rem; color: var(--kc-text-muted);">
+              <span style="color: var(--kc-primary-bright);">$</span> <span class="cc-cursor">_</span>
             </div>
           </div>
         </div>
@@ -357,7 +357,7 @@ function getTldr(body: string): string[] {
     </section>
 
     <!-- Stats Bar -->
-    <section class="cc-section-reveal" style="display: flex; flex-wrap: wrap; gap: 0; border: 4px solid var(--cc-border); margin-bottom: 3rem;">
+    <section class="cc-section-reveal" style="display: flex; flex-wrap: wrap; gap: 0; border: 4px solid var(--kc-border); margin-bottom: 3rem;">
       {[
         { label: "Releases", value: String(releases.length) },
         { label: "Breaking", value: String(breakingCount), warn: true },
@@ -365,11 +365,11 @@ function getTldr(body: string): string[] {
         { label: "Latest", value: displayVersion },
       ].map((stat, i) => (
         <div
-          style={`flex: 1; min-width: 120px; padding: 1rem 1.25rem; ${i < 3 ? 'border-right: 4px solid var(--cc-border);' : ''} background: var(--cc-bg-card); cursor: crosshair; transition: background 150ms;`}
+          style={`flex: 1; min-width: 120px; padding: 1rem 1.25rem; ${i < 3 ? 'border-right: 4px solid var(--kc-border);' : ''} background: var(--kc-bg-card); cursor: crosshair; transition: background 150ms;`}
           class="cc-stats-cell"
         >
-          <span style="display: block; color: var(--cc-text-muted); font-family: var(--cc-font-headline); font-weight: 700; text-transform: uppercase; font-size: 0.55rem; letter-spacing: 0.15em; margin-bottom: 0.25rem;">{stat.label}</span>
-          <span class="cc-headline" style={`display: block; font-size: 1.5rem; font-weight: 900; color: ${stat.warn ? 'var(--cc-primary-bright)' : 'var(--cc-text)'};`}>{stat.value}</span>
+          <span style="display: block; color: var(--kc-text-muted); font-family: var(--kc-font-headline); font-weight: 700; text-transform: uppercase; font-size: 0.55rem; letter-spacing: 0.15em; margin-bottom: 0.25rem;">{stat.label}</span>
+          <span class="cc-headline" style={`display: block; font-size: 1.5rem; font-weight: 900; color: ${stat.warn ? 'var(--kc-primary-bright)' : 'var(--kc-text)'};`}>{stat.value}</span>
         </div>
       ))}
     </section>
@@ -385,35 +385,35 @@ function getTldr(body: string): string[] {
       return (
         <section style="margin-bottom: 3rem;">
           <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
-            <h2 class="cc-headline" style="font-size: 2.5rem; font-weight: 900; color: var(--cc-text); text-transform: uppercase; font-style: italic; letter-spacing: -0.02em; margin: 0;">
+            <h2 class="cc-headline" style="font-size: 2.5rem; font-weight: 900; color: var(--kc-text); text-transform: uppercase; font-style: italic; letter-spacing: -0.02em; margin: 0;">
               TL;DR
             </h2>
-            <div style="flex: 1; height: 4px; background: var(--cc-border);"></div>
-            <span style="font-family: var(--cc-font-mono); font-size: 0.7rem; color: var(--cc-text-muted); text-transform: uppercase;">Latest Release</span>
+            <div style="flex: 1; height: 4px; background: var(--kc-border);"></div>
+            <span style="font-family: var(--kc-font-mono); font-size: 0.7rem; color: var(--kc-text-muted); text-transform: uppercase;">Latest Release</span>
           </div>
 
-          <div style={`padding: 1.5rem 2rem; border: 4px solid ${breaking ? 'var(--cc-primary)' : 'var(--cc-border)'}; background: ${breaking ? 'var(--cc-bg-surface)' : 'var(--cc-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--cc-primary);' : ''} margin-bottom: 2rem;`}>
+          <div style={`padding: 1.5rem 2rem; border: 4px solid ${breaking ? 'var(--kc-primary)' : 'var(--kc-border)'}; background: ${breaking ? 'var(--kc-bg-surface)' : 'var(--kc-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--kc-primary);' : ''} margin-bottom: 2rem;`}>
             <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
               <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-                <span class="cc-headline" style="font-size: 1.3rem; font-weight: 900; color: var(--cc-text); text-transform: uppercase;">{latestForTldr.version}</span>
+                <span class="cc-headline" style="font-size: 1.3rem; font-weight: 900; color: var(--kc-text); text-transform: uppercase;">{latestForTldr.version}</span>
                 {breaking && (
-                  <span style="background: var(--cc-primary); color: white; font-family: var(--cc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">BREAKING</span>
+                  <span style="background: var(--kc-primary); color: white; font-family: var(--kc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">BREAKING</span>
                 )}
                 {latestForTldr.prerelease && (
-                  <span style="background: rgba(245,158,11,0.15); color: #f59e0b; font-family: var(--cc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; border: 1px solid #f59e0b;">PRE</span>
+                  <span style="background: rgba(245,158,11,0.15); color: #f59e0b; font-family: var(--kc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; border: 1px solid #f59e0b;">PRE</span>
                 )}
               </div>
-              <span style="font-family: var(--cc-font-mono); font-size: 0.7rem; color: var(--cc-text-muted); white-space: nowrap;">{formatDate(latestForTldr.date)}</span>
+              <span style="font-family: var(--kc-font-mono); font-size: 0.7rem; color: var(--kc-text-muted); white-space: nowrap;">{formatDate(latestForTldr.date)}</span>
             </div>
             {summaryText ? (
               <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                <p style="margin: 0; font-family: var(--cc-font-body); font-size: 1rem; color: var(--cc-text); line-height: 1.7; max-width: 60ch;">{summaryText}</p>
+                <p style="margin: 0; font-family: var(--kc-font-body); font-size: 1rem; color: var(--kc-text); line-height: 1.7; max-width: 60ch;">{summaryText}</p>
               </div>
             ) : items.length > 0 && (
               <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.4rem;">
                 {items.map((item) => (
-                  <li style="display: flex; gap: 0.5rem; align-items: flex-start; font-family: var(--cc-font-body); font-size: 0.9rem; color: var(--cc-text-dim); line-height: 1.5;">
-                    <span style="color: var(--cc-primary-bright); flex-shrink: 0; font-weight: 700;">▸</span>
+                  <li style="display: flex; gap: 0.5rem; align-items: flex-start; font-family: var(--kc-font-body); font-size: 0.9rem; color: var(--kc-text-dim); line-height: 1.5;">
+                    <span style="color: var(--kc-primary-bright); flex-shrink: 0; font-weight: 700;">▸</span>
                     <span>{item}</span>
                   </li>
                 ))}
@@ -426,9 +426,9 @@ function getTldr(body: string): string[] {
 
     <!-- Recent Changelog -->
     <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
-      <div style="flex: 1; height: 4px; background: var(--cc-border);"></div>
-      <span class="cc-headline" style="font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--cc-text-muted);">Recent Changelog</span>
-      <div style="flex: 1; height: 4px; background: var(--cc-border);"></div>
+      <div style="flex: 1; height: 4px; background: var(--kc-border);"></div>
+      <span class="cc-headline" style="font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--kc-text-muted);">Recent Changelog</span>
+      <div style="flex: 1; height: 4px; background: var(--kc-border);"></div>
     </div>
 
     <section style="margin-bottom: 4rem; display: flex; flex-direction: column; gap: 1.25rem;">
@@ -437,19 +437,19 @@ function getTldr(body: string): string[] {
         const breaking = isBreaking(entry.body);
         const renderedBody = buildChangelogCard(entry.body || "");
         return (
-          <div style={`padding: 1.5rem 2rem; border: 4px solid ${breaking ? 'var(--cc-primary)' : 'var(--cc-border)'}; background: ${breaking ? 'var(--cc-bg-surface)' : 'var(--cc-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--cc-primary);' : ''}`}>
+          <div style={`padding: 1.5rem 2rem; border: 4px solid ${breaking ? 'var(--kc-primary)' : 'var(--kc-border)'}; background: ${breaking ? 'var(--kc-bg-surface)' : 'var(--kc-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--kc-primary);' : ''}`}>
             <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
               <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-                <span class="cc-headline" style="font-size: 1.25rem; font-weight: 900; color: var(--cc-text); text-transform: uppercase;">{entry.version}</span>
+                <span class="cc-headline" style="font-size: 1.25rem; font-weight: 900; color: var(--kc-text); text-transform: uppercase;">{entry.version}</span>
                 {breaking && (
-                  <span style="background: var(--cc-primary); color: white; font-family: var(--cc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">BREAKING</span>
+                  <span style="background: var(--kc-primary); color: white; font-family: var(--kc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">BREAKING</span>
                 )}
               </div>
-              <span style="font-family: var(--cc-font-mono); font-size: 0.7rem; color: var(--cc-text-muted); white-space: nowrap;">{formatDate(release.date)}</span>
+              <span style="font-family: var(--kc-font-mono); font-size: 0.7rem; color: var(--kc-text-muted); white-space: nowrap;">{formatDate(release.date)}</span>
             </div>
             <div
               class="changelog-body"
-              style="color: var(--cc-text-dim); font-size: 0.92rem; line-height: 1.7; font-family: var(--cc-font-body);"
+              style="color: var(--kc-text-dim); font-size: 0.92rem; line-height: 1.7; font-family: var(--kc-font-body);"
               set:html={renderedBody}
             />
           </div>
@@ -458,7 +458,7 @@ function getTldr(body: string): string[] {
       <a
         href="/kilocode/changelog/"
         class="cc-headline"
-        style="display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 900; text-transform: uppercase; color: var(--cc-primary-bright); font-style: italic; text-decoration: none; border-bottom: 2px solid var(--cc-primary-bright); padding-bottom: 2px; font-size: 0.85rem; align-self: flex-start;"
+        style="display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 900; text-transform: uppercase; color: var(--kc-primary-bright); font-style: italic; text-decoration: none; border-bottom: 2px solid var(--kc-primary-bright); padding-bottom: 2px; font-size: 0.85rem; align-self: flex-start;"
       >
         View full changelog →
       </a>
@@ -472,46 +472,46 @@ function getTldr(body: string): string[] {
         { href: "/kilocode/releases/", icon: "📦", label: "All Releases", sub: "Browse & filter" },
         { href: "/feed/all.xml", icon: "📡", label: "RSS Feed", sub: "Subscribe to updates" },
       ].map((link) => (
-        <a href={link.href} class="cc-quick-link" style="display: flex; align-items: center; gap: 0.75rem; padding: 1.25rem; border: 4px solid var(--cc-border); background: var(--cc-bg-card); text-decoration: none;">
+        <a href={link.href} class="cc-quick-link" style="display: flex; align-items: center; gap: 0.75rem; padding: 1.25rem; border: 4px solid var(--kc-border); background: var(--kc-bg-card); text-decoration: none;">
           <span style="font-size: 1.5rem;">{link.icon}</span>
           <div>
-            <span class="cc-headline" style="display: block; font-weight: 900; font-size: 0.85rem; color: var(--cc-text); text-transform: uppercase;">{link.label}</span>
-            <span style="font-family: var(--cc-font-mono); font-size: 0.65rem; color: var(--cc-text-muted);">{link.sub}</span>
+            <span class="cc-headline" style="display: block; font-weight: 900; font-size: 0.85rem; color: var(--kc-text); text-transform: uppercase;">{link.label}</span>
+            <span style="font-family: var(--kc-font-mono); font-size: 0.65rem; color: var(--kc-text-muted);">{link.sub}</span>
           </div>
         </a>
       ))}
     </section>
 
     <!-- Subscribe -->
-    <section style="margin-bottom: 5rem; text-align: center; padding: 3rem 2rem; border: 4px solid var(--cc-border); background: var(--cc-bg-surface);">
-      <h2 class="cc-headline" style="font-size: 2rem; font-weight: 900; text-transform: uppercase; font-style: italic; letter-spacing: -0.02em; margin: 0 0 0.75rem; color: var(--cc-text);">
+    <section style="margin-bottom: 5rem; text-align: center; padding: 3rem 2rem; border: 4px solid var(--kc-border); background: var(--kc-bg-surface);">
+      <h2 class="cc-headline" style="font-size: 2rem; font-weight: 900; text-transform: uppercase; font-style: italic; letter-spacing: -0.02em; margin: 0 0 0.75rem; color: var(--kc-text);">
         Stay in the Loop
       </h2>
-      <p style="font-family: var(--cc-font-body); font-size: 0.95rem; color: var(--cc-text-dim); margin: 0 0 2rem; max-width: 480px; margin-left: auto; margin-right: auto; line-height: 1.5;">
+      <p style="font-family: var(--kc-font-body); font-size: 0.95rem; color: var(--kc-text-dim); margin: 0 0 2rem; max-width: 480px; margin-left: auto; margin-right: auto; line-height: 1.5;">
         Get notified when Kilocode ships new releases. No spam — just changelogs.
       </p>
       <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; max-width: 500px; margin: 0 auto 1.5rem;">
         <input
           type="email"
           placeholder="you@example.com"
-          style="flex: 1; min-width: 220px; padding: 0.85rem 1rem; border: 4px solid var(--cc-border); background: var(--cc-bg); color: var(--cc-text); font-family: var(--cc-font-mono); font-size: 0.85rem; outline: none; transition: border-color 150ms;"
-          onfocus="this.style.borderColor='var(--cc-primary)'"
-          onblur="this.style.borderColor='var(--cc-border)'"
+          style="flex: 1; min-width: 220px; padding: 0.85rem 1rem; border: 4px solid var(--kc-border); background: var(--kc-bg); color: var(--kc-text); font-family: var(--kc-font-mono); font-size: 0.85rem; outline: none; transition: border-color 150ms;"
+          onfocus="this.style.borderColor='var(--kc-primary)'"
+          onblur="this.style.borderColor='var(--kc-border)'"
         />
         <button
           class="cc-headline"
-          style="background: var(--cc-primary); color: white; font-weight: 900; padding: 0.85rem 1.75rem; font-size: 0.85rem; border: 4px solid var(--cc-border); box-shadow: var(--cc-shadow-sm); cursor: pointer; text-transform: uppercase; font-style: italic; transition: transform 100ms, box-shadow 100ms; position: relative; overflow: visible;"
+          style="background: var(--kc-primary); color: white; font-weight: 900; padding: 0.85rem 1.75rem; font-size: 0.85rem; border: 4px solid var(--kc-border); box-shadow: var(--kc-shadow-sm); cursor: pointer; text-transform: uppercase; font-style: italic; transition: transform 100ms, box-shadow 100ms; position: relative; overflow: visible;"
           onmouseover="this.style.transform='translate(1px,1px)';this.style.boxShadow='none'"
-          onmouseout="this.style.transform='';this.style.boxShadow='var(--cc-shadow-sm)'"
+          onmouseout="this.style.transform='';this.style.boxShadow='var(--kc-shadow-sm)'"
         >
           Subscribe
         </button>
       </div>
       <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
-        <a href="/feed/all.xml" style="display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--cc-font-mono); font-size: 0.75rem; color: var(--cc-text-dim); text-decoration: none; transition: color 150ms;" onmouseover="this.style.color='var(--cc-primary-bright)'" onmouseout="this.style.color='var(--cc-text-dim)'">
+        <a href="/feed/all.xml" style="display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--kc-font-mono); font-size: 0.75rem; color: var(--kc-text-dim); text-decoration: none; transition: color 150ms;" onmouseover="this.style.color='var(--kc-primary-bright)'" onmouseout="this.style.color='var(--kc-text-dim)'">
           📡 RSS Feed
         </a>
-        <a href={`https://github.com/${tool?.repo || "anthropics/kilocode"}`} target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--cc-font-mono); font-size: 0.75rem; color: var(--cc-text-dim); text-decoration: none; transition: color 150ms;" onmouseover="this.style.color='var(--cc-primary-bright)'" onmouseout="this.style.color='var(--cc-text-dim)'">
+        <a href={`https://github.com/${tool?.repo || "anthropics/kilocode"}`} target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--kc-font-mono); font-size: 0.75rem; color: var(--kc-text-dim); text-decoration: none; transition: color 150ms;" onmouseover="this.style.color='var(--kc-primary-bright)'" onmouseout="this.style.color='var(--kc-text-dim)'">
           ⭐ Star on GitHub
         </a>
       </div>

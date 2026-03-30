@@ -22,25 +22,25 @@ const INITIAL_LOAD = 12;
   <div style="max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 0;">
 
     <!-- Header -->
-    <header style="margin-bottom: 4rem; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1.5rem; border-left: 8px solid var(--cc-primary); padding-left: 2rem; padding-top: 1rem; padding-bottom: 1rem;">
+    <header style="margin-bottom: 4rem; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1.5rem; border-left: 8px solid var(--kc-primary); padding-left: 2rem; padding-top: 1rem; padding-bottom: 1rem;">
       <div>
-        <h1 class="cc-headline" style="font-size: clamp(3rem, 8vw, 6rem); font-weight: 900; text-transform: uppercase; letter-spacing: -0.03em; line-height: 0.9; margin: 0 0 0.5rem; color: var(--cc-text);">
+        <h1 class="cc-headline" style="font-size: clamp(3rem, 8vw, 6rem); font-weight: 900; text-transform: uppercase; letter-spacing: -0.03em; line-height: 0.9; margin: 0 0 0.5rem; color: var(--kc-text);">
           Releases
         </h1>
-        <p class="cc-headline" style="font-size: 1.1rem; font-weight: 700; color: var(--cc-primary-bright); margin: 0; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.8;">
+        <p class="cc-headline" style="font-size: 1.1rem; font-weight: 700; color: var(--kc-primary-bright); margin: 0; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.8;">
           Version History &amp; Iteration Log
         </p>
       </div>
       <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
         {latestStable && (
-          <div style="border: 4px solid var(--cc-border); padding: 0.75rem 1.5rem; background: var(--cc-bg-card);">
-            <span style="font-family: var(--cc-font-mono); font-size: 0.65rem; color: var(--cc-text-muted); display: block; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.25rem;">Latest Stable</span>
-            <span class="cc-headline" style="font-size: 1.5rem; font-weight: 900; color: var(--cc-primary-bright);">{latestStable.version}</span>
+          <div style="border: 4px solid var(--kc-border); padding: 0.75rem 1.5rem; background: var(--kc-bg-card);">
+            <span style="font-family: var(--kc-font-mono); font-size: 0.65rem; color: var(--kc-text-muted); display: block; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.25rem;">Latest Stable</span>
+            <span class="cc-headline" style="font-size: 1.5rem; font-weight: 900; color: var(--kc-primary-bright);">{latestStable.version}</span>
           </div>
         )}
-        <div style="border: 4px solid var(--cc-border); padding: 0.75rem 1.5rem; background: var(--cc-bg-card);">
-          <span style="font-family: var(--cc-font-mono); font-size: 0.65rem; color: var(--cc-text-muted); display: block; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.25rem;">Total</span>
-          <span class="cc-headline" style="font-size: 1.5rem; font-weight: 900; color: var(--cc-text);">{releases.length}</span>
+        <div style="border: 4px solid var(--kc-border); padding: 0.75rem 1.5rem; background: var(--kc-bg-card);">
+          <span style="font-family: var(--kc-font-mono); font-size: 0.65rem; color: var(--kc-text-muted); display: block; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.25rem;">Total</span>
+          <span class="cc-headline" style="font-size: 1.5rem; font-weight: 900; color: var(--kc-text);">{releases.length}</span>
         </div>
       </div>
     </header>
@@ -48,12 +48,12 @@ const INITIAL_LOAD = 12;
     <!-- Filter bar -->
     {releases.length > 6 && (
       <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 2rem; align-items: center;">
-        <span style="font-family: var(--cc-font-mono); font-size: 0.65rem; color: var(--cc-text-muted); text-transform: uppercase; letter-spacing: 0.1em;">Filter:</span>
+        <span style="font-family: var(--kc-font-mono); font-size: 0.65rem; color: var(--kc-text-muted); text-transform: uppercase; letter-spacing: 0.1em;">Filter:</span>
         {["all", "stable", "breaking", "prerelease"].map((f) => (
           <button
             class="cc-headline releases-filter-btn"
             data-filter={f}
-            style={`border: 2px solid var(--cc-border-dim); padding: 0.35rem 0.9rem; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; transition: all 100ms; background: ${f === 'all' ? 'var(--cc-primary)' : 'transparent'}; color: ${f === 'all' ? 'white' : 'var(--cc-text-muted)'}; border-color: ${f === 'all' ? 'var(--cc-primary)' : 'var(--cc-border-dim)'};`}
+            style={`border: 2px solid var(--kc-border-dim); padding: 0.35rem 0.9rem; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; transition: all 100ms; background: ${f === 'all' ? 'var(--kc-primary)' : 'transparent'}; color: ${f === 'all' ? 'white' : 'var(--kc-text-muted)'}; border-color: ${f === 'all' ? 'var(--kc-primary)' : 'var(--kc-border-dim)'};`}
           >
             {f === "prerelease" ? "Pre" : f.charAt(0).toUpperCase() + f.slice(1)}
           </button>
@@ -62,9 +62,9 @@ const INITIAL_LOAD = 12;
           id="releases-search"
           type="text"
           placeholder="Search..."
-          style="background: var(--cc-bg); border: 2px solid var(--cc-border-dim); padding: 0.35rem 0.75rem; font-family: var(--cc-font-mono); font-size: 0.72rem; color: var(--cc-text); outline: none; transition: border-color 150ms; margin-left: auto;"
-          onfocus="this.style.borderColor='var(--cc-primary-bright)'"
-          onblur="this.style.borderColor='var(--cc-border-dim)'"
+          style="background: var(--kc-bg); border: 2px solid var(--kc-border-dim); padding: 0.35rem 0.75rem; font-family: var(--kc-font-mono); font-size: 0.72rem; color: var(--kc-text); outline: none; transition: border-color 150ms; margin-left: auto;"
+          onfocus="this.style.borderColor='var(--kc-primary-bright)'"
+          onblur="this.style.borderColor='var(--kc-border-dim)'"
         />
       </div>
     )}
@@ -82,21 +82,21 @@ const INITIAL_LOAD = 12;
               data-prerelease={String(release.prerelease)}
               data-breaking={String(breaking)}
               data-hidden-init={idx >= INITIAL_LOAD ? "true" : "false"}
-              style={`padding: 1.5rem; border: 4px solid ${breaking ? 'var(--cc-primary)' : 'var(--cc-border)'}; background: ${breaking ? 'rgba(245,158,11,0.06)' : 'var(--cc-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--cc-primary);' : ''} transition: border-color 150ms;`}
+              style={`padding: 1.5rem; border: 4px solid ${breaking ? 'var(--kc-primary)' : 'var(--kc-border)'}; background: ${breaking ? 'rgba(245,158,11,0.06)' : 'var(--kc-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--kc-primary);' : ''} transition: border-color 150ms;`}
             >
               <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.75rem;">
                 <div>
-                  <span class="cc-headline" style="font-size: 1.3rem; font-weight: 900; color: var(--cc-text); display: block;">{release.version}</span>
-                  <span style="font-family: var(--cc-font-mono); font-size: 0.65rem; color: var(--cc-text-muted);">{formatDate(release.date)}</span>
+                  <span class="cc-headline" style="font-size: 1.3rem; font-weight: 900; color: var(--kc-text); display: block;">{release.version}</span>
+                  <span style="font-family: var(--kc-font-mono); font-size: 0.65rem; color: var(--kc-text-muted);">{formatDate(release.date)}</span>
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 0.3rem; align-items: flex-end;">
-                  {breaking && <span style="background: var(--cc-primary); color: white; font-family: var(--cc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.55rem; font-weight: 700; text-transform: uppercase;">BREAKING</span>}
-                  {release.prerelease && <span style="background: rgba(245,158,11,0.15); color: #f59e0b; font-family: var(--cc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.55rem; font-weight: 700; text-transform: uppercase; border: 1px solid #f59e0b;">PRE</span>}
+                  {breaking && <span style="background: var(--kc-primary); color: white; font-family: var(--kc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.55rem; font-weight: 700; text-transform: uppercase;">BREAKING</span>}
+                  {release.prerelease && <span style="background: rgba(245,158,11,0.15); color: #f59e0b; font-family: var(--kc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.55rem; font-weight: 700; text-transform: uppercase; border: 1px solid #f59e0b;">PRE</span>}
                 </div>
               </div>
 
               {release.name && (
-                <p class="cc-headline" style="font-size: 0.78rem; font-weight: 700; color: var(--cc-text-dim); text-transform: uppercase; margin: 0 0 0.75rem; letter-spacing: 0.03em;">
+                <p class="cc-headline" style="font-size: 0.78rem; font-weight: 700; color: var(--kc-text-dim); text-transform: uppercase; margin: 0 0 0.75rem; letter-spacing: 0.03em;">
                   {(release.name).replace(/^claude[\s-]code\s+/i, "")}
                 </p>
               )}
@@ -105,9 +105,9 @@ const INITIAL_LOAD = 12;
                 href={release.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                style="display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--cc-font-mono); font-size: 0.65rem; color: var(--cc-text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.08em; transition: color 150ms; border-top: 1px solid var(--cc-border-dim); padding-top: 0.75rem; width: 100%;"
-                onmouseover="this.style.color='var(--cc-primary-bright)'"
-                onmouseout="this.style.color='var(--cc-text-muted)'"
+                style="display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--kc-font-mono); font-size: 0.65rem; color: var(--kc-text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.08em; transition: color 150ms; border-top: 1px solid var(--kc-border-dim); padding-top: 0.75rem; width: 100%;"
+                onmouseover="this.style.color='var(--kc-primary-bright)'"
+                onmouseout="this.style.color='var(--kc-text-muted)'"
               >
                 ↗ View on GitHub
               </a>
@@ -116,8 +116,8 @@ const INITIAL_LOAD = 12;
         })}
       </div>
     ) : (
-      <div style="padding: 4rem 2rem; border: 4px dashed var(--cc-border-dim); text-align: center; margin-bottom: 3rem;">
-        <p style="font-family: var(--cc-font-mono); color: var(--cc-text-muted);">$ no releases tracked yet</p>
+      <div style="padding: 4rem 2rem; border: 4px dashed var(--kc-border-dim); text-align: center; margin-bottom: 3rem;">
+        <p style="font-family: var(--kc-font-mono); color: var(--kc-text-muted);">$ no releases tracked yet</p>
       </div>
     )}
 
@@ -126,9 +126,9 @@ const INITIAL_LOAD = 12;
         <button
           id="load-more-releases"
           class="cc-headline"
-          style="background: transparent; border: 4px solid var(--cc-border); color: var(--cc-text); padding: 1rem 2.5rem; font-size: 0.85rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; font-style: italic; transition: background 100ms, color 100ms;"
-          onmouseover="this.style.background='var(--cc-primary)';this.style.color='white'"
-          onmouseout="this.style.background='transparent';this.style.color='var(--cc-text)'"
+          style="background: transparent; border: 4px solid var(--kc-border); color: var(--kc-text); padding: 1rem 2.5rem; font-size: 0.85rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; font-style: italic; transition: background 100ms, color 100ms;"
+          onmouseover="this.style.background='var(--kc-primary)';this.style.color='white'"
+          onmouseout="this.style.background='transparent';this.style.color='var(--kc-text)'"
         >
           Load More ▼
         </button>
@@ -179,12 +179,12 @@ const INITIAL_LOAD = 12;
         activeFilter = btn.dataset.filter || 'all';
         filterBtns.forEach(b => {
           b.style.background = 'transparent';
-          b.style.color = 'var(--cc-text-muted)';
-          b.style.borderColor = 'var(--cc-border-dim)';
+          b.style.color = 'var(--kc-text-muted)';
+          b.style.borderColor = 'var(--kc-border-dim)';
         });
-        btn.style.background = 'var(--cc-primary)';
+        btn.style.background = 'var(--kc-primary)';
         btn.style.color = 'white';
-        btn.style.borderColor = 'var(--cc-primary)';
+        btn.style.borderColor = 'var(--kc-primary)';
         applyFilters();
       });
     });
