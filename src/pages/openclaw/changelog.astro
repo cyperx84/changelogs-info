@@ -1,6 +1,7 @@
 ---
 import OpenClawLayout from "../../layouts/OpenClawLayout.astro";
 import { getToolReleases, formatDate } from "../../lib/releases";
+import "../../styles/changelog-shared.css";
 import { marked } from "marked";
 
 const data = await getToolReleases("openclaw");
@@ -41,306 +42,6 @@ function renderBody(body: string): string {
 }
 ---
 
-<style>
-  /* === Changelog Page === */
-
-  /* Search */
-  .cl-search-wrap {
-    width: 100%;
-    max-width: 320px;
-  }
-  .cl-search-inner {
-    position: relative;
-  }
-  .cl-search-input {
-    width: 100%;
-    background: var(--oc-bg);
-    border: 4px solid var(--oc-border);
-    padding: 1rem;
-    font-family: var(--oc-font-headline);
-    font-weight: 700;
-    text-transform: uppercase;
-    color: var(--oc-text);
-    font-size: 0.85rem;
-    outline: none;
-    box-shadow: var(--oc-shadow);
-    transition: border-color 100ms, box-shadow 100ms;
-  }
-  .cl-search-input::placeholder {
-    color: var(--oc-text-muted);
-    font-size: 0.85rem;
-  }
-  .cl-search-input:focus {
-    border-color: var(--oc-primary);
-    box-shadow: 6px 6px 0 0 var(--oc-primary);
-  }
-  .cl-search-icon {
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--oc-text-muted);
-    font-size: 1rem;
-    pointer-events: none;
-  }
-
-  /* Filter pills */
-  .cl-filter-btn {
-    background: transparent;
-    border: 2px solid var(--oc-border-dim);
-    padding: 0.3rem 0.75rem;
-    font-size: 0.65rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--oc-text-muted);
-    cursor: pointer;
-    transition: all 100ms;
-  }
-  .cl-filter-btn:hover {
-    border-color: var(--oc-border);
-    color: var(--oc-text);
-    background: var(--oc-bg-surface);
-  }
-  .cl-filter-btn.is-active {
-    border-color: var(--oc-primary);
-    color: var(--oc-text);
-    background: var(--oc-bg-surface);
-  }
-  .cl-filter-btn:focus-visible {
-    outline: 3px solid var(--oc-primary);
-    outline-offset: 2px;
-  }
-
-  /* Timeline */
-  .cl-timeline {
-    position: relative;
-    padding-left: 3rem;
-    border-left: 6px solid var(--oc-border);
-  }
-
-  /* Timeline dot */
-  .cl-dot {
-    position: absolute;
-    left: -3.9rem;
-    top: 0.5rem;
-    width: 3rem;
-    height: 3rem;
-    border: 4px solid var(--oc-border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--oc-bg-card);
-    transition: border-color 150ms;
-  }
-  .cl-dot--breaking {
-    background: var(--oc-primary);
-    border-color: var(--oc-primary);
-  }
-  .cl-dot__icon {
-    font-size: 0.8rem;
-    color: var(--oc-primary-bright);
-  }
-  .cl-dot--breaking .cl-dot__icon {
-    color: #fff;
-  }
-
-  /* Header */
-  .cl-header {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    align-items: baseline;
-    margin-bottom: 1rem;
-  }
-  .cl-header__version {
-    font-size: 2.25rem;
-    font-weight: 900;
-    font-style: italic;
-    letter-spacing: -0.02em;
-    color: var(--oc-text);
-  }
-  .cl-header__date {
-    font-size: 1rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: var(--oc-text-muted);
-    letter-spacing: 0.05em;
-  }
-
-  /* Badges */
-  .cl-label {
-    display: inline-block;
-    padding: 0.2rem 0.75rem;
-    font-family: var(--oc-font-headline);
-    font-size: 0.7rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-  .cl-label--breaking {
-    background: var(--oc-primary);
-    color: var(--oc-text-on-accent);
-  }
-  .cl-label--prerelease {
-    background: transparent;
-    color: var(--oc-primary);
-    border: 2px solid var(--oc-primary);
-  }
-
-  /* Entry card */
-  .cl-card {
-    padding: 2rem;
-    background: var(--oc-bg-card);
-    border: 4px solid var(--oc-border-dim);
-    transition: border-color 150ms, box-shadow 150ms;
-  }
-  .cl-card:hover {
-    border-color: var(--oc-border);
-  }
-  .cl-card--breaking {
-    border-left: 8px solid var(--oc-primary);
-  }
-  .cl-card--breaking:hover {
-    box-shadow: 4px 4px 0 0 var(--oc-primary);
-  }
-
-  /* Entry title */
-  .cl-card__title {
-    font-size: 1.5rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    margin: 0 0 1.5rem;
-    letter-spacing: -0.01em;
-    color: var(--oc-text);
-  }
-
-  /* Entry body */
-  .cl-card__body {
-    color: var(--oc-text-dim);
-    font-size: 0.875rem;
-    line-height: 1.7;
-    font-family: var(--oc-font-body);
-    overflow: hidden;
-    position: relative;
-  }
-
-  /* Expand button */
-  .cl-expand-btn {
-    display: block;
-    margin-top: 1rem;
-    background: transparent;
-    border: 2px solid var(--oc-border);
-    color: var(--oc-text);
-    padding: 0.5rem 1.25rem;
-    font-size: 0.7rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    cursor: pointer;
-    transition: background 100ms, transform 100ms;
-  }
-  .cl-expand-btn:hover {
-    background: var(--oc-bg-surface);
-    transform: translate(-1px, -1px);
-  }
-  .cl-expand-btn:focus-visible {
-    outline: 3px solid var(--oc-primary);
-    outline-offset: 2px;
-  }
-
-  /* Footer */
-  .cl-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 1.5rem;
-    padding-top: 1rem;
-    border-top: 2px solid var(--oc-border-dim);
-  }
-  .cl-footer__link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: var(--oc-primary-bright);
-    text-decoration: none;
-    transition: opacity 150ms, gap 150ms;
-  }
-  .cl-footer__link:hover {
-    opacity: 0.7;
-    gap: 0.75rem;
-  }
-  .cl-footer__link:focus-visible {
-    outline: 2px solid var(--oc-primary);
-    outline-offset: 2px;
-  }
-  .cl-footer__num {
-    font-family: var(--oc-font-mono);
-    font-size: 0.65rem;
-    color: var(--oc-text-muted);
-  }
-
-  /* Scroll to top */
-  #cl-scroll-top {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    z-index: 60;
-    background: var(--oc-border);
-    color: var(--oc-bg);
-    padding: 1rem;
-    border: 4px solid var(--oc-border);
-    box-shadow: 6px 6px 0px 0px rgba(235,0,0,1);
-    cursor: pointer;
-    font-size: 1.25rem;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 200ms, transform 100ms, box-shadow 100ms;
-  }
-  #cl-scroll-top.is-visible {
-    opacity: 1;
-    pointer-events: auto;
-  }
-  #cl-scroll-top:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 8px 8px 0px 0px rgba(235,0,0,1);
-  }
-  #cl-scroll-top:focus-visible {
-    outline: 3px solid var(--oc-primary);
-    outline-offset: 2px;
-  }
-
-  /* Hero */
-  .cl-hero__title {
-    font-size: clamp(3.5rem, 10vw, 7rem);
-    font-weight: 900;
-    text-transform: uppercase;
-    font-style: italic;
-    letter-spacing: -0.03em;
-    line-height: 0.9;
-    margin: 0 0 1.5rem;
-    color: var(--oc-text);
-  }
-  .cl-hero__sub {
-    font-family: var(--oc-font-body);
-    font-size: 1.1rem;
-    max-width: 32rem;
-    color: var(--oc-text-dim);
-    line-height: 1.6;
-    margin: 0;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  .cl-hero__actions {
-    margin-top: 2rem;
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-</style>
 
 <OpenClawLayout
   title="OpenClaw Changelog — changelogs.info"
@@ -380,19 +81,23 @@ function renderBody(body: string): string {
     >
       {releases.map((release, idx) => {
         const breaking = isBreaking(release.body);
-        const renderedBody = renderBody(release.body || "");
+        // Only render full body HTML for the first 10 entries — rest are lazy-loaded
+        const INITIAL_RENDER = 10;
+        const renderedBody = idx < INITIAL_RENDER ? renderBody(release.body || "") : "";
         const isLong = (release.body || "").length > 600;
+        const hidden = idx >= INITIAL_RENDER;
 
         return (
           <article
             class="cl-entry"
             data-version={release.version.toLowerCase()}
             data-name={(release.name || "").toLowerCase()}
-            data-body={(release.body || "").toLowerCase().slice(0, 800)}
+            data-body={(release.body || "").toLowerCase().slice(0, 400)}
             data-prerelease={String(release.prerelease)}
             data-breaking={String(breaking)}
             data-index={idx}
-            style={`position: relative; margin-bottom: 3rem; ${idx >= 10 ? 'display: none;' : ''}`}
+            data-src={hidden ? release.url : undefined}
+            style={`position: relative; margin-bottom: 3rem; ${hidden ? 'display: none;' : ''}`}
           >
             <div class={`cl-dot ${breaking ? 'cl-dot--breaking' : ''}`}>
               <span class="cl-dot__icon">
@@ -420,12 +125,18 @@ function renderBody(body: string): string {
                 {(release.name || release.version).replace(/^openclaw\s+/i, "")}
               </h3>
 
-              <div
-                class={`changelog-body ${isLong && idx > 0 ? 'cl-collapsed' : ''} cl-card__body`}
-                set:html={renderedBody}
-              />
+              {hidden ? (
+                <div class="changelog-body cl-card__body cl-lazy-placeholder">
+                  <p style="color:var(--oc-text-muted);font-size:0.8rem;">Click Load More to expand</p>
+                </div>
+              ) : (
+                <div
+                  class={`changelog-body ${isLong && idx > 0 ? 'cl-collapsed' : ''} cl-card__body`}
+                  set:html={renderedBody}
+                />
+              )}
 
-              {isLong && (
+              {!hidden && isLong && (
                 <button
                   class="cl-expand-btn oc-headline"
                   data-expand-target={idx}
@@ -453,6 +164,14 @@ function renderBody(body: string): string {
       <p class="oc-headline" style="font-weight: 700; text-transform: uppercase; color: var(--oc-text-muted);">
         — {releases.length} releases tracked —
       </p>
+
+      {releases.length > 10 && (
+        <div class="cl-load-more-wrap">
+          <button id="cl-load-more" class="oc-headline cl-load-more-btn">
+            Load {releases.length - 10} More Releases ▼
+          </button>
+        </div>
+      )}
     </section>
 
     <div style="padding: 3rem; border: 4px dashed var(--oc-border-dim); text-align: center;">
@@ -511,6 +230,19 @@ function renderBody(body: string): string {
     breakingBtn?.addEventListener("click", () => applyFilter("breaking"));
     prereleaseBtn?.addEventListener("click", () => applyFilter("prerelease"));
     allFilterBtn?.addEventListener("click", () => applyFilter("all"));
+
+    // Load more
+    let allLoaded = false;
+    const loadMoreBtn = document.getElementById("cl-load-more");
+    loadMoreBtn?.addEventListener("click", () => {
+      allLoaded = true;
+      loadMoreBtn.style.display = "none";
+      allEntries.forEach((entry) => {
+        if (entry.dataset.index && parseInt(entry.dataset.index) >= 10) {
+          entry.style.display = "";
+        }
+      });
+    });
 
     // Expand/collapse (event delegation)
     document.addEventListener("click", (e) => {
