@@ -21,7 +21,7 @@ try {
   // fallback: empty
 }
 
-const FEATURED_IDS = ["openclaw", "claude-code", "codex-cli", "gemini-cli", "kilocode"];
+const FEATURED_IDS = ["openclaw", "claude-code", "codex-cli", "gemini-cli", "kilocode", "opencode", "hermes-agent"];
 const allTools = getTools();
 const featuredTools = FEATURED_IDS.map(id => allTools.find(t => t.id === id)).filter(Boolean);
 const otherTools = allTools.filter(t => !FEATURED_IDS.includes(t.id));
@@ -37,6 +37,8 @@ const toolColors: Record<string, { bg: string; text: string; glow: string }> = {
   "continue":    { bg: "#2563eb", text: "#ffffff", glow: "#2563eb" },
   "opencode":    { bg: "#0ea5e9", text: "#ffffff", glow: "#0ea5e9" },
   "roo-code":    { bg: "#fb923c", text: "#ffffff", glow: "#fb923c" },
+  "kilocode":    { bg: "#CCFF33", text: "#000000", glow: "#CCFF33" },
+  "hermes-agent": { bg: "#D97706", text: "#ffffff", glow: "#D97706" },
 };
 
 const categoryLabels: Record<string, string> = {
@@ -57,6 +59,8 @@ const toolIcons: Record<string, string> = {
   "continue":    "▶",
   "opencode":    "○",
   "roo-code":    "R",
+  "kilocode":    "↗",
+  "hermes-agent": "⚡",
 };
 
 const featuredLinks: Record<string, string> = {
@@ -64,6 +68,9 @@ const featuredLinks: Record<string, string> = {
   "claude-code": "/claude-code/",
   "codex-cli":   "/codex-cli/",
   "gemini-cli":  "/gemini-cli/",
+  "kilocode":    "/kilocode/",
+  "opencode":    "/opencode/",
+  "hermes-agent": "/hermes-agent/",
 };
 
 function formatDate(dateStr: string): string {
@@ -112,13 +119,13 @@ const harnessPrefix: Record<string, string> = {
       </div>
 
       <h1 class="brutal-hero__title" aria-label="Too many tools. Too many changes.">
-        <span class="brutal-glitch" data-text="TOO">TOO</span>
-        <span class="brutal-glitch brutal-glitch--amber" data-text="MANY">MANY</span>
-        <span class="brutal-glitch brutal-glitch--green" data-text="TOOLS.">TOOLS.</span>
+        <span class="brutal-word" data-word="TOO">TOO</span>
+        <span class="brutal-word brutal-word--amber" data-word="MANY">MANY</span>
+        <span class="brutal-word brutal-word--green" data-word="TOOLS.">TOOLS.</span>
         <br />
-        <span class="brutal-glitch brutal-glitch--blue" data-text="TOO">TOO</span>
-        <span class="brutal-glitch brutal-glitch--violet" data-text="MANY">MANY</span>
-        <span class="brutal-glitch" data-text="CHANGES.">CHANGES.</span>
+        <span class="brutal-word brutal-word--blue" data-word="TOO">TOO</span>
+        <span class="brutal-word brutal-word--violet" data-word="MANY">MANY</span>
+        <span class="brutal-word" data-word="CHANGES.">CHANGES.</span>
       </h1>
 
       <p class="brutal-hero__sub">
@@ -298,6 +305,59 @@ const harnessPrefix: Record<string, string> = {
 
 </HubLayout>
 
+<script is:inline>
+(function () {
+  var CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*?";
+  var DURATION = 500;
+  var FRAME_MS = 40;
+  var STAGGER_MS = 120;
+
+  function scramble(el, word, delay) {
+    setTimeout(function () {
+      var start = null;
+      var len = word.length;
+      function frame(ts) {
+        if (!start) start = ts;
+        var elapsed = ts - start;
+        var progress = Math.min(elapsed / DURATION, 1);
+        var revealed = Math.floor(progress * len);
+        var text = "";
+        for (var i = 0; i < len; i++) {
+          if (i < revealed) {
+            text += word[i];
+          } else {
+            text += CHARS[Math.floor(Math.random() * CHARS.length)];
+          }
+        }
+        el.textContent = text;
+        if (progress < 1) {
+          requestAnimationFrame(frame);
+        } else {
+          el.textContent = word;
+        }
+      }
+      requestAnimationFrame(frame);
+    }, delay);
+  }
+
+  function init() {
+    var words = document.querySelectorAll(".brutal-word[data-word]");
+    words.forEach(function (el, i) {
+      scramble(el, el.getAttribute("data-word"), i * STAGGER_MS);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+
+  // Re-run on Astro view transitions
+  document.addEventListener("astro:page-load", init);
+})();
+</script>
+
 <style is:global>
   /* ══════════════════════════════════════════════════════════
      @property — animatable custom properties for gradient shifts
@@ -429,61 +489,14 @@ const harnessPrefix: Record<string, string> = {
     color: var(--hub-text-primary, #fff);
   }
 
-  .brutal-glitch {
-    position: relative;
+  .brutal-word {
     display: inline-block;
     color: #eb0000;
-    animation: brutal-glitch-color 8s steps(1) infinite;
   }
-  .brutal-glitch--amber { color: #f59e0b; animation-delay: -2s; }
-  .brutal-glitch--green { color: #00c851; animation-delay: -4s; }
-  .brutal-glitch--blue  { color: #4285f4; animation-delay: -6s; }
-  .brutal-glitch--violet { color: #8b5cf6; animation-delay: -3s; }
-
-  @keyframes brutal-glitch-color {
-    0%   { color: #eb0000; }
-    25%  { color: #f59e0b; }
-    50%  { color: #00c851; }
-    75%  { color: #4285f4; }
-    100% { color: #eb0000; }
-  }
-
-  /* Glitch pseudo-elements */
-  .brutal-glitch::before,
-  .brutal-glitch::after {
-    content: attr(data-text);
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-  }
-  .brutal-glitch::before {
-    color: #00c851;
-    animation: brutal-glitch-shift-1 3s steps(2) infinite;
-    clip-path: inset(20% 0 60% 0);
-    text-shadow: -2px 0 #f59e0b;
-  }
-  .brutal-glitch::after {
-    color: #4285f4;
-    animation: brutal-glitch-shift-2 2.5s steps(3) infinite;
-    clip-path: inset(60% 0 10% 0);
-    text-shadow: 2px 0 #eb0000;
-  }
-  @keyframes brutal-glitch-shift-1 {
-    0%, 100% { transform: translate(0); }
-    20% { transform: translate(-3px, 1px); }
-    40% { transform: translate(2px, -1px); }
-    60% { transform: translate(-1px, 2px); }
-    80% { transform: translate(3px, 0); }
-  }
-  @keyframes brutal-glitch-shift-2 {
-    0%, 100% { transform: translate(0); }
-    25% { transform: translate(2px, -2px); }
-    50% { transform: translate(-3px, 1px); }
-    75% { transform: translate(1px, 2px); }
-  }
+  .brutal-word--amber  { color: #f59e0b; }
+  .brutal-word--green  { color: #00c851; }
+  .brutal-word--blue   { color: #4285f4; }
+  .brutal-word--violet { color: #8b5cf6; }
 
   .brutal-hero__sub {
     font-family: 'Work Sans', sans-serif;
@@ -1001,17 +1014,6 @@ const harnessPrefix: Record<string, string> = {
      REDUCED MOTION
      ══════════════════════════════════════════════════════════ */
   @media (prefers-reduced-motion: reduce) {
-    .brutal-glitch::before,
-    .brutal-glitch::after {
-      display: none;
-    }
-    .brutal-glitch,
-    .brutal-glitch--amber,
-    .brutal-glitch--green,
-    .brutal-glitch--blue,
-    .brutal-glitch--violet {
-      animation: none;
-    }
     .brutal-grain-overlay {
       animation: none;
     }

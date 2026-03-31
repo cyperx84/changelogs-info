@@ -1,0 +1,201 @@
+---
+import OpenCodeLayout from "../../layouts/OpenCodeLayout.astro";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
+let cs: any = {};
+try {
+  const raw = readFileSync(join(process.cwd(), "src/content/cheatsheets-json/opencode.json"), "utf-8");
+  cs = JSON.parse(raw);
+} catch {}
+
+const quickStart = cs.quickStart || {};
+const dailyWorkflows = cs.dailyWorkflows || [];
+const powerMoves = cs.powerMoves || [];
+const gotchas = cs.gotchas || [];
+const cliFlags = cs.cliFlags || [];
+const slashCommands = cs.slashCommands || [];
+const proTips = cs.proTips || [];
+---
+
+<OpenCodeLayout
+  title="OpenCode Cheat Sheet — changelogs.info"
+  description="The actually useful OpenCode cheat sheet. Daily workflows, CLI flags, model switching, sessions."
+  currentPage="cheatsheet"
+>
+  <div style="max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 0;">
+
+    <!-- Hero -->
+    <section style="margin-bottom: 4rem; position: relative;">
+      <div style="position: absolute; top: -3rem; left: -3rem; opacity: 0.04; pointer-events: none; font-size: 12rem; line-height: 1;">○</div>
+      <h1
+        class="op-headline"
+        style="font-size: clamp(3.5rem, 10vw, 7rem); font-weight: 900; text-transform: uppercase; letter-spacing: -0.03em; line-height: 0.9; margin: 0 0 1rem; color: var(--op-text);"
+      >
+        Cheat<span style="color: var(--op-primary-bright);">Sheet</span>
+      </h1>
+      <p style="font-size: 1.1rem; max-width: 36rem; color: var(--op-text-dim); line-height: 1.5; margin: 0; font-family: var(--op-font-body); text-transform: uppercase; letter-spacing: 0.03em;">
+        The commands that matter. OpenCode muscle memory.
+      </p>
+      {cs.lastUpdated && (
+        <p style="font-family: var(--op-font-mono); font-size: 0.7rem; color: var(--op-text-muted); margin-top: 0.75rem;">
+          Last updated: {cs.lastUpdated}
+        </p>
+      )}
+    </section>
+
+    <!-- Bento grid -->
+    <div style="display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 4rem;">
+
+      <!-- Quick Start (from JSON or static fallback) -->
+      {quickStart.steps && quickStart.steps.length > 0 ? (
+        <div style="background: var(--op-border); color: var(--op-bg); padding: 2rem; border: 4px solid var(--op-border); box-shadow: var(--op-shadow);">
+          <h2 class="op-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--op-bg);">
+            {quickStart.title || "Quick Start"}
+          </h2>
+          <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            {quickStart.steps.map((step: string, i: number) => (
+              <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                <div style="background: var(--op-bg); color: var(--op-primary-bright); width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; font-family: var(--op-font-mono); font-weight: 900; font-size: 0.75rem; flex-shrink: 0;">
+                  {String(i + 1).padStart(2, '0')}
+                </div>
+                <div style="font-family: var(--op-font-headline); font-weight: 800; font-size: 0.85rem; color: var(--op-bg); text-transform: uppercase;">{step}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <!-- Static quick start fallback -->
+        <div style="background: var(--op-border); color: var(--op-bg); padding: 2rem; border: 4px solid var(--op-border); box-shadow: var(--op-shadow);">
+          <h2 class="op-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--op-bg);">
+            Quick Start
+          </h2>
+          <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            {[
+              { n: "01", label: "Install", cmd: "npm i -g opencode-ai" },
+              { n: "02", label: "Launch TUI", cmd: "opencode" },
+              { n: "03", label: "Auth GitHub Copilot", cmd: "opencode auth github" },
+              { n: "04", label: "Switch model", cmd: "opencode --model anthropic/claude-opus-4-5" },
+              { n: "05", label: "Share session", cmd: "opencode --share" },
+            ].map((item) => (
+              <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                <div style="background: var(--op-bg); color: var(--op-primary-bright); width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; font-family: var(--op-font-mono); font-weight: 900; font-size: 0.75rem; flex-shrink: 0;">
+                  {item.n}
+                </div>
+                <div style="flex: 1;">
+                  <div style="font-family: var(--op-font-headline); font-weight: 800; font-size: 0.85rem; color: var(--op-bg); text-transform: uppercase;">{item.label}</div>
+                  <div style="background: var(--op-bg); color: var(--op-primary-bright); font-family: var(--op-font-mono); font-size: 0.75rem; padding: 0.4rem 0.75rem; margin-top: 0.4rem; display: inline-block;">
+                    <span style="opacity: 0.5;">$</span> {item.cmd}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- Daily Workflows + Power Moves -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;" class="op-two-col">
+
+        <!-- Daily Workflows (JSON or fallback) -->
+        <div style="border: 4px solid var(--op-border); background: var(--op-bg-card); padding: 2rem; box-shadow: var(--op-shadow);">
+          <h2 class="op-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--op-primary-bright);">
+            Daily Workflows
+          </h2>
+          <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            {(dailyWorkflows.length > 0 ? dailyWorkflows : [
+              { title: "Start a session", command: "opencode" },
+              { title: "Resume last session", command: "opencode session resume" },
+              { title: "List sessions", command: "opencode session list" },
+              { title: "Run headless", command: "opencode --headless 'fix the bug'" },
+              { title: "Check version", command: "opencode --version" },
+            ]).map((wf: any) => (
+              <div style="border-left: 4px solid var(--op-border-dim); padding-left: 1rem;">
+                <div style="font-family: var(--op-font-headline); font-weight: 800; font-size: 0.85rem; color: var(--op-text); text-transform: uppercase; margin-bottom: 0.25rem;">{wf.title}</div>
+                {wf.description && <p style="font-family: var(--op-font-body); font-size: 0.8rem; color: var(--op-text-dim); margin: 0 0 0.5rem;">{wf.description}</p>}
+                {wf.command && (
+                  <div style="background: var(--op-bg); border: 2px solid var(--op-border-dim); padding: 0.5rem 0.75rem; font-family: var(--op-font-mono); font-size: 0.75rem; color: var(--op-primary-bright); overflow-x: auto;">
+                    <span style="opacity: 0.5;">$</span> {wf.command}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Power Moves -->
+        <div style="border: 4px solid var(--op-primary); background: var(--op-bg-card); padding: 2rem; box-shadow: var(--op-shadow);">
+          <h2 class="op-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--op-text);">
+            ⚡ Power Moves
+          </h2>
+          <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            {(powerMoves.length > 0 ? powerMoves : [
+              { title: "Multi-session TUI", command: "opencode session new" },
+              { title: "GitHub Copilot auth", command: "opencode auth github" },
+              { title: "Add MCP server", command: "opencode mcp add <url>" },
+              { title: "Share link", command: "opencode --share" },
+              { title: "LSP integration", command: "opencode lsp enable" },
+            ]).map((pm: any) => (
+              <div style="border: 2px solid var(--op-primary-bright); padding: 1rem; background: rgba(14,165,233,0.05);">
+                <div style="font-family: var(--op-font-headline); font-weight: 800; font-size: 0.85rem; color: var(--op-primary-bright); text-transform: uppercase; margin-bottom: 0.25rem;">{pm.title}</div>
+                {pm.description && <p style="font-family: var(--op-font-body); font-size: 0.8rem; color: var(--op-text-dim); margin: 0 0 0.5rem;">{pm.description}</p>}
+                {pm.command && (
+                  <div style="background: var(--op-bg); border: 2px solid var(--op-primary); padding: 0.5rem 0.75rem; font-family: var(--op-font-mono); font-size: 0.75rem; color: var(--op-primary-bright); overflow-x: auto;">
+                    <span style="opacity: 0.5;">$</span> {pm.command}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- CLI Flags -->
+      {cliFlags.length > 0 && (
+        <div style="border: 4px solid var(--op-border); background: var(--op-bg-surface); padding: 2rem; box-shadow: var(--op-shadow);">
+          <h2 class="op-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--op-text);">
+            CLI Flags
+          </h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem;">
+            {cliFlags.map((flag: any) => (
+              <div style="background: var(--op-bg); border: 2px solid var(--op-border-dim); padding: 1rem;">
+                <div style="font-family: var(--op-font-mono); font-size: 0.8rem; color: var(--op-primary-bright); font-weight: 700; margin-bottom: 0.35rem;">{flag.flag || flag.command}</div>
+                <div style="font-family: var(--op-font-body); font-size: 0.75rem; color: var(--op-text-dim);">{flag.description}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- Gotchas -->
+      {gotchas.length > 0 && (
+        <div style="border: 4px solid var(--op-border); background: rgba(14,165,233,0.04); padding: 2rem; box-shadow: var(--op-shadow);">
+          <h2 class="op-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--op-text);">
+            ⚠ Gotchas
+          </h2>
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {gotchas.map((g: any) => (
+              <div style="border-left: 6px solid var(--op-primary); padding: 1rem 1.25rem; background: var(--op-bg);">
+                <div style="font-family: var(--op-font-headline); font-weight: 800; font-size: 0.9rem; color: var(--op-primary-bright); text-transform: uppercase; margin-bottom: 0.35rem;">{g.title}</div>
+                <p style="font-family: var(--op-font-body); font-size: 0.82rem; color: var(--op-text-dim); margin: 0;">{g.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- Fallback if no data -->
+      {dailyWorkflows.length === 0 && powerMoves.length === 0 && cliFlags.length === 0 && gotchas.length === 0 && (
+        <div style="border: 4px dashed var(--op-border-dim); padding: 4rem 2rem; text-align: center;">
+          <p style="font-family: var(--op-font-mono); color: var(--op-text-muted); font-size: 0.85rem;">$ cheatsheet data not available — run scraper to populate</p>
+        </div>
+      )}
+    </div>
+  </div>
+
+  <style>
+    @media (max-width: 768px) {
+      .op-two-col { grid-template-columns: 1fr !important; }
+    }
+  </style>
+</OpenCodeLayout>

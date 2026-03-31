@@ -1,0 +1,167 @@
+---
+import HermesLayout from "../../layouts/HermesLayout.astro";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
+let cs: any = {};
+try {
+  const raw = readFileSync(join(process.cwd(), "src/content/cheatsheets-json/hermes-agent.json"), "utf-8");
+  cs = JSON.parse(raw);
+} catch {}
+
+const quickStart = cs.quickStart || {};
+const dailyWorkflows = cs.dailyWorkflows || [];
+const powerMoves = cs.powerMoves || [];
+const gotchas = cs.gotchas || [];
+const cliFlags = cs.cliFlags || [];
+const proTips = cs.proTips || [];
+---
+
+<HermesLayout
+  title="Hermes Agent Cheat Sheet — changelogs.info"
+  description="The actually useful Hermes Agent cheat sheet. Setup, memory, skills, platforms, cron."
+  currentPage="cheatsheet"
+>
+  <div style="max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 0;">
+
+    <!-- Hero -->
+    <section style="margin-bottom: 4rem; position: relative;">
+      <div style="position: absolute; top: -3rem; left: -3rem; opacity: 0.04; pointer-events: none; font-size: 12rem; line-height: 1;">⚡</div>
+      <h1 class="ha-headline" style="font-size: clamp(3.5rem, 10vw, 7rem); font-weight: 900; text-transform: uppercase; letter-spacing: -0.03em; line-height: 0.9; margin: 0 0 1rem; color: var(--ha-text);">
+        Cheat<span style="color: var(--ha-primary-bright);">Sheet</span>
+      </h1>
+      <p style="font-size: 1.1rem; max-width: 36rem; color: var(--ha-text-dim); line-height: 1.5; margin: 0; font-family: var(--ha-font-body); text-transform: uppercase; letter-spacing: 0.03em;">
+        The commands that matter. Hermes muscle memory.
+      </p>
+    </section>
+
+    <div style="display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 4rem;">
+
+      <!-- Quick Start -->
+      <div style="background: var(--ha-border); color: var(--ha-bg); padding: 2rem; border: 4px solid var(--ha-border); box-shadow: var(--ha-shadow);">
+        <h2 class="ha-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--ha-bg);">
+          {quickStart.title || "Quick Start"}
+        </h2>
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          {(quickStart.steps && quickStart.steps.length > 0 ? quickStart.steps.map((s: string, i: number) => ({ n: String(i+1).padStart(2,'0'), label: s })) : [
+            { n: "01", label: "Install via curl script", cmd: "curl -fsSL https://hermes.ai/install | sh" },
+            { n: "02", label: "Run setup wizard", cmd: "hermes setup" },
+            { n: "03", label: "Launch the agent", cmd: "hermes" },
+            { n: "04", label: "Switch model", cmd: "hermes model" },
+            { n: "05", label: "Start multi-platform gateway", cmd: "hermes gateway" },
+          ]).map((item: any) => (
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+              <div style="background: var(--ha-bg); color: var(--ha-primary-bright); width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; font-family: var(--ha-font-mono); font-weight: 900; font-size: 0.75rem; flex-shrink: 0;">
+                {item.n}
+              </div>
+              <div style="flex: 1;">
+                <div style="font-family: var(--ha-font-headline); font-weight: 800; font-size: 0.85rem; color: var(--ha-bg); text-transform: uppercase;">{item.label}</div>
+                {item.cmd && (
+                  <div style="background: var(--ha-bg); color: var(--ha-primary-bright); font-family: var(--ha-font-mono); font-size: 0.75rem; padding: 0.4rem 0.75rem; margin-top: 0.4rem; display: inline-block;">
+                    <span style="opacity: 0.5;">$</span> {item.cmd}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Daily Workflows + Power Moves -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;" class="ha-two-col">
+        <div style="border: 4px solid var(--ha-border); background: var(--ha-bg-card); padding: 2rem; box-shadow: var(--ha-shadow);">
+          <h2 class="ha-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--ha-primary-bright);">
+            Daily Workflows
+          </h2>
+          <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            {(dailyWorkflows.length > 0 ? dailyWorkflows : [
+              { title: "Start agent", command: "hermes" },
+              { title: "Check memory", command: "hermes memory show" },
+              { title: "Add a skill", command: "hermes skill create" },
+              { title: "Update Hermes", command: "hermes update" },
+              { title: "View cron jobs", command: "hermes cron list" },
+            ]).map((wf: any) => (
+              <div style="border-left: 4px solid var(--ha-border-dim); padding-left: 1rem;">
+                <div style="font-family: var(--ha-font-headline); font-weight: 800; font-size: 0.85rem; color: var(--ha-text); text-transform: uppercase; margin-bottom: 0.25rem;">{wf.title}</div>
+                {wf.description && <p style="font-family: var(--ha-font-body); font-size: 0.8rem; color: var(--ha-text-dim); margin: 0 0 0.5rem;">{wf.description}</p>}
+                {wf.command && (
+                  <div style="background: var(--ha-bg); border: 2px solid var(--ha-border-dim); padding: 0.5rem 0.75rem; font-family: var(--ha-font-mono); font-size: 0.75rem; color: var(--ha-primary-bright); overflow-x: auto;">
+                    <span style="opacity: 0.5;">$</span> {wf.command}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div style="border: 4px solid var(--ha-primary); background: var(--ha-bg-card); padding: 2rem; box-shadow: var(--ha-shadow);">
+          <h2 class="ha-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--ha-text);">
+            ⚡ Power Moves
+          </h2>
+          <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            {(powerMoves.length > 0 ? powerMoves : [
+              { title: "Spawn subagent", command: "hermes agent spawn" },
+              { title: "Multi-platform gateway", command: "hermes gateway" },
+              { title: "Schedule cron task", command: "hermes cron add '0 9 * * *' 'send daily report'" },
+              { title: "Memory export", command: "hermes memory export" },
+              { title: "Skill from example", command: "hermes skill learn" },
+            ]).map((pm: any) => (
+              <div style="border: 2px solid var(--ha-primary-bright); padding: 1rem; background: rgba(217,119,6,0.05);">
+                <div style="font-family: var(--ha-font-headline); font-weight: 800; font-size: 0.85rem; color: var(--ha-primary-bright); text-transform: uppercase; margin-bottom: 0.25rem;">{pm.title}</div>
+                {pm.description && <p style="font-family: var(--ha-font-body); font-size: 0.8rem; color: var(--ha-text-dim); margin: 0 0 0.5rem;">{pm.description}</p>}
+                {pm.command && (
+                  <div style="background: var(--ha-bg); border: 2px solid var(--ha-primary); padding: 0.5rem 0.75rem; font-family: var(--ha-font-mono); font-size: 0.75rem; color: var(--ha-primary-bright); overflow-x: auto; word-break: break-all;">
+                    <span style="opacity: 0.5;">$</span> {pm.command}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- CLI Flags -->
+      {cliFlags.length > 0 && (
+        <div style="border: 4px solid var(--ha-border); background: var(--ha-bg-surface); padding: 2rem; box-shadow: var(--ha-shadow);">
+          <h2 class="ha-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; margin: 0 0 1.5rem; color: var(--ha-text);">CLI Flags</h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem;">
+            {cliFlags.map((flag: any) => (
+              <div style="background: var(--ha-bg); border: 2px solid var(--ha-border-dim); padding: 1rem;">
+                <div style="font-family: var(--ha-font-mono); font-size: 0.8rem; color: var(--ha-primary-bright); font-weight: 700; margin-bottom: 0.35rem;">{flag.flag || flag.command}</div>
+                <div style="font-family: var(--ha-font-body); font-size: 0.75rem; color: var(--ha-text-dim);">{flag.description}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- Gotchas -->
+      {gotchas.length > 0 && (
+        <div style="border: 4px solid var(--ha-border); background: rgba(217,119,6,0.04); padding: 2rem; box-shadow: var(--ha-shadow);">
+          <h2 class="ha-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; margin: 0 0 1.5rem; color: var(--ha-text);">⚠ Gotchas</h2>
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {gotchas.map((g: any) => (
+              <div style="border-left: 6px solid var(--ha-primary); padding: 1rem 1.25rem; background: var(--ha-bg);">
+                <div style="font-family: var(--ha-font-headline); font-weight: 800; font-size: 0.9rem; color: var(--ha-primary-bright); text-transform: uppercase; margin-bottom: 0.35rem;">{g.title}</div>
+                <p style="font-family: var(--ha-font-body); font-size: 0.82rem; color: var(--ha-text-dim); margin: 0;">{g.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- Fallback -->
+      {dailyWorkflows.length === 0 && powerMoves.length === 0 && cliFlags.length === 0 && gotchas.length === 0 && (
+        <div style="border: 4px dashed var(--ha-border-dim); padding: 4rem 2rem; text-align: center;">
+          <p style="font-family: var(--ha-font-mono); color: var(--ha-text-muted); font-size: 0.85rem;">$ cheatsheet data not available — run scraper to populate</p>
+        </div>
+      )}
+    </div>
+  </div>
+
+  <style>
+    @media (max-width: 768px) {
+      .ha-two-col { grid-template-columns: 1fr !important; }
+    }
+  </style>
+</HermesLayout>

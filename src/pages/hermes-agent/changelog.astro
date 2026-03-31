@@ -1,0 +1,210 @@
+---
+import HermesLayout from "../../layouts/HermesLayout.astro";
+import { getToolReleases, formatDate } from "../../lib/releases";
+import { marked } from "marked";
+
+const data = await getToolReleases("hermes-agent");
+const releases = data?.releases || [];
+
+function isBreaking(body: string = ""): boolean {
+  return body.toLowerCase().includes("breaking");
+}
+
+function renderBody(body: string): string {
+  if (!body) return "";
+  marked.setOptions({ gfm: true, breaks: false });
+  let html = marked.parse(body) as string;
+  html = html.replace(/<a href="(https:\/\/github\.com\/[^/]+\/[^/]+\/pull\/(\d+))"[^>]*>[^<]*<\/a>/g,
+    '<a href="$1" target="_blank" rel="noopener noreferrer" class="cl-pr-link">#$2</a>');
+  html = html.replace(/<a href="(https:\/\/github\.com\/[^/]+\/[^/]+\/issues\/(\d+))"[^>]*>[^<]*<\/a>/g,
+    '<a href="$1" target="_blank" rel="noopener noreferrer" class="cl-pr-link">#$2</a>');
+  html = html.replace(/ by <a href="https:\/\/github\.com\/[^"]*"[^>]*>@[^<]+<\/a> in /g, ' ');
+  html = html.replace(/ by @[\w-]+ in /g, ' ');
+  html = html.replace(/<li>(.*?)<\/li>/gs, (match, content) => {
+    const text = content.toLowerCase();
+    let badge = '';
+    if (/^fix[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-fix">FIX</span>';
+    else if (/^feat[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-feat">FEAT</span>';
+    else if (/^docs[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-docs">DOCS</span>';
+    else if (/^test[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-test">TEST</span>';
+    else if (/^(refactor|chore)[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-chore">CHORE</span>';
+    else if (/^(ci|build|docker)[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-ci">CI</span>';
+    else if (/^(perf|style)[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-perf">PERF</span>';
+    return `<li>${badge}${content}</li>`;
+  });
+  return html;
+}
+---
+
+<HermesLayout
+  title="Hermes Agent Changelog — changelogs.info"
+  description="Full changelog for Hermes Agent. Every release, every breaking change, every fix."
+  currentPage="changelog"
+>
+  <div class="cl-wrapper">
+
+    <!-- Hero -->
+    <section class="cl-hero">
+      <h1 class="ha-headline cl-hero__title">Changelog</h1>
+      <div class="cl-hero__row">
+        <p class="cl-hero__sub">Every Hermes Agent release. Bolted straight to the record.</p>
+        <div class="cl-hero__filters">
+          <label class="ha-headline cl-filter-label">Filter updates</label>
+          <div class="cl-search-wrap">
+            <div class="cl-search-inner">
+              <input id="cl-search" type="text" placeholder="SEARCH RELEASES..." class="cl-search-input" autocomplete="off" spellcheck="false" />
+              <span class="cl-search-icon">⌕</span>
+            </div>
+          </div>
+          <div class="cl-filter-group">
+            <button id="cl-filter-stable" class="ha-headline cl-filter-btn" data-filter="stable">Stable</button>
+            <button id="cl-filter-breaking" class="ha-headline cl-filter-btn" data-filter="breaking">Breaking</button>
+            <button id="cl-filter-prerelease" class="ha-headline cl-filter-btn" data-filter="prerelease">Pre-release</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Timeline -->
+    {releases.length > 0 ? (
+      <div class="cl-timeline" id="cl-timeline">
+        {releases.map((release, idx) => {
+          const breaking = isBreaking(release.body);
+          const renderedBody = renderBody(release.body || "");
+          const isLong = (release.body || "").length > 600;
+          return (
+            <article
+              class={`cl-entry${breaking ? ' cl-entry--breaking' : ''}`}
+              data-version={release.version.toLowerCase()}
+              data-name={(release.name || "").toLowerCase()}
+              data-body={(release.body || "").toLowerCase().slice(0, 800)}
+              data-prerelease={String(release.prerelease)}
+              data-breaking={String(breaking)}
+              data-index={idx}
+            >
+              <div class={`cl-dot${breaking ? ' cl-dot--breaking' : ''}`}>
+                <span class="cl-dot__icon">{breaking ? "⚡" : release.prerelease ? "β" : "●"}</span>
+              </div>
+              <div class="cl-header">
+                <span class="ha-headline cl-header__version">{release.version}</span>
+                <span class="ha-headline cl-header__date">{formatDate(release.date)}</span>
+                {breaking && <span class="cl-label cl-label--breaking">Breaking</span>}
+                {release.prerelease && <span class="cl-label cl-label--prerelease">Pre-release</span>}
+              </div>
+              <div class={`cl-card${breaking ? ' cl-card--breaking' : ''}`}>
+                <h3 class="ha-headline cl-card__title">{(release.name || release.version).replace(/^hermes[\s-]agent\s+/i, "")}</h3>
+                <div class={`changelog-body cl-card__body${isLong && idx > 0 ? ' cl-collapsed' : ''}`} set:html={renderedBody} />
+                {isLong && (
+                  <button class="cl-expand-btn ha-headline">{idx === 0 ? '▲ COLLAPSE' : '▼ EXPAND FULL CHANGELOG'}</button>
+                )}
+                <div class="cl-card__footer">
+                  <a href={release.url} target="_blank" rel="noopener noreferrer" class="cl-gh-link">↗ GitHub</a>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+        {releases.length > 10 && (
+          <div class="cl-load-more-wrap">
+            <button id="cl-load-more" class="ha-headline cl-load-more-btn">Load {releases.length - 10} More Releases ▼</button>
+          </div>
+        )}
+      </div>
+    ) : (
+      <div class="cl-empty">
+        <p class="ha-headline">$ no releases tracked yet</p>
+      </div>
+    )}
+
+    <button id="cl-scroll-top" class="cl-scroll-top" aria-label="Scroll to top">↑</button>
+  </div>
+
+  <style>
+    .cl-wrapper { max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 0; }
+    .cl-hero { margin-bottom: 4rem; }
+    .cl-hero__title {
+      font-size: clamp(3.5rem, 10vw, 7rem); font-weight: 900; text-transform: uppercase;
+      font-style: italic; letter-spacing: -0.03em; line-height: 0.9; margin: 0 0 1.5rem;
+      color: var(--ha-text); animation: ha-enter 0.4s ease-out both;
+    }
+    .cl-hero__row { display: flex; flex-wrap: wrap; gap: 2rem; align-items: flex-end; justify-content: space-between; animation: ha-enter 0.4s ease-out 0.1s both; }
+    .cl-hero__sub { font-family: var(--ha-font-body); font-size: 1.1rem; max-width: 32rem; color: var(--ha-text-dim); line-height: 1.6; margin: 0; text-transform: uppercase; letter-spacing: 0.05em; }
+    .cl-hero__filters { width: 100%; max-width: 320px; }
+    .cl-filter-label { display: block; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ha-primary-bright); margin-bottom: 0.5rem; }
+    @keyframes ha-enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .cl-search-wrap { position: relative; }
+    .cl-search-inner { position: relative; }
+    .cl-search-input { width: 100%; background: var(--ha-bg); border: 4px solid var(--ha-border); padding: 1rem; font-family: var(--ha-font-headline); font-weight: 700; text-transform: uppercase; color: var(--ha-text); font-size: 0.85rem; outline: none; box-shadow: var(--ha-shadow); transition: border-color 100ms; }
+    .cl-search-input::placeholder { color: var(--ha-text-muted); }
+    .cl-search-input:focus { border-color: var(--ha-primary-bright); }
+    .cl-search-icon { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--ha-text-muted); font-size: 1rem; pointer-events: none; }
+    .cl-filter-group { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
+    .cl-filter-btn { background: transparent; border: 2px solid var(--ha-border-dim); padding: 0.3rem 0.75rem; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ha-text-muted); cursor: pointer; transition: background 100ms, border-color 100ms, color 100ms; }
+    .cl-filter-btn:hover { border-color: var(--ha-primary); color: var(--ha-primary-bright); }
+    .cl-filter-btn.is-active { background: var(--ha-primary); border-color: var(--ha-primary); color: white; }
+    .cl-timeline { position: relative; padding-left: 3rem; border-left: 6px solid var(--ha-border); animation: ha-enter 0.4s ease-out 0.2s both; }
+    .cl-entry { position: relative; margin-bottom: 3rem; }
+    .cl-dot { position: absolute; left: -3.9rem; top: 0.5rem; width: 3rem; height: 3rem; border: 4px solid var(--ha-border); display: flex; align-items: center; justify-content: center; background: var(--ha-bg-card); }
+    .cl-dot--breaking { background: var(--ha-primary); border-color: var(--ha-primary); }
+    .cl-dot__icon { font-size: 0.8rem; color: var(--ha-primary-bright); }
+    .cl-dot--breaking .cl-dot__icon { color: white; }
+    .cl-header { display: flex; flex-wrap: wrap; gap: 1rem; align-items: baseline; margin-bottom: 1rem; }
+    .cl-header__version { font-size: 2.25rem; font-weight: 900; font-style: italic; letter-spacing: -0.02em; color: var(--ha-text); }
+    .cl-header__date { font-size: 1rem; font-weight: 700; text-transform: uppercase; color: var(--ha-text-muted); letter-spacing: 0.05em; }
+    .cl-label { padding: 0.2rem 0.75rem; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; }
+    .cl-label--breaking { background: var(--ha-primary); color: white; }
+    .cl-label--prerelease { background: transparent; color: var(--ha-primary-bright); border: 2px solid var(--ha-primary); }
+    .cl-card { padding: 2rem; border: 4px solid var(--ha-border-dim); background: var(--ha-bg-surface); transition: border-color 150ms; }
+    .cl-card:hover { border-color: var(--ha-border); }
+    .cl-card--breaking { border-left: 8px solid var(--ha-primary); }
+    .cl-card__title { font-size: 1.5rem; font-weight: 900; text-transform: uppercase; margin: 0 0 1.5rem; letter-spacing: -0.01em; color: var(--ha-text); }
+    .cl-card__body { color: var(--ha-text-dim); font-size: 0.875rem; line-height: 1.7; font-family: var(--ha-font-body); }
+    .cl-collapsed { max-height: 12rem; overflow: hidden; position: relative; }
+    .cl-collapsed::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 4rem; background: linear-gradient(to bottom, transparent, var(--ha-bg-surface)); pointer-events: none; }
+    .cl-expand-btn { display: block; margin-top: 1rem; background: transparent; border: 2px solid var(--ha-border); color: var(--ha-text); padding: 0.5rem 1.25rem; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; transition: background 100ms, color 100ms; }
+    .cl-expand-btn:hover { background: var(--ha-primary); border-color: var(--ha-primary); color: white; }
+    .cl-card__footer { display: flex; justify-content: flex-end; margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--ha-border-dim); }
+    .cl-gh-link { font-family: var(--ha-font-mono); font-size: 0.65rem; color: var(--ha-text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.1em; transition: color 150ms; }
+    .cl-gh-link:hover { color: var(--ha-primary-bright); }
+    .cl-load-more-wrap { margin-bottom: 4rem; }
+    .cl-load-more-btn { background: transparent; border: 4px solid var(--ha-border); color: var(--ha-text); padding: 1rem 2.5rem; font-size: 0.85rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; font-style: italic; transition: background 100ms, color 100ms; }
+    .cl-load-more-btn:hover { background: var(--ha-primary); border-color: var(--ha-primary); color: white; }
+    .cl-empty { padding: 4rem 2rem; border: 4px dashed var(--ha-border-dim); text-align: center; }
+    .cl-empty p { font-family: var(--ha-font-mono); color: var(--ha-text-muted); margin: 0; }
+    .cl-scroll-top { position: fixed; bottom: 2rem; right: 2rem; background: var(--ha-primary); color: white; border: 4px solid var(--ha-border); padding: 0.75rem; cursor: pointer; font-size: 1rem; box-shadow: var(--ha-shadow); opacity: 0; pointer-events: none; transition: opacity 200ms; z-index: 50; }
+  </style>
+
+  <script>
+    const entries = Array.from(document.querySelectorAll('.cl-entry')) as HTMLElement[];
+    const searchInput = document.getElementById('cl-search') as HTMLInputElement;
+    const stableBtn = document.getElementById('cl-filter-stable');
+    const breakingBtn = document.getElementById('cl-filter-breaking');
+    const prereleaseBtn = document.getElementById('cl-filter-prerelease');
+    const scrollTopBtn = document.getElementById('cl-scroll-top');
+    const loadMoreBtn = document.getElementById('cl-load-more');
+    let activeFilter = ''; let searchQuery = ''; let allLoaded = entries.length <= 10;
+    stableBtn?.classList.add('is-active');
+    function filterEntries() {
+      entries.forEach((entry, idx) => {
+        const version = entry.dataset.version || ''; const name = entry.dataset.name || ''; const body = entry.dataset.body || '';
+        const prerelease = entry.dataset.prerelease === 'true'; const breaking = entry.dataset.breaking === 'true';
+        const matchesSearch = !searchQuery || version.includes(searchQuery) || name.includes(searchQuery) || body.includes(searchQuery);
+        const matchesFilter = activeFilter === '' || (activeFilter === 'stable' && !prerelease) || (activeFilter === 'breaking' && breaking) || (activeFilter === 'prerelease' && prerelease);
+        entry.style.display = (matchesSearch && matchesFilter && (allLoaded || idx < 10)) ? '' : 'none';
+      });
+    }
+    searchInput?.addEventListener('input', () => { searchQuery = searchInput.value.toLowerCase().trim(); if (searchQuery) allLoaded = true; filterEntries(); });
+    function applyFilter(f: string) { activeFilter = f === activeFilter ? '' : f; filterEntries(); stableBtn?.classList.toggle('is-active', activeFilter === 'stable'); breakingBtn?.classList.toggle('is-active', activeFilter === 'breaking'); prereleaseBtn?.classList.toggle('is-active', activeFilter === 'prerelease'); }
+    stableBtn?.addEventListener('click', () => applyFilter('stable'));
+    breakingBtn?.addEventListener('click', () => applyFilter('breaking'));
+    prereleaseBtn?.addEventListener('click', () => applyFilter('prerelease'));
+    loadMoreBtn?.addEventListener('click', () => { allLoaded = true; if (loadMoreBtn) loadMoreBtn.style.display = 'none'; filterEntries(); });
+    window.addEventListener('scroll', () => { if (scrollTopBtn) { scrollTopBtn.style.opacity = window.scrollY > 400 ? '1' : '0'; scrollTopBtn.style.pointerEvents = window.scrollY > 400 ? 'auto' : 'none'; } }, { passive: true });
+    document.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest('.cl-expand-btn');
+      if (!btn) return;
+      const body = btn.previousElementSibling as HTMLElement;
+      if (body) { body.classList.toggle('cl-collapsed'); btn.textContent = body.classList.contains('cl-collapsed') ? '▼ EXPAND FULL CHANGELOG' : '▲ COLLAPSE'; }
+    });
+  </script>
+</HermesLayout>

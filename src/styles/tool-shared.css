@@ -1,0 +1,179 @@
+/* ============================================================
+   tool-shared.css — Shared structural rules for all tool layouts
+   Each layout maps its own primary var to --tool-primary:
+     e.g. html[data-layout="kilocode"] { --tool-primary: var(--kc-primary); }
+   ============================================================ */
+
+/* ── Badge base ─────────────────────────────────────────── */
+.cl-badge {
+  display: inline-block;
+  font-family: var(--tool-font-mono, "JetBrains Mono", monospace);
+  font-size: 0.55rem;
+  font-weight: 700;
+  padding: 0.1rem 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-right: 0.4rem;
+  vertical-align: middle;
+}
+
+/* Semantic badge colors — consistent across all tools */
+.cl-badge-fix   { background: rgba(249, 115, 22, 0.15);  color: #f97316; border: 1px solid rgba(249, 115, 22, 0.3);  }
+.cl-badge-feat  { background: rgba(34, 197, 94, 0.15);   color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3);   }
+.cl-badge-docs  { background: rgba(96, 165, 250, 0.15);  color: #60a5fa; border: 1px solid rgba(96, 165, 250, 0.3);  }
+.cl-badge-test  { background: rgba(167, 139, 250, 0.15); color: #a78bfa; border: 1px solid rgba(167, 139, 250, 0.3); }
+.cl-badge-chore { background: rgba(148, 163, 184, 0.12); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.25);}
+.cl-badge-ci    { background: rgba(244, 114, 182, 0.1);  color: #f472b6; border: 1px solid rgba(244, 114, 182, 0.2); }
+.cl-badge-perf  { background: rgba(251, 191, 36, 0.15);  color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3);  }
+
+/* Light theme badge adjustments */
+[data-theme="light"] .cl-badge-fix   { color: #ea580c; background: rgba(234, 88, 12, 0.1);  }
+[data-theme="light"] .cl-badge-feat  { color: #16a34a; background: rgba(22, 163, 74, 0.1);  }
+[data-theme="light"] .cl-badge-docs  { color: #2563eb; background: rgba(37, 99, 235, 0.1);  }
+[data-theme="light"] .cl-badge-test  { color: #7c3aed; background: rgba(124, 58, 237, 0.1); }
+[data-theme="light"] .cl-badge-chore { color: #64748b; background: rgba(100, 116, 139, 0.1);}
+[data-theme="light"] .cl-badge-ci    { color: #db2777; background: rgba(219, 39, 119, 0.1); }
+[data-theme="light"] .cl-badge-perf  { color: #d97706; background: rgba(217, 119, 6, 0.1);  }
+
+/* ── PR / issue link ────────────────────────────────────── */
+.cl-pr-link {
+  color: var(--tool-primary-bright, var(--tool-primary, #0ea5e9)) !important;
+  text-decoration: none;
+  font-family: var(--tool-font-mono, "JetBrains Mono", monospace);
+  font-size: 0.8em;
+  opacity: 0.7;
+  transition: opacity 150ms;
+}
+.cl-pr-link:hover { opacity: 1; }
+
+/* ── Changelog body prose ───────────────────────────────── */
+.changelog-body h1,
+.changelog-body h2,
+.changelog-body h3,
+.changelog-body h4 {
+  font-family: var(--tool-font-mono, "JetBrains Mono", monospace);
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--tool-text, #fff);
+  margin: 1.5rem 0 0.75rem;
+  letter-spacing: -0.01em;
+}
+.changelog-body h1 { font-size: 1.3rem; }
+.changelog-body h2 {
+  font-size: 1.1rem;
+  border-bottom: 2px solid var(--tool-border-dim, rgba(255,255,255,0.15));
+  padding-bottom: 0.25rem;
+}
+.changelog-body h3 {
+  font-size: 0.95rem;
+  color: var(--tool-primary-bright, var(--tool-primary, currentColor));
+}
+.changelog-body p { margin: 0.75rem 0; }
+.changelog-body ul { list-style: none; margin: 0.5rem 0; padding: 0; }
+.changelog-body li {
+  padding: 0.25rem 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.changelog-body li::before {
+  content: '▸';
+  color: var(--tool-primary-bright, var(--tool-primary, currentColor));
+  flex-shrink: 0;
+  font-weight: 700;
+}
+.changelog-body code {
+  font-family: var(--tool-font-mono, "JetBrains Mono", monospace);
+  font-size: 0.85em;
+  background: var(--tool-bg-surface, rgba(255,255,255,0.05));
+  color: var(--tool-primary-bright, var(--tool-primary, currentColor));
+  padding: 0.1rem 0.35rem;
+  border: 1px solid var(--tool-border-dim, rgba(255,255,255,0.15));
+}
+.changelog-body pre {
+  background: var(--tool-bg-surface, rgba(0,0,0,0.4));
+  border: 2px solid var(--tool-border-dim, rgba(255,255,255,0.15));
+  padding: 1rem;
+  overflow-x: auto;
+  font-family: var(--tool-font-mono, "JetBrains Mono", monospace);
+  font-size: 0.8rem;
+}
+.changelog-body a {
+  color: var(--tool-primary-bright, var(--tool-primary, currentColor));
+  text-decoration: none;
+  border-bottom: 1px solid var(--tool-border-dim, rgba(255,255,255,0.2));
+  transition: border-color 150ms;
+}
+.changelog-body a:hover {
+  border-color: var(--tool-primary-bright, var(--tool-primary, currentColor));
+}
+.changelog-body strong { color: var(--tool-text, #fff); font-weight: 700; }
+
+/* ── Collapsed changelog ────────────────────────────────── */
+.cl-collapsed {
+  max-height: 180px;
+  overflow: hidden;
+  position: relative;
+}
+.cl-collapsed::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 80px;
+  background: linear-gradient(to bottom, transparent, var(--tool-bg-card, rgba(0,0,0,0.9)));
+  pointer-events: none;
+}
+
+/* ── Shared subnav structure ────────────────────────────── */
+/* Used by new layouts; legacy layouts keep their own prefixed classes */
+.tool-subnav {
+  position: sticky;
+  top: 56px;
+  z-index: 49;
+  background: var(--tool-bg-surface, var(--tool-bg, #0a0a0a));
+  border-bottom: 2px solid var(--tool-border-dim, rgba(255,255,255,0.15));
+}
+.tool-subnav__inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.5rem 1.25rem;
+}
+.tool-subnav__brand {
+  font-weight: 900;
+  font-size: 1rem;
+  font-style: italic;
+  letter-spacing: -0.03em;
+  color: var(--tool-primary-bright, var(--tool-primary, currentColor));
+}
+.tool-subnav__link {
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  color: var(--tool-text, #fff);
+  opacity: 0.6;
+  padding-bottom: 2px;
+  transition: color 100ms, opacity 100ms;
+}
+.tool-subnav__link:hover {
+  opacity: 1;
+  color: var(--tool-primary-bright, var(--tool-primary, currentColor));
+}
+.tool-subnav__link--active {
+  color: var(--tool-primary-bright, var(--tool-primary, currentColor));
+  opacity: 1;
+  border-bottom: 3px solid var(--tool-primary-bright, var(--tool-primary, currentColor));
+}
+
+@media (max-width: 640px) {
+  .tool-subnav__inner {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .tool-subnav__brand { font-size: 0.85rem; }
+  .tool-subnav__link  { font-size: 0.7rem; }
+}

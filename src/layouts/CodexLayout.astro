@@ -1,5 +1,6 @@
 ---
 import "../styles/cx-extracted.css";
+import "../styles/tool-shared.css";
 import "../styles/global.css";
 import "../styles/shared-nav.css";
 import "../styles/view-transitions.css";
@@ -81,6 +82,18 @@ const navLinks = [
         --cx-font-headline: "Space Grotesk", "Space Grotesk Fallback", sans-serif;
         --cx-font-body: "JetBrains Mono", ui-monospace, monospace;
         --cx-font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+        /* Bridge vars for tool-shared.css */
+        --tool-primary: var(--cx-primary);
+        --tool-primary-bright: var(--cx-primary-bright);
+        --tool-font-mono: var(--cx-font-mono);
+        --tool-font-headline: var(--cx-font-headline);
+        --tool-font-body: var(--cx-font-body);
+        --tool-bg: var(--cx-bg);
+        --tool-bg-card: var(--cx-bg-card);
+        --tool-bg-surface: var(--cx-bg-surface);
+        --tool-text: var(--cx-text);
+        --tool-border-dim: var(--cx-border-dim);
       }
 
       [data-theme="light"] {
@@ -137,91 +150,9 @@ const navLinks = [
         font-weight: 900;
       }
 
-      /* Badge styles */
-      .cl-badge {
-        display: inline-block;
-        font-family: var(--cx-font-mono);
-        font-size: 0.55rem;
-        font-weight: 700;
-        padding: 0.1rem 0.4rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        margin-right: 0.4rem;
-        vertical-align: middle;
-      }
-      .cl-badge-fix { background: rgba(51, 255, 51, 0.1); color: #33ff33; border: 1px solid rgba(51, 255, 51, 0.3); }
-      .cl-badge-feat { background: rgba(0, 200, 81, 0.12); color: #00c851; border: 1px solid rgba(0, 200, 81, 0.3); }
-      .cl-badge-docs { background: rgba(0, 255, 65, 0.08); color: #00ff41; border: 1px solid rgba(0, 255, 65, 0.2); }
-      .cl-badge-test { background: rgba(0, 168, 62, 0.1); color: #00a83e; border: 1px solid rgba(0, 168, 62, 0.2); }
-      .cl-badge-chore { background: rgba(0, 100, 30, 0.1); color: #00641e; border: 1px solid rgba(0, 100, 30, 0.2); }
-      .cl-badge-ci { background: rgba(0, 80, 20, 0.08); color: #005014; border: 1px solid rgba(0, 80, 20, 0.15); }
-      .cl-badge-perf { background: rgba(51, 255, 51, 0.15); color: #33ff33; border: 1px solid rgba(51, 255, 51, 0.35); }
+      /* Badge styles, cl-pr-link, changelog-body, cl-collapsed → see tool-shared.css */
 
-      .cl-pr-link {
-        color: var(--cx-primary-bright) !important;
-        text-decoration: none;
-        font-family: var(--cx-font-mono);
-        font-size: 0.8em;
-        opacity: 0.7;
-        transition: opacity 150ms;
-      }
-      .cl-pr-link:hover { opacity: 1; }
-
-      /* Changelog body */
-      .changelog-body h1, .changelog-body h2, .changelog-body h3, .changelog-body h4 {
-        font-family: var(--cx-font-headline);
-        font-weight: 800;
-        text-transform: uppercase;
-        color: var(--cx-text);
-        margin: 1.5rem 0 0.75rem;
-        letter-spacing: -0.01em;
-      }
-      .changelog-body h1 { font-size: 1.3rem; }
-      .changelog-body h2 { font-size: 1.1rem; border-bottom: 2px solid var(--cx-border-dim); padding-bottom: 0.25rem; }
-      .changelog-body h3 { font-size: 0.95rem; color: var(--cx-primary-bright); }
-      .changelog-body p { margin: 0.75rem 0; }
-      .changelog-body ul { list-style: none; margin: 0.5rem 0; padding: 0; }
-      .changelog-body li { padding: 0.25rem 0; display: flex; align-items: flex-start; gap: 0.5rem; }
-      .changelog-body li::before { content: '>'; color: var(--cx-primary-bright); flex-shrink: 0; font-weight: 700; font-family: var(--cx-font-mono); }
-      .changelog-body code {
-        font-family: var(--cx-font-mono);
-        font-size: 0.85em;
-        background: rgba(51, 255, 51, 0.08);
-        color: var(--cx-primary-bright);
-        padding: 0.1rem 0.35rem;
-        border: 1px solid rgba(51, 255, 51, 0.2);
-      }
-      .changelog-body pre {
-        background: var(--cx-bg-surface);
-        border: 2px solid var(--cx-border-dim);
-        padding: 1rem;
-        overflow-x: auto;
-        font-family: var(--cx-font-mono);
-        font-size: 0.8rem;
-      }
-      .changelog-body a {
-        color: var(--cx-primary-bright);
-        text-decoration: none;
-        border-bottom: 1px solid rgba(51, 255, 51, 0.3);
-        transition: border-color 150ms;
-      }
-      .changelog-body a:hover { border-color: var(--cx-primary-bright); }
-      .changelog-body strong { color: var(--cx-text); font-weight: 700; }
-
-      /* Collapsed changelog */
-      .cl-collapsed {
-        max-height: 180px;
-      }
-      .cl-collapsed::after {
-        content: '';
-        position: absolute;
-        bottom: 0; left: 0; right: 0;
-        height: 80px;
-        background: linear-gradient(to bottom, transparent, var(--cx-bg-card));
-        pointer-events: none;
-      }
-
-      /* Dot gridDot grid */
+      /* Dot grid */
       .cx-dotgrid {
         background-image: radial-gradient(circle, var(--cx-border-dim) 1px, transparent 1px);
         background-size: 24px 24px;

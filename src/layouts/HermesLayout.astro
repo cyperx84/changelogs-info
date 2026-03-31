@@ -1,0 +1,303 @@
+---
+import "../styles/ha-extracted.css";
+import "../styles/tool-shared.css";
+import "../styles/global.css";
+import "../styles/shared-nav.css";
+import "../styles/view-transitions.css";
+import { ViewTransitions } from "astro:transitions";
+import SharedNav from "../components/SharedNav.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  currentPage?: string;
+}
+
+const {
+  title,
+  description = "Hermes Agent — the self-improving AI agent with persistent memory, 40+ tools, and multi-platform support.",
+  currentPage = "",
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const navLinks = [
+  { label: "Changelog", href: "/hermes-agent/changelog/", key: "changelog" },
+  { label: "Cheatsheet", href: "/hermes-agent/cheatsheet/", key: "cheatsheet" },
+  { label: "Releases", href: "/hermes-agent/releases/", key: "releases" },
+];
+---
+
+<!doctype html>
+<html lang="en" data-layout="hermes">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <ViewTransitions />
+    <script defer data-domain="changelogs.info" src="https://plausible.io/js/script.js"></script>
+
+    <style is:global>
+      @font-face {
+        font-family: 'Space Grotesk Fallback';
+        src: local('Arial Black'), local('Arial');
+        size-adjust: 107%;
+        ascent-override: 95%;
+        descent-override: 22%;
+        line-gap-override: 0%;
+      }
+      @font-face {
+        font-family: 'Work Sans Fallback';
+        src: local('Helvetica Neue'), local('Arial');
+        size-adjust: 100%;
+        ascent-override: 96%;
+        descent-override: 24%;
+        line-gap-override: 0%;
+      }
+
+      /* Hermes Agent Amber/Gold Neo-Brutalist Theme */
+      :root {
+        --ha-header-bg: rgba(10, 6, 0, 0.92);
+        --ha-primary: #D97706;
+        --ha-primary-bright: #F59E0B;
+        --ha-accent: #FCD34D;
+        --ha-bg: #0a0600;
+        --ha-bg-card: #130d00;
+        --ha-bg-surface: #1c1400;
+        --ha-text: #fff8e7;
+        --ha-text-dim: rgba(255, 248, 231, 0.65);
+        --ha-text-muted: rgba(255, 248, 231, 0.4);
+        --ha-border: #F59E0B;
+        --ha-border-dim: rgba(217, 119, 6, 0.25);
+        --ha-shadow: 6px 6px 0px 0px rgba(217, 119, 6, 0.35);
+        --ha-shadow-sm: 4px 4px 0px 0px rgba(217, 119, 6, 0.28);
+        --ha-shadow-lg: 12px 12px 0px 0px rgba(217, 119, 6, 0.15);
+        --ha-font-headline: "Space Grotesk", "Space Grotesk Fallback", sans-serif;
+        --ha-font-body: "Work Sans", "Work Sans Fallback", sans-serif;
+        --ha-font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+        /* Bridge vars for tool-shared.css */
+        --tool-primary: var(--ha-primary);
+        --tool-primary-bright: var(--ha-primary-bright);
+        --tool-font-mono: var(--ha-font-mono);
+        --tool-font-headline: var(--ha-font-headline);
+        --tool-font-body: var(--ha-font-body);
+        --tool-bg: var(--ha-bg);
+        --tool-bg-card: var(--ha-bg-card);
+        --tool-bg-surface: var(--ha-bg-surface);
+        --tool-text: var(--ha-text);
+        --tool-border-dim: var(--ha-border-dim);
+      }
+
+      [data-theme="light"] {
+        --ha-header-bg: rgba(255, 251, 235, 0.92);
+        --ha-primary: #D97706;
+        --ha-primary-bright: #B45309;
+        --ha-bg: #fffbeb;
+        --ha-bg-card: #ffffff;
+        --ha-bg-surface: #fef3c7;
+        --ha-text: #1c1400;
+        --ha-text-dim: rgba(28, 20, 0, 0.65);
+        --ha-text-muted: rgba(28, 20, 0, 0.4);
+        --ha-border: #1c1400;
+        --ha-border-dim: rgba(28, 20, 0, 0.2);
+        --ha-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
+        --ha-shadow-sm: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+        --ha-shadow-lg: 12px 12px 0px 0px rgba(0, 0, 0, 0.8);
+
+        --tool-bg-card: var(--ha-bg-card);
+        --tool-bg-surface: var(--ha-bg-surface);
+        --tool-text: var(--ha-text);
+        --tool-border-dim: var(--ha-border-dim);
+      }
+
+      html[data-layout="hermes"] {
+        background: var(--ha-bg);
+        color: var(--ha-text);
+      }
+      html[data-layout="hermes"] body {
+        margin: 0;
+        padding: 0;
+        background: var(--ha-bg);
+        color: var(--ha-text);
+        font-family: var(--ha-font-body);
+        min-height: 100vh;
+      }
+
+      /* Warm scanline */
+      html[data-layout="hermes"] body::before {
+        content: '';
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(217, 119, 6, 0.012),
+          rgba(217, 119, 6, 0.012) 1px,
+          transparent 1px,
+          transparent 4px
+        );
+        pointer-events: none;
+        z-index: 9998;
+        opacity: 0.6;
+      }
+
+      .ha-headline {
+        font-family: var(--ha-font-mono);
+        font-weight: 900;
+      }
+
+      .ha-cta-btn {
+        transition: transform 100ms, box-shadow 100ms;
+      }
+      .ha-cta-btn:hover {
+        transform: translate(1px, 1px);
+        box-shadow: none !important;
+      }
+
+      .ha-quick-link {
+        transition: border-color 150ms, box-shadow 150ms;
+      }
+      .ha-quick-link:hover {
+        border-color: var(--ha-primary) !important;
+        box-shadow: var(--ha-shadow-sm) !important;
+      }
+
+      .ha-dotgrid {
+        background-image: radial-gradient(circle, var(--ha-border-dim) 1px, transparent 1px);
+        background-size: 24px 24px;
+      }
+
+      .ha-cursor {
+        animation: ha-blink 1s step-end infinite;
+      }
+      @keyframes ha-blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+      }
+
+      .ha-pulse-dot {
+        animation: ha-pulse 2s ease-in-out infinite;
+      }
+      @keyframes ha-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+      }
+
+      .ha-hero-title {
+        animation: ha-slide-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+      .ha-hero-section p {
+        animation: ha-slide-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+      }
+      .ha-terminal-card {
+        animation: ha-slide-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+      }
+      @keyframes ha-slide-in {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .ha-section-reveal {
+        opacity: 0;
+        transform: translateY(16px);
+        animation: ha-slide-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+      }
+
+      .ha-stats-cell {
+        transition: background 150ms;
+      }
+      .ha-stats-cell:hover {
+        background: var(--ha-primary) !important;
+      }
+
+      @media (max-width: 768px) {
+        .ha-hero-grid { grid-template-columns: 1fr !important; }
+        .ha-terminal-card { width: 100% !important; }
+      }
+    </style>
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Hermes Agent",
+      "description": "Self-improving AI agent with persistent memory, learning loop, and multi-platform support",
+      "url": "https://github.com/NousResearch/hermes-agent",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Cross-platform",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    })} />
+    <link rel="alternate" type="application/rss+xml" title="changelogs.info RSS" href="/feed/all.xml" />
+  </head>
+  <body>
+    <SharedNav currentSection="hermes-agent" />
+
+    <!-- Hermes sub-nav -->
+    <nav class="tool-subnav" aria-label="Hermes Agent section navigation">
+      <div class="tool-subnav__inner" style="font-family: var(--ha-font-mono);">
+        <span class="tool-subnav__brand">Hermes Agent</span>
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            class={`tool-subnav__link ${currentPage === link.key ? "tool-subnav__link--active" : ""}`}
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
+    </nav>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer style="border-top: 8px solid var(--ha-primary); background: var(--ha-bg); margin-top: 6rem; padding: 3rem 2rem;">
+      <div style="max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1.5rem;">
+        <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+          <span class="ha-headline" style="font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ha-text-dim);">
+            © {new Date().getFullYear()} changelogs.info / Hermes Agent
+          </span>
+          <span style="font-family: var(--ha-font-mono); font-size: 0.6rem; color: var(--ha-text-muted);">
+            DATA FROM OFFICIAL GITHUB RELEASES
+          </span>
+        </div>
+        <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+          {[
+            { label: "Hub", href: "/" },
+            { label: "Changelog", href: "/hermes-agent/changelog/" },
+            { label: "Cheatsheet", href: "/hermes-agent/cheatsheet/" },
+            { label: "Releases", href: "/hermes-agent/releases/" },
+            { label: "GitHub ↗", href: "https://github.com/NousResearch/hermes-agent", external: true },
+            { label: "RSS", href: "/feed/all.xml" },
+          ].map((link) => (
+            <a
+              href={link.href}
+              target={link.external ? "_blank" : undefined}
+              rel={link.external ? "noopener noreferrer" : undefined}
+              class="ha-headline"
+              style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ha-text-dim); text-decoration: none; transition: color 150ms;"
+              onmouseover={`this.style.color='var(--ha-primary-bright)'`}
+              onmouseout={`this.style.color='var(--ha-text-dim)'`}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+        <div style="font-family: var(--ha-font-mono); font-size: 0.65rem; color: var(--ha-text-muted); display: flex; align-items: center; gap: 0.5rem;">
+          <span style="color: var(--ha-primary);">⚡</span>
+          HERMES: ~
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
