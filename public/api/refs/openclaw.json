@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.3.28",
-  "generated_at": "2026-03-31T20:15:54.203Z",
+  "version": "2026.3.31",
+  "generated_at": "2026-03-31T21:15:27.008Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,33 +14,31 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.3.28",
-    "to_version": "2026.3.28",
+    "from_version": "2026.3.31",
+    "to_version": "2026.3.31",
     "new_features": [
-      "x-search",
-      "image-generation-provider-image-01",
-      "async-requireapproval-before-tool-call-hooks",
-      "file-first-sends-microsoft-teams-google-chat",
-      "matrix-tts-voice-bubbles",
-      "cli-config-schema",
-      "plugin-runtime-runheartbeatonce",
-      "background-tasks-lifecycle-records",
-      "pnpm-docs-check-links-anchors",
-      "tavily-client-source-header",
-      "gateway-backed-channel-mcp-bridge"
+      "qq-bot-channel-plugin",
+      "linear-task-flow-control",
+      "microsoft-teams-member-info",
+      "slack-exec-approvals",
+      "whatsapp-reactions"
     ],
-    "new_commands": [],
+    "new_commands": [
+      "openclaw flows"
+    ],
     "new_flags": [
-      "--cli-backend-logs"
+      "--dangerously-force-unsafe-install"
     ],
     "new_env_vars": [],
     "deprecated_commands": [],
-    "deprecated_flags": [
-      "--claude-cli-logs"
-    ],
+    "deprecated_flags": [],
     "breaking_changes": [
-      "providers-qwen-portal-auth-removal",
-      "config-doctor-legacy-migrations"
+      "nodes-exec-remove-duplicated-nodes-run",
+      "plugin-sdk-deprecate-legacy-provider-compat",
+      "skills-install-plugins-install-fail-closed-by-default",
+      "gateway-auth-trusted-proxy-rejects-mixed-shared-token-configs",
+      "gateway-node-commands-stay-disabled-until-pairing-approved",
+      "gateway-node-events-reduced-trusted-surface"
     ]
   },
   "payload": {
@@ -59,13 +57,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.3.28",
-      "latest_release_date": "2026-03-29",
+      "latest_stable": "2026.3.31",
+      "latest_release_date": "2026-03-31",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces first-class `x_search` support and async approval hooks for plugins, enhancing tool execution control. The bundled Gemini CLI backend is now supported, replacing the Claude-specific log flag with a generic `--cli-backend-logs`. File-first sends are unified with explicit support for Microsoft Teams and Google Chat. The deprecated Qwen Portal Auth has been removed, requiring migration to Model Studio. Additionally, config migrations older than two months are no longer automatically applied, potentially requiring manual updates for very old configurations. Several fixes address issues in agents, models, and various channels like WhatsApp, Telegram, and Discord, improving stability and reliability."
+      "tldr": "This release includes breaking changes to node execution, plugin SDK, skill/plugin installation, and gateway authentication, so review the migration guides carefully. Node shell execution now requires `exec host=node`, and unsafe plugin installs now fail by default unless overridden. The release introduces QQ Bot as a bundled channel plugin and a linear task flow control surface with `openclaw flows`.  Android notifications gain forwarding controls, and WhatsApp supports emoji reactions.  Several fixes address issues with Slack replies, OpenAI Responses, ACP security, and gateway authentication.  Consider the breaking changes and test thoroughly before upgrading."
     },
     "features": [
       {
@@ -641,6 +639,51 @@
         "description": "MiniMax image generation provider for the `image-01` model, supporting generate and image-to-image editing with aspect ratio control.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "qq-bot-channel-plugin",
+        "name": "QQ Bot Channel Plugin",
+        "status": "stable",
+        "since": "2026.3.31",
+        "description": "Adds QQ Bot as a bundled channel plugin with multi-account setup, SecretRef-aware credentials, slash commands, reminders, and media send/receive support.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "linear-task-flow-control",
+        "name": "Linear Task Flow Control",
+        "status": "stable",
+        "since": "2026.3.31",
+        "description": "Adds a linear task flow control surface with `openclaw flows list|show|cancel`, keeps manual multi-task flows separate from one-task auto-sync flows, and surfaces doctor recovery hints for obviously orphaned or broken flow/task linkage.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "microsoft-teams-member-info",
+        "name": "Microsoft Teams Member Info",
+        "status": "stable",
+        "since": "2026.3.31",
+        "description": "Adds a Graph-backed member info action so Teams automations and tools can resolve channel member details directly from Microsoft Graph.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "slack-exec-approvals",
+        "name": "Slack Exec Approvals",
+        "status": "stable",
+        "since": "2026.3.31",
+        "description": "Adds native Slack approval routing and approver authorization so exec approval prompts can stay in Slack instead of falling back to the Web UI or terminal.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "whatsapp-reactions",
+        "name": "WhatsApp Reactions",
+        "status": "stable",
+        "since": "2026.3.31",
+        "description": "Agents can now react with emoji on incoming WhatsApp messages, enabling more natural conversational interactions like acknowledging a photo with ❤️ instead of typing a reply.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -795,6 +838,14 @@
         "since": "2026.3.28",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "openclaw flows",
+        "syntax": "openclaw flows list|show|cancel",
+        "description": "Manages linear task flows.",
+        "since": "2026.3.31",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -843,6 +894,12 @@
           "flag": "--cli-backend-logs",
           "description": "Replaces `gateway run --claude-cli-logs` with generic `--cli-backend-logs` while keeping the old flag as a compatibility alias.",
           "since": "2026.3.28",
+          "source_url": ""
+        },
+        {
+          "flag": "--dangerously-force-unsafe-install",
+          "description": "Overrides built-in dangerous-code `critical` findings and install-time scan failures.",
+          "since": "2026.3.31",
           "source_url": ""
         }
       ],
@@ -961,7 +1018,7 @@
         }
       ],
       "new_since_previous": [
-        "--cli-backend-logs"
+        "--dangerously-force-unsafe-install"
       ]
     },
     "env_vars": [
@@ -1297,6 +1354,78 @@
           "Users with very old configurations"
         ],
         "migration": "Manually update your configuration to the latest schema.",
+        "source_url": ""
+      },
+      {
+        "id": "nodes-exec-remove-duplicated-nodes-run",
+        "version": "2026.3.31",
+        "title": "Nodes/exec: remove the duplicated `nodes.run` shell wrapper",
+        "description": "The duplicated `nodes.run` shell wrapper has been removed from the CLI and agent `nodes` tool so node shell execution always goes through `exec host=node`, keeping node-specific capabilities on `nodes invoke` and the dedicated media/location/notify actions.",
+        "affected": [
+          "nodes",
+          "cli",
+          "agents"
+        ],
+        "migration": "Use `exec host=node` for node shell execution.",
+        "source_url": ""
+      },
+      {
+        "id": "plugin-sdk-deprecate-legacy-provider-compat",
+        "version": "2026.3.31",
+        "title": "Plugin SDK: deprecate the legacy provider compat subpaths",
+        "description": "The legacy provider compat subpaths plus the older bundled provider setup and channel-runtime compatibility shims are deprecated. Migration warnings will be emitted.",
+        "affected": [
+          "plugin-sdk"
+        ],
+        "migration": "Use the current documented `openclaw/plugin-sdk/*` entrypoints plus local `api.ts` / `runtime-api.ts` barrels.",
+        "source_url": ""
+      },
+      {
+        "id": "skills-install-plugins-install-fail-closed-by-default",
+        "version": "2026.3.31",
+        "title": "Skills/install and Plugins/install: built-in dangerous-code `critical` findings and install-time scan failures now fail closed by default",
+        "description": "Built-in dangerous-code `critical` findings and install-time scan failures now fail closed by default, so plugin installs and gateway-backed skill dependency installs that previously succeeded may now require an explicit dangerous override.",
+        "affected": [
+          "skills",
+          "plugins"
+        ],
+        "migration": "Use `--dangerously-force-unsafe-install` to proceed with potentially unsafe installs.",
+        "source_url": ""
+      },
+      {
+        "id": "gateway-auth-trusted-proxy-rejects-mixed-shared-token-configs",
+        "version": "2026.3.31",
+        "title": "Gateway/auth: `trusted-proxy` now rejects mixed shared-token configs",
+        "description": "`trusted-proxy` now rejects mixed shared-token configs, and local-direct fallback requires the configured token instead of implicitly authenticating same-host callers.",
+        "affected": [
+          "gateway",
+          "auth"
+        ],
+        "migration": "Ensure `trusted-proxy` configurations use consistent shared tokens.",
+        "source_url": ""
+      },
+      {
+        "id": "gateway-node-commands-stay-disabled-until-pairing-approved",
+        "version": "2026.3.31",
+        "title": "Gateway/node commands: node commands now stay disabled until node pairing is approved",
+        "description": "Node commands now stay disabled until node pairing is approved, so device pairing alone is no longer enough to expose declared node commands.",
+        "affected": [
+          "gateway",
+          "nodes"
+        ],
+        "migration": "Approve node pairing to enable node commands.",
+        "source_url": ""
+      },
+      {
+        "id": "gateway-node-events-reduced-trusted-surface",
+        "version": "2026.3.31",
+        "title": "Gateway/node events: node-originated runs now stay on a reduced trusted surface",
+        "description": "Node-originated runs now stay on a reduced trusted surface, so notification-driven or node-triggered flows that previously relied on broader host/session tool access may need adjustment.",
+        "affected": [
+          "gateway",
+          "nodes"
+        ],
+        "migration": "Adjust notification-driven or node-triggered flows to use the reduced trusted surface.",
         "source_url": ""
       }
     ],
