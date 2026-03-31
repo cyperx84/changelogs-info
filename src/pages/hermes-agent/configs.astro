@@ -1,0 +1,52 @@
+---
+import HermesLayout from "../../layouts/HermesLayout.astro";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
+let configs: any[] = [];
+try {
+  const raw = readFileSync(join(process.cwd(), "src/content/configs/hermes-agent.json"), "utf-8");
+  configs = JSON.parse(raw);
+} catch {}
+---
+
+<HermesLayout
+  title="Hermes Agent Configs — changelogs.info"
+  description="Configuration examples and templates for Hermes Agent. Rules files, project context, and settings."
+  currentPage="configs"
+>
+  <div style="max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 0;">
+
+    <header style="margin-bottom: 3rem; border-left: 8px solid var(--ha-primary); padding-left: 2rem; padding-top: 1rem; padding-bottom: 1rem;">
+      <h1 class="ha-headline" style="font-size: clamp(2.5rem, 7vw, 5rem); font-weight: 900; text-transform: uppercase; letter-spacing: -0.03em; line-height: 0.9; margin: 0 0 0.5rem; color: var(--ha-text);">
+        Configs
+      </h1>
+      <p class="ha-headline" style="font-size: 1rem; font-weight: 700; color: var(--ha-primary-bright); margin: 0; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.8;">
+        Configuration Examples &amp; Templates
+      </p>
+    </header>
+
+    {configs.length > 0 ? (
+      <div style="display: flex; flex-direction: column; gap: 2rem; margin-bottom: 4rem;">
+        {configs.map((cfg: any) => (
+          <div style="border: 4px solid var(--ha-border-dim); background: var(--ha-bg-card); overflow: hidden; box-shadow: var(--ha-shadow);">
+            <div style="padding: 1.25rem 1.75rem; border-bottom: 2px solid var(--ha-border-dim); background: var(--ha-bg-surface); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+              <div>
+                <h2 class="ha-headline" style="font-size: 1.1rem; font-weight: 900; text-transform: uppercase; color: var(--ha-text); margin: 0;">{cfg.title || cfg.name}</h2>
+                {cfg.description && <p style="font-family: var(--ha-font-body); font-size: 0.8rem; color: var(--ha-text-dim); margin: 0.25rem 0 0;">{cfg.description}</p>}
+              </div>
+              {cfg.filename && (
+                <span style="font-family: var(--ha-font-mono); font-size: 0.65rem; color: var(--ha-text-muted); background: var(--ha-bg); padding: 0.25rem 0.6rem; border: 1px solid var(--ha-border-dim);">{cfg.filename}</span>
+              )}
+            </div>
+            <pre style="margin: 0; padding: 1.5rem; background: var(--ha-bg); font-family: var(--ha-font-mono); font-size: 0.78rem; line-height: 1.7; color: var(--ha-primary-bright); overflow-x: auto;">{cfg.content || cfg.code || JSON.stringify(cfg, null, 2)}</pre>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div style="padding: 4rem 2rem; border: 4px dashed var(--ha-border-dim); text-align: center; margin-bottom: 4rem;">
+        <p style="font-family: var(--ha-font-mono); color: var(--ha-text-muted); font-size: 0.85rem;">$ no config examples yet — check back after next scrape</p>
+      </div>
+    )}
+  </div>
+</HermesLayout>
