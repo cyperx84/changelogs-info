@@ -1,0 +1,279 @@
+---
+import RooCodeLayout from "../../layouts/RooCodeLayout.astro";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
+let cs: any = {};
+try {
+  const raw = readFileSync(join(process.cwd(), "src/content/cheatsheets-json/roo-code.json"), "utf-8");
+  cs = JSON.parse(raw);
+} catch {}
+
+const quickStart = cs.quickStart || {};
+const dailyWorkflows = cs.dailyWorkflows || [];
+const powerMoves = cs.powerMoves || [];
+const gotchas = cs.gotchas || [];
+const slashCommands = cs.slashCommands || [];
+const config = cs.config || [];
+const resources = cs.resources || [];
+const proTips = cs.proTips || [];
+
+const extraCards = [
+  {
+    title: "Mode switching",
+    copy: "Use slash commands to move between read-only analysis, planning, debugging, and direct implementation without carrying the same tool policy everywhere.",
+  },
+  {
+    title: ".rooignore",
+    copy: "Treat `.rooignore` like a context budget control. Keep build output, generated snapshots, and noisy vendor files out of the prompt path.",
+  },
+  {
+    title: "Custom instructions",
+    copy: "Project rules, custom modes, and slash commands are the fastest way to encode team conventions instead of repeating them in chat.",
+  },
+  {
+    title: "Model per mode",
+    copy: "Sticky Models let Code use a fast implementation model while Architect or Debug keeps a higher-reasoning model.",
+  },
+];
+---
+
+<RooCodeLayout
+  title="Roo Code Cheatsheet — changelogs.info"
+  description="Roo Code cheatsheet covering mode switching, MCP, custom instructions, .rooignore, and model-per-mode setup."
+  currentPage="cheatsheet"
+>
+  <div class="rc-page">
+    <section class="rc-sheet-hero">
+      <div class="rc-sheet-hero__eyebrow">Roo Code quick reference</div>
+      <h1 class="rc-headline rc-sheet-hero__title">Cheatsheet</h1>
+      <p class="rc-sheet-hero__text">
+        The high-signal Roo Code behaviors to remember: when to switch modes, how MCP config layers work,
+        and where teams usually over-grant permissions.
+      </p>
+      {cs.lastUpdated && <div class="rc-sheet-hero__meta">Last updated {cs.lastUpdated}</div>}
+    </section>
+
+    {quickStart.steps?.length > 0 && (
+      <section class="rc-card rc-section-block">
+        <h2 class="rc-headline">Get productive in 30 seconds</h2>
+        <ol class="rc-step-list">
+          {quickStart.steps.map((step: string) => <li>{step}</li>)}
+        </ol>
+      </section>
+    )}
+
+    <section class="rc-grid rc-grid--four">
+      {extraCards.map((card) => (
+        <article class="rc-card-soft rc-mini-card">
+          <h3 class="rc-headline">{card.title}</h3>
+          <p>{card.copy}</p>
+        </article>
+      ))}
+    </section>
+
+    <section class="rc-grid rc-grid--two">
+      <div class="rc-card rc-section-block">
+        <h2 class="rc-headline">Daily workflows</h2>
+        <div class="rc-stack">
+          {dailyWorkflows.map((wf: any) => (
+            <div class="rc-card-soft rc-command-card">
+              <h3 class="rc-headline">{wf.title}</h3>
+              <p>{wf.description}</p>
+              {wf.command && <code>{wf.command}</code>}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="rc-card rc-section-block">
+        <h2 class="rc-headline">Power moves</h2>
+        <div class="rc-stack">
+          {powerMoves.map((pm: any) => (
+            <div class="rc-card-soft rc-command-card">
+              <h3 class="rc-headline">{pm.title}</h3>
+              <p>{pm.description}</p>
+              {pm.command && <code>{pm.command}</code>}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="rc-grid rc-grid--two">
+      <div class="rc-card rc-section-block">
+        <h2 class="rc-headline">Slash commands</h2>
+        <div class="rc-stack">
+          {slashCommands.map((cmd: any) => (
+            <div class="rc-card-soft rc-command-card">
+              <code>{cmd.command || cmd.cmd}</code>
+              <p>{cmd.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="rc-card rc-section-block">
+        <h2 class="rc-headline">Config and defaults</h2>
+        <div class="rc-stack">
+          {config.map((item: any) => (
+            <div class="rc-card-soft rc-config-card">
+              <div class="rc-config-card__key">{item.key}</div>
+              <p>{item.description}</p>
+              {item.recommended && <div class="rc-config-card__note">Recommended: {item.recommended}</div>}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="rc-grid rc-grid--two">
+      <div class="rc-card rc-section-block">
+        <h2 class="rc-headline">Gotchas</h2>
+        <div class="rc-stack">
+          {gotchas.map((g: any) => (
+            <div class="rc-card-soft rc-gotcha">
+              <h3 class="rc-headline">{g.problem || g.title}</h3>
+              <p>{g.solution || g.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="rc-card rc-section-block">
+        <h2 class="rc-headline">Resources</h2>
+        <div class="rc-stack">
+          {resources.map((item: any) => (
+            <a href={item.url} target="_blank" rel="noopener noreferrer" class="rc-card-soft rc-resource">
+              <span>{item.title}</span>
+              <span>↗</span>
+            </a>
+          ))}
+        </div>
+
+        {proTips.length > 0 && (
+          <>
+            <h2 class="rc-headline rc-subsection">Pro tips</h2>
+            <ul class="rc-tip-list">
+              {proTips.map((tip: string) => <li>{tip}</li>)}
+            </ul>
+          </>
+        )}
+      </div>
+    </section>
+  </div>
+
+  <style>
+    .rc-sheet-hero {
+      margin-bottom: 2rem;
+    }
+    .rc-sheet-hero__eyebrow,
+    .rc-sheet-hero__meta,
+    .rc-config-card__key,
+    .rc-config-card__note,
+    .rc-command-card code {
+      font-family: var(--rc-font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .rc-sheet-hero__eyebrow {
+      font-size: 0.75rem;
+      color: var(--rc-primary-bright);
+    }
+    .rc-sheet-hero__title {
+      margin: 0.7rem 0 1rem;
+      font-size: clamp(3rem, 8vw, 6rem);
+      line-height: 0.92;
+    }
+    .rc-sheet-hero__text,
+    .rc-section-block p,
+    .rc-mini-card p,
+    .rc-tip-list li {
+      color: var(--rc-text-dim);
+      line-height: 1.7;
+    }
+    .rc-sheet-hero__meta {
+      margin-top: 1rem;
+      font-size: 0.7rem;
+      color: var(--rc-text-muted);
+    }
+    .rc-grid {
+      display: grid;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .rc-grid--four {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .rc-grid--two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .rc-section-block {
+      padding: 1.5rem;
+    }
+    .rc-section-block h2,
+    .rc-subsection {
+      margin: 0 0 1rem;
+      font-size: 1.6rem;
+    }
+    .rc-step-list,
+    .rc-tip-list {
+      margin: 0;
+      padding-left: 1.25rem;
+    }
+    .rc-step-list li,
+    .rc-tip-list li {
+      margin-bottom: 0.8rem;
+    }
+    .rc-mini-card,
+    .rc-command-card,
+    .rc-config-card,
+    .rc-gotcha {
+      padding: 1rem;
+    }
+    .rc-mini-card h3,
+    .rc-command-card h3,
+    .rc-gotcha h3 {
+      margin: 0 0 0.6rem;
+      font-size: 1rem;
+    }
+    .rc-stack {
+      display: grid;
+      gap: 0.9rem;
+    }
+    .rc-command-card code {
+      display: block;
+      overflow-x: auto;
+      padding: 0.7rem 0.85rem;
+      background: var(--rc-bg);
+      border: 2px solid var(--rc-border-dim);
+      color: var(--rc-primary-bright);
+      font-size: 0.72rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .rc-config-card__key {
+      font-size: 0.72rem;
+      color: var(--rc-primary-bright);
+    }
+    .rc-config-card__note {
+      margin-top: 0.75rem;
+      font-size: 0.68rem;
+      color: var(--rc-text-muted);
+    }
+    .rc-resource {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem;
+      color: inherit;
+      text-decoration: none;
+    }
+    @media (max-width: 960px) {
+      .rc-grid--four,
+      .rc-grid--two {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</RooCodeLayout>

@@ -1,0 +1,305 @@
+---
+import "../styles/cu-extracted.css";
+import "../styles/tool-shared.css";
+import "../styles/global.css";
+import "../styles/shared-nav.css";
+import "../styles/view-transitions.css";
+import { ViewTransitions } from "astro:transitions";
+import SharedNav from "../components/SharedNav.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  currentPage?: string;
+}
+
+const {
+  title,
+  description = "The AI-first code editor. Tab completes your thoughts, agents write entire features, chat knows your codebase.",
+  currentPage = "",
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const navLinks = [
+  { label: "Changelog", href: "/cursor/changelog/", key: "changelog" },
+  { label: "Cheatsheet", href: "/cursor/cheatsheet/", key: "cheatsheet" },
+  { label: "Releases", href: "/cursor/releases/", key: "releases" },
+];
+---
+
+<!doctype html>
+<html lang="en" data-layout="cursor">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <ViewTransitions />
+    <script defer data-domain="changelogs.info" src="https://plausible.io/js/script.js"></script>
+
+    <style is:global>
+      @font-face {
+        font-family: "Space Grotesk Fallback";
+        src: local("Arial Black"), local("Arial");
+        size-adjust: 107%;
+        ascent-override: 95%;
+        descent-override: 22%;
+        line-gap-override: 0%;
+      }
+      @font-face {
+        font-family: "Work Sans Fallback";
+        src: local("Helvetica Neue"), local("Arial");
+        size-adjust: 100%;
+        ascent-override: 96%;
+        descent-override: 24%;
+        line-gap-override: 0%;
+      }
+
+      :root {
+        --cu-primary: #146EF5;
+        --cu-primary-bright: #5a9cff;
+        --cu-primary-deep: #0f4fd6;
+        --cu-accent: #7dd3fc;
+        --cu-header-bg: rgba(6, 12, 29, 0.88);
+        --cu-bg: #07111f;
+        --cu-bg-card: #0d1a31;
+        --cu-bg-surface: #122545;
+        --cu-bg-soft: rgba(20, 110, 245, 0.08);
+        --cu-text: #eef5ff;
+        --cu-text-dim: rgba(238, 245, 255, 0.72);
+        --cu-text-muted: rgba(238, 245, 255, 0.48);
+        --cu-border: rgba(90, 156, 255, 0.75);
+        --cu-border-dim: rgba(90, 156, 255, 0.24);
+        --cu-shadow: 0 24px 80px rgba(7, 17, 31, 0.38);
+        --cu-shadow-sm: 0 14px 40px rgba(7, 17, 31, 0.24);
+        --cu-font-headline: "Space Grotesk", "Space Grotesk Fallback", sans-serif;
+        --cu-font-body: "Work Sans", "Work Sans Fallback", sans-serif;
+        --cu-font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+        --tool-primary: var(--cu-primary);
+        --tool-primary-bright: var(--cu-primary-bright);
+        --tool-font-mono: var(--cu-font-mono);
+        --tool-font-headline: var(--cu-font-headline);
+        --tool-font-body: var(--cu-font-body);
+        --tool-bg: var(--cu-bg);
+        --tool-bg-card: var(--cu-bg-card);
+        --tool-bg-surface: var(--cu-bg-surface);
+        --tool-text: var(--cu-text);
+        --tool-border-dim: var(--cu-border-dim);
+      }
+
+      [data-theme="light"] {
+        --cu-header-bg: rgba(247, 251, 255, 0.92);
+        --cu-primary: #146EF5;
+        --cu-primary-bright: #0f4fd6;
+        --cu-primary-deep: #0b3cab;
+        --cu-bg: #f5f9ff;
+        --cu-bg-card: #ffffff;
+        --cu-bg-surface: #e9f2ff;
+        --cu-bg-soft: rgba(20, 110, 245, 0.08);
+        --cu-text: #091223;
+        --cu-text-dim: rgba(9, 18, 35, 0.74);
+        --cu-text-muted: rgba(9, 18, 35, 0.48);
+        --cu-border: rgba(20, 110, 245, 0.75);
+        --cu-border-dim: rgba(20, 110, 245, 0.2);
+        --cu-shadow: 0 24px 80px rgba(20, 110, 245, 0.12);
+        --cu-shadow-sm: 0 14px 40px rgba(20, 110, 245, 0.08);
+      }
+
+      html[data-layout="cursor"] {
+        background: radial-gradient(circle at top, rgba(20, 110, 245, 0.14), transparent 30%), var(--cu-bg);
+        color: var(--cu-text);
+      }
+
+      html[data-layout="cursor"] body {
+        margin: 0;
+        min-height: 100vh;
+        background: transparent;
+        color: var(--cu-text);
+        font-family: var(--cu-font-body);
+      }
+
+      .cu-headline {
+        font-family: var(--cu-font-headline);
+        font-weight: 900;
+      }
+
+      .cu-dotgrid {
+        background-image: radial-gradient(circle, var(--cu-border-dim) 1px, transparent 1px);
+        background-size: 22px 22px;
+      }
+
+      .cu-cursor {
+        animation: cu-blink 1s step-end infinite;
+      }
+
+      .cu-pulse-dot {
+        animation: cu-pulse 2s ease-in-out infinite;
+      }
+
+      .cu-section-reveal {
+        opacity: 0;
+        transform: translateY(18px);
+        animation: cu-enter 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+      }
+
+      .cu-quick-link,
+      .cu-stats-cell,
+      .cu-cta-btn {
+        transition: transform 120ms ease, border-color 120ms ease, box-shadow 120ms ease, background 120ms ease;
+      }
+
+      .cu-quick-link:hover,
+      .cu-stats-cell:hover,
+      .cu-cta-btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .cu-subnav {
+        position: sticky;
+        top: 56px;
+        z-index: 49;
+        background: var(--cu-header-bg);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--cu-border-dim);
+      }
+
+      .cu-subnav__inner {
+        max-width: 1280px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 0.65rem 1.25rem;
+      }
+
+      .cu-subnav__brand,
+      .cu-subnav__link {
+        font-family: var(--cu-font-mono);
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .cu-subnav__brand {
+        color: var(--cu-primary-bright);
+        font-weight: 900;
+        font-size: 0.95rem;
+      }
+
+      .cu-subnav__link {
+        color: var(--cu-text-dim);
+        font-weight: 700;
+        font-size: 0.74rem;
+        opacity: 0.82;
+        padding-bottom: 0.2rem;
+        border-bottom: 2px solid transparent;
+      }
+
+      .cu-subnav__link:hover,
+      .cu-subnav__link--active {
+        color: var(--cu-primary-bright);
+        opacity: 1;
+        border-color: var(--cu-primary);
+      }
+
+      @keyframes cu-enter {
+        from { opacity: 0; transform: translateY(18px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      @keyframes cu-blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+      }
+
+      @keyframes cu-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.35; }
+      }
+
+      @media (max-width: 640px) {
+        .cu-subnav__inner {
+          flex-wrap: wrap;
+          gap: 0.65rem;
+        }
+      }
+    </style>
+
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        name: "Cursor",
+        description,
+        url: "https://cursor.com",
+        applicationCategory: "DeveloperApplication",
+        operatingSystem: "Cross-platform",
+      })}
+    />
+    <link rel="alternate" type="application/rss+xml" title="changelogs.info RSS" href="/feed/all.xml" />
+  </head>
+  <body>
+    <SharedNav currentSection="cursor" />
+
+    <div class="cu-subnav">
+      <div class="cu-subnav__inner">
+        <span class="cu-subnav__brand">Cursor</span>
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            class={`cu-subnav__link ${currentPage === link.key ? "cu-subnav__link--active" : ""}`}
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer style="margin-top: 6rem; border-top: 1px solid var(--cu-border-dim); background: rgba(7, 17, 31, 0.72);">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 2.5rem 1.5rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1.5rem; align-items: center;">
+        <div style="display: grid; gap: 0.35rem;">
+          <span class="cu-headline" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--cu-text-dim);">
+            © {new Date().getFullYear()} changelogs.info / Cursor
+          </span>
+          <span style="font-family: var(--cu-font-mono); font-size: 0.68rem; color: var(--cu-text-muted);">
+            TRACKING RELEASES, SHORTCUTS, AND WORKFLOWS
+          </span>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 1.25rem;">
+          {[
+            { label: "Hub", href: "/" },
+            { label: "Changelog", href: "/cursor/changelog/" },
+            { label: "Cheatsheet", href: "/cursor/cheatsheet/" },
+            { label: "Releases", href: "/cursor/releases/" },
+            { label: "Cursor ↗", href: "https://cursor.com", external: true },
+          ].map((link) => (
+            <a
+              href={link.href}
+              target={link.external ? "_blank" : undefined}
+              rel={link.external ? "noopener noreferrer" : undefined}
+              class="cu-headline"
+              style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--cu-text-dim); text-decoration: none;"
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

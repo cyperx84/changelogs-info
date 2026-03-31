@@ -1,0 +1,173 @@
+---
+import RooCodeLayout from "../../layouts/RooCodeLayout.astro";
+import { getToolReleases, formatDate } from "../../lib/releases";
+import { marked } from "marked";
+
+const data = await getToolReleases("roo-code");
+const releases = data?.releases || [];
+
+function isBreaking(body: string = ""): boolean {
+  return body.toLowerCase().includes("breaking");
+}
+
+function renderBody(body: string): string {
+  if (!body) return "";
+  marked.setOptions({ gfm: true, breaks: false });
+  return marked.parse(body) as string;
+}
+---
+
+<RooCodeLayout
+  title="Roo Code Changelog — changelogs.info"
+  description="Full changelog for Roo Code. Releases, stable builds, CLI prereleases, and notable notes."
+  currentPage="changelog"
+>
+  <div class="rc-page">
+    <section class="rc-changelog-hero">
+      <div>
+        <div class="rc-changelog-hero__eyebrow">Roo Code release log</div>
+        <h1 class="rc-headline rc-changelog-hero__title">Changelog</h1>
+      </div>
+      <p class="rc-changelog-hero__text">
+        Every tracked Roo Code release in one place, including extension releases and the CLI prerelease stream.
+      </p>
+    </section>
+
+    {releases.length > 0 ? (
+      <div class="rc-timeline">
+        {releases.map((release) => {
+          const breaking = isBreaking(release.body);
+          return (
+            <article class={`rc-card rc-entry ${breaking ? "rc-entry--breaking" : ""}`}>
+              <div class="rc-entry__meta">
+                <div>
+                  <div class="rc-entry__version">{release.version}</div>
+                  <div class="rc-entry__date">{formatDate(release.date)}</div>
+                </div>
+                <div class="rc-entry__badges">
+                  {breaking && <span class="rc-entry__badge rc-entry__badge--breaking">Breaking</span>}
+                  {release.prerelease && <span class="rc-entry__badge">Pre-release</span>}
+                </div>
+              </div>
+
+              <h2 class="rc-headline rc-entry__title">{release.name || release.version}</h2>
+
+              <div class="changelog-body rc-entry__body" set:html={renderBody(release.body || "")} />
+
+              <div class="rc-entry__footer">
+                <a href={release.url} target="_blank" rel="noopener noreferrer" class="rc-link">
+                  View on GitHub ↗
+                </a>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    ) : (
+      <div class="rc-card rc-empty">$ no releases tracked yet</div>
+    )}
+  </div>
+
+  <style>
+    .rc-changelog-hero {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .rc-changelog-hero__eyebrow,
+    .rc-entry__version,
+    .rc-entry__date,
+    .rc-entry__badge {
+      font-family: var(--rc-font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .rc-changelog-hero__eyebrow {
+      font-size: 0.75rem;
+      color: var(--rc-primary-bright);
+    }
+    .rc-changelog-hero__title {
+      margin: 0.75rem 0 0;
+      font-size: clamp(3rem, 8vw, 6rem);
+      line-height: 0.92;
+    }
+    .rc-changelog-hero__text {
+      max-width: 36rem;
+      color: var(--rc-text-dim);
+      line-height: 1.7;
+      margin: 0;
+      align-self: end;
+    }
+    .rc-timeline {
+      display: grid;
+      gap: 1.5rem;
+    }
+    .rc-entry {
+      padding: 1.5rem;
+    }
+    .rc-entry--breaking {
+      border-left-width: 10px;
+    }
+    .rc-entry__meta,
+    .rc-entry__footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: center;
+    }
+    .rc-entry__meta {
+      margin-bottom: 1rem;
+    }
+    .rc-entry__version {
+      font-size: 0.82rem;
+      color: var(--rc-primary-bright);
+    }
+    .rc-entry__date {
+      margin-top: 0.25rem;
+      font-size: 0.68rem;
+      color: var(--rc-text-muted);
+    }
+    .rc-entry__badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .rc-entry__badge {
+      border: 2px solid var(--rc-border-dim);
+      padding: 0.35rem 0.55rem;
+      font-size: 0.66rem;
+      color: var(--rc-text-dim);
+    }
+    .rc-entry__badge--breaking {
+      border-color: var(--rc-primary);
+      background: var(--rc-primary);
+      color: #fff;
+    }
+    .rc-entry__title {
+      margin: 0 0 1rem;
+      font-size: clamp(1.2rem, 2vw, 1.7rem);
+    }
+    .rc-entry__body {
+      color: var(--rc-text-dim);
+      line-height: 1.7;
+    }
+    .rc-entry__body :global(pre) {
+      overflow-x: auto;
+      padding: 1rem;
+      background: var(--rc-bg);
+      border: 2px solid var(--rc-border-dim);
+    }
+    .rc-entry__footer {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 2px solid var(--rc-border-dim);
+    }
+    .rc-empty {
+      padding: 3rem 1.5rem;
+      font-family: var(--rc-font-mono);
+      color: var(--rc-text-muted);
+    }
+  </style>
+</RooCodeLayout>

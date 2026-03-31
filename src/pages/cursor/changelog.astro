@@ -1,0 +1,422 @@
+---
+import CursorLayout from "../../layouts/CursorLayout.astro";
+import { getToolReleases, formatDate } from "../../lib/releases";
+import { marked } from "marked";
+
+const data = await getToolReleases("cursor");
+const releases = data?.releases || [];
+
+function isBreaking(body: string = ""): boolean {
+  return body.toLowerCase().includes("breaking");
+}
+
+function renderBody(body: string): string {
+  if (!body) return "";
+  marked.setOptions({ gfm: true, breaks: false });
+  let html = marked.parse(body) as string;
+  html = html.replace(/<a href="(https:\/\/github\.com\/[^/]+\/[^/]+\/pull\/(\d+))"[^>]*>[^<]*<\/a>/g,
+    '<a href="$1" target="_blank" rel="noopener noreferrer" class="cl-pr-link">#$2</a>');
+  html = html.replace(/<a href="(https:\/\/github\.com\/[^/]+\/[^/]+\/issues\/(\d+))"[^>]*>[^<]*<\/a>/g,
+    '<a href="$1" target="_blank" rel="noopener noreferrer" class="cl-pr-link">#$2</a>');
+  html = html.replace(/ by <a href="https:\/\/github\.com\/[^"]*"[^>]*>@[^<]+<\/a> in /g, " ");
+  html = html.replace(/ by @[\w-]+ in /g, " ");
+  html = html.replace(/<li>(.*?)<\/li>/gs, (match, content) => {
+    const text = content.toLowerCase();
+    let badge = "";
+    if (/^fix[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-fix">FIX</span>';
+    else if (/^feat[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-feat">FEAT</span>';
+    else if (/^docs[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-docs">DOCS</span>';
+    else if (/^test[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-test">TEST</span>';
+    else if (/^(refactor|chore)[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-chore">CHORE</span>';
+    else if (/^(ci|build|docker)[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-ci">CI</span>';
+    else if (/^(perf|style)[\s(:]/.test(text)) badge = '<span class="cl-badge cl-badge-perf">PERF</span>';
+    return `<li>${badge}${content}</li>`;
+  });
+  return html;
+}
+---
+
+<CursorLayout
+  title="Cursor Changelog — changelogs.info"
+  description="Full changelog for Cursor. Every release, every breaking change, every fix."
+  currentPage="changelog"
+>
+  <div class="cl-wrapper">
+    <section class="cl-hero">
+      <h1 class="cu-headline cl-hero__title">Changelog</h1>
+      <div class="cl-hero__row">
+        <p class="cl-hero__sub">Every Cursor release, indexed for fast scanning.</p>
+        <div class="cl-hero__filters">
+          <label class="cu-headline cl-filter-label">Filter updates</label>
+          <div class="cl-search-wrap">
+            <div class="cl-search-inner">
+              <input
+                id="cl-search"
+                type="text"
+                placeholder="SEARCH RELEASES..."
+                class="cl-search-input"
+                autocomplete="off"
+                spellcheck="false"
+              />
+              <span class="cl-search-icon">⌕</span>
+            </div>
+          </div>
+          <div class="cl-filter-group">
+            <button id="cl-filter-stable" class="cu-headline cl-filter-btn" data-filter="stable">Stable</button>
+            <button id="cl-filter-breaking" class="cu-headline cl-filter-btn" data-filter="breaking">Breaking</button>
+            <button id="cl-filter-prerelease" class="cu-headline cl-filter-btn" data-filter="prerelease">Pre-release</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {releases.length > 0 ? (
+      <div class="cl-timeline" id="cl-timeline">
+        {releases.map((release, idx) => {
+          const breaking = isBreaking(release.body);
+          const renderedBody = renderBody(release.body || "");
+          const isLong = (release.body || "").length > 600;
+
+          return (
+            <article
+              class={`cl-entry${breaking ? " cl-entry--breaking" : ""}`}
+              data-version={release.version.toLowerCase()}
+              data-name={(release.name || "").toLowerCase()}
+              data-body={(release.body || "").toLowerCase().slice(0, 800)}
+              data-prerelease={String(release.prerelease)}
+              data-breaking={String(breaking)}
+              data-index={idx}
+            >
+              <div class={`cl-dot${breaking ? " cl-dot--breaking" : ""}`}>
+                <span class="cl-dot__icon">{breaking ? "⚡" : release.prerelease ? "β" : "●"}</span>
+              </div>
+
+              <div class="cl-header">
+                <span class="cu-headline cl-header__version">{release.version}</span>
+                <span class="cu-headline cl-header__date">{formatDate(release.date)}</span>
+                {breaking && <span class="cl-label cl-label--breaking">Breaking</span>}
+                {release.prerelease && <span class="cl-label cl-label--prerelease">Pre-release</span>}
+              </div>
+
+              <div class={`cl-card${breaking ? " cl-card--breaking" : ""}`}>
+                <h3 class="cu-headline cl-card__title">{release.name || release.version}</h3>
+
+                <div
+                  class={`changelog-body cl-card__body${isLong && idx > 0 ? " cl-collapsed" : ""}`}
+                  set:html={renderedBody}
+                />
+
+                {isLong && (
+                  <button class="cl-expand-btn cu-headline">
+                    {idx === 0 ? "▲ Collapse" : "▼ Expand full changelog"}
+                  </button>
+                )}
+
+                <div class="cl-card__footer">
+                  <a
+                    href={release.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="cl-gh-link"
+                  >
+                    ↗ Source
+                  </a>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+
+        {releases.length > 10 && (
+          <div class="cl-load-more-wrap">
+            <button id="cl-load-more" class="cu-headline cl-load-more-btn">
+              Load {releases.length - 10} More Releases ▼
+            </button>
+          </div>
+        )}
+      </div>
+    ) : (
+      <div class="cl-empty">
+        <p class="cu-headline">$ no cursor releases tracked yet</p>
+      </div>
+    )}
+
+    <button id="cl-scroll-top" class="cl-scroll-top" aria-label="Scroll to top">↑</button>
+  </div>
+
+  <style>
+    .cl-wrapper { max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 0; }
+    .cl-hero { margin-bottom: 4rem; }
+    .cl-hero__title {
+      font-size: clamp(3.5rem, 10vw, 7rem);
+      letter-spacing: -0.04em;
+      line-height: 0.9;
+      margin: 0 0 1rem;
+    }
+    .cl-hero__row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      align-items: end;
+      justify-content: space-between;
+    }
+    .cl-hero__sub {
+      margin: 0;
+      max-width: 34rem;
+      color: var(--cu-text-dim);
+      line-height: 1.7;
+    }
+    .cl-hero__filters { width: 100%; max-width: 340px; }
+    .cl-filter-label {
+      display: block;
+      margin-bottom: 0.45rem;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--cu-primary-bright);
+    }
+    .cl-search-wrap, .cl-search-inner { position: relative; }
+    .cl-search-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0.95rem 1rem;
+      border-radius: 16px;
+      border: 1px solid var(--cu-border);
+      background: var(--cu-bg-card);
+      color: var(--cu-text);
+      font-family: var(--cu-font-mono);
+      font-size: 0.8rem;
+      outline: none;
+    }
+    .cl-search-input::placeholder { color: var(--cu-text-muted); }
+    .cl-search-icon {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--cu-text-muted);
+      pointer-events: none;
+    }
+    .cl-filter-group { display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap; }
+    .cl-filter-btn {
+      border: 1px solid var(--cu-border-dim);
+      background: transparent;
+      color: var(--cu-text-muted);
+      border-radius: 999px;
+      padding: 0.42rem 0.9rem;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+    }
+    .cl-filter-btn:hover, .cl-filter-btn.is-active {
+      border-color: var(--cu-primary);
+      background: var(--cu-primary);
+      color: #fff;
+    }
+    .cl-timeline {
+      position: relative;
+      padding-left: 2.8rem;
+      border-left: 2px solid var(--cu-border-dim);
+    }
+    .cl-entry { position: relative; margin-bottom: 2.4rem; }
+    .cl-dot {
+      position: absolute;
+      left: -3.55rem;
+      top: 0.3rem;
+      width: 2.4rem;
+      height: 2.4rem;
+      border-radius: 999px;
+      border: 1px solid var(--cu-border);
+      background: var(--cu-bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cl-dot--breaking {
+      background: var(--cu-primary);
+      border-color: var(--cu-primary);
+    }
+    .cl-dot__icon { color: var(--cu-primary-bright); font-size: 0.82rem; }
+    .cl-dot--breaking .cl-dot__icon { color: #fff; }
+    .cl-header { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: baseline; margin-bottom: 0.8rem; }
+    .cl-header__version { font-size: 2rem; }
+    .cl-header__date { color: var(--cu-text-muted); font-size: 0.9rem; }
+    .cl-label {
+      padding: 0.22rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.64rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .cl-label--breaking { background: var(--cu-primary); color: #fff; }
+    .cl-label--prerelease { border: 1px solid var(--cu-border); color: var(--cu-primary-bright); }
+    .cl-card {
+      padding: 1.4rem;
+      border-radius: 22px;
+      border: 1px solid var(--cu-border-dim);
+      background: rgba(13, 26, 49, 0.88);
+      box-shadow: var(--cu-shadow-sm);
+    }
+    .cl-card--breaking { border-color: var(--cu-primary); }
+    .cl-card__title { margin: 0 0 1rem; font-size: 1.35rem; }
+    .cl-card__body { color: var(--cu-text-dim); line-height: 1.75; }
+    .cl-collapsed { max-height: 12rem; overflow: hidden; position: relative; }
+    .cl-collapsed::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 4rem;
+      background: linear-gradient(to bottom, transparent, rgba(13, 26, 49, 1));
+    }
+    .cl-expand-btn {
+      margin-top: 1rem;
+      border-radius: 999px;
+      border: 1px solid var(--cu-border);
+      background: transparent;
+      color: var(--cu-text);
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.68rem;
+    }
+    .cl-expand-btn:hover { background: var(--cu-primary); color: #fff; }
+    .cl-card__footer {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 1rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid var(--cu-border-dim);
+    }
+    .cl-gh-link {
+      text-decoration: none;
+      font-family: var(--cu-font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--cu-text-dim);
+    }
+    .cl-gh-link:hover { color: var(--cu-primary-bright); }
+    .cl-load-more-wrap { margin-bottom: 4rem; }
+    .cl-load-more-btn {
+      border-radius: 999px;
+      border: 1px solid var(--cu-border);
+      background: transparent;
+      color: var(--cu-text);
+      padding: 0.85rem 1.5rem;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .cl-load-more-btn:hover { background: var(--cu-primary); color: #fff; }
+    .cl-empty {
+      padding: 4rem 2rem;
+      border-radius: 24px;
+      border: 1px dashed var(--cu-border-dim);
+      text-align: center;
+      color: var(--cu-text-muted);
+      background: rgba(13, 26, 49, 0.56);
+    }
+    .cl-scroll-top {
+      position: fixed;
+      right: 1.5rem;
+      bottom: 1.5rem;
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 999px;
+      border: 1px solid var(--cu-border);
+      background: var(--cu-primary);
+      color: #fff;
+      box-shadow: var(--cu-shadow-sm);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 160ms ease;
+    }
+    .cl-scroll-top.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  </style>
+
+  <script>
+    const entries = Array.from(document.querySelectorAll(".cl-entry"));
+    const filterBtns = Array.from(document.querySelectorAll(".cl-filter-btn"));
+    const searchInput = document.getElementById("cl-search");
+    const loadMoreBtn = document.getElementById("cl-load-more");
+    const scrollTopBtn = document.getElementById("cl-scroll-top");
+
+    let activeFilter = "all";
+    let searchQuery = "";
+    let visibleLimit = 10;
+
+    function matches(entry) {
+      const prerelease = entry.dataset.prerelease === "true";
+      const breaking = entry.dataset.breaking === "true";
+      const matchesSearch = !searchQuery
+        || entry.dataset.version?.includes(searchQuery)
+        || entry.dataset.name?.includes(searchQuery)
+        || entry.dataset.body?.includes(searchQuery);
+      const matchesFilter =
+        activeFilter === "all"
+        || (activeFilter === "stable" && !prerelease)
+        || (activeFilter === "breaking" && breaking)
+        || (activeFilter === "prerelease" && prerelease);
+      return matchesSearch && matchesFilter;
+    }
+
+    function applyFilters() {
+      let shown = 0;
+      entries.forEach((entry) => {
+        const show = matches(entry) && (searchQuery || shown < visibleLimit);
+        entry.style.display = show ? "" : "none";
+        if (matches(entry)) shown += 1;
+      });
+
+      if (loadMoreBtn) {
+        const totalMatches = entries.filter(matches).length;
+        loadMoreBtn.style.display = totalMatches > visibleLimit && !searchQuery ? "" : "none";
+      }
+    }
+
+    filterBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        activeFilter = btn.dataset.filter || "all";
+        filterBtns.forEach((b) => b.classList.remove("is-active"));
+        btn.classList.add("is-active");
+        applyFilters();
+      });
+    });
+
+    searchInput?.addEventListener("input", (event) => {
+      searchQuery = event.target.value.toLowerCase().trim();
+      applyFilters();
+    });
+
+    loadMoreBtn?.addEventListener("click", () => {
+      visibleLimit += 10;
+      applyFilters();
+    });
+
+    document.querySelectorAll(".cl-expand-btn").forEach((button) => {
+      button.addEventListener("click", () => {
+        const body = button.parentElement?.querySelector(".cl-card__body");
+        if (!body) return;
+        body.classList.toggle("cl-collapsed");
+        button.textContent = body.classList.contains("cl-collapsed") ? "▼ Expand full changelog" : "▲ Collapse";
+      });
+    });
+
+    window.addEventListener("scroll", () => {
+      if (!scrollTopBtn) return;
+      if (window.scrollY > 480) scrollTopBtn.classList.add("is-visible");
+      else scrollTopBtn.classList.remove("is-visible");
+    });
+
+    scrollTopBtn?.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    applyFilters();
+  </script>
+</CursorLayout>

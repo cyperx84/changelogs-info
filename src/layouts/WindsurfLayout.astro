@@ -1,0 +1,634 @@
+---
+import "../styles/ws-extracted.css";
+import "../styles/tool-shared.css";
+import "../styles/global.css";
+import "../styles/shared-nav.css";
+import "../styles/view-transitions.css";
+import { ViewTransitions } from "astro:transitions";
+import SharedNav from "../components/SharedNav.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  currentPage?: string;
+}
+
+const {
+  title,
+  description = "The first agentic IDE. Windsurf Cascade flows with you — multi-file edits, deep codebase awareness, autonomous task completion.",
+  currentPage = "",
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const navLinks = [
+  { label: "Changelog", href: "/windsurf/changelog/", key: "changelog" },
+  { label: "Cheatsheet", href: "/windsurf/cheatsheet/", key: "cheatsheet" },
+  { label: "Releases", href: "/windsurf/releases/", key: "releases" },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>    <ViewTransitions />
+    <script defer data-domain="changelogs.info" src="https://plausible.io/js/script.js"></script>
+
+    <style is:global>
+      @font-face {
+        font-family: 'Space Grotesk Fallback';
+        src: local('Arial Black'), local('Arial');
+        size-adjust: 107%;
+        ascent-override: 95%;
+        descent-override: 22%;
+        line-gap-override: 0%;
+      }
+      @font-face {
+        font-family: 'Work Sans Fallback';
+        src: local('Helvetica Neue'), local('Arial');
+        size-adjust: 100%;
+        ascent-override: 96%;
+        descent-override: 24%;
+        line-gap-override: 0%;
+      }
+
+      /* Windsurf Cyan Neo-Brutalist Theme */
+      :root {
+        --ws-header-bg: rgba(6, 15, 20, 0.92);
+        --ws-primary: #06B6D4;
+        --ws-primary-bright: #67E8F9;
+        --ws-accent: #22D3EE;
+        --ws-bg: #041217;
+        --ws-bg-card: #0a1a21;
+        --ws-bg-surface: #102731;
+        --ws-text: #ecfeff;
+        --ws-text-dim: rgba(236, 254, 255, 0.72);
+        --ws-text-muted: rgba(236, 254, 255, 0.46);
+        --ws-border: #22D3EE;
+        --ws-border-dim: rgba(34, 211, 238, 0.28);
+        --ws-shadow: 6px 6px 0px 0px rgba(8, 145, 178, 0.35);
+        --ws-shadow-sm: 4px 4px 0px 0px rgba(8, 145, 178, 0.3);
+        --ws-shadow-lg: 12px 12px 0px 0px rgba(8, 145, 178, 0.18);
+        --ws-font-headline: "Space Grotesk", "Space Grotesk Fallback", sans-serif;
+        --ws-font-body: "Work Sans", "Work Sans Fallback", sans-serif;
+        --ws-font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+        /* Bridge vars for tool-shared.css */
+        --tool-primary: var(--ws-primary);
+        --tool-primary-bright: var(--ws-primary-bright);
+        --tool-font-mono: var(--ws-font-mono);
+        --tool-font-headline: var(--ws-font-headline);
+        --tool-font-body: var(--ws-font-body);
+        --tool-bg: var(--ws-bg);
+        --tool-bg-card: var(--ws-bg-card);
+        --tool-bg-surface: var(--ws-bg-surface);
+        --tool-text: var(--ws-text);
+        --tool-border-dim: var(--ws-border-dim);
+      }
+
+      [data-theme="light"] {
+        --ws-header-bg: rgba(240, 253, 250, 0.96);
+        --ws-primary: #06B6D4;
+        --ws-primary-bright: #0891B2;
+        --ws-bg: #ecfeff;
+        --ws-bg-card: #ffffff;
+        --ws-bg-surface: #cffafe;
+        --ws-text: #083344;
+        --ws-text-dim: rgba(8, 51, 68, 0.68);
+        --ws-text-muted: rgba(8, 51, 68, 0.44);
+        --ws-border: #083344;
+        --ws-border-dim: rgba(8, 51, 68, 0.22);
+        --ws-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
+        --ws-shadow-sm: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+        --ws-shadow-lg: 12px 12px 0px 0px rgba(0, 0, 0, 0.8);
+      }
+
+      /* Base reset for cc layout */
+      html[data-layout="windsurf"] {
+        background: var(--ws-bg);
+        color: var(--ws-text);
+      }
+      html[data-layout="windsurf"] body {
+        margin: 0;
+        padding: 0;
+        background: var(--ws-bg);
+        color: var(--ws-text);
+        font-family: var(--ws-font-body);
+        min-height: 100vh;
+      }
+
+      /* Scanline overlay base */
+      html[data-layout="windsurf"] body::before {
+        content: '';
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(34, 211, 238, 0.012),
+          rgba(34, 211, 238, 0.012) 1px,
+          transparent 1px,
+          transparent 4px
+        );
+        pointer-events: none;
+        z-index: 9998;
+        opacity: 0.6;
+        display: none;
+      }
+
+      /* Typography helpers */
+      .ws-headline {
+        font-family: var(--ws-font-mono);
+        font-weight: 900;
+      }
+
+      /* Badge styles, cl-pr-link, changelog-body, cl-collapsed → see tool-shared.css */
+
+      /* Apex Mode */
+      [data-apex="true"] {
+        --ws-primary: #0891B2 !important;
+        --ws-primary-bright: #67E8F9 !important;
+        --ws-bg: #02151c !important;
+        --ws-bg-card: #082029 !important;
+        --ws-bg-surface: #0d2c37 !important;
+        --ws-text: #ecfeff !important;
+        --ws-text-dim: rgba(236, 254, 255, 0.76) !important;
+        --ws-text-muted: rgba(236, 254, 255, 0.52) !important;
+        --ws-border: #06B6D4 !important;
+        --ws-border-dim: rgba(6, 182, 212, 0.32) !important;
+        --ws-shadow: 6px 6px 0px 0px rgba(6, 182, 212, 0.4) !important;
+        --ws-shadow-sm: 4px 4px 0px 0px rgba(6, 182, 212, 0.3) !important;
+        --ws-header-bg: rgba(4, 18, 23, 0.96) !important;
+      }
+      [data-apex="true"][data-theme="light"] {
+        --ws-bg: #ecfeff !important;
+        --ws-bg-card: #cffafe !important;
+        --ws-bg-surface: #a5f3fc !important;
+        --ws-text: #164e63 !important;
+        --ws-text-dim: rgba(22, 78, 99, 0.7) !important;
+        --ws-text-muted: rgba(22, 78, 99, 0.45) !important;
+        --ws-border: #0891B2 !important;
+        --ws-header-bg: rgba(236, 254, 255, 0.96) !important;
+      }
+
+      @keyframes apex-pulse {
+        0%, 100% { text-shadow: 0 0 10px rgba(6, 182, 212, 0.5); }
+        50% { text-shadow: 0 0 30px rgba(6, 182, 212, 0.9), 0 0 60px rgba(103, 232, 249, 0.28); }
+      }
+      @keyframes apex-shake {
+        0%, 100% { transform: rotate(0deg) scale(1); }
+        25% { transform: rotate(-2deg) scale(1.05); }
+        75% { transform: rotate(2deg) scale(0.95); }
+      }
+      @keyframes apex-float {
+        0%, 100% { transform: translateY(0) skewX(0deg); }
+        33% { transform: translateY(-6px) skewX(1deg); }
+        66% { transform: translateY(3px) skewX(-0.5deg); }
+      }
+      @keyframes apex-glow {
+        0%, 100% { box-shadow: 0 0 5px rgba(6, 182, 212, 0.3); }
+        50% { box-shadow: 0 0 25px rgba(6, 182, 212, 0.7), 0 0 50px rgba(103, 232, 249, 0.18); }
+      }
+      @keyframes apex-trail-fade {
+        0% { opacity: 1; transform: scale(1) rotate(0deg); }
+        50% { opacity: 0.6; transform: scale(1.4) rotate(90deg); }
+        100% { opacity: 0; transform: scale(0.2) rotate(180deg) translateY(-50px); }
+      }
+      @keyframes apex-spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+
+      [data-apex="true"] #ws-apex-btn {
+        animation: apex-shake 0.6s ease-in-out infinite;
+        background: rgba(6, 182, 212, 0.15) !important;
+        border-color: #06B6D4 !important;
+        box-shadow: 0 0 20px rgba(6, 182, 212, 0.6) !important;
+      }
+      [data-apex="true"] .ws-headline {
+        animation: apex-float 3s ease-in-out infinite;
+      }
+      [data-apex="true"] .ws-headline:nth-child(2n) { animation-delay: 0.4s; }
+      [data-apex="true"] .ws-headline:nth-child(3n) { animation-delay: 0.8s; }
+      [data-apex="true"] [style*="border:"] {
+        animation: apex-glow 2.5s ease-in-out infinite !important;
+        border-color: #ff9500 !important;
+      }
+      [data-apex="true"] body::before { display: block !important; }
+
+      .apex-trail {
+        position: fixed;
+        pointer-events: none;
+        z-index: 9989;
+        font-size: 1.4rem;
+        animation: apex-trail-fade 0.9s ease-out forwards;
+        user-select: none;
+      }
+
+      /* CTA buttonCTA button */
+      .ws-cta-btn {
+        transition: transform 100ms, box-shadow 100ms;
+      }
+      .ws-cta-btn:hover {
+        transform: translate(1px, 1px);
+        box-shadow: none !important;
+      }
+
+      /* Quick link */
+      .ws-quick-link {
+        transition: border-color 150ms, box-shadow 150ms;
+      }
+      .ws-quick-link:hover {
+        border-color: var(--ws-primary) !important;
+        box-shadow: var(--ws-shadow-sm) !important;
+      }
+
+      /* Dot grid */
+      .ws-dotgrid {
+        background-image: radial-gradient(circle, var(--ws-border-dim) 1px, transparent 1px);
+        background-size: 24px 24px;
+      }
+
+      /* Cursor blink */
+      .ws-cursor {
+        animation: ws-blink 1s step-end infinite;
+      }
+      @keyframes ws-blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+      }
+
+      /* Pulse dot */
+      .ws-pulse-dot {
+        animation: ws-pulse 2s ease-in-out infinite;
+      }
+      @keyframes ws-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+      }
+
+      /* Hero animation */
+      .ws-hero-title {
+        animation: ws-slide-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+      .ws-hero-section p {
+        animation: ws-slide-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+      }
+      .ws-terminal-card {
+        animation: ws-slide-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+      }
+      @keyframes ws-slide-in {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .ws-section-reveal {
+        opacity: 0;
+        transform: translateY(16px);
+        animation: ws-slide-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+      }
+
+      /* Stats */
+      .ws-stats-cell {
+        transition: background 150ms;
+      }
+      .ws-stats-cell:hover {
+        background: var(--ws-primary) !important;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .ws-hero-grid { grid-template-columns: 1fr !important; }
+        .ws-terminal-card { width: 100% !important; }
+      }
+
+      /* Sub-nav */
+      .ws-subnav {
+        background: var(--ws-bg-surface, var(--ws-bg));
+        border-bottom: 2px solid var(--ws-border-dim, var(--ws-border));
+        position: sticky;
+        top: 56px;
+        z-index: 49;
+      }
+      .ws-subnav__inner {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 0.5rem 1.25rem;
+      }
+      .ws-subnav__brand {
+        font-family: var(--ws-font-mono);
+        font-weight: 900;
+        font-size: 1rem;
+        color: var(--ws-primary-bright, var(--ws-primary));
+        font-style: italic;
+        letter-spacing: -0.03em;
+      }
+      .ws-subnav__link {
+        font-family: var(--ws-font-mono);
+        font-weight: 700;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        text-decoration: none;
+        color: var(--ws-text);
+        opacity: 0.6;
+        padding-bottom: 2px;
+        transition: color 100ms, opacity 100ms;
+      }
+      .ws-subnav__link:hover {
+        opacity: 1;
+        color: var(--ws-primary-bright, var(--ws-primary));
+      }
+      .ws-subnav__link--active {
+        color: var(--ws-primary-bright, var(--ws-primary));
+        opacity: 1;
+        border-bottom: 3px solid var(--ws-primary-bright, var(--ws-primary));
+      }
+
+      @media (max-width: 640px) {
+        .ws-subnav__inner {
+          flex-wrap: wrap;
+          gap: 0.5rem;
+        }
+        .ws-subnav__brand {
+          font-size: 0.85rem;
+        }
+        .ws-subnav__link {
+          font-size: 0.7rem;
+        }
+      }
+    </style>
+      <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Windsurf",
+      "description": "The first agentic IDE. Windsurf Cascade flows with you across multi-file edits and autonomous development tasks.",
+      "url": "https://codeium.com/windsurf",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Cross-platform",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    })} />
+      <link rel="alternate" type="application/rss+xml" title="changelogs.info RSS" href="/feed/all.xml" />
+  </head>
+  <body>
+        <!-- Shared top nav -->
+    <SharedNav currentSection="windsurf" />
+
+    <!-- Windsurf sub-nav -->
+    <div class="ws-subnav">
+      <div class="ws-subnav__inner">
+        <span class="ws-subnav__brand">Windsurf</span>
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            class={`ws-subnav__link ${currentPage === link.key ? "ws-subnav__link--active" : ""}`}
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <main>
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer style="border-top: 8px solid var(--ws-primary); background: var(--ws-bg); margin-top: 6rem; padding: 3rem 2rem;">
+      <div style="max-width: 1280px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1.5rem;">
+        <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+          <span class="ws-headline" style="font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ws-text-dim);">
+            © {new Date().getFullYear()} changelogs.info / Windsurf
+          </span>
+          <span style="font-family: var(--ws-font-mono); font-size: 0.6rem; color: var(--ws-text-muted);">
+            DATA FROM OFFICIAL GITHUB RELEASES
+          </span>
+        </div>
+        <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+          {[
+            { label: "Hub", href: "/" },
+            { label: "Changelog", href: "/windsurf/changelog/" },
+            { label: "Cheatsheet", href: "/windsurf/cheatsheet/" },
+            { label: "Releases", href: "/windsurf/releases/" },
+            { label: "GitHub ↗", href: "https://github.com/codeium-ai/windsurf", external: true },
+            { label: "RSS", href: "/feed/all.xml" },
+          ].map((link) => (
+            <a
+              href={link.href}
+              target={link.external ? "_blank" : undefined}
+              rel={link.external ? "noopener noreferrer" : undefined}
+              class="ws-headline"
+              style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ws-text-dim); text-decoration: none; transition: color 150ms;"
+              onmouseover={`this.style.color='var(--ws-primary-bright)'`}
+              onmouseout={`this.style.color='var(--ws-text-dim)'`}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+        <div style="font-family: var(--ws-font-mono); font-size: 0.65rem; color: var(--ws-text-muted); display: flex; align-items: center; gap: 0.5rem;">
+          <span style="color: var(--ws-primary);">▶</span>
+          CASCADE: FLOW MODE
+        </div>
+      </div>
+    </footer>
+
+    <!-- Apex Mode canvas + banner -->
+    <canvas id="apex-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9990; pointer-events: none; display: none;"></canvas>
+    <div id="apex-banner" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); z-index: 9991; pointer-events: none; font-family: var(--ws-font-mono); font-weight: 900; font-size: clamp(2rem, 10vw, 7rem); color: #fff; text-shadow: 0 0 40px rgba(6,182,212,0.9), 0 0 80px rgba(103,232,249,0.45), 4px 4px 0 #000; text-transform: uppercase; font-style: italic; letter-spacing: -0.04em; text-align: center; width: 90vw; max-width: 900px; transition: transform 600ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 400ms; line-height: 1.1;">🌊 FLOW MODE 🌊<br><span style="font-size: 0.35em; opacity: 0.8; display: block; margin-top: 0.5rem;">CASCADE: MAXIMUM CONTEXT</span></div>
+
+    
+
+    <!-- === APEX MODE === -->
+    <script>
+      (function() {
+        let apexActive = false;
+        let animFrame: number;
+        let particles: Array<{x: number; y: number; vx: number; vy: number; rot: number; vr: number; size: number; emoji: string; wobble: number; wobbleSpeed: number; glow: number}> = [];
+        let trailThrottle = 0;
+
+        const APEX_EMOJIS = ['🧠', '⚡', '🔥', '✨', '💡', '🤖', '∞', '◈'];
+        const canvas = document.getElementById('apex-canvas') as HTMLCanvasElement;
+        const ctx = canvas?.getContext('2d');
+        const banner = document.getElementById('apex-banner');
+
+        function resizeCanvas() {
+          if (!canvas) return;
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+
+        function spawnParticles(count: number) {
+          for (let i = 0; i < count; i++) {
+            particles.push({
+              x: Math.random() * window.innerWidth,
+              y: -50 - Math.random() * 300,
+              vx: (Math.random() - 0.5) * 2.5,
+              vy: 1 + Math.random() * 2.5,
+              rot: Math.random() * Math.PI * 2,
+              vr: (Math.random() - 0.5) * 0.06,
+              size: 16 + Math.random() * 28,
+              emoji: APEX_EMOJIS[Math.floor(Math.random() * APEX_EMOJIS.length)],
+              wobble: Math.random() * Math.PI * 2,
+              wobbleSpeed: 0.015 + Math.random() * 0.03,
+              glow: Math.random()
+            });
+          }
+        }
+
+        function animate() {
+          if (!ctx || !canvas) return;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          particles.forEach(p => {
+            p.wobble += p.wobbleSpeed;
+            p.glow = 0.5 + 0.5 * Math.sin(p.wobble * 2);
+            p.x += p.vx + Math.sin(p.wobble) * 1.2;
+            p.y += p.vy;
+            p.rot += p.vr;
+
+            if (p.x < -60) p.x = canvas.width + 60;
+            if (p.x > canvas.width + 60) p.x = -60;
+            if (p.y > canvas.height + 60) {
+              p.y = -60;
+              p.x = Math.random() * canvas.width;
+              p.vy = 1 + Math.random() * 2.5;
+            }
+
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.rot);
+            ctx.globalAlpha = 0.7 + 0.3 * p.glow;
+
+            // Cyan glow effect
+            ctx.shadowColor = `rgba(6, 182, 212, ${p.glow * 0.6})`;
+            ctx.shadowBlur = p.size * 0.8;
+
+            ctx.font = `${p.size}px serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(p.emoji, 0, 0);
+            ctx.restore();
+          });
+
+          if (apexActive) {
+            animFrame = requestAnimationFrame(animate);
+          }
+        }
+
+        function addTrail(e: MouseEvent) {
+          const now = Date.now();
+          if (now - trailThrottle < 60) return;
+          trailThrottle = now;
+
+          const el = document.createElement('div');
+          el.className = 'apex-trail';
+          el.textContent = APEX_EMOJIS[Math.floor(Math.random() * 3)];
+          el.style.left = (e.clientX - 14) + 'px';
+          el.style.top = (e.clientY - 14) + 'px';
+          document.body.appendChild(el);
+          setTimeout(() => el.remove(), 1000);
+        }
+
+        function clickSpawn() {
+          if (apexActive) spawnParticles(6);
+        }
+
+        function enterApexMode(quiet = false) {
+          apexActive = true;
+          document.documentElement.setAttribute('data-apex', 'true');
+
+          if (canvas) {
+            canvas.style.display = 'block';
+            resizeCanvas();
+          }
+
+          if (quiet) {
+            spawnParticles(12);
+          } else {
+            spawnParticles(20);
+            setTimeout(() => spawnParticles(12), 700);
+            setTimeout(() => spawnParticles(8), 1400);
+          }
+
+          if (banner && !quiet) {
+            banner.style.display = 'block';
+            banner.style.opacity = '1';
+            requestAnimationFrame(() => {
+              banner.style.transform = 'translate(-50%, -50%) scale(1)';
+            });
+            setTimeout(() => {
+              banner.style.opacity = '0';
+              setTimeout(() => {
+                banner.style.display = 'none';
+                banner.style.transform = 'translate(-50%, -50%) scale(0)';
+              }, 500);
+            }, 2500);
+          }
+
+          animate();
+          document.addEventListener('mousemove', addTrail);
+          document.addEventListener('click', clickSpawn);
+          localStorage.setItem('ws-apex-mode', 'true');
+        }
+
+        function exitApexMode() {
+          apexActive = false;
+          document.documentElement.removeAttribute('data-apex');
+          cancelAnimationFrame(animFrame);
+          particles = [];
+
+          if (canvas) {
+            canvas.style.display = 'none';
+            if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+          }
+          if (banner) {
+            banner.style.display = 'none';
+            banner.style.transform = 'translate(-50%, -50%) scale(0)';
+          }
+
+          document.removeEventListener('mousemove', addTrail);
+          document.removeEventListener('click', clickSpawn);
+          document.querySelectorAll('.apex-trail').forEach(el => el.remove());
+          localStorage.removeItem('ws-apex-mode');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+          const apexBtn = document.getElementById('ws-apex-btn');
+          apexBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (apexActive) {
+              exitApexMode();
+            } else {
+              enterApexMode();
+            }
+          });
+
+          window.addEventListener('resize', resizeCanvas);
+
+          if (localStorage.getItem('ws-apex-mode') === 'true') {
+            enterApexMode(true);
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

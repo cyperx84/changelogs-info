@@ -28,7 +28,7 @@ export interface ToolReleases {
 
 export const FEATURED_TOOLS: string[] = [];
 
-export const CLWATCH_TOOLS = ['claude-code', 'codex-cli', 'gemini-cli', 'opencode', 'openclaw', 'kilocode', 'hermes-agent'];
+export const CLWATCH_TOOLS = ['claude-code', 'codex-cli', 'gemini-cli', 'opencode', 'openclaw', 'kilocode', 'hermes-agent', 'cline', 'cursor', 'windsurf', 'roo-code'];
 
 export function isFeatured(_toolId: string): boolean {
   return false;

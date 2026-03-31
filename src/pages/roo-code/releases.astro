@@ -1,0 +1,194 @@
+---
+import RooCodeLayout from "../../layouts/RooCodeLayout.astro";
+import { getToolReleases, formatDate } from "../../lib/releases";
+
+const data = await getToolReleases("roo-code");
+const releases = data?.releases || [];
+const stableReleases = releases.filter((r) => !r.prerelease);
+const latestStable = stableReleases[0];
+
+function isBreaking(body: string = ""): boolean {
+  return body.toLowerCase().includes("breaking");
+}
+
+function getExcerpt(body: string = ""): string {
+  const normalized = (body || "No notes available.")
+    .replace(/[#*_`>~-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return normalized.length > 180 ? `${normalized.slice(0, 180)}…` : normalized;
+}
+---
+
+<RooCodeLayout
+  title="Roo Code Releases — changelogs.info"
+  description="All Roo Code releases, including stable extension versions and prerelease builds."
+  currentPage="releases"
+>
+  <div class="rc-page">
+    <section class="rc-releases-hero">
+      <div>
+        <div class="rc-releases-hero__eyebrow">Roo Code version history</div>
+        <h1 class="rc-headline rc-releases-hero__title">Releases</h1>
+      </div>
+
+      <div class="rc-releases-hero__stats">
+        {latestStable && (
+          <div class="rc-card rc-releases-hero__stat">
+            <span>Latest stable</span>
+            <strong>{latestStable.version}</strong>
+          </div>
+        )}
+        <div class="rc-card rc-releases-hero__stat">
+          <span>Total tracked</span>
+          <strong>{releases.length}</strong>
+        </div>
+      </div>
+    </section>
+
+    {releases.length > 0 ? (
+      <div class="rc-release-grid">
+        {releases.map((release) => {
+          const breaking = isBreaking(release.body);
+          return (
+            <a href={release.url} target="_blank" rel="noopener noreferrer" class="rc-card rc-release-card">
+              <div class="rc-release-card__top">
+                <div>
+                  <div class="rc-release-card__version">{release.version}</div>
+                  <div class="rc-release-card__date">{formatDate(release.date)}</div>
+                </div>
+                <div class="rc-release-card__badges">
+                  {breaking && <span class="rc-release-card__badge rc-release-card__badge--breaking">Breaking</span>}
+                  {release.prerelease && <span class="rc-release-card__badge">Pre</span>}
+                </div>
+              </div>
+
+              <h2 class="rc-headline rc-release-card__title">{release.name || release.version}</h2>
+              <p class="rc-release-card__excerpt">{getExcerpt(release.body || "")}</p>
+
+              <div class="rc-release-card__footer">Open GitHub release ↗</div>
+            </a>
+          );
+        })}
+      </div>
+    ) : (
+      <div class="rc-card rc-empty">$ no releases tracked yet</div>
+    )}
+  </div>
+
+  <style>
+    .rc-releases-hero {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .rc-releases-hero__eyebrow,
+    .rc-release-card__version,
+    .rc-release-card__date,
+    .rc-release-card__badge,
+    .rc-releases-hero__stat span {
+      font-family: var(--rc-font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .rc-releases-hero__eyebrow {
+      font-size: 0.75rem;
+      color: var(--rc-primary-bright);
+    }
+    .rc-releases-hero__title {
+      margin: 0.7rem 0 0;
+      font-size: clamp(3rem, 8vw, 6rem);
+      line-height: 0.92;
+    }
+    .rc-releases-hero__stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-self: end;
+    }
+    .rc-releases-hero__stat {
+      min-width: 160px;
+      padding: 1rem 1.25rem;
+    }
+    .rc-releases-hero__stat span {
+      display: block;
+      font-size: 0.66rem;
+      color: var(--rc-text-muted);
+    }
+    .rc-releases-hero__stat strong {
+      display: block;
+      margin-top: 0.35rem;
+      font-family: var(--rc-font-headline);
+      font-size: 1.45rem;
+    }
+    .rc-release-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.2rem;
+    }
+    .rc-release-card {
+      padding: 1.3rem;
+      color: inherit;
+      text-decoration: none;
+    }
+    .rc-release-card__top,
+    .rc-release-card__footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .rc-release-card__version {
+      font-size: 0.78rem;
+      color: var(--rc-primary-bright);
+    }
+    .rc-release-card__date {
+      margin-top: 0.3rem;
+      font-size: 0.68rem;
+      color: var(--rc-text-muted);
+    }
+    .rc-release-card__badges {
+      display: flex;
+      flex-direction: column;
+      align-items: end;
+      gap: 0.35rem;
+    }
+    .rc-release-card__badge {
+      border: 2px solid var(--rc-border-dim);
+      padding: 0.2rem 0.45rem;
+      font-size: 0.62rem;
+      color: var(--rc-text-dim);
+    }
+    .rc-release-card__badge--breaking {
+      background: var(--rc-primary);
+      border-color: var(--rc-primary);
+      color: #fff;
+    }
+    .rc-release-card__title {
+      margin: 1rem 0 0.65rem;
+      font-size: 1.15rem;
+    }
+    .rc-release-card__excerpt {
+      color: var(--rc-text-dim);
+      line-height: 1.65;
+      min-height: 6.5rem;
+    }
+    .rc-release-card__footer {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 2px solid var(--rc-border-dim);
+      font-family: var(--rc-font-mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--rc-text-muted);
+    }
+    .rc-empty {
+      padding: 3rem 1.5rem;
+      font-family: var(--rc-font-mono);
+      color: var(--rc-text-muted);
+    }
+  </style>
+</RooCodeLayout>
