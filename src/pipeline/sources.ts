@@ -137,16 +137,6 @@ export const sources: Source[] = [
     pollIntervalMinutes: 30,
   },
 
-  // continue
-  {
-    toolSlug: "continue",
-    role: "github_releases",
-    url: "https://api.github.com/repos/continuedev/continue/releases",
-    official: true,
-    priority: 90,
-    format: "json",
-    pollIntervalMinutes: 30,
-  },
 
   // roo-code
   {
