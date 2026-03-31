@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.3.28",
-  "generated_at": "2026-03-30T01:37:33.958Z",
+  "generated_at": "2026-03-31T16:25:43.677Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -18,13 +18,14 @@
     "to_version": "2026.3.28",
     "new_features": [
       "x-search",
-      "image-generation-provider-minimax",
+      "image-generation-provider-image-01",
       "async-requireapproval-before-tool-call-hooks",
       "current-conversation-acp-binds-discord-bluebubbles-imessage",
+      "gemini-cli-backend-support",
       "upload-file-slack-action",
       "file-first-sends-microsoft-teams-google-chat",
       "matrix-tts-voice-bubbles",
-      "matrix-streaming-partial-draft-replies",
+      "cli-config-schema",
       "gateway-backed-channel-mcp-bridge"
     ],
     "new_commands": [],
@@ -37,8 +38,8 @@
       "--claude-cli-logs"
     ],
     "breaking_changes": [
-      "qwen-portal-auth-removal",
-      "drop-old-config-migrations"
+      "providers-qwen-portal-auth-removal",
+      "config-doctor-legacy-migrations"
     ]
   },
   "payload": {
@@ -63,7 +64,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release removes the deprecated Qwen portal auth and drops old config migrations, potentially requiring migration for users with older configurations. It introduces first-class x_search integration for xAI, an image generation provider for MiniMax, and async `requireApproval` hooks for plugins. File uploads are unified under the `upload-file` action with support for Microsoft Teams and Google Chat, and Matrix TTS replies are now sent as native voice bubbles. The release also includes numerous bug fixes and improvements across various platforms and features, including better error handling, improved message delivery, and enhanced plugin support."
+      "tldr": "This release introduces first-class x_search integration for xAI, and a MiniMax image generation provider with aspect ratio control. Plugins gain async `requireApproval` in `before_tool_call` hooks, enabling user approval prompts via various channels. The `openclaw config schema` command is added for printing the JSON schema. The deprecated `qwen-portal-auth` OAuth integration is removed, requiring migration to Model Studio. Automatic config migrations older than two months are dropped, potentially causing validation failures for very old configurations. The `gateway run --claude-cli-logs` flag is deprecated in favor of `--cli-backend-logs`."
     },
     "features": [
       {
@@ -630,6 +631,15 @@
         "description": "Generic --cli-backend-logs flag to replace gateway run --claude-cli-logs for viewing CLI backend logs.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "image-generation-provider-image-01",
+        "name": "Image Generation Provider for image-01",
+        "status": "stable",
+        "since": "2026.3.28",
+        "description": "MiniMax image generation provider for the `image-01` model, supporting generate and image-to-image editing with aspect ratio control.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -836,6 +846,13 @@
         }
       ],
       "deprecated": [
+        {
+          "flag": "--claude-cli-logs",
+          "replaced_by": "--cli-backend-logs",
+          "deprecated_since": "2026.3.28",
+          "removed_in": null,
+          "source_url": ""
+        },
         {
           "flag": "--claude-cli-logs",
           "replaced_by": "--cli-backend-logs",
@@ -1218,6 +1235,28 @@
           "Users with very old openclaw.json configurations"
         ],
         "migration": "Manually update your openclaw.json configuration to the latest schema.",
+        "source_url": ""
+      },
+      {
+        "id": "providers-qwen-portal-auth-removal",
+        "version": "2026.3.28",
+        "title": "Qwen Portal Auth Removed",
+        "description": "The deprecated `qwen-portal-auth` OAuth integration for `portal.qwen.ai` has been removed.",
+        "affected": [
+          "Qwen users"
+        ],
+        "migration": "Migrate to Model Studio with `openclaw onboard --auth-choice modelstudio-api-key`.",
+        "source_url": ""
+      },
+      {
+        "id": "config-doctor-legacy-migrations",
+        "version": "2026.3.28",
+        "title": "Dropped Automatic Config Migrations Older Than Two Months",
+        "description": "Automatic config migrations older than two months have been dropped. Very old legacy keys now fail validation instead of being rewritten on load or by `openclaw doctor`.",
+        "affected": [
+          "Users with very old configurations"
+        ],
+        "migration": "Manually update your configuration to the latest schema.",
         "source_url": ""
       }
     ],
