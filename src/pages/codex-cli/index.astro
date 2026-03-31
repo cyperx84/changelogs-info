@@ -231,14 +231,14 @@ function renderPrefix(prefix: string | null): string {
 }
 
 function renderChangelogItem(item: ParsedItem): string {
-  return `<li style="display:flex;gap:0.7rem;align-items:flex-start;line-height:1.6;">${renderPrefix(item.prefix)}<span style="display:block;min-width:0;">${escapeHtml(item.content)}</span></li>`;
+  return `<li class="cx-flex">${renderPrefix(item.prefix)}<span class="cx-s1">${escapeHtml(item.content)}</span></li>`;
 }
 
 function renderChangelogSection(title: string, items: ParsedItem[], emphasized = false): string {
   if (items.length === 0) return "";
   return `<div style="padding:1rem 1.1rem; border:3px solid var(--cx-border); background:${emphasized ? 'var(--cx-bg-surface)' : 'transparent'};">`
-    + `<div style="font-family:inherit;font-size:0.72rem;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:var(--cx-text-muted);margin-bottom:0.85rem;">${escapeHtml(title)}</div>`
-    + `<ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0.7rem;">${items.map(renderChangelogItem).join("")}</ul>`
+    + `<div class="cx-s2">${escapeHtml(title)}</div>`
+    + `<ul class="cx-vstack">${items.map(renderChangelogItem).join("")}</ul>`
     + `</div>`;
 }
 
@@ -256,17 +256,17 @@ function buildChangelogCard(body: string): string {
 
   const overflowHtml = overflow.length === 0
     ? ""
-    : `<details style="border:3px solid var(--cx-border);padding:0.95rem 1.1rem;background:transparent;"><summary style="cursor:pointer;font-family:inherit;font-size:0.78rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;color:var(--cx-text);">Show all changes <span style="color:var(--cx-text-muted);">(${overflow.length} more)</span></summary><div style="display:flex;flex-direction:column;gap:1rem;margin-top:1rem;">${sections.map((section) => {
+    : `<details class="cx-s4"><summary class="cx-s5">Show all changes <span class="cx-s6">(${overflow.length} more)</span></summary><div class="cx-vstack-2">${sections.map((section) => {
         const sectionItems = overflow.filter((item) => item.heading === section.heading);
         if (sectionItems.length === 0) return "";
-        return `<div><div style="font-family:inherit;font-size:0.72rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;color:var(--cx-text-muted);margin-bottom:0.65rem;">${escapeHtml(section.heading)}</div><ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0.65rem;">${sectionItems.map(renderChangelogItem).join("")}</ul></div>`;
+        return `<div><div class="cx-s8">${escapeHtml(section.heading)}</div><ul class="cx-vstack-3">${sectionItems.map(renderChangelogItem).join("")}</ul></div>`;
       }).join("")}</div></details>`;
 
   const fallback = sections.length > 0 && highlights.length === 0 && notable.length === 0
     ? renderChangelogSection(sections[0].heading, sections[0].items.slice(0, 6), false)
     : "";
 
-  return `<div style="display:flex;flex-direction:column;gap:1rem;">${renderChangelogSection("Highlights", highlights, true)}${renderChangelogSection("Notable changes", notable, false)}${fallback}${overflowHtml}</div>`;
+  return `<div class="cx-vstack-4">${renderChangelogSection("Highlights", highlights, true)}${renderChangelogSection("Notable changes", notable, false)}${fallback}${overflowHtml}</div>`;
 }
 
 function getTldr(body: string): string[] {
@@ -284,42 +284,40 @@ function getTldr(body: string): string[] {
   currentPage="home"
 >
   <!-- Dot grid -->
-  <div class="cx-dotgrid" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; opacity: 0.3;"></div>
+  <div class="cx-dotgrid cx-s11"></div>
 
-  <div style="max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 0;">
+  <div class="cx-s12">
 
     <!-- Hero -->
-    <section class="cx-hero-section" style="margin-bottom: 3rem;">
-      <div style="display: grid; grid-template-columns: 1fr auto; gap: 2.5rem; align-items: center;" class="cx-hero-grid">
+    <section class="cx-hero-section cx-s41">
+      <div class="cx-grid cx-hero-grid">
         <!-- Left -->
-        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
-          <div style="display: inline-flex; align-items: center; gap: 0.5rem; width: fit-content;">
-            <span class="cx-pulse-dot" style="width: 8px; height: 8px; background: #33ff33; display: inline-block;"></span>
-            <span style="font-family: var(--cx-font-mono); font-size: 0.65rem; color: var(--cx-text-muted); text-transform: uppercase; letter-spacing: 0.15em;">Tracking {canonicalEntries.length} latest entries</span>
+        <div class="cx-vstack-5">
+          <div class="cx-flex-2">
+            <span class="cx-pulse-dot cx-s17"></span>
+            <span class="cx-label">Tracking {canonicalEntries.length} latest entries</span>
           </div>
 
-          <h1 class="cx-headline cx-hero-title" style="font-size: clamp(3rem, 9vw, 5.5rem); font-weight: 900; color: var(--cx-text); text-transform: uppercase; line-height: 0.88; margin: 0; letter-spacing: -0.03em;">
-            Codex<br><span style="color: var(--cx-primary-bright);">CLI</span>
+          <h1 class="cx-headline cx-hero-title cx-s19">
+            Codex<br><span class="cx-s38">CLI</span>
           </h1>
 
-          <p style="font-size: 1.05rem; color: var(--cx-text-dim); max-width: 28rem; line-height: 1.6; margin: 0; font-family: var(--cx-font-body);">
+          <p class="cx-s21">
             {tool?.description || "OpenAI's agentic coding CLI — autonomous code editing, testing, and execution from the terminal."}
           </p>
 
-          <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.5rem;">
+          <div class="cx-flex-3">
             <a
               href={`https://github.com/${tool?.repo || "openai/codex"}`}
               target="_blank"
               rel="noopener noreferrer"
-              class="cx-headline cx-cta-btn"
-              style="background: var(--cx-primary); color: var(--cx-bg); font-weight: 900; padding: 0.75rem 1.75rem; font-size: 0.85rem; border: 4px solid var(--cx-border); box-shadow: var(--cx-shadow-sm); text-decoration: none; text-transform: uppercase; font-style: italic;"
+              class="cx-headline cx-cta-btn cx-s23"
             >
               GitHub ↗
             </a>
             <a
               href="/codex-cli/changelog/"
-              class="cx-headline cx-cta-btn"
-              style="background: transparent; color: var(--cx-text); font-weight: 900; padding: 0.75rem 1.75rem; font-size: 0.85rem; border: 4px solid var(--cx-border); box-shadow: var(--cx-shadow-sm); text-decoration: none; text-transform: uppercase; font-style: italic;"
+              class="cx-headline cx-cta-btn cx-s24"
             >
               Changelog
             </a>
@@ -327,26 +325,26 @@ function getTldr(body: string): string[] {
         </div>
 
         <!-- Right: terminal card -->
-        <div class="cx-terminal-card" style="width: 320px; border: 4px solid var(--cx-border); box-shadow: var(--cx-shadow); flex-shrink: 0; overflow: hidden;">
-          <div style="background: var(--cx-primary); padding: 0.5rem 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
-            <span style="font-family: var(--cx-font-mono); font-size: 0.6rem; color: var(--cx-bg); text-transform: uppercase; font-weight: 700;">$ codex --version</span>
+        <div class="cx-terminal-card cx-s25">
+          <div class="cx-flex-4">
+            <span class="cx-s27">$ codex --version</span>
           </div>
-          <div style="background: var(--cx-bg); padding: 1rem; font-family: var(--cx-font-mono); font-size: 0.7rem; line-height: 1.8; color: var(--cx-text-dim);">
-            <div><span style="color: var(--cx-primary-bright);">$</span> codex --full-auto "status"</div>
-            <div style="margin-top: 0.5rem;">
-              <span style="color: var(--cx-primary-bright);">&gt;</span> version: <span style="color: var(--cx-text);">{displayVersion}</span>
+          <div class="cx-s28">
+            <div><span class="cx-s38">$</span> codex --full-auto "status"</div>
+            <div class="cx-s30">
+              <span class="cx-s38">&gt;</span> version: <span class="cx-s36">{displayVersion}</span>
             </div>
             <div>
-              <span style="color: #22c55e;">&gt;</span> releases: <span style="color: var(--cx-text);">{releases.length}</span> tracked
+              <span class="cx-s35">&gt;</span> releases: <span class="cx-s36">{releases.length}</span> tracked
             </div>
             <div>
               <span style="color: {breakingCount > 0 ? 'var(--cx-primary-bright)' : '#22c55e'};">{breakingCount > 0 ? '!' : '>'}</span> breaking: <span style="color: {breakingCount > 0 ? 'var(--cx-primary-bright)' : 'var(--cx-text)'};">{breakingCount}</span>
             </div>
             <div>
-              <span style="color: #22c55e;">&gt;</span> updated: <span style="color: var(--cx-text);">{lastUpdatedAgo || "now"}</span>
+              <span class="cx-s35">&gt;</span> updated: <span class="cx-s36">{lastUpdatedAgo || "now"}</span>
             </div>
-            <div style="margin-top: 0.5rem; color: var(--cx-text-muted);">
-              <span style="color: var(--cx-primary-bright);">$</span> <span class="cx-cursor">_</span>
+            <div class="cx-s37">
+              <span class="cx-s38">$</span> <span class="cx-cursor">_</span>
             </div>
           </div>
         </div>
@@ -354,7 +352,7 @@ function getTldr(body: string): string[] {
     </section>
 
     <!-- Stats Bar -->
-    <section class="cx-section-reveal" style="display: flex; flex-wrap: wrap; gap: 0; border: 4px solid var(--cx-border); margin-bottom: 3rem;">
+    <section class="cx-section-reveal cx-flex-5">
       {[
         { label: "Releases", value: String(releases.length) },
         { label: "Breaking", value: String(breakingCount), warn: true },
@@ -365,7 +363,7 @@ function getTldr(body: string): string[] {
           style={`flex: 1; min-width: 120px; padding: 1rem 1.25rem; ${i < 3 ? 'border-right: 4px solid var(--cx-border);' : ''} background: var(--cx-bg-card); cursor: crosshair;`}
           class="cx-stats-cell"
         >
-          <span style="display: block; color: var(--cx-text-muted); font-family: var(--cx-font-headline); font-weight: 700; text-transform: uppercase; font-size: 0.55rem; letter-spacing: 0.15em; margin-bottom: 0.25rem;">{stat.label}</span>
+          <span class="cx-s40">{stat.label}</span>
           <span class="cx-headline" style={`display: block; font-size: 1.5rem; font-weight: 900; color: ${stat.warn ? 'var(--cx-primary-bright)' : 'var(--cx-text)'};`}>{stat.value}</span>
         </div>
       ))}
@@ -380,33 +378,33 @@ function getTldr(body: string): string[] {
       const summaryText = llmTldr?.trim() || null;
 
       return (
-        <section style="margin-bottom: 3rem;">
-          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
-            <h2 class="cx-headline" style="font-size: 2.5rem; font-weight: 900; color: var(--cx-text); text-transform: uppercase; font-style: italic; letter-spacing: -0.02em; margin: 0;">
+        <section class="cx-s41">
+          <div class="cx-flex-6">
+            <h2 class="cx-headline cx-s43">
               TL;DR
             </h2>
-            <div style="flex: 1; height: 4px; background: var(--cx-border);"></div>
-            <span style="font-family: var(--cx-font-mono); font-size: 0.7rem; color: var(--cx-text-muted); text-transform: uppercase;">Latest Release</span>
+            <div class="cx-s60"></div>
+            <span class="cx-s45">Latest Release</span>
           </div>
 
           <div style={`padding: 1.5rem 2rem; border: 4px solid ${breaking ? 'var(--cx-primary)' : 'var(--cx-border)'}; background: ${breaking ? 'var(--cx-bg-surface)' : 'var(--cx-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--cx-primary);' : ''} margin-bottom: 2rem;`}>
-            <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
-              <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-                <span class="cx-headline" style="font-size: 1.3rem; font-weight: 900; color: var(--cx-text); text-transform: uppercase;">{latestForTldr.version}</span>
-                {breaking && <span style="background: var(--cx-primary); color: var(--cx-bg); font-family: var(--cx-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">BREAKING</span>}
-                {latestForTldr.prerelease && <span style="background: rgba(51,255,51,0.12); color: #33ff33; font-family: var(--cx-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; border: 1px solid #33ff33;">PRE</span>}
+            <div class="cx-flex-11">
+              <div class="cx-flex-7">
+                <span class="cx-headline cx-s48">{latestForTldr.version}</span>
+                {breaking && <span class="cx-s65">BREAKING</span>}
+                {latestForTldr.prerelease && <span class="cx-s50">PRE</span>}
               </div>
-              <span style="font-family: var(--cx-font-mono); font-size: 0.7rem; color: var(--cx-text-muted); white-space: nowrap;">{formatDate(latestForTldr.date)}</span>
+              <span class="cx-s66">{formatDate(latestForTldr.date)}</span>
             </div>
             {summaryText ? (
-              <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                <p style="margin: 0; font-family: var(--cx-font-body); font-size: 1rem; color: var(--cx-text); line-height: 1.7; max-width: 60ch;">{summaryText}</p>
+              <div class="cx-vstack-6">
+                <p class="cx-s53">{summaryText}</p>
               </div>
             ) : items.length > 0 && (
-              <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.4rem;">
+              <ul class="cx-vstack-7">
                 {items.map((item) => (
-                  <li style="display: flex; gap: 0.5rem; align-items: flex-start; font-family: var(--cx-font-body); font-size: 0.9rem; color: var(--cx-text-dim); line-height: 1.5;">
-                    <span style="color: var(--cx-primary-bright); flex-shrink: 0; font-weight: 700;">&gt;</span>
+                  <li class="cx-flex-9">
+                    <span class="cx-s56">&gt;</span>
                     <span>{item}</span>
                   </li>
                 ))}
@@ -418,29 +416,28 @@ function getTldr(body: string): string[] {
     })()}
 
     <!-- Recent Changelog -->
-    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
-      <div style="flex: 1; height: 4px; background: var(--cx-border);"></div>
-      <span class="cx-headline" style="font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--cx-text-muted);">Recent Changelog</span>
-      <div style="flex: 1; height: 4px; background: var(--cx-border);"></div>
+    <div class="cx-flex-10">
+      <div class="cx-s60"></div>
+      <span class="cx-headline cx-s59">Recent Changelog</span>
+      <div class="cx-s60"></div>
     </div>
 
-    <section style="margin-bottom: 4rem; display: flex; flex-direction: column; gap: 1.25rem;">
+    <section class="cx-vstack-8">
       {canonicalEntries.map((entry) => {
         const release = releases.find((r) => r.version === entry.version) || latestForTldr;
         const breaking = isBreaking(entry.body);
         const renderedBody = buildChangelogCard(entry.body || "");
         return (
           <div style={`padding: 1.5rem 2rem; border: 4px solid ${breaking ? 'var(--cx-primary)' : 'var(--cx-border)'}; background: ${breaking ? 'var(--cx-bg-surface)' : 'var(--cx-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--cx-primary);' : ''}`}>
-            <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
-              <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-                <span class="cx-headline" style="font-size: 1.25rem; font-weight: 900; color: var(--cx-text); text-transform: uppercase;">{entry.version}</span>
-                {breaking && <span style="background: var(--cx-primary); color: var(--cx-bg); font-family: var(--cx-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">BREAKING</span>}
+            <div class="cx-flex-11">
+              <div class="cx-flex-7">
+                <span class="cx-headline cx-s64">{entry.version}</span>
+                {breaking && <span class="cx-s65">BREAKING</span>}
               </div>
-              <span style="font-family: var(--cx-font-mono); font-size: 0.7rem; color: var(--cx-text-muted); white-space: nowrap;">{formatDate(release.date)}</span>
+              <span class="cx-s66">{formatDate(release.date)}</span>
             </div>
             <div
-              class="changelog-body"
-              style="color: var(--cx-text-dim); font-size: 0.92rem; line-height: 1.7; font-family: var(--cx-font-body);"
+              class="changelog-body cx-s67"
               set:html={renderedBody}
             />
           </div>
@@ -448,57 +445,55 @@ function getTldr(body: string): string[] {
       })}
       <a
         href="/codex-cli/changelog/"
-        class="cx-headline"
-        style="display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 900; text-transform: uppercase; color: var(--cx-primary-bright); font-style: italic; text-decoration: none; border-bottom: 2px solid var(--cx-primary-bright); padding-bottom: 2px; font-size: 0.85rem; align-self: flex-start;"
+        class="cx-headline cx-flex-8"
       >
         View full changelog →
       </a>
     </section>
 
     <!-- Quick Links -->
-    <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 4rem;">
+    <section class="cx-grid-2">
       {[
         { href: "/codex-cli/changelog/", icon: "📋", label: "Full Changelog", sub: `${releases.length} releases` },
         { href: "/codex-cli/cheatsheet/", icon: "⚡", label: "Cheatsheet", sub: "Commands & flags" },
         { href: "/codex-cli/releases/", icon: "📦", label: "All Releases", sub: "Browse & filter" },
         { href: "/feed/all.xml", icon: "📡", label: "RSS Feed", sub: "Subscribe to updates" },
       ].map((link) => (
-        <a href={link.href} class="cx-quick-link" style="display: flex; align-items: center; gap: 0.75rem; padding: 1.25rem; border: 4px solid var(--cx-border); background: var(--cx-bg-card); text-decoration: none;">
-          <span style="font-size: 1.5rem;">{link.icon}</span>
+        <a href={link.href} class="cx-quick-link cx-flex-12">
+          <span class="cx-s71">{link.icon}</span>
           <div>
-            <span class="cx-headline" style="display: block; font-weight: 900; font-size: 0.85rem; color: var(--cx-text); text-transform: uppercase;">{link.label}</span>
-            <span style="font-family: var(--cx-font-mono); font-size: 0.65rem; color: var(--cx-text-muted);">{link.sub}</span>
+            <span class="cx-headline cx-s72">{link.label}</span>
+            <span class="cx-s73">{link.sub}</span>
           </div>
         </a>
       ))}
     </section>
 
     <!-- Subscribe -->
-    <section style="margin-bottom: 5rem; text-align: center; padding: 3rem 2rem; border: 4px solid var(--cx-border); background: var(--cx-bg-surface);">
-      <h2 class="cx-headline" style="font-size: 2rem; font-weight: 900; text-transform: uppercase; font-style: italic; letter-spacing: -0.02em; margin: 0 0 0.75rem; color: var(--cx-text);">
+    <section class="cx-s74">
+      <h2 class="cx-headline cx-s75">
         Stay in the Loop
       </h2>
-      <p style="font-family: var(--cx-font-body); font-size: 0.95rem; color: var(--cx-text-dim); margin: 0 0 2rem; max-width: 480px; margin-left: auto; margin-right: auto; line-height: 1.5;">
+      <p class="cx-s76">
         Get notified when Codex CLI ships new releases. No spam — just changelogs.
       </p>
-      <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; max-width: 500px; margin: 0 auto 1.5rem;">
+      <div class="cx-flex-13">
         <input
           type="email"
           placeholder="you@example.com"
-          style="flex: 1; min-width: 220px; padding: 0.85rem 1rem; border: 4px solid var(--cx-border); background: var(--cx-bg); color: var(--cx-text); font-family: var(--cx-font-mono); font-size: 0.85rem; outline: none; transition: border-color 150ms;"
+          class="cx-flex-item"
           onfocus="this.style.borderColor='var(--cx-primary)'"
           onblur="this.style.borderColor='var(--cx-border)'"
         />
         <button
-          class="cx-headline"
-          style="background: var(--cx-primary); color: var(--cx-bg); font-weight: 900; padding: 0.85rem 1.75rem; font-size: 0.85rem; border: 4px solid var(--cx-border); box-shadow: var(--cx-shadow-sm); cursor: pointer; text-transform: uppercase; font-style: italic; transition: transform 100ms;"
+          class="cx-headline cx-s79"
         >
           Subscribe
         </button>
       </div>
-      <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
-        <a href="/feed/all.xml" style="font-family: var(--cx-font-mono); font-size: 0.75rem; color: var(--cx-text-dim); text-decoration: none;">📡 RSS Feed</a>
-        <a href={`https://github.com/${tool?.repo || "openai/codex"}`} target="_blank" rel="noopener noreferrer" style="font-family: var(--cx-font-mono); font-size: 0.75rem; color: var(--cx-text-dim); text-decoration: none;">⭐ Star on GitHub</a>
+      <div class="cx-flex-14">
+        <a href="/feed/all.xml" class="cx-s82">📡 RSS Feed</a>
+        <a href={`https://github.com/${tool?.repo || "openai/codex"}`} target="_blank" rel="noopener noreferrer" class="cx-s82">⭐ Star on GitHub</a>
       </div>
     </section>
   </div>

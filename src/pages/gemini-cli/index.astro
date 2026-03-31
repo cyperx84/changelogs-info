@@ -231,14 +231,14 @@ function renderPrefix(prefix: string | null): string {
 }
 
 function renderChangelogItem(item: ParsedItem): string {
-  return `<li style="display:flex;gap:0.7rem;align-items:flex-start;line-height:1.6;">${renderPrefix(item.prefix)}<span style="display:block;min-width:0;">${escapeHtml(item.content)}</span></li>`;
+  return `<li class="gc-flex">${renderPrefix(item.prefix)}<span class="gc-s1">${escapeHtml(item.content)}</span></li>`;
 }
 
 function renderChangelogSection(title: string, items: ParsedItem[], emphasized = false): string {
   if (items.length === 0) return "";
   return `<div style="padding:1rem 1.1rem; border:3px solid var(--gc-border); background:${emphasized ? 'var(--gc-bg-surface)' : 'transparent'};">`
-    + `<div style="font-family:inherit;font-size:0.72rem;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:var(--gc-text-muted);margin-bottom:0.85rem;">${escapeHtml(title)}</div>`
-    + `<ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0.7rem;">${items.map(renderChangelogItem).join("")}</ul>`
+    + `<div class="gc-s2">${escapeHtml(title)}</div>`
+    + `<ul class="gc-vstack">${items.map(renderChangelogItem).join("")}</ul>`
     + `</div>`;
 }
 
@@ -256,17 +256,17 @@ function buildChangelogCard(body: string): string {
 
   const overflowHtml = overflow.length === 0
     ? ""
-    : `<details style="border:3px solid var(--gc-border);padding:0.95rem 1.1rem;background:transparent;"><summary style="cursor:pointer;font-family:inherit;font-size:0.78rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;color:var(--gc-text);">Show all changes <span style="color:var(--gc-text-muted);">(${overflow.length} more)</span></summary><div style="display:flex;flex-direction:column;gap:1rem;margin-top:1rem;">${sections.map((section) => {
+    : `<details class="gc-s4"><summary class="gc-s5">Show all changes <span class="gc-s6">(${overflow.length} more)</span></summary><div class="gc-vstack-2">${sections.map((section) => {
         const sectionItems = overflow.filter((item) => item.heading === section.heading);
         if (sectionItems.length === 0) return "";
-        return `<div><div style="font-family:inherit;font-size:0.72rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;color:var(--gc-text-muted);margin-bottom:0.65rem;">${escapeHtml(section.heading)}</div><ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0.65rem;">${sectionItems.map(renderChangelogItem).join("")}</ul></div>`;
+        return `<div><div class="gc-s8">${escapeHtml(section.heading)}</div><ul class="gc-vstack-3">${sectionItems.map(renderChangelogItem).join("")}</ul></div>`;
       }).join("")}</div></details>`;
 
   const fallback = sections.length > 0 && highlights.length === 0 && notable.length === 0
     ? renderChangelogSection(sections[0].heading, sections[0].items.slice(0, 6), false)
     : "";
 
-  return `<div style="display:flex;flex-direction:column;gap:1rem;">${renderChangelogSection("Highlights", highlights, true)}${renderChangelogSection("Notable changes", notable, false)}${fallback}${overflowHtml}</div>`;
+  return `<div class="gc-vstack-4">${renderChangelogSection("Highlights", highlights, true)}${renderChangelogSection("Notable changes", notable, false)}${fallback}${overflowHtml}</div>`;
 }
 
 function getTldr(body: string): string[] {
@@ -284,42 +284,40 @@ function getTldr(body: string): string[] {
   currentPage="home"
 >
   <!-- Dot grid -->
-  <div class="gc-dotgrid" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; opacity: 0.3;"></div>
+  <div class="gc-dotgrid gc-s11"></div>
 
-  <div style="max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 0;">
+  <div class="gc-s12">
 
     <!-- Hero -->
-    <section class="gc-hero-section" style="margin-bottom: 3rem;">
-      <div style="display: grid; grid-template-columns: 1fr auto; gap: 2.5rem; align-items: center;" class="gc-hero-grid">
+    <section class="gc-hero-section gc-s41">
+      <div class="gc-grid gc-hero-grid">
         <!-- Left -->
-        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
-          <div style="display: inline-flex; align-items: center; gap: 0.5rem; width: fit-content;">
-            <span class="gc-pulse-dot" style="width: 8px; height: 8px; background: #4285f4; display: inline-block;"></span>
-            <span style="font-family: var(--gc-font-mono); font-size: 0.65rem; color: var(--gc-text-muted); text-transform: uppercase; letter-spacing: 0.15em;">Tracking {canonicalEntries.length} latest entries</span>
+        <div class="gc-vstack-5">
+          <div class="gc-flex-2">
+            <span class="gc-pulse-dot gc-s17"></span>
+            <span class="gc-label">Tracking {canonicalEntries.length} latest entries</span>
           </div>
 
-          <h1 class="gc-headline gc-hero-title" style="font-size: clamp(3rem, 9vw, 5.5rem); font-weight: 900; color: var(--gc-text); text-transform: uppercase; line-height: 0.88; margin: 0; letter-spacing: -0.03em;">
-            Gemini<br><span style="color: var(--gc-primary-bright);">CLI</span>
+          <h1 class="gc-headline gc-hero-title gc-s19">
+            Gemini<br><span class="gc-s38">CLI</span>
           </h1>
 
-          <p style="font-size: 1.05rem; color: var(--gc-text-dim); max-width: 28rem; line-height: 1.6; margin: 0; font-family: var(--gc-font-body);">
+          <p class="gc-s21">
             {tool?.description || "Google's AI-powered CLI — Gemini in the terminal for code generation, analysis, and automation."}
           </p>
 
-          <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.5rem;">
+          <div class="gc-flex-3">
             <a
               href={`https://github.com/${tool?.repo || "google-gemini/gemini-cli"}`}
               target="_blank"
               rel="noopener noreferrer"
-              class="gc-headline gc-cta-btn"
-              style="background: var(--gc-primary); color: var(--gc-bg); font-weight: 900; padding: 0.75rem 1.75rem; font-size: 0.85rem; border: 4px solid var(--gc-border); box-shadow: var(--gc-shadow-sm); text-decoration: none; text-transform: uppercase; font-style: italic;"
+              class="gc-headline gc-cta-btn gc-s23"
             >
               GitHub ↗
             </a>
             <a
               href="/gemini-cli/changelog/"
-              class="gc-headline gc-cta-btn"
-              style="background: transparent; color: var(--gc-text); font-weight: 900; padding: 0.75rem 1.75rem; font-size: 0.85rem; border: 4px solid var(--gc-border); box-shadow: var(--gc-shadow-sm); text-decoration: none; text-transform: uppercase; font-style: italic;"
+              class="gc-headline gc-cta-btn gc-s24"
             >
               Changelog
             </a>
@@ -327,26 +325,26 @@ function getTldr(body: string): string[] {
         </div>
 
         <!-- Right: terminal card -->
-        <div class="gc-terminal-card" style="width: 320px; border: 4px solid var(--gc-border); box-shadow: var(--gc-shadow); flex-shrink: 0; overflow: hidden;">
-          <div style="background: var(--gc-primary); padding: 0.5rem 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
-            <span style="font-family: var(--gc-font-mono); font-size: 0.6rem; color: var(--gc-bg); text-transform: uppercase; font-weight: 700;">$ gemini --version</span>
+        <div class="gc-terminal-card gc-s25">
+          <div class="gc-flex-4">
+            <span class="gc-s27">$ gemini --version</span>
           </div>
-          <div style="background: var(--gc-bg); padding: 1rem; font-family: var(--gc-font-mono); font-size: 0.7rem; line-height: 1.8; color: var(--gc-text-dim);">
-            <div><span style="color: var(--gc-primary-bright);">›</span> gemini "status"</div>
-            <div style="margin-top: 0.5rem;">
-              <span style="color: var(--gc-primary-bright);">›</span> version: <span style="color: var(--gc-text);">{displayVersion}</span>
+          <div class="gc-s28">
+            <div><span class="gc-s38">›</span> gemini "status"</div>
+            <div class="gc-s30">
+              <span class="gc-s38">›</span> version: <span class="gc-s36">{displayVersion}</span>
             </div>
             <div>
-              <span style="color: #22c55e;">›</span> releases: <span style="color: var(--gc-text);">{releases.length}</span> tracked
+              <span class="gc-s35">›</span> releases: <span class="gc-s36">{releases.length}</span> tracked
             </div>
             <div>
               <span style="color: {breakingCount > 0 ? 'var(--gc-primary-bright)' : '#22c55e'};">{breakingCount > 0 ? '!' : '›'}</span> breaking: <span style="color: {breakingCount > 0 ? 'var(--gc-primary-bright)' : 'var(--gc-text)'};">{breakingCount}</span>
             </div>
             <div>
-              <span style="color: #22c55e;">›</span> updated: <span style="color: var(--gc-text);">{lastUpdatedAgo || "now"}</span>
+              <span class="gc-s35">›</span> updated: <span class="gc-s36">{lastUpdatedAgo || "now"}</span>
             </div>
-            <div style="margin-top: 0.5rem; color: var(--gc-text-muted);">
-              <span style="color: var(--gc-primary-bright);">›</span> <span class="gc-cursor">_</span>
+            <div class="gc-s37">
+              <span class="gc-s38">›</span> <span class="gc-cursor">_</span>
             </div>
           </div>
         </div>
@@ -354,7 +352,7 @@ function getTldr(body: string): string[] {
     </section>
 
     <!-- Stats Bar -->
-    <section class="gc-section-reveal" style="display: flex; flex-wrap: wrap; gap: 0; border: 4px solid var(--gc-border); margin-bottom: 3rem;">
+    <section class="gc-section-reveal gc-flex-5">
       {[
         { label: "Releases", value: String(releases.length) },
         { label: "Breaking", value: String(breakingCount), warn: true },
@@ -365,7 +363,7 @@ function getTldr(body: string): string[] {
           style={`flex: 1; min-width: 120px; padding: 1rem 1.25rem; ${i < 3 ? 'border-right: 4px solid var(--gc-border);' : ''} background: var(--gc-bg-card); cursor: crosshair;`}
           class="gc-stats-cell"
         >
-          <span style="display: block; color: var(--gc-text-muted); font-family: var(--gc-font-headline); font-weight: 700; text-transform: uppercase; font-size: 0.55rem; letter-spacing: 0.15em; margin-bottom: 0.25rem;">{stat.label}</span>
+          <span class="gc-s40">{stat.label}</span>
           <span class="gc-headline" style={`display: block; font-size: 1.5rem; font-weight: 900; color: ${stat.warn ? 'var(--gc-primary-bright)' : 'var(--gc-text)'};`}>{stat.value}</span>
         </div>
       ))}
@@ -380,33 +378,33 @@ function getTldr(body: string): string[] {
       const summaryText = llmTldr?.trim() || null;
 
       return (
-        <section style="margin-bottom: 3rem;">
-          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
-            <h2 class="gc-headline" style="font-size: 2.5rem; font-weight: 900; color: var(--gc-text); text-transform: uppercase; font-style: italic; letter-spacing: -0.02em; margin: 0;">
+        <section class="gc-s41">
+          <div class="gc-flex-6">
+            <h2 class="gc-headline gc-s43">
               TL;DR
             </h2>
-            <div style="flex: 1; height: 4px; background: var(--gc-border);"></div>
-            <span style="font-family: var(--gc-font-mono); font-size: 0.7rem; color: var(--gc-text-muted); text-transform: uppercase;">Latest Release</span>
+            <div class="gc-s60"></div>
+            <span class="gc-s45">Latest Release</span>
           </div>
 
           <div style={`padding: 1.5rem 2rem; border: 4px solid ${breaking ? 'var(--gc-primary)' : 'var(--gc-border)'}; background: ${breaking ? 'var(--gc-bg-surface)' : 'var(--gc-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--gc-primary);' : ''} margin-bottom: 2rem;`}>
-            <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
-              <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-                <span class="gc-headline" style="font-size: 1.3rem; font-weight: 900; color: var(--gc-text); text-transform: uppercase;">{latestForTldr.version}</span>
-                {breaking && <span style="background: var(--gc-primary); color: var(--gc-bg); font-family: var(--gc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">BREAKING</span>}
-                {latestForTldr.prerelease && <span style="background: rgba(66,133,244,0.12); color: #669df6; font-family: var(--gc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; border: 1px solid #669df6;">PRE</span>}
+            <div class="gc-flex-11">
+              <div class="gc-flex-7">
+                <span class="gc-headline gc-s48">{latestForTldr.version}</span>
+                {breaking && <span class="gc-s65">BREAKING</span>}
+                {latestForTldr.prerelease && <span class="gc-s50">PRE</span>}
               </div>
-              <span style="font-family: var(--gc-font-mono); font-size: 0.7rem; color: var(--gc-text-muted); white-space: nowrap;">{formatDate(latestForTldr.date)}</span>
+              <span class="gc-s66">{formatDate(latestForTldr.date)}</span>
             </div>
             {summaryText ? (
-              <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                <p style="margin: 0; font-family: var(--gc-font-body); font-size: 1rem; color: var(--gc-text); line-height: 1.7; max-width: 60ch;">{summaryText}</p>
+              <div class="gc-vstack-6">
+                <p class="gc-s53">{summaryText}</p>
               </div>
             ) : items.length > 0 && (
-              <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.4rem;">
+              <ul class="gc-vstack-7">
                 {items.map((item) => (
-                  <li style="display: flex; gap: 0.5rem; align-items: flex-start; font-family: var(--gc-font-body); font-size: 0.9rem; color: var(--gc-text-dim); line-height: 1.5;">
-                    <span style="color: var(--gc-primary-bright); flex-shrink: 0; font-weight: 700;">›</span>
+                  <li class="gc-flex-9">
+                    <span class="gc-s56">›</span>
                     <span>{item}</span>
                   </li>
                 ))}
@@ -418,29 +416,28 @@ function getTldr(body: string): string[] {
     })()}
 
     <!-- Recent Changelog -->
-    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
-      <div style="flex: 1; height: 4px; background: var(--gc-border);"></div>
-      <span class="gc-headline" style="font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--gc-text-muted);">Recent Changelog</span>
-      <div style="flex: 1; height: 4px; background: var(--gc-border);"></div>
+    <div class="gc-flex-10">
+      <div class="gc-s60"></div>
+      <span class="gc-headline gc-s59">Recent Changelog</span>
+      <div class="gc-s60"></div>
     </div>
 
-    <section style="margin-bottom: 4rem; display: flex; flex-direction: column; gap: 1.25rem;">
+    <section class="gc-vstack-8">
       {canonicalEntries.map((entry) => {
         const release = releases.find((r) => r.version === entry.version) || latestForTldr;
         const breaking = isBreaking(entry.body);
         const renderedBody = buildChangelogCard(entry.body || "");
         return (
           <div style={`padding: 1.5rem 2rem; border: 4px solid ${breaking ? 'var(--gc-primary)' : 'var(--gc-border)'}; background: ${breaking ? 'var(--gc-bg-surface)' : 'var(--gc-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--gc-primary);' : ''}`}>
-            <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
-              <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-                <span class="gc-headline" style="font-size: 1.25rem; font-weight: 900; color: var(--gc-text); text-transform: uppercase;">{entry.version}</span>
-                {breaking && <span style="background: var(--gc-primary); color: var(--gc-bg); font-family: var(--gc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">BREAKING</span>}
+            <div class="gc-flex-11">
+              <div class="gc-flex-7">
+                <span class="gc-headline gc-s64">{entry.version}</span>
+                {breaking && <span class="gc-s65">BREAKING</span>}
               </div>
-              <span style="font-family: var(--gc-font-mono); font-size: 0.7rem; color: var(--gc-text-muted); white-space: nowrap;">{formatDate(release.date)}</span>
+              <span class="gc-s66">{formatDate(release.date)}</span>
             </div>
             <div
-              class="changelog-body"
-              style="color: var(--gc-text-dim); font-size: 0.92rem; line-height: 1.7; font-family: var(--gc-font-body);"
+              class="changelog-body gc-s67"
               set:html={renderedBody}
             />
           </div>
@@ -448,57 +445,55 @@ function getTldr(body: string): string[] {
       })}
       <a
         href="/gemini-cli/changelog/"
-        class="gc-headline"
-        style="display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 900; text-transform: uppercase; color: var(--gc-primary-bright); font-style: italic; text-decoration: none; border-bottom: 2px solid var(--gc-primary-bright); padding-bottom: 2px; font-size: 0.85rem; align-self: flex-start;"
+        class="gc-headline gc-flex-8"
       >
         View full changelog →
       </a>
     </section>
 
     <!-- Quick Links -->
-    <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 4rem;">
+    <section class="gc-grid-2">
       {[
         { href: "/gemini-cli/changelog/", icon: "📋", label: "Full Changelog", sub: `${releases.length} releases` },
         { href: "/gemini-cli/cheatsheet/", icon: "⚡", label: "Cheatsheet", sub: "Commands & flags" },
         { href: "/gemini-cli/releases/", icon: "📦", label: "All Releases", sub: "Browse & filter" },
         { href: "/feed/all.xml", icon: "📡", label: "RSS Feed", sub: "Subscribe to updates" },
       ].map((link) => (
-        <a href={link.href} class="gc-quick-link" style="display: flex; align-items: center; gap: 0.75rem; padding: 1.25rem; border: 4px solid var(--gc-border); background: var(--gc-bg-card); text-decoration: none;">
-          <span style="font-size: 1.5rem;">{link.icon}</span>
+        <a href={link.href} class="gc-quick-link gc-flex-12">
+          <span class="gc-s71">{link.icon}</span>
           <div>
-            <span class="gc-headline" style="display: block; font-weight: 900; font-size: 0.85rem; color: var(--gc-text); text-transform: uppercase;">{link.label}</span>
-            <span style="font-family: var(--gc-font-mono); font-size: 0.65rem; color: var(--gc-text-muted);">{link.sub}</span>
+            <span class="gc-headline gc-s72">{link.label}</span>
+            <span class="gc-s73">{link.sub}</span>
           </div>
         </a>
       ))}
     </section>
 
     <!-- Subscribe -->
-    <section style="margin-bottom: 5rem; text-align: center; padding: 3rem 2rem; border: 4px solid var(--gc-border); background: var(--gc-bg-surface);">
-      <h2 class="gc-headline" style="font-size: 2rem; font-weight: 900; text-transform: uppercase; font-style: italic; letter-spacing: -0.02em; margin: 0 0 0.75rem; color: var(--gc-text);">
+    <section class="gc-s74">
+      <h2 class="gc-headline gc-s75">
         Stay in the Loop
       </h2>
-      <p style="font-family: var(--gc-font-body); font-size: 0.95rem; color: var(--gc-text-dim); margin: 0 0 2rem; max-width: 480px; margin-left: auto; margin-right: auto; line-height: 1.5;">
+      <p class="gc-s76">
         Get notified when Gemini CLI ships new releases. No spam — just changelogs.
       </p>
-      <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; max-width: 500px; margin: 0 auto 1.5rem;">
+      <div class="gc-flex-13">
         <input
           type="email"
           placeholder="you@example.com"
-          style="flex: 1; min-width: 220px; padding: 0.85rem 1rem; border: 4px solid var(--gc-border); background: var(--gc-bg); color: var(--gc-text); font-family: var(--gc-font-mono); font-size: 0.85rem; outline: none; transition: border-color 150ms;"
+          class="gc-flex-item"
           onfocus="this.style.borderColor='var(--gc-primary)'"
           onblur="this.style.borderColor='var(--gc-border)'"
         />
         <button
-          class="gc-headline"
-          style="background: var(--gc-primary); color: var(--gc-bg); font-weight: 900; padding: 0.85rem 1.75rem; font-size: 0.85rem; border: 4px solid var(--gc-border); box-shadow: var(--gc-shadow-sm); cursor: pointer; text-transform: uppercase; font-style: italic; transition: transform 100ms;"
+          class="gc-headline gc-s79"
         >
           Subscribe
         </button>
       </div>
-      <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
-        <a href="/feed/all.xml" style="font-family: var(--gc-font-mono); font-size: 0.75rem; color: var(--gc-text-dim); text-decoration: none;">📡 RSS Feed</a>
-        <a href={`https://github.com/${tool?.repo || "google-gemini/gemini-cli"}`} target="_blank" rel="noopener noreferrer" style="font-family: var(--gc-font-mono); font-size: 0.75rem; color: var(--gc-text-dim); text-decoration: none;">⭐ Star on GitHub</a>
+      <div class="gc-flex-14">
+        <a href="/feed/all.xml" class="gc-s82">📡 RSS Feed</a>
+        <a href={`https://github.com/${tool?.repo || "google-gemini/gemini-cli"}`} target="_blank" rel="noopener noreferrer" class="gc-s82">⭐ Star on GitHub</a>
       </div>
     </section>
   </div>

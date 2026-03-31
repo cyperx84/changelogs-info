@@ -231,14 +231,14 @@ function renderPrefix(prefix: string | null): string {
 }
 
 function renderChangelogItem(item: ParsedItem): string {
-  return `<li style="display:flex;gap:0.7rem;align-items:flex-start;line-height:1.6;">${renderPrefix(item.prefix)}<span style="display:block;min-width:0;">${escapeHtml(item.content)}</span></li>`;
+  return `<li class="oc-flex">${renderPrefix(item.prefix)}<span class="oc-s1">${escapeHtml(item.content)}</span></li>`;
 }
 
 function renderChangelogSection(title: string, items: ParsedItem[], emphasized = false): string {
   if (items.length === 0) return "";
   return `<div style="padding:1rem 1.1rem; border:3px solid var(--oc-border); background:${emphasized ? 'var(--oc-bg-surface)' : 'transparent'};">`
-    + `<div style="font-family:inherit;font-size:0.72rem;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:var(--oc-text-muted);margin-bottom:0.85rem;">${escapeHtml(title)}</div>`
-    + `<ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0.7rem;">${items.map(renderChangelogItem).join("")}</ul>`
+    + `<div class="oc-s2">${escapeHtml(title)}</div>`
+    + `<ul class="oc-vstack">${items.map(renderChangelogItem).join("")}</ul>`
     + `</div>`;
 }
 
@@ -256,17 +256,17 @@ function buildChangelogCard(body: string): string {
 
   const overflowHtml = overflow.length === 0
     ? ""
-    : `<details style="border:3px solid var(--oc-border);padding:0.95rem 1.1rem;background:transparent;"><summary style="cursor:pointer;font-family:inherit;font-size:0.78rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;color:var(--oc-text);">Show all changes <span style="color:var(--oc-text-muted);">(${overflow.length} more)</span></summary><div style="display:flex;flex-direction:column;gap:1rem;margin-top:1rem;">${sections.map((section) => {
+    : `<details class="oc-s4"><summary class="oc-s5">Show all changes <span class="oc-s6">(${overflow.length} more)</span></summary><div class="oc-vstack-2">${sections.map((section) => {
         const sectionItems = overflow.filter((item) => item.heading === section.heading);
         if (sectionItems.length === 0) return "";
-        return `<div><div style="font-family:inherit;font-size:0.72rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;color:var(--oc-text-muted);margin-bottom:0.65rem;">${escapeHtml(section.heading)}</div><ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0.65rem;">${sectionItems.map(renderChangelogItem).join("")}</ul></div>`;
+        return `<div><div class="oc-s8">${escapeHtml(section.heading)}</div><ul class="oc-vstack-3">${sectionItems.map(renderChangelogItem).join("")}</ul></div>`;
       }).join("")}</div></details>`;
 
   const fallback = sections.length > 0 && highlights.length === 0 && notable.length === 0
     ? renderChangelogSection(sections[0].heading, sections[0].items.slice(0, 6), false)
     : "";
 
-  return `<div style="display:flex;flex-direction:column;gap:1rem;">${renderChangelogSection("Highlights", highlights, true)}${renderChangelogSection("Notable changes", notable, false)}${fallback}${overflowHtml}</div>`;
+  return `<div class="oc-vstack-4">${renderChangelogSection("Highlights", highlights, true)}${renderChangelogSection("Notable changes", notable, false)}${fallback}${overflowHtml}</div>`;
 }
 
 function getTldr(body: string): string[] {
@@ -284,44 +284,42 @@ function getTldr(body: string): string[] {
   currentPage="home"
 >
   <!-- Dot grid background -->
-  <div class="oc-dotgrid" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; opacity: 0.4;"></div>
+  <div class="oc-dotgrid oc-s11"></div>
 
-  <div style="max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 0;">
+  <div class="oc-s12">
 
     <!-- Hero -->
-    <section class="oc-hero-section" style="margin-bottom: 3rem; display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: center;">
-      <div style="display: grid; grid-template-columns: 1fr auto; gap: 2.5rem; align-items: center;" class="oc-hero-grid">
+    <section class="oc-hero-section oc-grid">
+      <div class="oc-grid-2 oc-hero-grid">
         <!-- Left: text + CTA -->
-        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+        <div class="oc-vstack-5">
           <!-- Live badge -->
-          <div style="display: inline-flex; align-items: center; gap: 0.5rem; width: fit-content;">
-            <span class="oc-pulse-dot" style="width: 8px; height: 8px; background: #22c55e; display: inline-block;"></span>
-            <span style="font-family: var(--oc-font-mono); font-size: 0.65rem; color: var(--oc-text-muted); text-transform: uppercase; letter-spacing: 0.15em;">Tracking {canonicalEntries.length} latest entries</span>
+          <div class="oc-flex-2">
+            <span class="oc-pulse-dot oc-s17"></span>
+            <span class="oc-label">Tracking {canonicalEntries.length} latest entries</span>
           </div>
 
-          <h1 class="oc-headline oc-hero-title" style="font-size: clamp(3.5rem, 9vw, 6rem); font-weight: 900; color: var(--oc-text); text-transform: uppercase; line-height: 0.85; margin: 0; letter-spacing: -0.03em;">
-            Open<span style="color: var(--oc-primary-bright);">Claw</span>
+          <h1 class="oc-headline oc-hero-title oc-s19">
+            Open<span class="oc-s43">Claw</span>
           </h1>
 
-          <p style="font-size: 1.05rem; color: var(--oc-text-dim); max-width: 28rem; line-height: 1.6; margin: 0; font-family: var(--oc-font-body);">
+          <p class="oc-s21">
             {tool?.description || "Personal AI assistant platform — run your own AI on any device, any channel."}
           </p>
 
           <!-- CTA row -->
-          <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.5rem;">
+          <div class="oc-flex-3">
             <a
               href={`https://github.com/${tool?.repo || "openclaw/openclaw"}`}
               target="_blank"
               rel="noopener noreferrer"
-              class="oc-headline oc-cta-btn"
-              style="background: var(--oc-primary); color: white; font-weight: 900; padding: 0.75rem 1.75rem; font-size: 0.85rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow-sm); text-decoration: none; text-transform: uppercase; font-style: italic;"
+              class="oc-headline oc-cta-btn oc-s23"
             >
               GitHub ↗
             </a>
             <a
               href="/openclaw/changelog/"
-              class="oc-headline oc-cta-btn"
-              style="background: transparent; color: var(--oc-text); font-weight: 900; padding: 0.75rem 1.75rem; font-size: 0.85rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow-sm); text-decoration: none; text-transform: uppercase; font-style: italic;"
+              class="oc-headline oc-cta-btn oc-s24"
             >
               Changelog
             </a>
@@ -329,34 +327,34 @@ function getTldr(body: string): string[] {
         </div>
 
         <!-- Right: terminal card -->
-        <div class="oc-terminal-card" style="width: 320px; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow); flex-shrink: 0; overflow: hidden;">
+        <div class="oc-terminal-card oc-s25">
           <!-- Title bar -->
-          <div style="background: var(--oc-border); padding: 0.5rem 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
-            <span style="width: 10px; height: 10px; background: var(--oc-primary); display: inline-block;"></span>
-            <span style="width: 10px; height: 10px; background: #ffb800; display: inline-block;"></span>
-            <span style="width: 10px; height: 10px; background: #22c55e; display: inline-block;"></span>
-            <span style="font-family: var(--oc-font-mono); font-size: 0.6rem; color: var(--oc-bg); margin-left: 0.5rem; text-transform: uppercase; font-weight: 700;">openclaw status</span>
+          <div class="oc-flex-4">
+            <span class="oc-s27"></span>
+            <span class="oc-s28"></span>
+            <span class="oc-s29"></span>
+            <span class="oc-s30">openclaw status</span>
           </div>
           <!-- Terminal body -->
-          <div style="background: var(--oc-bg); padding: 1rem; font-family: var(--oc-font-mono); font-size: 0.7rem; line-height: 1.8; color: var(--oc-text-dim);">
-            <div><span style="color: var(--oc-primary-bright);">❯</span> openclaw status</div>
-            <div style="margin-top: 0.5rem;">
-              <span style="color: #22c55e;">●</span> Gateway: <span style="color: #22c55e;">running</span>
+          <div class="oc-s31">
+            <div><span class="oc-s43">❯</span> openclaw status</div>
+            <div class="oc-s33">
+              <span class="oc-s40">●</span> Gateway: <span class="oc-s40">running</span>
             </div>
             <div>
-              <span style="color: #22c55e;">●</span> Version: <span style="color: var(--oc-text);">{displayVersion}</span>
+              <span class="oc-s40">●</span> Version: <span class="oc-s41">{displayVersion}</span>
             </div>
             <div>
-              <span style="color: #22c55e;">●</span> Releases: <span style="color: var(--oc-text);">{releases.length}</span> tracked
+              <span class="oc-s40">●</span> Releases: <span class="oc-s41">{releases.length}</span> tracked
             </div>
             <div>
               <span style="color: {breakingCount > 0 ? 'var(--oc-primary-bright)' : '#22c55e'};">{breakingCount > 0 ? '⚠' : '●'}</span> Breaking: <span style="color: {breakingCount > 0 ? 'var(--oc-primary-bright)' : 'var(--oc-text)'};">{breakingCount}</span>
             </div>
             <div>
-              <span style="color: #22c55e;">●</span> Updated: <span style="color: var(--oc-text);">{lastUpdatedAgo || "now"}</span>
+              <span class="oc-s40">●</span> Updated: <span class="oc-s41">{lastUpdatedAgo || "now"}</span>
             </div>
-            <div style="margin-top: 0.5rem; color: var(--oc-text-muted);">
-              <span style="color: var(--oc-primary-bright);">❯</span> <span class="oc-cursor">_</span>
+            <div class="oc-s42">
+              <span class="oc-s43">❯</span> <span class="oc-cursor">_</span>
             </div>
           </div>
         </div>
@@ -364,7 +362,7 @@ function getTldr(body: string): string[] {
     </section>
 
     <!-- Stats Bar -->
-    <section class="oc-section-reveal" style="display: flex; flex-wrap: wrap; gap: 0; border: 4px solid var(--oc-border); margin-bottom: 3rem;">
+    <section class="oc-section-reveal oc-flex-5">
       {[
         { label: "Releases", value: String(releases.length) },
         { label: "Breaking", value: String(breakingCount), red: true },
@@ -375,7 +373,7 @@ function getTldr(body: string): string[] {
           style={`flex: 1; min-width: 120px; padding: 1rem 1.25rem; ${i < 3 ? 'border-right: 4px solid var(--oc-border);' : ''} background: var(--oc-bg-card); cursor: crosshair; transition: background 150ms;`}
           class="stats-cell"
         >
-          <span style="display: block; color: var(--oc-text-muted); font-family: var(--oc-font-headline); font-weight: 700; text-transform: uppercase; font-size: 0.55rem; letter-spacing: 0.15em; margin-bottom: 0.25rem;">{stat.label}</span>
+          <span class="oc-s45">{stat.label}</span>
           <span class="oc-headline" style={`display: block; font-size: 1.5rem; font-weight: 900; color: ${stat.red ? 'var(--oc-primary-bright)' : 'var(--oc-text)'};`}>{stat.value}</span>
         </div>
       ))}
@@ -390,37 +388,37 @@ function getTldr(body: string): string[] {
       const summaryText = llmTldr?.trim() || null;
 
       return (
-        <section style="margin-bottom: 3rem;">
-          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
-            <h2 class="oc-headline" style="font-size: 2.5rem; font-weight: 900; color: var(--oc-text); text-transform: uppercase; font-style: italic; letter-spacing: -0.02em; margin: 0;">
+        <section class="oc-s46">
+          <div class="oc-flex-6">
+            <h2 class="oc-headline oc-s48">
               TL;DR
             </h2>
-            <div style="flex: 1; height: 4px; background: var(--oc-border);"></div>
-            <span style="font-family: var(--oc-font-mono); font-size: 0.7rem; color: var(--oc-text-muted); text-transform: uppercase;">Latest Release</span>
+            <div class="oc-s65"></div>
+            <span class="oc-s50">Latest Release</span>
           </div>
 
           <div style={`padding: 1.5rem 2rem; border: 4px solid ${breaking ? 'var(--oc-primary)' : 'var(--oc-border)'}; background: ${breaking ? 'var(--oc-bg-surface)' : 'var(--oc-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--oc-primary);' : ''}`}>
-            <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
-              <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-                <span class="oc-headline" style="font-size: 1.3rem; font-weight: 900; color: var(--oc-text); text-transform: uppercase;">{latestForTldr.version}</span>
+            <div class="oc-flex-11">
+              <div class="oc-flex-7">
+                <span class="oc-headline oc-s53">{latestForTldr.version}</span>
                 {breaking && (
-                  <span style="background: var(--oc-primary); color: var(--oc-text-on-accent); font-family: var(--oc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">BREAKING</span>
+                  <span class="oc-s70">BREAKING</span>
                 )}
                 {latestForTldr.prerelease && (
-                  <span style="background: rgba(255,184,0,0.15); color: #ffb800; font-family: var(--oc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; border: 1px solid #ffb800;">PRE</span>
+                  <span class="oc-s55">PRE</span>
                 )}
               </div>
-              <span style="font-family: var(--oc-font-mono); font-size: 0.7rem; color: var(--oc-text-muted); white-space: nowrap;">{formatDate(latestForTldr.date)}</span>
+              <span class="oc-s71">{formatDate(latestForTldr.date)}</span>
             </div>
             {summaryText ? (
-              <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                <p style="margin: 0; font-family: var(--oc-font-body); font-size: 1rem; color: var(--oc-text); line-height: 1.7; max-width: 60ch;">{summaryText}</p>
+              <div class="oc-vstack-6">
+                <p class="oc-s58">{summaryText}</p>
               </div>
             ) : items.length > 0 && (
-              <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.4rem;">
+              <ul class="oc-vstack-7">
                 {items.map((item) => (
-                  <li style="display: flex; gap: 0.5rem; align-items: flex-start; font-family: var(--oc-font-body); font-size: 0.9rem; color: var(--oc-text-dim); line-height: 1.5;">
-                    <span style="color: var(--oc-primary-bright); flex-shrink: 0; font-weight: 700;">▸</span>
+                  <li class="oc-flex-9">
+                    <span class="oc-s61">▸</span>
                     <span>{item}</span>
                   </li>
                 ))}
@@ -432,31 +430,30 @@ function getTldr(body: string): string[] {
     })()}
 
     <!-- Previous 3 Releases -->
-    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
-      <div style="flex: 1; height: 4px; background: var(--oc-border);"></div>
-      <span class="oc-headline" style="font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--oc-text-muted);">Recent Changelog</span>
-      <div style="flex: 1; height: 4px; background: var(--oc-border);"></div>
+    <div class="oc-flex-10">
+      <div class="oc-s65"></div>
+      <span class="oc-headline oc-s64">Recent Changelog</span>
+      <div class="oc-s65"></div>
     </div>
 
-    <section style="margin-bottom: 4rem; display: flex; flex-direction: column; gap: 1.25rem;">
+    <section class="oc-vstack-8">
       {canonicalEntries.map((entry) => {
         const release = releases.find((r) => r.version === entry.version) || latestForTldr;
         const breaking = isBreaking(entry.body);
         const renderedBody = buildChangelogCard(entry.body || "");
         return (
           <div style={`padding: 1.5rem 2rem; border: 4px solid ${breaking ? 'var(--oc-primary)' : 'var(--oc-border)'}; background: ${breaking ? 'var(--oc-bg-surface)' : 'var(--oc-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--oc-primary);' : ''}`}>
-            <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
-              <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
-                <span class="oc-headline" style="font-size: 1.25rem; font-weight: 900; color: var(--oc-text); text-transform: uppercase;">{entry.version}</span>
+            <div class="oc-flex-11">
+              <div class="oc-flex-7">
+                <span class="oc-headline oc-s69">{entry.version}</span>
                 {breaking && (
-                  <span style="background: var(--oc-primary); color: var(--oc-text-on-accent); font-family: var(--oc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase;">BREAKING</span>
+                  <span class="oc-s70">BREAKING</span>
                 )}
               </div>
-              <span style="font-family: var(--oc-font-mono); font-size: 0.7rem; color: var(--oc-text-muted); white-space: nowrap;">{formatDate(release.date)}</span>
+              <span class="oc-s71">{formatDate(release.date)}</span>
             </div>
             <div
-              class="changelog-body"
-              style="color: var(--oc-text-dim); font-size: 0.92rem; line-height: 1.7; font-family: var(--oc-font-body);"
+              class="changelog-body oc-s72"
               set:html={renderedBody}
             />
           </div>
@@ -464,118 +461,115 @@ function getTldr(body: string): string[] {
       })}
       <a
         href="/openclaw/changelog/"
-        class="oc-headline"
-        style="display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 900; text-transform: uppercase; color: var(--oc-primary-bright); font-style: italic; text-decoration: none; border-bottom: 2px solid var(--oc-primary-bright); padding-bottom: 2px; font-size: 0.85rem; align-self: flex-start;"
+        class="oc-headline oc-flex-8"
       >
         View full changelog →
       </a>
     </section>
 
     <!-- Quick Links -->
-    <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 4rem;">
-      <a href="/openclaw/changelog/" class="oc-quick-link" style="display: flex; align-items: center; gap: 0.75rem; padding: 1.25rem; border: 4px solid var(--oc-border); background: var(--oc-bg-card); text-decoration: none;">
-        <span style="font-size: 1.5rem;">📋</span>
+    <section class="oc-grid-3">
+      <a href="/openclaw/changelog/" class="oc-quick-link oc-flex-13">
+        <span class="oc-s88">📋</span>
         <div>
-          <span class="oc-headline" style="display: block; font-weight: 900; font-size: 0.85rem; color: var(--oc-text); text-transform: uppercase;">Full Changelog</span>
-          <span style="font-family: var(--oc-font-mono); font-size: 0.65rem; color: var(--oc-text-muted);">{releases.length} releases</span>
+          <span class="oc-headline oc-s89">Full Changelog</span>
+          <span class="oc-s90">{releases.length} releases</span>
         </div>
       </a>
-      <a href="/openclaw/cheatsheet/" class="oc-quick-link" style="display: flex; align-items: center; gap: 0.75rem; padding: 1.25rem; border: 4px solid var(--oc-border); background: var(--oc-bg-card); text-decoration: none;">
-        <span style="font-size: 1.5rem;">⚡</span>
+      <a href="/openclaw/cheatsheet/" class="oc-quick-link oc-flex-13">
+        <span class="oc-s88">⚡</span>
         <div>
-          <span class="oc-headline" style="display: block; font-weight: 900; font-size: 0.85rem; color: var(--oc-text); text-transform: uppercase;">Cheatsheet</span>
-          <span style="font-family: var(--oc-font-mono); font-size: 0.65rem; color: var(--oc-text-muted);">Commands & tips</span>
+          <span class="oc-headline oc-s89">Cheatsheet</span>
+          <span class="oc-s90">Commands & tips</span>
         </div>
       </a>
-      <a href="/openclaw/releases/" class="oc-quick-link" style="display: flex; align-items: center; gap: 0.75rem; padding: 1.25rem; border: 4px solid var(--oc-border); background: var(--oc-bg-card); text-decoration: none;">
-        <span style="font-size: 1.5rem;">📦</span>
+      <a href="/openclaw/releases/" class="oc-quick-link oc-flex-13">
+        <span class="oc-s88">📦</span>
         <div>
-          <span class="oc-headline" style="display: block; font-weight: 900; font-size: 0.85rem; color: var(--oc-text); text-transform: uppercase;">All Releases</span>
-          <span style="font-family: var(--oc-font-mono); font-size: 0.65rem; color: var(--oc-text-muted);">Browse & filter</span>
+          <span class="oc-headline oc-s89">All Releases</span>
+          <span class="oc-s90">Browse & filter</span>
         </div>
       </a>
-      <a href="/feed/all.xml" class="oc-quick-link" style="display: flex; align-items: center; gap: 0.75rem; padding: 1.25rem; border: 4px solid var(--oc-border); background: var(--oc-bg-card); text-decoration: none;">
-        <span style="font-size: 1.5rem;">📡</span>
+      <a href="/feed/all.xml" class="oc-quick-link oc-flex-13">
+        <span class="oc-s88">📡</span>
         <div>
-          <span class="oc-headline" style="display: block; font-weight: 900; font-size: 0.85rem; color: var(--oc-text); text-transform: uppercase;">RSS Feed</span>
-          <span style="font-family: var(--oc-font-mono); font-size: 0.65rem; color: var(--oc-text-muted);">Subscribe to updates</span>
+          <span class="oc-headline oc-s89">RSS Feed</span>
+          <span class="oc-s90">Subscribe to updates</span>
         </div>
       </a>
     </section>
 
     <!-- Clwatch Section -->
-    <section style="margin-bottom: 4rem; border: 4px solid var(--oc-border); overflow: hidden;">
-      <div style="background: var(--oc-primary); padding: 2rem 2.5rem; display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; justify-content: space-between;">
-        <div style="max-width: 560px;">
-          <h2 class="oc-headline" style="font-size: 2.5rem; font-weight: 900; text-transform: uppercase; font-style: italic; letter-spacing: -0.02em; margin: 0 0 0.75rem; color: white; line-height: 1;">
+    <section class="oc-s91">
+      <div class="oc-flex-12">
+        <div class="oc-s93">
+          <h2 class="oc-headline oc-s94">
             Clwatch
           </h2>
-          <p style="font-family: var(--oc-font-body); font-size: 1rem; color: rgba(255,255,255,0.85); margin: 0; line-height: 1.6;">
+          <p class="oc-s95">
             Monitor coding CLI releases in real-time. Track Claude Code, Codex CLI, Gemini CLI, and OpenClaw all in one dashboard. Get notified when new versions drop.
           </p>
         </div>
         <a
           href="/clwatch"
-          class="oc-headline"
-          style="background: white; color: var(--oc-primary); font-weight: 900; padding: 1rem 2rem; font-size: 1rem; border: 4px solid white; box-shadow: 6px 6px 0 rgba(0,0,0,0.3); text-decoration: none; text-transform: uppercase; font-style: italic; transition: transform 100ms, box-shadow 100ms; white-space: nowrap;"
+          class="oc-headline oc-s96"
           onmouseover="this.style.transform='translate(2px,2px)';this.style.boxShadow='2px 2px 0 rgba(0,0,0,0.3)'"
           onmouseout="this.style.transform='';this.style.boxShadow='6px 6px 0 rgba(0,0,0,0.3)'"
         >
           Launch Dashboard →
         </a>
       </div>
-      <div style="background: var(--oc-bg-card); padding: 1.5rem 2.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem;">
+      <div class="oc-grid-4">
         <div>
-          <span style="color: var(--oc-primary-bright); font-size: 1.25rem; display: block; margin-bottom: 0.25rem;">🔔</span>
-          <span class="oc-headline" style="font-weight: 800; font-size: 0.75rem; text-transform: uppercase; color: var(--oc-text); display: block; margin-bottom: 0.25rem;">Real-time Monitoring</span>
-          <span style="font-family: var(--oc-font-body); font-size: 0.75rem; color: var(--oc-text-dim); line-height: 1.4;">Polls GitHub releases and surfaces new versions the moment they drop.</span>
+          <span class="oc-s104">🔔</span>
+          <span class="oc-headline oc-s105">Real-time Monitoring</span>
+          <span class="oc-s106">Polls GitHub releases and surfaces new versions the moment they drop.</span>
         </div>
         <div>
-          <span style="color: var(--oc-primary-bright); font-size: 1.25rem; display: block; margin-bottom: 0.25rem;">⚡</span>
-          <span class="oc-headline" style="font-weight: 800; font-size: 0.75rem; text-transform: uppercase; color: var(--oc-text); display: block; margin-bottom: 0.25rem;">Breaking Change Alerts</span>
-          <span style="font-family: var(--oc-font-body); font-size: 0.75rem; color: var(--oc-text-dim); line-height: 1.4;">Flags breaking changes so you know before upgrading.</span>
+          <span class="oc-s104">⚡</span>
+          <span class="oc-headline oc-s105">Breaking Change Alerts</span>
+          <span class="oc-s106">Flags breaking changes so you know before upgrading.</span>
         </div>
         <div>
-          <span style="color: var(--oc-primary-bright); font-size: 1.25rem; display: block; margin-bottom: 0.25rem;">📊</span>
-          <span class="oc-headline" style="font-weight: 800; font-size: 0.75rem; text-transform: uppercase; color: var(--oc-text); display: block; margin-bottom: 0.25rem;">Multi-Tool Dashboard</span>
-          <span style="font-family: var(--oc-font-body); font-size: 0.75rem; color: var(--oc-text-dim); line-height: 1.4;">Claude Code, Codex, Gemini CLI, OpenCode — all tools in one view.</span>
+          <span class="oc-s104">📊</span>
+          <span class="oc-headline oc-s105">Multi-Tool Dashboard</span>
+          <span class="oc-s106">Claude Code, Codex, Gemini CLI, OpenCode — all tools in one view.</span>
         </div>
       </div>
     </section>
 
     <!-- Newsletter / Subscribe -->
-    <section style="margin-bottom: 5rem; text-align: center; padding: 3rem 2rem; border: 4px solid var(--oc-border); background: var(--oc-bg-surface);">
-      <h2 class="oc-headline" style="font-size: 2rem; font-weight: 900; text-transform: uppercase; font-style: italic; letter-spacing: -0.02em; margin: 0 0 0.75rem; color: var(--oc-text);">
+    <section class="oc-s107">
+      <h2 class="oc-headline oc-s108">
         Stay in the Loop
       </h2>
-      <p style="font-family: var(--oc-font-body); font-size: 0.95rem; color: var(--oc-text-dim); margin: 0 0 2rem; max-width: 480px; margin-left: auto; margin-right: auto; line-height: 1.5;">
+      <p class="oc-s109">
         Get notified when OpenClaw ships new releases. No spam — just changelogs.
       </p>
-      <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; max-width: 500px; margin: 0 auto 1.5rem;">
+      <div class="oc-flex-14">
         <input
           type="email"
           placeholder="you@example.com"
-          style="flex: 1; min-width: 220px; padding: 0.85rem 1rem; border: 4px solid var(--oc-border); background: var(--oc-bg); color: var(--oc-text); font-family: var(--oc-font-mono); font-size: 0.85rem; outline: none; transition: border-color 150ms;"
+          class="oc-flex-item"
           onfocus="this.style.borderColor='var(--oc-primary)'"
           onblur="this.style.borderColor='var(--oc-border)'"
         />
         <button
-          class="oc-headline"
-          style="background: var(--oc-primary); color: white; font-weight: 900; padding: 0.85rem 1.75rem; font-size: 0.85rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow-sm); cursor: pointer; text-transform: uppercase; font-style: italic; transition: transform 100ms, box-shadow 100ms; position: relative; overflow: visible;"
+          class="oc-headline oc-s112"
           onmouseover="this.style.transform='translate(1px,1px)';this.style.boxShadow='none'"
           onmouseout="this.style.transform='';this.style.boxShadow='var(--oc-shadow-sm)'"
         >
           Subscribe
         </button>
       </div>
-      <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
-        <a href="/feed/all.xml" style="display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--oc-font-mono); font-size: 0.75rem; color: var(--oc-text-dim); text-decoration: none; transition: color 150ms;" onmouseover="this.style.color='var(--oc-primary-bright)'" onmouseout="this.style.color='var(--oc-text-dim)'">
+      <div class="oc-flex-15">
+        <a href="/feed/all.xml" class="oc-flex-16" onmouseover="this.style.color='var(--oc-primary-bright)'" onmouseout="this.style.color='var(--oc-text-dim)'">
           📡 RSS Feed
         </a>
-        <a href={`https://github.com/${tool?.repo || "openclaw/openclaw"}`} target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--oc-font-mono); font-size: 0.75rem; color: var(--oc-text-dim); text-decoration: none; transition: color 150ms;" onmouseover="this.style.color='var(--oc-primary-bright)'" onmouseout="this.style.color='var(--oc-text-dim)'">
+        <a href={`https://github.com/${tool?.repo || "openclaw/openclaw"}`} target="_blank" rel="noopener noreferrer" class="oc-flex-16" onmouseover="this.style.color='var(--oc-primary-bright)'" onmouseout="this.style.color='var(--oc-text-dim)'">
           ⭐ Star on GitHub
         </a>
-        <a href={`https://github.com/${tool?.repo || "openclaw/openclaw"}/releases.atom`} target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--oc-font-mono); font-size: 0.75rem; color: var(--oc-text-dim); text-decoration: none; transition: color 150ms;" onmouseover="this.style.color='var(--oc-primary-bright)'" onmouseout="this.style.color='var(--oc-text-dim)'">
+        <a href={`https://github.com/${tool?.repo || "openclaw/openclaw"}/releases.atom`} target="_blank" rel="noopener noreferrer" class="oc-flex-16" onmouseover="this.style.color='var(--oc-primary-bright)'" onmouseout="this.style.color='var(--oc-text-dim)'">
           🔖 GitHub Releases Atom
         </a>
       </div>
