@@ -1,6 +1,7 @@
 ---
 import KilocodeLayout from "../../layouts/KilocodeLayout.astro";
 import { getToolReleases, formatDate } from "../../lib/releases";
+import "../../styles/releases-shared.css";
 
 const data = await getToolReleases("kilocode");
 const releases = data?.releases || [];
@@ -19,96 +20,74 @@ const INITIAL_LOAD = 12;
   description="All Kilocode releases. Version history and iteration log."
   currentPage="releases"
 >
-  <div style="max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 0;">
+  <div class="rl-wrapper">
 
-    <!-- Header -->
-    <header style="margin-bottom: 4rem; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1.5rem; border-left: 8px solid var(--kc-primary); padding-left: 2rem; padding-top: 1rem; padding-bottom: 1rem;">
+    <header class="rl-header">
       <div>
-        <h1 class="cc-headline" style="font-size: clamp(3rem, 8vw, 6rem); font-weight: 900; text-transform: uppercase; letter-spacing: -0.03em; line-height: 0.9; margin: 0 0 0.5rem; color: var(--kc-text);">
-          Releases
-        </h1>
-        <p class="cc-headline" style="font-size: 1.1rem; font-weight: 700; color: var(--kc-primary-bright); margin: 0; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.8;">
-          Version History &amp; Iteration Log
-        </p>
+        <h1 class="kc-headline rl-header__title">Releases</h1>
+        <p class="kc-headline rl-header__sub">Version History &amp; Iteration Log</p>
       </div>
-      <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+      <div class="rl-header__stats">
         {latestStable && (
-          <div style="border: 4px solid var(--kc-border); padding: 0.75rem 1.5rem; background: var(--kc-bg-card);">
-            <span style="font-family: var(--kc-font-mono); font-size: 0.65rem; color: var(--kc-text-muted); display: block; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.25rem;">Latest Stable</span>
-            <span class="cc-headline" style="font-size: 1.5rem; font-weight: 900; color: var(--kc-primary-bright);">{latestStable.version}</span>
+          <div class="rl-stat-box">
+            <span class="rl-stat-box__label">Latest Stable</span>
+            <span class="kc-headline rl-stat-box__value">{latestStable.version}</span>
           </div>
         )}
-        <div style="border: 4px solid var(--kc-border); padding: 0.75rem 1.5rem; background: var(--kc-bg-card);">
-          <span style="font-family: var(--kc-font-mono); font-size: 0.65rem; color: var(--kc-text-muted); display: block; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.25rem;">Total</span>
-          <span class="cc-headline" style="font-size: 1.5rem; font-weight: 900; color: var(--kc-text);">{releases.length}</span>
+        <div class="rl-stat-box">
+          <span class="rl-stat-box__label">Total</span>
+          <span class="kc-headline rl-stat-box__value rl-stat-box__value--neutral">{releases.length}</span>
         </div>
       </div>
     </header>
 
-    <!-- Filter bar -->
     {releases.length > 6 && (
-      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 2rem; align-items: center;">
-        <span style="font-family: var(--kc-font-mono); font-size: 0.65rem; color: var(--kc-text-muted); text-transform: uppercase; letter-spacing: 0.1em;">Filter:</span>
+      <div class="rl-filters">
+        <span class="rl-filters__label">Filter:</span>
         {["all", "stable", "breaking", "prerelease"].map((f) => (
           <button
-            class="cc-headline releases-filter-btn"
+            class="kc-headline rl-filter-btn releases-filter-btn"
             data-filter={f}
-            style={`border: 2px solid var(--kc-border-dim); padding: 0.35rem 0.9rem; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; transition: all 100ms; background: ${f === 'all' ? 'var(--kc-primary)' : 'transparent'}; color: ${f === 'all' ? 'white' : 'var(--kc-text-muted)'}; border-color: ${f === 'all' ? 'var(--kc-primary)' : 'var(--kc-border-dim)'};`}
+            data-active={f === "all" ? "true" : "false"}
           >
             {f === "prerelease" ? "Pre" : f.charAt(0).toUpperCase() + f.slice(1)}
           </button>
         ))}
-        <input
-          id="releases-search"
-          type="text"
-          placeholder="Search..."
-          style="background: var(--kc-bg); border: 2px solid var(--kc-border-dim); padding: 0.35rem 0.75rem; font-family: var(--kc-font-mono); font-size: 0.72rem; color: var(--kc-text); outline: none; transition: border-color 150ms; margin-left: auto;"
-          onfocus="this.style.borderColor='var(--kc-primary-bright)'"
-          onblur="this.style.borderColor='var(--kc-border-dim)'"
-        />
+        <input id="releases-search" type="text" placeholder="Search..." class="rl-search" />
       </div>
     )}
 
-    <!-- Release grid -->
     {releases.length > 0 ? (
-      <div id="releases-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem; margin-bottom: 3rem;">
+      <div id="releases-grid" class="rl-grid">
         {releases.map((release, idx) => {
           const breaking = isBreaking(release.body);
           return (
             <div
-              class="release-card"
+              class={`rl-card ${breaking ? 'rl-card--breaking' : 'rl-card--normal'} release-card`}
               data-version={release.version.toLowerCase()}
               data-name={(release.name || "").toLowerCase()}
               data-prerelease={String(release.prerelease)}
               data-breaking={String(breaking)}
               data-hidden-init={idx >= INITIAL_LOAD ? "true" : "false"}
-              style={`padding: 1.5rem; border: 4px solid ${breaking ? 'var(--kc-primary)' : 'var(--kc-border)'}; background: ${breaking ? 'rgba(245,158,11,0.06)' : 'var(--kc-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--kc-primary);' : ''} transition: border-color 150ms;`}
             >
-              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.75rem;">
+              <div class="rl-card__top">
                 <div>
-                  <span class="cc-headline" style="font-size: 1.3rem; font-weight: 900; color: var(--kc-text); display: block;">{release.version}</span>
-                  <span style="font-family: var(--kc-font-mono); font-size: 0.65rem; color: var(--kc-text-muted);">{formatDate(release.date)}</span>
+                  <span class="kc-headline rl-card__version">{release.version}</span>
+                  <span class="rl-card__date">{formatDate(release.date)}</span>
                 </div>
-                <div style="display: flex; flex-direction: column; gap: 0.3rem; align-items: flex-end;">
-                  {breaking && <span style="background: var(--kc-primary); color: white; font-family: var(--kc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.55rem; font-weight: 700; text-transform: uppercase;">BREAKING</span>}
-                  {release.prerelease && <span style="background: rgba(245,158,11,0.15); color: #f59e0b; font-family: var(--kc-font-mono); padding: 0.15rem 0.5rem; font-size: 0.55rem; font-weight: 700; text-transform: uppercase; border: 1px solid #f59e0b;">PRE</span>}
+                <div class="rl-card__badges">
+                  {breaking && <span class="rl-badge rl-badge--breaking">BREAKING</span>}
+                  {release.prerelease && <span class="rl-badge rl-badge--pre">PRE</span>}
                 </div>
               </div>
 
               {release.name && (
-                <p class="cc-headline" style="font-size: 0.78rem; font-weight: 700; color: var(--kc-text-dim); text-transform: uppercase; margin: 0 0 0.75rem; letter-spacing: 0.03em;">
-                  {(release.name).replace(/^claude[\s-]code\s+/i, "")}
+                <p class="kc-headline rl-card__name">
+                  {release.name.replace(/kilocode\s+/i, "")}
                 </p>
               )}
 
-              <a
-                href={release.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                style="display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--kc-font-mono); font-size: 0.65rem; color: var(--kc-text-muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.08em; transition: color 150ms; border-top: 1px solid var(--kc-border-dim); padding-top: 0.75rem; width: 100%;"
-                onmouseover="this.style.color='var(--kc-primary-bright)'"
-                onmouseout="this.style.color='var(--kc-text-muted)'"
-              >
+              <a href={release.url} target="_blank" rel="noopener noreferrer" class="rl-card__link">
                 ↗ View on GitHub
               </a>
             </div>
@@ -116,30 +95,20 @@ const INITIAL_LOAD = 12;
         })}
       </div>
     ) : (
-      <div style="padding: 4rem 2rem; border: 4px dashed var(--kc-border-dim); text-align: center; margin-bottom: 3rem;">
-        <p style="font-family: var(--kc-font-mono); color: var(--kc-text-muted);">$ no releases tracked yet</p>
+      <div class="rl-empty">
+        <p>$ no releases tracked yet</p>
       </div>
     )}
 
     {releases.length > INITIAL_LOAD && (
-      <div style="margin-bottom: 4rem; text-align: center;">
-        <button
-          id="load-more-releases"
-          class="cc-headline"
-          style="background: transparent; border: 4px solid var(--kc-border); color: var(--kc-text); padding: 1rem 2.5rem; font-size: 0.85rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; font-style: italic; transition: background 100ms, color 100ms;"
-          onmouseover="this.style.background='var(--kc-primary)';this.style.color='white'"
-          onmouseout="this.style.background='transparent';this.style.color='var(--kc-text)'"
-        >
-          Load More ▼
-        </button>
+      <div class="rl-load-more">
+        <button id="load-more-releases" class="kc-headline rl-load-more-btn">Load More ▼</button>
       </div>
     )}
   </div>
 
   <script>
     const cards = Array.from(document.querySelectorAll('.release-card')) as HTMLElement[];
-
-    // Apply initial hidden state
     cards.forEach(card => {
       if (card.dataset.hiddenInit === 'true') card.style.display = 'none';
     });
@@ -151,40 +120,30 @@ const INITIAL_LOAD = 12;
     let searchQuery = '';
     let allLoaded = false;
 
+    filterBtns.find(b => b.dataset.filter === 'all')?.classList.add('is-active');
+
     function applyFilters() {
-      let visibleCount = 0;
-      cards.forEach((card, idx) => {
+      cards.forEach((card) => {
         const version = card.dataset.version || '';
         const name = card.dataset.name || '';
         const prerelease = card.dataset.prerelease === 'true';
         const breaking = card.dataset.breaking === 'true';
-
         const matchesSearch = !searchQuery || version.includes(searchQuery) || name.includes(searchQuery);
         const matchesFilter =
           activeFilter === 'all' ||
           (activeFilter === 'stable' && !prerelease) ||
           (activeFilter === 'breaking' && breaking) ||
           (activeFilter === 'prerelease' && prerelease);
-
         const withinLimit = allLoaded || card.dataset.hiddenInit !== 'true';
-
-        const show = matchesSearch && matchesFilter && withinLimit;
-        card.style.display = show ? '' : 'none';
-        if (show) visibleCount++;
+        card.style.display = (matchesSearch && matchesFilter && withinLimit) ? '' : 'none';
       });
     }
 
     filterBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         activeFilter = btn.dataset.filter || 'all';
-        filterBtns.forEach(b => {
-          b.style.background = 'transparent';
-          b.style.color = 'var(--kc-text-muted)';
-          b.style.borderColor = 'var(--kc-border-dim)';
-        });
-        btn.style.background = 'var(--kc-primary)';
-        btn.style.color = 'white';
-        btn.style.borderColor = 'var(--kc-primary)';
+        filterBtns.forEach(b => b.classList.remove('is-active'));
+        btn.classList.add('is-active');
         applyFilters();
       });
     });
@@ -198,9 +157,7 @@ const INITIAL_LOAD = 12;
     loadMoreBtn?.addEventListener('click', () => {
       allLoaded = true;
       loadMoreBtn.style.display = 'none';
-      cards.forEach(card => {
-        if (card.dataset.hiddenInit === 'true') card.style.display = '';
-      });
+      cards.forEach(card => { if (card.dataset.hiddenInit === 'true') card.style.display = ''; });
       applyFilters();
     });
   </script>

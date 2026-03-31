@@ -1,5 +1,6 @@
 ---
 import CursorLayout from "../../layouts/CursorLayout.astro";
+import "../../styles/cheatsheet-shared.css";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -13,184 +14,146 @@ const quickStart = cs.quickStart || {};
 const dailyWorkflows = cs.dailyWorkflows || [];
 const powerMoves = cs.powerMoves || [];
 const gotchas = cs.gotchas || [];
+const cliFlags = cs.cliFlags || [];
 const slashCommands = cs.slashCommands || [];
-const config = cs.config || [];
 const proTips = cs.proTips || [];
-
-const shortcutCards = [
-  { combo: "Cmd+K", title: "Inline edit", text: "Edit the current selection directly in the editor." },
-  { combo: "Cmd+L", title: "Chat", text: "Open chat for repo-aware explanations and follow-up edits." },
-  { combo: "Cmd+I", title: "Composer", text: "Kick off larger multi-file work from the AI panel." },
-  { combo: "@", title: "Reference files", text: "Mention files, folders, and symbols inside the prompt." },
-  { combo: "Agent mode", title: "Full task runner", text: "Let Cursor inspect the codebase, edit, and verify." },
-];
 ---
 
 <CursorLayout
   title="Cursor Cheat Sheet — changelogs.info"
-  description="Useful Cursor shortcuts, workflows, rules, and gotchas."
+  description="The actually useful Cursor cheat sheet. Daily workflows, power moves, CLI flags, gotchas."
   currentPage="cheatsheet"
 >
-  <div style="max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 0;">
-    <section style="margin-bottom: 2rem;">
-      <div style="font-family: var(--cu-font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--cu-primary-bright); margin-bottom: 0.5rem;">
-        Cursor cheatsheet
-      </div>
-      <h1 class="cu-headline" style="margin: 0 0 0.9rem; font-size: clamp(3rem, 8vw, 5.8rem); line-height: 0.92; letter-spacing: -0.05em;">
-        Move faster in Cursor
+  <div class="cs-wrapper">
+
+    <section class="cs-hero">
+      <div class="cs-hero__emoji">🧠</div>
+      <h1 class="cu-headline cs-hero__title">
+        Cheat<span class="cs-hero__accent">Sheet</span>
       </h1>
-      <p style="margin: 0; max-width: 44rem; color: var(--cu-text-dim); line-height: 1.7; font-size: 1.04rem;">
-        The shortcuts and patterns that matter once Cursor becomes part of your daily editing loop.
-      </p>
-      {cs.lastUpdated && (
-        <p style="margin: 0.75rem 0 0; font-family: var(--cu-font-mono); font-size: 0.72rem; color: var(--cu-text-muted);">
-          Last updated: {cs.lastUpdated}
-        </p>
+      <p class="cs-hero__sub">The commands that matter. Cursor muscle memory.</p>
+      {cs.lastUpdated && <p class="cs-hero__meta">Last updated: {cs.lastUpdated}</p>}
+    </section>
+
+    <div class="cs-grid">
+
+      {quickStart.steps && quickStart.steps.length > 0 && (
+        <div class="cs-quickstart">
+          <h2 class="cu-headline cs-quickstart__title">{quickStart.title || "Quick Start"}</h2>
+          <div class="cs-quickstart__steps">
+            {quickStart.steps.map((step: string, i: number) => {
+              const cmdMatch = step.match(/(\S+\s+[\w\-\-]+(?:\s+[\w\-]+)*)/);
+              const cmd = cmdMatch?.[1];
+              const hasColon = step.includes(":");
+              const label = hasColon ? step.split(":")[0].trim() : step;
+              return (
+                <div class="cs-quickstart__step">
+                  <div class="cu-headline cs-step-num">{String(i + 1).padStart(2, '0')}</div>
+                  <div class="cs-step-body">
+                    <div class="cs-step-label">{label}</div>
+                    {cmd && <div class="cs-step-cmd"><span class="cs-step-cmd__prompt">$</span> {cmd}</div>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       )}
-    </section>
 
-    <section style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.85rem; margin-bottom: 2rem;" class="cu-shortcut-grid">
-      {shortcutCards.map((card) => (
-        <article style="padding: 1.15rem; border-radius: 20px; border: 1px solid var(--cu-border-dim); background: linear-gradient(180deg, rgba(20,110,245,0.16), rgba(13,26,49,0.92)); box-shadow: var(--cu-shadow-sm);">
-          <div class="cu-headline" style="font-size: 1.05rem; color: var(--cu-primary-bright); margin-bottom: 0.55rem;">{card.combo}</div>
-          <div style="font-family: var(--cu-font-headline); font-weight: 700; margin-bottom: 0.35rem;">{card.title}</div>
-          <p style="margin: 0; color: var(--cu-text-dim); font-size: 0.88rem; line-height: 1.55;">{card.text}</p>
-        </article>
-      ))}
-    </section>
+      <div class="cs-two-col">
+        {dailyWorkflows.length > 0 && (
+          <div class="cs-panel">
+            <h2 class="cu-headline cs-panel__title cs-panel__title--accent">Daily Workflows</h2>
+            <div class="cs-item-list">
+              {dailyWorkflows.map((wf: any) => (
+                <div class="cs-item">
+                  <div class="cs-item__title">{wf.title}</div>
+                  {wf.description && <p class="cs-item__desc">{wf.description}</p>}
+                  {wf.command && <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> {wf.command}</div>}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
-    <section style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 0.92fr); gap: 1rem; margin-bottom: 2rem;" class="cu-cheat-grid">
-      <div style="padding: 1.5rem; border-radius: 24px; border: 1px solid var(--cu-border); background: rgba(13,26,49,0.9); box-shadow: var(--cu-shadow);">
-        <h2 class="cu-headline" style="margin: 0 0 1rem; font-size: 1.7rem;">Quick start</h2>
-        <div style="display: grid; gap: 0.9rem;">
-          {(quickStart.steps || []).map((step: string, i: number) => (
-            <div style="display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 0.9rem; align-items: start;">
-              <div class="cu-headline" style="width: 36px; height: 36px; border-radius: 999px; display: flex; align-items: center; justify-content: center; background: var(--cu-primary); color: #fff; font-size: 0.82rem;">
-                {i + 1}
+        {powerMoves.length > 0 && (
+          <div class="cs-panel cs-panel--accent">
+            <h2 class="cu-headline cs-panel__title">⚡ Power Moves</h2>
+            <div class="cs-item-list">
+              {powerMoves.map((pm: any) => (
+                <div class="cs-item cs-item--accent">
+                  <div class="cs-item__title cs-item__title--accent">{pm.title}</div>
+                  {pm.description && <p class="cs-item__desc">{pm.description}</p>}
+                  {pm.command && <div class="cs-item__cmd cs-item__cmd--accent"><span class="cs-step-cmd__prompt">$</span> {pm.command}</div>}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {cliFlags.length > 0 && (
+        <div class="cs-panel cs-panel--surface">
+          <h2 class="cu-headline cs-panel__title">CLI Flags</h2>
+          <div class="cs-flag-grid">
+            {cliFlags.map((flag: any) => (
+              <div class="cs-flag-item">
+                <div class="cs-flag-item__key">{flag.flag || flag.command}</div>
+                <div class="cs-flag-item__desc">{flag.description}</div>
               </div>
-              <div style="padding-top: 0.35rem; color: var(--cu-text-dim); line-height: 1.65;">{step}</div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
-      <aside style="padding: 1.5rem; border-radius: 24px; border: 1px solid var(--cu-border-dim); background: rgba(13,26,49,0.78); box-shadow: var(--cu-shadow-sm);">
-        <h2 class="cu-headline" style="margin: 0 0 1rem; font-size: 1.7rem;">Mode map</h2>
-        <div style="display: grid; gap: 0.85rem;">
-          {[
-            ["Agent", "Default mode for multi-file work, repo exploration, and command execution."],
-            ["Ask", "Use when you want explanation before changing code."],
-            ["Plan", "Generate the approach first, review it, then build."],
-            ["Debug", "Focus the model on failure analysis and fix loops."],
-            ["Cloud Agents", "Offload longer jobs after committing or stashing local changes."],
-          ].map(([title, text]) => (
-            <div style="padding: 0.95rem 1rem; border-radius: 18px; border: 1px solid var(--cu-border-dim); background: rgba(255,255,255,0.03);">
-              <div class="cu-headline" style="font-size: 1rem; margin-bottom: 0.25rem;">{title}</div>
-              <div style="color: var(--cu-text-dim); font-size: 0.9rem; line-height: 1.55;">{text}</div>
-            </div>
-          ))}
+      {slashCommands.length > 0 && (
+        <div class="cs-panel cs-panel--accent">
+          <h2 class="cu-headline cs-panel__title cs-panel__title--accent">/ Slash Commands</h2>
+          <div class="cs-cmd-grid">
+            {slashCommands.map((cmd: any) => (
+              <div class="cs-cmd-item">
+                <code class="cs-cmd-item__key">{cmd.command || cmd.cmd}</code>
+                <span class="cs-cmd-item__desc">{cmd.description}</span>
+              </div>
+            ))}
+          </div>
         </div>
-      </aside>
-    </section>
+      )}
 
-    <section style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-bottom: 2rem;" class="cu-two-col">
-      <div style="padding: 1.5rem; border-radius: 24px; border: 1px solid var(--cu-border-dim); background: rgba(13,26,49,0.9);">
-        <h2 class="cu-headline" style="margin: 0 0 1rem; font-size: 1.55rem;">Daily workflows</h2>
-        <div style="display: grid; gap: 0.9rem;">
-          {dailyWorkflows.map((wf: any) => (
-            <div style="padding-left: 1rem; border-left: 2px solid var(--cu-primary);">
-              <div style="font-family: var(--cu-font-headline); font-weight: 700; margin-bottom: 0.2rem;">{wf.title}</div>
-              <p style="margin: 0 0 0.35rem; color: var(--cu-text-dim); line-height: 1.55;">{wf.description}</p>
-              <code style="display: inline-block; font-family: var(--cu-font-mono); font-size: 0.74rem; color: var(--cu-primary-bright); background: rgba(20,110,245,0.08); padding: 0.4rem 0.6rem; border-radius: 10px;">{wf.command}</code>
-            </div>
-          ))}
+      {gotchas.length > 0 && (
+        <div class="cs-panel cs-panel--warning">
+          <h2 class="cu-headline cs-panel__title">⚠ Gotchas</h2>
+          <div class="cs-gotcha-list">
+            {gotchas.map((g: any) => (
+              <div class="cs-gotcha-item">
+                <div class="cs-gotcha-item__title">{g.title}</div>
+                <p class="cs-gotcha-item__desc">{g.description}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
-      <div style="padding: 1.5rem; border-radius: 24px; border: 1px solid var(--cu-border); background: linear-gradient(180deg, rgba(20,110,245,0.18), rgba(13,26,49,0.92));">
-        <h2 class="cu-headline" style="margin: 0 0 1rem; font-size: 1.55rem;">Power moves</h2>
-        <div style="display: grid; gap: 0.9rem;">
-          {powerMoves.map((pm: any) => (
-            <div style="padding: 1rem; border-radius: 18px; background: rgba(7,17,31,0.42); border: 1px solid var(--cu-border-dim);">
-              <div style="font-family: var(--cu-font-headline); font-weight: 700; margin-bottom: 0.2rem;">{pm.title}</div>
-              <p style="margin: 0 0 0.4rem; color: var(--cu-text-dim); line-height: 1.55;">{pm.description}</p>
-              <code style="display: inline-block; font-family: var(--cu-font-mono); font-size: 0.74rem; color: var(--cu-primary-bright); background: rgba(20,110,245,0.08); padding: 0.4rem 0.6rem; border-radius: 10px;">{pm.command}</code>
-            </div>
-          ))}
+      {proTips.length > 0 && (
+        <div class="cs-panel">
+          <h2 class="cu-headline cs-panel__title">💡 Pro Tips</h2>
+          <div class="cs-cmd-grid">
+            {proTips.map((tip: any) => (
+              <div class="cs-tip-item">
+                <div class="cs-tip-item__title">{tip.title}</div>
+                <p class="cs-tip-item__desc">{tip.description}</p>
+                {tip.command && <div class="cs-tip-item__cmd">{tip.command}</div>}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      )}
 
-    <section style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; margin-bottom: 2rem;" class="cu-two-col">
-      <div style="padding: 1.5rem; border-radius: 24px; border: 1px solid var(--cu-border-dim); background: rgba(13,26,49,0.88);">
-        <h2 class="cu-headline" style="margin: 0 0 1rem; font-size: 1.45rem;">Slash commands and actions</h2>
-        <div style="display: grid; gap: 0.75rem;">
-          {slashCommands.map((cmd: any) => (
-            <div style="padding: 0.95rem 1rem; border-radius: 16px; background: rgba(255,255,255,0.03); border: 1px solid var(--cu-border-dim);">
-              <code style="display: block; font-family: var(--cu-font-mono); color: var(--cu-primary-bright); margin-bottom: 0.3rem;">{cmd.command}</code>
-              <div style="color: var(--cu-text-dim); font-size: 0.9rem; line-height: 1.5;">{cmd.description}</div>
-            </div>
-          ))}
+      {dailyWorkflows.length === 0 && powerMoves.length === 0 && cliFlags.length === 0 && (
+        <div class="cs-empty">
+          <p>$ cheatsheet data not available — run scraper to populate</p>
         </div>
-      </div>
-
-      <div style="padding: 1.5rem; border-radius: 24px; border: 1px solid var(--cu-border-dim); background: rgba(13,26,49,0.88);">
-        <h2 class="cu-headline" style="margin: 0 0 1rem; font-size: 1.45rem;">Config and rules</h2>
-        <div style="display: grid; gap: 0.75rem;">
-          {config.map((item: any) => (
-            <div style="padding: 0.95rem 1rem; border-radius: 16px; background: rgba(255,255,255,0.03); border: 1px solid var(--cu-border-dim);">
-              <div style="font-family: var(--cu-font-headline); font-weight: 700; margin-bottom: 0.25rem;">{item.key}</div>
-              <div style="color: var(--cu-text-dim); font-size: 0.9rem; line-height: 1.55; margin-bottom: 0.35rem;">{item.description}</div>
-              <div style="font-family: var(--cu-font-mono); font-size: 0.72rem; color: var(--cu-text-muted);">Recommended: {item.recommended}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <section style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr); gap: 1rem;" class="cu-cheat-grid">
-      <div style="padding: 1.5rem; border-radius: 24px; border: 1px solid rgba(255, 107, 107, 0.25); background: rgba(127, 29, 29, 0.12);">
-        <h2 class="cu-headline" style="margin: 0 0 1rem; font-size: 1.45rem;">Gotchas</h2>
-        <div style="display: grid; gap: 0.8rem;">
-          {gotchas.map((g: any) => (
-            <div style="padding-left: 1rem; border-left: 2px solid #ff6b6b;">
-              <div style="font-family: var(--cu-font-headline); font-weight: 700; margin-bottom: 0.2rem;">{g.problem}</div>
-              <div style="color: var(--cu-text-dim); line-height: 1.55;">{g.solution}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <aside style="padding: 1.5rem; border-radius: 24px; border: 1px solid var(--cu-border); background: linear-gradient(180deg, rgba(20,110,245,0.16), rgba(13,26,49,0.9));">
-        <h2 class="cu-headline" style="margin: 0 0 1rem; font-size: 1.45rem;">Pro tips</h2>
-        <ul style="margin: 0; padding-left: 1rem; display: grid; gap: 0.75rem; color: var(--cu-text-dim); line-height: 1.6;">
-          {proTips.map((tip: string) => (
-            <li>{tip}</li>
-          ))}
-        </ul>
-      </aside>
-    </section>
+      )}
+    </div>
   </div>
-
-  <style>
-    @media (max-width: 1080px) {
-      .cu-shortcut-grid,
-      .cu-cheat-grid,
-      .cu-two-col {
-        grid-template-columns: 1fr !important;
-      }
-    }
-
-    @media (max-width: 860px) {
-      .cu-shortcut-grid {
-        grid-template-columns: 1fr 1fr !important;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .cu-shortcut-grid {
-        grid-template-columns: 1fr !important;
-      }
-    }
-  </style>
 </CursorLayout>

@@ -1,5 +1,6 @@
 ---
 import WindsurfLayout from "../../layouts/WindsurfLayout.astro";
+import "../../styles/cheatsheet-shared.css";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -13,66 +14,44 @@ const quickStart = cs.quickStart || {};
 const dailyWorkflows = cs.dailyWorkflows || [];
 const powerMoves = cs.powerMoves || [];
 const gotchas = cs.gotchas || [];
+const cliFlags = cs.cliFlags || [];
 const slashCommands = cs.slashCommands || [];
 const proTips = cs.proTips || [];
-const config = cs.config || [];
-const resources = cs.resources || [];
 ---
 
 <WindsurfLayout
   title="Windsurf Cheat Sheet — changelogs.info"
-  description="The actually useful Windsurf cheat sheet. Daily workflows, slash commands, config surface, and practical gotchas."
+  description="The actually useful Windsurf cheat sheet. Daily workflows, power moves, CLI flags, gotchas."
   currentPage="cheatsheet"
 >
-  <div style="max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 0;">
+  <div class="cs-wrapper">
 
-    <!-- Hero -->
-    <section style="margin-bottom: 4rem; position: relative;">
-      <div style="position: absolute; top: -3rem; left: -3rem; opacity: 0.04; pointer-events: none; font-size: 12rem; line-height: 1;">🧠</div>
-      <h1
-        class="ws-headline"
-        style="font-size: clamp(3.5rem, 10vw, 7rem); font-weight: 900; text-transform: uppercase; letter-spacing: -0.03em; line-height: 0.9; margin: 0 0 1rem; color: var(--ws-text);"
-      >
-        Cheat<span style="color: var(--ws-primary-bright);">Sheet</span>
+    <section class="cs-hero">
+      <div class="cs-hero__emoji">🧠</div>
+      <h1 class="ws-headline cs-hero__title">
+        Cheat<span class="cs-hero__accent">Sheet</span>
       </h1>
-      <p style="font-size: 1.1rem; max-width: 36rem; color: var(--ws-text-dim); line-height: 1.5; margin: 0; font-family: var(--ws-font-body); text-transform: uppercase; letter-spacing: 0.03em;">
-        The commands that matter. Windsurf muscle memory.
-      </p>
-      {cs.lastUpdated && (
-        <p style="font-family: var(--ws-font-mono); font-size: 0.7rem; color: var(--ws-text-muted); margin-top: 0.75rem;">
-          Last updated: {cs.lastUpdated}
-        </p>
-      )}
+      <p class="cs-hero__sub">The commands that matter. Windsurf muscle memory.</p>
+      {cs.lastUpdated && <p class="cs-hero__meta">Last updated: {cs.lastUpdated}</p>}
     </section>
 
-    <!-- Bento grid -->
-    <div style="display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 4rem;">
+    <div class="cs-grid">
 
-      <!-- Quick Start -->
       {quickStart.steps && quickStart.steps.length > 0 && (
-        <div style="background: var(--ws-border); color: var(--ws-bg); padding: 2rem; border: 4px solid var(--ws-border); box-shadow: var(--ws-shadow);">
-          <h2 class="ws-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--ws-bg);">
-            {quickStart.title || "Quick Start"}
-          </h2>
-          <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+        <div class="cs-quickstart">
+          <h2 class="ws-headline cs-quickstart__title">{quickStart.title || "Quick Start"}</h2>
+          <div class="cs-quickstart__steps">
             {quickStart.steps.map((step: string, i: number) => {
-              const cmdMatch = step.match(/(claude\s+[\w\-\-]+(?:\s+[\w\-]+)*)/);
+              const cmdMatch = step.match(/(\S+\s+[\w\-\-]+(?:\s+[\w\-]+)*)/);
               const cmd = cmdMatch?.[1];
               const hasColon = step.includes(":");
               const label = hasColon ? step.split(":")[0].trim() : step;
-
               return (
-                <div style="display: flex; gap: 1rem; align-items: flex-start;">
-                  <div style="background: var(--ws-bg); color: var(--ws-primary-bright); width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; font-family: var(--ws-font-mono); font-weight: 900; font-size: 0.75rem; flex-shrink: 0;">
-                    {String(i + 1).padStart(2, '0')}
-                  </div>
-                  <div style="flex: 1;">
-                    <div style="font-family: var(--ws-font-headline); font-weight: 800; font-size: 0.85rem; color: var(--ws-bg); text-transform: uppercase;">{label}</div>
-                    {cmd && (
-                      <div style="background: var(--ws-bg); color: var(--ws-primary-bright); font-family: var(--ws-font-mono); font-size: 0.75rem; padding: 0.4rem 0.75rem; margin-top: 0.4rem; display: inline-block;">
-                        <span style="opacity: 0.5;">$</span> {cmd}
-                      </div>
-                    )}
+                <div class="cs-quickstart__step">
+                  <div class="ws-headline cs-step-num">{String(i + 1).padStart(2, '0')}</div>
+                  <div class="cs-step-body">
+                    <div class="cs-step-label">{label}</div>
+                    {cmd && <div class="cs-step-cmd"><span class="cs-step-cmd__prompt">$</span> {cmd}</div>}
                   </div>
                 </div>
               );
@@ -81,24 +60,16 @@ const resources = cs.resources || [];
         </div>
       )}
 
-      <!-- Daily Workflows + Power Moves -->
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;" class="ws-two-col">
-
+      <div class="cs-two-col">
         {dailyWorkflows.length > 0 && (
-          <div style="border: 4px solid var(--ws-border); background: var(--ws-bg-card); padding: 2rem; box-shadow: var(--ws-shadow);">
-            <h2 class="ws-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--ws-primary-bright);">
-              Daily Workflows
-            </h2>
-            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <div class="cs-panel">
+            <h2 class="ws-headline cs-panel__title cs-panel__title--accent">Daily Workflows</h2>
+            <div class="cs-item-list">
               {dailyWorkflows.map((wf: any) => (
-                <div style="border-left: 4px solid var(--ws-border-dim); padding-left: 1rem;">
-                  <div style="font-family: var(--ws-font-headline); font-weight: 800; font-size: 0.85rem; color: var(--ws-text); text-transform: uppercase; margin-bottom: 0.25rem;">{wf.title}</div>
-                  {wf.description && <p style="font-family: var(--ws-font-body); font-size: 0.8rem; color: var(--ws-text-dim); margin: 0 0 0.5rem;">{wf.description}</p>}
-                  {wf.command && (
-                    <div style="background: var(--ws-bg); border: 2px solid var(--ws-border-dim); padding: 0.5rem 0.75rem; font-family: var(--ws-font-mono); font-size: 0.75rem; color: var(--ws-primary-bright); overflow-x: auto;">
-                      <span style="opacity: 0.5;">$</span> {wf.command}
-                    </div>
-                  )}
+                <div class="cs-item">
+                  <div class="cs-item__title">{wf.title}</div>
+                  {wf.description && <p class="cs-item__desc">{wf.description}</p>}
+                  {wf.command && <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> {wf.command}</div>}
                 </div>
               ))}
             </div>
@@ -106,20 +77,14 @@ const resources = cs.resources || [];
         )}
 
         {powerMoves.length > 0 && (
-          <div style="border: 4px solid var(--ws-primary); background: var(--ws-bg-card); padding: 2rem; box-shadow: var(--ws-shadow);">
-            <h2 class="ws-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--ws-text);">
-              ⚡ Power Moves
-            </h2>
-            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <div class="cs-panel cs-panel--accent">
+            <h2 class="ws-headline cs-panel__title">⚡ Power Moves</h2>
+            <div class="cs-item-list">
               {powerMoves.map((pm: any) => (
-                <div style="border: 2px solid var(--ws-primary-bright); padding: 1rem; background: rgba(6,182,212,0.06);">
-                  <div style="font-family: var(--ws-font-headline); font-weight: 800; font-size: 0.85rem; color: var(--ws-primary-bright); text-transform: uppercase; margin-bottom: 0.25rem;">{pm.title}</div>
-                  {pm.description && <p style="font-family: var(--ws-font-body); font-size: 0.8rem; color: var(--ws-text-dim); margin: 0 0 0.5rem;">{pm.description}</p>}
-                  {pm.command && (
-                    <div style="background: var(--ws-bg); border: 2px solid var(--ws-primary); padding: 0.5rem 0.75rem; font-family: var(--ws-font-mono); font-size: 0.75rem; color: var(--ws-primary-bright); overflow-x: auto;">
-                      <span style="opacity: 0.5;">$</span> {pm.command}
-                    </div>
-                  )}
+                <div class="cs-item cs-item--accent">
+                  <div class="cs-item__title cs-item__title--accent">{pm.title}</div>
+                  {pm.description && <p class="cs-item__desc">{pm.description}</p>}
+                  {pm.command && <div class="cs-item__cmd cs-item__cmd--accent"><span class="cs-step-cmd__prompt">$</span> {pm.command}</div>}
                 </div>
               ))}
             </div>
@@ -127,106 +92,68 @@ const resources = cs.resources || [];
         )}
       </div>
 
-      <!-- CLI Flags row -->
-      {config.length > 0 && (
-        <div style="border: 4px solid var(--ws-border); background: var(--ws-bg-surface); padding: 2rem; box-shadow: var(--ws-shadow);">
-          <h2 class="ws-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--ws-text);">
-            Config Surface
-          </h2>
-          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem;">
-            {config.map((item: any) => (
-              <div style="background: var(--ws-bg); border: 2px solid var(--ws-border-dim); padding: 1rem;">
-                <div style="font-family: var(--ws-font-mono); font-size: 0.8rem; color: var(--ws-primary-bright); font-weight: 700; margin-bottom: 0.35rem;">{item.key}</div>
-                <div style="font-family: var(--ws-font-body); font-size: 0.75rem; color: var(--ws-text-dim);">{item.recommended || item.description}</div>
+      {cliFlags.length > 0 && (
+        <div class="cs-panel cs-panel--surface">
+          <h2 class="ws-headline cs-panel__title">CLI Flags</h2>
+          <div class="cs-flag-grid">
+            {cliFlags.map((flag: any) => (
+              <div class="cs-flag-item">
+                <div class="cs-flag-item__key">{flag.flag || flag.command}</div>
+                <div class="cs-flag-item__desc">{flag.description}</div>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      <!-- Slash Commands -->
       {slashCommands.length > 0 && (
-        <div style="border: 4px solid var(--ws-primary); background: var(--ws-bg-card); padding: 2rem; box-shadow: var(--ws-shadow);">
-          <h2 class="ws-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--ws-primary-bright);">
-            / Slash Commands
-          </h2>
-          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;">
+        <div class="cs-panel cs-panel--accent">
+          <h2 class="ws-headline cs-panel__title cs-panel__title--accent">/ Slash Commands</h2>
+          <div class="cs-cmd-grid">
             {slashCommands.map((cmd: any) => (
-              <div style="background: var(--ws-bg); border: 2px solid var(--ws-border-dim); padding: 1rem;">
-                <code style="font-family: var(--ws-font-mono); font-size: 0.85rem; color: var(--ws-primary-bright); font-weight: 700; display: block; margin-bottom: 0.25rem;">{cmd.command || cmd.cmd}</code>
-                <span style="font-family: var(--ws-font-body); font-size: 0.75rem; color: var(--ws-text-dim);">{cmd.description}</span>
+              <div class="cs-cmd-item">
+                <code class="cs-cmd-item__key">{cmd.command || cmd.cmd}</code>
+                <span class="cs-cmd-item__desc">{cmd.description}</span>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      <!-- Gotchas -->
       {gotchas.length > 0 && (
-        <div style="border: 4px solid var(--ws-border); background: rgba(6,182,212,0.04); padding: 2rem; box-shadow: var(--ws-shadow);">
-          <h2 class="ws-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--ws-text);">
-            ⚠ Gotchas
-          </h2>
-          <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <div class="cs-panel cs-panel--warning">
+          <h2 class="ws-headline cs-panel__title">⚠ Gotchas</h2>
+          <div class="cs-gotcha-list">
             {gotchas.map((g: any) => (
-              <div style="border-left: 6px solid var(--ws-primary); padding: 1rem 1.25rem; background: var(--ws-bg);">
-                <div style="font-family: var(--ws-font-headline); font-weight: 800; font-size: 0.9rem; color: var(--ws-primary-bright); text-transform: uppercase; margin-bottom: 0.35rem;">{g.problem || g.title}</div>
-                <p style="font-family: var(--ws-font-body); font-size: 0.82rem; color: var(--ws-text-dim); margin: 0;">{g.solution || g.description}</p>
+              <div class="cs-gotcha-item">
+                <div class="cs-gotcha-item__title">{g.title}</div>
+                <p class="cs-gotcha-item__desc">{g.description}</p>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      <!-- Pro Tips -->
       {proTips.length > 0 && (
-        <div style="border: 4px solid var(--ws-border); background: var(--ws-bg-card); padding: 2rem; box-shadow: var(--ws-shadow);">
-          <h2 class="ws-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--ws-text);">
-            💡 Pro Tips
-          </h2>
-          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;">
+        <div class="cs-panel">
+          <h2 class="ws-headline cs-panel__title">💡 Pro Tips</h2>
+          <div class="cs-cmd-grid">
             {proTips.map((tip: any) => (
-              <div style="background: var(--ws-bg); border: 2px solid var(--ws-border-dim); padding: 1rem;">
-                <p style="font-family: var(--ws-font-body); font-size: 0.78rem; color: var(--ws-text-dim); margin: 0;">{typeof tip === "string" ? tip : tip.description}</p>
+              <div class="cs-tip-item">
+                <div class="cs-tip-item__title">{tip.title}</div>
+                <p class="cs-tip-item__desc">{tip.description}</p>
+                {tip.command && <div class="cs-tip-item__cmd">{tip.command}</div>}
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {resources.length > 0 && (
-        <div style="border: 4px solid var(--ws-primary); background: var(--ws-bg-card); padding: 2rem; box-shadow: var(--ws-shadow);">
-          <h2 class="ws-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--ws-primary-bright);">
-            Resources
-          </h2>
-          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;">
-            {resources.map((resource: any) => (
-              <a
-                href={resource.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                style="background: var(--ws-bg); border: 2px solid var(--ws-border-dim); padding: 1rem; color: inherit; text-decoration: none;"
-              >
-                <div style="font-family: var(--ws-font-headline); font-weight: 800; font-size: 0.82rem; color: var(--ws-text); text-transform: uppercase; margin-bottom: 0.35rem;">{resource.title}</div>
-                <div style="font-family: var(--ws-font-mono); font-size: 0.72rem; color: var(--ws-primary-bright);">{resource.url}</div>
-              </a>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Fallback if no data */}
-      {dailyWorkflows.length === 0 && powerMoves.length === 0 && config.length === 0 && (
-        <div style="border: 4px dashed var(--ws-border-dim); padding: 4rem 2rem; text-align: center;">
-          <p style="font-family: var(--ws-font-mono); color: var(--ws-text-muted); font-size: 0.85rem;">$ cheatsheet data not available — run scraper to populate</p>
+      {dailyWorkflows.length === 0 && powerMoves.length === 0 && cliFlags.length === 0 && (
+        <div class="cs-empty">
+          <p>$ cheatsheet data not available — run scraper to populate</p>
         </div>
       )}
     </div>
   </div>
-
-  <style>
-    @media (max-width: 768px) {
-      .ws-two-col { grid-template-columns: 1fr !important; }
-    }
-  </style>
 </WindsurfLayout>

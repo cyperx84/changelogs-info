@@ -1,14 +1,12 @@
 ---
 import OpenClawLayout from "../../layouts/OpenClawLayout.astro";
+import "../../styles/cheatsheet-shared.css";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 let cs: any = {};
 try {
-  const raw = readFileSync(
-    join(process.cwd(), "src/content/cheatsheets-json/openclaw.json"),
-    "utf-8"
-  );
+  const raw = readFileSync(join(process.cwd(), "src/content/cheatsheets-json/openclaw.json"), "utf-8");
   cs = JSON.parse(raw);
 } catch {}
 
@@ -22,184 +20,71 @@ const proTips = cs.proTips || [];
 ---
 
 <OpenClawLayout
-  title="OpenClaw Cheat Sheet — changelogs.info"
-  description="The actually useful OpenClaw cheat sheet. Daily workflows, power moves, CLI flags, gotchas."
+  title="Openclaw Cheat Sheet — changelogs.info"
+  description="The actually useful Openclaw cheat sheet. Daily workflows, power moves, CLI flags, gotchas."
   currentPage="cheatsheet"
 >
-  <div style="max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 0;">
+  <div class="cs-wrapper">
 
-    <!-- Hero -->
-    <section style="margin-bottom: 4rem; position: relative;">
-      <div style="position: absolute; top: -3rem; left: -3rem; opacity: 0.05; pointer-events: none; font-size: 12rem; line-height: 1;">▶</div>
-      <h1
-        class="oc-headline"
-        style="font-size: clamp(3.5rem, 10vw, 7rem); font-weight: 900; text-transform: uppercase; letter-spacing: -0.03em; line-height: 0.9; margin: 0 0 1rem; color: var(--oc-text);"
-      >
-        Cheat<span style="color: var(--oc-primary-bright);">Sheet</span>
+    <section class="cs-hero">
+      <div class="cs-hero__emoji">🧠</div>
+      <h1 class="oc-headline cs-hero__title">
+        Cheat<span class="cs-hero__accent">Sheet</span>
       </h1>
-      <p style="font-size: 1.1rem; max-width: 36rem; color: var(--oc-text-dim); line-height: 1.5; margin: 0; font-family: var(--oc-font-body); text-transform: uppercase; letter-spacing: 0.03em;">
-        THE ENGINE FOR OPENCLAW-POWERED WORKFLOWS. BOLT THESE COMMANDS INTO YOUR BRAIN.
-      </p>
-      {cs.lastUpdated && (
-        <p style="font-family: var(--oc-font-mono); font-size: 0.7rem; color: var(--oc-text-muted); margin-top: 0.75rem;">
-          Last updated: {cs.lastUpdated}
-        </p>
-      )}
+      <p class="cs-hero__sub">The commands that matter. Openclaw muscle memory.</p>
+      {cs.lastUpdated && <p class="cs-hero__meta">Last updated: {cs.lastUpdated}</p>}
     </section>
 
-    <!-- Bento grid -->
-    <div style="display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 4rem;">
+    <div class="cs-grid">
 
-      <!-- Quick Start + Daily Workflows row -->
-      <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;" class="oc-grid-7-5">
-
-        <!-- Quick Start -->
-        {quickStart.steps && quickStart.steps.length > 0 && (
-          <div style="background: var(--oc-border); color: var(--oc-bg); padding: 2rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow); position: relative;">
-            <div style="position: absolute; left: -3.25rem; top: 1rem; background: var(--oc-primary); color: var(--oc-text); padding: 0.5rem; border: 2px solid var(--oc-border);">
-              <span style="font-size: 1rem;">⚡</span>
-            </div>
-            <h2 class="oc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--oc-bg);">
-              {quickStart.title || "Quick Start"}
-            </h2>
-            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
-              {quickStart.steps.map((step: string, i: number) => {
-                // Extract command if present (openclaw ...)
-                const cmdMatch = step.match(/(openclaw\s+[\w\-]+(?:\s+[\w\-]+)*)/);
-                const cmd = cmdMatch?.[1];
-                // Extract label: everything before the colon, or the whole step if no command
-                const hasColon = step.includes(":");
-                const label = hasColon ? step.split(":")[0].trim() : step;
-                // Description: text after the command mention, or the part after colon without the command
-                const desc = !hasColon && !cmd ? step : undefined;
-
-                return (
-                  <div style="display: flex; gap: 1rem; align-items: flex-start;">
-                    <div style="background: var(--oc-bg); color: var(--oc-primary-bright); width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; font-family: var(--oc-font-mono); font-weight: 900; font-size: 0.75rem; flex-shrink: 0;">
-                      {String(i + 1).padStart(2, '0')}
-                    </div>
-                    <div style="flex: 1; min-width: 0;">
-                      <p style="font-size: 0.8rem; font-weight: 700; margin: 0; color: var(--oc-bg); text-transform: uppercase; font-family: var(--oc-font-headline); letter-spacing: 0.05em; line-height: 1.4;">
-                        {label}
-                      </p>
-                      {cmd && (
-                        <div style="background: var(--oc-bg); color: var(--oc-primary-bright); font-family: var(--oc-font-mono); font-size: 0.75rem; padding: 0.4rem 0.75rem; border: 2px solid var(--oc-border); margin-top: 0.5rem; display: inline-block; max-width: 100%; overflow-x: auto; white-space: nowrap;">
-                          $ {cmd}
-                        </div>
-                      )}
-                    </div>
+      {quickStart.steps && quickStart.steps.length > 0 && (
+        <div class="cs-quickstart">
+          <h2 class="oc-headline cs-quickstart__title">{quickStart.title || "Quick Start"}</h2>
+          <div class="cs-quickstart__steps">
+            {quickStart.steps.map((step: string, i: number) => {
+              const cmdMatch = step.match(/(\S+\s+[\w\-\-]+(?:\s+[\w\-]+)*)/);
+              const cmd = cmdMatch?.[1];
+              const hasColon = step.includes(":");
+              const label = hasColon ? step.split(":")[0].trim() : step;
+              return (
+                <div class="cs-quickstart__step">
+                  <div class="oc-headline cs-step-num">{String(i + 1).padStart(2, '0')}</div>
+                  <div class="cs-step-body">
+                    <div class="cs-step-label">{label}</div>
+                    {cmd && <div class="cs-step-cmd"><span class="cs-step-cmd__prompt">$</span> {cmd}</div>}
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              );
+            })}
           </div>
-        )}
+        </div>
+      )}
 
-        <!-- Daily Workflows -->
+      <div class="cs-two-col">
         {dailyWorkflows.length > 0 && (
-          <div style="background: var(--oc-bg-surface); color: var(--oc-text); padding: 2rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow);">
-            <h2 class="oc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--oc-text);">
-              Daily Workflows
-            </h2>
-            <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1rem;">
+          <div class="cs-panel">
+            <h2 class="oc-headline cs-panel__title cs-panel__title--accent">Daily Workflows</h2>
+            <div class="cs-item-list">
               {dailyWorkflows.map((wf: any) => (
-                <li style="display: flex; align-items: flex-start; gap: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--oc-border-dim);">
-                  <span style="color: var(--oc-primary-bright); flex-shrink: 0; font-size: 1rem; margin-top: 0.1rem;">☑</span>
-                  <div style="flex: 1; min-width: 0;">
-                    <span class="cs-wf-command" style="font-family: var(--oc-font-mono); font-weight: 700; font-size: 0.8rem; color: var(--oc-text); display: block; overflow-wrap: anywhere; word-break: break-all; white-space: normal; line-height: 1.45;">{wf.command}</span>
-                    <span style="font-family: var(--oc-font-body); font-size: 0.75rem; color: var(--oc-text-dim); display: block; margin-top: 0.15rem; line-height: 1.3;">{wf.title}</span>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-
-      <!-- CLI Flags - full width table -->
-      {cliFlags.length > 0 && (
-        <div style="background: var(--oc-bg); border: 4px solid var(--oc-border); padding: 2rem; box-shadow: var(--oc-shadow); overflow-x: auto;">
-          <h2 class="oc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 2rem; color: var(--oc-primary-bright);">
-            CLI Flags
-          </h2>
-          <table style="width: 100%; border-collapse: collapse; text-align: left;">
-            <thead>
-              <tr style="border-bottom: 4px solid var(--oc-primary);">
-                <th class="oc-headline" style="padding: 0.75rem 0.5rem; font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--oc-text-muted);">Flag</th>
-                <th class="oc-headline" style="padding: 0.75rem 0.5rem; font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--oc-text-muted);">Alias</th>
-                <th class="oc-headline" style="padding: 0.75rem 0.5rem; font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: var(--oc-text-muted);">Description</th>
-              </tr>
-            </thead>
-            <tbody style="font-family: var(--oc-font-mono); font-size: 0.85rem;">
-              {cliFlags.map((f: any) => (
-                <tr style="border-bottom: 2px solid var(--oc-border-dim); transition: background 100ms;" onmouseover="this.style.background='var(--oc-border-dim)'" onmouseout="this.style.background='transparent'">
-                  <td style="padding: 1rem 0.5rem; color: var(--oc-primary-bright); font-weight: 700; white-space: nowrap;">
-                    --{f.flag}{f.shorthand ? `, -${f.shorthand}` : ""}
-                  </td>
-                  <td style="padding: 1rem 0.5rem; color: var(--oc-text-muted); white-space: nowrap;">
-                    {f.shorthand ? `-${f.shorthand}` : "—"}
-                  </td>
-                  <td style="padding: 1rem 0.5rem; color: var(--oc-text-dim); line-height: 1.4;">
-                    {f.description}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      <!-- Slash Commands + Pro Tips row -->
-      <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;" class="oc-grid-6-6">
-
-        <!-- Slash Commands -->
-        {slashCommands.length > 0 && (
-          <div style="background: var(--oc-primary); color: var(--oc-text); padding: 2rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow); position: relative; overflow: hidden;">
-            <div style="position: absolute; top: 1rem; right: 1rem; color: var(--oc-border-dim); font-size: 4rem; pointer-events: none; user-select: none;">🔧</div>
-            <h2 class="oc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--oc-text);">
-              Slash Commands
-            </h2>
-            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-              {slashCommands.map((cmd: any) => (
-                <div class="cs-slash-row" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--oc-border-dim); padding-bottom: 0.75rem; gap: 1rem;">
-                  <span class="oc-headline" style="font-weight: 900; font-size: 0.9rem; color: var(--oc-text);">{cmd.command}</span>
-                  <span class="cs-slash-desc" style="background: var(--oc-bg); color: var(--oc-text); font-family: var(--oc-font-mono); font-size: 0.65rem; padding: 0.2rem 0.5rem; flex-shrink: 0; max-width: 12rem; text-align: right; line-height: 1.3;">{cmd.description}</span>
+                <div class="cs-item">
+                  <div class="cs-item__title">{wf.title}</div>
+                  {wf.description && <p class="cs-item__desc">{wf.description}</p>}
+                  {wf.command && <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> {wf.command}</div>}
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        <!-- Pro Tips -->
-        {proTips.length > 0 && (
-          <div style="background: var(--oc-border); color: var(--oc-bg); padding: 2rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow);">
-            <h2 class="oc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--oc-bg); display: flex; align-items: center; gap: 0.5rem;">
-              <span style="color: var(--oc-primary);">★</span> Pro Tips
-            </h2>
-            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
-              {(Array.isArray(proTips) ? proTips : []).map((tip: any) => (
-                <div style="display: flex; gap: 1rem; align-items: flex-start;">
-                  <div style="flex-shrink: 0; width: 2.5rem; height: 2.5rem; background: var(--oc-primary); display: flex; align-items: center; justify-content: center; color: var(--oc-text); border: 2px solid var(--oc-border);">
-                    <span style="font-size: 1rem;">💡</span>
-                  </div>
-                  <p style="font-weight: 700; font-family: var(--oc-font-body); margin: 0; font-size: 0.875rem; line-height: 1.5; color: var(--oc-bg);">
-                    {typeof tip === "string" ? tip : tip.tip || JSON.stringify(tip)}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <!-- Power Moves (if no slash commands / pro tips, or always show) -->
-        {powerMoves.length > 0 && slashCommands.length === 0 && (
-          <div style="background: var(--oc-primary); color: var(--oc-text); padding: 2rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow);">
-            <h2 class="oc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; margin: 0 0 1.5rem;">Power Moves</h2>
-            <div style="display: flex; flex-direction: column; gap: 1rem;">
+        {powerMoves.length > 0 && (
+          <div class="cs-panel cs-panel--accent">
+            <h2 class="oc-headline cs-panel__title">⚡ Power Moves</h2>
+            <div class="cs-item-list">
               {powerMoves.map((pm: any) => (
-                <div style="border-bottom: 2px solid var(--oc-border-dim); padding-bottom: 0.75rem;">
-                  <span class="oc-headline" style="font-size: 0.85rem; font-weight: 900; display: block; margin-bottom: 0.25rem;">{pm.title}</span>
-                  <code style="font-family: var(--oc-font-mono); font-size: 0.75rem; color: var(--oc-text-dim); word-break: break-all;">{pm.command}</code>
+                <div class="cs-item cs-item--accent">
+                  <div class="cs-item__title cs-item__title--accent">{pm.title}</div>
+                  {pm.description && <p class="cs-item__desc">{pm.description}</p>}
+                  {pm.command && <div class="cs-item__cmd cs-item__cmd--accent"><span class="cs-step-cmd__prompt">$</span> {pm.command}</div>}
                 </div>
               ))}
             </div>
@@ -207,80 +92,68 @@ const proTips = cs.proTips || [];
         )}
       </div>
 
-      <!-- Power Moves section (full, if they exist alongside commands) -->
-      {powerMoves.length > 0 && slashCommands.length > 0 && (
-        <div style="background: var(--oc-bg-surface); border: 4px solid var(--oc-border); padding: 2rem; box-shadow: var(--oc-shadow);">
-          <h2 class="oc-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--oc-text);">
-            Power Moves
-          </h2>
-          <div class="cs-power-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
-            {powerMoves.map((pm: any) => (
-              <div class="cs-power-card" style="border: 2px solid var(--oc-border-dim); padding: 1.25rem;">
-                <h3 class="oc-headline" style="font-size: 1rem; font-weight: 900; text-transform: uppercase; color: var(--oc-text); margin: 0 0 0.5rem; line-height: 1.2;">{pm.title}</h3>
-                <p style="font-family: var(--oc-font-body); font-size: 0.8rem; color: var(--oc-text-dim); margin: 0 0 0.75rem; line-height: 1.4;">{pm.description}</p>
-                {pm.command && (
-                  <code style="display: block; background: var(--oc-bg); padding: 0.5rem 0.75rem; font-family: var(--oc-font-mono); font-size: 0.75rem; color: var(--oc-primary-bright); word-break: break-all; border: 2px solid var(--oc-border-dim);">{pm.command}</code>
-                )}
+      {cliFlags.length > 0 && (
+        <div class="cs-panel cs-panel--surface">
+          <h2 class="oc-headline cs-panel__title">CLI Flags</h2>
+          <div class="cs-flag-grid">
+            {cliFlags.map((flag: any) => (
+              <div class="cs-flag-item">
+                <div class="cs-flag-item__key">{flag.flag || flag.command}</div>
+                <div class="cs-flag-item__desc">{flag.description}</div>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      <!-- Gotchas - warning section -->
+      {slashCommands.length > 0 && (
+        <div class="cs-panel cs-panel--accent">
+          <h2 class="oc-headline cs-panel__title cs-panel__title--accent">/ Slash Commands</h2>
+          <div class="cs-cmd-grid">
+            {slashCommands.map((cmd: any) => (
+              <div class="cs-cmd-item">
+                <code class="cs-cmd-item__key">{cmd.command || cmd.cmd}</code>
+                <span class="cs-cmd-item__desc">{cmd.description}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {gotchas.length > 0 && (
-        <div style="background: #ffdad6; color: #93000a; padding: 3rem; border: 4px solid var(--oc-border); box-shadow: var(--oc-shadow); position: relative;">
-          <div style="position: absolute; right: -1.5rem; top: -1.5rem; background: var(--oc-primary); padding: 1rem; border: 4px solid var(--oc-border); color: var(--oc-text); transform: rotate(12deg);">
-            <span style="font-size: 2.5rem;">⚠</span>
-          </div>
-          <h2 class="oc-headline" style="font-size: 2rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 2rem; color: #93000a;">
-            Gotchas
-          </h2>
-          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 2rem;">
+        <div class="cs-panel cs-panel--warning">
+          <h2 class="oc-headline cs-panel__title">⚠ Gotchas</h2>
+          <div class="cs-gotcha-list">
             {gotchas.map((g: any) => (
-              <div style="border-left: 8px solid var(--oc-primary); padding-left: 1.5rem;">
-                <h3 class="oc-headline" style="text-transform: uppercase; font-size: 1rem; margin: 0 0 0.5rem; color: #93000a; font-weight: 900;">{g.problem}</h3>
-                <p style="font-family: var(--oc-font-body); font-size: 0.875rem; color: rgba(147,0,10,0.8); margin: 0; line-height: 1.5;">{g.solution}</p>
+              <div class="cs-gotcha-item">
+                <div class="cs-gotcha-item__title">{g.title}</div>
+                <p class="cs-gotcha-item__desc">{g.description}</p>
               </div>
             ))}
           </div>
         </div>
       )}
 
+      {proTips.length > 0 && (
+        <div class="cs-panel">
+          <h2 class="oc-headline cs-panel__title">💡 Pro Tips</h2>
+          <div class="cs-cmd-grid">
+            {proTips.map((tip: any) => (
+              <div class="cs-tip-item">
+                <div class="cs-tip-item__title">{tip.title}</div>
+                <p class="cs-tip-item__desc">{tip.description}</p>
+                {tip.command && <div class="cs-tip-item__cmd">{tip.command}</div>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {dailyWorkflows.length === 0 && powerMoves.length === 0 && cliFlags.length === 0 && (
+        <div class="cs-empty">
+          <p>$ cheatsheet data not available — run scraper to populate</p>
+        </div>
+      )}
     </div>
   </div>
-
-  <style is:global>
-    @media (min-width: 768px) {
-      .oc-grid-7-5 {
-        grid-template-columns: 7fr 5fr !important;
-      }
-      .oc-grid-6-6 {
-        grid-template-columns: 1fr 1fr !important;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .cs-wf-command {
-        white-space: normal !important;
-        overflow-wrap: anywhere !important;
-        word-break: break-all !important;
-        line-height: 1.45 !important;
-      }
-      .cs-slash-row {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-      }
-      .cs-slash-desc {
-        max-width: 100% !important;
-        text-align: left !important;
-      }
-      .cs-power-grid {
-        grid-template-columns: 1fr !important;
-      }
-      .cs-power-card {
-        padding: 1rem !important;
-      }
-    }
-  </style>
 </OpenClawLayout>

@@ -1,5 +1,6 @@
 ---
 import HermesLayout from "../../layouts/HermesLayout.astro";
+import "../../styles/cheatsheet-shared.css";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -14,154 +15,145 @@ const dailyWorkflows = cs.dailyWorkflows || [];
 const powerMoves = cs.powerMoves || [];
 const gotchas = cs.gotchas || [];
 const cliFlags = cs.cliFlags || [];
+const slashCommands = cs.slashCommands || [];
 const proTips = cs.proTips || [];
 ---
 
 <HermesLayout
   title="Hermes Agent Cheat Sheet — changelogs.info"
-  description="The actually useful Hermes Agent cheat sheet. Setup, memory, skills, platforms, cron."
+  description="The actually useful Hermes Agent cheat sheet. Daily workflows, power moves, CLI flags, gotchas."
   currentPage="cheatsheet"
 >
-  <div style="max-width: 1280px; margin: 0 auto; padding: 2rem 1.5rem 0;">
+  <div class="cs-wrapper">
 
-    <!-- Hero -->
-    <section style="margin-bottom: 4rem; position: relative;">
-      <div style="position: absolute; top: -3rem; left: -3rem; opacity: 0.04; pointer-events: none; font-size: 12rem; line-height: 1;">⚡</div>
-      <h1 class="ha-headline" style="font-size: clamp(3.5rem, 10vw, 7rem); font-weight: 900; text-transform: uppercase; letter-spacing: -0.03em; line-height: 0.9; margin: 0 0 1rem; color: var(--ha-text);">
-        Cheat<span style="color: var(--ha-primary-bright);">Sheet</span>
+    <section class="cs-hero">
+      <div class="cs-hero__emoji">🧠</div>
+      <h1 class="ha-headline cs-hero__title">
+        Cheat<span class="cs-hero__accent">Sheet</span>
       </h1>
-      <p style="font-size: 1.1rem; max-width: 36rem; color: var(--ha-text-dim); line-height: 1.5; margin: 0; font-family: var(--ha-font-body); text-transform: uppercase; letter-spacing: 0.03em;">
-        The commands that matter. Hermes muscle memory.
-      </p>
+      <p class="cs-hero__sub">The commands that matter. Hermes Agent muscle memory.</p>
+      {cs.lastUpdated && <p class="cs-hero__meta">Last updated: {cs.lastUpdated}</p>}
     </section>
 
-    <div style="display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 4rem;">
+    <div class="cs-grid">
 
-      <!-- Quick Start -->
-      <div style="background: var(--ha-border); color: var(--ha-bg); padding: 2rem; border: 4px solid var(--ha-border); box-shadow: var(--ha-shadow);">
-        <h2 class="ha-headline" style="font-size: 1.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--ha-bg);">
-          {quickStart.title || "Quick Start"}
-        </h2>
-        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
-          {(quickStart.steps && quickStart.steps.length > 0 ? quickStart.steps.map((s: string, i: number) => ({ n: String(i+1).padStart(2,'0'), label: s })) : [
-            { n: "01", label: "Install via curl script", cmd: "curl -fsSL https://hermes.ai/install | sh" },
-            { n: "02", label: "Run setup wizard", cmd: "hermes setup" },
-            { n: "03", label: "Launch the agent", cmd: "hermes" },
-            { n: "04", label: "Switch model", cmd: "hermes model" },
-            { n: "05", label: "Start multi-platform gateway", cmd: "hermes gateway" },
-          ]).map((item: any) => (
-            <div style="display: flex; gap: 1rem; align-items: flex-start;">
-              <div style="background: var(--ha-bg); color: var(--ha-primary-bright); width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; font-family: var(--ha-font-mono); font-weight: 900; font-size: 0.75rem; flex-shrink: 0;">
-                {item.n}
-              </div>
-              <div style="flex: 1;">
-                <div style="font-family: var(--ha-font-headline); font-weight: 800; font-size: 0.85rem; color: var(--ha-bg); text-transform: uppercase;">{item.label}</div>
-                {item.cmd && (
-                  <div style="background: var(--ha-bg); color: var(--ha-primary-bright); font-family: var(--ha-font-mono); font-size: 0.75rem; padding: 0.4rem 0.75rem; margin-top: 0.4rem; display: inline-block;">
-                    <span style="opacity: 0.5;">$</span> {item.cmd}
+      {quickStart.steps && quickStart.steps.length > 0 && (
+        <div class="cs-quickstart">
+          <h2 class="ha-headline cs-quickstart__title">{quickStart.title || "Quick Start"}</h2>
+          <div class="cs-quickstart__steps">
+            {quickStart.steps.map((step: string, i: number) => {
+              const cmdMatch = step.match(/(\S+\s+[\w\-\-]+(?:\s+[\w\-]+)*)/);
+              const cmd = cmdMatch?.[1];
+              const hasColon = step.includes(":");
+              const label = hasColon ? step.split(":")[0].trim() : step;
+              return (
+                <div class="cs-quickstart__step">
+                  <div class="ha-headline cs-step-num">{String(i + 1).padStart(2, '0')}</div>
+                  <div class="cs-step-body">
+                    <div class="cs-step-label">{label}</div>
+                    {cmd && <div class="cs-step-cmd"><span class="cs-step-cmd__prompt">$</span> {cmd}</div>}
                   </div>
-                )}
-              </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      <div class="cs-two-col">
+        {dailyWorkflows.length > 0 && (
+          <div class="cs-panel">
+            <h2 class="ha-headline cs-panel__title cs-panel__title--accent">Daily Workflows</h2>
+            <div class="cs-item-list">
+              {dailyWorkflows.map((wf: any) => (
+                <div class="cs-item">
+                  <div class="cs-item__title">{wf.title}</div>
+                  {wf.description && <p class="cs-item__desc">{wf.description}</p>}
+                  {wf.command && <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> {wf.command}</div>}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        )}
+
+        {powerMoves.length > 0 && (
+          <div class="cs-panel cs-panel--accent">
+            <h2 class="ha-headline cs-panel__title">⚡ Power Moves</h2>
+            <div class="cs-item-list">
+              {powerMoves.map((pm: any) => (
+                <div class="cs-item cs-item--accent">
+                  <div class="cs-item__title cs-item__title--accent">{pm.title}</div>
+                  {pm.description && <p class="cs-item__desc">{pm.description}</p>}
+                  {pm.command && <div class="cs-item__cmd cs-item__cmd--accent"><span class="cs-step-cmd__prompt">$</span> {pm.command}</div>}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
-      <!-- Daily Workflows + Power Moves -->
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;" class="ha-two-col">
-        <div style="border: 4px solid var(--ha-border); background: var(--ha-bg-card); padding: 2rem; box-shadow: var(--ha-shadow);">
-          <h2 class="ha-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--ha-primary-bright);">
-            Daily Workflows
-          </h2>
-          <div style="display: flex; flex-direction: column; gap: 1.25rem;">
-            {(dailyWorkflows.length > 0 ? dailyWorkflows : [
-              { title: "Start agent", command: "hermes" },
-              { title: "Check memory", command: "hermes memory show" },
-              { title: "Add a skill", command: "hermes skill create" },
-              { title: "Update Hermes", command: "hermes update" },
-              { title: "View cron jobs", command: "hermes cron list" },
-            ]).map((wf: any) => (
-              <div style="border-left: 4px solid var(--ha-border-dim); padding-left: 1rem;">
-                <div style="font-family: var(--ha-font-headline); font-weight: 800; font-size: 0.85rem; color: var(--ha-text); text-transform: uppercase; margin-bottom: 0.25rem;">{wf.title}</div>
-                {wf.description && <p style="font-family: var(--ha-font-body); font-size: 0.8rem; color: var(--ha-text-dim); margin: 0 0 0.5rem;">{wf.description}</p>}
-                {wf.command && (
-                  <div style="background: var(--ha-bg); border: 2px solid var(--ha-border-dim); padding: 0.5rem 0.75rem; font-family: var(--ha-font-mono); font-size: 0.75rem; color: var(--ha-primary-bright); overflow-x: auto;">
-                    <span style="opacity: 0.5;">$</span> {wf.command}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div style="border: 4px solid var(--ha-primary); background: var(--ha-bg-card); padding: 2rem; box-shadow: var(--ha-shadow);">
-          <h2 class="ha-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; margin: 0 0 1.5rem; color: var(--ha-text);">
-            ⚡ Power Moves
-          </h2>
-          <div style="display: flex; flex-direction: column; gap: 1.25rem;">
-            {(powerMoves.length > 0 ? powerMoves : [
-              { title: "Spawn subagent", command: "hermes agent spawn" },
-              { title: "Multi-platform gateway", command: "hermes gateway" },
-              { title: "Schedule cron task", command: "hermes cron add '0 9 * * *' 'send daily report'" },
-              { title: "Memory export", command: "hermes memory export" },
-              { title: "Skill from example", command: "hermes skill learn" },
-            ]).map((pm: any) => (
-              <div style="border: 2px solid var(--ha-primary-bright); padding: 1rem; background: rgba(217,119,6,0.05);">
-                <div style="font-family: var(--ha-font-headline); font-weight: 800; font-size: 0.85rem; color: var(--ha-primary-bright); text-transform: uppercase; margin-bottom: 0.25rem;">{pm.title}</div>
-                {pm.description && <p style="font-family: var(--ha-font-body); font-size: 0.8rem; color: var(--ha-text-dim); margin: 0 0 0.5rem;">{pm.description}</p>}
-                {pm.command && (
-                  <div style="background: var(--ha-bg); border: 2px solid var(--ha-primary); padding: 0.5rem 0.75rem; font-family: var(--ha-font-mono); font-size: 0.75rem; color: var(--ha-primary-bright); overflow-x: auto; word-break: break-all;">
-                    <span style="opacity: 0.5;">$</span> {pm.command}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <!-- CLI Flags -->
       {cliFlags.length > 0 && (
-        <div style="border: 4px solid var(--ha-border); background: var(--ha-bg-surface); padding: 2rem; box-shadow: var(--ha-shadow);">
-          <h2 class="ha-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; margin: 0 0 1.5rem; color: var(--ha-text);">CLI Flags</h2>
-          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem;">
+        <div class="cs-panel cs-panel--surface">
+          <h2 class="ha-headline cs-panel__title">CLI Flags</h2>
+          <div class="cs-flag-grid">
             {cliFlags.map((flag: any) => (
-              <div style="background: var(--ha-bg); border: 2px solid var(--ha-border-dim); padding: 1rem;">
-                <div style="font-family: var(--ha-font-mono); font-size: 0.8rem; color: var(--ha-primary-bright); font-weight: 700; margin-bottom: 0.35rem;">{flag.flag || flag.command}</div>
-                <div style="font-family: var(--ha-font-body); font-size: 0.75rem; color: var(--ha-text-dim);">{flag.description}</div>
+              <div class="cs-flag-item">
+                <div class="cs-flag-item__key">{flag.flag || flag.command}</div>
+                <div class="cs-flag-item__desc">{flag.description}</div>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      <!-- Gotchas -->
+      {slashCommands.length > 0 && (
+        <div class="cs-panel cs-panel--accent">
+          <h2 class="ha-headline cs-panel__title cs-panel__title--accent">/ Slash Commands</h2>
+          <div class="cs-cmd-grid">
+            {slashCommands.map((cmd: any) => (
+              <div class="cs-cmd-item">
+                <code class="cs-cmd-item__key">{cmd.command || cmd.cmd}</code>
+                <span class="cs-cmd-item__desc">{cmd.description}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {gotchas.length > 0 && (
-        <div style="border: 4px solid var(--ha-border); background: rgba(217,119,6,0.04); padding: 2rem; box-shadow: var(--ha-shadow);">
-          <h2 class="ha-headline" style="font-size: 1.25rem; font-weight: 900; text-transform: uppercase; margin: 0 0 1.5rem; color: var(--ha-text);">⚠ Gotchas</h2>
-          <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <div class="cs-panel cs-panel--warning">
+          <h2 class="ha-headline cs-panel__title">⚠ Gotchas</h2>
+          <div class="cs-gotcha-list">
             {gotchas.map((g: any) => (
-              <div style="border-left: 6px solid var(--ha-primary); padding: 1rem 1.25rem; background: var(--ha-bg);">
-                <div style="font-family: var(--ha-font-headline); font-weight: 800; font-size: 0.9rem; color: var(--ha-primary-bright); text-transform: uppercase; margin-bottom: 0.35rem;">{g.title}</div>
-                <p style="font-family: var(--ha-font-body); font-size: 0.82rem; color: var(--ha-text-dim); margin: 0;">{g.description}</p>
+              <div class="cs-gotcha-item">
+                <div class="cs-gotcha-item__title">{g.title}</div>
+                <p class="cs-gotcha-item__desc">{g.description}</p>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      <!-- Fallback -->
-      {dailyWorkflows.length === 0 && powerMoves.length === 0 && cliFlags.length === 0 && gotchas.length === 0 && (
-        <div style="border: 4px dashed var(--ha-border-dim); padding: 4rem 2rem; text-align: center;">
-          <p style="font-family: var(--ha-font-mono); color: var(--ha-text-muted); font-size: 0.85rem;">$ cheatsheet data not available — run scraper to populate</p>
+      {proTips.length > 0 && (
+        <div class="cs-panel">
+          <h2 class="ha-headline cs-panel__title">💡 Pro Tips</h2>
+          <div class="cs-cmd-grid">
+            {proTips.map((tip: any) => (
+              <div class="cs-tip-item">
+                <div class="cs-tip-item__title">{tip.title}</div>
+                <p class="cs-tip-item__desc">{tip.description}</p>
+                {tip.command && <div class="cs-tip-item__cmd">{tip.command}</div>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {dailyWorkflows.length === 0 && powerMoves.length === 0 && cliFlags.length === 0 && (
+        <div class="cs-empty">
+          <p>$ cheatsheet data not available — run scraper to populate</p>
         </div>
       )}
     </div>
   </div>
-
-  <style>
-    @media (max-width: 768px) {
-      .ha-two-col { grid-template-columns: 1fr !important; }
-    }
-  </style>
 </HermesLayout>

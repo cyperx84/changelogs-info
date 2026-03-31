@@ -1,0 +1,302 @@
+/* ============================================================
+   cheatsheet-shared.css — Shared structural styles for all cheatsheet pages
+   Uses --tool-* bridge vars defined in each layout via tool-shared.css
+   ============================================================ */
+
+/* Page wrapper */
+.cs-wrapper {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 0;
+}
+
+/* Hero */
+.cs-hero {
+  margin-bottom: 4rem;
+  position: relative;
+}
+.cs-hero__emoji {
+  position: absolute;
+  top: -3rem;
+  left: -3rem;
+  opacity: 0.04;
+  pointer-events: none;
+  font-size: 12rem;
+  line-height: 1;
+}
+.cs-hero__title {
+  font-size: clamp(3.5rem, 10vw, 7rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  line-height: 0.9;
+  margin: 0 0 1rem;
+  color: var(--tool-text);
+}
+.cs-hero__accent {
+  color: var(--tool-primary-bright);
+}
+.cs-hero__sub {
+  font-size: 1.1rem;
+  max-width: 36rem;
+  color: var(--tool-text-dim, rgba(255,255,255,0.65));
+  line-height: 1.5;
+  margin: 0;
+  font-family: var(--tool-font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.cs-hero__meta {
+  font-family: var(--tool-font-mono);
+  font-size: 0.7rem;
+  color: var(--tool-text-muted, rgba(255,255,255,0.4));
+  margin-top: 0.75rem;
+}
+
+/* Bento grid */
+.cs-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+/* Quick start panel */
+.cs-quickstart {
+  background: var(--tool-primary);
+  color: var(--tool-bg);
+  padding: 2rem;
+  border: 4px solid var(--tool-primary);
+  box-shadow: var(--tool-shadow, 6px 6px 0 rgba(0,0,0,0.3));
+}
+.cs-quickstart__title {
+  font-size: 1.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  margin: 0 0 1.5rem;
+  color: var(--tool-bg);
+}
+.cs-quickstart__steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.cs-quickstart__step {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+.cs-step-num {
+  background: var(--tool-bg);
+  color: var(--tool-primary-bright);
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--tool-font-mono);
+  font-weight: 900;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+.cs-step-body { flex: 1; }
+.cs-step-label {
+  font-family: var(--tool-font-headline);
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--tool-bg);
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+.cs-step-cmd {
+  background: var(--tool-bg);
+  color: var(--tool-primary-bright);
+  font-family: var(--tool-font-mono);
+  font-size: 0.75rem;
+  padding: 0.4rem 0.75rem;
+  margin-top: 0.4rem;
+  display: inline-block;
+}
+.cs-step-cmd__prompt { opacity: 0.5; }
+
+/* Two-column layout */
+.cs-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+@media (max-width: 768px) {
+  .cs-two-col { grid-template-columns: 1fr; }
+}
+
+/* Section panel (generic) */
+.cs-panel {
+  border: 4px solid var(--tool-border-dim, rgba(255,255,255,0.2));
+  background: var(--tool-bg-card, var(--tool-bg));
+  padding: 2rem;
+  box-shadow: var(--tool-shadow, 6px 6px 0 rgba(0,0,0,0.3));
+}
+.cs-panel--accent {
+  border-color: var(--tool-primary);
+}
+.cs-panel--surface {
+  background: var(--tool-bg-surface, var(--tool-bg));
+}
+.cs-panel--warning {
+  background: rgba(245,158,11,0.04);
+}
+
+.cs-panel__title {
+  font-size: 1.25rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  margin: 0 0 1.5rem;
+  color: var(--tool-text);
+}
+.cs-panel__title--accent {
+  color: var(--tool-primary-bright);
+}
+
+/* Item list (workflows, power moves) */
+.cs-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.cs-item {
+  border-left: 4px solid var(--tool-border-dim);
+  padding-left: 1rem;
+}
+.cs-item--accent {
+  border: 2px solid var(--tool-primary-bright);
+  padding: 1rem;
+  background: rgba(245,158,11,0.05);
+  border-left-width: 2px;
+}
+.cs-item__title {
+  font-family: var(--tool-font-headline);
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--tool-text);
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+.cs-item__title--accent {
+  color: var(--tool-primary-bright);
+}
+.cs-item__desc {
+  font-family: var(--tool-font-body);
+  font-size: 0.8rem;
+  color: var(--tool-text-dim, rgba(255,255,255,0.65));
+  margin: 0 0 0.5rem;
+}
+.cs-item__cmd {
+  background: var(--tool-bg);
+  border: 2px solid var(--tool-border-dim);
+  padding: 0.5rem 0.75rem;
+  font-family: var(--tool-font-mono);
+  font-size: 0.75rem;
+  color: var(--tool-primary-bright);
+  overflow-x: auto;
+}
+.cs-item__cmd--accent {
+  border-color: var(--tool-primary);
+}
+
+/* Grid of flags/commands/tips */
+.cs-flag-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+.cs-cmd-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+.cs-flag-item,
+.cs-cmd-item,
+.cs-tip-item {
+  background: var(--tool-bg);
+  border: 2px solid var(--tool-border-dim);
+  padding: 1rem;
+}
+.cs-flag-item__key {
+  font-family: var(--tool-font-mono);
+  font-size: 0.8rem;
+  color: var(--tool-primary-bright);
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+.cs-flag-item__desc,
+.cs-cmd-item__desc,
+.cs-tip-item__desc {
+  font-family: var(--tool-font-body);
+  font-size: 0.75rem;
+  color: var(--tool-text-dim, rgba(255,255,255,0.65));
+}
+.cs-cmd-item__key {
+  font-family: var(--tool-font-mono);
+  font-size: 0.85rem;
+  color: var(--tool-primary-bright);
+  font-weight: 700;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+.cs-tip-item__title {
+  font-family: var(--tool-font-headline);
+  font-weight: 800;
+  font-size: 0.82rem;
+  color: var(--tool-text);
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+.cs-tip-item__cmd {
+  background: var(--tool-bg-surface, var(--tool-bg));
+  font-family: var(--tool-font-mono);
+  font-size: 0.72rem;
+  color: var(--tool-primary-bright);
+  padding: 0.4rem 0.6rem;
+  margin-top: 0.5rem;
+  overflow-x: auto;
+}
+
+/* Gotchas */
+.cs-gotcha-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.cs-gotcha-item {
+  border-left: 6px solid var(--tool-primary);
+  padding: 1rem 1.25rem;
+  background: var(--tool-bg);
+}
+.cs-gotcha-item__title {
+  font-family: var(--tool-font-headline);
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: var(--tool-primary-bright);
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+.cs-gotcha-item__desc {
+  font-family: var(--tool-font-body);
+  font-size: 0.82rem;
+  color: var(--tool-text-dim, rgba(255,255,255,0.65));
+  margin: 0;
+}
+
+/* Empty state */
+.cs-empty {
+  border: 4px dashed var(--tool-border-dim);
+  padding: 4rem 2rem;
+  text-align: center;
+}
+.cs-empty p {
+  font-family: var(--tool-font-mono);
+  color: var(--tool-text-muted, rgba(255,255,255,0.4));
+  font-size: 0.85rem;
+}
