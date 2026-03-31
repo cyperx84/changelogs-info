@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.117.0",
-  "generated_at": "2026-03-31T16:25:25.333Z",
+  "version": "0.118.0",
+  "generated_at": "2026-03-31T17:23:49.144Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,9 +14,14 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.117.0",
-    "to_version": "0.117.0",
-    "new_features": [],
+    "from_version": "0.118.0",
+    "to_version": "0.118.0",
+    "new_features": [
+      "windows-sandbox-proxy-only-networking",
+      "chatgpt-device-code-login-app-server",
+      "prompt-plus-stdin-workflow-codex-exec",
+      "dynamic-bearer-tokens-custom-model-providers"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -39,14 +44,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.117.0",
+      "latest_stable": "0.118.0",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-03-26",
+      "latest_release_date": "2026-03-31",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release introduces first-class plugin workflows with product-scoped plugin syncing, browsing in `/plugins`, and improved auth/setup. Sub-agents now use readable path-based addresses for multi-agent v2 workflows. The `/title` command now works in both TUIs. App-server clients can send `!` shell commands, watch filesystem changes, and connect to remote websocket servers with bearer-token auth. Image workflows are smoother with image URLs in code mode and reopenable generated images. Prompt history recall now works in the app-server TUI. The app-server-backed TUI is now enabled by default, and the plugin/app rollout flags have been flipped on in normal builds. The legacy artifact tool and the old `read_file` and `grep_files` handlers have been removed."
+      "tldr": "This release introduces proxy-only networking for Windows sandboxes, enhancing security. App-server clients can now use device code flow for ChatGPT sign-in, improving reliability. The `codex exec` command now supports piping input alongside a command-line prompt. Custom model providers can dynamically fetch and refresh bearer tokens, enabling more flexible authentication. Project-local `.codex` files are now better protected, and Linux sandbox launches are more reliable. Several TUI workflows have been restored, and MCP startup is more robust."
     },
     "features": [
       {
@@ -563,6 +568,42 @@
         "description": "Prompt history recall now works in the app-server TUI, including across sessions.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "windows-sandbox-proxy-only-networking",
+        "name": "Windows Sandbox Proxy-Only Networking",
+        "status": "stable",
+        "since": "0.118.0",
+        "description": "Windows sandbox runs can now enforce proxy-only networking with OS-level egress rules, instead of relying on environment variables alone.",
+        "key_details": [],
+        "source_url": "#12220"
+      },
+      {
+        "id": "chatgpt-device-code-login-app-server",
+        "name": "ChatGPT Device Code Login for App Server",
+        "status": "stable",
+        "since": "0.118.0",
+        "description": "App-server clients can now start ChatGPT sign-in with a device code flow, which helps when browser callback login is unreliable or unavailable.",
+        "key_details": [],
+        "source_url": "#15525"
+      },
+      {
+        "id": "prompt-plus-stdin-workflow-codex-exec",
+        "name": "Prompt Plus Stdin Workflow for codex exec",
+        "status": "stable",
+        "since": "0.118.0",
+        "description": "`codex exec` now supports the prompt-plus-stdin workflow, so you can pipe input and still pass a separate prompt on the command line.",
+        "key_details": [],
+        "source_url": "#15917"
+      },
+      {
+        "id": "dynamic-bearer-tokens-custom-model-providers",
+        "name": "Dynamic Bearer Tokens for Custom Model Providers",
+        "status": "stable",
+        "since": "0.118.0",
+        "description": "Custom model providers can now fetch and refresh short-lived bearer tokens dynamically, instead of being limited to static credentials from config or environment variables.",
+        "key_details": [],
+        "source_url": "#16286"
       }
     ],
     "commands": [
