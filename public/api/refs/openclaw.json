@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.3.28",
-  "generated_at": "2026-03-31T17:24:09.886Z",
+  "generated_at": "2026-03-31T18:23:06.677Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -20,9 +20,6 @@
       "x-search",
       "image-generation-provider-image-01",
       "async-requireapproval-before-tool-call-hooks",
-      "current-conversation-acp-binds-discord-bluebubbles-imessage",
-      "gemini-cli-backend-support",
-      "upload-file-slack-action",
       "file-first-sends-microsoft-teams-google-chat",
       "matrix-tts-voice-bubbles",
       "cli-config-schema",
@@ -30,7 +27,6 @@
       "background-tasks-lifecycle-records",
       "pnpm-docs-check-links-anchors",
       "tavily-client-source-header",
-      "matrix-streaming-partial-draft-replies",
       "gateway-backed-channel-mcp-bridge"
     ],
     "new_commands": [],
@@ -43,8 +39,8 @@
       "--claude-cli-logs"
     ],
     "breaking_changes": [
-      "remove-qwen-portal-auth",
-      "drop-old-config-migrations"
+      "providers-qwen-portal-auth-removal",
+      "config-doctor-legacy-migrations"
     ]
   },
   "payload": {
@@ -69,7 +65,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces first-class `x_search` support and async approval hooks for plugins, enhancing web search and tool execution workflows. The bundled Gemini CLI backend is now supported, and file uploads in Slack, Teams, and Google Chat are unified under the `upload-file` action. Legacy `qwen-portal-auth` is removed, requiring migration to Model Studio. Additionally, config migrations older than two months are dropped, potentially requiring manual updates for very old configurations. Several fixes address issues in Agents, Google models, WhatsApp, Telegram, and other channels, improving stability and reliability. The `openclaw config schema` command is added for easier configuration management."
+      "tldr": "This release introduces first-class `x_search` support and async approval hooks for plugins, enhancing tool execution control. The bundled Gemini CLI backend is now supported, replacing the Claude-specific log flag with a generic `--cli-backend-logs`. File-first sends are unified with explicit support for Microsoft Teams and Google Chat. The deprecated Qwen Portal Auth has been removed, requiring migration to Model Studio. Additionally, config migrations older than two months are no longer automatically applied, potentially requiring manual updates for very old configurations. Several fixes address issues in agents, models, and various channels like WhatsApp, Telegram, and Discord, improving stability and reliability."
     },
     "features": [
       {
@@ -851,6 +847,13 @@
         }
       ],
       "deprecated": [
+        {
+          "flag": "--claude-cli-logs",
+          "replaced_by": "--cli-backend-logs",
+          "deprecated_since": "2026.3.28",
+          "removed_in": null,
+          "source_url": ""
+        },
         {
           "flag": "--claude-cli-logs",
           "replaced_by": "--cli-backend-logs",
