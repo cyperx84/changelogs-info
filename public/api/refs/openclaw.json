@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.3.31",
-  "generated_at": "2026-04-01T12:23:34.512Z",
+  "generated_at": "2026-04-01T13:35:18.551Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -17,20 +17,24 @@
     "from_version": "2026.3.31",
     "to_version": "2026.3.31",
     "new_features": [
-      "qq-bot-channel-plugin",
+      "channels-qq-bot",
       "linear-task-flow-control",
-      "line-outbound-media",
-      "matrix-network",
-      "microsoft-teams-graph-member-info",
-      "pi-codex-web-search-support",
-      "slack-native-approval-routing",
+      "microsoft-teams-member-info",
+      "slack-exec-approvals",
       "whatsapp-reactions",
+      "line-outbound-media",
+      "matrix-history",
+      "matrix-network",
+      "mcp-remote-http-sse-server-support",
+      "memory-qmd",
+      "nostr-inbound-dms",
+      "pi-codex-web-search-support",
       "android-notification-forwarding-controls",
       "background-tasks-shared-control-plane",
-      "mcp-remote-http-sse-server-support"
+      "matrix-streaming-partial-draft-replies"
     ],
     "new_commands": [
-      "openclaw flows"
+      "openclaw tasks"
     ],
     "new_flags": [
       "--dangerously-force-unsafe-install"
@@ -69,7 +73,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces QQ Bot channel support, linear task flow control, and LINE outbound media. Node shell execution now requires `exec host=node`, and dangerous plugin installs fail closed by default unless explicitly overridden. Node commands are disabled until node pairing is approved, and node-originated runs operate on a reduced trusted surface. Matrix streaming now supports draft replies, and Microsoft Teams gains Graph-backed member info. Several fixes address issues with OpenAI Responses, ACP security, and gateway authentication, ensuring more reliable and secure operation."
+      "tldr": "This release introduces QQ Bot as a bundled channel plugin and a linear task flow control surface with the `openclaw tasks` command. Node shell execution now requires `exec host=node`, and node commands are disabled until node pairing is approved. Dangerous code findings now fail closed by default, requiring `--dangerously-force-unsafe-install` to override. Background tasks are now a shared control plane, and WhatsApp supports emoji reactions. This release also includes fixes for Slack duplicate replies, OpenAI Responses schema normalization, and various security enhancements, including blocking proxy and TLS env overrides in host execution."
     },
     "features": [
       {
@@ -1002,6 +1006,14 @@
         "name": "openclaw flows",
         "syntax": "openclaw flows list|show|cancel",
         "description": "Manages linear task flows.",
+        "since": "2026.3.31",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "openclaw tasks",
+        "syntax": "openclaw tasks list|show|cancel",
+        "description": "Manage background tasks.",
         "since": "2026.3.31",
         "status": "stable",
         "source_url": ""
