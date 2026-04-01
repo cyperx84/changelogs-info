@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.3.31",
-  "generated_at": "2026-04-01T16:23:31.423Z",
+  "version": "2026.4.1",
+  "generated_at": "2026-04-01T17:22:35.275Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,37 +14,27 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.3.31",
-    "to_version": "2026.3.31",
+    "from_version": "2026.4.1",
+    "to_version": "2026.4.1",
     "new_features": [
-      "linear-task-flow-control",
-      "channels-qq-bot",
-      "line-outbound-media",
-      "matrix-http-proxy-support",
-      "microsoft-teams-graph-member-info",
-      "slack-native-approval-routing",
-      "whatsapp-reactions",
-      "android-notification-forwarding-controls",
-      "mcp-remote-http-sse-server-support",
-      "pi-codex-web-search-support"
+      "tasks-chat-native-task-board",
+      "web-search-searxng-provider-plugin",
+      "amazon-bedrock-guardrails-support",
+      "macos-voice-wake-option",
+      "feishu-comments-drive-comment-event-flow",
+      "agents-default-params",
+      "cron-tools-allowlist",
+      "whatsapp-reactions-reaction-level-guidance",
+      "zai-models-glm-5-1-glm-5v-turbo"
     ],
-    "new_commands": [
-      "openclaw tasks"
-    ],
+    "new_commands": [],
     "new_flags": [
-      "--dangerously-force-unsafe-install"
+      "--tools"
     ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "nodes-exec-remove-duplicated-nodes-run",
-      "plugin-sdk-deprecate-legacy-provider-compat",
-      "skills-install-plugins-install-fail-closed-by-default",
-      "gateway-auth-trusted-proxy-rejects-mixed-shared-token-configs",
-      "gateway-node-commands-stay-disabled-until-pairing-approved",
-      "gateway-node-events-reduced-trusted-surface"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -62,13 +52,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.3.31",
-      "latest_release_date": "2026-03-31",
+      "latest_stable": "2026.4.1",
+      "latest_release_date": "2026-04-01",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces significant changes to node execution and plugin security. The `nodes.run` shell wrapper is removed, requiring `exec host=node` for node shell execution. Plugin installs now fail closed by default on dangerous code, requiring `--dangerously-force-unsafe-install` to override. Node commands are disabled until pairing is approved, and node-originated runs have a reduced trusted surface. New features include QQ Bot channel plugin, LINE outbound media support, Matrix HTTP proxy configuration, Microsoft Teams Graph member info, Slack native approval routing, WhatsApp reactions, and Android notification forwarding controls. Task management is improved with linear task flow control and background task unification."
+      "tldr": "This release introduces a chat-native background task board with the `/tasks` command, and adds support for SearXNG and Bedrock Guardrails. Gateway webchat history truncation is now configurable. Agent failover logic is improved with rate-limit handling and configurable cooldowns. Cron jobs can now have per-job tool allowlists. Several fixes address issues with task registry maintenance, exec approvals, session model switching, and various channel integrations including Telegram, Discord, and WhatsApp. The release also includes improvements to memory indexing and plugin runtime handling, ensuring smoother operation and enhanced security."
     },
     "features": [
       {
@@ -842,6 +832,87 @@
         "description": "Add native Slack approval routing and approver authorization so exec approval prompts can stay in Slack instead of falling back to the Web UI or terminal.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "tasks-chat-native-task-board",
+        "name": "Chat-native background task board",
+        "status": "stable",
+        "since": "2026.4.1",
+        "description": "Adds `/tasks` as a chat-native background task board for the current session, with recent task details and agent-local fallback counts when no linked tasks are visible.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "web-search-searxng-provider-plugin",
+        "name": "SearXNG provider plugin",
+        "status": "stable",
+        "since": "2026.4.1",
+        "description": "Adds the bundled SearXNG provider plugin for `web_search` with configurable host support.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "amazon-bedrock-guardrails-support",
+        "name": "Bedrock Guardrails support",
+        "status": "stable",
+        "since": "2026.4.1",
+        "description": "Adds Bedrock Guardrails support to the bundled provider.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "macos-voice-wake-option",
+        "name": "Voice Wake option",
+        "status": "stable",
+        "since": "2026.4.1",
+        "description": "Adds the Voice Wake option to trigger Talk Mode.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "feishu-comments-drive-comment-event-flow",
+        "name": "Feishu Drive comment-event flow",
+        "status": "stable",
+        "since": "2026.4.1",
+        "description": "Adds a dedicated Drive comment-event flow with comment-thread context resolution, in-thread replies, and `feishu_drive` comment actions for document collaboration workflows.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "agents-default-params",
+        "name": "Global default provider parameters",
+        "status": "stable",
+        "since": "2026.4.1",
+        "description": "Adds `agents.defaults.params` for global default provider parameters.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "cron-tools-allowlist",
+        "name": "Cron job tool allowlists",
+        "status": "stable",
+        "since": "2026.4.1",
+        "description": "Adds `openclaw cron --tools` for per-job tool allowlists.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "whatsapp-reactions-reaction-level-guidance",
+        "name": "WhatsApp reaction level guidance",
+        "status": "stable",
+        "since": "2026.4.1",
+        "description": "Adds `reactionLevel` guidance for agent reactions.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "zai-models-glm-5-1-glm-5v-turbo",
+        "name": "ZAI models glm-5.1 and glm-5v-turbo",
+        "status": "stable",
+        "since": "2026.4.1",
+        "description": "Adds `glm-5.1` and `glm-5v-turbo` to the bundled Z.AI provider catalog.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1067,6 +1138,12 @@
           "description": "Overrides built-in dangerous-code `critical` findings and install-time scan failures.",
           "since": "2026.3.31",
           "source_url": ""
+        },
+        {
+          "flag": "--tools",
+          "description": "Per-job tool allowlists for cron jobs.",
+          "since": "2026.4.1",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -1184,7 +1261,7 @@
         }
       ],
       "new_since_previous": [
-        "--dangerously-force-unsafe-install"
+        "--tools"
       ]
     },
     "env_vars": [
