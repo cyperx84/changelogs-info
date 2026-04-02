@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.4.1",
-  "generated_at": "2026-04-02T18:21:50.253Z",
+  "version": "2026.4.2",
+  "generated_at": "2026-04-02T19:24:33.514Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,15 +14,27 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.4.1",
-    "to_version": "2026.4.1",
-    "new_features": [],
+    "from_version": "2026.4.2",
+    "to_version": "2026.4.2",
+    "new_features": [
+      "android-assistant-integration",
+      "task-flow",
+      "managed-child-task-spawning",
+      "plugin-task-flow-api",
+      "provider-replay-hooks",
+      "before-agent-reply-hook",
+      "plugin-owned-session-key-surfaces",
+      "plugin-owned-viewer-base-url"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "plugins-xai-config-migration",
+      "plugins-web-fetch-config-migration"
+    ]
   },
   "payload": {
     "meta": {
@@ -40,13 +52,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.4.1",
-      "latest_release_date": "2026-04-01",
+      "latest_stable": "2026.4.2",
+      "latest_release_date": "2026-04-02",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release focuses on improving stability and reliability across various components. Matrix streaming now offers more granular control with an explicit opt-in flag. Cron tool schemas are now more strict-model-friendly, preserving important configurations. The release also addresses several critical bug fixes, including preventing gateway hangs due to task registry maintenance, resolving issues with bundled plugin runtime dependencies, and ensuring proper handling of Anthropic sessions after crashes. Additionally, exec approval handling is improved with better alignment between host policy and user approvals, and legacy Telegram configs are migrated to prevent startup crashes."
+      "tldr": "This release introduces breaking changes for xAI and web fetch plugin users, requiring a config migration via `openclaw doctor --fix`. Task Flows are restored with managed sync modes and durable state, enabling background orchestration separate from plugin authoring. A new `before_agent_reply` hook allows plugins to short-circuit the LLM with synthetic replies. Android Assistant integration is added, allowing OpenClaw to be launched from the assistant trigger. Several fixes address provider routing, exec approvals, channel integrations, and security vulnerabilities, ensuring more reliable and secure operation."
     },
     "features": [
       {
@@ -953,6 +965,78 @@
         "status": "stable",
         "since": "2026.4.1",
         "description": "Adds configurable `errorPolicy` and `errorCooldownMs` controls so Telegram can suppress repeated delivery errors per account, chat, and topic without muting distinct failures.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "android-assistant-integration",
+        "name": "Android Assistant Integration",
+        "status": "experimental",
+        "since": "2026.4.2",
+        "description": "Adds assistant-role entrypoints plus Google Assistant App Actions metadata so Android can launch OpenClaw from the assistant trigger and hand prompts into the chat composer.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "task-flow",
+        "name": "Task Flow",
+        "status": "experimental",
+        "since": "2026.4.2",
+        "description": "Restores the core Task Flow substrate with managed-vs-mirrored sync modes, durable flow state/revision tracking, and `openclaw flows` inspection/recovery primitives so background orchestration can persist and be operated separately from plugin authoring layers.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "managed-child-task-spawning",
+        "name": "Managed Child Task Spawning",
+        "status": "experimental",
+        "since": "2026.4.2",
+        "description": "Adds managed child task spawning plus sticky cancel intent, so external orchestrators can stop scheduling immediately and let parent Task Flows settle to `cancelled` once active child tasks finish.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "plugin-task-flow-api",
+        "name": "Plugin Task Flow API",
+        "status": "experimental",
+        "since": "2026.4.2",
+        "description": "Adds a bound `api.runtime.taskFlow` seam so plugins and trusted authoring layers can create and drive managed Task Flows from host-resolved OpenClaw context without passing owner identifiers on each call.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "provider-replay-hooks",
+        "name": "Provider Replay Hooks",
+        "status": "experimental",
+        "since": "2026.4.2",
+        "description": "Adds provider-owned replay hook surfaces for transcript policy, replay cleanup, and reasoning-mode dispatch.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "before-agent-reply-hook",
+        "name": "Before Agent Reply Hook",
+        "status": "experimental",
+        "since": "2026.4.2",
+        "description": "Adds `before_agent_reply` so plugins can short-circuit the LLM with synthetic replies after inline actions.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "plugin-owned-session-key-surfaces",
+        "name": "Plugin-Owned Session Key Surfaces",
+        "status": "experimental",
+        "since": "2026.4.2",
+        "description": "Moves provider-specific session conversation grammar into plugin-owned session-key surfaces, preserving Telegram topic routing and Feishu scoped inheritance across bootstrap, model override, restart, and tool-policy paths.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "plugin-owned-viewer-base-url",
+        "name": "Plugin-Owned Viewer Base URL",
+        "status": "experimental",
+        "since": "2026.4.2",
+        "description": "Adds plugin-owned `viewerBaseUrl` so viewer links can use a stable proxy/public origin without passing `baseUrl` on every tool call.",
         "key_details": [],
         "source_url": ""
       }
@@ -1884,6 +1968,30 @@
           "Telegram channel configurations"
         ],
         "migration": "The `channels.telegram.groupMentionsOnly` setting has been migrated to `channels.telegram.groups[\"*\"].requireMention`. No manual intervention is required, but you should update your configuration to use the new setting.",
+        "source_url": ""
+      },
+      {
+        "id": "plugins-xai-config-migration",
+        "version": "2026.4.2",
+        "title": "Plugins/xAI: Config Migration",
+        "description": "Moves `x_search` settings from the legacy core `tools.web.x_search.*` path to the plugin-owned `plugins.entries.xai.config.xSearch.*` path, standardizes `x_search` auth on `plugins.entries.xai.config.webSearch.apiKey` / `XAI_API_KEY`.",
+        "affected": [
+          "xAI plugin users",
+          "Users with custom x_search configurations"
+        ],
+        "migration": "Migrate legacy config with `openclaw doctor --fix`.",
+        "source_url": ""
+      },
+      {
+        "id": "plugins-web-fetch-config-migration",
+        "version": "2026.4.2",
+        "title": "Plugins/web fetch: Config Migration",
+        "description": "Moves Firecrawl `web_fetch` config from the legacy core `tools.web.fetch.firecrawl.*` path to the plugin-owned `plugins.entries.firecrawl.config.webFetch.*` path, routes `web_fetch` fallback through the new fetch-provider boundary instead of a Firecrawl-only core branch.",
+        "affected": [
+          "Firecrawl web_fetch users",
+          "Users with custom web_fetch configurations"
+        ],
+        "migration": "Migrate legacy config with `openclaw doctor --fix`.",
         "source_url": ""
       }
     ],
