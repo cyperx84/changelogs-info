@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.1",
-  "generated_at": "2026-04-02T16:24:56.470Z",
+  "generated_at": "2026-04-02T17:20:31.698Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -17,14 +17,14 @@
     "from_version": "2026.4.1",
     "to_version": "2026.4.1",
     "new_features": [],
-    "new_commands": [],
+    "new_commands": [
+      "/context detail"
+    ],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "telegram-group-mentions"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -48,7 +48,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release focuses on improving plugin loading, matrix multi-account handling, and exec approval workflows. Telegram configurations now migrate `groupMentionsOnly` to `requireMention`. Exec approvals now have improved UX, policy reporting, and `allow-always` persistence. Matrix streaming now requires explicit opt-in. Several fixes address issues with plugin runtime dependencies, task registry maintenance, and Anthropic agent behavior after crashes. Additionally, Discord monitors recover more promptly, and the Control UI build process is more reliable."
+      "tldr": "This release focuses on improving stability, security, and usability across various channels and features. Matrix multi-account handling is improved for consistency. Gateway pairing now prefers explicit QR bootstrap auth. Discord config validation is stricter, and `openclaw doctor` provides aligned repair guidance. Exec approvals are enhanced with better policy reporting and `allow-always` persistence. Matrix streaming now requires explicit opt-in. Several fixes address issues with plugin loading, task management, and memory indexing. Telegram configs are migrated to prevent crashes, and the Ollama model picker is more focused. Finally, the Control UI build process is stabilized."
     },
     "features": [
       {
@@ -1132,6 +1132,14 @@
         "name": "/tasks",
         "syntax": "/tasks",
         "description": "Chat-native background task board for the current session.",
+        "since": "2026.4.1",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "/context detail",
+        "syntax": "/context detail",
+        "description": "Compares the tracked prompt estimate with cached context usage and surfaces untracked provider/runtime overhead when present.",
         "since": "2026.4.1",
         "status": "stable",
         "source_url": ""
