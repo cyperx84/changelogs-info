@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.2",
-  "generated_at": "2026-04-02T20:13:45.469Z",
+  "generated_at": "2026-04-02T19:24:33.514Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -16,17 +16,24 @@
   "delta": {
     "from_version": "2026.4.2",
     "to_version": "2026.4.2",
-    "new_features": [],
-    "new_commands": [
-      "openclaw tasks flow"
+    "new_features": [
+      "android-assistant-integration",
+      "task-flow",
+      "managed-child-task-spawning",
+      "plugin-task-flow-api",
+      "provider-replay-hooks",
+      "before-agent-reply-hook",
+      "plugin-owned-session-key-surfaces",
+      "plugin-owned-viewer-base-url"
     ],
+    "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "xai-config-migration",
-      "web-fetch-config-migration"
+      "plugins-xai-config-migration",
+      "plugins-web-fetch-config-migration"
     ]
   },
   "payload": {
@@ -51,7 +58,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release features breaking changes to xAI and web fetch plugin configurations, requiring migration via `openclaw doctor --fix`. Task Flows are restored with managed sync modes and durable state, including managed child task spawning. Android gains assistant integration, and plugins can now short-circuit LLMs with synthetic replies via `before_agent_reply`. Provider-specific session conversation grammar is moved to plugin-owned session-key surfaces. Several fixes address provider routing, exec approvals, channel context, and image generation, enhancing security and stability."
+      "tldr": "This release introduces breaking changes for xAI and web fetch plugin users, requiring a config migration via `openclaw doctor --fix`. Task Flows are restored with managed sync modes and durable state, enabling background orchestration separate from plugin authoring. A new `before_agent_reply` hook allows plugins to short-circuit the LLM with synthetic replies. Android Assistant integration is added, allowing OpenClaw to be launched from the assistant trigger. Several fixes address provider routing, exec approvals, channel integrations, and security vulnerabilities, ensuring more reliable and secure operation."
     },
     "features": [
       {
@@ -1218,14 +1225,6 @@
         "since": "2026.4.1",
         "status": "stable",
         "source_url": ""
-      },
-      {
-        "name": "openclaw tasks flow",
-        "syntax": "openclaw tasks flow",
-        "description": "Inspection/recovery primitives for Task Flows.",
-        "since": "2026.4.2",
-        "status": "stable",
-        "source_url": ""
       }
     ],
     "flags": {
@@ -1991,32 +1990,6 @@
         "affected": [
           "Firecrawl web_fetch users",
           "Users with custom web_fetch configurations"
-        ],
-        "migration": "Migrate legacy config with `openclaw doctor --fix`.",
-        "source_url": ""
-      },
-      {
-        "id": "xai-config-migration",
-        "version": "2026.4.2",
-        "title": "Plugins/xAI: move `x_search` settings",
-        "description": "The `x_search` settings have been moved from the legacy core `tools.web.x_search.*` path to the plugin-owned `plugins.entries.xai.config.xSearch.*` path. `x_search` auth is now standardized on `plugins.entries.xai.config.webSearch.apiKey` / `XAI_API_KEY`.",
-        "affected": [
-          "Plugins",
-          "xAI",
-          "x_search"
-        ],
-        "migration": "Migrate legacy config with `openclaw doctor --fix`.",
-        "source_url": ""
-      },
-      {
-        "id": "web-fetch-config-migration",
-        "version": "2026.4.2",
-        "title": "Plugins/web fetch: move Firecrawl `web_fetch` config",
-        "description": "The Firecrawl `web_fetch` config has been moved from the legacy core `tools.web.fetch.firecrawl.*` path to the plugin-owned `plugins.entries.firecrawl.config.webFetch.*` path. `web_fetch` fallback is now routed through the new fetch-provider boundary instead of a Firecrawl-only core branch.",
-        "affected": [
-          "Plugins",
-          "web fetch",
-          "Firecrawl"
         ],
         "migration": "Migrate legacy config with `openclaw doctor --fix`.",
         "source_url": ""
