@@ -1,0 +1,209 @@
+{
+  "tool": "hermes-agent",
+  "lastUpdated": "2026-04-02",
+  "quickStart": {
+    "title": "Get running in 5 minutes",
+    "steps": [
+      "Install: npm install -g hermes-agent",
+      "Run: hermes init in your project directory",
+      "Edit the generated hermes.config.json with your API key and model preferences",
+      "Run: hermes 'describe your task here'",
+      "Hermes executes autonomously — check hermes.log for what it did"
+    ]
+  },
+  "dailyWorkflows": [
+    {
+      "title": "One-shot task execution",
+      "description": "Run a single focused task from the CLI.",
+      "command": "hermes 'fix all TypeScript errors in src/'",
+      "tags": ["basics", "cli"]
+    },
+    {
+      "title": "Interactive mode",
+      "description": "Run Hermes in a REPL-style session for iterative work.",
+      "command": "hermes --interactive",
+      "tags": ["workflow", "interactive"]
+    },
+    {
+      "title": "Dry run — see the plan without executing",
+      "description": "Generate an execution plan without touching any files.",
+      "command": "hermes --dry-run 'refactor auth module'",
+      "tags": ["safety", "planning"]
+    },
+    {
+      "title": "Run from a task file",
+      "description": "Put complex tasks in a markdown file and pass it as input.",
+      "command": "hermes --task tasks/migrate-db.md",
+      "tags": ["workflow", "files"]
+    },
+    {
+      "title": "Limit scope to specific paths",
+      "description": "Restrict what files Hermes can read and edit.",
+      "command": "hermes --scope src/lib/ 'refactor the utilities'",
+      "tags": ["safety", "scoping"]
+    },
+    {
+      "title": "Check what Hermes did",
+      "description": "Review the detailed execution log after a task.",
+      "command": "cat hermes.log  or  hermes log --last",
+      "tags": ["debugging", "review"]
+    }
+  ],
+  "powerMoves": [
+    {
+      "title": "Chain tasks with a pipeline file",
+      "description": "Define a sequence of tasks that run in order, with outputs piped as inputs.",
+      "command": "hermes --pipeline pipeline.yaml",
+      "why": "Automate multi-step workflows that normally require manual handoffs."
+    },
+    {
+      "title": "Use hermes.context.md for persistent instructions",
+      "description": "Add a context file at project root with architecture notes and rules.",
+      "command": "Create hermes.context.md at project root",
+      "why": "Hermes injects this into every task's context — better output without repeating yourself."
+    },
+    {
+      "title": "Capture structured output",
+      "description": "Ask Hermes to output JSON you can pipe into another tool.",
+      "command": "hermes --output-json 'list all API endpoints as JSON'",
+      "why": "Useful for generating data, configs, or feeding into scripts."
+    },
+    {
+      "title": "Parallel task execution",
+      "description": "Run multiple independent tasks concurrently.",
+      "command": "hermes --parallel tasks/a.md tasks/b.md tasks/c.md",
+      "why": "Speeds up batch work — each task gets its own context."
+    }
+  ],
+  "gotchas": [
+    {
+      "problem": "Hermes edits files outside the expected scope",
+      "solution": "Always use --scope to restrict file access. Or set allowedPaths in hermes.config.json.",
+      "severity": "high"
+    },
+    {
+      "problem": "API key not found",
+      "solution": "Set HERMES_API_KEY env var or add it to hermes.config.json. Check with hermes config show.",
+      "severity": "high"
+    },
+    {
+      "problem": "Task never terminates",
+      "solution": "Add --max-steps 20 to cap iterations. Check hermes.log to see where it looped.",
+      "severity": "medium"
+    },
+    {
+      "problem": "hermes.context.md not being loaded",
+      "solution": "Must be at project root (where you ran hermes init). Check hermes config show for contextPath.",
+      "severity": "medium"
+    }
+  ],
+  "cliFlags": [
+    {
+      "flag": "--dry-run",
+      "shorthand": "-n",
+      "description": "Show the execution plan without modifying any files.",
+      "example": "hermes --dry-run 'delete unused imports'",
+      "useCase": "Validate the plan before committing to changes."
+    },
+    {
+      "flag": "--interactive",
+      "shorthand": "-i",
+      "description": "Start an interactive session with back-and-forth conversation.",
+      "example": "hermes --interactive",
+      "useCase": "Exploratory work and iterative refinement."
+    },
+    {
+      "flag": "--scope",
+      "shorthand": null,
+      "description": "Restrict file access to a specific path. Hermes cannot read or edit outside this path.",
+      "example": "hermes --scope src/api/ 'add input validation to all endpoints'",
+      "useCase": "Focused tasks where you want to prevent accidental edits to other parts."
+    },
+    {
+      "flag": "--task",
+      "shorthand": "-t",
+      "description": "Read the task description from a file (markdown or plain text).",
+      "example": "hermes --task tasks/refactor.md",
+      "useCase": "Complex tasks that are easier to write in a file than inline."
+    },
+    {
+      "flag": "--max-steps",
+      "shorthand": null,
+      "description": "Maximum number of agent iterations before stopping.",
+      "example": "hermes --max-steps 10 'implement login flow'",
+      "useCase": "Budget cap for open-ended tasks."
+    },
+    {
+      "flag": "--model",
+      "shorthand": "-m",
+      "description": "Override the model for this task.",
+      "example": "hermes --model claude-opus-4-6 'redesign the architecture'",
+      "useCase": "Use a stronger model for complex tasks, cheaper one for quick fixes."
+    },
+    {
+      "flag": "--output-json",
+      "shorthand": null,
+      "description": "Ask Hermes to return structured JSON output.",
+      "example": "hermes --output-json 'list all exported functions'",
+      "useCase": "Piping Hermes output into scripts or other tools."
+    },
+    {
+      "flag": "--parallel",
+      "shorthand": null,
+      "description": "Run multiple task files concurrently.",
+      "example": "hermes --parallel tasks/a.md tasks/b.md",
+      "useCase": "Batch parallel execution of independent tasks."
+    }
+  ],
+  "slashCommands": [],
+  "config": [
+    {
+      "key": "apiKey",
+      "description": "API key for the configured model provider.",
+      "default": "reads from HERMES_API_KEY env var",
+      "recommended": "Use env var in production. Store in hermes.config.json for local dev only."
+    },
+    {
+      "key": "model",
+      "description": "Default model to use for all tasks.",
+      "default": "claude-sonnet-4-6",
+      "recommended": "Sonnet for most tasks. Opus for long autonomous runs."
+    },
+    {
+      "key": "contextPath",
+      "description": "Path to the context file injected into every task.",
+      "default": "hermes.context.md",
+      "recommended": "Create this file with project conventions and architecture notes."
+    },
+    {
+      "key": "allowedPaths",
+      "description": "Array of paths Hermes is permitted to read and edit. Empty = no restriction.",
+      "default": "[]",
+      "recommended": "Set to your source directories in production deployments."
+    },
+    {
+      "key": "maxSteps",
+      "description": "Default maximum agent iterations per task.",
+      "default": "50",
+      "recommended": "Lower to 20-30 for most tasks to prevent runaway loops."
+    }
+  ],
+  "proTips": [
+    "Always run --dry-run first on unfamiliar tasks to validate the plan.",
+    "Create hermes.context.md immediately on any new project.",
+    "Use --scope on every task that targets a specific module.",
+    "For long tasks, break them into a --pipeline of smaller steps.",
+    "Check hermes.log after every run — it shows exactly what the agent decided and why.",
+    "Set maxSteps low by default and increase only when needed."
+  ],
+  "resources": [
+    {
+      "title": "Hermes Agent GitHub",
+      "url": "https://github.com/elie222/hermes-agent"
+    },
+    {
+      "title": "Hermes Agent docs",
+      "url": "https://hermesagent.dev/docs"
+    }
+  ]
+}

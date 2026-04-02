@@ -1,0 +1,210 @@
+{
+  "tool": "kilocode",
+  "lastUpdated": "2026-04-02",
+  "quickStart": {
+    "title": "Get running in 5 minutes",
+    "steps": [
+      "Install from VS Code Marketplace: search 'Kilocode'",
+      "Sign in with your Kilocode account (or create one at kilocode.ai)",
+      "Open a project folder — Kilocode indexes your codebase automatically",
+      "Open the Kilocode sidebar panel (robot icon) and describe a task",
+      "Kilocode creates a plan and asks for approval before editing files"
+    ]
+  },
+  "dailyWorkflows": [
+    {
+      "title": "Start a new task",
+      "description": "Describe what you want built or fixed in plain English. Kilocode breaks it into steps.",
+      "command": "Click '+ New Task' in the sidebar or use Ctrl+Shift+K",
+      "tags": ["workflow", "basics"]
+    },
+    {
+      "title": "Review the plan before execution",
+      "description": "Kilocode shows a step-by-step plan before touching your files. Approve, reject, or edit individual steps.",
+      "command": "Click 'Approve Plan' or 'Edit Plan' in the task view",
+      "tags": ["safety", "workflow"]
+    },
+    {
+      "title": "Use Architect mode for big changes",
+      "description": "Architect mode maps your codebase and plans multi-file refactors with full context.",
+      "command": "Select 'Architect' from the mode dropdown before submitting a task",
+      "tags": ["modes", "refactoring"]
+    },
+    {
+      "title": "Chat mode for questions without edits",
+      "description": "Ask questions about your codebase without triggering any file edits.",
+      "command": "Select 'Chat' mode — reads code but never writes",
+      "tags": ["modes", "safe"]
+    },
+    {
+      "title": "Run auto mode for simple tasks",
+      "description": "For clear, low-risk tasks, Auto mode executes without plan approval.",
+      "command": "Select 'Auto' from mode dropdown — use carefully",
+      "tags": ["modes", "automation"]
+    },
+    {
+      "title": "Apply a diff from the task result",
+      "description": "After Kilocode generates changes, review the diff and apply selectively.",
+      "command": "Click file name in task result → review hunk → 'Apply' or 'Reject'",
+      "tags": ["review", "workflow"]
+    },
+    {
+      "title": "Resume a paused task",
+      "description": "Kilocode pauses when it needs input or hits an ambiguity. Add context and continue.",
+      "command": "Reply in the task thread and click 'Continue'",
+      "tags": ["workflow", "recovery"]
+    },
+    {
+      "title": "Switch the model mid-task",
+      "description": "Change the underlying LLM for the current task without starting over.",
+      "command": "Click the model selector in the task header",
+      "tags": ["models", "workflow"]
+    }
+  ],
+  "powerMoves": [
+    {
+      "title": "Pin a .kilo rules file",
+      "description": "Add project-specific instructions that apply to every task. Like CLAUDE.md for Kilocode.",
+      "command": "Create .kilo/rules.md at your project root",
+      "why": "Persist coding conventions, file layout rules, and banned patterns across sessions."
+    },
+    {
+      "title": "Mention specific files in your task",
+      "description": "Reference exact files so Kilocode focuses context on what matters.",
+      "command": "Type @src/lib/models.ts in your task description",
+      "why": "Prevents wasted tokens on unrelated files and gives sharper output."
+    },
+    {
+      "title": "Use the task history panel",
+      "description": "Every task is stored. Revisit, re-run, or fork previous tasks.",
+      "command": "Click the clock icon in the sidebar to open task history",
+      "why": "Useful for iterating on a task that was close but not quite right."
+    },
+    {
+      "title": "Ask Kilocode to explain before editing",
+      "description": "Use 'explain then ask' phrasing to get a code walkthrough before changes.",
+      "command": "Prefix your task: 'First explain how X works, then...'",
+      "why": "Catches misunderstandings before Kilocode starts writing code."
+    },
+    {
+      "title": "Set a token budget",
+      "description": "Cap how many tokens Kilocode can spend on a task to control cost.",
+      "command": "Advanced settings → 'Max tokens per task'",
+      "why": "Prevents runaway usage on open-ended tasks."
+    },
+    {
+      "title": "Multi-file context with @folder",
+      "description": "Include an entire directory as context.",
+      "command": "@src/components/ in your task to include all files under that path",
+      "why": "Better for refactors where the change spans a whole module."
+    }
+  ],
+  "gotchas": [
+    {
+      "problem": "Kilocode edits unintended files",
+      "solution": "Use Architect mode and review the plan carefully. Add .kiloignore to exclude paths.",
+      "severity": "high"
+    },
+    {
+      "problem": "Task stalls with 'waiting for approval'",
+      "solution": "Check the sidebar for a pending approval prompt — it won't continue until you respond.",
+      "severity": "medium"
+    },
+    {
+      "problem": "Context window exceeded on large codebase",
+      "solution": "Use @file mentions to narrow context. Switch to a model with a larger context window.",
+      "severity": "medium"
+    },
+    {
+      "problem": "Auto mode applies changes before review",
+      "solution": "Switch to Architect or Manual mode for any non-trivial task. Auto is for quick one-liners only.",
+      "severity": "high"
+    },
+    {
+      "problem": ".kilo/rules.md not being picked up",
+      "solution": "Ensure the file is at the workspace root (same level as package.json or the top-level folder).",
+      "severity": "medium"
+    },
+    {
+      "problem": "Diff looks correct but apply breaks the file",
+      "solution": "Review each hunk individually. Kilocode sometimes generates conflicts in files with unusual indentation.",
+      "severity": "medium"
+    }
+  ],
+  "cliFlags": [],
+  "slashCommands": [
+    {
+      "command": "/new",
+      "description": "Start a fresh task in the current project.",
+      "example": "/new refactor the auth module to use JWT",
+      "tip": "Clears previous task context entirely."
+    },
+    {
+      "command": "/explain",
+      "description": "Ask Kilocode to explain selected code without editing anything.",
+      "example": "/explain this function",
+      "tip": "Great for onboarding to unfamiliar codebases."
+    },
+    {
+      "command": "/plan",
+      "description": "Generate a plan for a task without executing it.",
+      "example": "/plan migrate from jest to vitest",
+      "tip": "Review and refine the plan before committing to execution."
+    },
+    {
+      "command": "/undo",
+      "description": "Revert the last set of file edits made by Kilocode.",
+      "example": "/undo",
+      "tip": "Works like Ctrl+Z but for AI edits — shows a diff before reverting."
+    }
+  ],
+  "config": [
+    {
+      "key": ".kilo/rules.md",
+      "description": "Project-level instructions for every task. Markdown format. Supports headings for sections.",
+      "default": "none",
+      "recommended": "Add coding conventions, architecture notes, and paths to avoid editing."
+    },
+    {
+      "key": ".kiloignore",
+      "description": "Paths Kilocode should never read or edit. Same syntax as .gitignore.",
+      "default": "none",
+      "recommended": "Add secrets/, build/, dist/, node_modules/ if not already in .gitignore."
+    },
+    {
+      "key": "kilocode.model",
+      "description": "Default model to use for tasks. Can also be changed per-task.",
+      "default": "claude-sonnet-4-5",
+      "recommended": "Use sonnet for most tasks; switch to opus for complex multi-file refactors."
+    },
+    {
+      "key": "kilocode.autoMode.enabled",
+      "description": "Whether Auto mode is available for tasks.",
+      "default": "false",
+      "recommended": "Leave false unless you trust the task scope. Architect mode is safer."
+    }
+  ],
+  "proTips": [
+    "Add .kilo/rules.md immediately on any new project — the earlier the better.",
+    "Use Chat mode for exploration, Architect mode for implementation.",
+    "Reference specific files with @filename to keep context tight.",
+    "Review every plan before approving — the plan quality predicts the output quality.",
+    "For multi-step tasks, break them into subtasks rather than one giant prompt.",
+    "If a task goes sideways, /undo and re-run with a tighter description.",
+    "Kilocode uses the same model throughout a task — pick the right one upfront."
+  ],
+  "resources": [
+    {
+      "title": "Kilocode docs",
+      "url": "https://kilocode.ai/docs"
+    },
+    {
+      "title": "VS Code Marketplace listing",
+      "url": "https://marketplace.visualstudio.com/items?itemName=kilocode.kilocode"
+    },
+    {
+      "title": "GitHub",
+      "url": "https://github.com/Kilo-Org/kilocode"
+    }
+  ]
+}
