@@ -1,6 +1,7 @@
 ---
 import HubLayout from "../layouts/HubLayout.astro";
 import { getTools, getAllToolReleases } from "../lib/releases";
+import { loadModelsData } from "../lib/models";
 
 let releaseMap: Record<string, any> = {};
 
@@ -23,6 +24,7 @@ try {
 
 const FEATURED_IDS = ["openclaw", "claude-code", "codex-cli", "gemini-cli", "cursor", "cline", "windsurf", "roo-code", "kilocode", "opencode", "hermes-agent"];
 const allTools = getTools();
+const { stats: modelStats } = loadModelsData();
 const featuredTools = FEATURED_IDS.map(id => allTools.find(t => t.id === id)).filter(Boolean);
 const otherTools = allTools.filter(t => !FEATURED_IDS.includes(t.id));
 
@@ -231,10 +233,10 @@ const harnessPrefix: Record<string, string> = {
         <h3 class="brutal-card__name">Models</h3>
         <p class="brutal-card__desc">Track AI model releases across Anthropic, OpenAI, Google, and more.</p>
         <div class="brutal-card__tldr">
-          <span class="brutal-card__prefix">◆</span> 9 providers · Claude, GPT, Gemini, Kimi, GLM, DeepSeek, Mistral, Grok
+          <span class="brutal-card__prefix">◆</span> 11 providers · Claude, GPT, Gemini, Grok, Mistral, Llama, Qwen, GLM, DeepSeek, Kimi, Minimax
         </div>
         <div class="brutal-card__footer">
-          <span class="brutal-card__version">Multi-provider</span>
+          <span class="brutal-card__version">{modelStats.totalModels} models tracked</span>
         </div>
       </a>
     </div>
