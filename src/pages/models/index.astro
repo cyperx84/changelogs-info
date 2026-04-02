@@ -69,7 +69,7 @@ function pricingSummary(model: (typeof models)[number]): string {
 ---
 
 <HubLayout
-  title="Models — changelogs.info"
+  title="Models - changelogs.info"
   description="Search, sort, and filter AI models across providers with lifecycle signals, pricing transparency, and release intelligence."
   currentSection="models"
 >
@@ -118,7 +118,7 @@ function pricingSummary(model: (typeof models)[number]): string {
         <h2 class="models-section__title">Shortlist picks</h2>
       </div>
       <p class="models-section__note">
-        These are heuristic recommendations from structured metadata in <code>src/content/models/*.json</code>, not normalized benchmarks.
+        Heuristic picks from structured metadata - not benchmark winners. Pricing source and alternatives shown on each card.
       </p>
     </div>
 
@@ -156,36 +156,6 @@ function pricingSummary(model: (typeof models)[number]): string {
           </article>
         );
       })}
-    </div>
-  </section>
-
-  <section class="models-section">
-    <div class="models-section__head">
-      <div>
-        <div class="models-label">// transparency</div>
-        <h2 class="models-section__title">Confidence and caveats</h2>
-      </div>
-    </div>
-
-    <div class="confidence-grid">
-      <article class="confidence-card">
-        <h3>Pricing is not uniformly first-party</h3>
-        <p>
-          Some open-weight models only have an <strong>OpenRouter</strong> price in the source data. Those cards are clearly labeled so you do not mistake routed pricing for the provider’s own API price.
-        </p>
-      </article>
-      <article class="confidence-card">
-        <h3>Null means unknown, not zero</h3>
-        <p>
-          Missing context, output, or cutoff values stay marked as unknown. Rankings that depend on those fields will naturally favor models with published numbers.
-        </p>
-      </article>
-      <article class="confidence-card">
-        <h3>Preview models are separated</h3>
-        <p>
-          Preview entries are treated as live for discovery, but the UI calls out that availability and pricing may move faster than stable models.
-        </p>
-      </article>
     </div>
   </section>
 
@@ -386,15 +356,6 @@ function pricingSummary(model: (typeof models)[number]): string {
               </div>
             )}
 
-            {model.confidenceFlags.length > 0 && (
-              <div class="confidence-box">
-                <div class="confidence-box__label">Data caveats</div>
-                <div class="confidence-box__items">
-                  {model.confidenceFlags.slice(0, 3).map((flag) => <span>{flag}</span>)}
-                </div>
-              </div>
-            )}
-
             <div class="model-card__provider-link">
               <a href={`/models/${providerSlug(model.provider)}/`} class="provider-link">
                 All {model.provider} models →
@@ -411,16 +372,6 @@ function pricingSummary(model: (typeof models)[number]): string {
     </div>
   </section>
 
-  <section class="models-cta">
-    <div>
-      <div class="models-label">// next</div>
-      <h2 class="models-section__title">Need change history?</h2>
-      <p class="models-section__note">
-        The model timeline now tracks releases and retirements across providers in reverse chronological order.
-      </p>
-    </div>
-    <a href="/models/changelog/" class="models-btn">Open model changelog</a>
-  </section>
 </HubLayout>
 
 <script is:inline>
@@ -602,8 +553,7 @@ function pricingSummary(model: (typeof models)[number]): string {
 
 <style is:global>
   .models-hero,
-  .models-section,
-  .models-cta {
+  .models-section {
     max-width: 1280px;
     margin: 0 auto;
     padding: 0 2rem;
@@ -643,10 +593,8 @@ function pricingSummary(model: (typeof models)[number]): string {
   .models-hero__copy,
   .models-hero__stats,
   .featured-card,
-  .confidence-card,
   .controls-shell,
-  .model-card,
-  .models-cta {
+  .model-card {
     border: 4px solid var(--models-border);
     background: var(--models-card);
     box-shadow: var(--models-shadow);
@@ -670,7 +618,6 @@ function pricingSummary(model: (typeof models)[number]): string {
   .models-hero__sub,
   .models-section__note,
   .model-card__desc,
-  .confidence-card p,
   .featured-card__why,
   .empty-state p {
     color: var(--models-text-dim);
@@ -758,6 +705,10 @@ function pricingSummary(model: (typeof models)[number]): string {
     padding-bottom: 1rem;
   }
 
+  .models-section:last-of-type {
+    padding-bottom: 4rem;
+  }
+
   .models-section__head {
     display: flex;
     justify-content: space-between;
@@ -774,19 +725,13 @@ function pricingSummary(model: (typeof models)[number]): string {
     margin-top: 0.45rem;
   }
 
-  .featured-grid,
-  .confidence-grid {
+  .featured-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
     gap: 1rem;
   }
 
-  .featured-grid {
-    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-  }
-
-  .featured-card,
-  .confidence-card {
+  .featured-card {
     padding: 1.35rem;
   }
 
@@ -811,7 +756,6 @@ function pricingSummary(model: (typeof models)[number]): string {
   }
 
   .featured-card__title,
-  .confidence-card h3,
   .empty-state h3 {
     font-family: var(--hub-font-head);
     font-size: 1.4rem;
@@ -845,7 +789,6 @@ function pricingSummary(model: (typeof models)[number]): string {
   }
 
   .featured-card__facts,
-  .confidence-box__items,
   .lineage-box__items {
     display: flex;
     flex-wrap: wrap;
@@ -854,7 +797,6 @@ function pricingSummary(model: (typeof models)[number]): string {
   }
 
   .featured-card__facts span,
-  .confidence-box__items span,
   .lineage-box__items span {
     display: inline-flex;
     align-items: center;
@@ -862,10 +804,6 @@ function pricingSummary(model: (typeof models)[number]): string {
     background: var(--models-surface);
     border: 2px solid var(--models-border-dim);
     font-size: 0.8rem;
-  }
-
-  .confidence-grid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
 
   .controls-shell {
@@ -1018,8 +956,7 @@ function pricingSummary(model: (typeof models)[number]): string {
     border-top: 2px dashed var(--models-border-dim);
   }
 
-  .lineage-box,
-  .confidence-box {
+  .lineage-box {
     margin-top: 1rem;
     padding: 0.9rem;
     border: 2px solid var(--models-border-dim);
@@ -1054,48 +991,26 @@ function pricingSummary(model: (typeof models)[number]): string {
     text-align: center;
   }
 
-  .models-cta {
-    margin-top: 2rem;
-    margin-bottom: 4rem;
-    padding: 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    align-items: center;
-  }
-
-  .models-cta .models-section__note {
-    margin-top: 0.6rem;
-  }
-
   @media (max-width: 1040px) {
     .models-hero__grid,
     .controls-row--top,
-    .filters-grid,
-    .models-cta {
+    .filters-grid {
       grid-template-columns: 1fr;
       display: grid;
-    }
-
-    .models-cta {
-      justify-content: stretch;
     }
   }
 
   @media (max-width: 720px) {
     .models-hero,
-    .models-section,
-    .models-cta {
+    .models-section {
       padding-left: 1.2rem;
       padding-right: 1.2rem;
     }
 
     .models-hero__copy,
     .featured-card,
-    .confidence-card,
     .controls-shell,
-    .model-card,
-    .models-cta {
+    .model-card {
       padding: 1rem;
     }
 
