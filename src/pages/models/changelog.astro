@@ -1,187 +1,710 @@
 ---
 import HubLayout from "../../layouts/HubLayout.astro";
+import "../../styles/models-vars.css";
+import { formatDate, loadModelsData } from "../../lib/models";
+
+const { providers, timeline, stats } = loadModelsData();
+
+const groupedTimeline = timeline.reduce((groups, event) => {
+  const monthKey = new Intl.DateTimeFormat("en", {
+    year: "numeric",
+    month: "long",
+  }).format(new Date(`${event.date}T00:00:00Z`));
+
+  const existing = groups.get(monthKey);
+  if (existing) {
+    existing.push(event);
+  } else {
+    groups.set(monthKey, [event]);
+  }
+  return groups;
+}, new Map<string, typeof timeline>());
+
+const months = Array.from(groupedTimeline.entries());
+
+const brandColors: Record<string, string> = {
+  Anthropic: "#ffb800",
+  OpenAI: "#10a37f",
+  Google: "#4285f4",
+  DeepSeek: "#6366f1",
+  xAI: "#1d9bf0",
+  "Moonshot AI": "#a855f7",
+  ZAI: "#ff6b35",
+  Minimax: "#06b6d4",
+  Meta: "#0668E1",
+  Mistral: "#ff7000",
+  Qwen: "#7c3aed",
+};
 ---
 
-<HubLayout title="Model Changelog — changelogs.info" description="Model changelog timeline — coming soon.">
-
-  <section class="mc-wrap">
-    <div class="mc-eyebrow">
-      <span class="mc-dot"></span>
-      Coming Soon
+<HubLayout
+  title="Model Changelog — changelogs.info"
+  description="Reverse-chronological model release and retirement timeline across providers."
+  currentSection="models"
+>
+  <section class="timeline-hero">
+    <div class="timeline-hero__eyebrow">
+      <span class="timeline-hero__dot"></span>
+      Model changelog
     </div>
 
-    <h1 class="mc-title">MODEL<br/><span class="mc-accent">CHANGELOG</span></h1>
+    <div class="timeline-hero__grid">
+      <div class="timeline-hero__copy">
+        <h1 class="timeline-hero__title">Release and retirement timeline</h1>
+        <p class="timeline-hero__sub">
+          Reverse chronological model events generated from release dates, deprecation dates, and lineage links in the model dataset.
+        </p>
+        <div class="timeline-hero__actions">
+          <a href="#timeline" class="timeline-btn">Browse timeline</a>
+          <a href="/models/" class="timeline-btn timeline-btn--ghost">Back to directory</a>
+        </div>
+      </div>
 
-    <p class="mc-desc">
-      A per-model version timeline tracking every change — new releases, capability updates,
-      breaking API changes, pricing shifts, and deprecation notices across all providers.
-    </p>
-
-    <div class="mc-features">
-      <div class="mc-feat">
-        <span class="mc-feat__icon">▲</span>
-        <span>Version-by-version diffs</span>
-      </div>
-      <div class="mc-feat">
-        <span class="mc-feat__icon">◆</span>
-        <span>Capability change logs</span>
-      </div>
-      <div class="mc-feat">
-        <span class="mc-feat__icon">$</span>
-        <span>Pricing history</span>
-      </div>
-      <div class="mc-feat">
-        <span class="mc-feat__icon">★</span>
-        <span>Breaking change alerts</span>
+      <div class="timeline-hero__stats">
+        <div class="timeline-stat">
+          <span class="timeline-stat__value">{timeline.length}</span>
+          <span class="timeline-stat__label">total events</span>
+        </div>
+        <div class="timeline-stat">
+          <span class="timeline-stat__value">{stats.totalProviders}</span>
+          <span class="timeline-stat__label">providers</span>
+        </div>
+        <div class="timeline-stat">
+          <span class="timeline-stat__value">{timeline.filter((event) => event.type === "release").length}</span>
+          <span class="timeline-stat__label">release events</span>
+        </div>
+        <div class="timeline-stat">
+          <span class="timeline-stat__value">{timeline.filter((event) => event.type === "deprecation").length}</span>
+          <span class="timeline-stat__label">retirement events</span>
+        </div>
       </div>
     </div>
-
-    <div class="mc-actions">
-      <a href="/models/" class="mc-btn">← Back to Models</a>
-      <a href="/rss.xml" class="mc-btn mc-btn--outline">RSS Feed</a>
-    </div>
-
-    <p class="mc-hint">
-      Want early access or want to contribute? Open an issue on GitHub or subscribe to the RSS feed for launch announcements.
-    </p>
   </section>
 
+  <section class="timeline-section">
+    <div class="timeline-section__head">
+      <div>
+        <div class="timeline-label">// filters</div>
+        <h2 class="timeline-section__title">Narrow the event stream</h2>
+      </div>
+      <p class="timeline-section__note">
+        Release events come from <code>released</code>. Retirement events come from <code>deprecated_date</code>. Lineage is shown when the model data includes a successor or predecessor.
+      </p>
+    </div>
+
+    <div class="timeline-controls">
+      <div class="timeline-controls__top">
+        <label class="timeline-search">
+          <span class="timeline-search__label">search</span>
+          <input id="timeline-search" class="timeline-search__input" type="search" placeholder="model, provider, api id, lineage..." />
+        </label>
+
+        <div class="timeline-toggle-group">
+          <span class="timeline-search__label">Event type</span>
+          <div class="timeline-chip-row">
+            <button class="timeline-chip is-active" type="button" data-type-filter="all">All</button>
+            <button class="timeline-chip" type="button" data-type-filter="release">Releases</button>
+            <button class="timeline-chip" type="button" data-type-filter="deprecation">Retirements</button>
+          </div>
+        </div>
+
+        <button id="timeline-reset" class="timeline-btn timeline-btn--ghost timeline-btn--small" type="button">Reset</button>
+      </div>
+
+      <div class="timeline-toggle-group">
+        <span class="timeline-search__label">Provider</span>
+        <div class="timeline-chip-row">
+          {providers.map((provider) => (
+            <button class="timeline-chip" type="button" data-provider-filter={provider}>{provider}</button>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="timeline-section" id="timeline">
+    <div class="timeline-section__head">
+      <div>
+        <div class="timeline-label">// timeline</div>
+        <h2 class="timeline-section__title">Reverse chronological events</h2>
+      </div>
+      <div class="timeline-counter">
+        <span id="timeline-count">{timeline.length}</span>
+        <span>events shown</span>
+      </div>
+    </div>
+
+    <div class="month-stack" id="timeline-groups">
+      {months.map(([month, events]) => (
+        <section class="month-group" data-month={month}>
+          <div class="month-group__head">
+            <h3>{month}</h3>
+            <span>{events.length} events</span>
+          </div>
+
+          <div class="month-group__items">
+            {events.map((event) => {
+              const accent = brandColors[event.provider] || "#a855f7";
+              return (
+                <article
+                  class="timeline-card"
+                  style={`--accent:${accent};`}
+                  data-type={event.type}
+                  data-provider={event.provider}
+                  data-search={[event.provider, event.title, event.model.name, event.model.api_id, event.model.notes, event.model.description, event.model.predecessor, event.model.successor].filter(Boolean).join(" ").toLowerCase()}
+                >
+                  <div class="timeline-card__rail"></div>
+                  <div class="timeline-card__body">
+                    <div class="timeline-card__head">
+                      <div>
+                        <div class="timeline-card__meta">
+                          <span>{event.provider}</span>
+                          <span>{formatDate(event.date)}</span>
+                        </div>
+                        <h4 class="timeline-card__title">{event.title}</h4>
+                      </div>
+                      <div class="timeline-card__badges">
+                        <span class:list={["timeline-pill", event.type === "deprecation" && "timeline-pill--warn"]}>{event.type}</span>
+                        <span class="timeline-pill">{event.model.status}</span>
+                        <span class="timeline-pill">{event.model.type}</span>
+                      </div>
+                    </div>
+
+                    <p class="timeline-card__summary">{event.summary}</p>
+
+                    <div class="timeline-card__facts">
+                      <span>Model: <strong>{event.model.name}</strong></span>
+                      <span>API: <code>{event.model.api_id}</code></span>
+                      <span>Context: {event.model.context ?? "Unknown"}</span>
+                      <span>Output: {event.model.max_output ?? "Unknown"}</span>
+                    </div>
+
+                    {(event.model.predecessor || event.model.successor || event.model.deprecated_date) && (
+                      <div class="timeline-card__lineage">
+                        {event.model.predecessor && <span>Predecessor: <code>{event.model.predecessor}</code></span>}
+                        {event.model.successor && <span>Successor: <code>{event.model.successor}</code></span>}
+                        {event.model.deprecated_date && <span>Retires: {formatDate(event.model.deprecated_date)}</span>}
+                      </div>
+                    )}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      ))}
+    </div>
+
+    <div id="timeline-empty" class="timeline-empty" hidden>
+      <h3>No events match the current filters.</h3>
+      <p>Clear provider or event-type filters, or broaden the search text.</p>
+    </div>
+  </section>
 </HubLayout>
 
+<script is:inline>
+  (function () {
+    const searchInput = document.getElementById("timeline-search");
+    const resetButton = document.getElementById("timeline-reset");
+    const counter = document.getElementById("timeline-count");
+    const empty = document.getElementById("timeline-empty");
+    const groups = Array.from(document.querySelectorAll(".month-group"));
+    const cards = Array.from(document.querySelectorAll(".timeline-card"));
+
+    if (!searchInput || !resetButton || !counter || !empty || cards.length === 0) {
+      return;
+    }
+
+    const state = {
+      search: "",
+      type: "all",
+      providers: new Set(),
+    };
+
+    function applyFilters() {
+      const query = state.search.trim().toLowerCase();
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const matches =
+          (!query || (card.dataset.search || "").includes(query)) &&
+          (state.type === "all" || card.dataset.type === state.type) &&
+          (state.providers.size === 0 || state.providers.has(card.dataset.provider));
+
+        card.hidden = !matches;
+        if (matches) {
+          visibleCount += 1;
+        }
+      });
+
+      groups.forEach((group) => {
+        const hasVisible = Array.from(group.querySelectorAll(".timeline-card")).some((card) => !card.hidden);
+        group.hidden = !hasVisible;
+      });
+
+      counter.textContent = String(visibleCount);
+      empty.hidden = visibleCount !== 0;
+    }
+
+    searchInput.addEventListener("input", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLInputElement)) {
+        return;
+      }
+      state.search = target.value;
+      applyFilters();
+    });
+
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) {
+        return;
+      }
+
+      const typeButton = target.closest("[data-type-filter]");
+      if (typeButton) {
+        const value = typeButton.dataset.typeFilter;
+        state.type = value || "all";
+        document.querySelectorAll("[data-type-filter]").forEach((node) => node.classList.remove("is-active"));
+        typeButton.classList.add("is-active");
+        applyFilters();
+        return;
+      }
+
+      const providerButton = target.closest("[data-provider-filter]");
+      if (!providerButton) {
+        return;
+      }
+
+      const value = providerButton.dataset.providerFilter;
+      if (!value) {
+        return;
+      }
+
+      if (state.providers.has(value)) {
+        state.providers.delete(value);
+        providerButton.classList.remove("is-active");
+      } else {
+        state.providers.add(value);
+        providerButton.classList.add("is-active");
+      }
+
+      applyFilters();
+    });
+
+    resetButton.addEventListener("click", () => {
+      state.search = "";
+      state.type = "all";
+      state.providers.clear();
+      searchInput.value = "";
+      document.querySelectorAll("[data-type-filter]").forEach((node) => {
+        node.classList.toggle("is-active", node.dataset.typeFilter === "all");
+      });
+      document.querySelectorAll("[data-provider-filter]").forEach((node) => {
+        node.classList.remove("is-active");
+      });
+      applyFilters();
+    });
+
+    applyFilters();
+  })();
+</script>
+
 <style is:global>
+  /* timeline-* vars alias models-* so changelog.astro shares the same design tokens */
   :root,
   [data-theme="light"] {
-    --mc-bg: #f8fbff;
-    --mc-bg-card: #ffffff;
-    --mc-text: #0a0a0a;
-    --mc-text-dim: #3a3a3a;
-    --mc-text-muted: #6a6a6a;
-    --mc-border: #0a0a0a;
-    --mc-border-dim: rgba(10,10,10,0.15);
-    --mc-shadow: 6px 6px 0px 0px rgba(10,10,10,0.9);
-    --mc-accent: #a855f7;
-  }
-  [data-theme="dark"] {
-    --mc-bg: #0a0a0a;
-    --mc-bg-card: #111111;
-    --mc-text: #f0f0f0;
-    --mc-text-dim: #b0b0b0;
-    --mc-text-muted: #707070;
-    --mc-border: #f0f0f0;
-    --mc-border-dim: rgba(240,240,240,0.15);
-    --mc-shadow: 6px 6px 0px 0px rgba(240,240,240,0.12);
-    --mc-accent: #a855f7;
+    --timeline-bg: var(--models-bg, #f8fbff);
+    --timeline-card: var(--models-card, #ffffff);
+    --timeline-surface: var(--models-surface, #ebf5ff);
+    --timeline-text: var(--models-text, #0a0a0a);
+    --timeline-text-dim: var(--models-text-dim, #394657);
+    --timeline-text-muted: var(--models-text-muted, #6d7a8d);
+    --timeline-border: var(--models-border, #0a0a0a);
+    --timeline-border-dim: var(--models-border-dim, rgba(10, 10, 10, 0.15));
+    --timeline-shadow: var(--models-shadow, 6px 6px 0 0 rgba(10, 10, 10, 0.9));
+    --timeline-accent: var(--models-accent, #0091f7);
+    --timeline-warn: #ef4444;
   }
 
-  .mc-wrap {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 5rem 2rem 4rem;
-    text-align: center;
+  [data-theme="dark"] {
+    --timeline-bg: var(--models-bg, #0a0a0a);
+    --timeline-card: var(--models-card, #111111);
+    --timeline-surface: var(--models-surface, #151b22);
+    --timeline-text: var(--models-text, #f0f0f0);
+    --timeline-text-dim: var(--models-text-dim, #c5ced9);
+    --timeline-text-muted: var(--models-text-muted, #8a95a7);
+    --timeline-border: var(--models-border, #f0f0f0);
+    --timeline-border-dim: var(--models-border-dim, rgba(240, 240, 240, 0.14));
+    --timeline-shadow: var(--models-shadow, 6px 6px 0 0 rgba(240, 240, 240, 0.14));
+    --timeline-accent: var(--models-accent, #00b0ff);
+    --timeline-warn: #ef4444;
   }
-  .mc-eyebrow {
+
+  .timeline-hero,
+  .timeline-section {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .timeline-hero {
+    padding-top: 4.5rem;
+    padding-bottom: 2rem;
+  }
+
+  .timeline-hero__eyebrow,
+  .timeline-label {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--hub-font-mono);
     font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.2em;
-    color: var(--mc-accent);
-    margin-bottom: 1.5rem;
-  }
-  .mc-dot {
-    width: 8px; height: 8px;
-    background: var(--mc-accent);
-    animation: mc-pulse 2s ease-in-out infinite;
-  }
-  @keyframes mc-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-  .mc-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(3rem, 10vw, 5.5rem);
-    font-weight: 900;
-    letter-spacing: -0.05em;
-    line-height: 0.9;
-    text-transform: uppercase;
-    color: var(--mc-text);
-    margin-bottom: 1.5rem;
-  }
-  .mc-accent {
-    color: var(--mc-accent);
-  }
-  .mc-desc {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.88rem;
-    color: var(--mc-text-dim);
-    line-height: 1.7;
-    max-width: 540px;
-    margin: 0 auto 2rem;
-  }
-  .mc-features {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    max-width: 360px;
-    margin: 0 auto 2rem;
-    text-align: left;
-  }
-  .mc-feat {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.78rem;
-    color: var(--mc-text-dim);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    border: 3px solid var(--mc-border-dim);
-    padding: 0.5rem 0.75rem;
-    background: var(--mc-bg-card);
-  }
-  .mc-feat__icon {
-    color: var(--mc-accent);
-    font-size: 0.9rem;
-  }
-  .mc-actions {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
-  }
-  .mc-btn {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    text-decoration: none;
-    border: 4px solid var(--mc-border);
-    padding: 0.6rem 1.2rem;
-    background: var(--mc-accent);
-    color: #fff;
-    box-shadow: var(--mc-shadow);
-    transition: transform 100ms, box-shadow 100ms;
-  }
-  .mc-btn:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 8px 8px 0px 0px var(--mc-border);
-  }
-  .mc-btn--outline {
-    background: transparent;
-    color: var(--mc-text);
-  }
-  .mc-hint {
-    font-family: 'Work Sans', sans-serif;
-    font-size: 0.78rem;
-    color: var(--mc-text-muted);
-    line-height: 1.5;
+    letter-spacing: 0.18em;
+    color: var(--timeline-accent);
   }
 
-  @media (max-width: 640px) {
-    .mc-wrap { padding: 3rem 1.25rem 2rem; }
-    .mc-title { font-size: clamp(2rem, 12vw, 3rem); }
+  .timeline-hero__dot {
+    width: 8px;
+    height: 8px;
+    background: var(--timeline-accent);
+  }
+
+  .timeline-hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.9fr);
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .timeline-hero__copy,
+  .timeline-hero__stats,
+  .timeline-controls,
+  .month-group,
+  .timeline-empty {
+    border: 4px solid var(--timeline-border);
+    background: var(--timeline-card);
+    box-shadow: var(--timeline-shadow);
+  }
+
+  .timeline-hero__copy,
+  .timeline-controls,
+  .month-group,
+  .timeline-empty {
+    padding: 1.5rem;
+  }
+
+  .timeline-hero__copy {
+    background:
+      linear-gradient(135deg, rgba(0, 145, 247, 0.14), transparent 55%),
+      linear-gradient(0deg, var(--timeline-card), var(--timeline-card));
+  }
+
+  .timeline-hero__title,
+  .timeline-section__title {
+    font-family: var(--hub-font-head);
+    letter-spacing: -0.04em;
+    line-height: 0.96;
+  }
+
+  .timeline-hero__title {
+    font-size: clamp(3rem, 6vw, 5rem);
+    margin-top: 0.9rem;
+  }
+
+  .timeline-section__title {
+    font-size: clamp(1.9rem, 4vw, 2.8rem);
+    margin-top: 0.45rem;
+  }
+
+  .timeline-hero__sub,
+  .timeline-section__note,
+  .timeline-card__summary,
+  .timeline-empty p {
+    color: var(--timeline-text-dim);
+    line-height: 1.7;
+  }
+
+  .timeline-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 1.4rem;
+  }
+
+  .timeline-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0.8rem 1.2rem;
+    border: 3px solid var(--timeline-border);
+    background: var(--timeline-accent);
+    color: #ffffff;
+    text-decoration: none;
+    font-family: var(--hub-font-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .timeline-btn--ghost {
+    background: transparent;
+    color: var(--timeline-text);
+  }
+
+  .timeline-btn--small {
+    min-height: 44px;
+  }
+
+  .timeline-hero__stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    padding: 1px;
+    background: var(--timeline-border);
+  }
+
+  .timeline-stat {
+    min-height: 145px;
+    padding: 1.3rem;
+    background: var(--timeline-surface);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .timeline-stat__value {
+    font-family: var(--hub-font-head);
+    font-size: clamp(2rem, 4vw, 3rem);
+    letter-spacing: -0.05em;
+    line-height: 1;
+  }
+
+  .timeline-stat__label,
+  .timeline-search__label,
+  .timeline-counter,
+  .timeline-card__meta,
+  .month-group__head span {
+    font-family: var(--hub-font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--timeline-text-muted);
+  }
+
+  .timeline-section {
+    padding-top: 2rem;
+    padding-bottom: 1rem;
+  }
+
+  .timeline-section__head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: end;
+    margin-bottom: 1rem;
+  }
+
+  .timeline-controls__top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 1rem;
+    align-items: end;
+  }
+
+  .timeline-search {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .timeline-search__input {
+    min-height: 52px;
+    border: 3px solid var(--timeline-border);
+    background: var(--timeline-surface);
+    color: var(--timeline-text);
+    padding: 0.9rem 1rem;
+    font-family: var(--hub-font-mono);
+    font-size: 0.92rem;
+  }
+
+  .timeline-toggle-group {
+    margin-top: 1rem;
+  }
+
+  .timeline-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-top: 0.45rem;
+  }
+
+  .timeline-chip {
+    border: 2px solid var(--timeline-border);
+    background: var(--timeline-card);
+    color: var(--timeline-text);
+    padding: 0.5rem 0.75rem;
+    font-family: var(--hub-font-mono);
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+  }
+
+  .timeline-chip.is-active {
+    background: var(--timeline-accent);
+    color: #ffffff;
+  }
+
+  .timeline-counter {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.8rem;
+    border: 2px solid var(--timeline-border);
+    background: var(--timeline-surface);
+  }
+
+  .month-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .month-group__head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: baseline;
+    margin-bottom: 1rem;
+  }
+
+  .month-group__head h3,
+  .timeline-empty h3 {
+    font-family: var(--hub-font-head);
+    font-size: 1.7rem;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .month-group__items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .timeline-card {
+    display: grid;
+    grid-template-columns: 8px minmax(0, 1fr);
+    border: 3px solid var(--timeline-border);
+    background: var(--timeline-card);
+  }
+
+  .timeline-card__rail {
+    background: var(--accent);
+  }
+
+  .timeline-card__body {
+    padding: 1rem;
+  }
+
+  .timeline-card__head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .timeline-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.9rem;
+  }
+
+  .timeline-card__title {
+    font-family: var(--hub-font-head);
+    font-size: 1.55rem;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-top: 0.35rem;
+  }
+
+  .timeline-card__badges,
+  .timeline-card__facts,
+  .timeline-card__lineage {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .timeline-pill,
+  .timeline-card__facts span,
+  .timeline-card__lineage span {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.32rem 0.55rem;
+    border: 2px solid var(--timeline-border);
+    background: var(--timeline-surface);
+    font-family: var(--hub-font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .timeline-pill--warn {
+    border-color: var(--timeline-warn);
+    color: var(--timeline-warn);
+  }
+
+  .timeline-card__summary {
+    margin-top: 0.8rem;
+  }
+
+  .timeline-card__facts,
+  .timeline-card__lineage {
+    margin-top: 0.8rem;
+  }
+
+  .timeline-empty {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  @media (max-width: 960px) {
+    .timeline-hero__grid,
+    .timeline-controls__top {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .timeline-hero,
+    .timeline-section {
+      padding-left: 1.2rem;
+      padding-right: 1.2rem;
+    }
+
+    .timeline-hero__copy,
+    .timeline-controls,
+    .month-group,
+    .timeline-empty {
+      padding: 1rem;
+    }
+
+    .timeline-hero__stats {
+      grid-template-columns: 1fr;
+    }
+
+    .timeline-section__head,
+    .timeline-card__head,
+    .month-group__head {
+      flex-direction: column;
+      align-items: start;
+    }
   }
 </style>

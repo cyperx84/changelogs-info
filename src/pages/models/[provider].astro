@@ -1,0 +1,793 @@
+---
+import HubLayout from "../../layouts/HubLayout.astro";
+import "../../styles/models-vars.css";
+import {
+  formatDate,
+  formatPrice,
+  formatTokenCount,
+  loadModelsData,
+  providerSlug,
+} from "../../lib/models";
+import type { ModelRecord, TimelineEvent } from "../../lib/models";
+
+export async function getStaticPaths() {
+  const { providers, models, timeline } = loadModelsData();
+  return providers.map((provider) => {
+    const slug = providerSlug(provider);
+    const providerModels = models.filter((m) => m.provider === provider);
+    const providerTimeline = timeline.filter((e) => e.provider === provider);
+    return {
+      params: { provider: slug },
+      props: { provider, providerModels, providerTimeline },
+    };
+  });
+}
+
+interface Props {
+  provider: string;
+  providerModels: ModelRecord[];
+  providerTimeline: TimelineEvent[];
+}
+
+const { provider, providerModels, providerTimeline } = Astro.props;
+
+const brandColors: Record<string, string> = {
+  Anthropic: "#ffb800",
+  OpenAI: "#10a37f",
+  Google: "#4285f4",
+  DeepSeek: "#6366f1",
+  xAI: "#1d9bf0",
+  "Moonshot AI": "#a855f7",
+  ZAI: "#ff6b35",
+  Minimax: "#06b6d4",
+  Meta: "#0668E1",
+  Mistral: "#ff7000",
+  Qwen: "#7c3aed",
+};
+
+const typeColors: Record<string, string> = {
+  frontier: "#ef4444",
+  balanced: "#f59e0b",
+  fast: "#22c55e",
+  reasoning: "#a855f7",
+  coding: "#3b82f6",
+  multimodal: "#ec4899",
+  "open-weight": "#06b6d4",
+};
+
+const statusColors: Record<string, string> = {
+  active: "#22c55e",
+  preview: "#f59e0b",
+  legacy: "#64748b",
+  deprecated: "#ef4444",
+};
+
+const accent = brandColors[provider] ?? "#a855f7";
+
+// Stats
+const activeCount = providerModels.filter((m) => m.status === "active" || m.status === "preview").length;
+const pricedCount = providerModels.filter((m) => m.primaryPrice).length;
+const latestModel = [...providerModels].sort((a, b) => b.releaseTs - a.releaseTs)[0];
+
+// Sort models: active/preview first, then newest
+const sortedModels = [...providerModels].sort((a, b) => {
+  const statusOrder: Record<string, number> = { active: 4, preview: 3, legacy: 2, deprecated: 1 };
+  return (statusOrder[b.status] ?? 0) - (statusOrder[a.status] ?? 0) || b.releaseTs - a.releaseTs;
+});
+
+// Build lineage chains
+function buildChains(models: ModelRecord[]): ModelRecord[][] {
+  const byId = new Map(models.map((m) => [m.id, m]));
+  const isChild = new Set(models.filter((m) => m.predecessor).map((m) => m.id));
+  // roots: models that are not a successor of something in this provider set
+  const roots = models.filter((m) => {
+    if (!m.predecessor) return true;
+    // predecessor exists but not in this provider's set → also a root
+    return !byId.has(m.predecessor);
+  });
+
+  function buildChain(model: ModelRecord): ModelRecord[] {
+    const chain = [model];
+    let cur = model;
+    while (cur.successor) {
+      const next = byId.get(cur.successor);
+      if (!next || chain.includes(next)) break;
+      chain.push(next);
+      cur = next;
+    }
+    return chain;
+  }
+
+  const chains = roots.map(buildChain).filter((c) => c.length > 1);
+  // deduplicate: only show chains with 2+ models
+  return chains;
+}
+
+const lineageChains = buildChains(providerModels);
+
+function pricingSummary(model: ModelRecord): string {
+  if (!model.primaryPrice) return "No listed pricing";
+  const source = model.pricingSource === "provider" ? "API" : "OpenRouter";
+  return `${formatPrice(model.inputPrice)} / ${formatPrice(model.outputPrice)} • ${source}`;
+}
+
+const pageTitle = `${provider} Models — changelogs.info`;
+const pageDescription = `All ${providerModels.length} tracked ${provider} models — ${activeCount} live or preview. Pricing, context windows, capabilities, and release timeline.`;
+---
+
+<HubLayout title={pageTitle} description={pageDescription} currentSection="models">
+  <!-- Breadcrumb -->
+  <nav class="pv-breadcrumb">
+    <a href="/models/">Models</a>
+    <span class="pv-breadcrumb__sep">›</span>
+    <span>{provider}</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="pv-hero" style={`--accent:${accent};`}>
+    <div class="pv-hero__bar"></div>
+    <div class="pv-hero__inner">
+      <div class="pv-hero__copy">
+        <div class="pv-label">// provider_directory</div>
+        <h1 class="pv-hero__title">{provider}</h1>
+        <p class="pv-hero__sub">
+          All tracked {provider} models — pricing, context windows, lifecycle state, and release history in one place.
+        </p>
+      </div>
+      <div class="pv-hero__stats">
+        <div class="pv-stat">
+          <span class="pv-stat__value">{providerModels.length}</span>
+          <span class="pv-stat__label">tracked models</span>
+        </div>
+        <div class="pv-stat">
+          <span class="pv-stat__value">{activeCount}</span>
+          <span class="pv-stat__label">live or preview</span>
+        </div>
+        <div class="pv-stat">
+          <span class="pv-stat__value">{pricedCount}</span>
+          <span class="pv-stat__label">with listed pricing</span>
+        </div>
+        {latestModel && (
+          <div class="pv-stat">
+            <span class="pv-stat__value">{formatDate(latestModel.released)}</span>
+            <span class="pv-stat__label">latest release</span>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- Model grid -->
+  <section class="pv-section">
+    <div class="pv-section__head">
+      <div class="pv-label">// model_index</div>
+      <h2 class="pv-section__title">All {provider} models</h2>
+    </div>
+
+    <div class="pv-cards-grid">
+      {sortedModels.map((model) => (
+        <article
+          class="pv-model-card"
+          style={`--accent:${accent};--type:${typeColors[model.type] ?? "#888"};--status:${statusColors[model.status] ?? "#888"};`}
+        >
+          <div class="pv-model-card__head">
+            <div>
+              <div class="pv-model-card__provider">{model.provider}</div>
+              <h3 class="pv-model-card__name">{model.name}</h3>
+            </div>
+            <div class="pv-model-card__badges">
+              <span class="pv-pill pv-pill--status">{model.status}</span>
+              <span class="pv-pill pv-pill--type">{model.type}</span>
+            </div>
+          </div>
+
+          <p class="pv-model-card__desc">{model.description ?? model.notes ?? "No description yet."}</p>
+
+          <div class="pv-model-card__metrics">
+            <div class="pv-metric">
+              <span class="pv-metric__label">Context</span>
+              <span class="pv-metric__value">{model.context ?? "Unknown"}</span>
+            </div>
+            <div class="pv-metric">
+              <span class="pv-metric__label">Max output</span>
+              <span class="pv-metric__value">{model.max_output ?? "Unknown"}</span>
+            </div>
+            <div class="pv-metric">
+              <span class="pv-metric__label">Pricing /1M tok</span>
+              <span class="pv-metric__value">{pricingSummary(model)}</span>
+            </div>
+            <div class="pv-metric">
+              <span class="pv-metric__label">Released</span>
+              <span class="pv-metric__value">{formatDate(model.released)}</span>
+            </div>
+          </div>
+
+          <div class="pv-model-card__meta">
+            <span>API: <code>{model.api_id}</code></span>
+            <span>Vision: {model.vision ? "Yes" : "No"}</span>
+            <span>Functions: {model.function_calling ? "Yes" : "No"}</span>
+            {model.knowledge_cutoff && <span>Cutoff: {model.knowledge_cutoff}</span>}
+          </div>
+
+          {(model.predecessor || model.successor || model.deprecated_date) && (
+            <div class="pv-lineage">
+              <span class="pv-lineage__label">Lifecycle</span>
+              <div class="pv-lineage__items">
+                {model.predecessor && <span>← {model.predecessor}</span>}
+                {model.successor && <span>→ {model.successor}</span>}
+                {model.deprecated_date && <span>Retires: {formatDate(model.deprecated_date)}</span>}
+              </div>
+            </div>
+          )}
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- Lineage chains -->
+  {lineageChains.length > 0 && (
+    <section class="pv-section">
+      <div class="pv-section__head">
+        <div class="pv-label">// lineage_chains</div>
+        <h2 class="pv-section__title">Model lineage</h2>
+      </div>
+      <p class="pv-section__note">Predecessor → successor chains tracked for {provider} models.</p>
+
+      <div class="pv-chains">
+        {lineageChains.map((chain) => (
+          <div class="pv-chain">
+            {chain.map((model, i) => (
+              <>
+                <div
+                  class="pv-chain__node"
+                  style={`--status:${statusColors[model.status] ?? "#888"};`}
+                >
+                  <span class="pv-chain__node-name">{model.name}</span>
+                  <span class="pv-chain__node-status">{model.status}</span>
+                  <span class="pv-chain__node-date">{formatDate(model.released)}</span>
+                </div>
+                {i < chain.length - 1 && (
+                  <div class="pv-chain__arrow">→</div>
+                )}
+              </>
+            ))}
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- Timeline -->
+  {providerTimeline.length > 0 && (
+    <section class="pv-section">
+      <div class="pv-section__head">
+        <div class="pv-label">// release_timeline</div>
+        <h2 class="pv-section__title">{provider} timeline</h2>
+      </div>
+
+      <div class="pv-timeline">
+        {providerTimeline.map((event) => (
+          <div class={`pv-event pv-event--${event.type}`} style={`--accent:${accent};`}>
+            <div class="pv-event__dot"></div>
+            <div class="pv-event__body">
+              <div class="pv-event__meta">
+                <span class="pv-event__date">{formatDate(event.date)}</span>
+                <span class={`pv-event__type pv-event__type--${event.type}`}>{event.type}</span>
+              </div>
+              <h3 class="pv-event__title">{event.title}</h3>
+              <p class="pv-event__summary">{event.summary}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- Footer nav -->
+  <div class="pv-footer-nav">
+    <a href="/models/" class="pv-btn pv-btn--ghost">← All providers</a>
+    <a href="/models/changelog/" class="pv-btn pv-btn--ghost">Model changelog</a>
+  </div>
+</HubLayout>
+
+<style>
+  /* ── Layout shell ── */
+  .pv-breadcrumb,
+  .pv-hero,
+  .pv-section,
+  .pv-footer-nav {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  .pv-breadcrumb {
+    padding-top: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--hub-font-mono);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--models-text-muted, #66758a);
+  }
+  .pv-breadcrumb a {
+    color: var(--models-accent, #0091f7);
+    text-decoration: none;
+  }
+  .pv-breadcrumb a:hover { text-decoration: underline; }
+  .pv-breadcrumb__sep { opacity: 0.5; }
+
+  /* ── Hero ── */
+  .pv-hero {
+    padding-top: 3rem;
+    padding-bottom: 2rem;
+  }
+
+  .pv-hero__bar {
+    height: 8px;
+    background: var(--accent);
+    margin-bottom: 1.5rem;
+    max-width: 1280px;
+    border: 3px solid var(--models-border, #0a0a0a);
+  }
+
+  .pv-hero__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.8fr);
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .pv-hero__copy {
+    border: 4px solid var(--models-border, #0a0a0a);
+    background: var(--models-card, #ffffff);
+    box-shadow: var(--models-shadow, 6px 6px 0 0 rgba(10,10,10,0.9));
+    padding: 2rem;
+  }
+
+  .pv-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--hub-font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--models-accent, #0091f7);
+  }
+
+  .pv-hero__title {
+    font-family: var(--hub-font-head);
+    font-size: clamp(3rem, 7vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.05em;
+    margin-top: 1rem;
+  }
+
+  .pv-hero__sub {
+    color: var(--models-text-dim, #364152);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-top: 0.75rem;
+  }
+
+  .pv-hero__stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    padding: 1px;
+    background: var(--models-border, #0a0a0a);
+    border: 4px solid var(--models-border, #0a0a0a);
+    box-shadow: var(--models-shadow, 6px 6px 0 0 rgba(10,10,10,0.9));
+  }
+
+  .pv-stat {
+    padding: 1.5rem;
+    background: var(--models-surface, #ecf6ff);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 120px;
+  }
+
+  .pv-stat__value {
+    font-family: var(--hub-font-head);
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    line-height: 1;
+    letter-spacing: -0.05em;
+  }
+
+  .pv-stat__label {
+    font-family: var(--hub-font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.74rem;
+    color: var(--models-text-muted, #66758a);
+    margin-top: 0.25rem;
+  }
+
+  /* ── Sections ── */
+  .pv-section {
+    padding-top: 2rem;
+    padding-bottom: 1rem;
+  }
+
+  .pv-section__head {
+    margin-bottom: 1.25rem;
+  }
+
+  .pv-section__title {
+    font-family: var(--hub-font-head);
+    font-size: clamp(1.9rem, 4vw, 3rem);
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin-top: 0.45rem;
+  }
+
+  .pv-section__note {
+    color: var(--models-text-dim, #364152);
+    font-size: 0.95rem;
+    margin-top: 0.5rem;
+  }
+
+  /* ── Cards grid ── */
+  .pv-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+    gap: 1rem;
+  }
+
+  .pv-model-card {
+    border: 4px solid var(--models-border, #0a0a0a);
+    background: var(--models-card, #ffffff);
+    box-shadow: var(--models-shadow, 6px 6px 0 0 rgba(10,10,10,0.9));
+    padding: 1.25rem;
+    position: relative;
+  }
+
+  .pv-model-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 8px;
+    background: var(--accent);
+  }
+
+  .pv-model-card__head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .pv-model-card__provider {
+    font-family: var(--hub-font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.74rem;
+    color: var(--models-text-muted, #66758a);
+  }
+
+  .pv-model-card__name {
+    font-family: var(--hub-font-head);
+    font-size: 1.8rem;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    margin-top: 0.25rem;
+  }
+
+  .pv-model-card__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    justify-content: flex-end;
+  }
+
+  .pv-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.55rem;
+    border: 2px solid var(--models-border, #0a0a0a);
+    background: var(--models-surface, #ecf6ff);
+    font-family: var(--hub-font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .pv-pill--status { border-color: var(--status); }
+  .pv-pill--type   { border-color: var(--type); }
+
+  .pv-model-card__desc {
+    color: var(--models-text-dim, #364152);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-top: 0.75rem;
+  }
+
+  .pv-model-card__metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+    margin-top: 1rem;
+  }
+
+  .pv-metric {
+    padding: 0.65rem;
+    border: 2px solid var(--models-border-dim, rgba(10,10,10,0.15));
+    background: var(--models-surface, #ecf6ff);
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .pv-metric__label {
+    font-family: var(--hub-font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.68rem;
+    color: var(--models-text-muted, #66758a);
+  }
+
+  .pv-metric__value {
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+
+  .pv-model-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+    border-top: 2px dashed var(--models-border-dim, rgba(10,10,10,0.15));
+    font-size: 0.83rem;
+    color: var(--models-text-dim, #364152);
+  }
+
+  .pv-model-card__meta code {
+    font-family: var(--hub-font-mono);
+    font-size: 0.78rem;
+  }
+
+  .pv-lineage {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    border: 2px solid var(--models-border-dim, rgba(10,10,10,0.15));
+    background: var(--models-surface, #ecf6ff);
+  }
+
+  .pv-lineage__label {
+    font-family: var(--hub-font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--models-text-muted, #66758a);
+  }
+
+  .pv-lineage__items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+  }
+
+  .pv-lineage__items span {
+    font-size: 0.8rem;
+    font-family: var(--hub-font-mono);
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--models-border-dim, rgba(10,10,10,0.15));
+    background: var(--models-card, #fff);
+  }
+
+  /* ── Lineage chains ── */
+  .pv-chains {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .pv-chain {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border: 4px solid var(--models-border, #0a0a0a);
+    background: var(--models-card, #fff);
+    box-shadow: var(--models-shadow, 6px 6px 0 0 rgba(10,10,10,0.9));
+  }
+
+  .pv-chain__node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.6rem 0.9rem;
+    border: 3px solid var(--status);
+    background: var(--models-surface, #ecf6ff);
+    min-width: 130px;
+  }
+
+  .pv-chain__node-name {
+    font-family: var(--hub-font-head);
+    font-size: 0.95rem;
+    letter-spacing: -0.02em;
+    text-align: center;
+  }
+
+  .pv-chain__node-status {
+    font-family: var(--hub-font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--status);
+  }
+
+  .pv-chain__node-date {
+    font-family: var(--hub-font-mono);
+    font-size: 0.65rem;
+    color: var(--models-text-muted, #66758a);
+  }
+
+  .pv-chain__arrow {
+    font-size: 1.4rem;
+    color: var(--models-text-muted, #66758a);
+    font-family: var(--hub-font-mono);
+  }
+
+  /* ── Timeline ── */
+  .pv-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+
+  .pv-event {
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: 1rem;
+    padding: 1.25rem 0;
+    border-bottom: 2px solid var(--models-border-dim, rgba(10,10,10,0.15));
+    position: relative;
+  }
+
+  .pv-event__dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 3px solid var(--models-border, #0a0a0a);
+    margin-top: 0.2rem;
+    flex-shrink: 0;
+  }
+
+  .pv-event--deprecation .pv-event__dot {
+    background: var(--models-card, #fff);
+    border-color: #ef4444;
+  }
+
+  .pv-event__body { min-width: 0; }
+
+  .pv-event__meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .pv-event__date {
+    font-family: var(--hub-font-mono);
+    font-size: 0.75rem;
+    color: var(--models-text-muted, #66758a);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .pv-event__type {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.45rem;
+    border: 2px solid currentColor;
+    font-family: var(--hub-font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .pv-event__type--release    { color: #22c55e; }
+  .pv-event__type--deprecation { color: #ef4444; }
+
+  .pv-event__title {
+    font-family: var(--hub-font-head);
+    font-size: 1.35rem;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .pv-event__summary {
+    color: var(--models-text-dim, #364152);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin-top: 0.4rem;
+  }
+
+  /* ── Footer nav ── */
+  .pv-footer-nav {
+    display: flex;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    padding-bottom: 4rem;
+    flex-wrap: wrap;
+  }
+
+  .pv-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0.8rem 1.2rem;
+    border: 3px solid var(--models-border, #0a0a0a);
+    background: var(--models-accent, #0091f7);
+    color: #ffffff;
+    text-decoration: none;
+    font-family: var(--hub-font-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    box-shadow: var(--models-shadow, 6px 6px 0 0 rgba(10,10,10,0.9));
+  }
+
+  .pv-btn--ghost {
+    background: transparent;
+    color: var(--models-text, #0a0a0a);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 1040px) {
+    .pv-hero__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .pv-breadcrumb,
+    .pv-hero,
+    .pv-section,
+    .pv-footer-nav {
+      padding-left: 1.2rem;
+      padding-right: 1.2rem;
+    }
+
+    .pv-hero__copy,
+    .pv-model-card {
+      padding: 1rem;
+    }
+
+    .pv-model-card__head,
+    .pv-model-card__metrics {
+      grid-template-columns: 1fr;
+    }
+
+    .pv-model-card__head {
+      flex-direction: column;
+      align-items: start;
+    }
+
+    .pv-chain {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .pv-chain__arrow {
+      transform: rotate(90deg);
+      text-align: center;
+    }
+  }
+</style>

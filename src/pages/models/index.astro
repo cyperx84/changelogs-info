@@ -1,27 +1,29 @@
 ---
 import HubLayout from "../../layouts/HubLayout.astro";
-import fs from "node:fs";
-import path from "node:path";
+import "../../styles/models-vars.css";
+import { formatDate, formatPrice, formatTokenCount, loadModelsData, providerSlug } from "../../lib/models";
 
-const modelsDir = path.join(process.cwd(), "src/content/models");
-const files = fs.readdirSync(modelsDir).filter(f => f.endsWith(".json"));
-const providers = files.map(f => JSON.parse(fs.readFileSync(path.join(modelsDir, f), "utf-8")));
-
-const totalModels = providers.reduce((sum, p) => sum + p.models.length, 0);
-const totalProviders = providers.length;
+const {
+  featured,
+  models,
+  providers,
+  statuses,
+  types,
+  stats,
+} = loadModelsData();
 
 const brandColors: Record<string, string> = {
-  "Anthropic": "#ffb800",
-  "OpenAI": "#10a37f",
-  "Google": "#4285f4",
-  "DeepSeek": "#6366f1",
-  "xAI": "#1d9bf0",
-  "Moonshot": "#a855f7",
-  "ZAI": "#ff6b35",
-  "Minimax": "#06b6d4",
-  "Meta": "#0668E1",
-  "Mistral": "#ff7000",
-  "Qwen": "#7c3aed",
+  Anthropic: "#ffb800",
+  OpenAI: "#10a37f",
+  Google: "#4285f4",
+  DeepSeek: "#6366f1",
+  xAI: "#1d9bf0",
+  "Moonshot AI": "#a855f7",
+  ZAI: "#ff6b35",
+  Minimax: "#06b6d4",
+  Meta: "#0668E1",
+  Mistral: "#ff7000",
+  Qwen: "#7c3aed",
 };
 
 const typeColors: Record<string, string> = {
@@ -30,584 +32,1082 @@ const typeColors: Record<string, string> = {
   fast: "#22c55e",
   reasoning: "#a855f7",
   coding: "#3b82f6",
+  multimodal: "#ec4899",
   "open-weight": "#06b6d4",
 };
+
+const statusColors: Record<string, string> = {
+  active: "#22c55e",
+  preview: "#f59e0b",
+  legacy: "#64748b",
+  deprecated: "#ef4444",
+};
+
+function contextBucket(tokens: number | null): string {
+  if (tokens == null) return "unknown";
+  if (tokens <= 128_000) return "0-128k";
+  if (tokens <= 512_000) return "129k-512k";
+  if (tokens <= 1_000_000) return "513k-1m";
+  return "gt-1m";
+}
+
+function outputBucket(tokens: number | null): string {
+  if (tokens == null) return "unknown";
+  if (tokens <= 8_000) return "0-8k";
+  if (tokens <= 32_000) return "9k-32k";
+  if (tokens <= 64_000) return "33k-64k";
+  return "gt-64k";
+}
+
+function pricingSummary(model: (typeof models)[number]): string {
+  if (!model.primaryPrice) {
+    return "No listed pricing";
+  }
+  const source = model.pricingSource === "provider" ? "API" : "OpenRouter";
+  return `${formatPrice(model.inputPrice)} / ${formatPrice(model.outputPrice)} per 1M tok • ${source}`;
+}
 ---
 
-<HubLayout title="Models — changelogs.info" description="Every AI model. Every update. Every provider." currentSection="models">
-
-  <!-- Hero -->
-  <section class="m-hero">
-    <div class="m-hero__eyebrow">
-      <span class="m-hero__dot"></span>
-      AI Model Tracker
+<HubLayout
+  title="Models — changelogs.info"
+  description="Search, sort, and filter AI models across providers with lifecycle signals, pricing transparency, and release intelligence."
+  currentSection="models"
+>
+  <section class="models-hero">
+    <div class="models-hero__eyebrow">
+      <span class="models-hero__dot"></span>
+      AI model directory
     </div>
-    <h1 class="m-hero__title">
-      <span class="m-hero__glitch" data-text="MODELS">MODELS</span>
-    </h1>
-    <p class="m-hero__sub">Every model. Every update. Every provider.</p>
-    <div class="m-hero__stats">
-      <div class="m-hero__stat">
-        <span class="m-hero__stat-num">{totalModels}</span>
-        <span class="m-hero__stat-label">models</span>
+    <div class="models-hero__grid">
+      <div class="models-hero__copy">
+        <h1 class="models-hero__title">Global model directory</h1>
+        <p class="models-hero__sub">
+          Search every tracked model across providers, compare lifecycle state, and make faster decisions without pretending the data is cleaner than it is.
+        </p>
+        <div class="models-hero__actions">
+          <a href="#directory" class="models-btn">Browse directory</a>
+          <a href="/models/changelog/" class="models-btn models-btn--ghost">Model timeline</a>
+        </div>
       </div>
-      <div class="m-hero__stat-divider"></div>
-      <div class="m-hero__stat">
-        <span class="m-hero__stat-num">{totalProviders}</span>
-        <span class="m-hero__stat-label">providers</span>
-      </div>
-      <div class="m-hero__stat-divider"></div>
-      <div class="m-hero__stat">
-        <span class="m-hero__stat-dot"></span>
-        <span class="m-hero__stat-label">Updated daily</span>
+
+      <div class="models-hero__stats">
+        <div class="models-stat">
+          <span class="models-stat__value">{stats.totalModels}</span>
+          <span class="models-stat__label">tracked models</span>
+        </div>
+        <div class="models-stat">
+          <span class="models-stat__value">{stats.totalProviders}</span>
+          <span class="models-stat__label">providers</span>
+        </div>
+        <div class="models-stat">
+          <span class="models-stat__value">{stats.activeCount}</span>
+          <span class="models-stat__label">live or preview</span>
+        </div>
+        <div class="models-stat">
+          <span class="models-stat__value">{stats.upcomingDeprecations}</span>
+          <span class="models-stat__label">scheduled retirements</span>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Providers -->
-  <section class="m-section">
-    <div class="m-label">// providers</div>
-    <div class="m-grid">
-      {providers.map((p) => {
-        const color = brandColors[p.provider] || "#a855f7";
+  <section class="models-section">
+    <div class="models-section__head">
+      <div>
+        <div class="models-label">// decision_intelligence</div>
+        <h2 class="models-section__title">Shortlist picks</h2>
+      </div>
+      <p class="models-section__note">
+        These are heuristic recommendations from structured metadata in <code>src/content/models/*.json</code>, not normalized benchmarks.
+      </p>
+    </div>
+
+    <div class="featured-grid">
+      {featured.map((pick) => {
+        const model = pick.model;
+        const accent = model ? brandColors[model.provider] || "#a855f7" : "#a855f7";
         return (
-          <div class="m-card" style={`--accent: ${color};`}>
-            <div class="m-card__stripe"></div>
-            <div class="m-card__head">
-              <div class="m-card__icon" style={`background: ${color};`}>{p.provider[0]}</div>
-              <div class="m-card__info">
-                <h3 class="m-card__name">{p.provider.toUpperCase()}</h3>
-                <span class="m-card__badge">{p.models.length} models</span>
+          <article class="featured-card" style={`--accent:${accent};`}>
+            <div class="featured-card__top">
+              <div>
+                <p class="featured-card__kicker">{pick.subtitle}</p>
+                <h3 class="featured-card__title">{pick.title}</h3>
               </div>
+              {model && <span class="featured-card__provider">{model.provider}</span>}
             </div>
-            <div class="m-card__list">
-              {p.models.map((m: any) => (
-                <div class="m-model">
-                  <div class="m-model__row">
-                    <span class="m-model__name">{m.name}</span>
-                    <span class="m-model__type" style={`--tc: ${typeColors[m.type] || '#888'};`}>{m.type}</span>
-                  </div>
-                  <div class="m-model__meta">
-                    <span>{m.context} ctx</span>
-                    <span class="m-model__sep">·</span>
-                    <span>{m.released}</span>
-                  </div>
+
+            {model ? (
+              <>
+                <div class="featured-card__model">{model.name}</div>
+                <p class="featured-card__why">{pick.rationale}</p>
+                <div class="featured-card__facts">
+                  <span>{model.type}</span>
+                  <span>{model.context ?? "ctx unknown"}</span>
+                  <span>{model.max_output ?? "output unknown"}</span>
+                  <span>{pricingSummary(model)}</span>
                 </div>
-              ))}
-            </div>
-          </div>
+                {pick.alternatives.length > 0 && (
+                  <p class="featured-card__alts">Also worth a look: {pick.alternatives.join(", ")}</p>
+                )}
+              </>
+            ) : (
+              <p class="featured-card__why">No model in the current dataset satisfies this slot yet.</p>
+            )}
+          </article>
         );
       })}
     </div>
   </section>
 
-  <!-- What Changes -->
-  <section class="m-section">
-    <div class="m-label">// what_changes</div>
-    <div class="m-stats">
-      <div class="m-stat-box">
-        <div class="m-stat-box__icon">▲</div>
-        <div class="m-stat-box__title">NEW MODELS</div>
-        <div class="m-stat-box__desc">Fresh releases and launches</div>
+  <section class="models-section">
+    <div class="models-section__head">
+      <div>
+        <div class="models-label">// transparency</div>
+        <h2 class="models-section__title">Confidence and caveats</h2>
       </div>
-      <div class="m-stat-box">
-        <div class="m-stat-box__icon">◆</div>
-        <div class="m-stat-box__title">CAPABILITY UPDATES</div>
-        <div class="m-stat-box__desc">Context, tools, multimodal</div>
-      </div>
-      <div class="m-stat-box">
-        <div class="m-stat-box__icon">★</div>
-        <div class="m-stat-box__title">BREAKING CHANGES</div>
-        <div class="m-stat-box__desc">API shifts, deprecations</div>
-      </div>
-      <div class="m-stat-box">
-        <div class="m-stat-box__icon">$</div>
-        <div class="m-stat-box__title">PRICING SHIFTS</div>
-        <div class="m-stat-box__desc">Cost changes, new tiers</div>
-      </div>
+    </div>
+
+    <div class="confidence-grid">
+      <article class="confidence-card">
+        <h3>Pricing is not uniformly first-party</h3>
+        <p>
+          Some open-weight models only have an <strong>OpenRouter</strong> price in the source data. Those cards are clearly labeled so you do not mistake routed pricing for the provider’s own API price.
+        </p>
+      </article>
+      <article class="confidence-card">
+        <h3>Null means unknown, not zero</h3>
+        <p>
+          Missing context, output, or cutoff values stay marked as unknown. Rankings that depend on those fields will naturally favor models with published numbers.
+        </p>
+      </article>
+      <article class="confidence-card">
+        <h3>Preview models are separated</h3>
+        <p>
+          Preview entries are treated as live for discovery, but the UI calls out that availability and pricing may move faster than stable models.
+        </p>
+      </article>
     </div>
   </section>
 
-  <!-- Roadmap -->
-  <section class="m-section">
-    <div class="m-label">// roadmap</div>
-    <div class="m-terminal">
-      <div class="m-terminal__bar">
-        <span class="m-terminal__dot" style="background:#ef4444;"></span>
-        <span class="m-terminal__dot" style="background:#f59e0b;"></span>
-        <span class="m-terminal__dot" style="background:#22c55e;"></span>
-        <span class="m-terminal__title">coming_soon.sh</span>
+  <section class="models-section" id="directory">
+    <div class="models-section__head">
+      <div>
+        <div class="models-label">// directory</div>
+        <h2 class="models-section__title">Searchable model index</h2>
       </div>
-      <div class="m-terminal__body">
-        <p class="m-terminal__line"><span class="m-terminal__prompt">$</span> Model changelog timeline — per-model version history with diffs</p>
-        <p class="m-terminal__line"><span class="m-terminal__prompt">$</span> Comparison tools — side-by-side model benchmarks</p>
-        <p class="m-terminal__line"><span class="m-terminal__prompt">$</span> Pricing tracker — real-time cost monitoring across providers</p>
-        <p class="m-terminal__line"><span class="m-terminal__prompt">$</span> <span class="m-terminal__blink">_</span></p>
+      <div class="directory-summary">
+        <span id="models-count">{models.length}</span>
+        <span>models shown</span>
       </div>
+    </div>
+
+    <div class="controls-shell">
+      <div class="controls-row controls-row--top">
+        <label class="control-search">
+          <span class="control-search__label">search</span>
+          <input
+            id="models-search"
+            class="control-search__input"
+            type="search"
+            placeholder="name, provider, api id, notes, lineage..."
+          />
+        </label>
+
+        <label class="control-select">
+          <span class="control-search__label">sort</span>
+          <select id="models-sort" class="control-select__input">
+            <option value="recommended">Recommended</option>
+            <option value="newest">Newest release</option>
+            <option value="oldest">Oldest release</option>
+            <option value="context">Longest context</option>
+            <option value="output">Largest output</option>
+            <option value="cheapest-total">Cheapest total price</option>
+            <option value="cheapest-input">Cheapest input price</option>
+            <option value="provider">Provider A-Z</option>
+            <option value="name">Name A-Z</option>
+          </select>
+        </label>
+
+        <button id="models-reset" class="models-btn models-btn--ghost models-btn--small" type="button">Reset filters</button>
+      </div>
+
+      <div class="filter-group">
+        <span class="filter-group__label">Provider</span>
+        <div class="chip-row" data-group="provider">
+          {providers.map((provider) => (
+            <button class="filter-chip" type="button" data-group="provider" data-value={provider}>{provider}</button>
+          ))}
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <span class="filter-group__label">Lifecycle</span>
+        <div class="chip-row" data-group="status">
+          {statuses.map((status) => (
+            <button class="filter-chip" type="button" data-group="status" data-value={status}>{status}</button>
+          ))}
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <span class="filter-group__label">Type</span>
+        <div class="chip-row" data-group="type">
+          {types.map((type) => (
+            <button class="filter-chip" type="button" data-group="type" data-value={type}>{type}</button>
+          ))}
+        </div>
+      </div>
+
+      <div class="filters-grid">
+        <div class="filter-group">
+          <span class="filter-group__label">Vision</span>
+          <div class="chip-row chip-row--compact">
+            <button class="filter-chip is-active" type="button" data-boolean="vision" data-value="any">Any</button>
+            <button class="filter-chip" type="button" data-boolean="vision" data-value="yes">Yes</button>
+            <button class="filter-chip" type="button" data-boolean="vision" data-value="no">No</button>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <span class="filter-group__label">Function calling</span>
+          <div class="chip-row chip-row--compact">
+            <button class="filter-chip is-active" type="button" data-boolean="function" data-value="any">Any</button>
+            <button class="filter-chip" type="button" data-boolean="function" data-value="yes">Yes</button>
+            <button class="filter-chip" type="button" data-boolean="function" data-value="no">No</button>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <span class="filter-group__label">Pricing</span>
+          <div class="chip-row chip-row--compact">
+            <button class="filter-chip is-active" type="button" data-boolean="pricing" data-value="any">Any</button>
+            <button class="filter-chip" type="button" data-boolean="pricing" data-value="listed">Listed</button>
+            <button class="filter-chip" type="button" data-boolean="pricing" data-value="missing">Missing</button>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <span class="filter-group__label">Context</span>
+          <div class="chip-row chip-row--compact">
+            <button class="filter-chip is-active" type="button" data-boolean="context" data-value="any">Any</button>
+            <button class="filter-chip" type="button" data-boolean="context" data-value="0-128k">≤128K</button>
+            <button class="filter-chip" type="button" data-boolean="context" data-value="129k-512k">129K-512K</button>
+            <button class="filter-chip" type="button" data-boolean="context" data-value="513k-1m">513K-1M</button>
+            <button class="filter-chip" type="button" data-boolean="context" data-value="gt-1m">{">"}1M</button>
+            <button class="filter-chip" type="button" data-boolean="context" data-value="unknown">Unknown</button>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <span class="filter-group__label">Output</span>
+          <div class="chip-row chip-row--compact">
+            <button class="filter-chip is-active" type="button" data-boolean="output" data-value="any">Any</button>
+            <button class="filter-chip" type="button" data-boolean="output" data-value="0-8k">≤8K</button>
+            <button class="filter-chip" type="button" data-boolean="output" data-value="9k-32k">9K-32K</button>
+            <button class="filter-chip" type="button" data-boolean="output" data-value="33k-64k">33K-64K</button>
+            <button class="filter-chip" type="button" data-boolean="output" data-value="gt-64k">{">"}64K</button>
+            <button class="filter-chip" type="button" data-boolean="output" data-value="unknown">Unknown</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cards-grid" id="models-grid">
+      {models.map((model, index) => {
+        const accent = brandColors[model.provider] || "#a855f7";
+        return (
+          <article
+            class="model-card"
+            style={`--accent:${accent};--type:${typeColors[model.type] || "#888"};--status:${statusColors[model.status] || "#888"};`}
+            data-rank={index}
+            data-name={model.name.toLowerCase()}
+            data-provider={model.provider}
+            data-status={model.status}
+            data-type={model.type}
+            data-vision={model.vision ? "yes" : "no"}
+            data-function={model.function_calling ? "yes" : "no"}
+            data-pricing={model.primaryPrice ? "listed" : "missing"}
+            data-context={contextBucket(model.contextTokens)}
+            data-output={outputBucket(model.outputTokens)}
+            data-released={model.releaseTs}
+            data-context-value={model.contextTokens ?? -1}
+            data-output-value={model.outputTokens ?? -1}
+            data-total-price={model.totalPrice ?? 999999}
+            data-input-price={model.inputPrice ?? 999999}
+            data-search={model.searchText}
+          >
+            <div class="model-card__head">
+              <div>
+                <div class="model-card__provider">{model.provider}</div>
+                <h3 class="model-card__name">{model.name}</h3>
+              </div>
+              <div class="model-card__badges">
+                <span class="model-pill model-pill--status">{model.status}</span>
+                <span class="model-pill model-pill--type">{model.type}</span>
+              </div>
+            </div>
+
+            <p class="model-card__desc">{model.description ?? model.notes ?? "No description yet."}</p>
+
+            <div class="model-card__metrics">
+              <div class="metric">
+                <span class="metric__label">Context</span>
+                <span class="metric__value">{model.context ?? "Unknown"}</span>
+              </div>
+              <div class="metric">
+                <span class="metric__label">Max output</span>
+                <span class="metric__value">{model.max_output ?? "Unknown"}</span>
+              </div>
+              <div class="metric">
+                <span class="metric__label">Pricing /1M tok</span>
+                <span class="metric__value">{pricingSummary(model)}</span>
+              </div>
+              <div class="metric">
+                <span class="metric__label">Released</span>
+                <span class="metric__value">{formatDate(model.released)}</span>
+              </div>
+            </div>
+
+            <div class="model-card__meta">
+              <span>API: <code>{model.api_id}</code></span>
+              <span>Vision: {model.vision ? "Yes" : "No"}</span>
+              <span>Functions: {model.function_calling ? "Yes" : "No"}</span>
+              <span>Cutoff: {model.knowledge_cutoff ?? "Unknown"}</span>
+            </div>
+
+            {(model.predecessor || model.successor || model.deprecated_date) && (
+              <div class="lineage-box">
+                <div class="lineage-box__label">Lifecycle</div>
+                <div class="lineage-box__items">
+                  {model.predecessor && <span>Predecessor: <code>{model.predecessor}</code></span>}
+                  {model.successor && <span>Successor: <code>{model.successor}</code></span>}
+                  {model.deprecated_date && <span>Retires: {formatDate(model.deprecated_date)}</span>}
+                </div>
+              </div>
+            )}
+
+            {model.confidenceFlags.length > 0 && (
+              <div class="confidence-box">
+                <div class="confidence-box__label">Data caveats</div>
+                <div class="confidence-box__items">
+                  {model.confidenceFlags.slice(0, 3).map((flag) => <span>{flag}</span>)}
+                </div>
+              </div>
+            )}
+
+            <div class="model-card__provider-link">
+              <a href={`/models/${providerSlug(model.provider)}/`} class="provider-link">
+                All {model.provider} models →
+              </a>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+
+    <div id="models-empty" class="empty-state" hidden>
+      <h3>No models match the current filters.</h3>
+      <p>Loosen one of the capability or lifecycle filters, or clear search and start broader.</p>
     </div>
   </section>
 
-  <!-- CTA -->
-  <section class="m-cta">
-    <p class="m-cta__text">Model changes are also tracked within each tool's changelog.</p>
-    <div class="m-cta__links">
-      <a href="/openclaw/" class="m-cta__link" style="color: #eb0000;">OpenClaw</a>
-      <span class="m-cta__sep">|</span>
-      <a href="/claude-code/" class="m-cta__link" style="color: #f59e0b;">Claude Code</a>
-      <span class="m-cta__sep">|</span>
-      <a href="/codex-cli/" class="m-cta__link" style="color: #00c851;">Codex</a>
-      <span class="m-cta__sep">|</span>
-      <a href="/gemini-cli/" class="m-cta__link" style="color: #4285f4;">Gemini CLI</a>
+  <section class="models-cta">
+    <div>
+      <div class="models-label">// next</div>
+      <h2 class="models-section__title">Need change history?</h2>
+      <p class="models-section__note">
+        The model timeline now tracks releases and retirements across providers in reverse chronological order.
+      </p>
     </div>
-    <div class="m-cta__bottom">
-      <a href="/models/changelog/" class="m-cta__rss">Model Changelog →</a>
-      <a href="/rss.xml" class="m-cta__rss">RSS Feed</a>
-    </div>
+    <a href="/models/changelog/" class="models-btn">Open model changelog</a>
   </section>
-
 </HubLayout>
 
+<script is:inline>
+  (function () {
+    const grid = document.getElementById("models-grid");
+    const count = document.getElementById("models-count");
+    const empty = document.getElementById("models-empty");
+    const searchInput = document.getElementById("models-search");
+    const sortSelect = document.getElementById("models-sort");
+    const resetButton = document.getElementById("models-reset");
+
+    if (!grid || !count || !empty || !searchInput || !sortSelect || !resetButton) {
+      return;
+    }
+
+    const cards = Array.from(grid.querySelectorAll(".model-card"));
+    const state = {
+      search: "",
+      sort: "recommended",
+      provider: new Set(),
+      status: new Set(),
+      type: new Set(),
+      vision: "any",
+      function: "any",
+      pricing: "any",
+      context: "any",
+      output: "any",
+    };
+
+    function sortCards(items) {
+      const sorted = [...items];
+      sorted.sort((a, b) => {
+        const aName = a.dataset.name || "";
+        const bName = b.dataset.name || "";
+        const aProvider = a.dataset.provider || "";
+        const bProvider = b.dataset.provider || "";
+        const numeric = (node, key) => Number(node.dataset[key] || 0);
+
+        switch (state.sort) {
+          case "newest":
+            return numeric(b, "released") - numeric(a, "released") || aName.localeCompare(bName);
+          case "oldest":
+            return numeric(a, "released") - numeric(b, "released") || aName.localeCompare(bName);
+          case "context":
+            return numeric(b, "contextValue") - numeric(a, "contextValue") || aName.localeCompare(bName);
+          case "output":
+            return numeric(b, "outputValue") - numeric(a, "outputValue") || aName.localeCompare(bName);
+          case "cheapest-total":
+            return numeric(a, "totalPrice") - numeric(b, "totalPrice") || aName.localeCompare(bName);
+          case "cheapest-input":
+            return numeric(a, "inputPrice") - numeric(b, "inputPrice") || aName.localeCompare(bName);
+          case "provider":
+            return aProvider.localeCompare(bProvider) || aName.localeCompare(bName);
+          case "name":
+            return aName.localeCompare(bName);
+          default:
+            return numeric(a, "rank") - numeric(b, "rank");
+        }
+      });
+
+      sorted.forEach((card) => grid.appendChild(card));
+    }
+
+    function matchesSetFilter(set, value) {
+      return set.size === 0 || set.has(value);
+    }
+
+    function applyFilters() {
+      const query = state.search.trim().toLowerCase();
+      let visible = 0;
+      const visibleCards = [];
+
+      cards.forEach((card) => {
+        const matches =
+          (!query || (card.dataset.search || "").includes(query)) &&
+          matchesSetFilter(state.provider, card.dataset.provider) &&
+          matchesSetFilter(state.status, card.dataset.status) &&
+          matchesSetFilter(state.type, card.dataset.type) &&
+          (state.vision === "any" || card.dataset.vision === state.vision) &&
+          (state.function === "any" || card.dataset.function === state.function) &&
+          (state.pricing === "any" || card.dataset.pricing === state.pricing) &&
+          (state.context === "any" || card.dataset.context === state.context) &&
+          (state.output === "any" || card.dataset.output === state.output);
+
+        card.hidden = !matches;
+        if (matches) {
+          visible += 1;
+          visibleCards.push(card);
+        }
+      });
+
+      sortCards(visibleCards);
+      count.textContent = String(visible);
+      empty.hidden = visible !== 0;
+    }
+
+    function toggleSetFilter(group, value) {
+      if (state[group].has(value)) {
+        state[group].delete(value);
+      } else {
+        state[group].add(value);
+      }
+      applyFilters();
+    }
+
+    searchInput.addEventListener("input", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLInputElement)) {
+        return;
+      }
+      state.search = target.value;
+      applyFilters();
+    });
+
+    sortSelect.addEventListener("change", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLSelectElement)) {
+        return;
+      }
+      state.sort = target.value;
+      applyFilters();
+    });
+
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) {
+        return;
+      }
+
+      const button = target.closest(".filter-chip");
+      if (!button) {
+        return;
+      }
+
+      const group = button.dataset.group;
+      const booleanGroup = button.dataset.boolean;
+      const value = button.dataset.value;
+
+      if (group && value) {
+        button.classList.toggle("is-active");
+        toggleSetFilter(group, value);
+        return;
+      }
+
+      if (booleanGroup && value) {
+        document
+          .querySelectorAll(`.filter-chip[data-boolean="${booleanGroup}"]`)
+          .forEach((node) => node.classList.remove("is-active"));
+        button.classList.add("is-active");
+        state[booleanGroup] = value;
+        applyFilters();
+      }
+    });
+
+    resetButton.addEventListener("click", () => {
+      state.search = "";
+      state.sort = "recommended";
+      state.provider.clear();
+      state.status.clear();
+      state.type.clear();
+      state.vision = "any";
+      state.function = "any";
+      state.pricing = "any";
+      state.context = "any";
+      state.output = "any";
+
+      searchInput.value = "";
+      sortSelect.value = "recommended";
+      document.querySelectorAll(".filter-chip").forEach((node) => {
+        const isBooleanAny = node.dataset.boolean && node.dataset.value === "any";
+        node.classList.toggle("is-active", Boolean(isBooleanAny));
+      });
+      applyFilters();
+    });
+
+    applyFilters();
+  })();
+</script>
+
 <style is:global>
-  :root,
-  [data-theme="light"] {
-    --m-bg: #f8fbff;
-    --m-bg-card: #ffffff;
-    --m-bg-surface: #f0f0f0;
-    --m-text: #0a0a0a;
-    --m-text-dim: #3a3a3a;
-    --m-text-muted: #6a6a6a;
-    --m-border: #0a0a0a;
-    --m-border-dim: rgba(10,10,10,0.15);
-    --m-shadow: 6px 6px 0px 0px rgba(10,10,10,0.9);
-    --m-shadow-hover: 9px 9px 0px 0px rgba(10,10,10,1);
-    --m-accent: #a855f7;
-  }
-  [data-theme="dark"] {
-    --m-bg: #0a0a0a;
-    --m-bg-card: #111111;
-    --m-bg-surface: #1a1a1a;
-    --m-text: #f0f0f0;
-    --m-text-dim: #b0b0b0;
-    --m-text-muted: #707070;
-    --m-border: #f0f0f0;
-    --m-border-dim: rgba(240,240,240,0.15);
-    --m-shadow: 6px 6px 0px 0px rgba(240,240,240,0.12);
-    --m-shadow-hover: 9px 9px 0px 0px rgba(240,240,240,0.15);
-    --m-accent: #a855f7;
-  }
-
-  /* Hero */
-  .m-hero {
+  .models-hero,
+  .models-section,
+  .models-cta {
     max-width: 1280px;
     margin: 0 auto;
-    padding: 5rem 2rem 3rem;
-    text-align: center;
-  }
-  .m-hero__eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    color: var(--m-accent);
-    margin-bottom: 1.5rem;
-  }
-  .m-hero__dot {
-    width: 8px; height: 8px;
-    background: var(--m-accent);
-  }
-  .m-hero__title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(4rem, 12vw, 8rem);
-    font-weight: 900;
-    letter-spacing: -0.06em;
-    line-height: 0.85;
-    text-transform: uppercase;
-    margin-bottom: 1.5rem;
-  }
-  .m-hero__glitch {
-    position: relative;
-    color: var(--m-text);
-    display: inline-block;
-  }
-  .m-hero__glitch::before,
-  .m-hero__glitch::after {
-    content: attr(data-text);
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    pointer-events: none;
-  }
-  .m-hero__glitch::before {
-    color: var(--m-accent);
-    clip-path: inset(0 0 65% 0);
-    transform: translate(-3px, -2px);
-    opacity: 0.7;
-  }
-  .m-hero__glitch::after {
-    color: #ef4444;
-    clip-path: inset(60% 0 0 0);
-    transform: translate(3px, 2px);
-    opacity: 0.5;
-  }
-  .m-hero__sub {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1rem;
-    color: var(--m-text-dim);
-    margin-bottom: 2rem;
-  }
-  .m-hero__stats {
-    display: inline-flex;
-    align-items: center;
-    gap: 1rem;
-    background: var(--m-bg-card);
-    border: 4px solid var(--m-border);
-    box-shadow: var(--m-shadow);
-    padding: 1rem 2rem;
-  }
-  .m-hero__stat {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-  }
-  .m-hero__stat-num {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.8rem;
-    font-weight: 900;
-    color: var(--m-accent);
-  }
-  .m-hero__stat-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--m-text-muted);
-  }
-  .m-hero__stat-dot {
-    width: 8px; height: 8px;
-    background: #22c55e;
-    animation: m-pulse 2s ease-in-out infinite;
-  }
-  .m-hero__stat-divider {
-    width: 4px; height: 28px;
-    background: var(--m-border-dim);
-  }
-  @keyframes m-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-
-  /* Sections */
-  .m-section {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 2rem 2rem 3rem;
-  }
-  .m-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.25em;
-    color: var(--m-text-muted);
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-  .m-label::after {
-    content: '';
-    flex: 1;
-    height: 4px;
-    background: var(--m-border);
-  }
-
-  /* Provider grid */
-  .m-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 1.5rem;
-  }
-
-  /* Card */
-  .m-card {
-    background: var(--m-bg-card);
-    border: 4px solid var(--m-border);
-    box-shadow: var(--m-shadow);
-    padding: 1.5rem;
-    position: relative;
-    overflow: hidden;
-    transition: transform 100ms, box-shadow 100ms;
-    animation: m-reveal both;
-    animation-timeline: view();
-    animation-range: entry;
-  }
-  @keyframes m-reveal {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .m-card:hover {
-    transform: translate(-3px, -3px);
-    box-shadow: var(--m-shadow-hover);
-  }
-  .m-card__stripe {
-    position: absolute;
-    top: 0; left: 0;
-    width: 6px; height: 100%;
-    background: var(--accent);
-  }
-  .m-card__head {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-    padding-left: 0.75rem;
-  }
-  .m-card__icon {
-    width: 40px; height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 900;
-    color: #fff;
-    flex-shrink: 0;
-  }
-  .m-card__name {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-    color: var(--m-text);
-  }
-  .m-card__badge {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--m-text-muted);
-    border: 2px solid var(--m-border-dim);
-    padding: 0.15rem 0.5rem;
-  }
-  .m-card__info {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-  .m-card__list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    border-top: 2px solid var(--m-border-dim);
-    padding-top: 0.75rem;
-    padding-left: 0.75rem;
-  }
-  .m-model__row {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    justify-content: space-between;
-  }
-  .m-model__name {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--m-text);
-  }
-  .m-model__type {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.6rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--tc);
-    border: 2px solid var(--tc);
-    padding: 0.1rem 0.4rem;
-    background: transparent;
-  }
-  .m-model__meta {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--m-text-muted);
-    display: flex;
-    gap: 0.3rem;
-    margin-top: 0.1rem;
-  }
-  .m-model__sep {
-    opacity: 0.4;
-  }
-
-  /* Stat boxes */
-  .m-stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.25rem;
-  }
-  .m-stat-box {
-    border: 4px solid var(--m-border);
-    box-shadow: var(--m-shadow);
-    background: var(--m-bg-card);
-    padding: 1.5rem;
-    transition: transform 100ms, box-shadow 100ms;
-    animation: m-reveal both;
-    animation-timeline: view();
-    animation-range: entry;
-  }
-  .m-stat-box:hover {
-    transform: translate(-3px, -3px);
-    box-shadow: var(--m-shadow-hover);
-  }
-  .m-stat-box__icon {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.5rem;
-    color: var(--m-accent);
-    margin-bottom: 0.75rem;
-  }
-  .m-stat-box__title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    color: var(--m-text);
-    margin-bottom: 0.3rem;
-  }
-  .m-stat-box__desc {
-    font-family: 'Work Sans', sans-serif;
-    font-size: 0.78rem;
-    color: var(--m-text-muted);
-  }
-
-  /* Terminal */
-  .m-terminal {
-    border: 4px solid var(--m-border);
-    box-shadow: var(--m-shadow);
-    background: var(--m-bg-card);
-    overflow: hidden;
-    animation: m-reveal both;
-    animation-timeline: view();
-    animation-range: entry;
-  }
-  .m-terminal__bar {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.6rem 1rem;
-    background: var(--m-bg-surface);
-    border-bottom: 3px solid var(--m-border);
-  }
-  .m-terminal__dot {
-    width: 10px; height: 10px;
-  }
-  .m-terminal__title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: var(--m-text-muted);
-    margin-left: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-  .m-terminal__body {
-    padding: 1.25rem 1.5rem;
-  }
-  .m-terminal__line {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.78rem;
-    color: var(--m-text-dim);
-    margin-bottom: 0.5rem;
-    display: flex;
-    gap: 0.5rem;
-  }
-  .m-terminal__prompt {
-    color: var(--m-accent);
-    font-weight: 700;
-  }
-  .m-terminal__blink {
-    animation: m-blink 1s step-end infinite;
-  }
-  @keyframes m-blink {
-    50% { opacity: 0; }
-  }
-
-  /* CTA */
-  .m-cta {
-    max-width: 1280px;
-    margin: 0 auto 4rem;
     padding: 0 2rem;
   }
-  .m-cta {
-    background: var(--m-bg-card);
-    border: 4px solid var(--m-border);
-    box-shadow: var(--m-shadow);
-    padding: 2rem;
-    text-align: center;
-  }
-  .m-cta__text {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-    color: var(--m-text-muted);
-    margin-bottom: 1rem;
-  }
-  .m-cta__links {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    flex-wrap: wrap;
-    margin-bottom: 1.5rem;
-  }
-  .m-cta__link {
-    text-decoration: none;
-    transition: opacity 100ms;
-  }
-  .m-cta__link:hover { opacity: 0.7; }
-  .m-cta__sep { color: var(--m-border-dim); }
-  .m-cta__bottom {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-  }
-  .m-cta__rss {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--m-accent);
-    text-decoration: none;
-    border: 2px solid var(--m-accent);
-    padding: 0.35rem 0.85rem;
-    transition: background 100ms, color 100ms;
-  }
-  .m-cta__rss:hover {
-    background: var(--m-accent);
-    color: #fff;
+
+  .models-hero {
+    padding-top: 4.5rem;
+    padding-bottom: 2rem;
   }
 
-  /* Responsive */
-  @media (max-width: 768px) {
-    .m-grid { grid-template-columns: 1fr; }
-    .m-stats { grid-template-columns: repeat(2, 1fr); }
-    .m-hero { padding: 3rem 1.25rem 2rem; }
-    .m-hero__title { font-size: clamp(2.5rem, 14vw, 4rem); }
-    .m-section { padding: 1.5rem 1.25rem 2rem; }
-    .m-cta { padding: 0 1.25rem; margin-bottom: 2rem; }
+  .models-hero__eyebrow,
+  .models-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--hub-font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--models-accent);
   }
-  @media (max-width: 480px) {
-    .m-stats { grid-template-columns: 1fr; }
-    .m-hero__stats { flex-direction: column; gap: 0.5rem; }
-    .m-hero__stat-divider { width: 100%; height: 2px; }
+
+  .models-hero__dot {
+    width: 8px;
+    height: 8px;
+    background: var(--models-accent);
+  }
+
+  .models-hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.85fr);
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .models-hero__copy,
+  .models-hero__stats,
+  .featured-card,
+  .confidence-card,
+  .controls-shell,
+  .model-card,
+  .models-cta {
+    border: 4px solid var(--models-border);
+    background: var(--models-card);
+    box-shadow: var(--models-shadow);
+  }
+
+  .models-hero__copy {
+    padding: 2rem;
+    background:
+      linear-gradient(135deg, rgba(0, 145, 247, 0.14), transparent 55%),
+      linear-gradient(0deg, var(--models-card), var(--models-card));
+  }
+
+  .models-hero__title {
+    font-family: var(--hub-font-head);
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.05em;
+    margin-top: 1rem;
+  }
+
+  .models-hero__sub,
+  .models-section__note,
+  .model-card__desc,
+  .confidence-card p,
+  .featured-card__why,
+  .empty-state p {
+    color: var(--models-text-dim);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .models-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 1.5rem;
+  }
+
+  .models-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0.8rem 1.2rem;
+    border: 3px solid var(--models-border);
+    background: var(--models-accent);
+    color: #ffffff;
+    text-decoration: none;
+    font-family: var(--hub-font-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .models-btn--ghost {
+    background: transparent;
+    color: var(--models-text);
+  }
+
+  .models-btn--small {
+    min-height: 42px;
+    padding: 0.65rem 1rem;
+  }
+
+  .models-hero__stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    padding: 1px;
+    background: var(--models-border);
+  }
+
+  .models-stat {
+    padding: 1.5rem;
+    background: var(--models-surface);
+    min-height: 145px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .models-stat__value {
+    font-family: var(--hub-font-head);
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    line-height: 1;
+    letter-spacing: -0.05em;
+  }
+
+  .models-stat__label,
+  .filter-group__label,
+  .control-search__label,
+  .metric__label,
+  .lineage-box__label,
+  .confidence-box__label,
+  .featured-card__kicker,
+  .directory-summary,
+  .model-card__provider {
+    font-family: var(--hub-font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.74rem;
+    color: var(--models-text-muted);
+  }
+
+  .models-section {
+    padding-top: 2rem;
+    padding-bottom: 1rem;
+  }
+
+  .models-section__head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: end;
+    margin-bottom: 1.25rem;
+  }
+
+  .models-section__title {
+    font-family: var(--hub-font-head);
+    font-size: clamp(1.9rem, 4vw, 3rem);
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin-top: 0.45rem;
+  }
+
+  .featured-grid,
+  .confidence-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .featured-grid {
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  }
+
+  .featured-card,
+  .confidence-card {
+    padding: 1.35rem;
+  }
+
+  .featured-card {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .featured-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 10px;
+    background: var(--accent);
+  }
+
+  .featured-card__top {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .featured-card__title,
+  .confidence-card h3,
+  .empty-state h3 {
+    font-family: var(--hub-font-head);
+    font-size: 1.4rem;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .featured-card__provider,
+  .model-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.55rem;
+    border: 2px solid var(--models-border);
+    background: var(--models-surface);
+    font-family: var(--hub-font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .featured-card__model {
+    font-family: var(--hub-font-head);
+    font-size: 2rem;
+    letter-spacing: -0.04em;
+    margin-top: 1rem;
+  }
+
+  .featured-card__why,
+  .featured-card__alts {
+    margin-top: 0.8rem;
+  }
+
+  .featured-card__facts,
+  .confidence-box__items,
+  .lineage-box__items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.9rem;
+  }
+
+  .featured-card__facts span,
+  .confidence-box__items span,
+  .lineage-box__items span {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.55rem;
+    background: var(--models-surface);
+    border: 2px solid var(--models-border-dim);
+    font-size: 0.8rem;
+  }
+
+  .confidence-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .controls-shell {
+    padding: 1.25rem;
+  }
+
+  .controls-row--top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 240px auto;
+    gap: 1rem;
+    align-items: end;
+  }
+
+  .control-search,
+  .control-select {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .control-search__input,
+  .control-select__input {
+    min-height: 52px;
+    border: 3px solid var(--models-border);
+    background: var(--models-surface);
+    color: var(--models-text);
+    padding: 0.9rem 1rem;
+    font-family: var(--hub-font-mono);
+    font-size: 0.92rem;
+  }
+
+  .filter-group {
+    margin-top: 1rem;
+  }
+
+  .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-top: 0.45rem;
+  }
+
+  .filters-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem 1rem;
+  }
+
+  .filter-chip {
+    border: 2px solid var(--models-border);
+    background: var(--models-card);
+    color: var(--models-text);
+    padding: 0.5rem 0.75rem;
+    font-family: var(--hub-font-mono);
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+  }
+
+  .filter-chip.is-active {
+    background: var(--models-accent);
+    color: #ffffff;
+  }
+
+  .directory-summary {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 0.55rem 0.8rem;
+    border: 2px solid var(--models-border);
+    background: var(--models-surface);
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .model-card {
+    padding: 1.25rem;
+    position: relative;
+  }
+
+  .model-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 8px;
+    background: var(--accent);
+  }
+
+  .model-card__head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .model-card__name {
+    font-family: var(--hub-font-head);
+    font-size: 1.8rem;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    margin-top: 0.25rem;
+  }
+
+  .model-card__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    justify-content: flex-end;
+  }
+
+  .model-pill--status {
+    border-color: var(--status);
+  }
+
+  .model-pill--type {
+    border-color: var(--type);
+  }
+
+  .model-card__metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .metric {
+    padding: 0.75rem;
+    border: 2px solid var(--models-border-dim);
+    background: var(--models-surface);
+  }
+
+  .metric__value,
+  .model-card__meta {
+    color: var(--models-text);
+    font-size: 0.92rem;
+  }
+
+  .model-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1rem;
+    margin-top: 1rem;
+    padding-top: 0.9rem;
+    border-top: 2px dashed var(--models-border-dim);
+  }
+
+  .lineage-box,
+  .confidence-box {
+    margin-top: 1rem;
+    padding: 0.9rem;
+    border: 2px solid var(--models-border-dim);
+    background: var(--models-surface);
+  }
+
+  .model-card__provider-link {
+    margin-top: 0.85rem;
+    padding-top: 0.85rem;
+    border-top: 2px dashed var(--models-border-dim);
+  }
+
+  .provider-link {
+    font-family: var(--hub-font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--models-accent);
+    text-decoration: none;
+    font-weight: 700;
+  }
+
+  .provider-link:hover {
+    text-decoration: underline;
+  }
+
+  .empty-state {
+    margin-top: 1rem;
+    padding: 2rem;
+    border: 4px dashed var(--models-border);
+    background: var(--models-surface);
+    text-align: center;
+  }
+
+  .models-cta {
+    margin-top: 2rem;
+    margin-bottom: 4rem;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .models-cta .models-section__note {
+    margin-top: 0.6rem;
+  }
+
+  @media (max-width: 1040px) {
+    .models-hero__grid,
+    .controls-row--top,
+    .filters-grid,
+    .models-cta {
+      grid-template-columns: 1fr;
+      display: grid;
+    }
+
+    .models-cta {
+      justify-content: stretch;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .models-hero,
+    .models-section,
+    .models-cta {
+      padding-left: 1.2rem;
+      padding-right: 1.2rem;
+    }
+
+    .models-hero__copy,
+    .featured-card,
+    .confidence-card,
+    .controls-shell,
+    .model-card,
+    .models-cta {
+      padding: 1rem;
+    }
+
+    .models-section__head,
+    .model-card__head {
+      flex-direction: column;
+      align-items: start;
+    }
+
+    .models-hero__stats,
+    .model-card__metrics {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
