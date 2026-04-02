@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.89",
-  "generated_at": "2026-04-01T23:14:06.756Z",
+  "version": "2.1.90",
+  "generated_at": "2026-04-02T00:29:27.938Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,17 +14,17 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.89",
-    "to_version": "2.1.89",
-    "new_features": [],
-    "new_commands": [],
-    "new_flags": [
-      "-p --resume",
-      "--mcp-config"
+    "from_version": "2.1.90",
+    "to_version": "2.1.90",
+    "new_features": [
+      "interactive-lessons"
     ],
+    "new_commands": [
+      "/powerup"
+    ],
+    "new_flags": [],
     "new_env_vars": [
-      "CLAUDE_CODE_NO_FLICKER",
-      "MCP_CONNECTION_NONBLOCKING"
+      "CLAUDE_CODE_PLUGIN_KEEP_MARKETPLACE_ON_FAILURE"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -45,12 +45,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.89",
+      "latest_stable": "2.1.90",
       "latest_release_date": "2026-04-01",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces the ability to defer permission decisions in `PreToolUse` hooks, allowing headless sessions to pause and resume with re-evaluated permissions. It also adds a `CLAUDE_CODE_NO_FLICKER` environment variable for flicker-free rendering and improves MCP connection handling. Auto mode now displays denied commands in the `/permissions` tab for retry. The release fixes several bugs, including issues with symlink handling, voice mode, structured output schemas, memory leaks, and prompt history truncation. Hook output over 50K characters is now saved to disk, and thinking summaries are disabled by default in interactive sessions."
+      "tldr": "Version 2.1.90 introduces interactive lessons accessible via the `/powerup` command, offering animated demos to teach Claude Code features. A new environment variable, `CLAUDE_CODE_PLUGIN_KEEP_MARKETPLACE_ON_FAILURE`, is added to preserve the marketplace cache in offline environments when `git pull` fails. This release also fixes a prompt-cache miss regression with `--resume` and addresses issues with file editing failures due to format-on-save hooks. PowerShell tool permission checks are hardened, and performance is improved for MCP tool schema lookups, SSE transport, and SDK sessions with long conversations. The `--resume` picker now excludes sessions created by `claude -p` or SDK invocations."
     },
     "features": [
       {
@@ -593,6 +593,15 @@
         "description": "Added `PermissionDenied` hook that fires after auto mode classifier denials. Returning `{retry: true}` tells the model it can retry the command.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "interactive-lessons",
+        "name": "Interactive Lessons",
+        "status": "experimental",
+        "since": "2.1.90",
+        "description": "Interactive lessons teaching Claude Code features with animated demos.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -896,6 +905,14 @@
         "since": "2.1.89",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "/powerup",
+        "syntax": "/powerup",
+        "description": "Interactive lessons teaching Claude Code features with animated demos",
+        "since": "2.1.90",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -1089,10 +1106,7 @@
           "source_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
         }
       ],
-      "new_since_previous": [
-        "-p --resume",
-        "--mcp-config"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
@@ -1225,6 +1239,13 @@
         "purpose": "Skip the MCP connection wait entirely in `-p` mode.",
         "status": "stable",
         "since": "2.1.89",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_PLUGIN_KEEP_MARKETPLACE_ON_FAILURE",
+        "purpose": "Keeps the existing marketplace cache when `git pull` fails, useful in offline environments.",
+        "status": "stable",
+        "since": "2.1.90",
         "source_url": ""
       }
     ],
