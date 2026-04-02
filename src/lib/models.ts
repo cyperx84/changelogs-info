@@ -369,6 +369,10 @@ export function providerSlug(provider: string): string {
   return provider.toLowerCase().replace(/\s+/g, "-");
 }
 
+export function modelSlug(modelId: string): string {
+  return modelId.toLowerCase().replace(/[^a-z0-9-]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+}
+
 export function formatDate(date: string): string {
   return new Intl.DateTimeFormat("en", {
     year: "numeric",

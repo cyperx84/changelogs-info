@@ -7,6 +7,7 @@ import {
   formatTokenCount,
   loadModelsData,
   providerSlug,
+  modelSlug,
 } from "../../lib/models";
 import type { ModelRecord, TimelineEvent } from "../../lib/models";
 
@@ -166,6 +167,10 @@ const pageDescription = `All ${providerModels.length} tracked ${provider} models
 
     <div class="pv-cards-grid">
       {sortedModels.map((model) => (
+        <a
+          href={`/models/${providerSlug(model.provider)}/${modelSlug(model.id)}/`}
+          class="pv-model-card-link"
+        >
         <article
           class="pv-model-card"
           style={`--accent:${accent};--type:${typeColors[model.type] ?? "#888"};--status:${statusColors[model.status] ?? "#888"};`}
@@ -220,6 +225,7 @@ const pageDescription = `All ${providerModels.length} tracked ${provider} models
             </div>
           )}
         </article>
+        </a>
       ))}
     </div>
   </section>
@@ -441,12 +447,24 @@ const pageDescription = `All ${providerModels.length} tracked ${provider} models
     gap: 1rem;
   }
 
+  .pv-model-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
   .pv-model-card {
     border: 4px solid var(--models-border, #0a0a0a);
     background: var(--models-card, #ffffff);
     box-shadow: var(--models-shadow, 6px 6px 0 0 rgba(10,10,10,0.9));
     padding: 1.25rem;
     position: relative;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+
+  .pv-model-card-link:hover .pv-model-card {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0 0 rgba(10,10,10,0.9);
   }
 
   .pv-model-card::before {
