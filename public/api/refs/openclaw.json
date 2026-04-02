@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.2",
-  "generated_at": "2026-04-02T20:13:45.469Z",
+  "generated_at": "2026-04-02T21:14:42.675Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -17,16 +17,14 @@
     "from_version": "2026.4.2",
     "to_version": "2026.4.2",
     "new_features": [],
-    "new_commands": [
-      "openclaw tasks flow"
-    ],
+    "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "xai-config-migration",
-      "web-fetch-config-migration"
+      "plugins-xai-x-search-config-migration",
+      "plugins-web-fetch-firecrawl-config-migration"
     ]
   },
   "payload": {
@@ -51,7 +49,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release features breaking changes to xAI and web fetch plugin configurations, requiring migration via `openclaw doctor --fix`. Task Flows are restored with managed sync modes and durable state, including managed child task spawning. Android gains assistant integration, and plugins can now short-circuit LLMs with synthetic replies via `before_agent_reply`. Provider-specific session conversation grammar is moved to plugin-owned session-key surfaces. Several fixes address provider routing, exec approvals, channel context, and image generation, enhancing security and stability."
+      "tldr": "This release features breaking changes that migrate `x_search` and `web_fetch` configurations to plugin-owned paths, requiring a config migration via `openclaw doctor --fix`. Task Flow is restored with managed sync modes and durable state, alongside managed child task spawning. Android gains assistant integration, allowing OpenClaw to be launched from the assistant trigger. Provider replay hooks and a `before_agent_reply` plugin hook are added for enhanced customization. Several fixes address provider routing, gateway loopback, exec approvals, and channel integrations, ensuring more reliable and secure operation."
     },
     "features": [
       {
@@ -2017,6 +2015,28 @@
           "Plugins",
           "web fetch",
           "Firecrawl"
+        ],
+        "migration": "Migrate legacy config with `openclaw doctor --fix`.",
+        "source_url": ""
+      },
+      {
+        "id": "plugins-xai-x-search-config-migration",
+        "version": "2026.4.2",
+        "title": "Plugins/xAI: Migrate x_search config to plugin-owned path",
+        "description": "Moves `x_search` settings from the legacy core `tools.web.x_search.*` path to the plugin-owned `plugins.entries.xai.config.xSearch.*` path, standardizes `x_search` auth on `plugins.entries.xai.config.webSearch.apiKey` / `XAI_API_KEY`.",
+        "affected": [
+          "x_search users"
+        ],
+        "migration": "Migrate legacy config with `openclaw doctor --fix`.",
+        "source_url": ""
+      },
+      {
+        "id": "plugins-web-fetch-firecrawl-config-migration",
+        "version": "2026.4.2",
+        "title": "Plugins/web fetch: Migrate Firecrawl web_fetch config to plugin-owned path",
+        "description": "Moves Firecrawl `web_fetch` config from the legacy core `tools.web.fetch.firecrawl.*` path to the plugin-owned `plugins.entries.firecrawl.config.webFetch.*` path, routes `web_fetch` fallback through the new fetch-provider boundary instead of a Firecrawl-only core branch.",
+        "affected": [
+          "web_fetch users"
         ],
         "migration": "Migrate legacy config with `openclaw doctor --fix`.",
         "source_url": ""
