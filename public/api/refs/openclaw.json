@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.2",
-  "generated_at": "2026-04-03T10:17:30.714Z",
+  "generated_at": "2026-04-03T11:18:26.222Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -16,15 +16,24 @@
   "delta": {
     "from_version": "2026.4.2",
     "to_version": "2026.4.2",
-    "new_features": [],
+    "new_features": [
+      "tasks-task-flow",
+      "managed-child-task-spawning",
+      "plugin-task-flow",
+      "android-assistant-integration",
+      "provider-replay-hooks",
+      "before-agent-reply",
+      "plugin-owned-session-key-surfaces",
+      "feishu-comments-drive-comment-event-flow"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "plugins-xai-config-migration",
-      "plugins-web-fetch-config-migration"
+      "plugins-xai-x-search-config-migration",
+      "plugins-web-fetch-firecrawl-config-migration"
     ]
   },
   "payload": {
@@ -49,7 +58,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release features breaking changes to xAI and web fetch plugin configurations, requiring migration via `openclaw doctor --fix`. Task Flows are restored with managed sync modes and child task spawning. Android assistant integration now supports assistant-role entrypoints and Google Assistant App Actions. Provider replay hooks and a `before_agent_reply` plugin hook are added. Several fixes address provider routing, gateway loopback, exec approvals, and channel integrations, ensuring more reliable and secure operation across various platforms."
+      "tldr": "This release introduces significant changes to Task Flows, restoring the core substrate with managed sync modes and durable state tracking, along with managed child task spawning. Configuration for the xAI and web fetch plugins has been migrated, requiring a config migration via `openclaw doctor --fix`. Android Assistant integration is now available, allowing OpenClaw to be launched from the assistant. Provider replay hooks have been added for transcript policy and cleanup. Several fixes address provider routing, gateway loopback, and exec approval configurations, ensuring more reliable and secure operation."
     },
     "features": [
       {
@@ -1028,6 +1037,33 @@
         "status": "experimental",
         "since": "2026.4.2",
         "description": "Adds plugin-owned `viewerBaseUrl` so viewer links can use a stable proxy/public origin without passing `baseUrl` on every tool call.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "tasks-task-flow",
+        "name": "Tasks/Task Flow",
+        "status": "stable",
+        "since": "2026.4.2",
+        "description": "Restores the core Task Flow substrate with managed-vs-mirrored sync modes, durable flow state/revision tracking, and `openclaw tasks flow` inspection/recovery primitives.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "plugin-task-flow",
+        "name": "Plugin/Task Flow API",
+        "status": "stable",
+        "since": "2026.4.2",
+        "description": "Adds a bound `api.runtime.taskFlow` seam so plugins and trusted authoring layers can create and drive managed Task Flows from host-resolved OpenClaw context without passing owner identifiers on each call.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "before-agent-reply",
+        "name": "Before Agent Reply Hook",
+        "status": "stable",
+        "since": "2026.4.2",
+        "description": "Adds `before_agent_reply` so plugins can short-circuit the LLM with synthetic replies after inline actions.",
         "key_details": [],
         "source_url": ""
       }
