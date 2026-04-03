@@ -1,0 +1,234 @@
+---
+import { getCollection } from "astro:content";
+import HubLayout from "../../layouts/HubLayout.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+---
+
+<HubLayout title={`${post.data.title} — changelogs.info`} description={post.data.excerpt} currentSection="blog">
+
+  <article class="blog-post">
+    <header class="blog-post__header">
+      <a href="/blog/" class="blog-post__back">← Dispatches</a>
+      <div class="blog-post__meta">
+        <span class="blog-post__date">{formatDate(post.data.date)}</span>
+        <span class="blog-post__dot">·</span>
+        <span class="blog-post__read-time">{post.data.readTime}</span>
+        <span class="blog-post__dot">·</span>
+        <span class="blog-post__category">{post.data.category}</span>
+      </div>
+      <h1 class="blog-post__title">{post.data.title}</h1>
+      <div class="blog-post__tags">
+        {post.data.tags.map((tag: string) => (
+          <span class="blog-post__tag">#{tag}</span>
+        ))}
+      </div>
+    </header>
+
+    <div class="blog-post__body prose">
+      <Content />
+    </div>
+
+    <footer class="blog-post__footer">
+      <a href="/blog/" class="blog-post__back">← Back to Dispatches</a>
+    </footer>
+  </article>
+
+</HubLayout>
+
+<style is:global>
+  .blog-post {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: clamp(2rem, 4vw, 3rem) 1.5rem;
+  }
+
+  .blog-post__header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 4px solid var(--hub-border, #333);
+  }
+
+  .blog-post__back {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #eb0000;
+    text-decoration: none;
+    border: 3px solid #eb0000;
+    padding: 0.3rem 0.8rem;
+    margin-bottom: 1.5rem;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 3px 3px 0 #eb0000;
+  }
+  .blog-post__back:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 #eb0000;
+  }
+
+  .blog-post__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--hub-text-secondary, #888);
+    margin-bottom: 1rem;
+  }
+  .blog-post__category {
+    color: #eb0000;
+    font-weight: 600;
+  }
+  .blog-post__dot { opacity: 0.4; }
+
+  .blog-post__title {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin: 0 0 1.25rem;
+    color: var(--hub-text-primary, #fff);
+  }
+
+  .blog-post__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .blog-post__tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--hub-text-secondary, #777);
+    border: 2px solid var(--hub-border, #333);
+    padding: 0.15rem 0.5rem;
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     PROSE — Blog body typography
+     ══════════════════════════════════════════════════════════ */
+  .blog-post__body.prose {
+    font-family: 'Work Sans', system-ui, sans-serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--hub-text-primary, #e0e0e0);
+  }
+  [data-theme="light"] .blog-post__body.prose {
+    color: #222;
+  }
+
+  .blog-post__body.prose h2 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid var(--hub-border, #333);
+    color: var(--hub-text-primary, #fff);
+  }
+
+  .blog-post__body.prose h3 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    color: var(--hub-text-primary, #fff);
+  }
+
+  .blog-post__body.prose p {
+    margin: 0 0 1.25rem;
+  }
+
+  .blog-post__body.prose strong {
+    color: var(--hub-text-primary, #fff);
+    font-weight: 700;
+  }
+  [data-theme="light"] .blog-post__body.prose strong {
+    color: #111;
+  }
+
+  .blog-post__body.prose code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88em;
+    background: color-mix(in srgb, var(--hub-border, #333) 40%, transparent);
+    padding: 0.15em 0.4em;
+    border: 1px solid var(--hub-border, #333);
+  }
+
+  .blog-post__body.prose pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    padding: 1.25rem;
+    border: 3px solid var(--hub-border, #333);
+    background: color-mix(in srgb, var(--hub-bg, #111) 90%, #000);
+    overflow-x: auto;
+    margin: 1.5rem 0;
+  }
+  .blog-post__body.prose pre code {
+    background: none;
+    border: none;
+    padding: 0;
+  }
+
+  .blog-post__body.prose ul,
+  .blog-post__body.prose ol {
+    margin: 0 0 1.25rem;
+    padding-left: 1.5rem;
+  }
+  .blog-post__body.prose li {
+    margin-bottom: 0.5rem;
+  }
+
+  .blog-post__body.prose blockquote {
+    border-left: 4px solid #eb0000;
+    padding: 0.75rem 1.25rem;
+    margin: 1.5rem 0;
+    background: color-mix(in srgb, #eb0000 5%, transparent);
+    font-style: italic;
+    color: var(--hub-text-secondary, #aaa);
+  }
+
+  .blog-post__body.prose a {
+    color: #eb0000;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .blog-post__body.prose a:hover {
+    color: #ff3333;
+  }
+
+  .blog-post__body.prose hr {
+    border: none;
+    border-top: 3px dashed var(--hub-border, #333);
+    margin: 2.5rem 0;
+  }
+
+  /* Footer */
+  .blog-post__footer {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 4px solid var(--hub-border, #333);
+  }
+</style>

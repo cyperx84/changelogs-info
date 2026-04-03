@@ -1,0 +1,161 @@
+---
+import { getCollection } from "astro:content";
+import HubLayout from "../../layouts/HubLayout.astro";
+
+const posts = (await getCollection("blog")).sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+---
+
+<HubLayout title="changelogs.info — Dispatches" currentSection="blog">
+
+  <section class="blog-hero">
+    <div class="blog-hero__inner">
+      <div class="blog-hero__eyebrow">DEEP DIVES & ANALYSIS</div>
+      <h1 class="blog-hero__title">Dispatches</h1>
+      <p class="blog-hero__sub">
+        Deep analysis of what's changing in AI tooling — source dives, architecture breakdowns, and migration guides written by the team that tracks every release.
+      </p>
+    </div>
+  </section>
+
+  <section class="blog-list">
+    <div class="blog-list__inner">
+      {posts.map((post, i) => (
+        <a href={`/blog/${post.slug}/`} class={`blog-card brutal-scroll-reveal`} style={`--reveal-delay: ${i * 0.1}s;`}>
+          <div class="blog-card__meta">
+            <span class="blog-card__date">{formatDate(post.data.date)}</span>
+            <span class="blog-card__dot">·</span>
+            <span class="blog-card__read-time">{post.data.readTime}</span>
+            <span class="blog-card__dot">·</span>
+            <span class="blog-card__category">{post.data.category}</span>
+          </div>
+          <h2 class="blog-card__title">{post.data.title}</h2>
+          <p class="blog-card__excerpt">{post.data.excerpt}</p>
+          <div class="blog-card__tags">
+            {post.data.tags.map((tag: string) => (
+              <span class="blog-card__tag">#{tag}</span>
+            ))}
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+</HubLayout>
+
+<style is:global>
+  .blog-hero {
+    padding: clamp(3rem, 6vw, 5rem) 1.5rem clamp(2rem, 4vw, 3rem);
+    text-align: center;
+    border-bottom: 4px solid var(--hub-border, #333);
+  }
+  .blog-hero__inner {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .blog-hero__eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--hub-text-secondary, #888);
+    margin-bottom: 1rem;
+  }
+  .blog-hero__title {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin: 0 0 1rem;
+    color: var(--hub-text-primary, #fff);
+  }
+  .blog-hero__sub {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 1rem;
+    color: var(--hub-text-secondary, #999);
+    line-height: 1.6;
+  }
+
+  .blog-list {
+    padding: clamp(2rem, 4vw, 3rem) 1.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .blog-list__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .blog-card {
+    display: block;
+    text-decoration: none;
+    color: var(--hub-text-primary, #fff);
+    padding: 2rem;
+    border: 4px solid var(--hub-border, #333);
+    background: var(--hub-card-bg, #1a1a1a);
+    box-shadow: 6px 6px 0 var(--hub-border, #333);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.2s ease,
+                border-color 0.2s ease;
+  }
+  [data-theme="light"] .blog-card {
+    background: #fff;
+    border-color: #222;
+    box-shadow: 6px 6px 0 #222;
+  }
+  .blog-card:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 10px 10px 0 #eb0000;
+    border-color: #eb0000;
+  }
+
+  .blog-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--hub-text-secondary, #888);
+    margin-bottom: 0.75rem;
+  }
+  .blog-card__category {
+    color: #eb0000;
+    font-weight: 600;
+  }
+  .blog-card__dot { opacity: 0.4; }
+
+  .blog-card__title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 0 0 0.75rem;
+  }
+  .blog-card__excerpt {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--hub-text-secondary, #999);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+  .blog-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .blog-card__tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--hub-text-secondary, #777);
+    border: 2px solid var(--hub-border, #333);
+    padding: 0.15rem 0.5rem;
+  }
+</style>

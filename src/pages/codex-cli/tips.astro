@@ -1,0 +1,104 @@
+---
+import CodexLayout from "../../layouts/CodexLayout.astro";
+import "../../styles/cheatsheet-shared.css";
+---
+
+<CodexLayout
+  title="Codex CLI Tips & Tricks — changelogs.info"
+  description="Quick wins, hidden features, common mistakes, and workflow combos for Codex CLI."
+  currentPage="tips"
+>
+  <div class="cs-wrapper">
+
+    <section class="cs-hero">
+      <div class="cs-hero__emoji">💡</div>
+      <h1 class="cx-headline cs-hero__title">
+        Tips &<span class="cs-hero__accent"> Tricks</span>
+      </h1>
+      <p class="cs-hero__sub">Quick wins, hidden features, and the mistakes everyone makes once.</p>
+    </section>
+
+    <div class="cs-grid">
+
+      <div class="cs-panel">
+        <h2 class="cx-headline cs-panel__title">Quick Wins</h2>
+        <div class="cs-item-list">
+          <div class="cs-item">
+            <div class="cs-item__title">Write .codex/instructions.md</div>
+            <p class="cs-item__desc">Your persistent context file — write it once and Codex reads it every run. Include build commands, test patterns, and repo conventions.</p>
+          </div>
+          <div class="cs-item">
+            <div class="cs-item__title">Use codex exec for one-shot runs</div>
+            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> codex exec "fix lint errors"</div>
+            <p class="cs-item__desc">Non-interactive mode, great for CI and automation scripts.</p>
+          </div>
+          <div class="cs-item">
+            <div class="cs-item__title">Choose the right approval mode</div>
+            <p class="cs-item__desc"><code>--approval-mode auto</code> for trusted repos. <code>--approval-mode suggest</code> for exploratory work where you want to review first.</p>
+          </div>
+          <div class="cs-item">
+            <div class="cs-item__title">Commit before big tasks</div>
+            <p class="cs-item__desc">Codex reads full git history as context. Commit your work before starting so Codex has the latest state.</p>
+          </div>
+          <div class="cs-item">
+            <div class="cs-item__title">Use --quiet for scripting</div>
+            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> codex exec --quiet "summarize changes"</div>
+            <p class="cs-item__desc">Suppresses thinking output for cleaner script integration.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs-panel cs-panel--accent">
+        <h2 class="cx-headline cs-panel__title">Hidden Features</h2>
+        <div class="cs-item-list">
+          <div class="cs-item cs-item--accent">
+            <div class="cs-item__title cs-item__title--accent">Built-in sub-agents</div>
+            <p class="cs-item__desc">Codex spawns parallel workers for large tasks automatically. No configuration needed.</p>
+          </div>
+          <div class="cs-item cs-item--accent">
+            <div class="cs-item__title cs-item__title--accent">URL fetching</div>
+            <p class="cs-item__desc">You can give Codex a URL and it fetches and reads the content directly.</p>
+          </div>
+          <div class="cs-item cs-item--accent">
+            <div class="cs-item__title cs-item__title--accent">Model swapping</div>
+            <p class="cs-item__desc"><code>--model</code> flag lets you swap models without changing any config files.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs-panel cs-panel--warning">
+        <h2 class="cx-headline cs-panel__title">Common Mistakes</h2>
+        <div class="cs-item-list">
+          <div class="cs-item">
+            <div class="cs-item__title">No .codex/instructions.md</div>
+            <p class="cs-item__desc">Codex flies blind without it. Even a few lines about your build system makes a huge difference.</p>
+          </div>
+          <div class="cs-item">
+            <div class="cs-item__title">Full-auto on unfamiliar repos</div>
+            <p class="cs-item__desc">Using <code>--full-auto</code> on repos you don't fully understand is asking for trouble. Start with <code>suggest</code> mode.</p>
+          </div>
+          <div class="cs-item">
+            <div class="cs-item__title">Missing API key</div>
+            <p class="cs-item__desc">Running without <code>OPENAI_API_KEY</code> set fails silently in some versions. Always verify it's exported.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs-panel">
+        <h2 class="cx-headline cs-panel__title">Workflow Combos</h2>
+        <div class="cs-item-list">
+          <div class="cs-item">
+            <div class="cs-item__title">Plan → Review → Execute</div>
+            <p class="cs-item__desc">Ask Codex to propose a plan first, review it, then execute with <code>--approval-mode auto</code>.</p>
+          </div>
+          <div class="cs-item">
+            <div class="cs-item__title">CI integration</div>
+            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> codex exec --quiet --full-auto "fix lint and type errors"</div>
+            <p class="cs-item__desc">Use exec mode with quiet flag in CI pipelines for automated fixes.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</CodexLayout>

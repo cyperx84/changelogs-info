@@ -1,0 +1,109 @@
+---
+import GeminiLayout from "../../layouts/GeminiLayout.astro";
+import "../../styles/cheatsheet-shared.css";
+---
+
+<GeminiLayout
+  title="Gemini CLI Tips & Tricks — changelogs.info"
+  description="Power-user tips, hidden features, and common mistakes for Gemini CLI."
+  currentPage="tips"
+>
+  <div class="cs-wrapper">
+    <section class="cs-hero">
+      <div class="cs-hero__emoji">💡</div>
+      <h1 class="gc-headline cs-hero__title">
+        Tips &<span class="cs-hero__accent"> Tricks</span>
+      </h1>
+      <p class="cs-hero__sub">Power-user knowledge for Gemini CLI</p>
+    </section>
+
+    <div class="cs-grid">
+      <div class="cs-two-col">
+        <!-- Quick Wins panel -->
+        <div class="cs-panel">
+          <h2 class="gc-headline cs-panel__title cs-panel__title--accent">⚡ Quick Wins</h2>
+          <div class="cs-item-list">
+            <div class="cs-item">
+              <div class="cs-item__title">One-shot mode with -p</div>
+              <p class="cs-item__desc">Non-interactive, perfect for scripts.</p>
+              <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> gemini -p "task description"</div>
+            </div>
+            <div class="cs-item">
+              <div class="cs-item__title">--yolo skips confirmations</div>
+              <p class="cs-item__desc">Use carefully — it's sticky for the entire session.</p>
+            </div>
+            <div class="cs-item">
+              <div class="cs-item__title">Feed the entire codebase</div>
+              <p class="cs-item__desc">1M context window means Gemini handles it.</p>
+            </div>
+            <div class="cs-item">
+              <div class="cs-item__title">Set default model in profile</div>
+              <p class="cs-item__desc">Avoid typing --model every time.</p>
+              <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> export GEMINI_MODEL=gemini-2.5-pro</div>
+            </div>
+            <div class="cs-item">
+              <div class="cs-item__title">Pipe files via stdin</div>
+              <p class="cs-item__desc">Review anything.</p>
+              <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> cat bigfile.ts | gemini -p "review for security issues"</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hidden Features panel -->
+        <div class="cs-panel cs-panel--accent">
+          <h2 class="gc-headline cs-panel__title">🔮 Hidden Features</h2>
+          <div class="cs-item-list">
+            <div class="cs-item">
+              <div class="cs-item__title">Checkpointing for long tasks</div>
+              <p class="cs-item__desc">Resume interrupted tasks with --checkpoint.</p>
+            </div>
+            <div class="cs-item">
+              <div class="cs-item__title">--sandbox with gVisor</div>
+              <p class="cs-item__desc">Runs shell commands in isolation — safer for untrusted code.</p>
+            </div>
+            <div class="cs-item">
+              <div class="cs-item__title">Policy engine</div>
+              <p class="cs-item__desc">Pre-approve certain action types to skip confirmations selectively.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Common Mistakes panel -->
+      <div class="cs-panel cs-panel--warning">
+        <h2 class="gc-headline cs-panel__title">⚠ Common Mistakes</h2>
+        <div class="cs-gotcha-list">
+          <div class="cs-gotcha-item">
+            <div class="cs-gotcha-item__title">--yolo is sticky</div>
+            <p class="cs-gotcha-item__desc">Stays active for the whole session, not just one command.</p>
+          </div>
+          <div class="cs-gotcha-item">
+            <div class="cs-gotcha-item__title">Browser auth in scripts</div>
+            <p class="cs-gotcha-item__desc">Set GEMINI_API_KEY instead for automation.</p>
+          </div>
+          <div class="cs-gotcha-item">
+            <div class="cs-gotcha-item__title">Small context when you could give everything</div>
+            <p class="cs-gotcha-item__desc">Give the whole repo — Gemini thrives on context.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Workflow Combos panel -->
+      <div class="cs-panel cs-panel--surface">
+        <h2 class="gc-headline cs-panel__title">🔗 Workflow Combos</h2>
+        <div class="cs-item-list">
+          <div class="cs-item">
+            <div class="cs-item__title">Security audit pipeline</div>
+            <p class="cs-item__desc">Scan files for issues.</p>
+            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> find src -name "*.ts" | xargs cat | gemini -p "full security audit, list all issues by severity"</div>
+          </div>
+          <div class="cs-item">
+            <div class="cs-item__title">Code review with sandbox</div>
+            <p class="cs-item__desc">Safe automated review.</p>
+            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> gemini --sandbox -p "review and run tests on this PR" &lt; diff.patch</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</GeminiLayout>

@@ -1,0 +1,108 @@
+---
+import HermesLayout from "../../layouts/HermesLayout.astro";
+import "../../styles/cheatsheet-shared.css";
+---
+
+<HermesLayout
+  title="Hermes Agent Tips & Tricks — changelogs.info"
+  description="Power-user tips, hidden features, and common mistakes for Hermes Agent."
+  currentPage="tips"
+>
+  <div class="cs-wrapper">
+    <section class="cs-hero">
+      <div class="cs-hero__emoji">💡</div>
+      <h1 class="ha-headline cs-hero__title">
+        Tips &<span class="cs-hero__accent"> Tricks</span>
+      </h1>
+      <p class="cs-hero__sub">Power-user knowledge for Hermes Agent</p>
+    </section>
+
+    <div class="cs-grid">
+      <div class="cs-two-col">
+        <!-- Quick Wins panel -->
+        <div class="cs-panel">
+          <h2 class="ha-headline cs-panel__title cs-panel__title--accent">⚡ Quick Wins</h2>
+          <div class="cs-item-list">
+            <div class="cs-item">
+              <div class="cs-item__title">hermes init first, always</div>
+              <p class="cs-item__desc">The config file tells Hermes about your stack and tools.</p>
+              <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> hermes init</div>
+            </div>
+            <div class="cs-item">
+              <div class="cs-item__title">--dry-run before uncertain tasks</div>
+              <p class="cs-item__desc">See the full plan before anything executes.</p>
+              <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> hermes "task" --dry-run</div>
+            </div>
+            <div class="cs-item">
+              <div class="cs-item__title">Structured descriptions win</div>
+              <p class="cs-item__desc">"Add rate limiting to POST /api/auth/login, max 5 req/min per IP" beats "make auth better".</p>
+            </div>
+            <div class="cs-item">
+              <div class="cs-item__title">Read the execution log</div>
+              <p class="cs-item__desc">hermes log shows the full trace when something goes wrong.</p>
+              <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> hermes log</div>
+            </div>
+            <div class="cs-item">
+              <div class="cs-item__title">Checkpoint for long ops</div>
+              <p class="cs-item__desc">Saves state mid-task for safe resumption.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hidden Features panel -->
+        <div class="cs-panel cs-panel--accent">
+          <h2 class="ha-headline cs-panel__title">🔮 Hidden Features</h2>
+          <div class="cs-item-list">
+            <div class="cs-item">
+              <div class="cs-item__title">Tool plugins</div>
+              <p class="cs-item__desc">hermes.config.json extends what Hermes can call — set up API integrations.</p>
+            </div>
+            <div class="cs-item">
+              <div class="cs-item__title">YAML workflow plans</div>
+              <p class="cs-item__desc">Pre-define multi-step workflows for repeatable complex tasks.</p>
+            </div>
+            <div class="cs-item">
+              <div class="cs-item__title">External API tools</div>
+              <p class="cs-item__desc">Wire up your internal APIs as tools Hermes can call.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Common Mistakes panel -->
+      <div class="cs-panel cs-panel--warning">
+        <h2 class="ha-headline cs-panel__title">⚠ Common Mistakes</h2>
+        <div class="cs-gotcha-list">
+          <div class="cs-gotcha-item">
+            <div class="cs-gotcha-item__title">Skipping hermes init</div>
+            <p class="cs-gotcha-item__desc">Runs with defaults that may not match your stack.</p>
+          </div>
+          <div class="cs-gotcha-item">
+            <div class="cs-gotcha-item__title">Vague task descriptions</div>
+            <p class="cs-gotcha-item__desc">"Make auth better" vs specific requirements with constraints.</p>
+          </div>
+          <div class="cs-gotcha-item">
+            <div class="cs-gotcha-item__title">No --dry-run before destructive ops</div>
+            <p class="cs-gotcha-item__desc">Always preview before letting Hermes modify files.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Workflow Combos panel -->
+      <div class="cs-panel cs-panel--surface">
+        <h2 class="ha-headline cs-panel__title">🔗 Workflow Combos</h2>
+        <div class="cs-item-list">
+          <div class="cs-item">
+            <div class="cs-item__title">Dry-run then execute</div>
+            <p class="cs-item__desc">Preview, verify, then run for real.</p>
+            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> hermes "write unit tests for src/utils/auth.ts" --dry-run &amp;&amp; hermes "write unit tests for src/utils/auth.ts"</div>
+          </div>
+          <div class="cs-item">
+            <div class="cs-item__title">Pipeline file workflow</div>
+            <p class="cs-item__desc">Define reusable task pipelines in YAML for complex multi-step operations.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</HermesLayout>

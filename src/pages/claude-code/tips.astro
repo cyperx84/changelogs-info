@@ -1,0 +1,106 @@
+---
+import ClaudeCodeLayout from "../../layouts/ClaudeCodeLayout.astro";
+import "../../styles/cheatsheet-shared.css";
+---
+
+<ClaudeCodeLayout
+  title="Claude Code Tips & Tricks — changelogs.info"
+  description="Quick wins, hidden features, common mistakes, and workflow combos for Claude Code."
+  currentPage="tips"
+>
+  <div class="cs-wrapper">
+
+    <section class="cs-hero">
+      <div class="cs-hero__emoji">💡</div>
+      <h1 class="cc-headline cs-hero__title">
+        Tips &<span class="cs-hero__accent"> Tricks</span>
+      </h1>
+      <p class="cs-hero__sub">Quick wins, hidden features, and the mistakes everyone makes once.</p>
+    </section>
+
+    <div class="cs-grid">
+
+      <div class="cs-panel">
+        <h2 class="cc-headline cs-panel__title">Quick Wins</h2>
+        <div class="cs-item-list">
+          <div class="cs-item">
+            <div class="cs-item__title">Add CLAUDE.md to your repo root</div>
+            <p class="cs-item__desc">CC reads it automatically — it becomes your persistent project context. Include build commands, conventions, and dangerous areas.</p>
+          </div>
+          <div class="cs-item">
+            <div class="cs-item__title">Use --print mode for scripting</div>
+            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> claude --print "summarise this" &lt; file.txt</div>
+            <p class="cs-item__desc">Turns Claude Code into a Unix-style tool. Pipe files in, get answers out.</p>
+          </div>
+          <div class="cs-item">
+            <div class="cs-item__title">Pipe errors directly</div>
+            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> cat error.log | claude "why is this failing"</div>
+            <p class="cs-item__desc">CC reads stdin natively — no need to copy-paste.</p>
+          </div>
+          <div class="cs-item">
+            <div class="cs-item__title">Resume with --continue</div>
+            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> claude --continue</div>
+            <p class="cs-item__desc">Resumes your last session without re-explaining context. One of the most useful daily commands.</p>
+          </div>
+          <div class="cs-item">
+            <div class="cs-item__title">JSON output for CI</div>
+            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> claude -p --output-format json "analyze this"</div>
+            <p class="cs-item__desc">Machine-readable output for pipeline integration.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs-panel cs-panel--accent">
+        <h2 class="cc-headline cs-panel__title">Hidden Features</h2>
+        <div class="cs-item-list">
+          <div class="cs-item cs-item--accent">
+            <div class="cs-item__title cs-item__title--accent">Parallel sub-agents</div>
+            <p class="cs-item__desc">The Task tool lets CC spawn parallel sub-agents. Say "use multiple agents to..." in your prompt for large refactors.</p>
+          </div>
+          <div class="cs-item cs-item--accent">
+            <div class="cs-item__title cs-item__title--accent">Automatic .gitignore respect</div>
+            <p class="cs-item__desc">CC reads .gitignore and respects it automatically. No configuration needed.</p>
+          </div>
+          <div class="cs-item cs-item--accent">
+            <div class="cs-item__title cs-item__title--accent">Middle-ground permissions</div>
+            <p class="cs-item__desc"><code>--permission-mode auto</code> is the sweet spot between bypassPermissions and ask-everything.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs-panel cs-panel--warning">
+        <h2 class="cc-headline cs-panel__title">Common Mistakes</h2>
+        <div class="cs-item-list">
+          <div class="cs-item">
+            <div class="cs-item__title">No CLAUDE.md in your repo</div>
+            <p class="cs-item__desc">Huge context loss. Even a 10-line file with build commands and conventions makes Claude dramatically better.</p>
+          </div>
+          <div class="cs-item">
+            <div class="cs-item__title">Vague task descriptions</div>
+            <p class="cs-item__desc">Saying "fix the bug" instead of "fix the null check in auth.ts:47" makes Claude guess instead of act.</p>
+          </div>
+          <div class="cs-item">
+            <div class="cs-item__title">Wrong working directory</div>
+            <p class="cs-item__desc">Running CC without checking it has the right working directory. Always <code>cd</code> to your project root first.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs-panel">
+        <h2 class="cc-headline cs-panel__title">Workflow Combos</h2>
+        <div class="cs-item-list">
+          <div class="cs-item">
+            <div class="cs-item__title">Explore → Plan → Implement → Verify</div>
+            <p class="cs-item__desc">Use <code>--permission-mode plan</code> first to understand the codebase, then switch to implementation with explicit verification steps.</p>
+          </div>
+          <div class="cs-item">
+            <div class="cs-item__title">CI review pipeline</div>
+            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> git diff main | claude -p --output-format json "review for security issues"</div>
+            <p class="cs-item__desc">Pipe diffs through headless mode with JSON output for automated code review in CI.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</ClaudeCodeLayout>

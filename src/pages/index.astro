@@ -2,6 +2,17 @@
 import HubLayout from "../layouts/HubLayout.astro";
 import { getTools, getAllToolReleases } from "../lib/releases";
 import { loadModelsData } from "../lib/models";
+import { getCollection } from "astro:content";
+
+const blogPosts = (await getCollection("blog"))
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 3);
+
+function formatDate(dateStr: string): string {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
 
 let releaseMap: Record<string, any> = {};
 
@@ -293,17 +304,26 @@ const harnessPrefix: Record<string, string> = {
       <span class="brutal-section__label-line"></span>
     </div>
 
-    <div class="brutal-dispatch brutal-scroll-reveal" style="--reveal-delay: 0s;">
-      <div class="brutal-dispatch__diagonal" aria-hidden="true"></div>
-      <div class="brutal-dispatch__content">
-        <span class="brutal-dispatch__icon">✍</span>
-        <div class="brutal-dispatch__eyebrow">COMING SOON</div>
-        <h2 class="brutal-dispatch__title">The changelog dispatches</h2>
-        <p class="brutal-dispatch__desc">
-          Human-readable summaries of major releases, migration guides, and deep dives — written automatically when significant versions drop.
-        </p>
-        <span class="brutal-dispatch__btn">Notify me ↗</span>
-      </div>
+    <div class="brutal-grid brutal-grid--dispatches">
+      {blogPosts.map((post, i) => (
+        <a href={`/blog/${post.slug}/`} class="brutal-card brutal-card--dispatch brutal-scroll-reveal" style={`--card-accent: #eb0000; --card-glow: #eb0000; --reveal-delay: ${i * 0.12}s;`}>
+          <div class="brutal-card__border-glow" aria-hidden="true"></div>
+          <div class="brutal-card__header">
+            <div class="brutal-card__icon" style="background: #eb0000; color: #fff;">✍</div>
+            <span class="brutal-card__tag" style="border-color: #eb0000; color: #eb0000;">{post.data.category}</span>
+            <span class="brutal-card__arrow">↗</span>
+          </div>
+          <h3 class="brutal-card__name">{post.data.title}</h3>
+          <p class="brutal-card__desc">{post.data.excerpt}</p>
+          <div class="brutal-card__footer">
+            <span class="brutal-card__version">{formatDate(post.data.date)}</span>
+            <span class="brutal-card__date">{post.data.readTime}</span>
+          </div>
+        </a>
+      ))}
+    </div>
+    <div style="text-align: center; margin-top: 1.5rem;">
+      <a href="/blog/" class="brutal-dispatch__btn" style="display: inline-block; text-decoration: none;">All dispatches ↗</a>
     </div>
   </section>
 
@@ -996,6 +1016,25 @@ const harnessPrefix: Record<string, string> = {
     line-height: 1.6;
     margin-bottom: 1.5rem;
   }
+  .brutal-grid--dispatches {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  @media (min-width: 700px) {
+    .brutal-grid--dispatches {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1000px) {
+    .brutal-grid--dispatches {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .brutal-card--dispatch .brutal-card__name {
+    font-size: 1.2rem;
+  }
+
   .brutal-dispatch__btn {
     display: inline-block;
     font-family: 'JetBrains Mono', monospace;
