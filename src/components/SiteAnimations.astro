@@ -10,6 +10,8 @@
   [data-reveal] {
     opacity: 0;
     transform: translateY(28px);
+    /* promote to own layer so transition doesn't trigger layout */
+    will-change: opacity, transform;
     transition:
       opacity 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94),
       transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -26,6 +28,8 @@
   [data-reveal].is-visible {
     opacity: 1;
     transform: none;
+    /* release compositor layer once animation is done */
+    will-change: auto;
   }
 
   /* ── Page transition overlay ───────────────────────────── */
@@ -37,7 +41,7 @@
     pointer-events: none;
     opacity: 0;
     mix-blend-mode: color;
-    will-change: opacity, background-color;
+    will-change: opacity;
   }
 
   /* ── Reduced motion ────────────────────────────────────── */

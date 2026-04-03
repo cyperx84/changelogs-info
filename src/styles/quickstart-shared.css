@@ -461,3 +461,15 @@
     display: block;
   }
 }
+
+/* ── Content Visibility (below fold) ───────────────────── */
+
+/* Steps 3+ are almost always below fold on first load.
+   content-visibility: auto defers paint/layout until near viewport. */
+.qs-step:nth-child(n+3),
+.qs-milestone,
+.qs-next {
+  content-visibility: auto;
+  /* hint avoids layout shift when element becomes visible */
+  contain-intrinsic-size: auto 280px;
+}

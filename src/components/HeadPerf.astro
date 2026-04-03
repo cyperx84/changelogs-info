@@ -1,0 +1,36 @@
+---
+// HeadPerf.astro — Performance hints injected into <head>
+// Preloads critical fonts (latin only — covers 99% of users)
+// Preconnects to analytics origin
+// Must be placed BEFORE any <link rel="stylesheet"> in <head>
+---
+
+<!-- Preconnect to analytics (early DNS + TLS) -->
+<link rel="preconnect" href="https://plausible.io" />
+<link rel="dns-prefetch" href="https://plausible.io" />
+
+<!-- Preload above-the-fold fonts (latin subset only) -->
+<!-- Space Grotesk Variable — headlines -->
+<link
+  rel="preload"
+  href="/fonts/space-grotesk-var-latin.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin="anonymous"
+/>
+<!-- Work Sans 400 — body text -->
+<link
+  rel="preload"
+  href="/fonts/work-sans-latin.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin="anonymous"
+/>
+<!-- JetBrains Mono 400 — code blocks (above fold on quickstart/tips) -->
+<link
+  rel="preload"
+  href="/fonts/jetbrains-mono-latin.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin="anonymous"
+/>
