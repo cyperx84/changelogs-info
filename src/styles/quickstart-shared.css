@@ -1,0 +1,372 @@
+/* ============================================================
+   quickstart-shared.css — Journey-style layout for all quickstart pages
+   Uses --tool-* bridge vars defined in each layout via tool-shared.css
+   ============================================================ */
+
+/* Page wrapper */
+.qs-wrapper {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 6rem;
+}
+
+/* ── Hero ── */
+.qs-hero {
+  margin-bottom: 5rem;
+  position: relative;
+  overflow: hidden;
+}
+.qs-hero__eyebrow {
+  font-family: var(--tool-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--tool-primary-bright);
+  margin-bottom: 1rem;
+  display: block;
+}
+.qs-hero__title {
+  font-size: clamp(3.5rem, 12vw, 7rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.04em;
+  line-height: 0.88;
+  margin: 0 0 1.5rem;
+  color: var(--tool-text);
+}
+.qs-hero__accent {
+  color: var(--tool-primary-bright);
+}
+.qs-hero__desc {
+  font-size: 1rem;
+  max-width: 42rem;
+  color: var(--tool-text-dim, rgba(255,255,255,0.6));
+  line-height: 1.6;
+  margin: 0;
+  font-family: var(--tool-font-body);
+}
+.qs-hero__badge {
+  display: inline-block;
+  background: var(--tool-primary);
+  color: var(--tool-bg);
+  font-family: var(--tool-font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Timeline journey ── */
+.qs-journey {
+  position: relative;
+  padding-left: 3.5rem;
+  margin-bottom: 4rem;
+}
+/* Vertical connector line */
+.qs-journey::before {
+  content: '';
+  position: absolute;
+  left: 1.1rem;
+  top: 1.25rem;
+  bottom: 1.25rem;
+  width: 2px;
+  background: var(--tool-border-dim, rgba(255,255,255,0.15));
+}
+
+.qs-step {
+  position: relative;
+  padding: 0 0 3rem;
+}
+.qs-step:last-child {
+  padding-bottom: 0;
+}
+/* Circle on the timeline */
+.qs-step__dot {
+  position: absolute;
+  left: -3.5rem;
+  top: 0.1rem;
+  width: 2.2rem;
+  height: 2.2rem;
+  background: var(--tool-bg);
+  border: 3px solid var(--tool-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--tool-font-mono);
+  font-weight: 900;
+  font-size: 0.72rem;
+  color: var(--tool-primary-bright);
+  flex-shrink: 0;
+}
+.qs-step--active .qs-step__dot {
+  background: var(--tool-primary);
+  color: var(--tool-bg);
+}
+
+.qs-step__label {
+  font-family: var(--tool-font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--tool-primary-bright);
+  margin-bottom: 0.35rem;
+  display: block;
+}
+.qs-step__title {
+  font-family: var(--tool-font-headline);
+  font-size: 1.3rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--tool-text);
+  margin: 0 0 0.5rem;
+}
+.qs-step__desc {
+  font-family: var(--tool-font-body);
+  font-size: 0.88rem;
+  color: var(--tool-text-dim, rgba(255,255,255,0.6));
+  line-height: 1.6;
+  margin: 0 0 1rem;
+  max-width: 44rem;
+}
+
+/* Command block */
+.qs-cmd {
+  position: relative;
+  background: var(--tool-bg-surface, rgba(0,0,0,0.3));
+  border: 2px solid var(--tool-border-dim, rgba(255,255,255,0.12));
+  border-left: 4px solid var(--tool-primary);
+  padding: 0.9rem 1.25rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+  overflow-x: auto;
+}
+.qs-cmd code {
+  font-family: var(--tool-font-mono);
+  font-size: 0.88rem;
+  color: var(--tool-primary-bright);
+  white-space: pre;
+  background: none;
+  border: none;
+  padding: 0;
+}
+.qs-cmd__prompt {
+  color: var(--tool-text-muted, rgba(255,255,255,0.35));
+  user-select: none;
+  margin-right: 0.6rem;
+}
+.qs-cmd__copy {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: 1px solid var(--tool-border-dim);
+  color: var(--tool-text-muted, rgba(255,255,255,0.4));
+  font-family: var(--tool-font-mono);
+  font-size: 0.62rem;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 0.15s, border-color 0.15s;
+}
+.qs-cmd__copy:hover {
+  color: var(--tool-primary-bright);
+  border-color: var(--tool-primary);
+}
+
+/* Inline note under a command */
+.qs-cmd-note {
+  font-family: var(--tool-font-mono);
+  font-size: 0.7rem;
+  color: var(--tool-text-muted, rgba(255,255,255,0.4));
+  margin-top: 0.4rem;
+}
+
+/* Multi-command block */
+.qs-cmd-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+/* Option label for alternative commands */
+.qs-cmd-label {
+  font-family: var(--tool-font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tool-text-muted, rgba(255,255,255,0.4));
+  margin-bottom: 0.2rem;
+  margin-top: 0.75rem;
+  display: block;
+}
+
+/* ── Milestone step (first real task) ── */
+.qs-milestone {
+  background: var(--tool-primary);
+  padding: 2rem;
+  margin-left: -3.5rem; /* Break out of timeline indent */
+  margin-bottom: 4rem;
+  position: relative;
+  overflow: hidden;
+}
+.qs-milestone::before {
+  content: '★';
+  position: absolute;
+  right: -0.5rem;
+  top: -1rem;
+  font-size: 8rem;
+  opacity: 0.08;
+  line-height: 1;
+  color: var(--tool-bg);
+}
+.qs-milestone__eyebrow {
+  font-family: var(--tool-font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--tool-bg);
+  opacity: 0.7;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+.qs-milestone__title {
+  font-family: var(--tool-font-headline);
+  font-size: 1.5rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--tool-bg);
+  margin: 0 0 0.75rem;
+}
+.qs-milestone__desc {
+  font-family: var(--tool-font-body);
+  font-size: 0.88rem;
+  color: var(--tool-bg);
+  opacity: 0.8;
+  line-height: 1.6;
+  margin: 0 0 1.25rem;
+  max-width: 40rem;
+}
+.qs-milestone__cmd {
+  background: rgba(0,0,0,0.25);
+  border: none;
+  border-left: 4px solid rgba(255,255,255,0.3);
+  padding: 0.9rem 1.25rem;
+  margin-bottom: 0.5rem;
+  overflow-x: auto;
+}
+.qs-milestone__cmd code {
+  font-family: var(--tool-font-mono);
+  font-size: 0.88rem;
+  color: var(--tool-bg);
+  white-space: pre;
+  background: none;
+  border: none;
+  padding: 0;
+}
+.qs-milestone__steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.qs-milestone__step {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+.qs-milestone__step-num {
+  background: rgba(255,255,255,0.2);
+  color: var(--tool-bg);
+  font-family: var(--tool-font-mono);
+  font-weight: 900;
+  font-size: 0.7rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+.qs-milestone__step-body {
+  font-family: var(--tool-font-body);
+  font-size: 0.85rem;
+  color: var(--tool-bg);
+  opacity: 0.9;
+  line-height: 1.5;
+}
+.qs-milestone__step-body code {
+  background: rgba(0,0,0,0.2);
+  font-family: var(--tool-font-mono);
+  font-size: 0.8rem;
+  padding: 0.1rem 0.4rem;
+  color: var(--tool-bg);
+}
+
+/* ── What next cards ── */
+.qs-next {
+  margin-top: 2rem;
+}
+.qs-next__title {
+  font-family: var(--tool-font-headline);
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--tool-text-dim, rgba(255,255,255,0.5));
+  margin-bottom: 1.25rem;
+}
+.qs-next__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+.qs-next__card {
+  border: 2px solid var(--tool-border-dim, rgba(255,255,255,0.12));
+  padding: 1.25rem;
+  text-decoration: none;
+  display: block;
+  transition: border-color 0.15s, transform 0.12s;
+  background: var(--tool-bg-card, transparent);
+}
+.qs-next__card:hover {
+  border-color: var(--tool-primary);
+  transform: translateY(-2px);
+}
+.qs-next__card-arrow {
+  font-size: 1.1rem;
+  color: var(--tool-primary-bright);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+.qs-next__card-title {
+  font-family: var(--tool-font-headline);
+  font-weight: 900;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: var(--tool-text);
+  margin-bottom: 0.35rem;
+}
+.qs-next__card-desc {
+  font-family: var(--tool-font-body);
+  font-size: 0.75rem;
+  color: var(--tool-text-dim, rgba(255,255,255,0.5));
+  line-height: 1.4;
+}
+
+/* ── Copy button JS ── */
+
+/* Responsive */
+@media (max-width: 640px) {
+  .qs-wrapper { padding: 1.5rem 1rem 4rem; }
+  .qs-journey { padding-left: 2.75rem; }
+  .qs-journey::before { left: 0.9rem; }
+  .qs-step__dot { left: -2.75rem; width: 1.8rem; height: 1.8rem; font-size: 0.65rem; }
+  .qs-milestone { margin-left: -2.75rem; padding: 1.5rem; }
+}
