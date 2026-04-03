@@ -35,9 +35,9 @@
     inset: 0;
     z-index: 10000;
     pointer-events: none;
-    /* background set dynamically via JS */
-    transform: translateX(-101%);
-    will-change: transform;
+    opacity: 0;
+    mix-blend-mode: color;
+    will-change: opacity, background-color;
   }
 
   /* ── Reduced motion ────────────────────────────────────── */
@@ -149,22 +149,28 @@
   }
 
   // ── Page transitions ───────────────────────────────────────────────────────
+  // Fade out with outgoing section color tint, fade in with incoming color tint.
+  // mix-blend-mode: color means the overlay hue bleeds into the page without
+  // blocking it — you see the page desaturate through the section's hue.
 
-  // Before navigation: slide overlay IN using the CURRENT page's primary color
+  let ptAnim: Animation | null = null;
+
+  // Before navigation: fade overlay IN (current page's color tint)
   document.addEventListener("astro:before-preparation", () => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const color = getPrimaryColor();
     const overlay = getOverlay();
-    overlay.style.background = color;
+    overlay.style.backgroundColor = color;
 
-    overlay.animate(
-      [{ transform: "translateX(-101%)" }, { transform: "translateX(0%)" }],
-      { duration: 280, easing: "cubic-bezier(0.4, 0, 1, 1)", fill: "forwards" }
+    ptAnim?.cancel();
+    ptAnim = overlay.animate(
+      [{ opacity: 0 }, { opacity: 0.55 }],
+      { duration: 260, easing: "ease-in", fill: "forwards" }
     );
   });
 
-  // After navigation: update overlay to NEW page color, then slide OUT
+  // After navigation: hold tint at peak, switch hue to new page color, fade out
   document.addEventListener("astro:page-load", () => {
     // Re-run scroll reveal on new page
     initReveal();
@@ -172,17 +178,14 @@
     const overlay = document.getElementById("pt-overlay");
     if (!overlay) return;
 
-    // Switch to new page's color mid-cover (user can't see — overlay is full screen)
+    // Swap hue to destination color mid-tint (page is blended — swap is invisible)
     const newColor = getPrimaryColor();
-    overlay.style.background = newColor;
+    overlay.style.backgroundColor = newColor;
 
-    overlay
-      .animate(
-        [{ transform: "translateX(0%)" }, { transform: "translateX(101%)" }],
-        { duration: 380, easing: "cubic-bezier(0, 0, 0.2, 1)", fill: "forwards" }
-      )
-      .finished.then(() => {
-        overlay.style.transform = "translateX(-101%)";
-      });
+    ptAnim?.cancel();
+    ptAnim = overlay.animate(
+      [{ opacity: 0.55 }, { opacity: 0 }],
+      { duration: 380, easing: "ease-out", fill: "forwards" }
+    );
   });
 </script>
