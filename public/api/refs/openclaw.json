@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.2",
-  "generated_at": "2026-04-03T22:11:03.355Z",
+  "generated_at": "2026-04-03T23:12:36.454Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -16,22 +16,15 @@
   "delta": {
     "from_version": "2026.4.2",
     "to_version": "2026.4.2",
-    "new_features": [
-      "android-assistant-integration",
-      "provider-replay-hooks",
-      "before-agent-reply",
-      "plugin-owned-session-key-surfaces",
-      "feishu-comments-drive-comment-event-flow",
-      "plugin-owned-viewer-base-url"
-    ],
+    "new_features": [],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "plugins-xai-config-migration",
-      "plugins-web-fetch-config-migration"
+      "plugins-xai-x-search-config-migration",
+      "plugins-web-fetch-firecrawl-config-migration"
     ]
   },
   "payload": {
@@ -56,7 +49,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces significant configuration changes for the xAI and web fetch plugins, requiring migration via `openclaw doctor --fix`. Task Flows are restored with managed sync modes and durable state, enabling persistent background orchestration. Android Assistant integration is added, allowing OpenClaw to be launched from the assistant. Provider replay hooks are introduced for transcript policy and reasoning-mode dispatch. Several fixes address provider routing, exec approvals, channel integrations, and image generation, enhancing stability and security."
+      "tldr": "This release migrates `x_search` and `web_fetch` configurations to plugin-owned paths, requiring migration via `openclaw doctor --fix`. The core Task Flow substrate is restored with managed-vs-mirrored sync modes and durable state tracking. Managed child task spawning is added with sticky cancel intent. Plugins can now short-circuit the LLM with synthetic replies using `before_agent_reply`. Google Assistant App Actions prompts are auto-sent once chat is healthy and idle. Credential-path binds are blocked in sandboxes for enhanced security."
     },
     "features": [
       {
