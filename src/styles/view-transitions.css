@@ -1,26 +1,24 @@
-/* view-transitions.css
- * SiteAnimations.astro handles the primary fade+color-modulation transition.
- * These are fallbacks only.
+/*
+ * view-transitions.css
+ *
+ * SiteAnimations.astro owns ALL visual transition effects via its overlay.
+ * We suppress native ::view-transition-old/new on root so they don't fight it.
+ * ViewTransitions component stays in layouts for SPA routing — just no visuals.
  */
 
-@keyframes vt-fade-out {
-  from { opacity: 1; }
-  to   { opacity: 0; }
-}
-@keyframes vt-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-::view-transition-old(root) {
-  animation: vt-fade-out 0.18s ease forwards;
-}
+/* Instant cut at DOM level — overlay provides the visual */
+::view-transition-old(root),
 ::view-transition-new(root) {
-  animation: vt-fade-in 0.28s ease forwards;
-  animation-delay: 0.12s;
+  animation: none;
+  mix-blend-mode: normal;
 }
 
-/* Persist nav — no animation on it */
+/* Prevent isolation layer from creating stacking context issues with overlay */
+::view-transition-image-pair(root) {
+  isolation: auto;
+}
+
+/* Nav: no transition — it persists */
 ::view-transition-group(nav) {
   animation-duration: 0s;
 }
