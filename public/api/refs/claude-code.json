@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.90",
-  "generated_at": "2026-04-02T23:11:43.382Z",
+  "version": "2.1.91",
+  "generated_at": "2026-04-03T00:31:29.606Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,16 +14,17 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.90",
-    "to_version": "2.1.90",
+    "from_version": "2.1.91",
+    "to_version": "2.1.91",
     "new_features": [
-      "interactive-lessons"
+      "mcp-tool-result-persistence-override",
+      "disable-skill-shell-execution-setting",
+      "multi-line-prompts-in-deep-links",
+      "plugins-can-ship-executables"
     ],
     "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [
-      "CLAUDE_CODE_PLUGIN_KEEP_MARKETPLACE_ON_FAILURE"
-    ],
+    "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -43,12 +44,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.90",
-      "latest_release_date": "2026-04-01",
+      "latest_stable": "2.1.91",
+      "latest_release_date": "2026-04-02",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Version 2.1.90 introduces interactive lessons via the `/powerup` command, offering animated demos to teach Claude Code features. A new environment variable, `CLAUDE_CODE_PLUGIN_KEEP_MARKETPLACE_ON_FAILURE`, allows retaining the marketplace cache when `git pull` fails, which is beneficial in offline environments. This release also addresses several critical bugs, including an infinite loop in the rate-limit options dialog, prompt-cache misses with `--resume` for users with deferred tools, and file-saving failures due to format-on-save hooks. Additionally, the update hardens PowerShell tool permission checks and improves performance by optimizing JSON processing, SSE transport, and transcript writes for long conversations. The `--resume` command now loads project sessions in parallel and filters out sessions created by `claude -p` or SDK invocations."
+      "tldr": "This release introduces the ability to override the maximum result size for MCP tools using the `_meta[\"anthropic/maxResultSizeChars\"]` annotation, allowing larger results like DB schemas to be processed. A new `disableSkillShellExecution` setting allows disabling inline shell execution in skills, custom slash commands, and plugin commands. Multi-line prompts are now supported in `claude-cli://open?q=` deep links. Plugins can now ship and execute binaries directly. Several fixes address transcript issues on `--resume`, `cmd+delete` behavior in terminals, plan mode in remote sessions, JSON schema validation, and Windows version cleanup. The `/feedback` command now provides a reason for unavailability, and `/claude-api` skill guidance has been improved."
     },
     "features": [
       {
@@ -598,6 +599,42 @@
         "status": "experimental",
         "since": "2.1.90",
         "description": "Interactive lessons teaching Claude Code features with animated demos.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "mcp-tool-result-persistence-override",
+        "name": "MCP Tool Result Persistence Override",
+        "status": "stable",
+        "since": "2.1.91",
+        "description": "Added MCP tool result persistence override via `_meta[\"anthropic/maxResultSizeChars\"]` annotation (up to 500K), allowing larger results like DB schemas to pass through without truncation",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "disable-skill-shell-execution-setting",
+        "name": "Disable Skill Shell Execution Setting",
+        "status": "stable",
+        "since": "2.1.91",
+        "description": "Added `disableSkillShellExecution` setting to disable inline shell execution in skills, custom slash commands, and plugin commands",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "multi-line-prompts-in-deep-links",
+        "name": "Multi-line Prompts in Deep Links",
+        "status": "stable",
+        "since": "2.1.91",
+        "description": "Added support for multi-line prompts in `claude-cli://open?q=` deep links (encoded newlines `%0A` no longer rejected)",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "plugins-can-ship-executables",
+        "name": "Plugins Can Ship Executables",
+        "status": "stable",
+        "since": "2.1.91",
+        "description": "Plugins can now ship executables under `bin/` and invoke them as bare commands from the Bash tool",
         "key_details": [],
         "source_url": ""
       }
