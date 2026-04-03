@@ -1,108 +1,195 @@
 ---
 import HermesLayout from "../../layouts/HermesLayout.astro";
-import "../../styles/cheatsheet-shared.css";
+import "../../styles/tips-shared.css";
 ---
 
 <HermesLayout
-  title="Hermes Agent Tips & Tricks — changelogs.info"
-  description="Power-user tips, hidden features, and common mistakes for Hermes Agent."
+  title="Hermes Agent Tips & Tricks — Power User Guide"
+  description="Task descriptions that work, --dry-run habit, checkpoint patterns, YAML workflow plans, tool plugin setup, and execution log analysis."
   currentPage="tips"
 >
-  <div class="cs-wrapper">
-    <section class="cs-hero">
-      <div class="cs-hero__emoji">💡</div>
-      <h1 class="ha-headline cs-hero__title">
-        Tips &<span class="cs-hero__accent"> Tricks</span>
+  <div class="tips-wrapper">
+
+    <header class="tips-hero">
+      <span class="tips-hero__eyebrow">Hermes Agent · Power User</span>
+      <h1 class="tips-hero__title">
+        Tips &amp; <span class="tips-hero__accent">Tricks</span>
       </h1>
-      <p class="cs-hero__sub">Power-user knowledge for Hermes Agent</p>
-    </section>
+      <p class="tips-hero__desc">Writing task descriptions that actually work. --dry-run as a habit. Checkpoint patterns for long operations. YAML workflow plans. Tool plugin setup.</p>
+    </header>
 
-    <div class="cs-grid">
-      <div class="cs-two-col">
-        <!-- Quick Wins panel -->
-        <div class="cs-panel">
-          <h2 class="ha-headline cs-panel__title cs-panel__title--accent">⚡ Quick Wins</h2>
-          <div class="cs-item-list">
-            <div class="cs-item">
-              <div class="cs-item__title">hermes init first, always</div>
-              <p class="cs-item__desc">The config file tells Hermes about your stack and tools.</p>
-              <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> hermes init</div>
-            </div>
-            <div class="cs-item">
-              <div class="cs-item__title">--dry-run before uncertain tasks</div>
-              <p class="cs-item__desc">See the full plan before anything executes.</p>
-              <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> hermes "task" --dry-run</div>
-            </div>
-            <div class="cs-item">
-              <div class="cs-item__title">Structured descriptions win</div>
-              <p class="cs-item__desc">"Add rate limiting to POST /api/auth/login, max 5 req/min per IP" beats "make auth better".</p>
-            </div>
-            <div class="cs-item">
-              <div class="cs-item__title">Read the execution log</div>
-              <p class="cs-item__desc">hermes log shows the full trace when something goes wrong.</p>
-              <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> hermes log</div>
-            </div>
-            <div class="cs-item">
-              <div class="cs-item__title">Checkpoint for long ops</div>
-              <p class="cs-item__desc">Saves state mid-task for safe resumption.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Hidden Features panel -->
-        <div class="cs-panel cs-panel--accent">
-          <h2 class="ha-headline cs-panel__title">🔮 Hidden Features</h2>
-          <div class="cs-item-list">
-            <div class="cs-item">
-              <div class="cs-item__title">Tool plugins</div>
-              <p class="cs-item__desc">hermes.config.json extends what Hermes can call — set up API integrations.</p>
-            </div>
-            <div class="cs-item">
-              <div class="cs-item__title">YAML workflow plans</div>
-              <p class="cs-item__desc">Pre-define multi-step workflows for repeatable complex tasks.</p>
-            </div>
-            <div class="cs-item">
-              <div class="cs-item__title">External API tools</div>
-              <p class="cs-item__desc">Wire up your internal APIs as tools Hermes can call.</p>
-            </div>
-          </div>
-        </div>
+    <div class="tips-section">
+      <div class="tips-section__header">
+        <span class="tips-section__icon">⚡</span>
+        <h2 class="tips-section__title">Quick Wins</h2>
       </div>
+      <div class="tips-cards">
 
-      <!-- Common Mistakes panel -->
-      <div class="cs-panel cs-panel--warning">
-        <h2 class="ha-headline cs-panel__title">⚠ Common Mistakes</h2>
-        <div class="cs-gotcha-list">
-          <div class="cs-gotcha-item">
-            <div class="cs-gotcha-item__title">Skipping hermes init</div>
-            <p class="cs-gotcha-item__desc">Runs with defaults that may not match your stack.</p>
-          </div>
-          <div class="cs-gotcha-item">
-            <div class="cs-gotcha-item__title">Vague task descriptions</div>
-            <p class="cs-gotcha-item__desc">"Make auth better" vs specific requirements with constraints.</p>
-          </div>
-          <div class="cs-gotcha-item">
-            <div class="cs-gotcha-item__title">No --dry-run before destructive ops</div>
-            <p class="cs-gotcha-item__desc">Always preview before letting Hermes modify files.</p>
-          </div>
+        <div class="tips-card tips-card--highlight">
+          <span class="tips-card__num">01</span>
+          <div class="tips-card__title">hermes init first, always</div>
+          <p class="tips-card__desc">Without hermes.config.json, Hermes uses defaults that probably don't match your stack. The init wizard takes 2 minutes and makes every subsequent task dramatically more accurate.</p>
         </div>
-      </div>
 
-      <!-- Workflow Combos panel -->
-      <div class="cs-panel cs-panel--surface">
-        <h2 class="ha-headline cs-panel__title">🔗 Workflow Combos</h2>
-        <div class="cs-item-list">
-          <div class="cs-item">
-            <div class="cs-item__title">Dry-run then execute</div>
-            <p class="cs-item__desc">Preview, verify, then run for real.</p>
-            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> hermes "write unit tests for src/utils/auth.ts" --dry-run &amp;&amp; hermes "write unit tests for src/utils/auth.ts"</div>
-          </div>
-          <div class="cs-item">
-            <div class="cs-item__title">Pipeline file workflow</div>
-            <p class="cs-item__desc">Define reusable task pipelines in YAML for complex multi-step operations.</p>
-          </div>
+        <div class="tips-card">
+          <span class="tips-card__num">02</span>
+          <div class="tips-card__title">--dry-run before you execute</div>
+          <p class="tips-card__desc">Hermes is autonomous. See the full plan before any files are touched. This is especially important for refactors, migrations, and anything involving multiple files.</p>
+          <div class="tips-card__cmd">hermes "your task" --dry-run</div>
         </div>
+
+        <div class="tips-card">
+          <span class="tips-card__num">03</span>
+          <div class="tips-card__title">Specific descriptions = better plans</div>
+          <p class="tips-card__desc">Vague: "improve auth." Specific: "Add rate limiting to POST /api/auth/login — max 5 requests per minute per IP, return 429 with Retry-After header, store state in Redis." Specificity is everything.</p>
+        </div>
+
+        <div class="tips-card">
+          <span class="tips-card__num">04</span>
+          <div class="tips-card__title">Read the execution log when things go wrong</div>
+          <p class="tips-card__desc">Hermes logs every step of its execution. When a task doesn't go as expected, the log tells you exactly what happened and where it diverged from the plan.</p>
+          <div class="tips-card__cmd">hermes log</div>
+        </div>
+
+        <div class="tips-card">
+          <span class="tips-card__num">05</span>
+          <div class="tips-card__title">Checkpoint saves mid-task state</div>
+          <p class="tips-card__desc">For long-running operations, checkpoint at meaningful milestones. If something goes wrong later, you can resume from the checkpoint instead of starting over.</p>
+          <div class="tips-card__cmd">hermes checkpoint</div>
+        </div>
+
+        <div class="tips-card">
+          <span class="tips-card__num">06</span>
+          <div class="tips-card__title">--model swaps the underlying model</div>
+          <p class="tips-card__desc">Use a cheaper model for exploration and planning tasks, a smarter one for actual implementation. You're not locked into one model for the whole workflow.</p>
+          <div class="tips-card__cmd">hermes --model claude-opus-4-6 "your task"</div>
+        </div>
+
       </div>
     </div>
+
+    <div class="tips-section">
+      <div class="tips-section__header">
+        <span class="tips-section__icon">🔍</span>
+        <h2 class="tips-section__title">Hidden Features</h2>
+      </div>
+      <div class="tips-features">
+
+        <div class="tips-feature">
+          <span class="tips-feature__icon">📋</span>
+          <div class="tips-feature__body">
+            <div class="tips-feature__title">YAML workflow plans for repeatable tasks</div>
+            <p class="tips-feature__desc">Define multi-step workflows as YAML plans in your project. Hermes reads them and executes the steps in sequence — great for recurring tasks like deployment prep, release checks, or data migrations. Write once, run whenever.</p>
+            <code class="tips-feature__cmd">hermes run workflows/deploy-prep.yaml</code>
+          </div>
+        </div>
+
+        <div class="tips-feature">
+          <span class="tips-feature__icon">🔌</span>
+          <div class="tips-feature__body">
+            <div class="tips-feature__title">Tool plugins extend what Hermes can touch</div>
+            <p class="tips-feature__desc">Configure tool plugins in hermes.config.json and Hermes can call your internal APIs, run database queries, trigger CI jobs, or interact with any external service. Not just file edits — real system actions.</p>
+            <div class="tips-feature__cmd">// hermes.config.json<br/>&#123;"tools": [&#123; "name": "run-tests", "exec": "npm test" &#125;]</div>
+          </div>
+        </div>
+
+        <div class="tips-feature">
+          <span class="tips-feature__icon">🔁</span>
+          <div class="tips-feature__body">
+            <div class="tips-feature__title">Checkpoint resumes — not retries</div>
+            <p class="tips-feature__desc">Checkpoints aren't just backups — they let Hermes resume from a specific execution state. For a 20-step migration where step 12 fails, you resume at step 12, not step 1. Massive time saver.</p>
+            <code class="tips-feature__cmd">hermes resume &lt;checkpoint-id&gt;</code>
+          </div>
+        </div>
+
+        <div class="tips-feature">
+          <span class="tips-feature__icon">🌐</span>
+          <div class="tips-feature__body">
+            <div class="tips-feature__title">Hermes can call external APIs as tools</div>
+            <p class="tips-feature__desc">Wire up your internal APIs as Hermes tools. It can then make authenticated API calls as part of a task — e.g., create a GitHub issue, trigger a Slack notification, or update a database record as part of a workflow.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="tips-section">
+      <div class="tips-section__header">
+        <span class="tips-section__icon">💀</span>
+        <h2 class="tips-section__title">Common Mistakes</h2>
+      </div>
+      <div class="tips-gotchas">
+
+        <div class="tips-gotcha">
+          <span class="tips-gotcha__skull">☠️</span>
+          <div class="tips-gotcha__title">Skipping hermes init</div>
+          <p class="tips-gotcha__desc">Without the config file, Hermes guesses at your stack. It might pick the wrong test runner, wrong build command, or wrong file patterns. Everything works worse.</p>
+          <span class="tips-gotcha__fix">Run hermes init in every project before your first real task. It's 2 minutes that pays back on every run.</span>
+        </div>
+
+        <div class="tips-gotcha">
+          <span class="tips-gotcha__skull">☠️</span>
+          <div class="tips-gotcha__title">Vague task descriptions</div>
+          <p class="tips-gotcha__desc">"Make auth better" produces a plan that may not match what you meant at all. Hermes does what you say, not what you meant.</p>
+          <span class="tips-gotcha__fix">Structure: [action] [what] [where] [constraints]. e.g. "Add JWT validation middleware to all /api/ routes except /api/health"</span>
+        </div>
+
+        <div class="tips-gotcha">
+          <span class="tips-gotcha__skull">☠️</span>
+          <div class="tips-gotcha__title">Not using --dry-run on destructive tasks</div>
+          <p class="tips-gotcha__desc">Hermes will delete files, drop columns, or run migrations if your task says to. Without --dry-run, you find out about surprises after they've already happened.</p>
+          <span class="tips-gotcha__fix">--dry-run is free. Use it on anything that modifies data, deletes files, or runs migrations.</span>
+        </div>
+
+        <div class="tips-gotcha">
+          <span class="tips-gotcha__skull">☠️</span>
+          <div class="tips-gotcha__title">Not reading the log when things fail</div>
+          <p class="tips-gotcha__desc">When something goes wrong, people often just retry with slightly different wording. The log tells you exactly what went wrong — use it before guessing.</p>
+          <span class="tips-gotcha__fix">hermes log after any unexpected outcome. The answer is almost always in there.</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="tips-section">
+      <div class="tips-section__header">
+        <span class="tips-section__icon">🔄</span>
+        <h2 class="tips-section__title">Workflow Combos</h2>
+      </div>
+      <div class="tips-recipes">
+
+        <div class="tips-recipe">
+          <div class="tips-recipe__header">
+            <span class="tips-recipe__icon">🚀</span>
+            <span class="tips-recipe__name">Release prep checklist — YAML workflow</span>
+          </div>
+          <div class="tips-recipe__body">
+            <p class="tips-recipe__desc">Define your pre-release checklist once as a YAML workflow. Run it before every release with one command.</p>
+            <div class="tips-recipe__steps">
+              <div class="tips-recipe__step"><span class="tips-recipe__step-num">1.</span><span class="tips-recipe__step-text">Create <code>workflows/release-check.yaml</code> with steps: run tests, check for TODO/FIXME, verify env vars documented, check CHANGELOG updated</span></div>
+              <div class="tips-recipe__step"><span class="tips-recipe__step-num">2.</span><span class="tips-recipe__step-text"><code>hermes run workflows/release-check.yaml</code> — Hermes executes each step and reports</span></div>
+              <div class="tips-recipe__step"><span class="tips-recipe__step-num">3.</span><span class="tips-recipe__step-text">Any failures are reported with context. Fix and re-run. Checklist is now automated.</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tips-recipe">
+          <div class="tips-recipe__header">
+            <span class="tips-recipe__icon">🧪</span>
+            <span class="tips-recipe__name">Spec → implementation → tests</span>
+          </div>
+          <div class="tips-recipe__body">
+            <p class="tips-recipe__desc">Give Hermes a spec and let it generate the full implementation + tests in one autonomous run.</p>
+            <div class="tips-recipe__steps">
+              <div class="tips-recipe__step"><span class="tips-recipe__step-num">1.</span><span class="tips-recipe__step-text">Write a spec in a Markdown file: <code>specs/rate-limiter.md</code> — inputs, outputs, edge cases, constraints</span></div>
+              <div class="tips-recipe__step"><span class="tips-recipe__step-num">2.</span><span class="tips-recipe__step-text"><code>hermes "implement the rate limiter as specified in specs/rate-limiter.md, including full unit test coverage" --dry-run</code></span></div>
+              <div class="tips-recipe__step"><span class="tips-recipe__step-num">3.</span><span class="tips-recipe__step-text">Review the plan, run without --dry-run. Hermes generates implementation + tests as one atomic operation.</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </HermesLayout>

@@ -1,103 +1,131 @@
 ---
 import GeminiLayout from "../../layouts/GeminiLayout.astro";
-import "../../styles/cheatsheet-shared.css";
+import "../../styles/quickstart-shared.css";
 ---
 
 <GeminiLayout
-  title="Gemini CLI Quickstart — changelogs.info"
-  description="Get up and running with Gemini CLI in 10 minutes. Install, first run, first real task."
+  title="Gemini CLI Quickstart — Up and Running in 10 Minutes"
+  description="Install Gemini CLI, authenticate, and leverage 1M token context to analyse your entire codebase in one shot."
   currentPage="quickstart"
 >
-  <div class="cs-wrapper">
-    <section class="cs-hero">
-      <div class="cs-hero__emoji">🚀</div>
-      <h1 class="gc-headline cs-hero__title">
-        Quick<span class="cs-hero__accent">Start</span>
+  <div class="qs-wrapper">
+
+    <header class="qs-hero">
+      <span class="qs-hero__eyebrow">Gemini CLI · Getting Started</span>
+      <h1 class="qs-hero__title">
+        Quick<span class="qs-hero__accent">Start</span>
       </h1>
-      <p class="cs-hero__sub">Up and running in 10 minutes</p>
-      <p class="cs-hero__meta">Google's AI CLI with 1M context — feed it an entire codebase at once</p>
-    </section>
+      <p class="qs-hero__desc">Google's AI CLI with a 1M token context window. Feed it an entire codebase, a full log file, or a massive dataset — it can handle it.</p>
+    </header>
 
-    <div class="cs-grid">
+    <div class="qs-journey">
 
-      <div class="cs-panel">
-        <h2 class="gc-headline cs-panel__title">Prerequisites</h2>
-        <div class="cs-item-list">
-          <div class="cs-item">
-            <div class="cs-item__title">Node.js 18+</div>
-            <p class="cs-item__desc">Required runtime. Check with <code>node -v</code>.</p>
-          </div>
-          <div class="cs-item">
-            <div class="cs-item__title">Google account or GEMINI_API_KEY</div>
-            <p class="cs-item__desc">Browser auth works on first launch, or export an API key from <a href="https://aistudio.google.com/apikey">AI Studio</a>.</p>
-          </div>
-        </div>
+      <div class="qs-step">
+        <div class="qs-step__dot">01</div>
+        <span class="qs-step__label">Prerequisites</span>
+        <h2 class="qs-step__title">Node.js 18+ and a Google account</h2>
+        <p class="qs-step__desc">You can auth with your Google account on first launch (browser-based), or use a Gemini API key from aistudio.google.com.</p>
+        <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>node --version</code></div>
       </div>
 
-      <div class="cs-panel cs-panel--accent">
-        <h2 class="gc-headline cs-panel__title">Install</h2>
-        <div class="cs-item-list">
-          <div class="cs-item">
-            <div class="cs-item__title">Via npm</div>
-            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> npm install -g @google/gemini-cli</div>
-          </div>
-        </div>
+      <div class="qs-step">
+        <div class="qs-step__dot">02</div>
+        <span class="qs-step__label">Install</span>
+        <h2 class="qs-step__title">Install Gemini CLI globally</h2>
+        <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>npm install -g @google/gemini-cli</code></div>
+        <p class="qs-cmd-note">Verify: gemini --version</p>
       </div>
 
-      <div class="cs-panel">
-        <h2 class="gc-headline cs-panel__title">First Run</h2>
-        <div class="cs-item-list">
-          <div class="cs-item">
-            <div class="cs-item__title">Launch Gemini</div>
-            <p class="cs-item__desc">Opens browser auth on first launch. After that, starts instantly.</p>
-            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> gemini</div>
-          </div>
-        </div>
+      <div class="qs-step">
+        <div class="qs-step__dot">03</div>
+        <span class="qs-step__label">Authenticate</span>
+        <h2 class="qs-step__title">First launch — browser auth or API key</h2>
+        <p class="qs-step__desc">Run <code>gemini</code> and it will open a browser for Google account auth. Or skip the browser by setting an API key first.</p>
+        <span class="qs-cmd-label">Option A — Google account (browser)</span>
+        <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>gemini</code></div>
+        <span class="qs-cmd-label">Option B — API key (faster, better for scripts)</span>
+        <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>export GEMINI_API_KEY=your-key && gemini</code></div>
+        <p class="qs-cmd-note">Get an API key free at aistudio.google.com/apikey</p>
       </div>
 
-      <div class="cs-panel cs-panel--accent">
-        <h2 class="gc-headline cs-panel__title">⚡ First Real Task</h2>
-        <div class="cs-item-list">
-          <div class="cs-item">
-            <div class="cs-item__title">Pipe a file for review</div>
-            <p class="cs-item__desc">One-shot mode with -p flag. Great for code review.</p>
-            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> gemini -p "review this file for security issues" &lt; src/auth.ts</div>
-          </div>
-          <div class="cs-item">
-            <div class="cs-item__title">Set an API key</div>
-            <p class="cs-item__desc">Faster than browser auth, required for CI/scripts.</p>
-            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> export GEMINI_API_KEY=your-key-here</div>
-          </div>
-          <div class="cs-item">
-            <div class="cs-item__title">Try --yolo mode</div>
-            <p class="cs-item__desc">Auto-approve all tool calls. Use on trusted repos only.</p>
-            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> gemini --yolo "refactor the database layer"</div>
-          </div>
-          <div class="cs-item">
-            <div class="cs-item__title">Explore checkpointing</div>
-            <p class="cs-item__desc">Gemini can checkpoint and restore file state, letting you undo changes safely.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="cs-panel cs-panel--surface">
-        <h2 class="gc-headline cs-panel__title">What Next?</h2>
-        <div class="cs-flag-grid">
-          <div class="cs-flag-item">
-            <a href="/gemini-cli/cheatsheet/" class="cs-flag-item__key" style="text-decoration:none;">Cheat Sheet →</a>
-            <div class="cs-flag-item__desc">Daily commands and power moves</div>
-          </div>
-          <div class="cs-flag-item">
-            <a href="/gemini-cli/changelog/" class="cs-flag-item__key" style="text-decoration:none;">Changelog →</a>
-            <div class="cs-flag-item__desc">Latest updates and release notes</div>
-          </div>
-          <div class="cs-flag-item">
-            <a href="/gemini-cli/releases/" class="cs-flag-item__key" style="text-decoration:none;">Releases →</a>
-            <div class="cs-flag-item__desc">Full release history and downloads</div>
-          </div>
-        </div>
+      <div class="qs-step qs-step--active">
+        <div class="qs-step__dot">04</div>
+        <span class="qs-step__label">First Real Task</span>
+        <h2 class="qs-step__title">Non-interactive one-shot mode</h2>
+        <p class="qs-step__desc">Use -p for scripting — non-interactive, returns output immediately. Perfect for piping in files.</p>
+        <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>gemini -p "what does this codebase do and what are the main entry points" &lt; README.md</code></div>
+        <p class="qs-cmd-note">Or pipe any file. With 1M context, you can pipe entire codebases.</p>
       </div>
 
     </div>
+
+    <div class="qs-milestone">
+      <span class="qs-milestone__eyebrow">First Real Task</span>
+      <h2 class="qs-milestone__title">Feed it your entire codebase — it can take it</h2>
+      <p class="qs-milestone__desc">Most tools are bottlenecked by context. Gemini isn't. Use this to get a comprehensive analysis of your whole project at once.</p>
+      <div class="qs-milestone__steps">
+        <div class="qs-milestone__step">
+          <div class="qs-milestone__step-num">1</div>
+          <div class="qs-milestone__step-body">Navigate to your project root.</div>
+        </div>
+        <div class="qs-milestone__step">
+          <div class="qs-milestone__step-num">2</div>
+          <div class="qs-milestone__step-body">Run a security audit across the whole codebase:</div>
+        </div>
+      </div>
+      <div class="qs-milestone__cmd"><code><span class="qs-cmd__prompt">$</span>find . -name "*.ts" -not -path "*/node_modules/*" | xargs cat | gemini -p "security audit: find auth issues, injection vectors, and exposed secrets"</code></div>
+      <div class="qs-milestone__steps">
+        <div class="qs-milestone__step">
+          <div class="qs-milestone__step-num">3</div>
+          <div class="qs-milestone__step-body">Gemini processes the full codebase in one shot and returns a structured security report. No other CLI handles this scale.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="qs-next">
+      <p class="qs-next__title">What next?</p>
+      <div class="qs-next__grid">
+        <a href="/gemini-cli/tips/" class="qs-next__card">
+          <span class="qs-next__card-arrow">⚡</span>
+          <div class="qs-next__card-title">Tips & Tricks</div>
+          <p class="qs-next__card-desc">--yolo mode, checkpointing, sandbox, GEMINI_MODEL env.</p>
+        </a>
+        <a href="/gemini-cli/cheatsheet/" class="qs-next__card">
+          <span class="qs-next__card-arrow">📋</span>
+          <div class="qs-next__card-title">Cheatsheet</div>
+          <p class="qs-next__card-desc">All flags and workflows at a glance.</p>
+        </a>
+        <a href="/gemini-cli/changelog/" class="qs-next__card">
+          <span class="qs-next__card-arrow">🔔</span>
+          <div class="qs-next__card-title">Changelog</div>
+          <p class="qs-next__card-desc">Every Google release, tracked.</p>
+        </a>
+        <a href="/gemini-cli/configs/" class="qs-next__card">
+          <span class="qs-next__card-arrow">⚙️</span>
+          <div class="qs-next__card-title">Configs</div>
+          <p class="qs-next__card-desc">Models, sandbox settings, policy engine.</p>
+        </a>
+      </div>
+    </div>
+
   </div>
+
+  <script is:inline>
+    document.querySelectorAll('.qs-cmd').forEach(function(block) {
+      var btn = document.createElement('button');
+      btn.className = 'qs-cmd__copy';
+      btn.textContent = 'copy';
+      btn.addEventListener('click', function() {
+        var code = block.querySelector('code');
+        if (!code) return;
+        var text = code.textContent.replace(/^\$\s*/, '').trim();
+        navigator.clipboard.writeText(text).then(function() {
+          btn.textContent = 'copied!';
+          setTimeout(function() { btn.textContent = 'copy'; }, 1500);
+        });
+      });
+      block.style.paddingRight = '5rem';
+      block.appendChild(btn);
+    });
+  </script>
 </GeminiLayout>

@@ -1,106 +1,189 @@
 ---
 import GeminiLayout from "../../layouts/GeminiLayout.astro";
-import "../../styles/cheatsheet-shared.css";
+import "../../styles/tips-shared.css";
 ---
 
 <GeminiLayout
-  title="Gemini CLI Tips & Tricks — changelogs.info"
-  description="Quick wins, hidden features, common mistakes, and workflow combos for Gemini CLI."
+  title="Gemini CLI Tips & Tricks — Power User Guide"
+  description="1M context tricks, --yolo mode, checkpointing, GEMINI_MODEL env, sandbox isolation, and patterns for massive codebase analysis."
   currentPage="tips"
 >
-  <div class="cs-wrapper">
+  <div class="tips-wrapper">
 
-    <section class="cs-hero">
-      <div class="cs-hero__emoji">💡</div>
-      <h1 class="gc-headline cs-hero__title">
-        Tips &<span class="cs-hero__accent"> Tricks</span>
+    <header class="tips-hero">
+      <span class="tips-hero__eyebrow">Gemini CLI · Power User</span>
+      <h1 class="tips-hero__title">
+        Tips &amp; <span class="tips-hero__accent">Tricks</span>
       </h1>
-      <p class="cs-hero__sub">Quick wins, hidden features, and the mistakes everyone makes once.</p>
-    </section>
+      <p class="tips-hero__desc">Getting real leverage from 1M context. --yolo mode, checkpointing for long tasks, sandbox isolation, model pinning, and patterns for whole-codebase analysis.</p>
+    </header>
 
-    <div class="cs-grid">
-
-      <div class="cs-panel">
-        <h2 class="gc-headline cs-panel__title">Quick Wins</h2>
-        <div class="cs-item-list">
-          <div class="cs-item">
-            <div class="cs-item__title">Use -p for one-shot mode</div>
-            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> gemini -p "summarize this repo"</div>
-            <p class="cs-item__desc">Non-interactive one-shot mode — perfect for scripts and automation.</p>
-          </div>
-          <div class="cs-item">
-            <div class="cs-item__title">--yolo skips confirmations</div>
-            <p class="cs-item__desc">Skips all confirmation prompts for the session. Use carefully — it's sticky for the entire session.</p>
-          </div>
-          <div class="cs-item">
-            <div class="cs-item__title">Feed it the whole codebase</div>
-            <p class="cs-item__desc">1M context window means you can give Gemini your entire codebase. Don't hold back — more context = better results.</p>
-          </div>
-          <div class="cs-item">
-            <div class="cs-item__title">Set default model in profile</div>
-            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> export GEMINI_MODEL=gemini-2.5-pro</div>
-            <p class="cs-item__desc">Add to your shell profile to avoid typing <code>--model</code> every time.</p>
-          </div>
-          <div class="cs-item">
-            <div class="cs-item__title">Pipe files via stdin</div>
-            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> cat bigfile.ts | gemini -p "review for security issues"</div>
-            <p class="cs-item__desc">Feed any file directly into Gemini for focused analysis.</p>
-          </div>
-        </div>
+    <div class="tips-section">
+      <div class="tips-section__header">
+        <span class="tips-section__icon">⚡</span>
+        <h2 class="tips-section__title">Quick Wins</h2>
       </div>
+      <div class="tips-cards">
 
-      <div class="cs-panel cs-panel--accent">
-        <h2 class="gc-headline cs-panel__title">Hidden Features</h2>
-        <div class="cs-item-list">
-          <div class="cs-item cs-item--accent">
-            <div class="cs-item__title cs-item__title--accent">Checkpointing</div>
-            <p class="cs-item__desc">Use <code>--checkpoint</code> on long tasks so you can resume if interrupted. Essential for tasks over 5 minutes.</p>
-          </div>
-          <div class="cs-item cs-item--accent">
-            <div class="cs-item__title cs-item__title--accent">gVisor sandbox</div>
-            <p class="cs-item__desc"><code>--sandbox</code> runs shell commands inside gVisor isolation — safer for untrusted or exploratory code.</p>
-          </div>
-          <div class="cs-item cs-item--accent">
-            <div class="cs-item__title cs-item__title--accent">Policy engine</div>
-            <p class="cs-item__desc">Pre-approve certain action types to skip confirmations selectively, without going full --yolo.</p>
-          </div>
+        <div class="tips-card tips-card--highlight">
+          <span class="tips-card__num">01</span>
+          <div class="tips-card__title">-p for non-interactive scripting</div>
+          <p class="tips-card__desc">The single most useful flag. Makes Gemini return output immediately and exit — perfect for pipelines, cron jobs, and one-off analysis.</p>
+          <div class="tips-card__cmd">gemini -p "summarise this" &lt; file.txt</div>
         </div>
-      </div>
 
-      <div class="cs-panel cs-panel--warning">
-        <h2 class="gc-headline cs-panel__title">Common Mistakes</h2>
-        <div class="cs-item-list">
-          <div class="cs-item">
-            <div class="cs-item__title">Forgetting --yolo is sticky</div>
-            <p class="cs-item__desc">Once enabled, --yolo stays on for the whole session. If you didn't mean to skip all confirmations, start a new session.</p>
-          </div>
-          <div class="cs-item">
-            <div class="cs-item__title">Browser auth in scripts</div>
-            <p class="cs-item__desc">Browser auth doesn't work in CI/automation. Set <code>GEMINI_API_KEY</code> instead.</p>
-          </div>
-          <div class="cs-item">
-            <div class="cs-item__title">Giving small context</div>
-            <p class="cs-item__desc">You have 1M tokens of context — use it. Giving Gemini only one file when you could give the whole repo leaves performance on the table.</p>
-          </div>
+        <div class="tips-card">
+          <span class="tips-card__num">02</span>
+          <div class="tips-card__title">Feed it the whole codebase</div>
+          <p class="tips-card__desc">1M tokens is roughly 750,000 words or several large codebases. Don't be conservative — give Gemini full context and it gives better answers.</p>
+          <div class="tips-card__cmd">find . -name "*.py" | xargs cat | gemini -p "your question"</div>
         </div>
-      </div>
 
-      <div class="cs-panel">
-        <h2 class="gc-headline cs-panel__title">Workflow Combos</h2>
-        <div class="cs-item-list">
-          <div class="cs-item">
-            <div class="cs-item__title">Full-repo security audit</div>
-            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> gemini -p "audit this entire codebase for OWASP top 10 vulnerabilities"</div>
-            <p class="cs-item__desc">Feed the whole repo into the 1M context window for a comprehensive security review.</p>
-          </div>
-          <div class="cs-item">
-            <div class="cs-item__title">Safe exploration of untrusted code</div>
-            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> gemini --sandbox --checkpoint</div>
-            <p class="cs-item__desc">Combine gVisor isolation with checkpointing for safe, resumable exploration.</p>
-          </div>
+        <div class="tips-card">
+          <span class="tips-card__num">03</span>
+          <div class="tips-card__title">Pin your model with an env var</div>
+          <p class="tips-card__desc">Set once in your shell profile and never type --model again. Gemini 2.5 Pro for the best reasoning.</p>
+          <div class="tips-card__cmd">export GEMINI_MODEL=gemini-2.5-pro</div>
         </div>
-      </div>
 
+        <div class="tips-card">
+          <span class="tips-card__num">04</span>
+          <div class="tips-card__title">--yolo skips confirmations</div>
+          <p class="tips-card__desc">Skips all confirmation prompts — runs commands and makes changes without asking. Sticky for the session. Use carefully on anything destructive.</p>
+          <div class="tips-card__cmd">gemini --yolo</div>
+        </div>
+
+        <div class="tips-card">
+          <span class="tips-card__num">05</span>
+          <div class="tips-card__title">Checkpoint long tasks</div>
+          <p class="tips-card__desc">For tasks that take 5+ minutes, use --checkpoint so Gemini can resume if interrupted. Huge time saver on big analysis tasks.</p>
+          <div class="tips-card__cmd">gemini --checkpoint "analyse this entire monorepo"</div>
+        </div>
+
+        <div class="tips-card">
+          <span class="tips-card__num">06</span>
+          <div class="tips-card__title">API key vs browser auth</div>
+          <p class="tips-card__desc">Browser auth is fine for interactive use. For scripts and CI, set GEMINI_API_KEY — browser auth requires a human to click, which breaks automation.</p>
+          <div class="tips-card__cmd">export GEMINI_API_KEY=your-key</div>
+        </div>
+
+      </div>
     </div>
+
+    <div class="tips-section">
+      <div class="tips-section__header">
+        <span class="tips-section__icon">🔍</span>
+        <h2 class="tips-section__title">Hidden Features</h2>
+      </div>
+      <div class="tips-features">
+
+        <div class="tips-feature">
+          <span class="tips-feature__icon">🔒</span>
+          <div class="tips-feature__body">
+            <div class="tips-feature__title">--sandbox runs commands in gVisor isolation</div>
+            <p class="tips-feature__desc">When Gemini runs shell commands, --sandbox wraps them in gVisor container isolation. Safer for running Gemini on unfamiliar code or in shared environments. Slightly slower, much safer.</p>
+            <code class="tips-feature__cmd">gemini --sandbox "run and fix these tests"</code>
+          </div>
+        </div>
+
+        <div class="tips-feature">
+          <span class="tips-feature__icon">⚙️</span>
+          <div class="tips-feature__body">
+            <div class="tips-feature__title">Policy engine — pre-approve action types</div>
+            <p class="tips-feature__desc">The policy engine lets you pre-approve certain categories of actions (file writes, shell commands) while blocking others. More granular than --yolo. Configure in your settings to avoid per-action confirmations on safe operations.</p>
+          </div>
+        </div>
+
+        <div class="tips-feature">
+          <span class="tips-feature__icon">🔁</span>
+          <div class="tips-feature__body">
+            <div class="tips-feature__title">Checkpointing resumes mid-task</div>
+            <p class="tips-feature__desc">If Gemini is partway through a long task and gets interrupted (network drop, Ctrl+C, timeout), --checkpoint means it can pick up from where it left off rather than starting over.</p>
+            <code class="tips-feature__cmd">gemini --checkpoint "migrate all components to TypeScript"</code>
+          </div>
+        </div>
+
+        <div class="tips-feature">
+          <span class="tips-feature__icon">📊</span>
+          <div class="tips-feature__body">
+            <div class="tips-feature__title">Structured output with format flags</div>
+            <p class="tips-feature__desc">Ask Gemini to return JSON, Markdown tables, or structured reports. Much easier to parse and pipe into other tools than freeform text.</p>
+            <code class="tips-feature__cmd">gemini -p "list all API endpoints as JSON with method, path, and auth required"</code>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="tips-section">
+      <div class="tips-section__header">
+        <span class="tips-section__icon">💀</span>
+        <h2 class="tips-section__title">Common Mistakes</h2>
+      </div>
+      <div class="tips-gotchas">
+
+        <div class="tips-gotcha">
+          <span class="tips-gotcha__skull">☠️</span>
+          <div class="tips-gotcha__title">--yolo is sticky for the whole session</div>
+          <p class="tips-gotcha__desc">Once you set --yolo, it applies to everything in that session — including operations you didn't expect. It doesn't reset between tasks.</p>
+          <span class="tips-gotcha__fix">Use --yolo per session, not as a default. Start a fresh session to get confirmation prompts back.</span>
+        </div>
+
+        <div class="tips-gotcha">
+          <span class="tips-gotcha__skull">☠️</span>
+          <div class="tips-gotcha__title">Browser auth in scripts</div>
+          <p class="tips-gotcha__desc">Browser auth requires a human to click a browser window. Any script or cron job using browser auth will hang and never complete.</p>
+          <span class="tips-gotcha__fix">Set GEMINI_API_KEY for any automated or non-interactive use. Never rely on browser auth in CI.</span>
+        </div>
+
+        <div class="tips-gotcha">
+          <span class="tips-gotcha__skull">☠️</span>
+          <div class="tips-gotcha__title">Giving tiny context to a 1M context tool</div>
+          <p class="tips-gotcha__desc">Asking Gemini to "look at this one file" when it can handle your entire codebase is like bringing a car to go 50 metres. You're leaving most of the value on the table.</p>
+          <span class="tips-gotcha__fix">Feed it everything relevant. The context window is the feature — use it.</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="tips-section">
+      <div class="tips-section__header">
+        <span class="tips-section__icon">🔄</span>
+        <h2 class="tips-section__title">Workflow Combos</h2>
+      </div>
+      <div class="tips-recipes">
+
+        <div class="tips-recipe">
+          <div class="tips-recipe__header">
+            <span class="tips-recipe__icon">🔬</span>
+            <span class="tips-recipe__name">Full codebase security audit in one command</span>
+          </div>
+          <div class="tips-recipe__body">
+            <p class="tips-recipe__desc">No other CLI can do this cleanly at scale. Feed Gemini your entire source and get a structured security report.</p>
+            <div class="tips-recipe__steps">
+              <div class="tips-recipe__step"><span class="tips-recipe__step-num">1.</span><span class="tips-recipe__step-text">From project root: <code>find . -name "*.ts" -not -path "*/node_modules/*" | xargs cat | gemini -p "security audit: auth issues, injection, exposed secrets, insecure defaults. Return as Markdown with severity levels."</code></span></div>
+              <div class="tips-recipe__step"><span class="tips-recipe__step-num">2.</span><span class="tips-recipe__step-text">Pipe to a file: <code>... &gt; security-audit.md</code></span></div>
+              <div class="tips-recipe__step"><span class="tips-recipe__step-num">3.</span><span class="tips-recipe__step-text">Review and triage. Gemini processes the whole repo at once — no sampling, no missed files.</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tips-recipe">
+          <div class="tips-recipe__header">
+            <span class="tips-recipe__icon">📝</span>
+            <span class="tips-recipe__name">Auto-generate docs from source</span>
+          </div>
+          <div class="tips-recipe__body">
+            <p class="tips-recipe__desc">Generate or update documentation from your actual source code — the whole thing, not just one file.</p>
+            <div class="tips-recipe__steps">
+              <div class="tips-recipe__step"><span class="tips-recipe__step-num">1.</span><span class="tips-recipe__step-text">Pipe your source: <code>find src/ -name "*.ts" | xargs cat | gemini -p "generate comprehensive API documentation for all exported functions and types. Markdown format."</code></span></div>
+              <div class="tips-recipe__step"><span class="tips-recipe__step-num">2.</span><span class="tips-recipe__step-text">Redirect to <code>docs/api.md</code> and commit. Done.</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </GeminiLayout>

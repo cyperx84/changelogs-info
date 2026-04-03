@@ -1,108 +1,202 @@
 ---
 import OpenClawLayout from "../../layouts/OpenClawLayout.astro";
-import "../../styles/cheatsheet-shared.css";
+import "../../styles/tips-shared.css";
 ---
 
 <OpenClawLayout
-  title="OpenClaw Tips & Tricks — changelogs.info"
-  description="Quick wins, hidden features, common mistakes, and workflow combos for OpenClaw."
+  title="OpenClaw Tips & Tricks — Power User Guide"
+  description="Quick wins, hidden features, common mistakes, and workflow combos for OpenClaw power users."
   currentPage="tips"
 >
-  <div class="cs-wrapper">
+  <div class="tips-wrapper">
 
-    <section class="cs-hero">
-      <div class="cs-hero__emoji">💡</div>
-      <h1 class="oc-headline cs-hero__title">
-        Tips &<span class="cs-hero__accent"> Tricks</span>
+    <header class="tips-hero">
+      <span class="tips-hero__eyebrow">OpenClaw · Power User</span>
+      <h1 class="tips-hero__title">
+        Tips &amp; <span class="tips-hero__accent">Tricks</span>
       </h1>
-      <p class="cs-hero__sub">Quick wins, hidden features, and the mistakes everyone makes once.</p>
-    </section>
+      <p class="tips-hero__desc">The non-obvious stuff. Quick wins you can use today, hidden features most users miss, mistakes that waste hours, and workflow patterns that scale.</p>
+    </header>
 
-    <div class="cs-grid">
-
-      <div class="cs-panel">
-        <h2 class="oc-headline cs-panel__title">Quick Wins</h2>
-        <div class="cs-item-list">
-          <div class="cs-item">
-            <div class="cs-item__title">Run openclaw doctor first</div>
-            <p class="cs-item__desc">Catches 80% of problems before you waste time debugging. Always start here.</p>
-            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> openclaw doctor</div>
-          </div>
-          <div class="cs-item">
-            <div class="cs-item__title">Dashboard works without messaging apps</div>
-            <p class="cs-item__desc">Use <code>openclaw dashboard</code> to validate the full stack before adding Telegram or Discord.</p>
-          </div>
-          <div class="cs-item">
-            <div class="cs-item__title">Memory is plain .md files</div>
-            <p class="cs-item__desc">Memory lives in your workspace as markdown files. Read and edit them directly — search with the memory_search tool.</p>
-          </div>
-          <div class="cs-item">
-            <div class="cs-item__title">Check which skills actually work</div>
-            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> openclaw skills check</div>
-            <p class="cs-item__desc">Shows which skills are runnable vs just installed.</p>
-          </div>
-          <div class="cs-item">
-            <div class="cs-item__title">Tail the gateway log</div>
-            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> tail -f ~/.openclaw/logs/gateway.log</div>
-            <p class="cs-item__desc">Beats guessing when debugging channel issues.</p>
-          </div>
-        </div>
+    <!-- Quick Wins -->
+    <div class="tips-section">
+      <div class="tips-section__header">
+        <span class="tips-section__icon">⚡</span>
+        <h2 class="tips-section__title">Quick Wins</h2>
       </div>
+      <div class="tips-cards">
 
-      <div class="cs-panel cs-panel--accent">
-        <h2 class="oc-headline cs-panel__title">Hidden Features</h2>
-        <div class="cs-item-list">
-          <div class="cs-item cs-item--accent">
-            <div class="cs-item__title cs-item__title--accent">Share skills across agents</div>
-            <p class="cs-item__desc">Agents can share skills by symlinking skill directories — no duplication needed.</p>
-          </div>
-          <div class="cs-item cs-item--accent">
-            <div class="cs-item__title cs-item__title--accent">HEARTBEAT.md drives health checks</div>
-            <p class="cs-item__desc">HEARTBEAT.md drives automated health check crons — keep it updated and run it on a schedule.</p>
-          </div>
-          <div class="cs-item cs-item--accent">
-            <div class="cs-item__title cs-item__title--accent">Multiple agents, different models</div>
-            <p class="cs-item__desc">You can run multiple agents pointing at different models on the same gateway.</p>
-          </div>
+        <div class="tips-card tips-card--highlight">
+          <span class="tips-card__num">01</span>
+          <div class="tips-card__title">Doctor first, always</div>
+          <p class="tips-card__desc">Before debugging anything, run this. It catches broken services, invalid config, bad auth, orphan sessions, and cron drift — before you waste 30 minutes guessing.</p>
+          <div class="tips-card__cmd">openclaw doctor</div>
         </div>
-      </div>
 
-      <div class="cs-panel cs-panel--warning">
-        <h2 class="oc-headline cs-panel__title">Common Mistakes</h2>
-        <div class="cs-item-list">
-          <div class="cs-item">
-            <div class="cs-item__title">Setting up Discord before proving the gateway works</div>
-            <p class="cs-item__desc">Always use <code>openclaw dashboard</code> first. Prove the stack works before adding channel complexity.</p>
-          </div>
-          <div class="cs-item">
-            <div class="cs-item__title">Putting secrets in workspace files</div>
-            <p class="cs-item__desc">Use <code>~/.openclaw/secrets/</code> only. Workspace files are visible to agents.</p>
-          </div>
-          <div class="cs-item">
-            <div class="cs-item__title">Using rm on workspace files</div>
-            <p class="cs-item__desc">Use trash instead so you can recover files. <code>rm</code> is permanent.</p>
-          </div>
-          <div class="cs-item">
-            <div class="cs-item__title">Skipping openclaw doctor</div>
-            <p class="cs-item__desc">When something breaks, doctor should be your first move, not your last resort.</p>
-          </div>
+        <div class="tips-card">
+          <span class="tips-card__num">02</span>
+          <div class="tips-card__title">Dashboard before any messaging app</div>
+          <p class="tips-card__desc">The dashboard proves gateway + auth + model + workspace all work without setting up Telegram/Discord first. Always validate here first.</p>
+          <div class="tips-card__cmd">openclaw dashboard</div>
         </div>
-      </div>
 
-      <div class="cs-panel">
-        <h2 class="oc-headline cs-panel__title">Workflow Combos</h2>
-        <div class="cs-item-list">
-          <div class="cs-item">
-            <div class="cs-item__title">Mobile-first setup (15 min)</div>
-            <p class="cs-item__desc">Telegram → openclaw dashboard → phone pairing → done. The fastest path to a working mobile AI assistant.</p>
-          </div>
-          <div class="cs-item">
-            <div class="cs-item__title">Fleet pattern</div>
-            <p class="cs-item__desc">One gateway, 5 agents, each with a different persona and model. Use symlinked skills to share capabilities without duplication.</p>
-          </div>
+        <div class="tips-card">
+          <span class="tips-card__num">03</span>
+          <div class="tips-card__title">Memory is just Markdown</div>
+          <p class="tips-card__desc">Long-term memory lives in plain .md files in your workspace. You can read, edit, and grep them directly. No magic black box.</p>
+          <div class="tips-card__cmd">ls ~/.openclaw/agents/*/workspace/memory/</div>
         </div>
-      </div>
 
+        <div class="tips-card">
+          <span class="tips-card__num">04</span>
+          <div class="tips-card__title">Check which skills actually run</div>
+          <p class="tips-card__desc">Installed ≠ runnable. Skills can be blocked by missing binaries or env vars. This shows you what's actually ready.</p>
+          <div class="tips-card__cmd">openclaw skills check</div>
+        </div>
+
+        <div class="tips-card">
+          <span class="tips-card__num">05</span>
+          <div class="tips-card__title">Tail the gateway log live</div>
+          <p class="tips-card__desc">Better than guessing. When a channel isn't responding, this shows you exactly what's happening at the routing layer.</p>
+          <div class="tips-card__cmd">tail -f ~/.openclaw/logs/gateway.log</div>
+        </div>
+
+        <div class="tips-card">
+          <span class="tips-card__num">06</span>
+          <div class="tips-card__title">Deep status for channel issues</div>
+          <p class="tips-card__desc">Regular <code>status</code> is shallow. Add <code>--deep</code> when you suspect a channel auth or connectivity problem.</p>
+          <div class="tips-card__cmd">openclaw status --deep</div>
+        </div>
+
+      </div>
     </div>
+
+    <!-- Hidden Features -->
+    <div class="tips-section">
+      <div class="tips-section__header">
+        <span class="tips-section__icon">🔍</span>
+        <h2 class="tips-section__title">Hidden Features</h2>
+      </div>
+      <div class="tips-features">
+
+        <div class="tips-feature">
+          <span class="tips-feature__icon">🔗</span>
+          <div class="tips-feature__body">
+            <div class="tips-feature__title">Share skills across agents by symlinking</div>
+            <p class="tips-feature__desc">You don't need to duplicate skill directories for each agent. Symlink a skill dir from one agent's workspace into another. Changes propagate everywhere.</p>
+            <code class="tips-feature__cmd">ln -s ~/.openclaw/agents/main/skills/obsidian ~/.openclaw/agents/researcher/skills/obsidian</code>
+          </div>
+        </div>
+
+        <div class="tips-feature">
+          <span class="tips-feature__icon">🤖</span>
+          <div class="tips-feature__body">
+            <div class="tips-feature__title">Run multiple agents on one gateway</div>
+            <p class="tips-feature__desc">One gateway process can serve multiple agents simultaneously — each with a different model, persona, and set of channels. Create them with <code>openclaw agents add</code> and they share the same gateway but stay isolated.</p>
+          </div>
+        </div>
+
+        <div class="tips-feature">
+          <span class="tips-feature__icon">📋</span>
+          <div class="tips-feature__body">
+            <div class="tips-feature__title">HEARTBEAT.md drives automated health checks</div>
+            <p class="tips-feature__desc">Put a HEARTBEAT.md in your agent workspace. OpenClaw will execute it on a schedule (configure in your cron settings) and alert you if anything's broken. Keep it updated as your setup evolves.</p>
+          </div>
+        </div>
+
+        <div class="tips-feature">
+          <span class="tips-feature__icon">🌐</span>
+          <div class="tips-feature__body">
+            <div class="tips-feature__title">No messaging app? Use the dashboard as your interface</div>
+            <p class="tips-feature__desc">The dashboard isn't just for setup — it's a fully functional chat interface. Some users run OpenClaw exclusively via dashboard with no external channels at all.</p>
+            <code class="tips-feature__cmd">openclaw dashboard</code>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mistakes -->
+    <div class="tips-section">
+      <div class="tips-section__header">
+        <span class="tips-section__icon">💀</span>
+        <h2 class="tips-section__title">Common Mistakes</h2>
+      </div>
+      <div class="tips-gotchas">
+
+        <div class="tips-gotcha">
+          <span class="tips-gotcha__skull">☠️</span>
+          <div class="tips-gotcha__title">Setting up Discord before proving the gateway</div>
+          <p class="tips-gotcha__desc">You'll spend an hour debugging Discord bot permissions when the real problem is the gateway isn't running.</p>
+          <span class="tips-gotcha__fix">Always openclaw dashboard first. If that works, Discord will work.</span>
+        </div>
+
+        <div class="tips-gotcha">
+          <span class="tips-gotcha__skull">☠️</span>
+          <div class="tips-gotcha__title">Secrets in workspace files</div>
+          <p class="tips-gotcha__desc">API keys and tokens in MEMORY.md or workspace .md files can end up in git, logs, or synced to the cloud.</p>
+          <span class="tips-gotcha__fix">Secrets go in ~/.openclaw/secrets/ only. Never in workspace files.</span>
+        </div>
+
+        <div class="tips-gotcha">
+          <span class="tips-gotcha__skull">☠️</span>
+          <div class="tips-gotcha__title">Using rm on workspace files</div>
+          <p class="tips-gotcha__desc">MEMORY.md and agent workspace files are not trivial. <code>rm</code> is permanent — you lose your agent's memory and context.</p>
+          <span class="tips-gotcha__fix">Use trash instead. Recoverable if you realise the mistake.</span>
+        </div>
+
+        <div class="tips-gotcha">
+          <span class="tips-gotcha__skull">☠️</span>
+          <div class="tips-gotcha__title">Skipping openclaw doctor when things break</div>
+          <p class="tips-gotcha__desc">It's tempting to start digging into config files manually. Doctor catches most issues in seconds and tells you exactly what to fix.</p>
+          <span class="tips-gotcha__fix">Run doctor first, always. Then go manual if it can't find it.</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Workflow Combos -->
+    <div class="tips-section">
+      <div class="tips-section__header">
+        <span class="tips-section__icon">🔄</span>
+        <h2 class="tips-section__title">Workflow Combos</h2>
+      </div>
+      <div class="tips-recipes">
+
+        <div class="tips-recipe">
+          <div class="tips-recipe__header">
+            <span class="tips-recipe__icon">📱</span>
+            <span class="tips-recipe__name">Mobile-first setup — 15 minutes total</span>
+          </div>
+          <div class="tips-recipe__body">
+            <p class="tips-recipe__desc">The fastest path from zero to AI in your pocket.</p>
+            <div class="tips-recipe__steps">
+              <div class="tips-recipe__step"><span class="tips-recipe__step-num">1.</span><span class="tips-recipe__step-text">Install and run <code>openclaw onboard</code></span></div>
+              <div class="tips-recipe__step"><span class="tips-recipe__step-num">2.</span><span class="tips-recipe__step-text"><code>openclaw gateway start</code> then <code>openclaw dashboard</code> — confirm it works in browser</span></div>
+              <div class="tips-recipe__step"><span class="tips-recipe__step-num">3.</span><span class="tips-recipe__step-text">Get Telegram bot token from @BotFather → <code>openclaw channels add --channel telegram --token TOKEN</code></span></div>
+              <div class="tips-recipe__step"><span class="tips-recipe__step-num">4.</span><span class="tips-recipe__step-text">Scan the QR in dashboard from your phone. Done — you're in your Telegram DMs.</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tips-recipe">
+          <div class="tips-recipe__header">
+            <span class="tips-recipe__icon">🤖</span>
+            <span class="tips-recipe__name">Multi-agent fleet on one machine</span>
+          </div>
+          <div class="tips-recipe__body">
+            <p class="tips-recipe__desc">Run specialised agents for different tasks — one for coding, one for research, one for family — all on a single gateway with isolated workspaces.</p>
+            <div class="tips-recipe__steps">
+              <div class="tips-recipe__step"><span class="tips-recipe__step-num">1.</span><span class="tips-recipe__step-text"><code>openclaw agents add builder</code> — creates workspace + persona files</span></div>
+              <div class="tips-recipe__step"><span class="tips-recipe__step-num">2.</span><span class="tips-recipe__step-text">Edit <code>~/.openclaw/agents/builder/workspace/SOUL.md</code> to define the persona</span></div>
+              <div class="tips-recipe__step"><span class="tips-recipe__step-num">3.</span><span class="tips-recipe__step-text">Assign it to specific Discord channels or Telegram DMs in config</span></div>
+              <div class="tips-recipe__step"><span class="tips-recipe__step-num">4.</span><span class="tips-recipe__step-text">Repeat for each agent. One gateway routes to all of them.</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </OpenClawLayout>

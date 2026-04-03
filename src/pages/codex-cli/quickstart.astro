@@ -1,102 +1,131 @@
 ---
 import CodexLayout from "../../layouts/CodexLayout.astro";
-import "../../styles/cheatsheet-shared.css";
+import "../../styles/quickstart-shared.css";
 ---
 
 <CodexLayout
-  title="Codex CLI Quickstart — Up and Running in 10 Minutes | changelogs.info"
-  description="Get Codex CLI installed and running in 10 minutes. OpenAI's autonomous coding agent."
+  title="Codex CLI Quickstart — Up and Running in 10 Minutes"
+  description="Install Codex CLI, point it at your codebase, and run your first autonomous coding task in under 10 minutes."
   currentPage="quickstart"
 >
-  <div class="cs-wrapper">
+  <div class="qs-wrapper">
 
-    <section class="cs-hero">
-      <div class="cs-hero__emoji">⚡</div>
-      <h1 class="cx-headline cs-hero__title">
-        Quick<span class="cs-hero__accent">Start</span>
+    <header class="qs-hero">
+      <span class="qs-hero__eyebrow">Codex CLI · Getting Started</span>
+      <h1 class="qs-hero__title">
+        Quick<span class="qs-hero__accent">Start</span>
       </h1>
-      <p class="cs-hero__sub">Up and running in 10 minutes — autonomous coding agent that reads your repo, writes code, runs commands.</p>
-    </section>
+      <p class="qs-hero__desc">OpenAI's autonomous coding agent. Reads your repo, writes code, runs commands. Built for unattended runs and CI automation.</p>
+    </header>
 
-    <div class="cs-grid">
+    <div class="qs-journey">
 
-      <div class="cs-panel cs-panel--accent">
-        <h2 class="cx-headline cs-panel__title">Prerequisites</h2>
-        <div class="cs-item-list">
-          <div class="cs-item cs-item--accent">
-            <div class="cs-item__title cs-item__title--accent">Node.js 18+</div>
-            <p class="cs-item__desc">Required runtime. Check with <code>node --version</code></p>
-          </div>
-          <div class="cs-item cs-item--accent">
-            <div class="cs-item__title cs-item__title--accent">OPENAI_API_KEY</div>
-            <p class="cs-item__desc">Get your API key from <code>platform.openai.com</code>. Export it in your shell profile.</p>
-          </div>
-        </div>
+      <div class="qs-step">
+        <div class="qs-step__dot">01</div>
+        <span class="qs-step__label">Prerequisites</span>
+        <h2 class="qs-step__title">Node.js 18+ and OpenAI API key</h2>
+        <p class="qs-step__desc">Get your API key from platform.openai.com. Then set it in your shell.</p>
+        <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>export OPENAI_API_KEY=sk-...</code></div>
+        <p class="qs-cmd-note">Add it to your .zshrc or .bashrc so it persists across sessions.</p>
       </div>
 
-      <div class="cs-panel">
-        <h2 class="cx-headline cs-panel__title">Install</h2>
-        <div class="cs-item-list">
-          <div class="cs-item">
-            <div class="cs-item__title">Install globally via npm</div>
-            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> npm install -g @openai/codex</div>
-          </div>
-        </div>
+      <div class="qs-step">
+        <div class="qs-step__dot">02</div>
+        <span class="qs-step__label">Install</span>
+        <h2 class="qs-step__title">Install the Codex CLI globally</h2>
+        <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>npm install -g @openai/codex</code></div>
+        <p class="qs-cmd-note">Verify: codex --version</p>
       </div>
 
-      <div class="cs-panel">
-        <h2 class="cx-headline cs-panel__title">First Run</h2>
-        <div class="cs-item-list">
-          <div class="cs-item">
-            <div class="cs-item__title">1. Navigate to your project</div>
-            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> cd your-project</div>
-          </div>
-          <div class="cs-item">
-            <div class="cs-item__title">2. Launch Codex</div>
-            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> codex</div>
-            <p class="cs-item__desc">Opens the interactive TUI. Codex reads your repo structure and git history for context.</p>
-          </div>
+      <div class="qs-step">
+        <div class="qs-step__dot">03</div>
+        <span class="qs-step__label">First Run</span>
+        <h2 class="qs-step__title">Launch in your project</h2>
+        <p class="qs-step__desc">Navigate to your repo and launch Codex. It reads your files and waits for instructions.</p>
+        <div class="qs-cmd-group">
+          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>cd your-project</code></div>
+          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>codex</code></div>
         </div>
+        <p class="qs-cmd-note">Interactive mode. Type your task. Codex reads the relevant files and proposes changes with your approval.</p>
       </div>
 
-      <div class="cs-panel cs-panel--accent">
-        <h2 class="cx-headline cs-panel__title">First Real Task</h2>
-        <div class="cs-item-list">
-          <div class="cs-item cs-item--accent">
-            <div class="cs-item__title cs-item__title--accent">Add input validation with review</div>
-            <div class="cs-item__cmd cs-item__cmd--accent"><span class="cs-step-cmd__prompt">$</span> codex "add input validation to the login form" --approval-mode suggest</div>
-            <p class="cs-item__desc">Suggest mode shows you the plan before executing. Perfect for first runs when you want to see what Codex will do.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="cs-panel">
-        <h2 class="cx-headline cs-panel__title">What Next?</h2>
-        <div class="cs-item-list">
-          <div class="cs-item">
-            <div class="cs-item__title">Create instructions file</div>
-            <p class="cs-item__desc">Create <code>.codex/instructions.md</code> with build commands and repo conventions. Codex reads it every run.</p>
-          </div>
-          <div class="cs-item">
-            <div class="cs-item__title">Try full-auto on a side project</div>
-            <div class="cs-item__cmd"><span class="cs-step-cmd__prompt">$</span> codex "refactor utils" --approval-mode auto</div>
-            <p class="cs-item__desc">Auto mode lets Codex execute without asking. Great for trusted repos.</p>
-          </div>
-          <div class="cs-item">
-            <a href="/codex-cli/cheatsheet/" class="cs-item__title" style="color: var(--tool-primary-bright); text-decoration: none;">Cheatsheet →</a>
-            <p class="cs-item__desc">All the commands and workflows at a glance.</p>
-          </div>
-          <div class="cs-item">
-            <a href="/codex-cli/tips/" class="cs-item__title" style="color: var(--tool-primary-bright); text-decoration: none;">Tips & Tricks →</a>
-            <p class="cs-item__desc">Quick wins, hidden features, and common mistakes to avoid.</p>
-          </div>
-          <div class="cs-item">
-            <a href="/codex-cli/changelog/" class="cs-item__title" style="color: var(--tool-primary-bright); text-decoration: none;">Changelog →</a>
-            <p class="cs-item__desc">Stay up to date with every release.</p>
-          </div>
-        </div>
+      <div class="qs-step qs-step--active">
+        <div class="qs-step__dot">04</div>
+        <span class="qs-step__label">Try it</span>
+        <h2 class="qs-step__title">Your first real task</h2>
+        <p class="qs-step__desc">Give it a concrete, scoped task. The --approval-mode suggest flag means it will show you changes before applying them.</p>
+        <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>codex "add input validation to the login form" --approval-mode suggest</code></div>
       </div>
 
     </div>
+
+    <div class="qs-milestone">
+      <span class="qs-milestone__eyebrow">First Real Task</span>
+      <h2 class="qs-milestone__title">Create .codex/instructions.md — your persistent context</h2>
+      <p class="qs-milestone__desc">This is the single most impactful thing you can do. Codex reads this file at the start of every run. Put your project conventions, stack details, and any do's and don'ts here.</p>
+      <div class="qs-milestone__steps">
+        <div class="qs-milestone__step">
+          <div class="qs-milestone__step-num">1</div>
+          <div class="qs-milestone__step-body">Create the directory and file in your project root.</div>
+        </div>
+      </div>
+      <div class="qs-milestone__cmd"><code><span class="qs-cmd__prompt">$</span>mkdir -p .codex && touch .codex/instructions.md</code></div>
+      <div class="qs-milestone__steps">
+        <div class="qs-milestone__step">
+          <div class="qs-milestone__step-num">2</div>
+          <div class="qs-milestone__step-body">Add your stack, conventions, and rules. Example: "This is a Next.js 14 app. Use TypeScript, never any. Prefer server components. Tests go in __tests__/ next to the source file."</div>
+        </div>
+        <div class="qs-milestone__step">
+          <div class="qs-milestone__step-num">3</div>
+          <div class="qs-milestone__step-body">Codex reads it automatically. Every future run starts informed.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="qs-next">
+      <p class="qs-next__title">What next?</p>
+      <div class="qs-next__grid">
+        <a href="/codex-cli/tips/" class="qs-next__card">
+          <span class="qs-next__card-arrow">⚡</span>
+          <div class="qs-next__card-title">Tips & Tricks</div>
+          <p class="qs-next__card-desc">Approval modes, exec mode, sub-agents, CI patterns.</p>
+        </a>
+        <a href="/codex-cli/cheatsheet/" class="qs-next__card">
+          <span class="qs-next__card-arrow">📋</span>
+          <div class="qs-next__card-title">Cheatsheet</div>
+          <p class="qs-next__card-desc">All flags and workflows at a glance.</p>
+        </a>
+        <a href="/codex-cli/changelog/" class="qs-next__card">
+          <span class="qs-next__card-arrow">🔔</span>
+          <div class="qs-next__card-title">Changelog</div>
+          <p class="qs-next__card-desc">Every Codex release, tracked.</p>
+        </a>
+        <a href="/codex-cli/configs/" class="qs-next__card">
+          <span class="qs-next__card-arrow">⚙️</span>
+          <div class="qs-next__card-title">Configs</div>
+          <p class="qs-next__card-desc">Full configuration reference.</p>
+        </a>
+      </div>
+    </div>
+
   </div>
+
+  <script is:inline>
+    document.querySelectorAll('.qs-cmd').forEach(function(block) {
+      var btn = document.createElement('button');
+      btn.className = 'qs-cmd__copy';
+      btn.textContent = 'copy';
+      btn.addEventListener('click', function() {
+        var code = block.querySelector('code');
+        if (!code) return;
+        var text = code.textContent.replace(/^\$\s*/, '').trim();
+        navigator.clipboard.writeText(text).then(function() {
+          btn.textContent = 'copied!';
+          setTimeout(function() { btn.textContent = 'copy'; }, 1500);
+        });
+      });
+      block.style.paddingRight = '5rem';
+      block.appendChild(btn);
+    });
+  </script>
 </CodexLayout>
