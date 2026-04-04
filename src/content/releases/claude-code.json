@@ -16,6 +16,14 @@
   },
   "releases": [
     {
+      "version": "v2.1.92",
+      "name": "v2.1.92",
+      "body": "## What's changed\n\n- Added `forceRemoteSettingsRefresh` policy setting: when set, the CLI blocks startup until remote managed settings are freshly fetched, and exits if the fetch fails (fail-closed)\n- Added interactive Bedrock setup wizard accessible from the login screen when selecting \"3rd-party platform\" — guides you through AWS authentication, region configuration, credential verification, and model pinning\n- Added per-model and cache-hit breakdown to `/cost` for subscription users\n- `/release-notes` is now an interactive version picker\n- Remote Control session names now use your hostname as the default prefix (e.g. `myhost-graceful-unicorn`), overridable with `--remote-control-session-name-prefix`\n- Pro users now see a footer hint when returning to a session after the prompt cache has expired, showing roughly how many tokens the next turn will send uncached\n- Fixed subagent spawning permanently failing with \"Could not determine pane count\" after tmux windows are killed or renumbered during a long-running session\n- Fixed prompt-type Stop hooks incorrectly failing when the small fast model returns `ok:false`, and restored `preventContinuation:true` semantics for non-Stop prompt-type hooks\n- Fixed tool input validation failures when streaming emits array/object fields as JSON-encoded strings\n- Fixed an API 400 error that could occur when extended thinking produced a whitespace-only text block alongside real content\n- Fixed accidental feedback survey submissions from auto-pilot keypresses and consecutive-prompt digit collisions\n- Fixed misleading \"esc to interrupt\" hint appearing alongside \"esc to clear\" when a text selection exists in fullscreen mode during processing\n- Fixed Homebrew install update prompts to use the cask's release channel (`claude-code` → stable, `claude-code@latest` → latest)\n- Fixed `ctrl+e` jumping to the end of the next line when already at end of line in multiline prompts\n- Fixed an issue where the same message could appear at two positions when scrolling up in fullscreen mode (iTerm2, Ghostty, and other terminals with DEC 2026 support)\n- Fixed idle-return \"/clear to save X tokens\" hint showing cumulative session tokens instead of current context size\n- Fixed plugin MCP servers stuck \"connecting\" on session start when they duplicate a claude.ai connector that is unauthenticated\n- Improved Write tool diff computation speed for large files (60% faster on files with tabs/`&`/`$`)\n- Removed `/tag` command\n- Removed `/vim` command (toggle vim mode via `/config` → Editor mode)\n- Linux sandbox now ships the `apply-seccomp` helper in both npm and native builds, restoring unix-socket blocking for sandboxed commands\n",
+      "date": "2026-04-04T00:42:02Z",
+      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.92",
+      "prerelease": false
+    },
+    {
       "version": "v2.1.91",
       "name": "v2.1.91",
       "body": "## What's changed\n\n- Added MCP tool result persistence override via `_meta[\"anthropic/maxResultSizeChars\"]` annotation (up to 500K), allowing larger results like DB schemas to pass through without truncation\n- Added `disableSkillShellExecution` setting to disable inline shell execution in skills, custom slash commands, and plugin commands\n- Added support for multi-line prompts in `claude-cli://open?q=` deep links (encoded newlines `%0A` no longer rejected)\n- Plugins can now ship executables under `bin/` and invoke them as bare commands from the Bash tool\n- Fixed transcript chain breaks on `--resume` that could lose conversation history when async transcript writes fail silently\n- Fixed `cmd+delete` not deleting to start of line on iTerm2, kitty, WezTerm, Ghostty, and Windows Terminal\n- Fixed plan mode in remote sessions losing track of the plan file after a container restart, which caused permission prompts on plan edits and an empty plan-approval modal\n- Fixed JSON schema validation for `permissions.defaultMode: \"auto\"` in settings.json\n- Fixed Windows version cleanup not protecting the active version's rollback copy\n- `/feedback` now explains why it's unavailable instead of disappearing from the slash menu\n- Improved `/claude-api` skill guidance for agent design patterns including tool surface decisions, context management, and caching strategy\n- Improved performance: faster `stripAnsi` on Bun by routing through `Bun.stripANSI`\n- Edit tool now uses shorter `old_string` anchors, reducing output tokens\n",
@@ -246,15 +254,7 @@
       "date": "2026-02-25T06:27:48Z",
       "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.56",
       "prerelease": false
-    },
-    {
-      "version": "v2.1.55",
-      "name": "v2.1.55",
-      "body": "## What's changed\n\n- Fixed BashTool failing on Windows with EINVAL error\n",
-      "date": "2026-02-25T03:15:51Z",
-      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.55",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-04-03T06:22:06.879Z"
+  "lastUpdated": "2026-04-04T06:18:05.480Z"
 }
