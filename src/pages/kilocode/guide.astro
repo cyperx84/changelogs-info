@@ -35,7 +35,6 @@ function isBreaking(body: string = "") { return body.toLowerCase().includes("bre
       <a href="#getting-started" class="guide-toc__link">Getting Started</a>
       <a href="#power-tips" class="guide-toc__link">Power Tips</a>
       <a href="#reference" class="guide-toc__link">Reference</a>
-      <a href="#releases" class="guide-toc__link">Releases</a>
     </nav>
 
     <!-- ══ 1: GETTING STARTED ══ -->
@@ -227,40 +226,6 @@ function isBreaking(body: string = "") { return body.toLowerCase().includes("bre
       </div>
       {cliFlags.length === 0 && slashCommands.length === 0 && dailyWorkflows.length === 0 && (
         <p style="font-family: var(--tool-font-mono); font-size: 0.8rem; color: var(--tool-text-muted);">$ cheatsheet data not available</p>
-      )}
-    </section>
-
-    <!-- ══ 4: RECENT RELEASES ══ -->
-    <section class="guide-section" id="releases">
-      <div class="guide-section__header">
-        <span class="guide-section__num">04</span>
-        <span class="guide-section__icon">🔔</span>
-        <h2 class="guide-section__title">Recent Releases</h2>
-        <span class="guide-section__sub">Latest {releases.length} versions</span>
-      </div>
-
-      {releases.length > 0 ? (
-        <>
-          <div class="guide-releases">
-            {releases.map((r) => {
-              const breaking = isBreaking(r.body);
-              return (
-                <a href={r.url} target="_blank" rel="noopener noreferrer" class="guide-release">
-                  <span class="guide-release__version">v{r.version}</span>
-                  {r.name && <span class="guide-release__name">{r.name}</span>}
-                  {breaking && <span class="guide-release__badge guide-release__badge--breaking">Breaking</span>}
-                  {r.prerelease && <span class="guide-release__badge guide-release__badge--pre">Pre</span>}
-                  <span class="guide-release__date">{formatDate(r.date)}</span>
-                </a>
-              );
-            })}
-          </div>
-          <div class="guide-releases__more">
-            <a href="/kilocode/releases/" class="guide-releases__more-link">All releases ↗</a>
-          </div>
-        </>
-      ) : (
-        <p style="font-family: var(--tool-font-mono); font-size: 0.8rem; color: var(--tool-text-muted);">$ no releases tracked yet</p>
       )}
     </section>
 
