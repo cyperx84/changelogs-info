@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.2",
-  "generated_at": "2026-04-04T10:12:51.127Z",
+  "generated_at": "2026-04-04T11:10:23.443Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -49,7 +49,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This is a substantial breaking release for OpenClaw that restructures how plugin configurations are owned and routed. The headline change: xAI's x_search settings and Firecrawl's web_fetch settings have been moved from legacy core config paths to their plugin-owned paths under plugins.entries.*. If you're using either of these, you MUST run openclaw doctor --fix to migrate \u2014 your existing config will stop working without it. The Task Flow substrate is fully restored with managed-vs-mirrored sync modes, durable flow state and revision tracking, and new openclaw flows inspection/recovery primitives for operating background orchestration separately from plugin authoring. Task Flows now support managed child task spawning with sticky cancel intent \u2014 external orchestrators can stop scheduling immediately and let parent flows settle to cancelled gracefully. The Android integration got a major upgrade with assistant-role entrypoints and Google Assistant App Actions metadata, so Android can launch OpenClaw directly from the assistant trigger and hand prompts into the chat composer. On the exec side, gateway/node host exec now defaults to YOLO mode (security=full, ask=off) \u2014 no more prompts on every command. Plugin developers get two new surfaces: before_agent_reply hooks for short-circuiting LLM replies after inline actions, and provider-owned replay hooks for transcript policy, replay cleanup, and reasoning-mode dispatch. Channel routing moved provider-specific session grammar into plugin-owned session-key surfaces, improving Telegram topic routing and Feishu scoped inheritance. Feishu gets a dedicated Drive comment-event flow for document collaboration. Matrix now emits spec-compliant m.mentions metadata for reliable notifications in Element. The compaction system was fixed to respect agents.defaults.compaction.model consistently, and there's a new opt-in agents.defaults.compaction.notifyUser flag for the compacting notice. Security fixes are extensive \u2014 centralized transport policy for HTTP/streaming/websocket, hardened Copilot and Anthropic routing, SSRF protections for Mattermost and image generation providers, timing-safe secret comparisons across all webhook handlers, sandboxed environment variable overrides, and scoped shell/remote workspace paths. WhatsApp gets presence fixes (no more lost notifications in self-chat mode) and expanded MIME support. MS Teams streaming no longer duplicates content on long responses. ACP gateway reconnects are now resilient to transient websocket drops. Gateway session kill requests now require proper HTTP operator scopes. Upgrade urgency: HIGH if you use xAI search or Firecrawl web_fetch (breaking migration required). Otherwise, the security hardening and Task Flow restoration make this worth upgrading to soon."
+      "tldr": "This release introduces significant changes to plugin configuration and task flow management. The `x_search` and Firecrawl `web_fetch` configurations have been migrated from the core to plugin-owned paths, requiring a migration step using `openclaw doctor --fix`. The core Task Flow substrate is restored with managed-vs-mirrored sync modes and durable state tracking, enabling persistent background orchestration. Managed child task spawning with sticky cancel intent allows external orchestrators to gracefully stop scheduling and cancel parent Task Flows. A bound `api.runtime.taskFlow` seam is added for plugins to create and drive managed Task Flows. Android assistant integration now includes assistant-role entrypoints and Google Assistant App Actions metadata for launching OpenClaw from the assistant. Provider-owned replay hook surfaces are added for transcript policy and reasoning-mode dispatch. The `before_agent_reply` hook allows plugins to short-circuit the LLM with synthetic replies. Feishu comments now have a dedicated Drive comment-event flow. Matrix plugin emits spec-compliant `m.mentions` metadata. Plugin-owned `viewerBaseUrl` is added for stable proxy/public origin viewer links. Agent compaction now consistently resolves `agents.defaults.compaction.model` and introduces `agents.defaults.compaction.notifyUser` for opt-in start notices. WhatsApp reactions now have `reactionLevel` guidance. Credential-path binds are blocked in sandboxes for enhanced security. Gateway/Windows scheduled tasks are improved with preserved settings and better error reporting. Control UI model picker preserves already-qualified `provider/model` refs. Session model switches now resolve bare model ids against the configured allowlist. Upgrade is recommended, especially if you use `x_search` or Firecrawl `web_fetch`."
     },
     "features": [
       {
@@ -59,11 +59,11 @@
         "since": "1.0.0",
         "description": "The core Gateway process bridges messaging channels to AI agents. Runs as a background daemon service. Single process serves all channels simultaneously.",
         "key_details": [
-          "openclaw gateway \u2014 start gateway",
-          "openclaw gateway --port 18789 \u2014 custom port",
-          "openclaw gateway --verbose \u2014 debug/trace to stdio",
-          "openclaw gateway --force \u2014 force-kill listener then start",
-          "openclaw gateway status \u2014 check running status",
+          "openclaw gateway — start gateway",
+          "openclaw gateway --port 18789 — custom port",
+          "openclaw gateway --verbose — debug/trace to stdio",
+          "openclaw gateway --force — force-kill listener then start",
+          "openclaw gateway status — check running status",
           "Managed as system daemon with openclaw gateway start/stop/restart",
           "Default port: 18789"
         ],
@@ -147,8 +147,8 @@
           "Install skills from clawhub.com via the clawhub CLI",
           "SKILL.md format: YAML frontmatter + markdown body",
           "Skills appear in agent system prompt discovery section",
-          "openclaw skills list \u2014 list installed skills",
-          "openclaw skills install <name> \u2014 install skill"
+          "openclaw skills list — list installed skills",
+          "openclaw skills install <name> — install skill"
         ],
         "source_url": "https://docs.openclaw.ai"
       },
@@ -174,11 +174,11 @@
         "since": "1.0.0",
         "description": "Full session lifecycle management. Sessions persist across gateway restarts. Multi-session routing per channel.",
         "key_details": [
-          "openclaw sessions list \u2014 list active sessions",
-          "sessions_spawn \u2014 spawn isolated sub-agent session",
-          "sessions_send \u2014 message another session",
-          "sessions_history \u2014 fetch session transcript",
-          "sessions_list \u2014 list all sessions with filters",
+          "openclaw sessions list — list active sessions",
+          "sessions_spawn — spawn isolated sub-agent session",
+          "sessions_send — message another session",
+          "sessions_history — fetch session transcript",
+          "sessions_list — list all sessions with filters",
           "Isolated sessions: runtime=subagent or runtime=acp",
           "Thread-bound ACP sessions: thread:true mode:session"
         ],
@@ -239,7 +239,7 @@
         "since": "1.5.0",
         "description": "Community plugins that extend Gateway capabilities with new channels, tools, and integrations.",
         "key_details": [
-          "openclaw plugins list \u2014 list installed plugins",
+          "openclaw plugins list — list installed plugins",
           "openclaw plugins install <name>",
           "Plugins: agent-tools, voice-call, mattermost, zalouser, others",
           "Community plugins at clawhub.com"
@@ -268,7 +268,7 @@
         "since": "1.3.0",
         "description": "Browser-based chat and management dashboard. Opens at http://127.0.0.1:18789/ by default.",
         "key_details": [
-          "openclaw dashboard \u2014 open Control UI in browser",
+          "openclaw dashboard — open Control UI in browser",
           "Chat with agents directly in browser (no channel setup needed)",
           "Session management and config editing",
           "Model selection and provider configuration"
@@ -282,10 +282,10 @@
         "since": "1.2.0",
         "description": "SecretRef contract for runtime secret injection. Secrets applied via openclaw secrets apply, referenced as ${{secret.name}} in config.",
         "key_details": [
-          "openclaw secrets apply \u2014 apply secrets to runtime",
+          "openclaw secrets apply — apply secrets to runtime",
           "SecretRef: ${{secret.name}} in config values",
           "Runtime snapshot behavior: secrets not written to disk",
-          "openclaw secrets list \u2014 list known secret keys"
+          "openclaw secrets list — list known secret keys"
         ],
         "source_url": "https://docs.openclaw.ai/gateway/secrets"
       },
@@ -296,7 +296,7 @@
         "since": "1.5.0",
         "description": "Command execution sandbox for agent tool calls. Controls which shell commands agents can run without approval.",
         "key_details": [
-          "openclaw sandbox \u2014 manage sandbox policies",
+          "openclaw sandbox — manage sandbox policies",
           "Approval levels: allow-once, allow-always, deny",
           "/approve <code> to approve pending commands"
         ],
@@ -307,7 +307,7 @@
         "name": "Chrome DevTools MCP attach mode",
         "status": "stable",
         "since": "2026.3.13",
-        "description": "Add an official Chrome DevTools MCP attach mode for signed-in live Chrome sessions, with docs for `chrome://inspect/#remote-debugging` enablement and direct backlinks to Chrome\u2019s own setup guides.",
+        "description": "Add an official Chrome DevTools MCP attach mode for signed-in live Chrome sessions, with docs for `chrome://inspect/#remote-debugging` enablement and direct backlinks to Chrome’s own setup guides.",
         "key_details": [],
         "source_url": ""
       },
@@ -667,7 +667,7 @@
         "name": "WhatsApp Reactions",
         "status": "stable",
         "since": "2026.3.31",
-        "description": "Agents can now react with emoji on incoming WhatsApp messages, enabling more natural conversational interactions like acknowledging a photo with \u2764\ufe0f instead of typing a reply.",
+        "description": "Agents can now react with emoji on incoming WhatsApp messages, enabling more natural conversational interactions like acknowledging a photo with ❤️ instead of typing a reply.",
         "key_details": [],
         "source_url": ""
       },
