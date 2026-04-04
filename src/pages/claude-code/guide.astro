@@ -20,6 +20,7 @@ const gotchas = cs.gotchas || [];
 
 const data = await getToolReleases("claude-code");
 const releases = (data?.releases || []).slice(0, 8);
+const latestRelease = data?.releases?.[0] || null;
 
 function isBreaking(body: string = "") { return body.toLowerCase().includes("breaking"); }
 ---
@@ -41,77 +42,41 @@ function isBreaking(body: string = "") { return body.toLowerCase().includes("bre
     </nav>
 
     <!-- ══ 1: GETTING STARTED ══ -->
-    <section class="guide-section" id="getting-started">
-      <div class="guide-section__header">
-        <span class="guide-section__num">01</span>
-        <span class="guide-section__icon">🚀</span>
-        <h2 class="guide-section__title">Getting Started</h2>
-        <span class="guide-section__sub">Up and running in 10 min</span>
-      </div>
-
-      <div class="qs-journey">
-
-        <div class="qs-step">
-          <div class="qs-step__dot">01</div>
-          <span class="qs-step__label">Prerequisites</span>
-          <h3 class="qs-step__title">Node.js 18+ and an API key</h3>
-          <p class="qs-step__desc">You need Node.js and an Anthropic API key. Get the key at console.anthropic.com.</p>
-          <div class="qs-cmd-group">
-            <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>node --version</code></div>
-          </div>
-          <p class="qs-cmd-note">Then set your key: export ANTHROPIC_API_KEY=sk-ant-...</p>
-        </div>
-
-        <div class="qs-step">
-          <div class="qs-step__dot">02</div>
-          <span class="qs-step__label">Install</span>
-          <h3 class="qs-step__title">Install Claude Code globally</h3>
-          <p class="qs-step__desc">One command. Installs the <code>claude</code> CLI globally.</p>
-          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>npm install -g @anthropic-ai/claude-code</code></div>
-        </div>
-
-        <div class="qs-step">
-          <div class="qs-step__dot">03</div>
-          <span class="qs-step__label">First Run</span>
-          <h3 class="qs-step__title">Navigate to a project and launch</h3>
-          <p class="qs-step__desc">Claude Code reads your files automatically. Just go to your project directory and run it.</p>
-          <div class="qs-cmd-group">
-            <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>cd your-project</code></div>
-            <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>claude</code></div>
-          </div>
-          <p class="qs-cmd-note">Interactive mode. Type your task and Claude Code will read, edit, and explain code.</p>
-        </div>
-
-        <div class="qs-step qs-step--active">
-          <div class="qs-step__dot">04</div>
-          <span class="qs-step__label">Verify</span>
-          <h3 class="qs-step__title">First task — no config needed</h3>
-          <p class="qs-step__desc">Run this one-shot command — it will read your entire codebase and respond immediately.</p>
-          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>claude --print "explain this codebase in 3 sentences and list the main entry points"</code></div>
-          <p class="qs-cmd-note">--print mode is non-interactive, perfect for scripting and one-off questions.</p>
-        </div>
-
-      </div>
-
-      <div class="qs-milestone">
-        <span class="qs-milestone__eyebrow">Key Setup</span>
-        <h3 class="qs-milestone__title">Add a CLAUDE.md — unlock persistent context</h3>
-        <p class="qs-milestone__desc">The single highest-leverage thing you can do. A CLAUDE.md in your repo root is automatically read by Claude Code every session. It becomes your permanent project context.</p>
-        <div class="qs-milestone__steps">
-          <div class="qs-milestone__step">
-            <div class="qs-milestone__step-num">1</div>
-            <div class="qs-milestone__step-body">Generate one automatically from your codebase:</div>
-          </div>
-        </div>
-        <div class="qs-milestone__cmd"><code><span class="qs-cmd__prompt">$</span>claude --print "generate a CLAUDE.md for this project based on the codebase" > CLAUDE.md</code></div>
-        <div class="qs-milestone__steps">
-          <div class="qs-milestone__step">
-            <div class="qs-milestone__step-num">2</div>
-            <div class="qs-milestone__step-body">Edit it to add your conventions, preferred patterns, and anything Claude should always know. Now every CC session starts informed.</div>
-          </div>
+    <section class="guide-hero" id="getting-started">
+      <img class="guide-hero__img" src="/images/guides/claude-code-hero.png" alt="Claude Code" />
+      <div class="guide-hero__content">
+        <h2 class="guide-hero__title">Claude Code</h2>
+        <div class="guide-hero__body">
+          <p>
+            Honestly, Claude Code is the one that changed how I actually work. Not "improved" — changed. It's a terminal-based AI coding agent from Anthropic that drops directly into your workflow. No browser tab, no copy-paste loops, no context window juggling. You open your project, type <code>claude</code>, and it starts reading your codebase. It just… knows where it is.
+          </p>
+          <p>
+            What makes it different from other AI coding tools is the agentic loop. Claude Code doesn't just answer questions — it takes actions. It reads files, edits code, runs commands, checks the output, and iterates. You give it a task like "refactor the auth module to use JWTs and make sure the tests still pass" and it actually does that, end to end. You're supervising, not transcribing.
+          </p>
+          <p>
+            The <strong>CLAUDE.md</strong> feature is legitimately sick. Drop a markdown file in your repo root, and it gets read automatically at the start of every session. Put your conventions, your architecture notes, your "don't touch this" warnings — all of it. Suddenly every session starts with full context. No re-explaining. No "as I mentioned before." It's like having a senior dev who actually remembers things.
+          </p>
+          <p>
+            Getting started is fast. You need Node 18+, an Anthropic API key, and one install command. From there you can run it interactively or pipe it into scripts with <code>--print</code> mode. The non-interactive output is clean JSON or plain text — works perfectly in CI, git hooks, or any automation where you need AI reasoning without a human in the loop.
+          </p>
+          <p>
+            Who's it for? Builders who live in the terminal. Backend engineers doing big refactors. Anyone tired of bouncing between an editor and a chat window. If you're spending more than a few minutes a day on copy-paste AI workflows, this is the upgrade.
+          </p>
         </div>
       </div>
     </section>
+
+    {latestRelease && (
+      <div class="guide-latest">
+        <div class="guide-latest__header">
+          <span class="guide-latest__version">v{latestRelease.version}</span>
+          {latestRelease.name && <span class="guide-latest__name">{latestRelease.name.replace(/^claude[\s-]code\s+/i, "")}</span>}
+          <span class="guide-latest__date">{formatDate(latestRelease.date)}</span>
+        </div>
+        <div class="guide-latest__body">{latestRelease.body || "No release notes available."}</div>
+        {latestRelease.url && <a href={latestRelease.url} target="_blank" rel="noopener noreferrer" class="guide-latest__link">View on GitHub ↗</a>}
+      </div>
+    )}
 
     <!-- ══ 2: POWER TIPS ══ -->
     <section class="guide-section" id="power-tips">

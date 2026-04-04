@@ -19,6 +19,7 @@ const powerMoves = cs.powerMoves || [];
 
 const data = await getToolReleases("codex-cli");
 const releases = (data?.releases || []).slice(0, 8);
+const latestRelease = data?.releases?.[0] || null;
 function isBreaking(body: string = "") { return body.toLowerCase().includes("breaking"); }
 ---
 
@@ -38,72 +39,41 @@ function isBreaking(body: string = "") { return body.toLowerCase().includes("bre
     </nav>
 
     <!-- ══ 1: GETTING STARTED ══ -->
-    <section class="guide-section" id="getting-started">
-      <div class="guide-section__header">
-        <span class="guide-section__num">01</span>
-        <span class="guide-section__icon">🚀</span>
-        <h2 class="guide-section__title">Getting Started</h2>
-        <span class="guide-section__sub">Up and running in 10 min</span>
-      </div>
-
-      <div class="qs-journey">
-        <div class="qs-step">
-          <div class="qs-step__dot">01</div>
-          <span class="qs-step__label">Prerequisites</span>
-          <h3 class="qs-step__title">Node.js 18+ and OpenAI API key</h3>
-          <p class="qs-step__desc">Get your API key from platform.openai.com. Then set it in your shell.</p>
-          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>export OPENAI_API_KEY=sk-...</code></div>
-          <p class="qs-cmd-note">Add it to your .zshrc or .bashrc so it persists across sessions.</p>
-        </div>
-
-        <div class="qs-step">
-          <div class="qs-step__dot">02</div>
-          <span class="qs-step__label">Install</span>
-          <h3 class="qs-step__title">Install the Codex CLI globally</h3>
-          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>npm install -g @openai/codex</code></div>
-          <p class="qs-cmd-note">Verify: codex --version</p>
-        </div>
-
-        <div class="qs-step">
-          <div class="qs-step__dot">03</div>
-          <span class="qs-step__label">First Run</span>
-          <h3 class="qs-step__title">Launch in your project</h3>
-          <p class="qs-step__desc">Navigate to your repo and launch Codex. It reads your files and waits for instructions.</p>
-          <div class="qs-cmd-group">
-            <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>cd your-project</code></div>
-            <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>codex</code></div>
-          </div>
-          <p class="qs-cmd-note">Interactive mode. Type your task. Codex reads relevant files and proposes changes with your approval.</p>
-        </div>
-
-        <div class="qs-step qs-step--active">
-          <div class="qs-step__dot">04</div>
-          <span class="qs-step__label">Try it</span>
-          <h3 class="qs-step__title">Your first real task</h3>
-          <p class="qs-step__desc">Give it a concrete, scoped task. The --approval-mode suggest flag means it will show you changes before applying them.</p>
-          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>codex "add input validation to the login form" --approval-mode suggest</code></div>
-        </div>
-      </div>
-
-      <div class="qs-milestone">
-        <span class="qs-milestone__eyebrow">Key Setup</span>
-        <h3 class="qs-milestone__title">Create .codex/instructions.md — your persistent context</h3>
-        <p class="qs-milestone__desc">This is the single most impactful thing you can do. Codex reads this file at the start of every run. Put your project conventions, stack details, and any do's and don'ts here.</p>
-        <div class="qs-milestone__steps">
-          <div class="qs-milestone__step">
-            <div class="qs-milestone__step-num">1</div>
-            <div class="qs-milestone__step-body">Create the directory and file in your project root.</div>
-          </div>
-        </div>
-        <div class="qs-milestone__cmd"><code><span class="qs-cmd__prompt">$</span>mkdir -p .codex && touch .codex/instructions.md</code></div>
-        <div class="qs-milestone__steps">
-          <div class="qs-milestone__step">
-            <div class="qs-milestone__step-num">2</div>
-            <div class="qs-milestone__step-body">Add your stack, conventions, and rules. Example: "This is a Next.js 14 app. Use TypeScript, never any. Prefer server components. Tests go in __tests__/ next to the source file."</div>
-          </div>
+    <section class="guide-hero" id="getting-started">
+      <img class="guide-hero__img" src="/images/guides/codex-cli-hero.png" alt="Codex CLI" />
+      <div class="guide-hero__content">
+        <h2 class="guide-hero__title">Codex CLI</h2>
+        <div class="guide-hero__body">
+          <p>
+            Codex CLI is OpenAI's answer to the agentic coding assistant question — and the answer is fast. Like, genuinely fast. It's a terminal-native tool that reads your codebase, proposes changes, and applies them with approval. The whole loop from task to working code is tighter than most alternatives, which is exactly what you want when you're iterating on a feature at 11pm.
+          </p>
+          <p>
+            The core model is <strong>suggest-then-apply</strong>. By default, Codex shows you what it wants to do before touching anything. You review the diff, approve or reject, and it moves on. That approval friction is actually a feature — you stay in the loop without having to babysit every file. You can also drop into fully autonomous mode if you trust the task, but suggest mode is the right default when you're starting out.
+          </p>
+          <p>
+            The <strong>.codex/instructions.md</strong> file is where you make it smart about your project. This gets read at the start of every run. Drop your stack info, your naming conventions, which files to avoid, your testing patterns — all of it. Without this, Codex is smart but general. With it, Codex knows your codebase. That difference is massive.
+          </p>
+          <p>
+            Setup is clean: set your <code>OPENAI_API_KEY</code>, install with npm, run <code>codex</code> in your project directory. First-run onboarding walks you through the basics. By the time you finish, you should have a working task loop and understand the approval flow. The whole thing takes under 10 minutes.
+          </p>
+          <p>
+            Who's it for? Engineers who want speed and prefer OpenAI's models. Teams already in the OpenAI ecosystem who want to extend that into the terminal. Anyone doing iterative coding tasks where you want AI proposals without AI autonomy by default.
+          </p>
         </div>
       </div>
     </section>
+
+    {latestRelease && (
+      <div class="guide-latest">
+        <div class="guide-latest__header">
+          <span class="guide-latest__version">v{latestRelease.version}</span>
+          {latestRelease.name && <span class="guide-latest__name">{latestRelease.name}</span>}
+          <span class="guide-latest__date">{formatDate(latestRelease.date)}</span>
+        </div>
+        <div class="guide-latest__body">{latestRelease.body || "No release notes available."}</div>
+        {latestRelease.url && <a href={latestRelease.url} target="_blank" rel="noopener noreferrer" class="guide-latest__link">View on GitHub ↗</a>}
+      </div>
+    )}
 
     <!-- ══ 2: POWER TIPS ══ -->
     <section class="guide-section" id="power-tips">

@@ -1,35 +1,59 @@
 ---
-// SiteAnimations.astro — Site-wide scroll reveal + page transition overlay
+// SiteAnimations.astro — Site-wide glitch reveal + cinematic page transitions
 // Drop into any layout to enable both features.
 // No props needed. Works with Astro ViewTransitions.
 ---
 
 <style is:global>
-  /* ── Scroll Reveal ─────────────────────────────────────── */
+  /* ── Glitch Reveal ─────────────────────────────────────── */
 
   [data-reveal] {
     opacity: 0;
-    transform: translateY(28px);
-    /* promote to own layer so transition doesn't trigger layout */
-    will-change: opacity, transform;
-    transition:
-      opacity 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-      transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-  [data-reveal="left"] {
-    transform: translateX(-28px);
-  }
-  [data-reveal="right"] {
-    transform: translateX(28px);
-  }
-  [data-reveal="scale"] {
-    transform: scale(0.94) translateY(8px);
+    clip-path: inset(40% 0 40% 0);
+    filter: blur(4px);
+    will-change: opacity, clip-path, filter;
   }
   [data-reveal].is-visible {
     opacity: 1;
-    transform: none;
-    /* release compositor layer once animation is done */
+    clip-path: inset(0 0 0 0);
+    filter: blur(0);
     will-change: auto;
+    transition:
+      opacity 0.3s ease forwards,
+      clip-path 0.35s steps(6, end) forwards,
+      filter 0.4s ease forwards;
+  }
+
+  /* Hero elements get extra punch */
+  [data-reveal="hero"] {
+    opacity: 0;
+    clip-path: inset(50% 10% 50% 10%);
+    filter: blur(8px) brightness(1.5);
+  }
+  [data-reveal="hero"].is-visible {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+    filter: blur(0) brightness(1);
+    transition:
+      opacity 0.2s ease forwards,
+      clip-path 0.45s steps(8, end) forwards,
+      filter 0.6s ease forwards;
+  }
+
+  /* Cards / items get a subtle scale glitch */
+  [data-reveal="card"] {
+    opacity: 0;
+    clip-path: inset(20% 20% 20% 20%);
+    transform: scale(0.92);
+  }
+  [data-reveal="card"].is-visible {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+    transform: scale(1);
+    transition:
+      opacity 0.25s ease forwards,
+      clip-path 0.3s steps(4, end) forwards,
+      transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   }
 
   /* ── Page transition overlay ───────────────────────────── */
@@ -40,8 +64,10 @@
     z-index: 10000;
     pointer-events: none;
     opacity: 0;
-    mix-blend-mode: color;
-    will-change: opacity;
+    transform: scale(1.08);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    will-change: opacity, transform;
   }
 
   /* ── Reduced motion ────────────────────────────────────── */
@@ -49,6 +75,8 @@
   @media (prefers-reduced-motion: reduce) {
     [data-reveal] {
       opacity: 1 !important;
+      clip-path: none !important;
+      filter: none !important;
       transform: none !important;
       transition: none !important;
     }
@@ -85,39 +113,35 @@
 
   // ── Scroll reveal ──────────────────────────────────────────────────────────
 
-  /**
-   * Selectors that get data-reveal auto-applied. No need to touch page templates.
-   * Works on both quickstart and tips layouts + any future pages.
-   */
   const REVEAL_SELECTORS = [
-    ".qs-hero__eyebrow",
-    ".qs-hero__title",
-    ".qs-hero__desc",
-    ".qs-hero__badge",
-    ".qs-step",
-    ".qs-milestone",
-    ".qs-next__title",
-    ".qs-next__grid",
-    ".tips-hero__eyebrow",
-    ".tips-hero__title",
-    ".tips-hero__desc",
-    ".tips-section__header",
-    ".tips-section",
-    ".tips-card",
-    ".tips-feature",
-    ".tips-gotcha",
-    ".tips-recipe",
+    { sel: ".qs-hero__eyebrow", mode: "hero" },
+    { sel: ".qs-hero__title", mode: "hero" },
+    { sel: ".qs-hero__desc", mode: "hero" },
+    { sel: ".qs-hero__badge", mode: "hero" },
+    { sel: ".guide-hero__title", mode: "hero" },
+    { sel: ".guide-hero__body", mode: "hero" },
+    { sel: ".qs-step", mode: "card" },
+    { sel: ".qs-milestone", mode: "card" },
+    { sel: ".qs-next__title", mode: "card" },
+    { sel: ".qs-next__grid", mode: "card" },
+    { sel: ".tips-hero__eyebrow", mode: "hero" },
+    { sel: ".tips-hero__title", mode: "hero" },
+    { sel: ".tips-hero__desc", mode: "hero" },
+    { sel: ".tips-section__header", mode: "" },
+    { sel: ".tips-section", mode: "" },
+    { sel: ".tips-card", mode: "card" },
+    { sel: ".tips-feature", mode: "card" },
+    { sel: ".tips-gotcha", mode: "card" },
+    { sel: ".tips-recipe", mode: "card" },
+    { sel: ".guide-changelog", mode: "card" },
   ];
 
   function initReveal() {
-    // Apply data-reveal to matching elements that don't already have it
-    REVEAL_SELECTORS.forEach((sel) => {
+    REVEAL_SELECTORS.forEach(({ sel, mode }) => {
       document.querySelectorAll(sel).forEach((el) => {
         if (el.hasAttribute("data-reveal")) return;
+        el.setAttribute("data-reveal", mode || "");
 
-        el.setAttribute("data-reveal", "");
-
-        // Stagger siblings: index within parent, capped so last card isn't too late
         const parent = el.parentElement;
         if (parent) {
           const siblingIndex = [...parent.children].indexOf(el as HTMLElement);
@@ -127,7 +151,6 @@
       });
     });
 
-    // Observer: fire once per element as it enters viewport
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -141,32 +164,21 @@
     );
 
     document.querySelectorAll("[data-reveal]").forEach((el) => {
-      // Skip elements already visible (e.g. above fold on load)
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight * 0.95) {
-        // In or near viewport — observe with short delay so animation still plays
-        observer.observe(el);
-      } else {
-        observer.observe(el);
-      }
+      observer.observe(el);
     });
   }
 
-  // ── Page transitions ───────────────────────────────────────────────────────
+  // ── Cinematic page transitions ─────────────────────────────────────────────
   //
   // Event sequence (Astro ViewTransitions SPA lifecycle):
-  //   astro:before-preparation  → nav starts, old page visible  → fade overlay IN
-  //   astro:before-swap          → DOM about to swap, overlay at peak → hold
-  //   astro:page-load            → new page painted (2x rAF guard) → fade overlay OUT
-  //
-  // ::view-transition-old/new(root) are suppressed in view-transitions.css
-  // so native transitions never fight the overlay.
+  //   astro:before-preparation  → nav starts  → scale in + fade overlay
+  //   astro:before-swap          → DOM about to swap → hold
+  //   astro:page-load            → new page painted → scale down + fade out
   //
 
   let ptAnim: Animation | null = null;
   let transitioning = false;
 
-  // Step 1: Nav starts — fade overlay in quickly to cover old page
   document.addEventListener("astro:before-preparation", () => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
@@ -174,25 +186,24 @@
     const color = getPrimaryColor();
     const overlay = getOverlay();
     overlay.style.backgroundColor = color;
+    overlay.style.backdropFilter = "blur(6px)";
 
     ptAnim?.cancel();
-    // Fast fade-in so overlay covers page before DOM swap happens
+    // Dramatic scale-up + color wash
     ptAnim = overlay.animate(
-      [{ opacity: 0 }, { opacity: 0.6 }],
-      { duration: 180, easing: "ease-in", fill: "forwards" }
+      [
+        { opacity: 0, transform: "scale(1.08)" },
+        { opacity: 0.85, transform: "scale(1.0)" },
+      ],
+      { duration: 280, easing: "cubic-bezier(0.4, 0, 0.2, 1)", fill: "forwards" }
     );
   });
 
-  // Step 2: DOM about to swap — overlay is covering page, swap is invisible
-  // Update bg color NOW so it's already the destination hue when we fade out
   document.addEventListener("astro:before-swap", () => {
-    // Nothing to animate — just note we're mid-transition
-    // Color update happens in page-load once new CSS vars are active
+    // Hold overlay through swap
   });
 
-  // Step 3: New page is loaded — wait for paint, then fade overlay out
   document.addEventListener("astro:page-load", () => {
-    // Always re-run scroll reveal
     initReveal();
 
     if (!transitioning) return;
@@ -201,18 +212,19 @@
     const overlay = document.getElementById("pt-overlay");
     if (!overlay) return;
 
-    // New page CSS vars are live — read destination color
     const newColor = getPrimaryColor();
     overlay.style.backgroundColor = newColor;
 
-    // Double rAF: first frame = layout, second frame = paint committed
-    // Ensures new page content is fully rendered before we reveal it
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         ptAnim?.cancel();
+        // Cinematic scale-down reveal
         ptAnim = overlay.animate(
-          [{ opacity: 0.6 }, { opacity: 0 }],
-          { duration: 420, easing: "ease-out", fill: "forwards" }
+          [
+            { opacity: 0.85, transform: "scale(1.0)" },
+            { opacity: 0, transform: "scale(0.95)" },
+          ],
+          { duration: 600, easing: "cubic-bezier(0.0, 0, 0.2, 1)", fill: "forwards" }
         );
       });
     });

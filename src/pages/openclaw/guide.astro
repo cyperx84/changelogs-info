@@ -19,6 +19,7 @@ const powerMoves = cs.powerMoves || [];
 
 const data = await getToolReleases("openclaw");
 const releases = (data?.releases || []).slice(0, 8);
+const latestRelease = data?.releases?.[0] || null;
 function isBreaking(body: string = "") { return body.toLowerCase().includes("breaking"); }
 ---
 
@@ -38,88 +39,41 @@ function isBreaking(body: string = "") { return body.toLowerCase().includes("bre
     </nav>
 
     <!-- ══ 1: GETTING STARTED ══ -->
-    <section class="guide-section" id="getting-started">
-      <div class="guide-section__header">
-        <span class="guide-section__num">01</span>
-        <span class="guide-section__icon">🚀</span>
-        <h2 class="guide-section__title">Getting Started</h2>
-        <span class="guide-section__sub">Up and running in 10 min</span>
-      </div>
-
-      <div class="qs-journey">
-        <div class="qs-step">
-          <div class="qs-step__dot">01</div>
-          <span class="qs-step__label">Prerequisites</span>
-          <h3 class="qs-step__title">Node.js 18+ or Homebrew</h3>
-          <p class="qs-step__desc">Check if you're ready — run these and confirm they return something.</p>
-          <div class="qs-cmd-group">
-            <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>node --version</code></div>
-            <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>npm --version</code></div>
-          </div>
-          <p class="qs-cmd-note">Node 18 or higher required. If you're on macOS, Homebrew also works.</p>
-        </div>
-
-        <div class="qs-step">
-          <div class="qs-step__dot">02</div>
-          <span class="qs-step__label">Install</span>
-          <h3 class="qs-step__title">Install OpenClaw globally</h3>
-          <p class="qs-step__desc">Pick your preferred package manager. Both install the same thing.</p>
-          <span class="qs-cmd-label">Option A — npm</span>
-          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>npm install -g openclaw</code></div>
-          <span class="qs-cmd-label">Option B — Homebrew (macOS)</span>
-          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>brew install openclaw</code></div>
-        </div>
-
-        <div class="qs-step">
-          <div class="qs-step__dot">03</div>
-          <span class="qs-step__label">Onboard</span>
-          <h3 class="qs-step__title">Run the setup wizard</h3>
-          <p class="qs-step__desc">This creates your workspace, config files, and default agent. Only needed once.</p>
-          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>openclaw onboard</code></div>
-          <p class="qs-cmd-note">Follow the prompts. It will ask for a model API key — Anthropic, OpenAI, or OpenRouter all work.</p>
-        </div>
-
-        <div class="qs-step">
-          <div class="qs-step__dot">04</div>
-          <span class="qs-step__label">Start</span>
-          <h3 class="qs-step__title">Start the gateway</h3>
-          <p class="qs-step__desc">The gateway is the local process that routes messages between your channels and agents.</p>
-          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>openclaw gateway start</code></div>
-        </div>
-
-        <div class="qs-step qs-step--active">
-          <div class="qs-step__dot">05</div>
-          <span class="qs-step__label">Verify</span>
-          <h3 class="qs-step__title">Open the dashboard — prove it works</h3>
-          <p class="qs-step__desc">The dashboard runs in your browser. No messaging app needed yet. If you can chat here, the stack is working.</p>
-          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>openclaw dashboard</code></div>
-          <p class="qs-cmd-note">Opens at http://localhost:PORT — send a message to confirm your model is responding.</p>
-        </div>
-      </div>
-
-      <div class="qs-milestone">
-        <span class="qs-milestone__eyebrow">Key Setup</span>
-        <h3 class="qs-milestone__title">Connect Telegram in 2 minutes</h3>
-        <p class="qs-milestone__desc">Get your AI on your phone. Telegram is the fastest channel to set up — just a bot token and one command.</p>
-        <div class="qs-milestone__steps">
-          <div class="qs-milestone__step">
-            <div class="qs-milestone__step-num">1</div>
-            <div class="qs-milestone__step-body">Open Telegram, message <code>@BotFather</code>, send <code>/newbot</code>, follow the steps, copy the token.</div>
-          </div>
-          <div class="qs-milestone__step">
-            <div class="qs-milestone__step-num">2</div>
-            <div class="qs-milestone__step-body">Run the command below with your token.</div>
-          </div>
-        </div>
-        <div class="qs-milestone__cmd"><code><span class="qs-cmd__prompt">$</span>openclaw channels add --channel telegram --token YOUR_BOT_TOKEN</code></div>
-        <div class="qs-milestone__steps">
-          <div class="qs-milestone__step">
-            <div class="qs-milestone__step-num">3</div>
-            <div class="qs-milestone__step-body">Open the dashboard QR code and scan it from your phone to approve the pairing. Done — your AI is now in your Telegram DMs.</div>
-          </div>
+    <section class="guide-hero" id="getting-started">
+      <img class="guide-hero__img" src="/images/guides/openclaw-hero.png" alt="OpenClaw" />
+      <div class="guide-hero__content">
+        <h2 class="guide-hero__title">OpenClaw</h2>
+        <div class="guide-hero__body">
+          <p>
+            OpenClaw is the orchestration layer that connects your AI agents to everything else. Think of it as the switching fabric — a local gateway process that routes messages between whatever channels you want (Telegram, Discord, Slack, webhook) and whatever AI models you're running (Anthropic, OpenAI, OpenRouter, local). It's the glue that makes your AI actually reachable.
+          </p>
+          <p>
+            The core idea is clean: you run one gateway, you attach channels to it, and you attach agents to those channels. Each agent gets its own workspace — a directory of plain markdown files that serve as its memory, skills, and context. No proprietary formats, no cloud sync required. Just files you can read, edit, and version control.
+          </p>
+          <p>
+            What I actually like about it is the <strong>model agnosticism</strong>. You're not locked to one provider. You can run Claude on your personal agent, GPT-4o on your work agent, and a local Ollama model for anything sensitive — all routing through the same gateway. Switching models is a config change, not a rewrite.
+          </p>
+          <p>
+            Setup is a <code>openclaw onboard</code> wizard that walks you through creating your first agent, then a <code>openclaw gateway start</code> to bring the router online. From there you can validate everything in the browser dashboard before touching any external channels. That's the move — dashboard first, then Telegram, then Discord. Don't set up bots before you know the core stack is working.
+          </p>
+          <p>
+            Who's it for? People who want their AI available everywhere, not just in one app. Builders who are tired of one-off bot setups and want a proper agent infrastructure. If you've ever wished your AI assistant was in your phone, your terminal, and your team chat simultaneously — that's exactly what OpenClaw does.
+          </p>
         </div>
       </div>
     </section>
+
+    {latestRelease && (
+      <div class="guide-latest">
+        <div class="guide-latest__header">
+          <span class="guide-latest__version">v{latestRelease.version}</span>
+          {latestRelease.name && <span class="guide-latest__name">{latestRelease.name}</span>}
+          <span class="guide-latest__date">{formatDate(latestRelease.date)}</span>
+        </div>
+        <div class="guide-latest__body">{latestRelease.body || "No release notes available."}</div>
+        {latestRelease.url && <a href={latestRelease.url} target="_blank" rel="noopener noreferrer" class="guide-latest__link">View on GitHub ↗</a>}
+      </div>
+    )}
 
     <!-- ══ 2: POWER TIPS ══ -->
     <section class="guide-section" id="power-tips">

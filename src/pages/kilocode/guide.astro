@@ -19,6 +19,7 @@ const powerMoves = cs.powerMoves || [];
 
 const data = await getToolReleases("kilocode");
 const releases = (data?.releases || []).slice(0, 8);
+const latestRelease = data?.releases?.[0] || null;
 function isBreaking(body: string = "") { return body.toLowerCase().includes("breaking"); }
 ---
 
@@ -38,79 +39,41 @@ function isBreaking(body: string = "") { return body.toLowerCase().includes("bre
     </nav>
 
     <!-- ══ 1: GETTING STARTED ══ -->
-    <section class="guide-section" id="getting-started">
-      <div class="guide-section__header">
-        <span class="guide-section__num">01</span>
-        <span class="guide-section__icon">🚀</span>
-        <h2 class="guide-section__title">Getting Started</h2>
-        <span class="guide-section__sub">Up and running in 10 min</span>
-      </div>
-
-      <div class="qs-journey">
-        <div class="qs-step">
-          <div class="qs-step__dot">01</div>
-          <span class="qs-step__label">Prerequisites</span>
-          <h3 class="qs-step__title">VS Code 1.85+ and an API key</h3>
-          <p class="qs-step__desc">Kilo Code works with Anthropic, OpenAI, or any compatible provider. Get a key and have it ready.</p>
-          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>code --version</code></div>
-          <p class="qs-cmd-note">VS Code 1.85 or higher required.</p>
-        </div>
-
-        <div class="qs-step">
-          <div class="qs-step__dot">02</div>
-          <span class="qs-step__label">Install</span>
-          <h3 class="qs-step__title">Install from VS Code Marketplace</h3>
-          <p class="qs-step__desc">Open the Extensions panel in VS Code and search for Kilo Code.</p>
-          <div class="qs-cmd"><code><span class="qs-cmd__prompt">Cmd+Shift+X</span> → search "Kilo Code" → Install</code></div>
-          <p class="qs-cmd-note">Or install from the terminal:</p>
-          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>code --install-extension kilocode.kilo-code</code></div>
-        </div>
-
-        <div class="qs-step">
-          <div class="qs-step__dot">03</div>
-          <span class="qs-step__label">Configure</span>
-          <h3 class="qs-step__title">Add your API key</h3>
-          <p class="qs-step__desc">Open the Kilo Code settings via the Command Palette and enter your API key. It stays local — never sent anywhere except the AI provider.</p>
-          <div class="qs-cmd"><code><span class="qs-cmd__prompt">Cmd+Shift+P</span> → "Kilo Code: Open Settings" → enter API key</code></div>
-        </div>
-
-        <div class="qs-step qs-step--active">
-          <div class="qs-step__dot">04</div>
-          <span class="qs-step__label">First Run</span>
-          <h3 class="qs-step__title">Start your first task</h3>
-          <p class="qs-step__desc">Open a project in VS Code, then launch a Kilo Code task. It reads your workspace automatically.</p>
-          <div class="qs-cmd"><code><span class="qs-cmd__prompt">Cmd+Shift+P</span> → "Kilo Code: New Task"</code></div>
-          <p class="qs-cmd-note">Type your first task in the panel that appears. Try: "explain what this codebase does and list the main components."</p>
-        </div>
-      </div>
-
-      <div class="qs-milestone">
-        <span class="qs-milestone__eyebrow">Key Unlock</span>
-        <h3 class="qs-milestone__title">Selection = context — try Explain Selection</h3>
-        <p class="qs-milestone__desc">Select any block of code before running a task and that selection becomes your context anchor. This is how Kilo Code becomes precise instead of vague.</p>
-        <div class="qs-milestone__steps">
-          <div class="qs-milestone__step">
-            <div class="qs-milestone__step-num">1</div>
-            <div class="qs-milestone__step-body">Open a file with a complex function.</div>
-          </div>
-          <div class="qs-milestone__step">
-            <div class="qs-milestone__step-num">2</div>
-            <div class="qs-milestone__step-body">Select the function body.</div>
-          </div>
-          <div class="qs-milestone__step">
-            <div class="qs-milestone__step-num">3</div>
-            <div class="qs-milestone__step-body">Right-click → "Kilo Code: Explain Selection" or use the Command Palette.</div>
-          </div>
-        </div>
-        <div class="qs-milestone__cmd"><code><span class="qs-cmd__prompt">Cmd+Shift+P</span> → "Kilo Code: Explain Selection"</code></div>
-        <div class="qs-milestone__steps">
-          <div class="qs-milestone__step">
-            <div class="qs-milestone__step-num">4</div>
-            <div class="qs-milestone__step-body">Kilo Code explains exactly that selection with full context from surrounding files. From here, ask it to refactor, add tests, or fix issues — it stays focused on your selection.</div>
-          </div>
+    <section class="guide-hero" id="getting-started">
+      <img class="guide-hero__img" src="/images/guides/kilocode-hero.png" alt="Kilo Code" />
+      <div class="guide-hero__content">
+        <h2 class="guide-hero__title">Kilo Code</h2>
+        <div class="guide-hero__body">
+          <p>
+            Kilo Code is the autonomous builder — a VS Code extension that doesn't just suggest code, it builds features. You describe what you want at a high level and it figures out the implementation: which files to create, which to modify, how to wire things together. It's the closest thing to having a junior dev who actually executes on specs instead of asking clarifying questions every 30 seconds.
+          </p>
+          <p>
+            What makes it distinct is the <strong>task-based model</strong>. You don't work line by line or file by file. You create a task — something like "add JWT authentication to this Express API with refresh token support" — and Kilo Code builds a plan, executes it across multiple files, and reports back. You review at the task level, not the keystroke level.
+          </p>
+          <p>
+            It's model-agnostic, which is actually important for an extension that's doing this much autonomous work. You can run Claude for complex reasoning tasks, swap to a faster/cheaper model for simpler generation, and configure different models for different task types. That flexibility means you're not stuck paying Opus-tier prices for tasks that don't need it.
+          </p>
+          <p>
+            The selection context feature is genuinely useful — highlight a function, ask Kilo Code to refactor it or write tests for it, and it stays anchored to exactly that code plus the necessary surrounding context. No hallucinated APIs, no ignoring your actual file structure. Select first, then task. That's the pattern.
+          </p>
+          <p>
+            Who's it for? VS Code users who want to delegate entire features, not just lines. People doing rapid prototyping where speed matters more than perfection. Teams building internal tools or MVPs where "good enough and done" beats "perfect and pending." If you're tired of babysitting an AI through every implementation step, Kilo Code handles that loop for you.
+          </p>
         </div>
       </div>
     </section>
+
+    {latestRelease && (
+      <div class="guide-latest">
+        <div class="guide-latest__header">
+          <span class="guide-latest__version">v{latestRelease.version}</span>
+          {latestRelease.name && <span class="guide-latest__name">{latestRelease.name}</span>}
+          <span class="guide-latest__date">{formatDate(latestRelease.date)}</span>
+        </div>
+        <div class="guide-latest__body">{latestRelease.body || "No release notes available."}</div>
+        {latestRelease.url && <a href={latestRelease.url} target="_blank" rel="noopener noreferrer" class="guide-latest__link">View on GitHub ↗</a>}
+      </div>
+    )}
 
     <!-- ══ 2: POWER TIPS ══ -->
     <section class="guide-section" id="power-tips">
