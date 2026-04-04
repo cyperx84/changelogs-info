@@ -19,6 +19,7 @@ const powerMoves = cs.powerMoves || [];
 
 const data = await getToolReleases("hermes-agent");
 const releases = (data?.releases || []).slice(0, 8);
+const latestRelease = data?.releases?.[0] || null;
 function isBreaking(body: string = "") { return body.toLowerCase().includes("breaking"); }
 ---
 
@@ -38,75 +39,41 @@ function isBreaking(body: string = "") { return body.toLowerCase().includes("bre
     </nav>
 
     <!-- ══ 1: GETTING STARTED ══ -->
-    <section class="guide-section" id="getting-started">
-      <div class="guide-section__header">
-        <span class="guide-section__num">01</span>
-        <span class="guide-section__icon">🚀</span>
-        <h2 class="guide-section__title">Getting Started</h2>
-        <span class="guide-section__sub">Up and running in 10 min</span>
-      </div>
-
-      <div class="qs-journey">
-        <div class="qs-step">
-          <div class="qs-step__dot">01</div>
-          <span class="qs-step__label">Prerequisites</span>
-          <h3 class="qs-step__title">Node.js 18+ and a model API key</h3>
-          <p class="qs-step__desc">Hermes works with Anthropic Claude, OpenAI, or any OpenAI-compatible provider. Have an API key ready.</p>
-          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>node --version</code></div>
-        </div>
-
-        <div class="qs-step">
-          <div class="qs-step__dot">02</div>
-          <span class="qs-step__label">Install</span>
-          <h3 class="qs-step__title">Install Hermes Agent globally</h3>
-          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>npm install -g hermes-agent</code></div>
-          <p class="qs-cmd-note">Verify: hermes --version</p>
-        </div>
-
-        <div class="qs-step">
-          <div class="qs-step__dot">03</div>
-          <span class="qs-step__label">Configure</span>
-          <h3 class="qs-step__title">Initialize in your project</h3>
-          <p class="qs-step__desc">This creates hermes.config.json in your project root. Edit it to tell Hermes about your stack, tools, and constraints — this is what makes it useful.</p>
-          <div class="qs-cmd-group">
-            <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>cd your-project</code></div>
-            <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>hermes init</code></div>
-          </div>
-          <p class="qs-cmd-note">The init wizard will ask about your stack and set sensible defaults.</p>
-        </div>
-
-        <div class="qs-step qs-step--active">
-          <div class="qs-step__dot">04</div>
-          <span class="qs-step__label">First Run</span>
-          <h3 class="qs-step__title">Ask what the codebase does</h3>
-          <p class="qs-step__desc">Before running any task that modifies files, start by asking Hermes to understand the codebase. This gives you a baseline and lets Hermes build a plan.</p>
-          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>hermes "what does this codebase do and what are the main moving parts"</code></div>
-        </div>
-      </div>
-
-      <div class="qs-milestone">
-        <span class="qs-milestone__eyebrow">Key Habit</span>
-        <h3 class="qs-milestone__title">Always --dry-run before you execute</h3>
-        <p class="qs-milestone__desc">Hermes is autonomous — it will make real changes. The --dry-run flag shows you the full execution plan before anything touches your files. Build this habit from day one.</p>
-        <div class="qs-milestone__steps">
-          <div class="qs-milestone__step">
-            <div class="qs-milestone__step-num">1</div>
-            <div class="qs-milestone__step-body">Write a specific task description. Specific = better plan.</div>
-          </div>
-          <div class="qs-milestone__step">
-            <div class="qs-milestone__step-num">2</div>
-            <div class="qs-milestone__step-body">Run with --dry-run first to preview the plan.</div>
-          </div>
-        </div>
-        <div class="qs-milestone__cmd"><code><span class="qs-cmd__prompt">$</span>hermes "write unit tests for src/utils/auth.ts — test all exported functions, edge cases included" --dry-run</code></div>
-        <div class="qs-milestone__steps">
-          <div class="qs-milestone__step">
-            <div class="qs-milestone__step-num">3</div>
-            <div class="qs-milestone__step-body">Review the plan. If it looks right, run without --dry-run. If not, refine your task description and try again.</div>
-          </div>
+    <section class="guide-hero" id="getting-started">
+      <img class="guide-hero__img" src="/images/guides/hermes-agent-hero.png" alt="Hermes Agent" />
+      <div class="guide-hero__content">
+        <h2 class="guide-hero__title">Hermes Agent</h2>
+        <div class="guide-hero__body">
+          <p>
+            Hermes is the messenger — a terminal AI agent built around the idea that the hardest part of agentic AI isn't the intelligence, it's the delivery. Getting your AI's output to the right place, at the right time, in the right format. Hermes handles the plumbing so you can focus on the actual task.
+          </p>
+          <p>
+            It's a project-scoped AI agent. You initialize it in your repo with <code>hermes init</code>, configure your stack and constraints in <code>hermes.config.json</code>, and then run tasks against it. The config file is what makes it smart — without it, you're just running a generic AI. With it, Hermes knows your architecture, your conventions, what files to touch, and what to leave alone.
+          </p>
+          <p>
+            The <strong>dry-run habit</strong> is the most important thing to internalize early. Hermes is designed for autonomous execution, which means it will actually make changes to your files. The <code>--dry-run</code> flag gives you a full execution plan preview before anything happens. Review the plan, tweak your task description if needed, then run for real. This loop is fast and it saves you from messy reverts.
+          </p>
+          <p>
+            Model flexibility is a first-class feature. Hermes works with Anthropic Claude, OpenAI, or any OpenAI-compatible provider — including local models via Ollama. You pick the model in config, not in the tool. That means you can swap without relearning the workflow.
+          </p>
+          <p>
+            Who's it for? Engineers who want a reliable, predictable AI agent they can trust with real tasks. Teams who need AI tooling that respects project constraints instead of hallucinating imports and patterns that don't exist. Anyone who's been burned by AI agents going off-script and wants a tool that shows you the plan before executing it.
+          </p>
         </div>
       </div>
     </section>
+
+    {latestRelease && (
+      <div class="guide-latest">
+        <div class="guide-latest__header">
+          <span class="guide-latest__version">v{latestRelease.version}</span>
+          {latestRelease.name && <span class="guide-latest__name">{latestRelease.name}</span>}
+          <span class="guide-latest__date">{formatDate(latestRelease.date)}</span>
+        </div>
+        <div class="guide-latest__body">{latestRelease.body || "No release notes available."}</div>
+        {latestRelease.url && <a href={latestRelease.url} target="_blank" rel="noopener noreferrer" class="guide-latest__link">View on GitHub ↗</a>}
+      </div>
+    )}
 
     <!-- ══ 2: POWER TIPS ══ -->
     <section class="guide-section" id="power-tips">
