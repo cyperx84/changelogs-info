@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.91",
-  "generated_at": "2026-04-04T00:29:07.769Z",
+  "version": "2.1.92",
+  "generated_at": "2026-04-04T01:36:26.036Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,13 +14,23 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.91",
-    "to_version": "2.1.91",
-    "new_features": [],
-    "new_commands": [],
-    "new_flags": [],
+    "from_version": "2.1.92",
+    "to_version": "2.1.92",
+    "new_features": [
+      "force-remote-settings-refresh-policy-setting",
+      "interactive-bedrock-setup-wizard"
+    ],
+    "new_commands": [
+      "/release-notes"
+    ],
+    "new_flags": [
+      "--remote-control-session-name-prefix"
+    ],
     "new_env_vars": [],
-    "deprecated_commands": [],
+    "deprecated_commands": [
+      "/tag",
+      "/vim"
+    ],
     "deprecated_flags": [],
     "breaking_changes": []
   },
@@ -39,12 +49,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.91",
-      "latest_release_date": "2026-04-02",
+      "latest_stable": "2.1.92",
+      "latest_release_date": "2026-04-04",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release enhances tool result handling and security. MCP tool results can now persist larger outputs (up to 500K chars) using the `_meta` annotation, enabling DB schema transfers. A new setting, `disableSkillShellExecution`, disables inline shell execution in skills and commands for enhanced security. Deep links now support multi-line prompts, and plugins can ship and execute binaries. This release also fixes transcript loss on `--resume`, `cmd+delete` behavior in several terminals, and plan mode issues in remote sessions."
+      "tldr": "Version 2.1.92 introduces an interactive Bedrock setup wizard for easier AWS integration and makes the `/release-notes` command interactive. The `/cost` command now provides a per-model and cache-hit breakdown for subscription users. Remote Control session names now default to using the hostname as a prefix, customizable with `--remote-control-session-name-prefix`. This release also fixes several bugs, including issues with subagent spawning, prompt-type Stop hooks, tool input validation, and feedback survey submissions. The `/tag` command has been removed, and `/vim` is deprecated in favor of `/config` → Editor mode."
     },
     "features": [
       {
@@ -641,6 +651,24 @@
         "description": "Added `disableSkillShellExecution` setting to disable inline shell execution in skills, custom slash commands, and plugin commands",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "force-remote-settings-refresh-policy-setting",
+        "name": "forceRemoteSettingsRefresh policy setting",
+        "status": "stable",
+        "since": "2.1.92",
+        "description": "Added `forceRemoteSettingsRefresh` policy setting: when set, the CLI blocks startup until remote managed settings are freshly fetched, and exits if the fetch fails (fail-closed)",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "interactive-bedrock-setup-wizard",
+        "name": "Interactive Bedrock setup wizard",
+        "status": "stable",
+        "since": "2.1.92",
+        "description": "Added interactive Bedrock setup wizard accessible from the login screen when selecting \"3rd-party platform\" — guides you through AWS authentication, region configuration, credential verification, and model pinning",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -952,6 +980,14 @@
         "since": "2.1.90",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "/release-notes",
+        "syntax": "/release-notes",
+        "description": "/release-notes is now an interactive version picker",
+        "since": "2.1.92",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -1133,6 +1169,12 @@
           "description": "Resume a headless session after a PreToolUse hook pauses at a tool call.",
           "since": "2.1.89",
           "source_url": ""
+        },
+        {
+          "flag": "--remote-control-session-name-prefix",
+          "description": "Overridable prefix for Remote Control session names (default: hostname)",
+          "since": "2.1.92",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -1145,7 +1187,9 @@
           "source_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--remote-control-session-name-prefix"
+      ]
     },
     "env_vars": [
       {
@@ -1543,6 +1587,18 @@
         "name": "/status",
         "replaced_by": null,
         "deprecated_since": "2.1.83",
+        "source_url": ""
+      },
+      {
+        "name": "/tag",
+        "replaced_by": null,
+        "deprecated_since": "2.1.92",
+        "source_url": ""
+      },
+      {
+        "name": "/vim",
+        "replaced_by": "/config → Editor mode",
+        "deprecated_since": "2.1.92",
         "source_url": ""
       }
     ],
