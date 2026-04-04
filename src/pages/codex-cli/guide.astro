@@ -1,0 +1,333 @@
+---
+import CodexLayout from "../../layouts/CodexLayout.astro";
+import "../../styles/guide-shared.css";
+import "../../styles/cheatsheet-shared.css";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { getToolReleases, formatDate } from "../../lib/releases";
+
+let cs: any = {};
+try {
+  const raw = readFileSync(join(process.cwd(), "src/content/cheatsheets-json/codex-cli.json"), "utf-8");
+  cs = JSON.parse(raw);
+} catch {}
+
+const cliFlags = cs.cliFlags || [];
+const slashCommands = cs.slashCommands || [];
+const dailyWorkflows = cs.dailyWorkflows || [];
+const powerMoves = cs.powerMoves || [];
+
+const data = await getToolReleases("codex-cli");
+const releases = (data?.releases || []).slice(0, 8);
+function isBreaking(body: string = "") { return body.toLowerCase().includes("breaking"); }
+---
+
+<CodexLayout
+  title="Codex CLI Guide — Getting Started, Tips, Reference"
+  description="Everything you need for Codex CLI: install guide, power tips, command reference, and latest releases."
+  currentPage="guide"
+>
+  <div class="guide-wrapper">
+
+    <nav class="guide-toc" aria-label="Guide sections">
+      <span class="guide-toc__label">Jump to</span>
+      <a href="#getting-started" class="guide-toc__link">Getting Started</a>
+      <a href="#power-tips" class="guide-toc__link">Power Tips</a>
+      <a href="#reference" class="guide-toc__link">Reference</a>
+      <a href="#releases" class="guide-toc__link">Releases</a>
+    </nav>
+
+    <!-- ══ 1: GETTING STARTED ══ -->
+    <section class="guide-section" id="getting-started">
+      <div class="guide-section__header">
+        <span class="guide-section__num">01</span>
+        <span class="guide-section__icon">🚀</span>
+        <h2 class="guide-section__title">Getting Started</h2>
+        <span class="guide-section__sub">Up and running in 10 min</span>
+      </div>
+
+      <div class="qs-journey">
+        <div class="qs-step">
+          <div class="qs-step__dot">01</div>
+          <span class="qs-step__label">Prerequisites</span>
+          <h3 class="qs-step__title">Node.js 18+ and OpenAI API key</h3>
+          <p class="qs-step__desc">Get your API key from platform.openai.com. Then set it in your shell.</p>
+          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>export OPENAI_API_KEY=sk-...</code></div>
+          <p class="qs-cmd-note">Add it to your .zshrc or .bashrc so it persists across sessions.</p>
+        </div>
+
+        <div class="qs-step">
+          <div class="qs-step__dot">02</div>
+          <span class="qs-step__label">Install</span>
+          <h3 class="qs-step__title">Install the Codex CLI globally</h3>
+          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>npm install -g @openai/codex</code></div>
+          <p class="qs-cmd-note">Verify: codex --version</p>
+        </div>
+
+        <div class="qs-step">
+          <div class="qs-step__dot">03</div>
+          <span class="qs-step__label">First Run</span>
+          <h3 class="qs-step__title">Launch in your project</h3>
+          <p class="qs-step__desc">Navigate to your repo and launch Codex. It reads your files and waits for instructions.</p>
+          <div class="qs-cmd-group">
+            <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>cd your-project</code></div>
+            <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>codex</code></div>
+          </div>
+          <p class="qs-cmd-note">Interactive mode. Type your task. Codex reads relevant files and proposes changes with your approval.</p>
+        </div>
+
+        <div class="qs-step qs-step--active">
+          <div class="qs-step__dot">04</div>
+          <span class="qs-step__label">Try it</span>
+          <h3 class="qs-step__title">Your first real task</h3>
+          <p class="qs-step__desc">Give it a concrete, scoped task. The --approval-mode suggest flag means it will show you changes before applying them.</p>
+          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>codex "add input validation to the login form" --approval-mode suggest</code></div>
+        </div>
+      </div>
+
+      <div class="qs-milestone">
+        <span class="qs-milestone__eyebrow">Key Setup</span>
+        <h3 class="qs-milestone__title">Create .codex/instructions.md — your persistent context</h3>
+        <p class="qs-milestone__desc">This is the single most impactful thing you can do. Codex reads this file at the start of every run. Put your project conventions, stack details, and any do's and don'ts here.</p>
+        <div class="qs-milestone__steps">
+          <div class="qs-milestone__step">
+            <div class="qs-milestone__step-num">1</div>
+            <div class="qs-milestone__step-body">Create the directory and file in your project root.</div>
+          </div>
+        </div>
+        <div class="qs-milestone__cmd"><code><span class="qs-cmd__prompt">$</span>mkdir -p .codex && touch .codex/instructions.md</code></div>
+        <div class="qs-milestone__steps">
+          <div class="qs-milestone__step">
+            <div class="qs-milestone__step-num">2</div>
+            <div class="qs-milestone__step-body">Add your stack, conventions, and rules. Example: "This is a Next.js 14 app. Use TypeScript, never any. Prefer server components. Tests go in __tests__/ next to the source file."</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 2: POWER TIPS ══ -->
+    <section class="guide-section" id="power-tips">
+      <div class="guide-section__header">
+        <span class="guide-section__num">02</span>
+        <span class="guide-section__icon">⚡</span>
+        <h2 class="guide-section__title">Power Tips</h2>
+        <span class="guide-section__sub">Non-obvious leverage</span>
+      </div>
+
+      <div class="tips-section">
+        <div class="tips-section__header">
+          <span class="tips-section__icon">⚡</span>
+          <h3 class="tips-section__title">Quick Wins</h3>
+        </div>
+        <div class="tips-cards">
+          <div class="tips-card tips-card--highlight">
+            <span class="tips-card__num">01</span>
+            <div class="tips-card__title">.codex/instructions.md is your foundation</div>
+            <p class="tips-card__desc">Write it once. Codex reads it every run. Put your stack, conventions, testing patterns, and rules here. It's the difference between a tool that guesses and one that knows your codebase.</p>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">02</span>
+            <div class="tips-card__title">exec for one-shot CI runs</div>
+            <p class="tips-card__desc">Non-interactive mode. Perfect for automation, CI pipelines, and scripted tasks.</p>
+            <div class="tips-card__cmd">codex exec "run tests and fix any failing ones"</div>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">03</span>
+            <div class="tips-card__title">Approval mode determines autonomy</div>
+            <p class="tips-card__desc">Three modes: <code>suggest</code> (show changes, ask), <code>auto</code> (apply without asking), <code>full-auto</code> (run commands too).</p>
+            <div class="tips-card__cmd">codex "task" --approval-mode auto</div>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">04</span>
+            <div class="tips-card__title">Commit before big tasks</div>
+            <p class="tips-card__desc">Codex reads your git history as part of its context. A clean commit before a big task also gives you a clear rollback point.</p>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">05</span>
+            <div class="tips-card__title">Feed it the whole repo</div>
+            <p class="tips-card__desc">Don't point Codex at one file. It builds a mental model of your whole codebase and makes better decisions when it has full context.</p>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">06</span>
+            <div class="tips-card__title">--quiet for clean script output</div>
+            <p class="tips-card__desc">Suppresses the "thinking" output for cleaner integration into shell pipelines and CI logs.</p>
+            <div class="tips-card__cmd">codex --quiet exec "task"</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tips-section">
+        <div class="tips-section__header">
+          <span class="tips-section__icon">🔍</span>
+          <h3 class="tips-section__title">Hidden Features</h3>
+        </div>
+        <div class="tips-features">
+          <div class="tips-feature">
+            <span class="tips-feature__icon">🤖</span>
+            <div class="tips-feature__body">
+              <div class="tips-feature__title">Built-in sub-agent support</div>
+              <p class="tips-feature__desc">For large tasks, Codex can spawn parallel worker agents automatically. It handles the orchestration — you don't need to break the task up manually. Just describe the full scope and it figures out the parallelism.</p>
+            </div>
+          </div>
+          <div class="tips-feature">
+            <span class="tips-feature__icon">🔗</span>
+            <div class="tips-feature__body">
+              <div class="tips-feature__title">Give it a URL — it fetches and reads</div>
+              <p class="tips-feature__desc">You can reference a URL in your task description and Codex will fetch and read it as context. Useful for "implement this API according to the spec at https://..."</p>
+            </div>
+          </div>
+          <div class="tips-feature">
+            <span class="tips-feature__icon">🔄</span>
+            <div class="tips-feature__body">
+              <div class="tips-feature__title">Swap models with --model</div>
+              <p class="tips-feature__desc">Use a different model for different tasks without changing config. Fast model for exploration, smarter model for production code.</p>
+              <code class="tips-feature__cmd">codex --model gpt-4o-mini "quick refactor of this function"</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tips-section">
+        <div class="tips-section__header">
+          <span class="tips-section__icon">💀</span>
+          <h3 class="tips-section__title">Common Mistakes</h3>
+        </div>
+        <div class="tips-gotchas">
+          <div class="tips-gotcha">
+            <span class="tips-gotcha__skull">☠️</span>
+            <div class="tips-gotcha__title">No instructions.md</div>
+            <p class="tips-gotcha__desc">Codex guesses your stack and conventions from scratch every run. Everything is slower and less accurate without it.</p>
+            <span class="tips-gotcha__fix">Create .codex/instructions.md before your first real task.</span>
+          </div>
+          <div class="tips-gotcha">
+            <span class="tips-gotcha__skull">☠️</span>
+            <div class="tips-gotcha__title">Using full-auto on unfamiliar code</div>
+            <p class="tips-gotcha__desc">full-auto runs shell commands without confirmation. In code you don't know well, this can delete files or run destructive migrations.</p>
+            <span class="tips-gotcha__fix">Use suggest on code you don't own. full-auto only for trusted, well-tested repos.</span>
+          </div>
+          <div class="tips-gotcha">
+            <span class="tips-gotcha__skull">☠️</span>
+            <div class="tips-gotcha__title">Skipping git commit before big tasks</div>
+            <p class="tips-gotcha__desc">If you don't like Codex's output, you need a clean commit to roll back to. Working with a dirty git state gives you no safety net.</p>
+            <span class="tips-gotcha__fix">git add -A && git commit -m "checkpoint" before every big Codex task.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 3: COMMAND REFERENCE ══ -->
+    <section class="guide-section" id="reference">
+      <div class="guide-section__header">
+        <span class="guide-section__num">03</span>
+        <span class="guide-section__icon">📋</span>
+        <h2 class="guide-section__title">Command Reference</h2>
+        <span class="guide-section__sub">Flags and commands</span>
+      </div>
+
+      <div class="guide-ref-grid">
+        {cliFlags.length > 0 && (
+          <div class="guide-ref-panel">
+            <div class="guide-ref-panel__title">CLI Flags</div>
+            {cliFlags.map((flag: any) => (
+              <div class="guide-ref-item">
+                <span class="guide-ref-item__key">{flag.flag || flag.command}</span>
+                <span class="guide-ref-item__desc">{flag.description}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        {dailyWorkflows.length > 0 && (
+          <div class="guide-ref-panel">
+            <div class="guide-ref-panel__title">Daily Workflows</div>
+            {dailyWorkflows.map((wf: any) => (
+              <div class="guide-ref-item">
+                <span class="guide-ref-item__key" style="min-width: 0; font-size: 0.68rem;">{wf.title}</span>
+                <span class="guide-ref-item__desc">{wf.command || wf.description}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        {powerMoves.length > 0 && (
+          <div class="guide-ref-panel">
+            <div class="guide-ref-panel__title">⚡ Power Moves</div>
+            {powerMoves.map((pm: any) => (
+              <div class="guide-ref-item">
+                <span class="guide-ref-item__key" style="min-width: 0; font-size: 0.68rem;">{pm.title}</span>
+                <span class="guide-ref-item__desc">{pm.command || pm.description}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      {cliFlags.length === 0 && dailyWorkflows.length === 0 && (
+        <p style="font-family: var(--tool-font-mono); font-size: 0.8rem; color: var(--tool-text-muted);">$ cheatsheet data not available</p>
+      )}
+    </section>
+
+    <!-- ══ 4: RECENT RELEASES ══ -->
+    <section class="guide-section" id="releases">
+      <div class="guide-section__header">
+        <span class="guide-section__num">04</span>
+        <span class="guide-section__icon">🔔</span>
+        <h2 class="guide-section__title">Recent Releases</h2>
+        <span class="guide-section__sub">Latest {releases.length} versions</span>
+      </div>
+
+      {releases.length > 0 ? (
+        <>
+          <div class="guide-releases">
+            {releases.map((r) => {
+              const breaking = isBreaking(r.body);
+              return (
+                <a href={r.url} target="_blank" rel="noopener noreferrer" class="guide-release">
+                  <span class="guide-release__version">v{r.version}</span>
+                  {r.name && <span class="guide-release__name">{r.name}</span>}
+                  {breaking && <span class="guide-release__badge guide-release__badge--breaking">Breaking</span>}
+                  {r.prerelease && <span class="guide-release__badge guide-release__badge--pre">Pre</span>}
+                  <span class="guide-release__date">{formatDate(r.date)}</span>
+                </a>
+              );
+            })}
+          </div>
+          <div class="guide-releases__more">
+            <a href="/codex-cli/releases/" class="guide-releases__more-link">All releases ↗</a>
+          </div>
+        </>
+      ) : (
+        <p style="font-family: var(--tool-font-mono); font-size: 0.8rem; color: var(--tool-text-muted);">$ no releases tracked yet</p>
+      )}
+    </section>
+
+  </div>
+
+  <script is:inline>
+    document.querySelectorAll('.qs-cmd').forEach(function(block) {
+      var btn = document.createElement('button');
+      btn.className = 'qs-cmd__copy';
+      btn.textContent = 'copy';
+      btn.addEventListener('click', function() {
+        var code = block.querySelector('code');
+        if (!code) return;
+        var text = code.textContent.replace(/^\$\s*/, '').trim();
+        navigator.clipboard.writeText(text).then(function() {
+          btn.textContent = 'copied!';
+          setTimeout(function() { btn.textContent = 'copy'; }, 1500);
+        });
+      });
+      block.style.paddingRight = '5rem';
+      block.appendChild(btn);
+    });
+    var sections = document.querySelectorAll('.guide-section[id]');
+    var tocLinks = document.querySelectorAll('.guide-toc__link');
+    function updateToc() {
+      var scrollY = window.scrollY + 160;
+      var current = '';
+      sections.forEach(function(s) { if (s.offsetTop <= scrollY) current = s.id; });
+      tocLinks.forEach(function(link) {
+        link.classList.toggle('guide-toc__link--active', link.getAttribute('href') === '#' + current);
+      });
+    }
+    window.addEventListener('scroll', updateToc, { passive: true });
+    updateToc();
+  </script>
+</CodexLayout>

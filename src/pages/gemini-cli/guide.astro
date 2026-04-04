@@ -1,0 +1,339 @@
+---
+import GeminiLayout from "../../layouts/GeminiLayout.astro";
+import "../../styles/guide-shared.css";
+import "../../styles/cheatsheet-shared.css";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { getToolReleases, formatDate } from "../../lib/releases";
+
+let cs: any = {};
+try {
+  const raw = readFileSync(join(process.cwd(), "src/content/cheatsheets-json/gemini-cli.json"), "utf-8");
+  cs = JSON.parse(raw);
+} catch {}
+
+const cliFlags = cs.cliFlags || [];
+const dailyWorkflows = cs.dailyWorkflows || [];
+const powerMoves = cs.powerMoves || [];
+
+const data = await getToolReleases("gemini-cli");
+const releases = (data?.releases || []).slice(0, 8);
+function isBreaking(body: string = "") { return body.toLowerCase().includes("breaking"); }
+---
+
+<GeminiLayout
+  title="Gemini CLI Guide — Getting Started, Tips, Reference"
+  description="Everything you need for Gemini CLI: install guide, power tips, command reference, and latest releases."
+  currentPage="guide"
+>
+  <div class="guide-wrapper">
+
+    <nav class="guide-toc" aria-label="Guide sections">
+      <span class="guide-toc__label">Jump to</span>
+      <a href="#getting-started" class="guide-toc__link">Getting Started</a>
+      <a href="#power-tips" class="guide-toc__link">Power Tips</a>
+      <a href="#reference" class="guide-toc__link">Reference</a>
+      <a href="#releases" class="guide-toc__link">Releases</a>
+    </nav>
+
+    <!-- ══ 1: GETTING STARTED ══ -->
+    <section class="guide-section" id="getting-started">
+      <div class="guide-section__header">
+        <span class="guide-section__num">01</span>
+        <span class="guide-section__icon">🚀</span>
+        <h2 class="guide-section__title">Getting Started</h2>
+        <span class="guide-section__sub">Up and running in 10 min</span>
+      </div>
+
+      <div class="qs-journey">
+        <div class="qs-step">
+          <div class="qs-step__dot">01</div>
+          <span class="qs-step__label">Prerequisites</span>
+          <h3 class="qs-step__title">Node.js 18+ and a Google account</h3>
+          <p class="qs-step__desc">You can auth with your Google account on first launch (browser-based), or use a Gemini API key from aistudio.google.com.</p>
+          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>node --version</code></div>
+        </div>
+
+        <div class="qs-step">
+          <div class="qs-step__dot">02</div>
+          <span class="qs-step__label">Install</span>
+          <h3 class="qs-step__title">Install Gemini CLI globally</h3>
+          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>npm install -g @google/gemini-cli</code></div>
+          <p class="qs-cmd-note">Verify: gemini --version</p>
+        </div>
+
+        <div class="qs-step">
+          <div class="qs-step__dot">03</div>
+          <span class="qs-step__label">Authenticate</span>
+          <h3 class="qs-step__title">First launch — browser auth or API key</h3>
+          <p class="qs-step__desc">Run <code>gemini</code> and it will open a browser for Google account auth. Or skip the browser by setting an API key first.</p>
+          <span class="qs-cmd-label">Option A — Google account (browser)</span>
+          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>gemini</code></div>
+          <span class="qs-cmd-label">Option B — API key (faster, better for scripts)</span>
+          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>export GEMINI_API_KEY=your-key && gemini</code></div>
+          <p class="qs-cmd-note">Get an API key free at aistudio.google.com/apikey</p>
+        </div>
+
+        <div class="qs-step qs-step--active">
+          <div class="qs-step__dot">04</div>
+          <span class="qs-step__label">First Real Task</span>
+          <h3 class="qs-step__title">Non-interactive one-shot mode</h3>
+          <p class="qs-step__desc">Use -p for scripting — non-interactive, returns output immediately. Perfect for piping in files.</p>
+          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>gemini -p "what does this codebase do and what are the main entry points" &lt; README.md</code></div>
+          <p class="qs-cmd-note">Or pipe any file. With 1M context, you can pipe entire codebases.</p>
+        </div>
+      </div>
+
+      <div class="qs-milestone">
+        <span class="qs-milestone__eyebrow">Key Unlock</span>
+        <h3 class="qs-milestone__title">Feed it your entire codebase — it can take it</h3>
+        <p class="qs-milestone__desc">Most tools are bottlenecked by context. Gemini isn't. Use this to get a comprehensive analysis of your whole project at once.</p>
+        <div class="qs-milestone__steps">
+          <div class="qs-milestone__step">
+            <div class="qs-milestone__step-num">1</div>
+            <div class="qs-milestone__step-body">Navigate to your project root.</div>
+          </div>
+          <div class="qs-milestone__step">
+            <div class="qs-milestone__step-num">2</div>
+            <div class="qs-milestone__step-body">Run a security audit across the whole codebase:</div>
+          </div>
+        </div>
+        <div class="qs-milestone__cmd"><code><span class="qs-cmd__prompt">$</span>find . -name "*.ts" -not -path "*/node_modules/*" | xargs cat | gemini -p "security audit: find auth issues, injection vectors, and exposed secrets"</code></div>
+        <div class="qs-milestone__steps">
+          <div class="qs-milestone__step">
+            <div class="qs-milestone__step-num">3</div>
+            <div class="qs-milestone__step-body">Gemini processes the full codebase in one shot and returns a structured security report. No other CLI handles this scale.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 2: POWER TIPS ══ -->
+    <section class="guide-section" id="power-tips">
+      <div class="guide-section__header">
+        <span class="guide-section__num">02</span>
+        <span class="guide-section__icon">⚡</span>
+        <h2 class="guide-section__title">Power Tips</h2>
+        <span class="guide-section__sub">Getting real leverage from 1M context</span>
+      </div>
+
+      <div class="tips-section">
+        <div class="tips-section__header">
+          <span class="tips-section__icon">⚡</span>
+          <h3 class="tips-section__title">Quick Wins</h3>
+        </div>
+        <div class="tips-cards">
+          <div class="tips-card tips-card--highlight">
+            <span class="tips-card__num">01</span>
+            <div class="tips-card__title">-p for non-interactive scripting</div>
+            <p class="tips-card__desc">The single most useful flag. Makes Gemini return output immediately and exit — perfect for pipelines, cron jobs, and one-off analysis.</p>
+            <div class="tips-card__cmd">gemini -p "summarise this" &lt; file.txt</div>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">02</span>
+            <div class="tips-card__title">Feed it the whole codebase</div>
+            <p class="tips-card__desc">1M tokens is roughly 750,000 words or several large codebases. Don't be conservative — give Gemini full context.</p>
+            <div class="tips-card__cmd">find . -name "*.py" | xargs cat | gemini -p "your question"</div>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">03</span>
+            <div class="tips-card__title">Pin your model with an env var</div>
+            <p class="tips-card__desc">Set once in your shell profile and never type --model again. Gemini 2.5 Pro for the best reasoning.</p>
+            <div class="tips-card__cmd">export GEMINI_MODEL=gemini-2.5-pro</div>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">04</span>
+            <div class="tips-card__title">--yolo skips confirmations</div>
+            <p class="tips-card__desc">Skips all confirmation prompts — runs commands and makes changes without asking. Sticky for the session. Use carefully on anything destructive.</p>
+            <div class="tips-card__cmd">gemini --yolo</div>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">05</span>
+            <div class="tips-card__title">Checkpoint long tasks</div>
+            <p class="tips-card__desc">For tasks that take 5+ minutes, use --checkpoint so Gemini can resume if interrupted. Huge time saver on big analysis tasks.</p>
+            <div class="tips-card__cmd">gemini --checkpoint "analyse this entire monorepo"</div>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">06</span>
+            <div class="tips-card__title">API key vs browser auth</div>
+            <p class="tips-card__desc">Browser auth is fine for interactive use. For scripts and CI, set GEMINI_API_KEY — browser auth requires a human to click, which breaks automation.</p>
+            <div class="tips-card__cmd">export GEMINI_API_KEY=your-key</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tips-section">
+        <div class="tips-section__header">
+          <span class="tips-section__icon">🔍</span>
+          <h3 class="tips-section__title">Hidden Features</h3>
+        </div>
+        <div class="tips-features">
+          <div class="tips-feature">
+            <span class="tips-feature__icon">🔒</span>
+            <div class="tips-feature__body">
+              <div class="tips-feature__title">--sandbox runs commands in gVisor isolation</div>
+              <p class="tips-feature__desc">When Gemini runs shell commands, --sandbox wraps them in gVisor container isolation. Safer for running Gemini on unfamiliar code or in shared environments. Slightly slower, much safer.</p>
+              <code class="tips-feature__cmd">gemini --sandbox "run and fix these tests"</code>
+            </div>
+          </div>
+          <div class="tips-feature">
+            <span class="tips-feature__icon">⚙️</span>
+            <div class="tips-feature__body">
+              <div class="tips-feature__title">Policy engine — pre-approve action types</div>
+              <p class="tips-feature__desc">The policy engine lets you pre-approve certain categories of actions (file writes, shell commands) while blocking others. More granular than --yolo. Configure in your settings to avoid per-action confirmations on safe operations.</p>
+            </div>
+          </div>
+          <div class="tips-feature">
+            <span class="tips-feature__icon">🔁</span>
+            <div class="tips-feature__body">
+              <div class="tips-feature__title">Checkpointing resumes mid-task</div>
+              <p class="tips-feature__desc">Long analysis tasks can be interrupted by network drops, rate limits, or system sleep. With --checkpoint, Gemini saves its state and can resume exactly where it left off — no re-running the whole thing.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tips-section">
+        <div class="tips-section__header">
+          <span class="tips-section__icon">💀</span>
+          <h3 class="tips-section__title">Common Mistakes</h3>
+        </div>
+        <div class="tips-gotchas">
+          <div class="tips-gotcha">
+            <span class="tips-gotcha__skull">☠️</span>
+            <div class="tips-gotcha__title">Browser auth in automation</div>
+            <p class="tips-gotcha__desc">Browser auth requires a human to click through a consent screen. In CI or cron jobs it just blocks silently.</p>
+            <span class="tips-gotcha__fix">Set GEMINI_API_KEY for all non-interactive and automated use.</span>
+          </div>
+          <div class="tips-gotcha">
+            <span class="tips-gotcha__skull">☠️</span>
+            <div class="tips-gotcha__title">--yolo on production systems</div>
+            <p class="tips-gotcha__desc">--yolo skips all confirmations. On a live system, this can execute destructive commands without a prompt to stop you.</p>
+            <span class="tips-gotcha__fix">--yolo is for local dev only. Never on shared or production infrastructure.</span>
+          </div>
+          <div class="tips-gotcha">
+            <span class="tips-gotcha__skull">☠️</span>
+            <div class="tips-gotcha__title">Forgetting to exclude node_modules</div>
+            <p class="tips-gotcha__desc">Piping your whole repo including node_modules will blow your token budget on irrelevant vendor code.</p>
+            <span class="tips-gotcha__fix">Always use -not -path "*/node_modules/*" in your find commands.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 3: COMMAND REFERENCE ══ -->
+    <section class="guide-section" id="reference">
+      <div class="guide-section__header">
+        <span class="guide-section__num">03</span>
+        <span class="guide-section__icon">📋</span>
+        <h2 class="guide-section__title">Command Reference</h2>
+        <span class="guide-section__sub">Flags and workflows</span>
+      </div>
+
+      <div class="guide-ref-grid">
+        {cliFlags.length > 0 && (
+          <div class="guide-ref-panel">
+            <div class="guide-ref-panel__title">CLI Flags</div>
+            {cliFlags.map((flag: any) => (
+              <div class="guide-ref-item">
+                <span class="guide-ref-item__key">{flag.flag || flag.command}</span>
+                <span class="guide-ref-item__desc">{flag.description}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        {dailyWorkflows.length > 0 && (
+          <div class="guide-ref-panel">
+            <div class="guide-ref-panel__title">Daily Workflows</div>
+            {dailyWorkflows.map((wf: any) => (
+              <div class="guide-ref-item">
+                <span class="guide-ref-item__key" style="min-width: 0; font-size: 0.68rem;">{wf.title}</span>
+                <span class="guide-ref-item__desc">{wf.command || wf.description}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        {powerMoves.length > 0 && (
+          <div class="guide-ref-panel">
+            <div class="guide-ref-panel__title">⚡ Power Moves</div>
+            {powerMoves.map((pm: any) => (
+              <div class="guide-ref-item">
+                <span class="guide-ref-item__key" style="min-width: 0; font-size: 0.68rem;">{pm.title}</span>
+                <span class="guide-ref-item__desc">{pm.command || pm.description}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      {cliFlags.length === 0 && dailyWorkflows.length === 0 && (
+        <p style="font-family: var(--tool-font-mono); font-size: 0.8rem; color: var(--tool-text-muted);">$ cheatsheet data not available</p>
+      )}
+    </section>
+
+    <!-- ══ 4: RECENT RELEASES ══ -->
+    <section class="guide-section" id="releases">
+      <div class="guide-section__header">
+        <span class="guide-section__num">04</span>
+        <span class="guide-section__icon">🔔</span>
+        <h2 class="guide-section__title">Recent Releases</h2>
+        <span class="guide-section__sub">Latest {releases.length} versions</span>
+      </div>
+
+      {releases.length > 0 ? (
+        <>
+          <div class="guide-releases">
+            {releases.map((r) => {
+              const breaking = isBreaking(r.body);
+              return (
+                <a href={r.url} target="_blank" rel="noopener noreferrer" class="guide-release">
+                  <span class="guide-release__version">v{r.version}</span>
+                  {r.name && <span class="guide-release__name">{r.name}</span>}
+                  {breaking && <span class="guide-release__badge guide-release__badge--breaking">Breaking</span>}
+                  {r.prerelease && <span class="guide-release__badge guide-release__badge--pre">Pre</span>}
+                  <span class="guide-release__date">{formatDate(r.date)}</span>
+                </a>
+              );
+            })}
+          </div>
+          <div class="guide-releases__more">
+            <a href="/gemini-cli/releases/" class="guide-releases__more-link">All releases ↗</a>
+          </div>
+        </>
+      ) : (
+        <p style="font-family: var(--tool-font-mono); font-size: 0.8rem; color: var(--tool-text-muted);">$ no releases tracked yet</p>
+      )}
+    </section>
+
+  </div>
+
+  <script is:inline>
+    document.querySelectorAll('.qs-cmd').forEach(function(block) {
+      var btn = document.createElement('button');
+      btn.className = 'qs-cmd__copy';
+      btn.textContent = 'copy';
+      btn.addEventListener('click', function() {
+        var code = block.querySelector('code');
+        if (!code) return;
+        var text = code.textContent.replace(/^\$\s*/, '').trim();
+        navigator.clipboard.writeText(text).then(function() {
+          btn.textContent = 'copied!';
+          setTimeout(function() { btn.textContent = 'copy'; }, 1500);
+        });
+      });
+      block.style.paddingRight = '5rem';
+      block.appendChild(btn);
+    });
+    var sections = document.querySelectorAll('.guide-section[id]');
+    var tocLinks = document.querySelectorAll('.guide-toc__link');
+    function updateToc() {
+      var scrollY = window.scrollY + 160;
+      var current = '';
+      sections.forEach(function(s) { if (s.offsetTop <= scrollY) current = s.id; });
+      tocLinks.forEach(function(link) {
+        link.classList.toggle('guide-toc__link--active', link.getAttribute('href') === '#' + current);
+      });
+    }
+    window.addEventListener('scroll', updateToc, { passive: true });
+    updateToc();
+  </script>
+</GeminiLayout>

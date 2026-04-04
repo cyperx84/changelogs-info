@@ -20,9 +20,7 @@ export const SECTIONS: Section[] = [
     colorRgb: "255, 51, 51",
     subNav: [
       { label: "Changelog", href: "/openclaw/changelog/" },
-      { label: "Cheatsheet", href: "/openclaw/cheatsheet/" },
-      { label: "Configs", href: "/openclaw/configs/" },
-      { label: "Releases", href: "/openclaw/releases/" },
+      { label: "Guide", href: "/openclaw/guide/" },
     ],
   },
   {
@@ -35,9 +33,7 @@ export const SECTIONS: Section[] = [
     colorRgb: "255, 184, 0",
     subNav: [
       { label: "Changelog", href: "/claude-code/changelog/" },
-      { label: "Cheatsheet", href: "/claude-code/cheatsheet/" },
-      { label: "Configs", href: "/claude-code/configs/" },
-      { label: "Releases", href: "/claude-code/releases/" },
+      { label: "Guide", href: "/claude-code/guide/" },
     ],
   },
   {
@@ -50,9 +46,7 @@ export const SECTIONS: Section[] = [
     colorRgb: "51, 255, 51",
     subNav: [
       { label: "Changelog", href: "/codex-cli/changelog/" },
-      { label: "Cheatsheet", href: "/codex-cli/cheatsheet/" },
-      { label: "Configs", href: "/codex-cli/configs/" },
-      { label: "Releases", href: "/codex-cli/releases/" },
+      { label: "Guide", href: "/codex-cli/guide/" },
     ],
   },
   {

@@ -28,7 +28,7 @@ export interface ToolReleases {
 
 export const FEATURED_TOOLS: string[] = [];
 
-export const CLWATCH_TOOLS = ['claude-code', 'codex-cli', 'gemini-cli', 'opencode', 'openclaw', 'kilocode', 'hermes-agent', 'cline', 'cursor', 'windsurf', 'roo-code'];
+export const CLWATCH_TOOLS = ['claude-code', 'codex-cli', 'gemini-cli', 'openclaw', 'kilocode', 'hermes-agent'];
 
 export function isFeatured(_toolId: string): boolean {
   return false;
@@ -36,7 +36,7 @@ export function isFeatured(_toolId: string): boolean {
 
 export function getTools(): Tool[] {
   const tools = toolsData as Tool[];
-  const priority: Record<string, number> = { 'openclaw': 0, 'claude-code': 1, 'codex-cli': 2, 'gemini-cli': 3, 'opencode': 4, 'kilocode': 5, 'hermes-agent': 6 };
+  const priority: Record<string, number> = { 'openclaw': 0, 'claude-code': 1, 'codex-cli': 2, 'gemini-cli': 3, 'kilocode': 4, 'hermes-agent': 5 };
   return tools.sort((a, b) => {
     const pa = priority[a.id] ?? 3;
     const pb = priority[b.id] ?? 3;

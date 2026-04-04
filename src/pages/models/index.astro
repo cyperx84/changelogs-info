@@ -1,16 +1,9 @@
 ---
 import HubLayout from "../../layouts/HubLayout.astro";
 import "../../styles/models-vars.css";
-import { formatDate, formatPrice, formatTokenCount, loadModelsData, providerSlug } from "../../lib/models";
+import { formatDate, formatPrice, loadModelsData, providerSlug } from "../../lib/models";
 
-const {
-  featured,
-  models,
-  providers,
-  statuses,
-  types,
-  stats,
-} = loadModelsData();
+const { models, providers, types, statuses, stats } = loadModelsData();
 
 const brandColors: Record<string, string> = {
   Anthropic: "#ffb800",
@@ -43,986 +36,654 @@ const statusColors: Record<string, string> = {
   deprecated: "#ef4444",
 };
 
-function contextBucket(tokens: number | null): string {
-  if (tokens == null) return "unknown";
-  if (tokens <= 128_000) return "0-128k";
-  if (tokens <= 512_000) return "129k-512k";
-  if (tokens <= 1_000_000) return "513k-1m";
-  return "gt-1m";
-}
-
-function outputBucket(tokens: number | null): string {
-  if (tokens == null) return "unknown";
-  if (tokens <= 8_000) return "0-8k";
-  if (tokens <= 32_000) return "9k-32k";
-  if (tokens <= 64_000) return "33k-64k";
-  return "gt-64k";
-}
+const modelsByProvider = providers.map((provider) => ({
+  provider,
+  color: brandColors[provider] || "#a855f7",
+  models: models.filter((m) => m.provider === provider),
+}));
 
 function pricingSummary(model: (typeof models)[number]): string {
-  if (!model.primaryPrice) {
-    return "No listed pricing";
-  }
-  const source = model.pricingSource === "provider" ? "API" : "OpenRouter";
-  return `${formatPrice(model.inputPrice)} / ${formatPrice(model.outputPrice)} per 1M tok • ${source}`;
+  if (!model.primaryPrice) return "—";
+  return `$${formatPrice(model.inputPrice)} / $${formatPrice(model.outputPrice)}`;
 }
 ---
 
 <HubLayout
   title="Models - changelogs.info"
-  description="Search, sort, and filter AI models across providers with lifecycle signals, pricing transparency, and release intelligence."
+  description="AI model directory — search and filter models across providers with pricing, context windows, and lifecycle state."
   currentSection="models"
 >
-  <section class="models-hero">
-    <div class="models-hero__eyebrow">
-      <span class="models-hero__dot"></span>
-      AI model directory
-    </div>
-    <div class="models-hero__grid">
-      <div class="models-hero__copy">
-        <h1 class="models-hero__title">Global model directory</h1>
-        <p class="models-hero__sub">
-          Search every tracked model across providers, compare lifecycle state, and make faster decisions without pretending the data is cleaner than it is.
+  <!-- Header -->
+  <div class="md-header">
+    <div class="md-header__inner">
+      <div class="md-header__copy">
+        <h1 class="md-header__title">AI Model Directory</h1>
+        <p class="md-header__sub">
+          {stats.totalModels} models across {stats.totalProviders} providers
+          · {stats.activeCount} live or preview · <a href="/models/changelog/" class="md-header__link">timeline →</a>
         </p>
-        <div class="models-hero__actions">
-          <a href="#directory" class="models-btn">Browse directory</a>
-          <a href="/models/changelog/" class="models-btn models-btn--ghost">Model timeline</a>
-        </div>
       </div>
-
-      <div class="models-hero__stats">
-        <div class="models-stat">
-          <span class="models-stat__value">{stats.totalModels}</span>
-          <span class="models-stat__label">tracked models</span>
-        </div>
-        <div class="models-stat">
-          <span class="models-stat__value">{stats.totalProviders}</span>
-          <span class="models-stat__label">providers</span>
-        </div>
-        <div class="models-stat">
-          <span class="models-stat__value">{stats.activeCount}</span>
-          <span class="models-stat__label">live or preview</span>
-        </div>
-        <div class="models-stat">
-          <span class="models-stat__value">{stats.upcomingDeprecations}</span>
-          <span class="models-stat__label">scheduled retirements</span>
-        </div>
+      <div class="md-header__stats">
+        <div class="md-stat"><span class="md-stat__n">{stats.totalModels}</span><span class="md-stat__l">models</span></div>
+        <div class="md-stat"><span class="md-stat__n">{stats.totalProviders}</span><span class="md-stat__l">providers</span></div>
+        <div class="md-stat"><span class="md-stat__n">{stats.activeCount}</span><span class="md-stat__l">live</span></div>
       </div>
     </div>
-  </section>
+  </div>
 
-  <section class="models-section">
-    <div class="models-section__head">
-      <div>
-        <div class="models-label">// decision_intelligence</div>
-        <h2 class="models-section__title">Shortlist picks</h2>
-      </div>
-      <p class="models-section__note">
-        Heuristic picks from structured metadata - not benchmark winners. Pricing source and alternatives shown on each card.
-      </p>
-    </div>
-
-    <div class="featured-grid">
-      {featured.map((pick) => {
-        const model = pick.model;
-        const accent = model ? brandColors[model.provider] || "#a855f7" : "#a855f7";
-        return (
-          <article class="featured-card" style={`--accent:${accent};`}>
-            <div class="featured-card__top">
-              <div>
-                <p class="featured-card__kicker">{pick.subtitle}</p>
-                <h3 class="featured-card__title">{pick.title}</h3>
-              </div>
-              {model && <span class="featured-card__provider">{model.provider}</span>}
-            </div>
-
-            {model ? (
-              <>
-                <div class="featured-card__model">{model.name}</div>
-                <p class="featured-card__why">{pick.rationale}</p>
-                <div class="featured-card__facts">
-                  <span>{model.type}</span>
-                  <span>{model.context ?? "ctx unknown"}</span>
-                  <span>{model.max_output ?? "output unknown"}</span>
-                  <span>{pricingSummary(model)}</span>
-                </div>
-                {pick.alternatives.length > 0 && (
-                  <p class="featured-card__alts">Also worth a look: {pick.alternatives.join(", ")}</p>
-                )}
-              </>
-            ) : (
-              <p class="featured-card__why">No model in the current dataset satisfies this slot yet.</p>
-            )}
-          </article>
-        );
-      })}
-    </div>
-  </section>
-
-  <section class="models-section" id="directory">
-    <div class="models-section__head">
-      <div>
-        <div class="models-label">// directory</div>
-        <h2 class="models-section__title">Searchable model index</h2>
-      </div>
-      <div class="directory-summary">
-        <span id="models-count">{models.length}</span>
-        <span>models shown</span>
-      </div>
-    </div>
-
-    <div class="controls-shell">
-      <div class="controls-row controls-row--top">
-        <label class="control-search">
-          <span class="control-search__label">search</span>
-          <input
-            id="models-search"
-            class="control-search__input"
-            type="search"
-            placeholder="name, provider, api id, notes, lineage..."
-          />
-        </label>
-
-        <label class="control-select">
-          <span class="control-search__label">sort</span>
-          <select id="models-sort" class="control-select__input">
-            <option value="recommended">Recommended</option>
-            <option value="newest">Newest release</option>
-            <option value="oldest">Oldest release</option>
-            <option value="context">Longest context</option>
-            <option value="output">Largest output</option>
-            <option value="cheapest-total">Cheapest total price</option>
-            <option value="cheapest-input">Cheapest input price</option>
-            <option value="provider">Provider A-Z</option>
-            <option value="name">Name A-Z</option>
-          </select>
-        </label>
-
-        <button id="models-reset" class="models-btn models-btn--ghost models-btn--small" type="button">Reset filters</button>
+  <!-- Controls -->
+  <div class="md-controls">
+    <div class="md-controls__inner">
+      <div class="md-search-row">
+        <input
+          id="md-search"
+          class="md-search"
+          type="search"
+          placeholder="Search models, IDs, providers..."
+          autocomplete="off"
+        />
+        <select id="md-sort" class="md-select">
+          <option value="recommended">Recommended</option>
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+          <option value="context">Longest context</option>
+          <option value="cheapest">Cheapest input</option>
+          <option value="name">Name A–Z</option>
+        </select>
+        <button id="md-reset" class="md-reset-btn" type="button">Reset</button>
+        <span class="md-count"><span id="md-visible-count">{models.length}</span> shown</span>
       </div>
 
-      <div class="filter-group">
-        <span class="filter-group__label">Provider</span>
-        <div class="chip-row" data-group="provider">
-          {providers.map((provider) => (
-            <button class="filter-chip" type="button" data-group="provider" data-value={provider}>{provider}</button>
-          ))}
-        </div>
-      </div>
-
-      <div class="filter-group">
-        <span class="filter-group__label">Lifecycle</span>
-        <div class="chip-row" data-group="status">
-          {statuses.map((status) => (
-            <button class="filter-chip" type="button" data-group="status" data-value={status}>{status}</button>
-          ))}
-        </div>
-      </div>
-
-      <div class="filter-group">
-        <span class="filter-group__label">Type</span>
-        <div class="chip-row" data-group="type">
-          {types.map((type) => (
-            <button class="filter-chip" type="button" data-group="type" data-value={type}>{type}</button>
-          ))}
-        </div>
-      </div>
-
-      <div class="filters-grid">
-        <div class="filter-group">
-          <span class="filter-group__label">Vision</span>
-          <div class="chip-row chip-row--compact">
-            <button class="filter-chip is-active" type="button" data-boolean="vision" data-value="any">Any</button>
-            <button class="filter-chip" type="button" data-boolean="vision" data-value="yes">Yes</button>
-            <button class="filter-chip" type="button" data-boolean="vision" data-value="no">No</button>
+      <div class="md-filter-row">
+        <div class="md-filter-group">
+          <span class="md-filter-label">Provider</span>
+          <div class="md-chips" data-group="provider">
+            {providers.map((p) => (
+              <button class="md-chip" data-group="provider" data-value={p} type="button"
+                style={`--chip-color:${brandColors[p] || "#a855f7"}`}>{p}</button>
+            ))}
           </div>
         </div>
 
-        <div class="filter-group">
-          <span class="filter-group__label">Function calling</span>
-          <div class="chip-row chip-row--compact">
-            <button class="filter-chip is-active" type="button" data-boolean="function" data-value="any">Any</button>
-            <button class="filter-chip" type="button" data-boolean="function" data-value="yes">Yes</button>
-            <button class="filter-chip" type="button" data-boolean="function" data-value="no">No</button>
+        <div class="md-filter-group">
+          <span class="md-filter-label">Type</span>
+          <div class="md-chips" data-group="type">
+            {types.map((t) => (
+              <button class="md-chip" data-group="type" data-value={t} type="button"
+                style={`--chip-color:${typeColors[t] || "#888"}`}>{t}</button>
+            ))}
           </div>
         </div>
 
-        <div class="filter-group">
-          <span class="filter-group__label">Pricing</span>
-          <div class="chip-row chip-row--compact">
-            <button class="filter-chip is-active" type="button" data-boolean="pricing" data-value="any">Any</button>
-            <button class="filter-chip" type="button" data-boolean="pricing" data-value="listed">Listed</button>
-            <button class="filter-chip" type="button" data-boolean="pricing" data-value="missing">Missing</button>
-          </div>
-        </div>
-
-        <div class="filter-group">
-          <span class="filter-group__label">Context</span>
-          <div class="chip-row chip-row--compact">
-            <button class="filter-chip is-active" type="button" data-boolean="context" data-value="any">Any</button>
-            <button class="filter-chip" type="button" data-boolean="context" data-value="0-128k">≤128K</button>
-            <button class="filter-chip" type="button" data-boolean="context" data-value="129k-512k">129K-512K</button>
-            <button class="filter-chip" type="button" data-boolean="context" data-value="513k-1m">513K-1M</button>
-            <button class="filter-chip" type="button" data-boolean="context" data-value="gt-1m">{">"}1M</button>
-            <button class="filter-chip" type="button" data-boolean="context" data-value="unknown">Unknown</button>
-          </div>
-        </div>
-
-        <div class="filter-group">
-          <span class="filter-group__label">Output</span>
-          <div class="chip-row chip-row--compact">
-            <button class="filter-chip is-active" type="button" data-boolean="output" data-value="any">Any</button>
-            <button class="filter-chip" type="button" data-boolean="output" data-value="0-8k">≤8K</button>
-            <button class="filter-chip" type="button" data-boolean="output" data-value="9k-32k">9K-32K</button>
-            <button class="filter-chip" type="button" data-boolean="output" data-value="33k-64k">33K-64K</button>
-            <button class="filter-chip" type="button" data-boolean="output" data-value="gt-64k">{">"}64K</button>
-            <button class="filter-chip" type="button" data-boolean="output" data-value="unknown">Unknown</button>
+        <div class="md-filter-group">
+          <span class="md-filter-label">Status</span>
+          <div class="md-chips" data-group="status">
+            {statuses.map((s) => (
+              <button class="md-chip" data-group="status" data-value={s} type="button"
+                style={`--chip-color:${statusColors[s] || "#888"}`}>{s}</button>
+            ))}
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="cards-grid" id="models-grid">
-      {models.map((model, index) => {
-        const accent = brandColors[model.provider] || "#a855f7";
-        return (
-          <article
-            class="model-card"
-            style={`--accent:${accent};--type:${typeColors[model.type] || "#888"};--status:${statusColors[model.status] || "#888"};`}
-            data-rank={index}
-            data-name={model.name.toLowerCase()}
-            data-provider={model.provider}
-            data-status={model.status}
-            data-type={model.type}
-            data-vision={model.vision ? "yes" : "no"}
-            data-function={model.function_calling ? "yes" : "no"}
-            data-pricing={model.primaryPrice ? "listed" : "missing"}
-            data-context={contextBucket(model.contextTokens)}
-            data-output={outputBucket(model.outputTokens)}
-            data-released={model.releaseTs}
-            data-context-value={model.contextTokens ?? -1}
-            data-output-value={model.outputTokens ?? -1}
-            data-total-price={model.totalPrice ?? 999999}
-            data-input-price={model.inputPrice ?? 999999}
-            data-search={model.searchText}
-          >
-            <div class="model-card__head">
-              <div>
-                <div class="model-card__provider">{model.provider}</div>
-                <h3 class="model-card__name">{model.name}</h3>
-              </div>
-              <div class="model-card__badges">
-                <span class="model-pill model-pill--status">{model.status}</span>
-                <span class="model-pill model-pill--type">{model.type}</span>
-              </div>
-            </div>
+  <!-- Directory: grouped by provider -->
+  <div class="md-directory" id="md-directory">
+    {modelsByProvider.map(({ provider, color, models: providerModels }) => (
+      <section class="md-provider-group" data-provider={provider} id={`provider-${providerSlug(provider)}`}>
+        <header class="md-provider-head" style={`--pcolor:${color}`}>
+          <span class="md-provider-dot"></span>
+          <h2 class="md-provider-name">{provider}</h2>
+          <a href={`/models/${providerSlug(provider)}/`} class="md-provider-link">
+            All {provider} models →
+          </a>
+        </header>
 
-            <p class="model-card__desc">{model.description ?? model.notes ?? "No description yet."}</p>
-
-            <div class="model-card__metrics">
-              <div class="metric">
-                <span class="metric__label">Context</span>
-                <span class="metric__value">{model.context ?? "Unknown"}</span>
-              </div>
-              <div class="metric">
-                <span class="metric__label">Max output</span>
-                <span class="metric__value">{model.max_output ?? "Unknown"}</span>
-              </div>
-              <div class="metric">
-                <span class="metric__label">Pricing /1M tok</span>
-                <span class="metric__value">{pricingSummary(model)}</span>
-              </div>
-              <div class="metric">
-                <span class="metric__label">Released</span>
-                <span class="metric__value">{formatDate(model.released)}</span>
-              </div>
-            </div>
-
-            <div class="model-card__meta">
-              <span>API: <code>{model.api_id}</code></span>
-              <span>Vision: {model.vision ? "Yes" : "No"}</span>
-              <span>Functions: {model.function_calling ? "Yes" : "No"}</span>
-              <span>Cutoff: {model.knowledge_cutoff ?? "Unknown"}</span>
-            </div>
-
-            {(model.predecessor || model.successor || model.deprecated_date) && (
-              <div class="lineage-box">
-                <div class="lineage-box__label">Lifecycle</div>
-                <div class="lineage-box__items">
-                  {model.predecessor && <span>Predecessor: <code>{model.predecessor}</code></span>}
-                  {model.successor && <span>Successor: <code>{model.successor}</code></span>}
-                  {model.deprecated_date && <span>Retires: {formatDate(model.deprecated_date)}</span>}
+        <div class="md-model-grid">
+          {providerModels.map((model, idx) => (
+            <article
+              class="md-card"
+              style={`--accent:${color};--type-color:${typeColors[model.type] || "#888"};--status-color:${statusColors[model.status] || "#888"};`}
+              data-provider={model.provider}
+              data-type={model.type}
+              data-status={model.status}
+              data-search={model.searchText}
+              data-released={model.releaseTs}
+              data-context-value={model.contextTokens ?? -1}
+              data-input-price={model.inputPrice ?? 999999}
+              data-rank={idx}
+            >
+              <div class="md-card__top">
+                <div class="md-card__badges">
+                  <span class="md-badge md-badge--type">{model.type}</span>
+                  <span class="md-badge md-badge--status">{model.status}</span>
                 </div>
               </div>
-            )}
 
-            <div class="model-card__provider-link">
-              <a href={`/models/${providerSlug(model.provider)}/`} class="provider-link">
-                All {model.provider} models →
-              </a>
-            </div>
-          </article>
-        );
-      })}
+              <h3 class="md-card__name">{model.name}</h3>
+              <code class="md-card__id">{model.api_id}</code>
+
+              <div class="md-card__row">
+                <span class="md-card__fact">
+                  <span class="md-fact-label">Context</span>
+                  <span class="md-fact-val">{model.context ?? "—"}</span>
+                </span>
+                <span class="md-card__fact">
+                  <span class="md-fact-label">Output</span>
+                  <span class="md-fact-val">{model.max_output ?? "—"}</span>
+                </span>
+                <span class="md-card__fact">
+                  <span class="md-fact-label">Pricing /1M</span>
+                  <span class="md-fact-val">{pricingSummary(model)}</span>
+                </span>
+              </div>
+
+              {model.description && (
+                <p class="md-card__desc">{model.description}</p>
+              )}
+
+              <div class="md-card__foot">
+                <span class="md-card__date">Released {formatDate(model.released)}</span>
+                {model.vision && <span class="md-card__cap">Vision</span>}
+                {model.function_calling && <span class="md-card__cap">Functions</span>}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    ))}
+
+    <div id="md-empty" class="md-empty" hidden>
+      <p>No models match — try broadening your filters or clearing search.</p>
+      <button class="md-reset-btn" onclick="document.getElementById('md-reset').click()">Clear filters</button>
     </div>
-
-    <div id="models-empty" class="empty-state" hidden>
-      <h3>No models match the current filters.</h3>
-      <p>Loosen one of the capability or lifecycle filters, or clear search and start broader.</p>
-    </div>
-  </section>
-
+  </div>
 </HubLayout>
 
 <script is:inline>
-  (function () {
-    const grid = document.getElementById("models-grid");
-    const count = document.getElementById("models-count");
-    const empty = document.getElementById("models-empty");
-    const searchInput = document.getElementById("models-search");
-    const sortSelect = document.getElementById("models-sort");
-    const resetButton = document.getElementById("models-reset");
+(function () {
+  const searchInput = document.getElementById("md-search");
+  const sortSelect = document.getElementById("md-sort");
+  const resetBtn = document.getElementById("md-reset");
+  const countEl = document.getElementById("md-visible-count");
+  const emptyEl = document.getElementById("md-empty");
 
-    if (!grid || !count || !empty || !searchInput || !sortSelect || !resetButton) {
-      return;
-    }
+  if (!searchInput || !sortSelect || !resetBtn) return;
 
-    const cards = Array.from(grid.querySelectorAll(".model-card"));
-    const state = {
-      search: "",
-      sort: "recommended",
-      provider: new Set(),
-      status: new Set(),
-      type: new Set(),
-      vision: "any",
-      function: "any",
-      pricing: "any",
-      context: "any",
-      output: "any",
-    };
+  const state = {
+    search: "",
+    sort: "recommended",
+    provider: new Set(),
+    type: new Set(),
+    status: new Set(),
+  };
 
-    function sortCards(items) {
-      const sorted = [...items];
-      sorted.sort((a, b) => {
-        const aName = a.dataset.name || "";
-        const bName = b.dataset.name || "";
-        const aProvider = a.dataset.provider || "";
-        const bProvider = b.dataset.provider || "";
-        const numeric = (node, key) => Number(node.dataset[key] || 0);
+  const allCards = Array.from(document.querySelectorAll(".md-card"));
 
+  function applyFilters() {
+    const q = state.search.trim().toLowerCase();
+    let visible = 0;
+
+    allCards.forEach((card) => {
+      const show =
+        (!q || (card.dataset.search || "").includes(q)) &&
+        (state.provider.size === 0 || state.provider.has(card.dataset.provider)) &&
+        (state.type.size === 0 || state.type.has(card.dataset.type)) &&
+        (state.status.size === 0 || state.status.has(card.dataset.status));
+
+      card.hidden = !show;
+      if (show) visible++;
+    });
+
+    // Show/hide provider group headers
+    document.querySelectorAll(".md-provider-group").forEach((group) => {
+      const anyVisible = group.querySelector(".md-card:not([hidden])");
+      group.hidden = !anyVisible;
+    });
+
+    if (countEl) countEl.textContent = String(visible);
+    if (emptyEl) emptyEl.hidden = visible > 0;
+  }
+
+  function sortCards() {
+    document.querySelectorAll(".md-model-grid").forEach((grid) => {
+      const cards = Array.from(grid.querySelectorAll(".md-card"));
+      cards.sort((a, b) => {
+        const num = (el, key) => Number(el.dataset[key] || 0);
         switch (state.sort) {
-          case "newest":
-            return numeric(b, "released") - numeric(a, "released") || aName.localeCompare(bName);
-          case "oldest":
-            return numeric(a, "released") - numeric(b, "released") || aName.localeCompare(bName);
-          case "context":
-            return numeric(b, "contextValue") - numeric(a, "contextValue") || aName.localeCompare(bName);
-          case "output":
-            return numeric(b, "outputValue") - numeric(a, "outputValue") || aName.localeCompare(bName);
-          case "cheapest-total":
-            return numeric(a, "totalPrice") - numeric(b, "totalPrice") || aName.localeCompare(bName);
-          case "cheapest-input":
-            return numeric(a, "inputPrice") - numeric(b, "inputPrice") || aName.localeCompare(bName);
-          case "provider":
-            return aProvider.localeCompare(bProvider) || aName.localeCompare(bName);
-          case "name":
-            return aName.localeCompare(bName);
-          default:
-            return numeric(a, "rank") - numeric(b, "rank");
+          case "newest": return num(b, "released") - num(a, "released");
+          case "oldest": return num(a, "released") - num(b, "released");
+          case "context": return num(b, "contextValue") - num(a, "contextValue");
+          case "cheapest": return num(a, "inputPrice") - num(b, "inputPrice");
+          case "name": return (a.querySelector(".md-card__name")?.textContent || "").localeCompare(b.querySelector(".md-card__name")?.textContent || "");
+          default: return num(a, "rank") - num(b, "rank");
         }
       });
-
-      sorted.forEach((card) => grid.appendChild(card));
-    }
-
-    function matchesSetFilter(set, value) {
-      return set.size === 0 || set.has(value);
-    }
-
-    function applyFilters() {
-      const query = state.search.trim().toLowerCase();
-      let visible = 0;
-      const visibleCards = [];
-
-      cards.forEach((card) => {
-        const matches =
-          (!query || (card.dataset.search || "").includes(query)) &&
-          matchesSetFilter(state.provider, card.dataset.provider) &&
-          matchesSetFilter(state.status, card.dataset.status) &&
-          matchesSetFilter(state.type, card.dataset.type) &&
-          (state.vision === "any" || card.dataset.vision === state.vision) &&
-          (state.function === "any" || card.dataset.function === state.function) &&
-          (state.pricing === "any" || card.dataset.pricing === state.pricing) &&
-          (state.context === "any" || card.dataset.context === state.context) &&
-          (state.output === "any" || card.dataset.output === state.output);
-
-        card.hidden = !matches;
-        if (matches) {
-          visible += 1;
-          visibleCards.push(card);
-        }
-      });
-
-      sortCards(visibleCards);
-      count.textContent = String(visible);
-      empty.hidden = visible !== 0;
-    }
-
-    function toggleSetFilter(group, value) {
-      if (state[group].has(value)) {
-        state[group].delete(value);
-      } else {
-        state[group].add(value);
-      }
-      applyFilters();
-    }
-
-    searchInput.addEventListener("input", (event) => {
-      const target = event.target;
-      if (!(target instanceof HTMLInputElement)) {
-        return;
-      }
-      state.search = target.value;
-      applyFilters();
+      cards.forEach((c) => grid.appendChild(c));
     });
+  }
 
-    sortSelect.addEventListener("change", (event) => {
-      const target = event.target;
-      if (!(target instanceof HTMLSelectElement)) {
-        return;
-      }
-      state.sort = target.value;
-      applyFilters();
-    });
-
-    document.addEventListener("click", (event) => {
-      const target = event.target;
-      if (!(target instanceof Element)) {
-        return;
-      }
-
-      const button = target.closest(".filter-chip");
-      if (!button) {
-        return;
-      }
-
-      const group = button.dataset.group;
-      const booleanGroup = button.dataset.boolean;
-      const value = button.dataset.value;
-
-      if (group && value) {
-        button.classList.toggle("is-active");
-        toggleSetFilter(group, value);
-        return;
-      }
-
-      if (booleanGroup && value) {
-        document
-          .querySelectorAll(`.filter-chip[data-boolean="${booleanGroup}"]`)
-          .forEach((node) => node.classList.remove("is-active"));
-        button.classList.add("is-active");
-        state[booleanGroup] = value;
-        applyFilters();
-      }
-    });
-
-    resetButton.addEventListener("click", () => {
-      state.search = "";
-      state.sort = "recommended";
-      state.provider.clear();
-      state.status.clear();
-      state.type.clear();
-      state.vision = "any";
-      state.function = "any";
-      state.pricing = "any";
-      state.context = "any";
-      state.output = "any";
-
-      searchInput.value = "";
-      sortSelect.value = "recommended";
-      document.querySelectorAll(".filter-chip").forEach((node) => {
-        const isBooleanAny = node.dataset.boolean && node.dataset.value === "any";
-        node.classList.toggle("is-active", Boolean(isBooleanAny));
-      });
-      applyFilters();
-    });
-
+  function update() {
+    sortCards();
     applyFilters();
-  })();
+  }
+
+  searchInput.addEventListener("input", (e) => {
+    state.search = e.target.value;
+    update();
+  });
+
+  sortSelect.addEventListener("change", (e) => {
+    state.sort = e.target.value;
+    update();
+  });
+
+  document.addEventListener("click", (e) => {
+    const chip = e.target.closest(".md-chip");
+    if (!chip) return;
+    const group = chip.dataset.group;
+    const val = chip.dataset.value;
+    if (!group || !val) return;
+
+    chip.classList.toggle("md-chip--active");
+    if (state[group].has(val)) state[group].delete(val);
+    else state[group].add(val);
+    update();
+  });
+
+  resetBtn.addEventListener("click", () => {
+    state.search = "";
+    state.sort = "recommended";
+    state.provider.clear();
+    state.type.clear();
+    state.status.clear();
+    searchInput.value = "";
+    sortSelect.value = "recommended";
+    document.querySelectorAll(".md-chip--active").forEach((c) => c.classList.remove("md-chip--active"));
+    update();
+  });
+
+  update();
+})();
 </script>
 
 <style is:global>
-  .models-hero,
-  .models-section {
+  /* ── Layout shell ── */
+  .md-header,
+  .md-controls,
+  .md-directory {
     max-width: 1280px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 1.5rem;
   }
 
-  .models-hero {
-    padding-top: 4.5rem;
-    padding-bottom: 2rem;
+  /* ── Header ── */
+  .md-header {
+    padding-top: 3.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--models-border);
+    margin-bottom: 0;
   }
-
-  .models-hero__eyebrow,
-  .models-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-family: var(--hub-font-mono);
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--models-accent);
-  }
-
-  .models-hero__dot {
-    width: 8px;
-    height: 8px;
-    background: var(--models-accent);
-  }
-
-  .models-hero__grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.85fr);
-    gap: 1.5rem;
-    margin-top: 1.5rem;
-  }
-
-  .models-hero__copy,
-  .models-hero__stats,
-  .featured-card,
-  .controls-shell,
-  .model-card {
-    border: 4px solid var(--models-border);
-    background: var(--models-card);
-    box-shadow: var(--models-shadow);
-  }
-
-  .models-hero__copy {
-    padding: 2rem;
-    background:
-      linear-gradient(135deg, rgba(0, 145, 247, 0.14), transparent 55%),
-      linear-gradient(0deg, var(--models-card), var(--models-card));
-  }
-
-  .models-hero__title {
-    font-family: var(--hub-font-head);
-    font-size: clamp(3rem, 7vw, 5.5rem);
-    line-height: 0.95;
-    letter-spacing: -0.05em;
-    margin-top: 1rem;
-  }
-
-  .models-hero__sub,
-  .models-section__note,
-  .model-card__desc,
-  .featured-card__why,
-  .empty-state p {
-    color: var(--models-text-dim);
-    font-size: 1rem;
-    line-height: 1.7;
-  }
-
-  .models-hero__actions {
+  .md-header__inner {
     display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
     flex-wrap: wrap;
-    gap: 0.9rem;
-    margin-top: 1.5rem;
+    gap: 1rem;
   }
-
-  .models-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 48px;
-    padding: 0.8rem 1.2rem;
-    border: 3px solid var(--models-border);
-    background: var(--models-accent);
-    color: #ffffff;
-    text-decoration: none;
+  .md-header__title {
+    font-family: var(--hub-font-headline);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 900;
+    color: var(--hub-text);
+    margin: 0 0 0.25rem;
+    letter-spacing: -0.02em;
+  }
+  .md-header__sub {
     font-family: var(--hub-font-mono);
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    cursor: pointer;
+    font-size: 0.8rem;
+    color: var(--hub-text-dim);
+    margin: 0;
   }
-
-  .models-btn--ghost {
-    background: transparent;
-    color: var(--models-text);
+  .md-header__link {
+    color: var(--models-accent);
+    text-decoration: none;
   }
-
-  .models-btn--small {
-    min-height: 42px;
-    padding: 0.65rem 1rem;
+  .md-header__link:hover { text-decoration: underline; }
+  .md-header__stats {
+    display: flex;
+    gap: 1.5rem;
+    flex-shrink: 0;
   }
-
-  .models-hero__stats {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1px;
-    padding: 1px;
-    background: var(--models-border);
-  }
-
-  .models-stat {
-    padding: 1.5rem;
-    background: var(--models-surface);
-    min-height: 145px;
+  .md-stat {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    align-items: flex-end;
+    gap: 0.1rem;
   }
-
-  .models-stat__value {
-    font-family: var(--hub-font-head);
-    font-size: clamp(2rem, 5vw, 3.2rem);
+  .md-stat__n {
+    font-family: var(--hub-font-headline);
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--models-accent);
     line-height: 1;
-    letter-spacing: -0.05em;
   }
-
-  .models-stat__label,
-  .filter-group__label,
-  .control-search__label,
-  .metric__label,
-  .lineage-box__label,
-  .confidence-box__label,
-  .featured-card__kicker,
-  .directory-summary,
-  .model-card__provider {
+  .md-stat__l {
     font-family: var(--hub-font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: 0.74rem;
-    color: var(--models-text-muted);
+    color: var(--hub-text-muted);
   }
 
-  .models-section {
+  /* ── Controls ── */
+  .md-controls {
+    position: sticky;
+    top: 56px;
+    z-index: 40;
+    background: var(--hub-bg);
+    border-bottom: 2px solid var(--models-border);
+    padding-top: 0.875rem;
+    padding-bottom: 0.875rem;
+  }
+  .md-controls__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .md-search-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .md-search {
+    flex: 1 1 240px;
+    min-width: 160px;
+    padding: 0.45rem 0.75rem;
+    background: var(--models-card);
+    border: 2px solid var(--models-border);
+    color: var(--hub-text);
+    font-family: var(--hub-font-mono);
+    font-size: 0.8rem;
+    outline: none;
+  }
+  .md-search:focus { border-color: var(--models-accent); }
+  .md-select {
+    padding: 0.45rem 0.6rem;
+    background: var(--models-card);
+    border: 2px solid var(--models-border);
+    color: var(--hub-text);
+    font-family: var(--hub-font-mono);
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
+  .md-reset-btn {
+    padding: 0.4rem 0.9rem;
+    background: transparent;
+    border: 2px solid var(--models-border);
+    color: var(--hub-text-dim);
+    font-family: var(--hub-font-mono);
+    font-size: 0.75rem;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .md-reset-btn:hover { border-color: var(--models-accent); color: var(--models-accent); }
+  .md-count {
+    font-family: var(--hub-font-mono);
+    font-size: 0.75rem;
+    color: var(--hub-text-muted);
+    white-space: nowrap;
+    margin-left: auto;
+  }
+  .md-filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+    align-items: flex-start;
+  }
+  .md-filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .md-filter-label {
+    font-family: var(--hub-font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--hub-text-muted);
+    white-space: nowrap;
+  }
+  .md-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+  .md-chip {
+    padding: 0.2rem 0.65rem;
+    border: 1.5px solid var(--models-border);
+    background: transparent;
+    color: var(--hub-text-dim);
+    font-family: var(--hub-font-mono);
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: border-color 100ms, color 100ms, background 100ms;
+    white-space: nowrap;
+  }
+  .md-chip:hover {
+    border-color: var(--chip-color, var(--models-accent));
+    color: var(--chip-color, var(--models-accent));
+  }
+  .md-chip--active {
+    background: var(--chip-color, var(--models-accent));
+    border-color: var(--chip-color, var(--models-accent));
+    color: #000;
+  }
+
+  /* ── Directory ── */
+  .md-directory {
     padding-top: 2rem;
-    padding-bottom: 1rem;
-  }
-
-  .models-section:last-of-type {
     padding-bottom: 4rem;
   }
 
-  .models-section__head {
+  /* ── Provider group ── */
+  .md-provider-group {
+    margin-bottom: 2.5rem;
+  }
+  .md-provider-head {
     display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    align-items: end;
-    margin-bottom: 1.25rem;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0;
+    border-bottom: 3px solid var(--pcolor);
+    margin-bottom: 1rem;
   }
-
-  .models-section__title {
-    font-family: var(--hub-font-head);
-    font-size: clamp(1.9rem, 4vw, 3rem);
-    letter-spacing: -0.04em;
-    line-height: 1;
-    margin-top: 0.45rem;
-  }
-
-  .featured-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-    gap: 1rem;
-  }
-
-  .featured-card {
-    padding: 1.35rem;
-  }
-
-  .featured-card {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .featured-card::before {
-    content: "";
-    position: absolute;
-    inset: 0 auto 0 0;
+  .md-provider-dot {
     width: 10px;
-    background: var(--accent);
+    height: 10px;
+    background: var(--pcolor);
+    border-radius: 50%;
+    flex-shrink: 0;
   }
-
-  .featured-card__top {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    align-items: start;
+  .md-provider-name {
+    font-family: var(--hub-font-headline);
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--hub-text);
+    margin: 0;
+    letter-spacing: -0.01em;
   }
-
-  .featured-card__title,
-  .empty-state h3 {
-    font-family: var(--hub-font-head);
-    font-size: 1.4rem;
-    line-height: 1;
-    letter-spacing: -0.03em;
-  }
-
-  .featured-card__provider,
-  .model-pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.3rem 0.55rem;
-    border: 2px solid var(--models-border);
-    background: var(--models-surface);
+  .md-provider-link {
+    margin-left: auto;
     font-family: var(--hub-font-mono);
-    font-size: 0.68rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    font-size: 0.7rem;
+    color: var(--pcolor);
+    text-decoration: none;
+    opacity: 0.7;
   }
+  .md-provider-link:hover { opacity: 1; }
 
-  .featured-card__model {
-    font-family: var(--hub-font-head);
-    font-size: 2rem;
-    letter-spacing: -0.04em;
-    margin-top: 1rem;
-  }
-
-  .featured-card__why,
-  .featured-card__alts {
-    margin-top: 0.8rem;
-  }
-
-  .featured-card__facts,
-  .lineage-box__items {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.9rem;
-  }
-
-  .featured-card__facts span,
-  .lineage-box__items span {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.3rem 0.55rem;
-    background: var(--models-surface);
-    border: 2px solid var(--models-border-dim);
-    font-size: 0.8rem;
-  }
-
-  .controls-shell {
-    padding: 1.25rem;
-  }
-
-  .controls-row--top {
+  /* ── Model card grid ── */
+  .md-model-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 240px auto;
-    gap: 1rem;
-    align-items: end;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1px;
+    border: 2px solid var(--models-border);
   }
 
-  .control-search,
-  .control-select {
+  /* ── Model card ── */
+  .md-card {
+    padding: 1rem;
+    background: var(--models-card);
+    border-right: 1px solid var(--models-border);
+    border-bottom: 1px solid var(--models-border);
     display: flex;
     flex-direction: column;
-    gap: 0.45rem;
-  }
-
-  .control-search__input,
-  .control-select__input {
-    min-height: 52px;
-    border: 3px solid var(--models-border);
-    background: var(--models-surface);
-    color: var(--models-text);
-    padding: 0.9rem 1rem;
-    font-family: var(--hub-font-mono);
-    font-size: 0.92rem;
-  }
-
-  .filter-group {
-    margin-top: 1rem;
-  }
-
-  .chip-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.55rem;
-    margin-top: 0.45rem;
-  }
-
-  .filters-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.8rem 1rem;
-  }
-
-  .filter-chip {
-    border: 2px solid var(--models-border);
-    background: var(--models-card);
-    color: var(--models-text);
-    padding: 0.5rem 0.75rem;
-    font-family: var(--hub-font-mono);
-    font-size: 0.76rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    cursor: pointer;
-  }
-
-  .filter-chip.is-active {
-    background: var(--models-accent);
-    color: #ffffff;
-  }
-
-  .directory-summary {
-    display: inline-flex;
-    gap: 0.5rem;
-    align-items: center;
-    padding: 0.55rem 0.8rem;
-    border: 2px solid var(--models-border);
-    background: var(--models-surface);
-  }
-
-  .cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-
-  .model-card {
-    padding: 1.25rem;
+    gap: 0.4rem;
     position: relative;
+    transition: background 120ms;
   }
-
-  .model-card::before {
+  .md-card:hover {
+    background: color-mix(in srgb, var(--accent) 6%, var(--models-card));
+  }
+  .md-card::before {
     content: "";
     position: absolute;
-    inset: 0 auto 0 0;
-    width: 8px;
+    top: 0; left: 0; right: 0;
+    height: 2px;
     background: var(--accent);
+    opacity: 0;
+    transition: opacity 120ms;
   }
+  .md-card:hover::before { opacity: 1; }
 
-  .model-card__head {
+  .md-card__top {
     display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    align-items: start;
-  }
-
-  .model-card__name {
-    font-family: var(--hub-font-head);
-    font-size: 1.8rem;
-    line-height: 1;
-    letter-spacing: -0.04em;
-    margin-top: 0.25rem;
-  }
-
-  .model-card__badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
+    align-items: flex-start;
     justify-content: flex-end;
   }
-
-  .model-pill--status {
-    border-color: var(--status);
+  .md-card__badges {
+    display: flex;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+  }
+  .md-badge {
+    font-family: var(--hub-font-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.15rem 0.45rem;
+    border-radius: 2px;
+  }
+  .md-badge--type {
+    background: color-mix(in srgb, var(--type-color) 18%, transparent);
+    color: var(--type-color);
+    border: 1px solid color-mix(in srgb, var(--type-color) 40%, transparent);
+  }
+  .md-badge--status {
+    background: color-mix(in srgb, var(--status-color) 15%, transparent);
+    color: var(--status-color);
+    border: 1px solid color-mix(in srgb, var(--status-color) 35%, transparent);
   }
 
-  .model-pill--type {
-    border-color: var(--type);
+  .md-card__name {
+    font-family: var(--hub-font-headline);
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--hub-text);
+    margin: 0;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
   }
-
-  .model-card__metrics {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem;
-    margin-top: 1rem;
+  .md-card__id {
+    font-family: var(--hub-font-mono);
+    font-size: 0.65rem;
+    color: var(--hub-text-muted);
+    background: none;
+    padding: 0;
   }
-
-  .metric {
-    padding: 0.75rem;
-    border: 2px solid var(--models-border-dim);
-    background: var(--models-surface);
-  }
-
-  .metric__value,
-  .model-card__meta {
-    color: var(--models-text);
-    font-size: 0.92rem;
-  }
-
-  .model-card__meta {
+  .md-card__row {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.6rem 1rem;
-    margin-top: 1rem;
-    padding-top: 0.9rem;
-    border-top: 2px dashed var(--models-border-dim);
+    gap: 0.4rem 1rem;
+    margin-top: 0.25rem;
   }
-
-  .lineage-box {
-    margin-top: 1rem;
-    padding: 0.9rem;
-    border: 2px solid var(--models-border-dim);
-    background: var(--models-surface);
+  .md-card__fact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
   }
-
-  .model-card__provider-link {
-    margin-top: 0.85rem;
-    padding-top: 0.85rem;
-    border-top: 2px dashed var(--models-border-dim);
+  .md-fact-label {
+    font-family: var(--hub-font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--hub-text-muted);
   }
-
-  .provider-link {
+  .md-fact-val {
     font-family: var(--hub-font-mono);
     font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--models-accent);
-    text-decoration: none;
+    color: var(--hub-text);
+    font-weight: 600;
+  }
+  .md-card__desc {
+    font-size: 0.75rem;
+    color: var(--hub-text-dim);
+    margin: 0.25rem 0 0;
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .md-card__foot {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: auto;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--models-border);
+  }
+  .md-card__date {
+    font-family: var(--hub-font-mono);
+    font-size: 0.65rem;
+    color: var(--hub-text-muted);
+    flex: 1;
+  }
+  .md-card__cap {
+    font-family: var(--hub-font-mono);
+    font-size: 0.6rem;
     font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--models-accent);
+    padding: 0.1rem 0.4rem;
+    border: 1px solid var(--models-border);
   }
 
-  .provider-link:hover {
-    text-decoration: underline;
-  }
-
-  .empty-state {
-    margin-top: 1rem;
-    padding: 2rem;
-    border: 4px dashed var(--models-border);
-    background: var(--models-surface);
+  /* ── Empty state ── */
+  .md-empty {
+    padding: 4rem 2rem;
     text-align: center;
+    border: 2px dashed var(--models-border);
+    color: var(--hub-text-dim);
+    font-family: var(--hub-font-mono);
+    font-size: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
   }
 
-  @media (max-width: 1040px) {
-    .models-hero__grid,
-    .controls-row--top,
-    .filters-grid {
-      grid-template-columns: 1fr;
-      display: grid;
-    }
-  }
-
-  @media (max-width: 720px) {
-    .models-hero,
-    .models-section {
-      padding-left: 1.2rem;
-      padding-right: 1.2rem;
-    }
-
-    .models-hero__copy,
-    .featured-card,
-    .controls-shell,
-    .model-card {
-      padding: 1rem;
-    }
-
-    .models-section__head,
-    .model-card__head {
-      flex-direction: column;
-      align-items: start;
-    }
-
-    .models-hero__stats,
-    .model-card__metrics {
-      grid-template-columns: 1fr;
-    }
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .md-header__stats { display: none; }
+    .md-model-grid { grid-template-columns: 1fr; }
+    .md-filter-row { gap: 0.5rem 1rem; }
   }
 </style>

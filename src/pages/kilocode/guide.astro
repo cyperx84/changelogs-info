@@ -1,0 +1,336 @@
+---
+import KilocodeLayout from "../../layouts/KilocodeLayout.astro";
+import "../../styles/guide-shared.css";
+import "../../styles/cheatsheet-shared.css";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { getToolReleases, formatDate } from "../../lib/releases";
+
+let cs: any = {};
+try {
+  const raw = readFileSync(join(process.cwd(), "src/content/cheatsheets-json/kilocode.json"), "utf-8");
+  cs = JSON.parse(raw);
+} catch {}
+
+const cliFlags = cs.cliFlags || [];
+const slashCommands = cs.slashCommands || [];
+const dailyWorkflows = cs.dailyWorkflows || [];
+const powerMoves = cs.powerMoves || [];
+
+const data = await getToolReleases("kilocode");
+const releases = (data?.releases || []).slice(0, 8);
+function isBreaking(body: string = "") { return body.toLowerCase().includes("breaking"); }
+---
+
+<KilocodeLayout
+  title="Kilo Code Guide — Getting Started, Tips, Reference"
+  description="Everything you need for Kilo Code: install guide, power tips, command reference, and latest releases."
+  currentPage="guide"
+>
+  <div class="guide-wrapper">
+
+    <nav class="guide-toc" aria-label="Guide sections">
+      <span class="guide-toc__label">Jump to</span>
+      <a href="#getting-started" class="guide-toc__link">Getting Started</a>
+      <a href="#power-tips" class="guide-toc__link">Power Tips</a>
+      <a href="#reference" class="guide-toc__link">Reference</a>
+      <a href="#releases" class="guide-toc__link">Releases</a>
+    </nav>
+
+    <!-- ══ 1: GETTING STARTED ══ -->
+    <section class="guide-section" id="getting-started">
+      <div class="guide-section__header">
+        <span class="guide-section__num">01</span>
+        <span class="guide-section__icon">🚀</span>
+        <h2 class="guide-section__title">Getting Started</h2>
+        <span class="guide-section__sub">Up and running in 10 min</span>
+      </div>
+
+      <div class="qs-journey">
+        <div class="qs-step">
+          <div class="qs-step__dot">01</div>
+          <span class="qs-step__label">Prerequisites</span>
+          <h3 class="qs-step__title">VS Code 1.85+ and an API key</h3>
+          <p class="qs-step__desc">Kilo Code works with Anthropic, OpenAI, or any compatible provider. Get a key and have it ready.</p>
+          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>code --version</code></div>
+          <p class="qs-cmd-note">VS Code 1.85 or higher required.</p>
+        </div>
+
+        <div class="qs-step">
+          <div class="qs-step__dot">02</div>
+          <span class="qs-step__label">Install</span>
+          <h3 class="qs-step__title">Install from VS Code Marketplace</h3>
+          <p class="qs-step__desc">Open the Extensions panel in VS Code and search for Kilo Code.</p>
+          <div class="qs-cmd"><code><span class="qs-cmd__prompt">Cmd+Shift+X</span> → search "Kilo Code" → Install</code></div>
+          <p class="qs-cmd-note">Or install from the terminal:</p>
+          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>code --install-extension kilocode.kilo-code</code></div>
+        </div>
+
+        <div class="qs-step">
+          <div class="qs-step__dot">03</div>
+          <span class="qs-step__label">Configure</span>
+          <h3 class="qs-step__title">Add your API key</h3>
+          <p class="qs-step__desc">Open the Kilo Code settings via the Command Palette and enter your API key. It stays local — never sent anywhere except the AI provider.</p>
+          <div class="qs-cmd"><code><span class="qs-cmd__prompt">Cmd+Shift+P</span> → "Kilo Code: Open Settings" → enter API key</code></div>
+        </div>
+
+        <div class="qs-step qs-step--active">
+          <div class="qs-step__dot">04</div>
+          <span class="qs-step__label">First Run</span>
+          <h3 class="qs-step__title">Start your first task</h3>
+          <p class="qs-step__desc">Open a project in VS Code, then launch a Kilo Code task. It reads your workspace automatically.</p>
+          <div class="qs-cmd"><code><span class="qs-cmd__prompt">Cmd+Shift+P</span> → "Kilo Code: New Task"</code></div>
+          <p class="qs-cmd-note">Type your first task in the panel that appears. Try: "explain what this codebase does and list the main components."</p>
+        </div>
+      </div>
+
+      <div class="qs-milestone">
+        <span class="qs-milestone__eyebrow">Key Unlock</span>
+        <h3 class="qs-milestone__title">Selection = context — try Explain Selection</h3>
+        <p class="qs-milestone__desc">Select any block of code before running a task and that selection becomes your context anchor. This is how Kilo Code becomes precise instead of vague.</p>
+        <div class="qs-milestone__steps">
+          <div class="qs-milestone__step">
+            <div class="qs-milestone__step-num">1</div>
+            <div class="qs-milestone__step-body">Open a file with a complex function.</div>
+          </div>
+          <div class="qs-milestone__step">
+            <div class="qs-milestone__step-num">2</div>
+            <div class="qs-milestone__step-body">Select the function body.</div>
+          </div>
+          <div class="qs-milestone__step">
+            <div class="qs-milestone__step-num">3</div>
+            <div class="qs-milestone__step-body">Right-click → "Kilo Code: Explain Selection" or use the Command Palette.</div>
+          </div>
+        </div>
+        <div class="qs-milestone__cmd"><code><span class="qs-cmd__prompt">Cmd+Shift+P</span> → "Kilo Code: Explain Selection"</code></div>
+        <div class="qs-milestone__steps">
+          <div class="qs-milestone__step">
+            <div class="qs-milestone__step-num">4</div>
+            <div class="qs-milestone__step-body">Kilo Code explains exactly that selection with full context from surrounding files. From here, ask it to refactor, add tests, or fix issues — it stays focused on your selection.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 2: POWER TIPS ══ -->
+    <section class="guide-section" id="power-tips">
+      <div class="guide-section__header">
+        <span class="guide-section__num">02</span>
+        <span class="guide-section__icon">⚡</span>
+        <h2 class="guide-section__title">Power Tips</h2>
+        <span class="guide-section__sub">Selection, tasks, MCP, tokens</span>
+      </div>
+
+      <div class="tips-section">
+        <div class="tips-section__header">
+          <span class="tips-section__icon">⚡</span>
+          <h3 class="tips-section__title">Quick Wins</h3>
+        </div>
+        <div class="tips-cards">
+          <div class="tips-card tips-card--highlight">
+            <span class="tips-card__num">01</span>
+            <div class="tips-card__title">Select first, then ask</div>
+            <p class="tips-card__desc">Always select the relevant code before starting a task. That selection becomes your context anchor — Kilo Code focuses on it and its surrounding context, not the whole project at once.</p>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">02</span>
+            <div class="tips-card__title">Task history is persistent</div>
+            <p class="tips-card__desc">Kilo Code saves all your tasks. Reopen old tasks to continue work, reference what you did, or see what decisions were made. Never lose a conversation.</p>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">03</span>
+            <div class="tips-card__title">Watch the token budget indicator</div>
+            <p class="tips-card__desc">When the token budget indicator gets low, start a new task rather than continuing. Trying to push through causes degraded output quality as context gets compressed.</p>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">04</span>
+            <div class="tips-card__title">MCP tools multiply your capability</div>
+            <p class="tips-card__desc">Set up MCP tools for your stack — database queries, API calls, test runners — before starting big tasks. They let Kilo Code take real actions, not just suggest them.</p>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">05</span>
+            <div class="tips-card__title">Concurrent tasks for parallel work</div>
+            <p class="tips-card__desc">Kilo Code supports multiple concurrent tasks. Run a refactor in one task while asking questions about docs in another. They don't interfere.</p>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">06</span>
+            <div class="tips-card__title">Checkpoint before risky ops</div>
+            <p class="tips-card__desc">Before any large edit or refactor, save a checkpoint. You can revert to it cleanly if the output isn't what you wanted — no manual undo chains.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tips-section">
+        <div class="tips-section__header">
+          <span class="tips-section__icon">🔍</span>
+          <h3 class="tips-section__title">Hidden Features</h3>
+        </div>
+        <div class="tips-features">
+          <div class="tips-feature">
+            <span class="tips-feature__icon">🎯</span>
+            <div class="tips-feature__body">
+              <div class="tips-feature__title">Restrict auto-approve to specific patterns</div>
+              <p class="tips-feature__desc">Auto-approve doesn't have to be all-or-nothing. Configure it in Kilo Code settings to only auto-approve for specific file types or directories (e.g., only test files, only src/, never config/). More safety, less friction.</p>
+            </div>
+          </div>
+          <div class="tips-feature">
+            <span class="tips-feature__icon">🛠️</span>
+            <div class="tips-feature__body">
+              <div class="tips-feature__title">MCP tools give Kilo Code real actions</div>
+              <p class="tips-feature__desc">Without MCP tools, Kilo Code can only read and write files. With MCP tools configured for your stack, it can run tests, query databases, call APIs, and execute custom scripts — directly from the task panel.</p>
+            </div>
+          </div>
+          <div class="tips-feature">
+            <span class="tips-feature__icon">📊</span>
+            <div class="tips-feature__body">
+              <div class="tips-feature__title">Kilo Code shows token usage per task</div>
+              <p class="tips-feature__desc">In the task history panel, you can see exactly how many tokens each task consumed. Use this to identify which prompting styles are most efficient and which are burning your budget unnecessarily.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tips-section">
+        <div class="tips-section__header">
+          <span class="tips-section__icon">💀</span>
+          <h3 class="tips-section__title">Common Mistakes</h3>
+        </div>
+        <div class="tips-gotchas">
+          <div class="tips-gotcha">
+            <span class="tips-gotcha__skull">☠️</span>
+            <div class="tips-gotcha__title">Not selecting code before asking</div>
+            <p class="tips-gotcha__desc">Without a selection, Kilo Code has no context anchor and will give vague, broad responses. Selection is how you get precision.</p>
+            <span class="tips-gotcha__fix">Select the relevant code first. Every time.</span>
+          </div>
+          <div class="tips-gotcha">
+            <span class="tips-gotcha__skull">☠️</span>
+            <div class="tips-gotcha__title">Ignoring the token budget indicator</div>
+            <p class="tips-gotcha__desc">When the indicator gets critical, Kilo Code starts compressing context. The quality of its responses degrades noticeably before it hits the limit.</p>
+            <span class="tips-gotcha__fix">Start a new task when the token budget indicator turns orange.</span>
+          </div>
+          <div class="tips-gotcha">
+            <span class="tips-gotcha__skull">☠️</span>
+            <div class="tips-gotcha__title">Setting up auto-approve globally</div>
+            <p class="tips-gotcha__desc">Global auto-approve means Kilo Code can edit any file without asking. This is too much autonomy for files like .env, migrations, or CI config.</p>
+            <span class="tips-gotcha__fix">Restrict auto-approve to specific directories or file types only.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 3: COMMAND REFERENCE ══ -->
+    <section class="guide-section" id="reference">
+      <div class="guide-section__header">
+        <span class="guide-section__num">03</span>
+        <span class="guide-section__icon">📋</span>
+        <h2 class="guide-section__title">Command Reference</h2>
+        <span class="guide-section__sub">Commands and shortcuts</span>
+      </div>
+
+      <div class="guide-ref-grid">
+        {cliFlags.length > 0 && (
+          <div class="guide-ref-panel">
+            <div class="guide-ref-panel__title">Commands</div>
+            {cliFlags.map((flag: any) => (
+              <div class="guide-ref-item">
+                <span class="guide-ref-item__key">{flag.flag || flag.command}</span>
+                <span class="guide-ref-item__desc">{flag.description}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        {slashCommands.length > 0 && (
+          <div class="guide-ref-panel">
+            <div class="guide-ref-panel__title">Shortcuts</div>
+            {slashCommands.map((cmd: any) => (
+              <div class="guide-ref-item">
+                <span class="guide-ref-item__key">{cmd.command || cmd.cmd}</span>
+                <span class="guide-ref-item__desc">{cmd.description}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        {dailyWorkflows.length > 0 && (
+          <div class="guide-ref-panel">
+            <div class="guide-ref-panel__title">Daily Workflows</div>
+            {dailyWorkflows.map((wf: any) => (
+              <div class="guide-ref-item">
+                <span class="guide-ref-item__key" style="min-width: 0; font-size: 0.68rem;">{wf.title}</span>
+                <span class="guide-ref-item__desc">{wf.command || wf.description}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      {cliFlags.length === 0 && slashCommands.length === 0 && dailyWorkflows.length === 0 && (
+        <p style="font-family: var(--tool-font-mono); font-size: 0.8rem; color: var(--tool-text-muted);">$ cheatsheet data not available</p>
+      )}
+    </section>
+
+    <!-- ══ 4: RECENT RELEASES ══ -->
+    <section class="guide-section" id="releases">
+      <div class="guide-section__header">
+        <span class="guide-section__num">04</span>
+        <span class="guide-section__icon">🔔</span>
+        <h2 class="guide-section__title">Recent Releases</h2>
+        <span class="guide-section__sub">Latest {releases.length} versions</span>
+      </div>
+
+      {releases.length > 0 ? (
+        <>
+          <div class="guide-releases">
+            {releases.map((r) => {
+              const breaking = isBreaking(r.body);
+              return (
+                <a href={r.url} target="_blank" rel="noopener noreferrer" class="guide-release">
+                  <span class="guide-release__version">v{r.version}</span>
+                  {r.name && <span class="guide-release__name">{r.name}</span>}
+                  {breaking && <span class="guide-release__badge guide-release__badge--breaking">Breaking</span>}
+                  {r.prerelease && <span class="guide-release__badge guide-release__badge--pre">Pre</span>}
+                  <span class="guide-release__date">{formatDate(r.date)}</span>
+                </a>
+              );
+            })}
+          </div>
+          <div class="guide-releases__more">
+            <a href="/kilocode/releases/" class="guide-releases__more-link">All releases ↗</a>
+          </div>
+        </>
+      ) : (
+        <p style="font-family: var(--tool-font-mono); font-size: 0.8rem; color: var(--tool-text-muted);">$ no releases tracked yet</p>
+      )}
+    </section>
+
+  </div>
+
+  <script is:inline>
+    document.querySelectorAll('.qs-cmd').forEach(function(block) {
+      var btn = document.createElement('button');
+      btn.className = 'qs-cmd__copy';
+      btn.textContent = 'copy';
+      btn.addEventListener('click', function() {
+        var code = block.querySelector('code');
+        if (!code) return;
+        var text = code.textContent.replace(/^(Cmd\+Shift\+[A-Z]|\$)\s*→?\s*/i, '').replace(/^\$\s*/, '').trim();
+        navigator.clipboard.writeText(text).then(function() {
+          btn.textContent = 'copied!';
+          setTimeout(function() { btn.textContent = 'copy'; }, 1500);
+        });
+      });
+      block.style.paddingRight = '5rem';
+      block.appendChild(btn);
+    });
+    var sections = document.querySelectorAll('.guide-section[id]');
+    var tocLinks = document.querySelectorAll('.guide-toc__link');
+    function updateToc() {
+      var scrollY = window.scrollY + 160;
+      var current = '';
+      sections.forEach(function(s) { if (s.offsetTop <= scrollY) current = s.id; });
+      tocLinks.forEach(function(link) {
+        link.classList.toggle('guide-toc__link--active', link.getAttribute('href') === '#' + current);
+      });
+    }
+    window.addEventListener('scroll', updateToc, { passive: true });
+    updateToc();
+  </script>
+</KilocodeLayout>

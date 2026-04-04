@@ -8,9 +8,13 @@ import type { Release } from "../../lib/releases";
 const s = TOOLS_SECTION;
 const tools = getTools();
 const sectionToolIds = SECTIONS.map((sec) => sec.toolId);
+const REMOVED_IDS = ["cline", "cursor", "opencode", "windsurf", "roo-code"];
+const DEDICATED_IDS = ["gemini-cli", "kilocode", "hermes-agent"];
 
-// Secondary tools = those not featured as primary sections
-const secondaryTools = tools.filter((t) => !sectionToolIds.includes(t.id));
+// Secondary tools = those not featured as primary sections and not removed/dedicated
+const secondaryTools = tools.filter(
+  (t) => !sectionToolIds.includes(t.id) && !REMOVED_IDS.includes(t.id) && !DEDICATED_IDS.includes(t.id)
+);
 
 let releaseMap: Record<string, Release> = {};
 try {
@@ -26,13 +30,7 @@ try {
 } catch {}
 
 const toolDescriptions: Record<string, string> = {
-  cursor: "AI-first code editor built on VS Code with built-in LLM integration",
-  cline: "Autonomous coding agent that lives in your IDE",
   continue: "Open-source AI code assistant for VS Code and JetBrains",
-  "roo-code": "AI coding assistant with multi-model support and custom modes",
-  windsurf: "AI-powered code editor by Codeium with Cascade agent",
-  "gemini-cli": "Google's AI coding assistant for the terminal",
-  opencode: "Open-source terminal AI coding tool with multi-provider support",
 };
 ---
 

@@ -1,0 +1,337 @@
+---
+import HermesLayout from "../../layouts/HermesLayout.astro";
+import "../../styles/guide-shared.css";
+import "../../styles/cheatsheet-shared.css";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { getToolReleases, formatDate } from "../../lib/releases";
+
+let cs: any = {};
+try {
+  const raw = readFileSync(join(process.cwd(), "src/content/cheatsheets-json/hermes-agent.json"), "utf-8");
+  cs = JSON.parse(raw);
+} catch {}
+
+const cliFlags = cs.cliFlags || [];
+const slashCommands = cs.slashCommands || [];
+const dailyWorkflows = cs.dailyWorkflows || [];
+const powerMoves = cs.powerMoves || [];
+
+const data = await getToolReleases("hermes-agent");
+const releases = (data?.releases || []).slice(0, 8);
+function isBreaking(body: string = "") { return body.toLowerCase().includes("breaking"); }
+---
+
+<HermesLayout
+  title="Hermes Agent Guide — Getting Started, Tips, Reference"
+  description="Everything you need for Hermes Agent: install guide, power tips, command reference, and latest releases."
+  currentPage="guide"
+>
+  <div class="guide-wrapper">
+
+    <nav class="guide-toc" aria-label="Guide sections">
+      <span class="guide-toc__label">Jump to</span>
+      <a href="#getting-started" class="guide-toc__link">Getting Started</a>
+      <a href="#power-tips" class="guide-toc__link">Power Tips</a>
+      <a href="#reference" class="guide-toc__link">Reference</a>
+      <a href="#releases" class="guide-toc__link">Releases</a>
+    </nav>
+
+    <!-- ══ 1: GETTING STARTED ══ -->
+    <section class="guide-section" id="getting-started">
+      <div class="guide-section__header">
+        <span class="guide-section__num">01</span>
+        <span class="guide-section__icon">🚀</span>
+        <h2 class="guide-section__title">Getting Started</h2>
+        <span class="guide-section__sub">Up and running in 10 min</span>
+      </div>
+
+      <div class="qs-journey">
+        <div class="qs-step">
+          <div class="qs-step__dot">01</div>
+          <span class="qs-step__label">Prerequisites</span>
+          <h3 class="qs-step__title">Node.js 18+ and a model API key</h3>
+          <p class="qs-step__desc">Hermes works with Anthropic Claude, OpenAI, or any OpenAI-compatible provider. Have an API key ready.</p>
+          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>node --version</code></div>
+        </div>
+
+        <div class="qs-step">
+          <div class="qs-step__dot">02</div>
+          <span class="qs-step__label">Install</span>
+          <h3 class="qs-step__title">Install Hermes Agent globally</h3>
+          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>npm install -g hermes-agent</code></div>
+          <p class="qs-cmd-note">Verify: hermes --version</p>
+        </div>
+
+        <div class="qs-step">
+          <div class="qs-step__dot">03</div>
+          <span class="qs-step__label">Configure</span>
+          <h3 class="qs-step__title">Initialize in your project</h3>
+          <p class="qs-step__desc">This creates hermes.config.json in your project root. Edit it to tell Hermes about your stack, tools, and constraints — this is what makes it useful.</p>
+          <div class="qs-cmd-group">
+            <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>cd your-project</code></div>
+            <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>hermes init</code></div>
+          </div>
+          <p class="qs-cmd-note">The init wizard will ask about your stack and set sensible defaults.</p>
+        </div>
+
+        <div class="qs-step qs-step--active">
+          <div class="qs-step__dot">04</div>
+          <span class="qs-step__label">First Run</span>
+          <h3 class="qs-step__title">Ask what the codebase does</h3>
+          <p class="qs-step__desc">Before running any task that modifies files, start by asking Hermes to understand the codebase. This gives you a baseline and lets Hermes build a plan.</p>
+          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>hermes "what does this codebase do and what are the main moving parts"</code></div>
+        </div>
+      </div>
+
+      <div class="qs-milestone">
+        <span class="qs-milestone__eyebrow">Key Habit</span>
+        <h3 class="qs-milestone__title">Always --dry-run before you execute</h3>
+        <p class="qs-milestone__desc">Hermes is autonomous — it will make real changes. The --dry-run flag shows you the full execution plan before anything touches your files. Build this habit from day one.</p>
+        <div class="qs-milestone__steps">
+          <div class="qs-milestone__step">
+            <div class="qs-milestone__step-num">1</div>
+            <div class="qs-milestone__step-body">Write a specific task description. Specific = better plan.</div>
+          </div>
+          <div class="qs-milestone__step">
+            <div class="qs-milestone__step-num">2</div>
+            <div class="qs-milestone__step-body">Run with --dry-run first to preview the plan.</div>
+          </div>
+        </div>
+        <div class="qs-milestone__cmd"><code><span class="qs-cmd__prompt">$</span>hermes "write unit tests for src/utils/auth.ts — test all exported functions, edge cases included" --dry-run</code></div>
+        <div class="qs-milestone__steps">
+          <div class="qs-milestone__step">
+            <div class="qs-milestone__step-num">3</div>
+            <div class="qs-milestone__step-body">Review the plan. If it looks right, run without --dry-run. If not, refine your task description and try again.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 2: POWER TIPS ══ -->
+    <section class="guide-section" id="power-tips">
+      <div class="guide-section__header">
+        <span class="guide-section__num">02</span>
+        <span class="guide-section__icon">⚡</span>
+        <h2 class="guide-section__title">Power Tips</h2>
+        <span class="guide-section__sub">Task descriptions, plans, checkpoints</span>
+      </div>
+
+      <div class="tips-section">
+        <div class="tips-section__header">
+          <span class="tips-section__icon">⚡</span>
+          <h3 class="tips-section__title">Quick Wins</h3>
+        </div>
+        <div class="tips-cards">
+          <div class="tips-card tips-card--highlight">
+            <span class="tips-card__num">01</span>
+            <div class="tips-card__title">hermes init first, always</div>
+            <p class="tips-card__desc">Without hermes.config.json, Hermes uses defaults that probably don't match your stack. The init wizard takes 2 minutes and makes every subsequent task dramatically more accurate.</p>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">02</span>
+            <div class="tips-card__title">--dry-run before you execute</div>
+            <p class="tips-card__desc">Hermes is autonomous. See the full plan before any files are touched. This is especially important for refactors, migrations, and anything involving multiple files.</p>
+            <div class="tips-card__cmd">hermes "your task" --dry-run</div>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">03</span>
+            <div class="tips-card__title">Specific descriptions = better plans</div>
+            <p class="tips-card__desc">Vague: "improve auth." Specific: "Add rate limiting to POST /api/auth/login — max 5 requests per minute per IP, return 429 with Retry-After header." Specificity is everything.</p>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">04</span>
+            <div class="tips-card__title">Read the execution log when things go wrong</div>
+            <p class="tips-card__desc">Hermes logs every step of its execution. When a task doesn't go as expected, the log tells you exactly what happened and where it diverged from the plan.</p>
+            <div class="tips-card__cmd">hermes log</div>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">05</span>
+            <div class="tips-card__title">Checkpoint saves mid-task state</div>
+            <p class="tips-card__desc">For long-running operations, checkpoint at meaningful milestones. If something goes wrong later, you can resume from the checkpoint instead of starting over.</p>
+            <div class="tips-card__cmd">hermes checkpoint</div>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">06</span>
+            <div class="tips-card__title">--model swaps the underlying model</div>
+            <p class="tips-card__desc">Use a cheaper model for exploration and planning tasks, a smarter one for actual implementation. You're not locked into one model for the whole workflow.</p>
+            <div class="tips-card__cmd">hermes --model claude-opus-4-6 "your task"</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tips-section">
+        <div class="tips-section__header">
+          <span class="tips-section__icon">🔍</span>
+          <h3 class="tips-section__title">Hidden Features</h3>
+        </div>
+        <div class="tips-features">
+          <div class="tips-feature">
+            <span class="tips-feature__icon">📋</span>
+            <div class="tips-feature__body">
+              <div class="tips-feature__title">YAML workflow plans for repeatable tasks</div>
+              <p class="tips-feature__desc">Write a .hermes/workflow.yaml that describes a multi-step process. Hermes executes it deterministically every time — great for deployment pipelines, onboarding scripts, and anything you'd otherwise document as a manual runbook.</p>
+            </div>
+          </div>
+          <div class="tips-feature">
+            <span class="tips-feature__icon">🔌</span>
+            <div class="tips-feature__body">
+              <div class="tips-feature__title">Tool plugins extend what Hermes can do</div>
+              <p class="tips-feature__desc">Hermes has a plugin system for tools. Add plugins for your database CLI, cloud provider, test framework, or any other tool you use. Hermes can then invoke them directly as part of its execution plans.</p>
+            </div>
+          </div>
+          <div class="tips-feature">
+            <span class="tips-feature__icon">🔁</span>
+            <div class="tips-feature__body">
+              <div class="tips-feature__title">Resume from checkpoint after interruption</div>
+              <p class="tips-feature__desc">Long tasks get interrupted — network drops, rate limits, system sleep. Checkpoints let Hermes resume exactly where it left off without re-running everything from the start.</p>
+              <code class="tips-feature__cmd">hermes resume --checkpoint latest</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tips-section">
+        <div class="tips-section__header">
+          <span class="tips-section__icon">💀</span>
+          <h3 class="tips-section__title">Common Mistakes</h3>
+        </div>
+        <div class="tips-gotchas">
+          <div class="tips-gotcha">
+            <span class="tips-gotcha__skull">☠️</span>
+            <div class="tips-gotcha__title">Skipping --dry-run on first tasks</div>
+            <p class="tips-gotcha__desc">Hermes is autonomous and will make real changes immediately. Running without --dry-run on a task you haven't validated means you're discovering the plan by watching it execute.</p>
+            <span class="tips-gotcha__fix">Always --dry-run on any task that modifies files. No exceptions until you know the tool well.</span>
+          </div>
+          <div class="tips-gotcha">
+            <span class="tips-gotcha__skull">☠️</span>
+            <div class="tips-gotcha__title">Vague task descriptions</div>
+            <p class="tips-gotcha__desc">Vague input = vague plan = vague output. Hermes is only as good as the task description you give it. Ambiguous tasks produce generic results.</p>
+            <span class="tips-gotcha__fix">Include: what to change, where (file/function), the expected behaviour, and any constraints.</span>
+          </div>
+          <div class="tips-gotcha">
+            <span class="tips-gotcha__skull">☠️</span>
+            <div class="tips-gotcha__title">No checkpoint on long tasks</div>
+            <p class="tips-gotcha__desc">A 15-minute task that gets interrupted at minute 12 has to start over. That's avoidable.</p>
+            <span class="tips-gotcha__fix">Run hermes checkpoint at logical milestones during long operations.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 3: COMMAND REFERENCE ══ -->
+    <section class="guide-section" id="reference">
+      <div class="guide-section__header">
+        <span class="guide-section__num">03</span>
+        <span class="guide-section__icon">📋</span>
+        <h2 class="guide-section__title">Command Reference</h2>
+        <span class="guide-section__sub">Flags and commands</span>
+      </div>
+
+      <div class="guide-ref-grid">
+        {cliFlags.length > 0 && (
+          <div class="guide-ref-panel">
+            <div class="guide-ref-panel__title">CLI Flags</div>
+            {cliFlags.map((flag: any) => (
+              <div class="guide-ref-item">
+                <span class="guide-ref-item__key">{flag.flag || flag.command}</span>
+                <span class="guide-ref-item__desc">{flag.description}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        {dailyWorkflows.length > 0 && (
+          <div class="guide-ref-panel">
+            <div class="guide-ref-panel__title">Daily Workflows</div>
+            {dailyWorkflows.map((wf: any) => (
+              <div class="guide-ref-item">
+                <span class="guide-ref-item__key" style="min-width: 0; font-size: 0.68rem;">{wf.title}</span>
+                <span class="guide-ref-item__desc">{wf.command || wf.description}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        {powerMoves.length > 0 && (
+          <div class="guide-ref-panel">
+            <div class="guide-ref-panel__title">⚡ Power Moves</div>
+            {powerMoves.map((pm: any) => (
+              <div class="guide-ref-item">
+                <span class="guide-ref-item__key" style="min-width: 0; font-size: 0.68rem;">{pm.title}</span>
+                <span class="guide-ref-item__desc">{pm.command || pm.description}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      {cliFlags.length === 0 && dailyWorkflows.length === 0 && (
+        <p style="font-family: var(--tool-font-mono); font-size: 0.8rem; color: var(--tool-text-muted);">$ cheatsheet data not available</p>
+      )}
+    </section>
+
+    <!-- ══ 4: RECENT RELEASES ══ -->
+    <section class="guide-section" id="releases">
+      <div class="guide-section__header">
+        <span class="guide-section__num">04</span>
+        <span class="guide-section__icon">🔔</span>
+        <h2 class="guide-section__title">Recent Releases</h2>
+        <span class="guide-section__sub">Latest {releases.length} versions</span>
+      </div>
+
+      {releases.length > 0 ? (
+        <>
+          <div class="guide-releases">
+            {releases.map((r) => {
+              const breaking = isBreaking(r.body);
+              return (
+                <a href={r.url} target="_blank" rel="noopener noreferrer" class="guide-release">
+                  <span class="guide-release__version">v{r.version}</span>
+                  {r.name && <span class="guide-release__name">{r.name}</span>}
+                  {breaking && <span class="guide-release__badge guide-release__badge--breaking">Breaking</span>}
+                  {r.prerelease && <span class="guide-release__badge guide-release__badge--pre">Pre</span>}
+                  <span class="guide-release__date">{formatDate(r.date)}</span>
+                </a>
+              );
+            })}
+          </div>
+          <div class="guide-releases__more">
+            <a href="/hermes-agent/releases/" class="guide-releases__more-link">All releases ↗</a>
+          </div>
+        </>
+      ) : (
+        <p style="font-family: var(--tool-font-mono); font-size: 0.8rem; color: var(--tool-text-muted);">$ no releases tracked yet</p>
+      )}
+    </section>
+
+  </div>
+
+  <script is:inline>
+    document.querySelectorAll('.qs-cmd').forEach(function(block) {
+      var btn = document.createElement('button');
+      btn.className = 'qs-cmd__copy';
+      btn.textContent = 'copy';
+      btn.addEventListener('click', function() {
+        var code = block.querySelector('code');
+        if (!code) return;
+        var text = code.textContent.replace(/^\$\s*/, '').trim();
+        navigator.clipboard.writeText(text).then(function() {
+          btn.textContent = 'copied!';
+          setTimeout(function() { btn.textContent = 'copy'; }, 1500);
+        });
+      });
+      block.style.paddingRight = '5rem';
+      block.appendChild(btn);
+    });
+    var sections = document.querySelectorAll('.guide-section[id]');
+    var tocLinks = document.querySelectorAll('.guide-toc__link');
+    function updateToc() {
+      var scrollY = window.scrollY + 160;
+      var current = '';
+      sections.forEach(function(s) { if (s.offsetTop <= scrollY) current = s.id; });
+      tocLinks.forEach(function(link) {
+        link.classList.toggle('guide-toc__link--active', link.getAttribute('href') === '#' + current);
+      });
+    }
+    window.addEventListener('scroll', updateToc, { passive: true });
+    updateToc();
+  </script>
+</HermesLayout>

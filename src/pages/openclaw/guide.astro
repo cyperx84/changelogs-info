@@ -1,0 +1,367 @@
+---
+import OpenClawLayout from "../../layouts/OpenClawLayout.astro";
+import "../../styles/guide-shared.css";
+import "../../styles/cheatsheet-shared.css";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { getToolReleases, formatDate } from "../../lib/releases";
+
+let cs: any = {};
+try {
+  const raw = readFileSync(join(process.cwd(), "src/content/cheatsheets-json/openclaw.json"), "utf-8");
+  cs = JSON.parse(raw);
+} catch {}
+
+const cliFlags = cs.cliFlags || [];
+const slashCommands = cs.slashCommands || [];
+const dailyWorkflows = cs.dailyWorkflows || [];
+const powerMoves = cs.powerMoves || [];
+
+const data = await getToolReleases("openclaw");
+const releases = (data?.releases || []).slice(0, 8);
+function isBreaking(body: string = "") { return body.toLowerCase().includes("breaking"); }
+---
+
+<OpenClawLayout
+  title="OpenClaw Guide — Getting Started, Tips, Reference"
+  description="Everything you need for OpenClaw: install guide, power tips, command reference, and latest releases."
+  currentPage="guide"
+>
+  <div class="guide-wrapper">
+
+    <nav class="guide-toc" aria-label="Guide sections">
+      <span class="guide-toc__label">Jump to</span>
+      <a href="#getting-started" class="guide-toc__link">Getting Started</a>
+      <a href="#power-tips" class="guide-toc__link">Power Tips</a>
+      <a href="#reference" class="guide-toc__link">Reference</a>
+      <a href="#releases" class="guide-toc__link">Releases</a>
+    </nav>
+
+    <!-- ══ 1: GETTING STARTED ══ -->
+    <section class="guide-section" id="getting-started">
+      <div class="guide-section__header">
+        <span class="guide-section__num">01</span>
+        <span class="guide-section__icon">🚀</span>
+        <h2 class="guide-section__title">Getting Started</h2>
+        <span class="guide-section__sub">Up and running in 10 min</span>
+      </div>
+
+      <div class="qs-journey">
+        <div class="qs-step">
+          <div class="qs-step__dot">01</div>
+          <span class="qs-step__label">Prerequisites</span>
+          <h3 class="qs-step__title">Node.js 18+ or Homebrew</h3>
+          <p class="qs-step__desc">Check if you're ready — run these and confirm they return something.</p>
+          <div class="qs-cmd-group">
+            <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>node --version</code></div>
+            <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>npm --version</code></div>
+          </div>
+          <p class="qs-cmd-note">Node 18 or higher required. If you're on macOS, Homebrew also works.</p>
+        </div>
+
+        <div class="qs-step">
+          <div class="qs-step__dot">02</div>
+          <span class="qs-step__label">Install</span>
+          <h3 class="qs-step__title">Install OpenClaw globally</h3>
+          <p class="qs-step__desc">Pick your preferred package manager. Both install the same thing.</p>
+          <span class="qs-cmd-label">Option A — npm</span>
+          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>npm install -g openclaw</code></div>
+          <span class="qs-cmd-label">Option B — Homebrew (macOS)</span>
+          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>brew install openclaw</code></div>
+        </div>
+
+        <div class="qs-step">
+          <div class="qs-step__dot">03</div>
+          <span class="qs-step__label">Onboard</span>
+          <h3 class="qs-step__title">Run the setup wizard</h3>
+          <p class="qs-step__desc">This creates your workspace, config files, and default agent. Only needed once.</p>
+          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>openclaw onboard</code></div>
+          <p class="qs-cmd-note">Follow the prompts. It will ask for a model API key — Anthropic, OpenAI, or OpenRouter all work.</p>
+        </div>
+
+        <div class="qs-step">
+          <div class="qs-step__dot">04</div>
+          <span class="qs-step__label">Start</span>
+          <h3 class="qs-step__title">Start the gateway</h3>
+          <p class="qs-step__desc">The gateway is the local process that routes messages between your channels and agents.</p>
+          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>openclaw gateway start</code></div>
+        </div>
+
+        <div class="qs-step qs-step--active">
+          <div class="qs-step__dot">05</div>
+          <span class="qs-step__label">Verify</span>
+          <h3 class="qs-step__title">Open the dashboard — prove it works</h3>
+          <p class="qs-step__desc">The dashboard runs in your browser. No messaging app needed yet. If you can chat here, the stack is working.</p>
+          <div class="qs-cmd"><code><span class="qs-cmd__prompt">$</span>openclaw dashboard</code></div>
+          <p class="qs-cmd-note">Opens at http://localhost:PORT — send a message to confirm your model is responding.</p>
+        </div>
+      </div>
+
+      <div class="qs-milestone">
+        <span class="qs-milestone__eyebrow">Key Setup</span>
+        <h3 class="qs-milestone__title">Connect Telegram in 2 minutes</h3>
+        <p class="qs-milestone__desc">Get your AI on your phone. Telegram is the fastest channel to set up — just a bot token and one command.</p>
+        <div class="qs-milestone__steps">
+          <div class="qs-milestone__step">
+            <div class="qs-milestone__step-num">1</div>
+            <div class="qs-milestone__step-body">Open Telegram, message <code>@BotFather</code>, send <code>/newbot</code>, follow the steps, copy the token.</div>
+          </div>
+          <div class="qs-milestone__step">
+            <div class="qs-milestone__step-num">2</div>
+            <div class="qs-milestone__step-body">Run the command below with your token.</div>
+          </div>
+        </div>
+        <div class="qs-milestone__cmd"><code><span class="qs-cmd__prompt">$</span>openclaw channels add --channel telegram --token YOUR_BOT_TOKEN</code></div>
+        <div class="qs-milestone__steps">
+          <div class="qs-milestone__step">
+            <div class="qs-milestone__step-num">3</div>
+            <div class="qs-milestone__step-body">Open the dashboard QR code and scan it from your phone to approve the pairing. Done — your AI is now in your Telegram DMs.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 2: POWER TIPS ══ -->
+    <section class="guide-section" id="power-tips">
+      <div class="guide-section__header">
+        <span class="guide-section__num">02</span>
+        <span class="guide-section__icon">⚡</span>
+        <h2 class="guide-section__title">Power Tips</h2>
+        <span class="guide-section__sub">Non-obvious leverage</span>
+      </div>
+
+      <div class="tips-section">
+        <div class="tips-section__header">
+          <span class="tips-section__icon">⚡</span>
+          <h3 class="tips-section__title">Quick Wins</h3>
+        </div>
+        <div class="tips-cards">
+          <div class="tips-card tips-card--highlight">
+            <span class="tips-card__num">01</span>
+            <div class="tips-card__title">Doctor first, always</div>
+            <p class="tips-card__desc">Before debugging anything, run this. It catches broken services, invalid config, bad auth, orphan sessions, and cron drift — before you waste 30 minutes guessing.</p>
+            <div class="tips-card__cmd">openclaw doctor</div>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">02</span>
+            <div class="tips-card__title">Dashboard before any messaging app</div>
+            <p class="tips-card__desc">The dashboard proves gateway + auth + model + workspace all work without setting up Telegram/Discord first. Always validate here first.</p>
+            <div class="tips-card__cmd">openclaw dashboard</div>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">03</span>
+            <div class="tips-card__title">Memory is just Markdown</div>
+            <p class="tips-card__desc">Long-term memory lives in plain .md files in your workspace. You can read, edit, and grep them directly. No magic black box.</p>
+            <div class="tips-card__cmd">ls ~/.openclaw/agents/*/workspace/memory/</div>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">04</span>
+            <div class="tips-card__title">Check which skills actually run</div>
+            <p class="tips-card__desc">Installed ≠ runnable. Skills can be blocked by missing binaries or env vars. This shows you what's actually ready.</p>
+            <div class="tips-card__cmd">openclaw skills check</div>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">05</span>
+            <div class="tips-card__title">Tail the gateway log live</div>
+            <p class="tips-card__desc">When a channel isn't responding, this shows you exactly what's happening at the routing layer.</p>
+            <div class="tips-card__cmd">tail -f ~/.openclaw/logs/gateway.log</div>
+          </div>
+          <div class="tips-card">
+            <span class="tips-card__num">06</span>
+            <div class="tips-card__title">Deep status for channel issues</div>
+            <p class="tips-card__desc">Regular <code>status</code> is shallow. Add <code>--deep</code> when you suspect a channel auth or connectivity problem.</p>
+            <div class="tips-card__cmd">openclaw status --deep</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tips-section">
+        <div class="tips-section__header">
+          <span class="tips-section__icon">🔍</span>
+          <h3 class="tips-section__title">Hidden Features</h3>
+        </div>
+        <div class="tips-features">
+          <div class="tips-feature">
+            <span class="tips-feature__icon">🔗</span>
+            <div class="tips-feature__body">
+              <div class="tips-feature__title">Share skills across agents by symlinking</div>
+              <p class="tips-feature__desc">You don't need to duplicate skill directories for each agent. Symlink a skill dir from one agent's workspace into another. Changes propagate everywhere.</p>
+              <code class="tips-feature__cmd">ln -s ~/.openclaw/agents/main/skills/obsidian ~/.openclaw/agents/researcher/skills/obsidian</code>
+            </div>
+          </div>
+          <div class="tips-feature">
+            <span class="tips-feature__icon">🤖</span>
+            <div class="tips-feature__body">
+              <div class="tips-feature__title">Run multiple agents on one gateway</div>
+              <p class="tips-feature__desc">One gateway process can serve multiple agents simultaneously — each with a different model, persona, and set of channels. Create them with <code>openclaw agents add</code> and they share the same gateway but stay isolated.</p>
+            </div>
+          </div>
+          <div class="tips-feature">
+            <span class="tips-feature__icon">📋</span>
+            <div class="tips-feature__body">
+              <div class="tips-feature__title">HEARTBEAT.md drives automated health checks</div>
+              <p class="tips-feature__desc">Put a HEARTBEAT.md in your agent workspace. OpenClaw will execute it on a schedule and alert you if anything's broken. Keep it updated as your setup evolves.</p>
+            </div>
+          </div>
+          <div class="tips-feature">
+            <span class="tips-feature__icon">🌐</span>
+            <div class="tips-feature__body">
+              <div class="tips-feature__title">No messaging app? Use the dashboard as your interface</div>
+              <p class="tips-feature__desc">The dashboard isn't just for setup — it's a fully functional chat interface. Some users run OpenClaw exclusively via dashboard with no external channels at all.</p>
+              <code class="tips-feature__cmd">openclaw dashboard</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tips-section">
+        <div class="tips-section__header">
+          <span class="tips-section__icon">💀</span>
+          <h3 class="tips-section__title">Common Mistakes</h3>
+        </div>
+        <div class="tips-gotchas">
+          <div class="tips-gotcha">
+            <span class="tips-gotcha__skull">☠️</span>
+            <div class="tips-gotcha__title">Setting up Discord before proving the gateway</div>
+            <p class="tips-gotcha__desc">You'll spend an hour debugging Discord bot permissions when the real problem is the gateway isn't running.</p>
+            <span class="tips-gotcha__fix">Always openclaw dashboard first. If that works, Discord will work.</span>
+          </div>
+          <div class="tips-gotcha">
+            <span class="tips-gotcha__skull">☠️</span>
+            <div class="tips-gotcha__title">Secrets in workspace files</div>
+            <p class="tips-gotcha__desc">API keys and tokens in MEMORY.md or workspace .md files can end up in git, logs, or synced to the cloud.</p>
+            <span class="tips-gotcha__fix">Secrets go in ~/.openclaw/secrets/ only. Never in workspace files.</span>
+          </div>
+          <div class="tips-gotcha">
+            <span class="tips-gotcha__skull">☠️</span>
+            <div class="tips-gotcha__title">Using rm on workspace files</div>
+            <p class="tips-gotcha__desc">MEMORY.md and agent workspace files are not trivial. <code>rm</code> is permanent — you lose your agent's memory and context.</p>
+            <span class="tips-gotcha__fix">Use trash instead. Recoverable if you realise the mistake.</span>
+          </div>
+          <div class="tips-gotcha">
+            <span class="tips-gotcha__skull">☠️</span>
+            <div class="tips-gotcha__title">Skipping openclaw doctor when things break</div>
+            <p class="tips-gotcha__desc">Doctor catches most issues in seconds and tells you exactly what to fix. Run it first, then go manual.</p>
+            <span class="tips-gotcha__fix">Run doctor first, always.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 3: COMMAND REFERENCE ══ -->
+    <section class="guide-section" id="reference">
+      <div class="guide-section__header">
+        <span class="guide-section__num">03</span>
+        <span class="guide-section__icon">📋</span>
+        <h2 class="guide-section__title">Command Reference</h2>
+        <span class="guide-section__sub">Commands, flags, workflows</span>
+      </div>
+
+      <div class="guide-ref-grid">
+        {cliFlags.length > 0 && (
+          <div class="guide-ref-panel">
+            <div class="guide-ref-panel__title">CLI Commands</div>
+            {cliFlags.map((flag: any) => (
+              <div class="guide-ref-item">
+                <span class="guide-ref-item__key">{flag.flag || flag.command}</span>
+                <span class="guide-ref-item__desc">{flag.description}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        {dailyWorkflows.length > 0 && (
+          <div class="guide-ref-panel">
+            <div class="guide-ref-panel__title">Daily Workflows</div>
+            {dailyWorkflows.map((wf: any) => (
+              <div class="guide-ref-item">
+                <span class="guide-ref-item__key" style="min-width: 0; font-size: 0.68rem;">{wf.title}</span>
+                <span class="guide-ref-item__desc">{wf.command || wf.description}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        {powerMoves.length > 0 && (
+          <div class="guide-ref-panel">
+            <div class="guide-ref-panel__title">⚡ Power Moves</div>
+            {powerMoves.map((pm: any) => (
+              <div class="guide-ref-item">
+                <span class="guide-ref-item__key" style="min-width: 0; font-size: 0.68rem;">{pm.title}</span>
+                <span class="guide-ref-item__desc">{pm.command || pm.description}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {cliFlags.length === 0 && dailyWorkflows.length === 0 && (
+        <p style="font-family: var(--tool-font-mono); font-size: 0.8rem; color: var(--tool-text-muted);">$ cheatsheet data not available</p>
+      )}
+    </section>
+
+    <!-- ══ 4: RECENT RELEASES ══ -->
+    <section class="guide-section" id="releases">
+      <div class="guide-section__header">
+        <span class="guide-section__num">04</span>
+        <span class="guide-section__icon">🔔</span>
+        <h2 class="guide-section__title">Recent Releases</h2>
+        <span class="guide-section__sub">Latest {releases.length} versions</span>
+      </div>
+
+      {releases.length > 0 ? (
+        <>
+          <div class="guide-releases">
+            {releases.map((r) => {
+              const breaking = isBreaking(r.body);
+              return (
+                <a href={r.url} target="_blank" rel="noopener noreferrer" class="guide-release">
+                  <span class="guide-release__version">v{r.version}</span>
+                  {r.name && <span class="guide-release__name">{r.name}</span>}
+                  {breaking && <span class="guide-release__badge guide-release__badge--breaking">Breaking</span>}
+                  {r.prerelease && <span class="guide-release__badge guide-release__badge--pre">Pre</span>}
+                  <span class="guide-release__date">{formatDate(r.date)}</span>
+                </a>
+              );
+            })}
+          </div>
+          <div class="guide-releases__more">
+            <a href="/openclaw/releases/" class="guide-releases__more-link">All releases ↗</a>
+          </div>
+        </>
+      ) : (
+        <p style="font-family: var(--tool-font-mono); font-size: 0.8rem; color: var(--tool-text-muted);">$ no releases tracked yet</p>
+      )}
+    </section>
+
+  </div>
+
+  <script is:inline>
+    document.querySelectorAll('.qs-cmd').forEach(function(block) {
+      var btn = document.createElement('button');
+      btn.className = 'qs-cmd__copy';
+      btn.textContent = 'copy';
+      btn.addEventListener('click', function() {
+        var code = block.querySelector('code');
+        if (!code) return;
+        var text = code.textContent.replace(/^\$\s*/, '').replace(/^\$/, '').trim();
+        navigator.clipboard.writeText(text).then(function() {
+          btn.textContent = 'copied!';
+          setTimeout(function() { btn.textContent = 'copy'; }, 1500);
+        });
+      });
+      block.style.paddingRight = '5rem';
+      block.appendChild(btn);
+    });
+    var sections = document.querySelectorAll('.guide-section[id]');
+    var tocLinks = document.querySelectorAll('.guide-toc__link');
+    function updateToc() {
+      var scrollY = window.scrollY + 160;
+      var current = '';
+      sections.forEach(function(s) { if (s.offsetTop <= scrollY) current = s.id; });
+      tocLinks.forEach(function(link) {
+        link.classList.toggle('guide-toc__link--active', link.getAttribute('href') === '#' + current);
+      });
+    }
+    window.addEventListener('scroll', updateToc, { passive: true });
+    updateToc();
+  </script>
+</OpenClawLayout>

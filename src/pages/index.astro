@@ -33,22 +33,18 @@ try {
   // fallback: empty
 }
 
-const FEATURED_IDS = ["openclaw", "claude-code", "codex-cli", "gemini-cli", "cursor", "cline", "windsurf", "roo-code", "kilocode", "opencode", "hermes-agent"];
+const FEATURED_IDS = ["openclaw", "claude-code", "codex-cli", "gemini-cli", "kilocode", "hermes-agent"];
+const REMOVED_IDS = ["cline", "cursor", "opencode", "windsurf", "roo-code"];
 const allTools = getTools();
 const { stats: modelStats } = loadModelsData();
 const featuredTools = FEATURED_IDS.map(id => allTools.find(t => t.id === id)).filter(Boolean);
-const otherTools = allTools.filter(t => !FEATURED_IDS.includes(t.id));
+const otherTools = allTools.filter(t => !FEATURED_IDS.includes(t.id) && !REMOVED_IDS.includes(t.id));
 
 const toolColors: Record<string, { bg: string; text: string; glow: string }> = {
   "openclaw":    { bg: "#eb0000", text: "#ffffff", glow: "#eb0000" },
   "claude-code": { bg: "#f59e0b", text: "#ffffff", glow: "#f59e0b" },
   "codex-cli":   { bg: "#00c851", text: "#ffffff", glow: "#00c851" },
   "gemini-cli":  { bg: "#4285f4", text: "#ffffff", glow: "#4285f4" },
-  "cursor":      { bg: "#146EF5", text: "#ffffff", glow: "#146EF5" },
-  "windsurf":    { bg: "#06b6d4", text: "#ffffff", glow: "#06b6d4" },
-  "cline":       { bg: "#a855f7", text: "#ffffff", glow: "#a855f7" },
-  "opencode":    { bg: "#0ea5e9", text: "#ffffff", glow: "#0ea5e9" },
-  "roo-code":    { bg: "#fb923c", text: "#ffffff", glow: "#fb923c" },
   "kilocode":    { bg: "#CCFF33", text: "#000000", glow: "#CCFF33" },
   "hermes-agent": { bg: "#D97706", text: "#ffffff", glow: "#D97706" },
 };
@@ -65,11 +61,6 @@ const toolIcons: Record<string, string> = {
   "claude-code": "C",
   "codex-cli":   "$",
   "gemini-cli":  "G",
-  "cursor":      "↗",
-  "windsurf":    "~",
-  "cline":       "»",
-  "opencode":    "○",
-  "roo-code":    "R",
   "kilocode":    "↗",
   "hermes-agent": "⚡",
 };
@@ -79,20 +70,9 @@ const featuredLinks: Record<string, string> = {
   "claude-code": "/claude-code/",
   "codex-cli":   "/codex-cli/",
   "gemini-cli":  "/gemini-cli/",
-  "cursor":      "/cursor/",
-  "cline":       "/cline/",
-  "windsurf":    "/windsurf/",
-  "roo-code":    "/roo-code/",
   "kilocode":    "/kilocode/",
-  "opencode":    "/opencode/",
   "hermes-agent": "/hermes-agent/",
 };
-
-function formatDate(dateStr: string): string {
-  if (!dateStr) return "";
-  const d = new Date(dateStr);
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-}
 
 function getTldr(body: string): string {
   if (!body) return "No summary available yet.";
@@ -110,6 +90,8 @@ const harnessPrefix: Record<string, string> = {
   "claude-code": "▸",
   "codex-cli": ">",
   "gemini-cli": "›",
+  "kilocode": "↗",
+  "hermes-agent": "⚡",
 };
 ---
 
