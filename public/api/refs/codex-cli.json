@@ -51,7 +51,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release adds support for OS-level proxy enforcement in Windows sandboxes. App-server clients can now use device code flow for ChatGPT sign-in. The `codex exec` command now supports piping input with a separate command-line prompt. Custom model providers can now use dynamic bearer tokens. Project-local `.codex` files are now protected on first creation. Linux sandbox launches are more reliable, and several TUI workflows have been restored, including hook notifications, `/copy`, `/resume`, and the skills picker. MCP startup is also more robust with longer timeouts and clearer warnings."
+      "tldr": "Release 0.119.0-alpha.9 is a patch release in the Rust-based Codex CLI alpha series. The release notes are minimal \u2014 just the version bump with no detailed changelog provided. Given the alpha designation and rapid version cadence, this likely includes incremental fixes and improvements to the Rust sandbox, command execution pipeline, or model integration layer. Previous alpha releases in this series have focused on stabilizing the sandbox execution environment, improving streaming output handling, and expanding model support. For users tracking the alpha channel, this is a routine update \u2014 pull it if you want the latest fixes, but don't expect major feature additions. If you're on the stable npm-based Codex CLI, this Rust alpha is a separate track and you don't need to switch unless you specifically want the native Rust runtime. The alpha continues to mature the Rust implementation as a path toward better performance and sandbox isolation compared to the Node.js version."
     },
     "features": [
       {
@@ -69,7 +69,7 @@
           "Esc Esc: edit previous user message / walk back transcript",
           "! prefix: run local shell command",
           "Ctrl+G: open $VISUAL/$EDITOR for long prompt",
-          "$ mention picker: labels Skills, Apps, Plugins — plugins surface first"
+          "$ mention picker: labels Skills, Apps, Plugins \u2014 plugins surface first"
         ],
         "source_url": "https://github.com/openai/codex"
       },
@@ -80,12 +80,12 @@
         "since": "0.50.0",
         "description": "One-shot headless execution. codex exec runs without interactive TUI, outputs to stdout.",
         "key_details": [
-          "codex exec \"task\" — basic one-shot",
-          "codex exec --full-auto \"task\" — auto-approve in workspace",
-          "codex exec --yolo \"task\" — no sandbox, no approvals, live web search",
-          "codex exec --json \"task\" — machine-readable output",
-          "codex exec resume --last \"follow-up\" — resume last session headlessly",
-          "codex exec resume <id> \"follow-up\" — resume specific session headlessly"
+          "codex exec \"task\" \u2014 basic one-shot",
+          "codex exec --full-auto \"task\" \u2014 auto-approve in workspace",
+          "codex exec --yolo \"task\" \u2014 no sandbox, no approvals, live web search",
+          "codex exec --json \"task\" \u2014 machine-readable output",
+          "codex exec resume --last \"follow-up\" \u2014 resume last session headlessly",
+          "codex exec resume <id> \"follow-up\" \u2014 resume specific session headlessly"
         ],
         "source_url": "https://github.com/openai/codex"
       },
@@ -97,8 +97,8 @@
         "description": "Run tasks in cloud environments. Best-of-N runs supported.",
         "key_details": [
           "codex cloud exec --env ENV_ID \"task\"",
-          "codex cloud exec --env ENV_ID --attempts 3 \"task\" — best-of-N runs",
-          "codex cloud — interactive picker",
+          "codex cloud exec --env ENV_ID --attempts 3 \"task\" \u2014 best-of-N runs",
+          "codex cloud \u2014 interactive picker",
           "Requires configured cloud environment ID"
         ],
         "source_url": "https://github.com/openai/codex"
@@ -110,10 +110,10 @@
         "since": "0.60.0",
         "description": "Resume prior sessions with transcript, plan history, and approvals preserved.",
         "key_details": [
-          "codex resume — picker of recent sessions",
-          "codex resume --all — sessions from any directory",
-          "codex resume --last — jump to most recent",
-          "codex resume <session-id> — specific session",
+          "codex resume \u2014 picker of recent sessions",
+          "codex resume --all \u2014 sessions from any directory",
+          "codex resume --last \u2014 jump to most recent",
+          "codex resume <session-id> \u2014 specific session",
           "Override CWD with --cd or add extra dirs with --add-dir"
         ],
         "source_url": "https://github.com/openai/codex"
@@ -125,7 +125,7 @@
         "since": "0.100.0",
         "description": "Codex auto-spawns sub-agents for parallel work. Manages orchestration, routing, and consolidation.",
         "enabled_by": {
-          "slash_command": "/experimental → Multi-agents → restart",
+          "slash_command": "/experimental \u2192 Multi-agents \u2192 restart",
           "or_config": "~/.codex/config.toml: [features] multi_agent = true"
         },
         "built_in_roles": [
@@ -192,10 +192,10 @@
         "since": "0.80.0",
         "description": "Built-in code review via /review command with preset review modes.",
         "review_presets": [
-          "Review against base branch — diff vs upstream",
-          "Review uncommitted changes — staged + unstaged + untracked",
-          "Review a commit — specific SHA",
-          "Custom review instructions — user-defined focus"
+          "Review against base branch \u2014 diff vs upstream",
+          "Review uncommitted changes \u2014 staged + unstaged + untracked",
+          "Review a commit \u2014 specific SHA",
+          "Custom review instructions \u2014 user-defined focus"
         ],
         "key_details": [
           "Uses dedicated reviewer agent",
@@ -915,14 +915,14 @@
         ".codex/config.toml (project)"
       ],
       "notable_keys": {
-        "model": "string — default model",
+        "model": "string \u2014 default model",
         "web_search": "cached | live | disabled",
-        "review_model": "string — model for /review agent",
-        "[features] multi_agent": "boolean — enable multi-agent",
-        "[features] code_mode": "boolean — enable experimental code mode",
-        "[agents] max_threads": "integer — concurrent agent cap (default 6)",
-        "[agents] max_depth": "integer — nesting depth (default 1)",
-        "[agents] job_max_runtime_seconds": "integer — CSV job timeout (default 1800)"
+        "review_model": "string \u2014 model for /review agent",
+        "[features] multi_agent": "boolean \u2014 enable multi-agent",
+        "[features] code_mode": "boolean \u2014 enable experimental code mode",
+        "[agents] max_threads": "integer \u2014 concurrent agent cap (default 6)",
+        "[agents] max_depth": "integer \u2014 nesting depth (default 1)",
+        "[agents] job_max_runtime_seconds": "integer \u2014 CSV job timeout (default 1800)"
       },
       "source_url": "https://github.com/openai/codex"
     }

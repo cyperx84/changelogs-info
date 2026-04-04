@@ -80,7 +80,7 @@
       "runtime": "node",
       "written_in": "typescript",
       "release_cadence": "Stable on Tuesdays. Preview: Tuesdays UTC 23:59. Nightly: daily UTC 00:00.",
-      "tldr": "This release introduces several key enhancements, including multi-registry support for subagents, dynamic model resolution, and a new experimental memory manager agent. macOS sandboxing is now stricter with Seatbelt allowlisting, and native Windows sandboxing is implemented. The browser agent gains a security prompt and sensitive action controls. Policy configurations now require explicit `toolName` specification, a breaking change. Git worktree support enables isolated parallel sessions, and the CLI now displays a full logo when logged out. This release also includes numerous bug fixes and performance improvements, such as parallelizing startup cleanup tasks and preventing terminal escape sequences from leaking on exit."
+      "tldr": "Gemini CLI v0.37.0-preview.1 is a cherry-pick patch release that applies a fix (commit 64c928f) to the v0.37.0-preview branch. This follows the v0.37.0-preview.0 release and addresses a specific issue discovered after that initial preview drop. The patch was applied by the gemini-cli-robot automation. Being a preview release, this sits on the bleeding edge of Gemini CLI development \u2014 it may include experimental features that haven't landed in the stable channel yet. The v0.37.x series is likely building toward the next stable Gemini CLI release with improvements to the extensions system, model resolution, or interactive mode features. If you're testing the preview channel, pull this patch. If you're on stable, wait for the official v0.37.0 stable release which will incorporate these fixes along with the full feature set."
     },
     "features": [
       {
@@ -90,9 +90,9 @@
         "since": "0.1.0",
         "description": "Full-screen terminal UI. Launch with gemini or gemini -m <model>. Supports --include-directories for extra context.",
         "key_details": [
-          "gemini — launch TUI",
-          "gemini -m gemini-2.5-flash — specific model",
-          "gemini --include-directories ../lib,../docs — add context dirs",
+          "gemini \u2014 launch TUI",
+          "gemini -m gemini-2.5-flash \u2014 specific model",
+          "gemini --include-directories ../lib,../docs \u2014 add context dirs",
           "@file autocomplete prioritizes filenames (0.33.0)",
           "Compact header with ASCII icon",
           "Shell autocomplete improved"
@@ -106,9 +106,9 @@
         "since": "0.10.0",
         "description": "One-shot execution via -p flag. Supports structured JSON and streaming output.",
         "key_details": [
-          "gemini -p \"prompt\" — one-shot text",
-          "gemini -p \"prompt\" --output-format json — structured JSON",
-          "gemini -p \"prompt\" --output-format stream-json — streaming events"
+          "gemini -p \"prompt\" \u2014 one-shot text",
+          "gemini -p \"prompt\" --output-format json \u2014 structured JSON",
+          "gemini -p \"prompt\" --output-format stream-json \u2014 streaming events"
         ],
         "source_url": "https://github.com/google-gemini/gemini-cli"
       },
@@ -144,8 +144,8 @@
           "5. Skill guidance prioritized for session duration"
         ],
         "key_details": [
-          "/skills list — show discovered skills",
-          "/skills link <path> — symlink skills from directory",
+          "/skills list \u2014 show discovered skills",
+          "/skills link <path> \u2014 symlink skills from directory",
           "/skills disable <name> / enable <name> / reload",
           "gemini skills install https://github.com/org/skills.git",
           "gemini skills install /path/local",
@@ -160,7 +160,7 @@
         "name": "Subagents",
         "status": "experimental",
         "since": "0.25.0",
-        "description": "Custom specialized subagents. Operate in YOLO mode — tools execute without individual confirmation.",
+        "description": "Custom specialized subagents. Operate in YOLO mode \u2014 tools execute without individual confirmation.",
         "enabled_by": {
           "settings": "~/.gemini/settings.json: { \"experimental\": { \"enableAgents\": true } }"
         },
@@ -191,7 +191,7 @@
           }
         ],
         "key_details": [
-          "WARNING: Subagents operate in YOLO mode — no per-tool confirmation",
+          "WARNING: Subagents operate in YOLO mode \u2014 no per-tool confirmation",
           "Define custom agents in .gemini/agents/*.md (project) or ~/.gemini/agents/*.md (user)",
           "Frontmatter: name (required), description (required), kind (local/remote), tools, model, temperature, max_turns, timeout_mins",
           "Browser agent requires Chrome 144+",
@@ -214,7 +214,7 @@
           "isolated": "Temp profile, deleted after session",
           "existing": "Attach to running Chrome with remote debugging"
         },
-        "visual_model": "gemini-2.5-computer-use-preview-10-2025 — for click/interact UI tasks",
+        "visual_model": "gemini-2.5-computer-use-preview-10-2025 \u2014 for click/interact UI tasks",
         "requirements": [
           "Chrome 144+"
         ],
@@ -275,7 +275,7 @@
         "key_details": [
           "gemini extensions install <url>",
           "gemini extensions uninstall <name>",
-          "gemini extensions uninstall --all — bulk uninstall (0.33.0)",
+          "gemini extensions uninstall --all \u2014 bulk uninstall (0.33.0)",
           "Symlink-safe source paths",
           "Extensions can distribute subagents"
         ],
@@ -288,7 +288,7 @@
         "since": "0.20.0",
         "description": "Read-only mode for planning complex changes without executing. Documented Conductor pattern for structured task decomposition.",
         "key_details": [
-          "/plan — enter plan mode",
+          "/plan \u2014 enter plan mode",
           "Conductor pattern for structured task decomposition",
           "Integration tests stabilized (0.33.0)"
         ],
@@ -309,9 +309,9 @@
         "since": "0.15.0",
         "description": "Multi-session support with new, resume, and list commands.",
         "key_details": [
-          "/chat new — new session",
-          "/chat resume — resume previous",
-          "/chat list — list sessions",
+          "/chat new \u2014 new session",
+          "/chat resume \u2014 resume previous",
+          "/chat list \u2014 list sessions",
           "Chat resume footer shown on quit with resume instructions (0.33.0)"
         ],
         "source_url": "https://github.com/google-gemini/gemini-cli"
@@ -1428,13 +1428,13 @@
     "config": {
       "file_path": "~/.gemini/settings.json",
       "notable_keys": {
-        "experimental.enableAgents": "boolean — enable subagents",
-        "experimental.codebaseInvestigatorSettings.model": "string — model for codebase investigator",
+        "experimental.enableAgents": "boolean \u2014 enable subagents",
+        "experimental.codebaseInvestigatorSettings.model": "string \u2014 model for codebase investigator",
         "experimental.codebaseInvestigatorSettings.maxNumTurns": "integer",
-        "agents.overrides.browser_agent.enabled": "boolean — enable browser agent",
+        "agents.overrides.browser_agent.enabled": "boolean \u2014 enable browser agent",
         "agents.browser.sessionMode": "persistent | isolated | existing",
         "agents.browser.headless": "boolean",
-        "agents.browser.visualModel": "string — model for visual browser tasks"
+        "agents.browser.visualModel": "string \u2014 model for visual browser tasks"
       },
       "source_url": "https://github.com/google-gemini/gemini-cli"
     }

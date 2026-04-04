@@ -52,7 +52,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces a `forceRemoteSettingsRefresh` policy setting that blocks startup until remote managed settings are fetched, exiting if the fetch fails. An interactive Bedrock setup wizard is now available from the login screen for AWS authentication and model pinning. The `/cost` command now provides a per-model and cache-hit breakdown for subscription users. Remote Control session names now default to using your hostname as a prefix, configurable via `--remote-control-session-name-prefix`. The `/tag` command has been removed, and `/vim` is deprecated in favor of `/config` → Editor mode."
+      "tldr": "This release (v2.1.92) brings quality-of-life improvements and important bug fixes across the board. The standout new feature is the interactive Bedrock setup wizard \u2014 when you select 3rd-party platform from the login screen, Claude Code now walks you through AWS authentication, region configuration, credential verification, and model pinning step by step. No more guessing at AWS config. A new forceRemoteSettingsRefresh policy setting lets enterprise admins enforce fresh managed settings on every startup, with a fail-closed exit if the fetch fails \u2014 useful for environments where policy compliance matters. The /cost command now shows per-model and cache-hit breakdowns for subscription users, so you can see exactly where your money's going. /release-notes is now an interactive version picker instead of dumping the latest changelog. Remote Control sessions got a nice UX touch \u2014 session names now use your hostname as the default prefix (e.g. myhost-graceful-unicorn), overridable with --remote-control-session-name-prefix. Pro users get a footer hint when returning to a session after the prompt cache expires, showing roughly how many tokens the next turn will send uncached \u2014 helpful for cost awareness. Bug fixes are significant: subagent spawning no longer permanently fails after tmux windows are killed or renumbered during long sessions, prompt-type Stop hooks work correctly when the fast model returns ok:false, tool input validation no longer chokes on streaming-emitted JSON-encoded string fields, and whitespace-only extended thinking blocks no longer cause API 400 errors. The Write tool's diff computation is 60% faster on large files with tabs, ampersands, or dollar signs. Accidental feedback survey submissions from auto-pilot keypresses are fixed. The misleading esc-to-interrupt hint no longer appears alongside esc-to-clear when text is selected. Homebrew install prompts now correctly distinguish between the stable cask and the latest channel. On the breaking side, /tag and /vim commands have been removed (toggle vim mode via /config \u2192 Editor mode instead). The Linux sandbox now ships the apply-seccomp helper in both npm and native builds, restoring unix-socket blocking for sandboxed commands. Overall: solid quality release. Upgrade if you use Bedrock, care about cost tracking, or have hit any of the subagent/tmux/hook bugs."
     },
     "features": [
       {
@@ -72,15 +72,15 @@
           "/batch"
         ],
         "key_details": [
-          "3–5 teammates recommended",
+          "3\u20135 teammates recommended",
           "Teammates inherit the lead's model unless overridden",
           "Shift+Down cycles between teammates in in-process mode",
           "Ctrl+T opens shared task list",
-          "Tasks: pending → in progress → completed with dependency support",
+          "Tasks: pending \u2192 in progress \u2192 completed with dependency support",
           "File locking prevents race conditions on task claiming",
-          "Teammates do NOT inherit lead's conversation history — include context in spawn prompt",
+          "Teammates do NOT inherit lead's conversation history \u2014 include context in spawn prompt",
           "TeammateIdle and TaskCompleted hooks support exit code 2 to keep working",
-          "Lead must clean up team — shut down teammates before cleanup",
+          "Lead must clean up team \u2014 shut down teammates before cleanup",
           "Plan approval mode: teammate works read-only then submits plan for lead review"
         ],
         "display_modes": [
@@ -99,7 +99,7 @@
         "name": "Subagents",
         "status": "stable",
         "since": "2.0.0",
-        "description": "Focused workers that run inside a session and report back to the caller. Simpler than agent teams — no inter-agent messaging, no shared task list.",
+        "description": "Focused workers that run inside a session and report back to the caller. Simpler than agent teams \u2014 no inter-agent messaging, no shared task list.",
         "key_details": [
           "Cannot spawn other subagents (no nesting)",
           "Do not inherit parent conversation history",
@@ -138,7 +138,7 @@
         "key_details": [
           "Exit code 2 from hook sends feedback and blocks action",
           "SessionEnd hooks timeout configurable via CLAUDE_CODE_SESSIONEND_HOOKS_TIMEOUT_MS",
-          "Hooks fire per-session — JSON-output hooks no longer inject no-op system-reminder messages",
+          "Hooks fire per-session \u2014 JSON-output hooks no longer inject no-op system-reminder messages",
           "agent_id and agent_type fields available in hook events for subagent identification",
           "worktree field added with name, path, branch, original repo directory"
         ],
@@ -194,7 +194,7 @@
           "Esc+Esc or /rewind opens rewind menu",
           "Actions: restore code+conversation, restore conversation only, restore code only, summarize-from-here",
           "30-day retention (configurable)",
-          "Limitation: Bash-modified files NOT tracked — only Claude's edit tools"
+          "Limitation: Bash-modified files NOT tracked \u2014 only Claude's edit tools"
         ],
         "source_url": "https://docs.anthropic.com/en/docs/claude-code/checkpointing"
       },
@@ -208,8 +208,8 @@
           "Max 50 tasks per session",
           "3-day auto-expiry for recurring tasks",
           "No catch-up for missed fires",
-          "±10% jitter (max 15min) for recurring, ±90s for one-shots",
-          "Session-scoped only — not durable across restarts",
+          "\u00b110% jitter (max 15min) for recurring, \u00b190s for one-shots",
+          "Session-scoped only \u2014 not durable across restarts",
           "Disable mid-session: CLAUDE_CODE_DISABLE_CRON env var",
           "Tools: CronCreate, CronList, CronDelete"
         ],
@@ -232,7 +232,7 @@
           }
         },
         "key_details": [
-          "↯ icon appears while active",
+          "\u21af icon appears while active",
           "Compatible with 1M context window",
           "Switching mid-conversation pays full uncached input price",
           "/fast again to toggle off (stays on Opus 4.6)",
@@ -248,7 +248,7 @@
         "description": "Automated PR review using multi-agent parallel analysis. Posts inline PR comments.",
         "key_details": [
           "Multiple specialized agents examine diff + full codebase in parallel",
-          "Severity: 🔴 Normal, 🟡 Nit, 🟣 Pre-existing",
+          "Severity: \ud83d\udd34 Normal, \ud83d\udfe1 Nit, \ud83d\udfe3 Pre-existing",
           "Verification step filters false positives",
           "Customizable via CLAUDE.md and REVIEW.md in repo",
           "Runs on PR creation and/or every push (configurable)",
@@ -279,7 +279,7 @@
         "key_details": [
           "Start: /remote-control [--name \"title\"]",
           "Custom session title visible in claude.ai/code",
-          "Poll rate: 10min while connected (was 1–2s), 300x server load reduction",
+          "Poll rate: 10min while connected (was 1\u20132s), 300x server load reduction",
           "Reconnection immediately wakes fast polling on transport loss"
         ],
         "source_url": "https://docs.anthropic.com/en/docs/claude-code/remote-control"
@@ -385,7 +385,7 @@
         "name": "Plugin Marketplace Settings Source",
         "status": "stable",
         "since": "2.1.80",
-        "description": "Added `source: 'settings'` plugin marketplace source — declare plugin entries inline in settings.json",
+        "description": "Added `source: 'settings'` plugin marketplace source \u2014 declare plugin entries inline in settings.json",
         "key_details": [],
         "source_url": ""
       },
@@ -439,7 +439,7 @@
         "name": "Transcript Search",
         "status": "stable",
         "since": "2.1.83",
-        "description": "Added transcript search — press `/` in transcript mode (`Ctrl+O`) to search, `n`/`N` to step through matches.",
+        "description": "Added transcript search \u2014 press `/` in transcript mode (`Ctrl+O`) to search, `n`/`N` to step through matches.",
         "key_details": [],
         "source_url": ""
       },
@@ -502,7 +502,7 @@
         "name": "Plugin Options Available Externally",
         "status": "stable",
         "since": "2.1.83",
-        "description": "Plugin options (`manifest.userConfig`) now available externally — plugins can prompt for configuration at enable time, with `sensitive: true` values stored in keychain (macOS) or protected credentials file (other platforms).",
+        "description": "Plugin options (`manifest.userConfig`) now available externally \u2014 plugins can prompt for configuration at enable time, with `sensitive: true` values stored in keychain (macOS) or protected credentials file (other platforms).",
         "key_details": [],
         "source_url": ""
       },
@@ -538,7 +538,7 @@
         "name": "WorktreeCreate HTTP Hook Support",
         "status": "stable",
         "since": "2.1.84",
-        "description": "Added `WorktreeCreate` hook support for `type: \"http\"` — return the created worktree path via `hookSpecificOutput.worktreePath` in the response JSON",
+        "description": "Added `WorktreeCreate` hook support for `type: \"http\"` \u2014 return the created worktree path via `hookSpecificOutput.worktreePath` in the response JSON",
         "key_details": [],
         "source_url": ""
       },
@@ -664,7 +664,7 @@
         "name": "Interactive Bedrock setup wizard",
         "status": "stable",
         "since": "2.1.92",
-        "description": "Added interactive Bedrock setup wizard accessible from the login screen when selecting \"3rd-party platform\" — guides you through AWS authentication, region configuration, credential verification, and model pinning",
+        "description": "Added interactive Bedrock setup wizard accessible from the login screen when selecting \"3rd-party platform\" \u2014 guides you through AWS authentication, region configuration, credential verification, and model pinning",
         "key_details": [],
         "source_url": ""
       }
@@ -724,9 +724,9 @@
         "since": "2.1.72",
         "status": "stable",
         "symbols": {
-          "low": "○",
-          "medium": "◐",
-          "high": "●"
+          "low": "\u25cb",
+          "medium": "\u25d0",
+          "high": "\u25cf"
         },
         "source_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
       },
@@ -926,7 +926,7 @@
       {
         "name": "/clear",
         "syntax": "/clear",
-        "description": "Clear foreground only — does not kill background agent/bash tasks.",
+        "description": "Clear foreground only \u2014 does not kill background agent/bash tasks.",
         "since": "2.0.0",
         "status": "stable",
         "source_url": "https://docs.anthropic.com/en/docs/claude-code"
@@ -1146,7 +1146,7 @@
         },
         {
           "flag": "--channels",
-          "description": "(research preview) — allow MCP servers to push messages into your session",
+          "description": "(research preview) \u2014 allow MCP servers to push messages into your session",
           "since": "2.1.80",
           "source_url": ""
         },
@@ -1595,7 +1595,7 @@
       },
       {
         "name": "/vim",
-        "replaced_by": "/config → Editor mode",
+        "replaced_by": "/config \u2192 Editor mode",
         "deprecated_since": "2.1.92",
         "source_url": ""
       },
@@ -1607,7 +1607,7 @@
       },
       {
         "name": "/vim",
-        "replaced_by": "/config → Editor mode",
+        "replaced_by": "/config \u2192 Editor mode",
         "deprecated_since": "2.1.92",
         "source_url": ""
       },
@@ -1619,7 +1619,7 @@
       },
       {
         "name": "/vim",
-        "replaced_by": "/config → Editor mode",
+        "replaced_by": "/config \u2192 Editor mode",
         "deprecated_since": "2.1.92",
         "source_url": ""
       },
@@ -1631,7 +1631,7 @@
       },
       {
         "name": "/vim",
-        "replaced_by": "/config → Editor mode",
+        "replaced_by": "/config \u2192 Editor mode",
         "deprecated_since": "2.1.92",
         "source_url": ""
       },
@@ -1643,7 +1643,7 @@
       },
       {
         "name": "/vim",
-        "replaced_by": "/config → Editor mode",
+        "replaced_by": "/config \u2192 Editor mode",
         "deprecated_since": "2.1.92",
         "source_url": ""
       },
@@ -1655,7 +1655,7 @@
       },
       {
         "name": "/vim",
-        "replaced_by": "/config → Editor mode",
+        "replaced_by": "/config \u2192 Editor mode",
         "deprecated_since": "2.1.92",
         "source_url": ""
       },
@@ -1667,7 +1667,7 @@
       },
       {
         "name": "/vim",
-        "replaced_by": "/config → Editor mode",
+        "replaced_by": "/config \u2192 Editor mode",
         "deprecated_since": "2.1.92",
         "source_url": ""
       },
@@ -1679,7 +1679,7 @@
       },
       {
         "name": "/vim",
-        "replaced_by": "/config → Editor mode",
+        "replaced_by": "/config \u2192 Editor mode",
         "deprecated_since": "2.1.92",
         "source_url": ""
       },
@@ -1691,7 +1691,7 @@
       },
       {
         "name": "/vim",
-        "replaced_by": "/config → Editor mode",
+        "replaced_by": "/config \u2192 Editor mode",
         "deprecated_since": "2.1.92",
         "source_url": ""
       }
@@ -1737,11 +1737,11 @@
         ".claude/settings.local.json (project-local, gitignored)"
       ],
       "notable_keys": {
-        "fastMode": "boolean — enable fast mode",
+        "fastMode": "boolean \u2014 enable fast mode",
         "teammateMode": "in-process | split-panes | auto",
-        "autoMemoryDirectory": "string — custom directory for auto-memory storage (new in 2.1.74)",
-        "modelOverrides": "object — map model picker entries to custom provider model IDs (new in 2.1.73)",
-        "includeGitInstructions": "boolean — include built-in git commit/PR workflow instructions",
+        "autoMemoryDirectory": "string \u2014 custom directory for auto-memory storage (new in 2.1.74)",
+        "modelOverrides": "object \u2014 map model picker entries to custom provider model IDs (new in 2.1.73)",
+        "includeGitInstructions": "boolean \u2014 include built-in git commit/PR workflow instructions",
         "sandbox.enabled": "boolean",
         "sandbox.filesystem.allowWrite": "string[]",
         "permissions.defaultMode": "acceptEdits | plan",
