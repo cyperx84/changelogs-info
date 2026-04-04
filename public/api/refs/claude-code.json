@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.92",
-  "generated_at": "2026-04-04T11:09:52.478Z",
+  "generated_at": "2026-04-04T12:13:24.328Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -16,10 +16,7 @@
   "delta": {
     "from_version": "2.1.92",
     "to_version": "2.1.92",
-    "new_features": [
-      "force-remote-settings-refresh-policy",
-      "interactive-bedrock-setup-wizard"
-    ],
+    "new_features": [],
     "new_commands": [],
     "new_flags": [
       "--remote-control-session-name-prefix"
@@ -31,7 +28,8 @@
     ],
     "deprecated_flags": [],
     "breaking_changes": [
-      "vim-command-removal"
+      "removed-tag-command",
+      "removed-vim-command"
     ]
   },
   "payload": {
@@ -54,7 +52,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Version 2.1.92 introduces a `forceRemoteSettingsRefresh` policy that ensures the CLI blocks startup until remote managed settings are freshly fetched, exiting if the fetch fails, providing a fail-closed approach for managed settings. An interactive Bedrock setup wizard is now available from the login screen for \"3rd-party platform\" selection, guiding users through AWS authentication, region configuration, credential verification, and model pinning. The `/cost` command now provides a per-model and cache-hit breakdown for subscription users, offering more granular cost analysis. Remote Control session names now default to using your hostname as a prefix, which can be overridden with the `--remote-control-session-name-prefix` flag. The `/vim` command has been removed; vim mode can now be toggled via `/config` → Editor mode. The `/tag` command has also been removed. Several fixes address issues such as subagent spawning failures, prompt-type Stop hook errors, tool input validation failures, API 400 errors, accidental feedback survey submissions, misleading hints, Homebrew update prompts, multiline prompt behavior, message duplication in fullscreen mode, incorrect token counts, plugin MCP server connection issues, and Write tool diff computation speed. Pro users will now see a footer hint indicating the approximate uncached token count when returning to a session after the prompt cache has expired. The Linux sandbox now ships the `apply-seccomp` helper in both npm and native builds. Upgrading is recommended to benefit from the new features, fixes, and improved performance. No specific prerequisites are required."
+      "tldr": "This release introduces a `forceRemoteSettingsRefresh` policy setting that blocks startup until remote managed settings are fetched, ensuring fail-closed behavior. A new interactive Bedrock setup wizard simplifies AWS authentication and model pinning for 3rd-party platforms. The `/cost` command now provides a per-model and cache-hit breakdown for subscription users, offering more granular cost analysis. The `/release-notes` command is now an interactive version picker. Remote Control session names now default to using your hostname as a prefix, customizable with the `--remote-control-session-name-prefix` flag. Pro users will see a footer hint indicating the uncached token count after prompt cache expiration. Several fixes address issues like subagent spawning failures, prompt-type Stop hook errors, tool input validation failures, API 400 errors, accidental feedback submissions, misleading hints, Homebrew update prompts, multiline prompt behavior, message duplication in fullscreen mode, incorrect idle-return hints, and plugin MCP server connection issues. The Write tool's diff computation speed has been improved for large files. The `/tag` command has been removed, and the `/vim` command has been replaced by a toggle in `/config` → Editor mode. The Linux sandbox now ships the `apply-seccomp` helper in both npm and native builds. Upgrading is recommended to benefit from the new features, fixes, and security enhancements. No specific prerequisites are required."
     },
     "features": [
       {
@@ -1468,6 +1466,24 @@
         ],
         "migration": "Use `/config` → Editor mode to toggle vim mode.",
         "source_url": ""
+      },
+      {
+        "id": "removed-tag-command",
+        "version": "2.1.92",
+        "title": "/tag command removed",
+        "description": "The `/tag` command has been removed.",
+        "affected": [],
+        "migration": "Use alternative methods for tagging or note-taking.",
+        "source_url": ""
+      },
+      {
+        "id": "removed-vim-command",
+        "version": "2.1.92",
+        "title": "/vim command removed",
+        "description": "The `/vim` command has been removed.",
+        "affected": [],
+        "migration": "Toggle vim mode via `/config` → Editor mode.",
+        "source_url": ""
       }
     ],
     "deprecations": [
@@ -1607,6 +1623,18 @@
         "name": "/status",
         "replaced_by": null,
         "deprecated_since": "2.1.83",
+        "source_url": ""
+      },
+      {
+        "name": "/tag",
+        "replaced_by": null,
+        "deprecated_since": "2.1.92",
+        "source_url": ""
+      },
+      {
+        "name": "/vim",
+        "replaced_by": "/config → Editor mode",
+        "deprecated_since": "2.1.92",
         "source_url": ""
       },
       {
