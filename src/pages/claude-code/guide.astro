@@ -45,21 +45,36 @@ function isBreaking(body: string = "") { return body.toLowerCase().includes("bre
       <img class="guide-hero__img" src="/images/guides/claude-code-hero.png" alt="Claude Code" />
       <div class="guide-hero__content">
         <h2 class="guide-hero__title">Claude Code</h2>
-        <div class="guide-hero__body">
+                <div class="guide-hero__body">
           <p>
-            Honestly, Claude Code is the one that changed how I actually work. Not "improved" — changed. It's a terminal-based AI coding agent from Anthropic that drops directly into your workflow. No browser tab, no copy-paste loops, no context window juggling. You open your project, type <code>claude</code>, and it starts reading your codebase. It just… knows where it is.
+            Honestly, Claude Code is the one that changed how I actually work. Not "improved" — changed. It's an agentic coding assistant from Anthropic that lives in your terminal and does real engineering work, not just autocomplete or snippet generation. You give it a task, it explores your codebase, understands the architecture, writes code, runs tests, reads errors, and iterates until it's done. It's the closest thing to having a senior engineer who never sleeps.
           </p>
           <p>
-            What makes it different from other AI coding tools is the agentic loop. Claude Code doesn't just answer questions — it takes actions. It reads files, edits code, runs commands, checks the output, and iterates. You give it a task like "refactor the auth module to use JWTs and make sure the tests still pass" and it actually does that, end to end. You're supervising, not transcribing.
+            What makes it different from other AI coding tools is the <strong>agentic loop</strong>. Claude Code doesn't just answer a question and stop — it plans, executes, observes, and adapts. Ask it to "add authentication to the API" and it'll find your existing auth patterns, create the middleware, update the routes, add tests, and fix anything that breaks. All autonomously. You watch it work in real-time, intervene when you want, or just let it run.
           </p>
           <p>
-            The <strong>CLAUDE.md</strong> feature is legitimately sick. Drop a markdown file in your repo root, and it gets read automatically at the start of every session. Put your conventions, your architecture notes, your "don't touch this" warnings — all of it. Suddenly every session starts with full context. No re-explaining. No "as I mentioned before." It's like having a senior dev who actually remembers things.
+            The <strong>CLAUDE.md</strong> feature is legitimately sick. Drop a markdown file in your repo root with your project's conventions, architecture decisions, testing patterns, coding style — and Claude Code reads it before every task. It's like onboarding documentation that the AI actually respects. Your codebase, your rules. Multiple levels too — root CLAUDE.md for project-wide stuff, directory-level ones for module-specific conventions.
           </p>
           <p>
-            Getting started is fast. You need Node 18+, an Anthropic API key, and one install command. From there you can run it interactively or pipe it into scripts with <code>--print</code> mode. The non-interactive output is clean JSON or plain text — works perfectly in CI, git hooks, or any automation where you need AI reasoning without a human in the loop.
+            The <strong>Task tool</strong> is where the orchestration gets wild. Claude Code can spawn sub-agents for parallel work. So when you say "implement the user management feature," it breaks that into database schema, API endpoints, frontend components, and tests — then works through them systematically, either sequentially or in parallel. It's not guessing, it's actually reasoning about dependencies.
           </p>
           <p>
-            Who's it for? Builders who live in the terminal. Backend engineers doing big refactors. Anyone tired of bouncing between an editor and a chat window. If you're spending more than a few minutes a day on copy-paste AI workflows, this is the upgrade.
+            Getting started is fast. You need Node 18+, an Anthropic API key, and one install command. From there, <code>claude</code> in any project directory starts a session. Use <code>--print</code> for non-interactive mode (great for CI/CD pipelines), <code>--permission-mode</code> to control how aggressive it is with file changes, and <code>--resume</code> to pick up where you left off after lunch.
+          </p>
+          <p>
+            The <strong>permission modes</strong> are worth understanding. <code>bypassPermissions</code> means it just goes — no confirmation prompts, full send. <code>auto</code> lets it do most things but asks on destructive ops. The default mode confirms before file writes. For autonomous work on a trusted project, bypass is the move. For anything production-critical, start with default until you trust it.
+          </p>
+          <p>
+            Context window is massive — 200K tokens. That's enough to load entire codebases into a single session. Large monorepos, complex refactors, cross-cutting concerns that touch dozens of files — Claude Code can hold all of it in context and make coherent changes across the whole thing. That's the difference between an autocomplete tool and an actual engineering partner.
+          </p>
+          <p>
+            The <strong>MCP integration</strong> means it can connect to external tools and data sources. Database queries, API calls, file systems, custom tooling — Claude Code can use all of it through the Model Context Protocol. If your workflow involves looking at logs, checking APIs, and reading documentation, you can wire those directly into the session instead of copy-pasting between windows.
+          </p>
+          <p>
+            What about cost? It uses Anthropic's API directly, so you pay per token. A complex refactor might run $2-5 in API costs. A full feature implementation might be $5-15. Compared to the hours of engineering time it saves, the math works out fast. Use Sonnet for day-to-day work (cheaper, fast) and Opus for the hard problems (more expensive, but actually reasons through edge cases).
+          </p>
+          <p>
+            Who's it for? Builders who live in the terminal. Backend engineers doing big refactors. Anyone tired of cookie-cutter autocomplete suggestions that don't understand their codebase. Teams that want to ship faster without sacrificing code quality. If you've ever wished you could just describe what you want built and have it actually happen — Claude Code is the closest thing to that right now.
           </p>
         </div>
       </div>

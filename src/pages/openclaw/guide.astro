@@ -44,19 +44,34 @@ function isBreaking(body: string = "") { return body.toLowerCase().includes("bre
         <h2 class="guide-hero__title">OpenClaw</h2>
         <div class="guide-hero__body">
           <p>
-            OpenClaw is the orchestration layer that connects your AI agents to everything else. Think of it as the switching fabric — a local gateway process that routes messages between whatever channels you want (Telegram, Discord, Slack, webhook) and whatever AI models you're running (Anthropic, OpenAI, OpenRouter, local). It's the glue that makes your AI actually reachable.
+            OpenClaw is the orchestration layer that connects your AI agents to everything else. Think of it as the switching fabric — a local gateway process that routes messages between whatever channels you want (Telegram, Discord, Slack, Signal, iMessage, webhook) and whatever AI models you're running (Anthropic, OpenAI, OpenRouter, Google, local Ollama). It's the glue that makes your AI actually reachable, not just some API key you forget about.
           </p>
           <p>
-            The core idea is clean: you run one gateway, you attach channels to it, and you attach agents to those channels. Each agent gets its own workspace — a directory of plain markdown files that serve as its memory, skills, and context. No proprietary formats, no cloud sync required. Just files you can read, edit, and version control.
+            The core idea is clean: you run one gateway, you attach channels to it, and you attach agents to those channels. Each agent gets its own workspace — a directory of plain markdown files that serve as its memory, skills, and context. No proprietary formats, no cloud sync required, no vendor lock-in. Just files you can read, edit, version control, and actually understand. That's kind of the whole philosophy — your agent's brain should be inspectable.
           </p>
           <p>
-            What I actually like about it is the <strong>model agnosticism</strong>. You're not locked to one provider. You can run Claude on your personal agent, GPT-4o on your work agent, and a local Ollama model for anything sensitive — all routing through the same gateway. Switching models is a config change, not a rewrite.
+            What I actually like about it is the <strong>model agnosticism</strong>. You're not locked to one provider. You can run Claude on your personal agent, GPT-4o on your work agent, Gemini for research tasks, and a local Ollama model for anything sensitive — all routing through the same gateway. Switching models is literally a config change, not a rewrite. When a new model drops and everyone's losing their minds on Twitter about it, you just swap the model string and you're running it.
           </p>
           <p>
-            Setup is a <code>openclaw onboard</code> wizard that walks you through creating your first agent, then a <code>openclaw gateway start</code> to bring the router online. From there you can validate everything in the browser dashboard before touching any external channels. That's the move — dashboard first, then Telegram, then Discord. Don't set up bots before you know the core stack is working.
+            The <strong>skills system</strong> is where it gets genuinely interesting. Skills are just directories with a SKILL.md file — no special build step, no packaging nonsense. You write instructions in plain English, drop in a script or two, and your agent knows how to use a new tool. There's a whole community hub at clawhub.ai where people share skills, or you can just write your own. It's basically giving your agent new abilities on demand.
           </p>
           <p>
-            Who's it for? People who want their AI available everywhere, not just in one app. Builders who are tired of one-off bot setups and want a proper agent infrastructure. If you've ever wished your AI assistant was in your phone, your terminal, and your team chat simultaneously — that's exactly what OpenClaw does.
+            Setup is a <code>openclaw onboard</code> wizard that walks you through creating your first agent, then a <code>openclaw gateway start</code> to bring the router online. From there you can validate everything in the browser dashboard before touching any external channels. That's the move — dashboard first, then Telegram, then Discord. Don't set up bots before you know the core stack is working. <code>openclaw doctor</code> is your best friend here — run it when anything's off and it'll tell you exactly what's broken.
+          </p>
+          <p>
+            The <strong>fleet model</strong> is what separates it from just running a bot. You can have multiple agents — one for coding, one for research, one for ops — each with its own personality, model, and skill set, all running through one gateway. They share memory through a semantic memory pool (Mem0 + Qdrant), so when your research agent learns something, your coding agent can access that knowledge too. It's not a single chatbot, it's an actual agent team.
+          </p>
+          <p>
+            What about reliability? The gateway runs locally on your machine — your Mac, a VPS, a Pi, whatever. No cloud dependency for the core routing. Your channels connect out to their APIs, but the brain stays local. That means no outages because some SaaS provider had a bad deploy. Your agents, your hardware, your rules.
+          </p>
+          <p>
+            The <strong>ACP runtime</strong> lets you wire in coding agents like Claude Code, Codex, Gemini CLI — they run as subprocesses under OpenClaw's management. So you can literally message your agent on Telegram and say "build me a landing page" and it spawns Claude Code to do the work, reports back when it's done. That's the kind of workflow that sounds like sci-fi but it's literally just a config file and a tmux session.
+          </p>
+          <p>
+            Mobile support is solid too — there's companion apps for iOS and Android that pair with your gateway via QR code. So you're walking around, idea hits you, you tell your agent, and it's already working on it by the time you sit down at your desk. Pair that with the voice-to-text pipeline and it basically becomes an always-available chief of staff.
+          </p>
+          <p>
+            Who's it for? People who want their AI available everywhere, not just in one app. Builders who are tired of one-off bot setups and want a proper agent infrastructure. Teams who need AI that's actually connected to their tools and workflows. If you've ever wished your AI assistant was in your phone, your terminal, and your team chat simultaneously — that's exactly what OpenClaw does. It's not a chatbot wrapper, it's the infrastructure layer for making AI agents real.
           </p>
         </div>
       </div>

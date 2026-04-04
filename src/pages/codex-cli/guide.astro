@@ -42,21 +42,36 @@ function isBreaking(body: string = "") { return body.toLowerCase().includes("bre
       <img class="guide-hero__img" src="/images/guides/codex-cli-hero.png" alt="Codex CLI" />
       <div class="guide-hero__content">
         <h2 class="guide-hero__title">Codex CLI</h2>
-        <div class="guide-hero__body">
+                <div class="guide-hero__body">
           <p>
-            Codex CLI is OpenAI's answer to the agentic coding assistant question — and the answer is fast. Like, genuinely fast. It's a terminal-native tool that reads your codebase, proposes changes, and applies them with approval. The whole loop from task to working code is tighter than most alternatives, which is exactly what you want when you're iterating on a feature at 11pm.
+            Codex CLI is OpenAI's answer to the agentic coding assistant question — and the answer is fast. Like, noticeably faster than the competition. It's a terminal-based coding agent powered by OpenAI's latest models that takes natural language instructions and turns them into actual code changes in your repo. No GUI needed, no VS Code extension, just your terminal and an API key.
           </p>
           <p>
-            The core model is <strong>suggest-then-apply</strong>. By default, Codex shows you what it wants to do before touching anything. You review the diff, approve or reject, and it moves on. That approval friction is actually a feature — you stay in the loop without having to babysit every file. You can also drop into fully autonomous mode if you trust the task, but suggest mode is the right default when you're starting out.
+            The core model is <strong>suggest-then-apply</strong>. By default, Codex shows you what it wants to change and waits for your approval. This is actually smart for a default — you see the diff, you approve or reject, you stay in control. But once you trust it, switch to full-auto mode with <code>--full-auto</code> and it just goes. Writes code, runs tests, fixes errors, commits. The whole loop.
           </p>
           <p>
-            The <strong>.codex/instructions.md</strong> file is where you make it smart about your project. This gets read at the start of every run. Drop your stack info, your naming conventions, which files to avoid, your testing patterns — all of it. Without this, Codex is smart but general. With it, Codex knows your codebase. That difference is massive.
+            The <strong>.codex/instructions.md</strong> file is where you make it smart about your project. This is your chance to tell it about your stack, your conventions, your testing setup, your deployment process. Codex reads this before every task, so it's not just guessing about how your project works — it actually knows. Think of it as the onboarding doc you wish every new hire would actually read.
           </p>
           <p>
-            Setup is clean: set your <code>OPENAI_API_KEY</code>, install with npm, run <code>codex</code> in your project directory. First-run onboarding walks you through the basics. By the time you finish, you should have a working task loop and understand the approval flow. The whole thing takes under 10 minutes.
+            Where Codex really shines is <strong>batch operations</strong>. Need to update 50 API endpoints to use a new auth pattern? Add error handling to every controller? Migrate a config format across an entire codebase? Codex handles the "do this repetitive thing 100 times" class of problems better than almost anything else. It's methodical, it doesn't get bored, and it doesn't miss edge cases on file 47 because it's tired.
           </p>
           <p>
-            Who's it for? Engineers who want speed and prefer OpenAI's models. Teams already in the OpenAI ecosystem who want to extend that into the terminal. Anyone doing iterative coding tasks where you want AI proposals without AI autonomy by default.
+            Setup is clean: set your <code>OPENAI_API_KEY</code>, install with npm, run <code>codex</code> in your project directory. That's it. No config files to create, no workspace setup, no onboarding wizard. First run takes maybe 30 seconds from install to writing code. The simplicity is actually a feature — less ceremony means more actual work getting done.
+          </p>
+          <p>
+            The <strong>sandbox execution</strong> is a nice safety feature. Codex can run commands in a sandboxed environment so it can test its changes without touching your actual system. This means it can run your test suite, check build output, and validate its work without risk. For anything beyond trivial changes, this is the mode you want — it catches problems before they become your problems.
+          </p>
+          <p>
+            Model selection matters here. Codex supports OpenAI's full model lineup. Use the fast models for quick fixes and small tasks. Use the reasoning models for complex architecture decisions and debugging gnarly bugs. The difference in output quality between models is significant — don't cheap out on the hard problems.
+          </p>
+          <p>
+            The <strong>session history</strong> is stored locally in <code>~/.codex/sessions/</code>. Every conversation, every change, every decision — it's all there. You can resume sessions, review what happened, and trace back why a particular change was made. This is way better than the "black box" approach where you just get a PR and have no idea what the AI was thinking.
+          </p>
+          <p>
+            Integration with OpenAI's ecosystem is tight. If you're already using OpenAI for other things — embeddings, fine-tuned models, batch processing — Codex fits naturally into that stack. The API key you're already using probably works. No new accounts, no new billing setups, no new vendor relationships.
+          </p>
+          <p>
+            Who's it for? Engineers who want speed and prefer OpenAI's models. Teams already in the OpenAI ecosystem who want an agentic tool that works with their existing setup. People doing bulk operations across large codebases. If you want the fastest path from "I need this changed" to "it's changed, tested, and committed" — Codex CLI is that path.
           </p>
         </div>
       </div>
