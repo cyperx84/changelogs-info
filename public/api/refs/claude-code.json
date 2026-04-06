@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.92",
-  "generated_at": "2026-04-06T05:49:05.138Z",
+  "generated_at": "2026-04-06T06:41:38.693Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -28,8 +28,7 @@
     ],
     "deprecated_flags": [],
     "breaking_changes": [
-      "removed-tag-command",
-      "removed-vim-command"
+      "vim-command-removal"
     ]
   },
   "payload": {
@@ -52,7 +51,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces a `forceRemoteSettingsRefresh` policy setting that blocks startup until remote managed settings are fetched, ensuring fail-closed behavior. A new interactive Bedrock setup wizard simplifies AWS authentication and model pinning for 3rd-party platforms. The `/cost` command now provides a per-model and cache-hit breakdown for subscription users, offering more granular cost analysis. The `/release-notes` command is now an interactive version picker. Remote Control session names now default to using your hostname as a prefix, customizable with the `--remote-control-session-name-prefix` flag. Pro users will see a footer hint indicating the uncached token count after prompt cache expiration. Several fixes address issues like subagent spawning failures, prompt-type Stop hook errors, tool input validation failures, API 400 errors, accidental feedback submissions, misleading hints, Homebrew update prompts, multiline prompt behavior, message duplication in fullscreen mode, incorrect idle-return hints, and plugin MCP server connection issues. The Write tool's diff computation speed has been improved for large files. The `/tag` command has been removed, and the `/vim` command has been replaced by a toggle in `/config` → Editor mode. The Linux sandbox now ships the `apply-seccomp` helper in both npm and native builds. Upgrading is recommended to benefit from the new features, fixes, and security enhancements. No specific prerequisites are required."
+      "tldr": "This release introduces a fail-closed behavior for the `forceRemoteSettingsRefresh` policy, ensuring the CLI blocks startup until remote managed settings are freshly fetched and exits if the fetch fails, enhancing security and configuration consistency. A new interactive Bedrock setup wizard simplifies AWS authentication and model pinning for 3rd-party platform users. The `/cost` command now provides a per-model and cache-hit breakdown for subscription users, offering more granular cost analysis. The `/release-notes` command now features an interactive version picker. Remote Control session names now default to using the hostname as a prefix, customizable with the `--remote-control-session-name-prefix` flag. Pro users will now see a footer hint indicating the approximate uncached token count when returning to a session after prompt cache expiration. Several fixes address issues such as subagent spawning failures, prompt-type Stop hook errors, tool input validation failures, API 400 errors, accidental feedback survey submissions, misleading UI hints, Homebrew update prompts, multiline prompt behavior, message duplication in fullscreen mode, incorrect idle-return token hints, and plugin MCP server connection issues. Write tool diff computation speed has been improved for large files. The `/tag` and `/vim` commands have been removed, with vim mode now accessible via `/config` → Editor mode. The Linux sandbox now includes the `apply-seccomp` helper, restoring unix-socket blocking. Upgrade is recommended to benefit from the enhanced security, improved usability, and bug fixes. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
@@ -1623,6 +1622,18 @@
         "name": "/status",
         "replaced_by": null,
         "deprecated_since": "2.1.83",
+        "source_url": ""
+      },
+      {
+        "name": "/tag",
+        "replaced_by": null,
+        "deprecated_since": "2.1.92",
+        "source_url": ""
+      },
+      {
+        "name": "/vim",
+        "replaced_by": "/config → Editor mode",
+        "deprecated_since": "2.1.92",
         "source_url": ""
       },
       {
