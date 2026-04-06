@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.5",
-  "generated_at": "2026-04-06T05:00:51.684Z",
+  "generated_at": "2026-04-06T03:09:20.391Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -19,7 +19,7 @@
     "new_features": [
       "video-generate-tool",
       "music-generate-tool",
-      "comfy-workflow-media-plugin",
+      "comfyui-workflow-media-plugin",
       "qwen-fireworks-ai-stepfun-providers",
       "amazon-bedrock-mantle-support",
       "localized-control-ui-support",
@@ -39,14 +39,12 @@
     "new_commands": [
       "/dreaming"
     ],
-    "new_flags": [
-      "--force"
-    ],
+    "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "config-remove-legacy-public-config-aliases"
+      "config-legacy-aliases-removal"
     ]
   },
   "payload": {
@@ -71,7 +69,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces significant enhancements to agent capabilities with the addition of built-in `video_generate` and `music_generate` tools, enabling agents to create videos and music directly within their workflows. The new Comfy workflow media plugin facilitates local ComfyUI and Comfy Cloud integrations, while support for Qwen, Fireworks AI, and StepFun providers expands chat, speech, and search options. A breaking change removes legacy config aliases, requiring migration to canonical paths using `openclaw doctor --fix`. Localized control UI support broadens accessibility, and ClawHub integration streamlines skill discovery. Matrix and iOS now support native exec approvals, enhancing security. Channel context visibility is now configurable, allowing filtering of supplemental context. Amazon Bedrock Mantle support simplifies setup, and memory dreaming introduces weighted recall promotion and a Dreams UI. Prompt caching is improved for better reuse, and several fixes address issues in Telegram, Discord, Matrix, and other channels. It is highly recommended to upgrade to benefit from the new features, security enhancements, and bug fixes. Ensure to run `openclaw doctor --fix` after upgrading to migrate any deprecated config aliases."
+      "tldr": "Version 2026.4.5 introduces the built-in `video_generate` tool, enabling agents to create videos via configured providers and return the media directly in replies. This release also includes a breaking change, removing legacy config aliases in favor of canonical paths and `enabled` toggles; use `openclaw doctor --fix` for migration. New features include the `music_generate` tool with Google Lyria and MiniMax support, a ComfyUI workflow media plugin, and bundled Qwen, Fireworks AI, and StepFun providers. Amazon Bedrock Mantle support is enhanced with inference-profile discovery and automatic request-region injection. The Control UI now supports multiple languages, and the Skills panel integrates ClawHub search and install flows. iOS and Matrix now have native exec approval prompts. Channel context visibility is configurable, and shared model/media request overrides are available. Several fixes address security vulnerabilities, Telegram issues, Discord connectivity, and Matrix reliability. Prompt caching is improved for better reuse, and memory dreaming is enhanced with new features and controls. It is recommended to upgrade to benefit from the new features and security fixes. Ensure to migrate from legacy config aliases using `openclaw doctor --fix` before upgrading."
     },
     "features": [
       {
@@ -1241,15 +1239,6 @@
         "description": "Adds weighted short-term recall promotion, a `/dreaming` command, Dreams UI, multilingual conceptual tagging, and doctor/status repair support, while refactoring dreaming from competing modes into three cooperative phases (light, deep, REM) with independent schedules and recovery behavior so durable memory promotion can run in the background with less manual setup.",
         "key_details": [],
         "source_url": ""
-      },
-      {
-        "id": "comfy-workflow-media-plugin",
-        "name": "Comfy workflow media plugin",
-        "status": "stable",
-        "since": "2026.4.5",
-        "description": "Adds a bundled `comfy` workflow media plugin for local ComfyUI and Comfy Cloud workflows, including shared `image_generate`, `video_generate`, and workflow-backed `music_generate` support, with prompt injection, optional reference-image upload, live tests, and output download.",
-        "key_details": [],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -1629,9 +1618,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--force"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
@@ -2280,17 +2267,6 @@
           "Configurations using legacy config aliases"
         ],
         "migration": "Use the canonical public paths and `enabled` instead. `openclaw doctor --fix` provides migration support for existing configs.",
-        "source_url": ""
-      },
-      {
-        "id": "config-remove-legacy-public-config-aliases",
-        "version": "2026.4.5",
-        "title": "Remove legacy public config aliases",
-        "description": "Removes legacy public config aliases such as `talk.voiceId` / `talk.apiKey`, `agents.*.sandbox.perSession`, `browser.ssrfPolicy.allowPrivateNetwork`, `hooks.internal.handlers`, and channel/group/room `allow` toggles.",
-        "affected": [
-          "Configuration"
-        ],
-        "migration": "Use the canonical public paths and `enabled`. `openclaw doctor --fix` provides migration support for existing configs.",
         "source_url": ""
       }
     ],
