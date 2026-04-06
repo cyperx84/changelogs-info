@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.5",
-  "generated_at": "2026-04-06T18:22:44.317Z",
+  "generated_at": "2026-04-06T20:16:18.228Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -19,6 +19,7 @@
     "new_features": [
       "video-generate-tool",
       "music-generate-tool",
+      "arcee-ai-provider-plugin",
       "comfy-workflow-media-plugin",
       "qwen-fireworks-ai-stepfun-providers",
       "amazon-bedrock-mantle-support",
@@ -34,17 +35,19 @@
       "xai-alibaba-runway-video-providers",
       "amazon-bedrock-embeddings",
       "amazon-bedrock-mantle-bearer-tokens",
-      "memory-dreaming"
+      "memory-dreaming-experimental"
     ],
     "new_commands": [],
     "new_flags": [
       "--force"
     ],
-    "new_env_vars": [],
+    "new_env_vars": [
+      "ARCEEAI_API_KEY"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "config-legacy-aliases"
+      "config-remove-legacy-public-config-aliases"
     ]
   },
   "payload": {
@@ -69,7 +72,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces significant improvements to agent capabilities with the addition of built-in `video_generate` and `music_generate` tools, enabling agents to create videos and music directly through configured providers. The new Comfy workflow media plugin facilitates local ComfyUI and Comfy Cloud workflows, supporting image, video, and music generation. Several new providers have been added, including Qwen, Fireworks AI, StepFun, MiniMax TTS, Ollama Web Search, and MiniMax Search, expanding options for chat, speech, and search workflows. Amazon Bedrock Mantle support simplifies setup for Bedrock-hosted models. Localized control UI support has been added for multiple languages, improving accessibility. A breaking change removes legacy config aliases, requiring migration to canonical paths using `openclaw doctor --fix`. Other notable changes include iOS and Matrix native exec approvals, configurable channel context visibility, shared model and media request overrides, and experimental memory dreaming features. Numerous fixes address issues across various channels like Telegram, Discord, Slack, and Matrix, improving reliability and security. Upgrade is recommended to take advantage of new features and fixes, ensuring configuration migration using `openclaw doctor --fix` to address breaking changes."
+      "tldr": "This release introduces significant changes, including the removal of legacy config aliases, so upgrading is recommended but requires attention to config migration. The release adds built-in `video_generate` and `music_generate` tools, enabling agents to create videos and music directly. It also bundles Arcee AI and ComfyUI providers, expanding media generation capabilities.  New providers like Qwen, Fireworks AI, StepFun, and Amazon Bedrock Mantle are now supported, simplifying setup for various models. Localized control UI support has been added for multiple languages.  Legacy config aliases like `talk.voiceId` and `agents.*.sandbox.perSession` have been removed in favor of canonical paths and `enabled`; use `openclaw doctor --fix` for migration. Several fixes address security vulnerabilities, improve provider compatibility, and enhance stability across channels like Telegram, Discord, and Matrix.  The release also includes improvements to prompt caching, memory dreaming, and plugin management.  Consider upgrading to take advantage of the new features and fixes, but be sure to run `openclaw doctor --fix` to migrate your configuration. Ensure that you update your configurations to use the new canonical paths for settings."
     },
     "features": [
       {
@@ -1248,6 +1251,24 @@
         "description": "Adds a bundled `comfy` workflow media plugin for local ComfyUI and Comfy Cloud workflows, including shared `image_generate`, `video_generate`, and workflow-backed `music_generate` support, with prompt injection, optional reference-image upload, live tests, and output download.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "arcee-ai-provider-plugin",
+        "name": "Arcee AI provider plugin",
+        "status": "stable",
+        "since": "2026.4.5",
+        "description": "Adds a bundled Arcee AI provider plugin with `ARCEEAI_API_KEY` onboarding, Trinity model catalog (mini, large-preview, large-thinking), OpenAI-compatible API support, and OpenRouter as an alternative auth path.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "memory-dreaming-experimental",
+        "name": "Memory dreaming (experimental)",
+        "status": "experimental",
+        "since": "2026.4.5",
+        "description": "Adds weighted short-term recall promotion, a `/dreaming` command, Dreams UI, multilingual conceptual tagging, and doctor/status repair support, while refactoring dreaming from competing modes into three cooperative phases (light, deep, REM) with independent schedules and recovery behavior so durable memory promotion can run in the background with less manual setup.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1644,6 +1665,13 @@
         "purpose": "Run `openclaw` commands inside a running Docker or Podman OpenClaw container.",
         "status": "stable",
         "since": "2026.3.24",
+        "source_url": ""
+      },
+      {
+        "name": "ARCEEAI_API_KEY",
+        "purpose": "API key for Arcee AI provider.",
+        "status": "stable",
+        "since": "2026.4.5",
         "source_url": ""
       }
     ],
