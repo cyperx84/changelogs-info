@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.5",
-  "generated_at": "2026-04-06T11:23:00.817Z",
+  "generated_at": "2026-04-06T12:22:22.394Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -36,10 +36,10 @@
       "amazon-bedrock-mantle-bearer-tokens",
       "memory-dreaming"
     ],
-    "new_commands": [],
-    "new_flags": [
-      "--force"
+    "new_commands": [
+      "/dreaming"
     ],
+    "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -69,7 +69,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces significant improvements to agent capabilities, provider integrations, and security. Agents can now generate videos and music directly using the new `video_generate` and `music_generate` tools, leveraging providers like Google Lyria, MiniMax, and Comfy workflows. The Comfy workflow media plugin enables local ComfyUI and Comfy Cloud workflows. New providers include Qwen, Fireworks AI, StepFun, MiniMax TTS, Ollama Web Search, and MiniMax Search. Amazon Bedrock Mantle support is enhanced with inference-profile discovery and automatic request-region injection. A breaking change removes legacy config aliases, requiring migration to canonical paths and `enabled` toggles, with `openclaw doctor --fix` assisting in the process. Localized control UI support is added for multiple languages. Plugin management is improved with TUI prompts and a `--force` flag for easier replacement. Security enhancements include stricter plugin allowlisting, SSRF redirect prevention, and Claude CLI security measures. Numerous bug fixes address issues across Telegram, Discord, Android, Matrix, MS Teams, and other channels, improving reliability and user experience. Memory dreaming is enhanced with recall promotion, a `/dreaming` command, and a Dreams UI. Prompt caching is optimized for better reuse and stability. It is recommended to upgrade to benefit from these new features, security fixes, and performance improvements. Ensure to migrate from legacy config aliases using `openclaw doctor --fix`."
+      "tldr": "This release introduces significant changes, including the removal of legacy config aliases, so upgrading requires careful attention. The headline change is the addition of built-in `video_generate` and `music_generate` tools, enabling agents to create videos and music directly through configured providers. A new ComfyUI workflow media plugin facilitates local ComfyUI and Comfy Cloud workflows, supporting image, video, and music generation. New providers like Qwen, Fireworks AI, and StepFun have been added, along with MiniMax TTS, Ollama Web Search, and MiniMax Search integrations. Amazon Bedrock Mantle support is now included, simplifying setup for Bedrock-hosted models.\n\nLocalized control UI support has been expanded to include multiple languages. The Skills panel now integrates ClawHub search and install flows. Matrix-native exec approvals and configurable channel context visibility enhance security and control. Shared model and media request overrides provide greater flexibility across providers. Memory dreaming has been refactored with new features like weighted recall promotion and a Dreams UI.\n\nSeveral fixes address security vulnerabilities, including restrictive plugin-only tool allowlists and browser SSRF redirect bypasses. Telegram, Discord, and Matrix integrations have received numerous improvements. Prompt caching has been optimized for better reuse and stability. Legacy config aliases have been removed, requiring migration to canonical paths using `openclaw doctor --fix`. The bundled CLI text-provider backends and the `agents.defaults.cliBackends` surface have been removed.\n\nIt is recommended to upgrade to this version, paying close attention to the config migration. Ensure that all legacy config aliases are updated to the canonical paths. Review the new features and fixes to take advantage of the latest improvements. There are no specific prerequisites for this upgrade."
     },
     "features": [
       {
@@ -1627,9 +1627,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--force"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
