@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.4.2",
-  "generated_at": "2026-04-06T01:38:29.486Z",
+  "version": "2026.4.5",
+  "generated_at": "2026-04-06T03:09:20.391Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,17 +14,37 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.4.2",
-    "to_version": "2026.4.2",
-    "new_features": [],
-    "new_commands": [],
+    "from_version": "2026.4.5",
+    "to_version": "2026.4.5",
+    "new_features": [
+      "video-generate-tool",
+      "music-generate-tool",
+      "comfyui-workflow-media-plugin",
+      "qwen-fireworks-ai-stepfun-providers",
+      "amazon-bedrock-mantle-support",
+      "localized-control-ui-support",
+      "clawhub-skills-panel-integration",
+      "ios-exec-approvals",
+      "matrix-native-exec-approvals",
+      "configurable-channel-context-visibility",
+      "shared-model-media-request-overrides",
+      "openai-codex-gpt-5-4-mini",
+      "acpx-runtime-embedding",
+      "structured-plan-execution-updates",
+      "xai-alibaba-runway-video-providers",
+      "amazon-bedrock-embeddings",
+      "amazon-bedrock-mantle-bearer-tokens",
+      "memory-dreaming"
+    ],
+    "new_commands": [
+      "/dreaming"
+    ],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "plugins-xai-x-search-config-migration",
-      "plugins-web-fetch-firecrawl-config-migration"
+      "config-legacy-aliases-removal"
     ]
   },
   "payload": {
@@ -43,13 +63,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.4.2",
-      "latest_release_date": "2026-04-02",
+      "latest_stable": "2026.4.5",
+      "latest_release_date": "2026-04-06",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces breaking changes to plugin configurations for xAI's `x_search` and web fetch's Firecrawl, requiring migration of settings to plugin-owned paths using `openclaw doctor --fix`. The `x_search` authentication is now standardized on `plugins.entries.xai.config.webSearch.apiKey` / `XAI_API_KEY`. The core Task Flow substrate is restored with managed-vs-mirrored sync modes, durable flow state/revision tracking, and `openclaw tasks flow` inspection/recovery primitives, enabling persistent background orchestration. Managed child task spawning with sticky cancel intent allows external orchestrators to stop scheduling and let parent Task Flows settle to `cancelled`. A bound `api.runtime.taskFlow` seam is added for plugins to create and drive managed Task Flows. Android integration is enhanced with assistant-role entrypoints and Google Assistant App Actions metadata. Provider-owned replay hook surfaces are added for transcript policy, replay cleanup, and reasoning-mode dispatch. The `before_agent_reply` hook allows plugins to short-circuit the LLM with synthetic replies. Feishu comments now have a dedicated Drive comment-event flow. Matrix plugin emits spec-compliant `m.mentions` metadata. Plugin-owned `viewerBaseUrl` is added for stable proxy/public origin viewer links. Agent compaction now consistently resolves `agents.defaults.compaction.model` and adds `agents.defaults.compaction.notifyUser` for opt-in start notices. WhatsApp reactions gain `reactionLevel` guidance. DM-first native chat approvals are auto-enabled. Sandbox security blocks credential-path binds. Gateway/Windows scheduled tasks are improved. Control UI model picker preserves already-qualified `provider/model` refs. Session model switches resolve bare model ids against the configured allowlist. It is recommended to upgrade to this version, paying close attention to the plugin configuration migrations and the new Task Flow features."
+      "tldr": "Version 2026.4.5 introduces the built-in `video_generate` tool, enabling agents to create videos via configured providers and return the media directly in replies. This release also includes a breaking change, removing legacy config aliases in favor of canonical paths and `enabled` toggles; use `openclaw doctor --fix` for migration. New features include the `music_generate` tool with Google Lyria and MiniMax support, a ComfyUI workflow media plugin, and bundled Qwen, Fireworks AI, and StepFun providers. Amazon Bedrock Mantle support is enhanced with inference-profile discovery and automatic request-region injection. The Control UI now supports multiple languages, and the Skills panel integrates ClawHub search and install flows. iOS and Matrix now have native exec approval prompts. Channel context visibility is configurable, and shared model/media request overrides are available. Several fixes address security vulnerabilities, Telegram issues, Discord connectivity, and Matrix reliability. Prompt caching is improved for better reuse, and memory dreaming is enhanced with new features and controls. It is recommended to upgrade to benefit from the new features and security fixes. Ensure to migrate from legacy config aliases using `openclaw doctor --fix` before upgrading."
     },
     "features": [
       {
@@ -1057,6 +1077,168 @@
         "description": "Adds `before_agent_reply` so plugins can short-circuit the LLM with synthetic replies after inline actions.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "video-generate-tool",
+        "name": "Video Generation Tool",
+        "status": "stable",
+        "since": "2026.4.5",
+        "description": "Adds the built-in `video_generate` tool so agents can create videos through configured providers and return the generated media directly in the reply.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "music-generate-tool",
+        "name": "Music Generation Tool",
+        "status": "stable",
+        "since": "2026.4.5",
+        "description": "Adds the built-in `music_generate` tool with bundled Google (Lyria) and MiniMax providers plus workflow-backed Comfy support, including async task tracking and follow-up delivery of finished audio.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "comfyui-workflow-media-plugin",
+        "name": "ComfyUI Workflow Media Plugin",
+        "status": "stable",
+        "since": "2026.4.5",
+        "description": "Adds a bundled `comfy` workflow media plugin for local ComfyUI and Comfy Cloud workflows, including shared `image_generate`, `video_generate`, and workflow-backed `music_generate` support, with prompt injection, optional reference-image upload, live tests, and output download.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "qwen-fireworks-ai-stepfun-providers",
+        "name": "Qwen, Fireworks AI, and StepFun Providers",
+        "status": "stable",
+        "since": "2026.4.5",
+        "description": "Adds bundled Qwen, Fireworks AI, and StepFun providers, plus MiniMax TTS, Ollama Web Search, and MiniMax Search integrations for chat, speech, and search workflows.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "amazon-bedrock-mantle-support",
+        "name": "Amazon Bedrock Mantle Support",
+        "status": "stable",
+        "since": "2026.4.5",
+        "description": "Adds bundled Mantle support plus inference-profile discovery and automatic request-region injection so Bedrock-hosted Claude, GPT-OSS, Qwen, Kimi, GLM, and similar routes work with less manual setup.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "localized-control-ui-support",
+        "name": "Localized Control UI Support",
+        "status": "stable",
+        "since": "2026.4.5",
+        "description": "Adds localized control UI support for Simplified Chinese, Traditional Chinese, Brazilian Portuguese, German, Spanish, Japanese, Korean, French, Turkish, Indonesian, Polish, and Ukrainian.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "clawhub-skills-panel-integration",
+        "name": "ClawHub Skills Panel Integration",
+        "status": "stable",
+        "since": "2026.4.5",
+        "description": "Adds ClawHub search, detail, and install flows directly in the Skills panel.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "ios-exec-approvals",
+        "name": "iOS Exec Approvals",
+        "status": "stable",
+        "since": "2026.4.5",
+        "description": "Adds generic APNs approval notifications that open an in-app exec approval modal, fetch command details only after authenticated operator reconnect, and clear stale notification state when the approval resolves.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "matrix-native-exec-approvals",
+        "name": "Matrix Native Exec Approvals",
+        "status": "stable",
+        "since": "2026.4.5",
+        "description": "Adds Matrix-native exec approval prompts with account-scoped approvers, channel-or-DM delivery, and room-thread aware resolution handling.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "configurable-channel-context-visibility",
+        "name": "Configurable Channel Context Visibility",
+        "status": "stable",
+        "since": "2026.4.5",
+        "description": "Adds configurable `contextVisibility` per channel (`all`, `allowlist`, `allowlist_quote`) so supplemental quote, thread, and fetched history context can be filtered by sender allowlists instead of always passing through as received.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "shared-model-media-request-overrides",
+        "name": "Shared Model and Media Request Overrides",
+        "status": "stable",
+        "since": "2026.4.5",
+        "description": "Adds shared model and media request transport overrides across OpenAI-, Anthropic-, Google-, and compatible provider paths, including headers, auth, proxy, and TLS controls.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "openai-codex-gpt-5-4-mini",
+        "name": "OpenAI Codex GPT-5.4-mini",
+        "status": "stable",
+        "since": "2026.4.5",
+        "description": "Adds forward-compat `openai-codex/gpt-5.4-mini`, an opt-in GPT personality, and provider-owned GPT-5 prompt contributions so Codex/GPT runs stay cache-stable and compatible with bundled catalog lag.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "acpx-runtime-embedding",
+        "name": "ACPX Runtime Embedding",
+        "status": "stable",
+        "since": "2026.4.5",
+        "description": "Embeds the ACP runtime directly in the bundled `acpx` plugin, removes the extra external ACP CLI hop, hardens live ACP session binding and reuse, and adds a generic `reply_dispatch` hook so bundled plugins like ACPX can own reply interception without hardcoded ACP paths in core auto-reply routing.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "structured-plan-execution-updates",
+        "name": "Structured Plan and Execution Updates",
+        "status": "experimental",
+        "since": "2026.4.5",
+        "description": "Adds experimental structured plan updates and structured execution item events so compatible UIs can show clearer step-by-step progress during long-running runs.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "xai-alibaba-runway-video-providers",
+        "name": "xAI, Alibaba, and Runway Video Providers",
+        "status": "stable",
+        "since": "2026.4.5",
+        "description": "Adds bundled xAI (`grok-imagine-video`), Alibaba Model Studio Wan, and Runway video providers, plus live-test/default model wiring for all three.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "amazon-bedrock-embeddings",
+        "name": "Amazon Bedrock Embeddings",
+        "status": "stable",
+        "since": "2026.4.5",
+        "description": "Adds Amazon Bedrock embeddings for Titan, Cohere, Nova, and TwelveLabs models, with AWS credential-chain auto-detection for `provider: \"auto\"` and provider-specific dimension controls.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "amazon-bedrock-mantle-bearer-tokens",
+        "name": "Amazon Bedrock Mantle Bearer Tokens",
+        "status": "stable",
+        "since": "2026.4.5",
+        "description": "Generates bearer tokens from the AWS credential chain so Mantle auto-discovery can use IAM auth without manually exporting `AWS_BEARER_TOKEN_BEDROCK`.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "memory-dreaming",
+        "name": "Memory Dreaming",
+        "status": "experimental",
+        "since": "2026.4.5",
+        "description": "Adds weighted short-term recall promotion, a `/dreaming` command, Dreams UI, multilingual conceptual tagging, and doctor/status repair support, while refactoring dreaming from competing modes into three cooperative phases (light, deep, REM) with independent schedules and recovery behavior so durable memory promotion can run in the background with less manual setup.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1249,6 +1431,14 @@
         "syntax": "openclaw tasks flow",
         "description": "Inspection/recovery primitives for Task Flows.",
         "since": "2026.4.2",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "/dreaming",
+        "syntax": "/dreaming",
+        "description": "Triggers memory dreaming (experimental).",
+        "since": "2026.4.5",
         "status": "stable",
         "source_url": ""
       }
@@ -2066,6 +2256,17 @@
           "web_fetch users"
         ],
         "migration": "Migrate legacy config with `openclaw doctor --fix`.",
+        "source_url": ""
+      },
+      {
+        "id": "config-legacy-aliases-removal",
+        "version": "2026.4.5",
+        "title": "Config: Remove Legacy Public Config Aliases",
+        "description": "Removes legacy public config aliases such as `talk.voiceId` / `talk.apiKey`, `agents.*.sandbox.perSession`, `browser.ssrfPolicy.allowPrivateNetwork`, `hooks.internal.handlers`, and channel/group/room `allow` toggles in favor of the canonical public paths and `enabled`.",
+        "affected": [
+          "Configurations using legacy config aliases"
+        ],
+        "migration": "Use the canonical public paths and `enabled` instead. `openclaw doctor --fix` provides migration support for existing configs.",
         "source_url": ""
       }
     ],
