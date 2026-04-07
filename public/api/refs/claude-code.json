@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.92",
-  "generated_at": "2026-04-07T21:18:27.201Z",
+  "version": "2.1.94",
+  "generated_at": "2026-04-07T22:14:50.319Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,23 +14,23 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.92",
-    "to_version": "2.1.92",
-    "new_features": [],
+    "from_version": "2.1.94",
+    "to_version": "2.1.94",
+    "new_features": [
+      "mantle-support",
+      "slack-mcp-channel-header",
+      "keep-coding-instructions-frontmatter",
+      "userpromptsubmit-sessiontitle-hook",
+      "plugin-skill-name-from-frontmatter"
+    ],
     "new_commands": [],
-    "new_flags": [
-      "--remote-control-session-name-prefix"
+    "new_flags": [],
+    "new_env_vars": [
+      "CLAUDE_CODE_USE_MANTLE"
     ],
-    "new_env_vars": [],
-    "deprecated_commands": [
-      "/tag",
-      "/vim"
-    ],
+    "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "removed-tag-command",
-      "removed-vim-command"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -47,12 +47,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.92",
-      "latest_release_date": "2026-04-04",
+      "latest_stable": "2.1.94",
+      "latest_release_date": "2026-04-07",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces a `forceRemoteSettingsRefresh` policy setting that blocks startup until remote managed settings are fetched, ensuring fail-closed behavior. A new interactive Bedrock setup wizard simplifies AWS authentication and model pinning for 3rd-party platforms. The `/cost` command now provides a per-model and cache-hit breakdown for subscription users, offering more granular cost analysis. The `/release-notes` command is now an interactive version picker. Remote Control session names now default to using your hostname as a prefix, customizable with the `--remote-control-session-name-prefix` flag. Pro users will see a footer hint indicating the uncached token count after prompt cache expiration. Several fixes address issues like subagent spawning failures, prompt-type Stop hook errors, tool input validation failures, API 400 errors, accidental feedback submissions, misleading hints, Homebrew update prompts, multiline prompt behavior, message duplication in fullscreen mode, incorrect idle-return hints, and plugin MCP server connection issues. The Write tool's diff computation speed has been improved for large files. The `/tag` command has been removed, and the `/vim` command has been replaced by a toggle in `/config` → Editor mode. The Linux sandbox now ships the `apply-seccomp` helper in both npm and native builds. Upgrading is recommended to benefit from the new features, fixes, and security enhancements. No specific prerequisites are required."
+      "tldr": "Version 2.1.94 introduces support for Amazon Bedrock powered by Mantle, enabled via the `CLAUDE_CODE_USE_MANTLE=1` environment variable, allowing users to leverage Bedrock's capabilities. The default effort level has been increased from medium to high for API-key, Bedrock/Vertex/Foundry, Team, and Enterprise users, though this can be controlled with the `/effort` command. A compact `Slacked #channel` header with a clickable channel link is now available for Slack MCP send-message tool calls, improving usability. Plugin skills now use the skill's frontmatter `name` for invocation, providing a stable name across install methods. Several fixes address error surfacing, including surfacing 429 rate-limit errors immediately and diagnosing macOS Console login failures with `claude doctor`. Plugin skill hooks defined in YAML frontmatter are no longer silently ignored, and plugin hooks now function correctly when `CLAUDE_PLUGIN_ROOT` is not set. The `${CLAUDE_PLUGIN_ROOT}` variable now resolves to the installed cache for local-marketplace plugins on startup. Scrollback issues with repeated diffs and blank pages have been resolved, and multiline user prompts are now correctly indented in the transcript. Shift+Space now inserts a space character in search inputs, and hyperlink handling in tmux has been improved. The `FORCE_HYPERLINK` environment variable is now correctly respected when set via `settings.json` `env`. The `--resume` command now directly resumes sessions from other worktrees of the same repo. CJK text corruption in stream-json input/output has been fixed. VSCode users will see reduced cold-open subprocess work and a warning banner for `settings.json` parsing failures. Upgrade is recommended to benefit from these improvements and fixes, with no specific prerequisites."
     },
     "features": [
       {
@@ -676,6 +676,53 @@
         "description": "Adds a `forceRemoteSettingsRefresh` policy setting. When enabled, the CLI blocks startup until remote managed settings are freshly fetched, and exits if the fetch fails (fail-closed).",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "mantle-support",
+        "name": "Amazon Bedrock Mantle Support",
+        "status": "experimental",
+        "since": "2.1.94",
+        "description": "Adds support for Amazon Bedrock powered by Mantle.",
+        "key_details": [
+          "Enabled by setting the environment variable `CLAUDE_CODE_USE_MANTLE=1`."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "slack-mcp-channel-header",
+        "name": "Compact Slack MCP Channel Header",
+        "status": "stable",
+        "since": "2.1.94",
+        "description": "Adds a compact `Slacked #channel` header with a clickable channel link for Slack MCP send-message tool calls.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "keep-coding-instructions-frontmatter",
+        "name": "Keep Coding Instructions Frontmatter",
+        "status": "stable",
+        "since": "2.1.94",
+        "description": "Adds `keep-coding-instructions` frontmatter field support for plugin output styles.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "userpromptsubmit-sessiontitle-hook",
+        "name": "UserPromptSubmit Session Title Hook",
+        "status": "stable",
+        "since": "2.1.94",
+        "description": "Adds `hookSpecificOutput.sessionTitle` to `UserPromptSubmit` hooks for setting the session title.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "plugin-skill-name-from-frontmatter",
+        "name": "Plugin Skill Name from Frontmatter",
+        "status": "stable",
+        "since": "2.1.94",
+        "description": "Plugin skills declared via `\"skills\": [\"./\"]` now use the skill's frontmatter `name` for the invocation name instead of the directory basename, giving a stable name across install methods.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1194,9 +1241,7 @@
           "source_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
         }
       ],
-      "new_since_previous": [
-        "--remote-control-session-name-prefix"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
@@ -1336,6 +1381,13 @@
         "purpose": "Keeps the existing marketplace cache when `git pull` fails, useful in offline environments.",
         "status": "stable",
         "since": "2.1.90",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_USE_MANTLE",
+        "purpose": "Enables support for Amazon Bedrock powered by Mantle.",
+        "status": "experimental",
+        "since": "2.1.94",
         "source_url": ""
       }
     ],
