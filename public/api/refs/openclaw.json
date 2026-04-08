@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.4.5",
-  "generated_at": "2026-04-08T01:38:47.317Z",
+  "version": "2026.4.7",
+  "generated_at": "2026-04-08T03:08:49.340Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,25 +14,27 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.4.5",
-    "to_version": "2026.4.5",
+    "from_version": "2026.4.7",
+    "to_version": "2026.4.7",
     "new_features": [
-      "video-generate-tool",
-      "music-generate-tool",
-      "arcee-ai-provider-plugin",
-      "comfy-workflow-media-plugin"
+      "cli-infer-hub",
+      "memory-wiki-stack",
+      "webhook-ingress-plugin",
+      "pluggable-compaction-provider-registry"
     ],
-    "new_commands": [],
-    "new_flags": [
-      "--force"
+    "new_commands": [
+      "openclaw infer"
     ],
-    "new_env_vars": [
-      "ARCEEAI_API_KEY"
-    ],
+    "new_flags": [],
+    "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "config-remove-legacy-public-config-aliases"
+      "gateway-tool-exec-config-restrictions",
+      "host-exec-env-sanitization",
+      "network-fetch-guard-redirect-bodies",
+      "browser-node-invoke-profile-mutations",
+      "gateway-auth-websocket-invalidation"
     ]
   },
   "payload": {
@@ -51,13 +53,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.4.5",
-      "latest_release_date": "2026-04-06",
+      "latest_stable": "2026.4.7",
+      "latest_release_date": "2026-04-08",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces significant enhancements, most notably the addition of built-in `video_generate` and `music_generate` tools, enabling agents to create videos and music directly within replies. The Arcee AI and ComfyUI provider plugins have been bundled, expanding media generation capabilities.  Amazon Bedrock gains Mantle support for easier integration of Claude, GPT-OSS, and other models. Localized control UI support has been added for multiple languages. A breaking change removes legacy config aliases, requiring migration to canonical paths and `enabled` toggles, but `openclaw doctor --fix` assists with this transition.  Plugin management is improved with TUI prompts and a `--force` flag for easier updates. Matrix exec approvals are now native, and channel context visibility is configurable.  Prompt caching is enhanced for better reuse, and memory dreaming receives updates for improved background operation.  Numerous fixes address security vulnerabilities, Telegram issues, Discord integration, and more.  It is highly recommended to upgrade to benefit from the new features, security patches, and bug fixes. Run `openclaw doctor --fix` to migrate legacy config aliases."
+      "tldr": "This release introduces a new `openclaw infer` CLI hub for provider-backed inference workflows, streamlining model, media, web, and embedding tasks. The restored `memory-wiki` stack provides comprehensive memory management with CLI tools, claim/evidence fields, and health linting. A new webhook ingress plugin enables external automation to drive TaskFlows via shared-secret endpoints. Media generation now features auto-fallback across providers, intent preservation, and mode-aware video-to-video support. Persisted compaction checkpoints and Sessions UI branch/restore actions aid in session state recovery. A pluggable compaction provider registry allows plugins to replace the built-in summarization pipeline, configurable via `agents.defaults.compaction.provider`. Several security fixes address potential vulnerabilities, including blocking gateway config writes for exec approval paths, sanitizing host exec env overrides, and dropping request bodies on cross-origin redirects. The release also includes numerous bug fixes and improvements across various channels, providers, and the control UI. It's highly recommended to upgrade to benefit from the security enhancements and new features. No specific prerequisites are required for the upgrade."
     },
     "features": [
       {
@@ -1254,6 +1256,42 @@
         "description": "Adds weighted short-term recall promotion, a `/dreaming` command, Dreams UI, multilingual conceptual tagging, and doctor/status repair support, while refactoring dreaming from competing modes into three cooperative phases (light, deep, REM) with independent schedules and recovery behavior so durable memory promotion can run in the background with less manual setup.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "cli-infer-hub",
+        "name": "CLI Infer Hub",
+        "status": "stable",
+        "since": "2026.4.7",
+        "description": "A first-class `openclaw infer ...` hub for provider-backed inference workflows across model, media, web, and embedding tasks.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "memory-wiki-stack",
+        "name": "Memory Wiki Stack",
+        "status": "stable",
+        "since": "2026.4.7",
+        "description": "Restores the bundled `memory-wiki` stack with plugin, CLI, sync/query/apply tooling, memory-host integration, structured claim/evidence fields, compiled digest retrieval, claim-health linting, contradiction clustering, staleness dashboards, and freshness-weighted search.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "webhook-ingress-plugin",
+        "name": "Webhook Ingress Plugin",
+        "status": "stable",
+        "since": "2026.4.7",
+        "description": "A bundled webhook ingress plugin so external automation can create and drive bound TaskFlows through per-route shared-secret endpoints.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "pluggable-compaction-provider-registry",
+        "name": "Pluggable Compaction Provider Registry",
+        "status": "stable",
+        "since": "2026.4.7",
+        "description": "A pluggable compaction provider registry so plugins can replace the built-in summarization pipeline. Configure via `agents.defaults.compaction.provider`; falls back to LLM summarization on provider failure.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1456,6 +1494,14 @@
         "since": "2026.4.5",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "openclaw infer",
+        "syntax": "openclaw infer ...",
+        "description": "Hub for provider-backed inference workflows across model, media, web, and embedding tasks.",
+        "since": "2026.4.7",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -1633,9 +1679,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--force"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
@@ -2313,6 +2357,68 @@
           "Configuration files"
         ],
         "migration": "Use the canonical public paths and `enabled`. `openclaw doctor --fix` provides migration support for existing configs.",
+        "source_url": ""
+      },
+      {
+        "id": "gateway-tool-exec-config-restrictions",
+        "version": "2026.4.7",
+        "title": "Gateway Tool/Exec Config Restrictions",
+        "description": "Model-facing `gateway config.apply` and `config.patch` writes are now blocked from changing exec approval paths such as `safeBins`, `safeBinProfiles`, `safeBinTrustedDirs`, and `strictInlineEval`. This prevents malicious models from modifying security-sensitive configurations.",
+        "affected": [
+          "Gateway",
+          "Configuration"
+        ],
+        "migration": "Ensure that exec approval paths are managed through secure channels and not directly exposed to model-driven configuration updates.",
+        "source_url": ""
+      },
+      {
+        "id": "host-exec-env-sanitization",
+        "version": "2026.4.7",
+        "title": "Host Exec/Env Sanitization",
+        "description": "Dangerous Java, Rust, Cargo, Git, Kubernetes, cloud credential, config-path, and Helm env overrides are now blocked. This prevents host-run tools from being redirected to attacker-chosen code, config, credentials, or repository state.",
+        "affected": [
+          "Host Execution",
+          "Environment Variables"
+        ],
+        "migration": "Review and adjust any existing configurations that rely on these environment variables. Ensure that tools are not dependent on potentially malicious environment overrides.",
+        "source_url": ""
+      },
+      {
+        "id": "network-fetch-guard-redirect-bodies",
+        "version": "2026.4.7",
+        "title": "Network Fetch Guard: Redirect Bodies Dropped",
+        "description": "Request bodies and body-describing headers are now dropped on cross-origin `307` and `308` redirects by default. This prevents attacker-controlled redirect hops from receiving secret-bearing POST payloads from SSRF-guarded fetch flows unless a caller explicitly opts in.",
+        "affected": [
+          "Network",
+          "Fetch API",
+          "Security"
+        ],
+        "migration": "If your application relies on forwarding request bodies across redirects, you will need to explicitly opt-in to this behavior. Review your fetch configurations and ensure that you understand the security implications of forwarding request bodies across redirects.",
+        "source_url": ""
+      },
+      {
+        "id": "browser-node-invoke-profile-mutations",
+        "version": "2026.4.7",
+        "title": "Browser Node Invoke: Profile Mutations Blocked",
+        "description": "Persistent browser profile create, reset, and delete mutations through `browser.proxy` are now blocked on both gateway-forwarded `node.invoke` and the node-host proxy path, even when no profile allowlist is configured.",
+        "affected": [
+          "Browser Control",
+          "Node Invoke"
+        ],
+        "migration": "If your application relies on creating, resetting, or deleting browser profiles through `browser.proxy`, you will need to adjust your approach. Consider using alternative methods for managing browser profiles that do not involve persistent mutations.",
+        "source_url": ""
+      },
+      {
+        "id": "gateway-auth-websocket-invalidation",
+        "version": "2026.4.7",
+        "title": "Gateway Auth: WebSocket Invalidation",
+        "description": "Existing shared-token and password WebSocket sessions are now invalidated when the configured secret rotates. This ensures that stale authenticated sockets cannot stay attached after token or password changes.",
+        "affected": [
+          "Gateway",
+          "Authentication",
+          "WebSockets"
+        ],
+        "migration": "No specific migration steps are required. This change improves security by ensuring that WebSocket sessions are properly invalidated after authentication secrets are rotated.",
         "source_url": ""
       }
     ],
