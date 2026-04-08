@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
-  "version": "1.3.17",
-  "generated_at": "2026-04-07T23:15:42.189Z",
+  "version": "1.4.0",
+  "generated_at": "2026-04-08T00:33:51.973Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -14,15 +14,23 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "1.3.17",
-    "to_version": "1.3.17",
-    "new_features": [],
+    "from_version": "1.4.0",
+    "to_version": "1.4.0",
+    "new_features": [
+      "otlp-observability-export-support",
+      "full-http-proxy-support"
+    ],
     "new_commands": [],
-    "new_flags": [],
+    "new_flags": [
+      "--dangerously-skip-permissions"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "diff-metadata-format",
+      "user-message-variant-field"
+    ]
   },
   "payload": {
     "meta": {
@@ -40,13 +48,13 @@
       "changelog_url": "https://github.com/anomalyco/opencode/releases",
       "repo_url": "https://github.com/anomalyco/opencode",
       "license": "mit",
-      "latest_stable": "1.3.17",
-      "latest_release_date": "2026-04-06",
+      "latest_stable": "1.4.0",
+      "latest_release_date": "2026-04-08",
       "status": "active",
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "This release focuses on improving the user experience with Cloudflare Workers AI and AI Gateway, particularly around account setup and error handling. When using Cloudflare Workers AI or AI Gateway, the system now prompts for missing account details and displays clearer setup errors if required Cloudflare variables are absent, streamlining the configuration process and reducing potential frustration. Additionally, a fix has been implemented in the TUI to restore the default kitty keyboard handling on Windows terminals, resolving input issues that arose from a previous workaround rollback. This ensures a smoother and more reliable user experience when interacting with the application through the terminal on Windows. Given the improvements to error handling and user experience, upgrading is recommended for users of Cloudflare Workers AI, AI Gateway, and the TUI on Windows."
+      "tldr": "Version 1.4.0 introduces breaking changes to the SDK's data model to address performance issues. Specifically, diff metadata now only contains a `patch` field with the unified diff, and the `variant` field in `UserMessage` is now nested under `model` as `userMessage.model.variant`. This release also adds OTLP observability export support, enabling developers to export observability data using the OpenTelemetry Protocol. Full HTTP proxy support has been added for improved network configuration. The `opencode run` command now accepts a `--dangerously-skip-permissions` flag to auto-approve non-denied permission prompts. Several fixes are included, such as resolving stale timeouts from failed web fetches, improving error messages for `opencode login`, retrying Alibaba provider rate-limit errors, fixing OpenRouter provider issues, aligning GitHub Copilot Anthropic reasoning levels, and reducing TypeScript LSP memory usage. TUI improvements include a keybinding option for switching model variants and PDF drag and drop for attachments. Desktop improvements include clearer subagent session titles, navigation, and progress states, moving auto-accept permissions into Settings, and showing full file names on attachment chips. Due to the breaking changes, a careful review and migration of affected code is recommended before upgrading. Upgrade is recommended to take advantage of the new features and fixes."
     },
     "features": [
       {
@@ -447,6 +455,24 @@
         "description": "Adds a dedicated system prompt for Kimi models.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "otlp-observability-export-support",
+        "name": "OTLP Observability Export Support",
+        "status": "stable",
+        "since": "1.4.0",
+        "description": "Adds support for exporting observability data using the OpenTelemetry Protocol (OTLP).",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "full-http-proxy-support",
+        "name": "Full HTTP Proxy Support",
+        "status": "stable",
+        "since": "1.4.0",
+        "description": "Adds full support for using HTTP proxies.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -528,10 +554,18 @@
           "description": "Launch web UI.",
           "since": "0.8.0",
           "source_url": "https://opencode.ai"
+        },
+        {
+          "flag": "--dangerously-skip-permissions",
+          "description": "Auto-approves non-denied permission prompts when used with the `opencode run` command.",
+          "since": "1.4.0",
+          "source_url": ""
         }
       ],
       "deprecated": [],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--dangerously-skip-permissions"
+      ]
     },
     "env_vars": [
       {
@@ -641,6 +675,31 @@
           "Extension installation"
         ],
         "migration": "Ensure plugins do not rely on package install scripts for proper functionality.",
+        "source_url": ""
+      },
+      {
+        "id": "diff-metadata-format",
+        "version": "1.4.0",
+        "title": "Diff metadata format",
+        "description": "The diffs contained in the metadata for the edit and patch tool will no longer contain a `to` and `from` field with full file contents. they will only contain a `patch` field with the unified diff. Additionally all snapshot diffs contained in user message and session diff will follow this format.",
+        "affected": [
+          "edit tool",
+          "patch tool",
+          "user message",
+          "session diff"
+        ],
+        "migration": "Update code to use the `patch` field instead of `to` and `from` fields when processing diff metadata.",
+        "source_url": ""
+      },
+      {
+        "id": "user-message-variant-field",
+        "version": "1.4.0",
+        "title": "`UserMessage.variant` field location",
+        "description": "The `variant` field in `UserMessage` is now nested under `model`, so it should be accessed as `userMessage.model.variant`.",
+        "affected": [
+          "UserMessage object"
+        ],
+        "migration": "Update code to access the variant field as `userMessage.model.variant` instead of `userMessage.variant`.",
         "source_url": ""
       }
     ],
