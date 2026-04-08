@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.4.7",
-  "generated_at": "2026-04-08T05:37:43.731Z",
+  "version": "2026.4.8",
+  "generated_at": "2026-04-08T06:36:37.816Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,16 +14,9 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.4.7",
-    "to_version": "2026.4.7",
-    "new_features": [
-      "pluggable-compaction-provider-registry",
-      "agents-system-prompt-override",
-      "webhook-ingress-plugin",
-      "persisted-compaction-checkpoints",
-      "memory-dreaming-ingest-redacted-session-transcripts",
-      "plugin-sdk-provider-auth-runtime"
-    ],
+    "from_version": "2026.4.8",
+    "to_version": "2026.4.8",
+    "new_features": [],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -47,13 +40,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.4.7",
+      "latest_stable": "2026.4.8",
       "latest_release_date": "2026-04-08",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces a new `openclaw infer` hub for provider-backed inference workflows, streamlining model, media, web, and embedding tasks. Media generation now features auto-fallback across providers, intent preservation during switches, and mode-aware video-to-video support. The `memory-wiki` stack is restored with enhanced tooling and features like claim-health linting and freshness-weighted search. A webhook ingress plugin enables external automation to drive TaskFlows via shared-secret endpoints, and persisted compaction checkpoints allow operators to inspect and recover pre-compaction session state.  The release also adds a pluggable compaction provider registry configurable via `agents.defaults.compaction.provider` and `agents.defaults.systemPromptOverride` for controlled prompt experiments. Gemma 4 model support is added for Google providers, and Ollama vision models now accept image attachments.  Several fixes address issues with CLI infer behavior, plugin media capabilities, agent history and replies, control UI display, iOS gateway connections, TUI routing, iOS/Watch exec approvals, agent context overflow, OpenAI Codex OAuth, Anthropic thinking blocks, agent Claude CLI errors, agent exec routing, node exec approvals, gateway tool/exec config, host exec/env sanitization, command allowlisting, Feishu docx uploads, network fetch guard, browser SSRF, gateway node pairing, gateway auth, MS Teams security, media base64 decode guards, runtime event trust, auto-reply media, gateway status and containers, gateway OpenAI-compatible HTTP, macOS gateway version, sessions model selection, Discord ACP bindings, Discord recovery, Slack thread mentions, Slack threading, Slack media, Matrix onboarding, Matrix formatting, Telegram doctor, plugin loaders, plugin channels, ClawHub verification, plugin provider hooks, Docker plugins, Ollama provider, xAI provider, Mistral provider, OpenAI TTS/Groq, web fetch and web search, memory vector recall, memory dreaming, QQ Bot media, browser remote CDP, UI light mode, agents subagents, cron, agents model fallback, BlueBubbles network, agents heartbeat, agents compaction, approvals runtime, security fetch-guard, logging, agents sessions_send, daemon systemd, docs i18n, agents exec, agents model resolution, and Z.AI provider.  It is recommended to upgrade to this release to benefit from the new features and fixes. No specific prerequisites are required."
+      "tldr": "This release focuses on improving reliability and consistency across various integrations and agent behaviors. The agent `/exec` command now accurately reflects runtime behavior for `host=auto` sessions, ensuring correct fallback policies. OpenAI-family agent runs retain `update_plan` availability while offering compact success payloads, with an option to disable the plan tool via `tools.experimental.planTool=false`. Slack integration now respects ambient HTTP(S) proxy settings, including NO_PROXY exclusions, enabling seamless connectivity in proxy-only environments. Additionally, Slack actions now correctly handle SecretRef-backed bot tokens, preventing failures after config re-reads. Network fetch guards now bypass target DNS pinning in trusted env-proxy mode, allowing proxy-only sandboxes to resolve outbound hosts through the trusted proxy. Bundled channels and plugins now load shared secret contracts and align compatibility metadata correctly, resolving issues with missing files during gateway startup. It is recommended to upgrade to this version to benefit from these fixes and improvements, especially if you rely on Slack, OpenAI agents, or proxy-based network configurations. No specific migration steps are required."
     },
     "features": [
       {
