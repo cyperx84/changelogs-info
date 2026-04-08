@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
   "version": "1.4.0",
-  "generated_at": "2026-04-08T01:38:30.345Z",
+  "generated_at": "2026-04-08T00:33:51.973Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -16,7 +16,10 @@
   "delta": {
     "from_version": "1.4.0",
     "to_version": "1.4.0",
-    "new_features": [],
+    "new_features": [
+      "otlp-observability-export-support",
+      "full-http-proxy-support"
+    ],
     "new_commands": [],
     "new_flags": [
       "--dangerously-skip-permissions"
@@ -26,7 +29,7 @@
     "deprecated_flags": [],
     "breaking_changes": [
       "diff-metadata-format",
-      "user-message-variant-nesting"
+      "user-message-variant-field"
     ]
   },
   "payload": {
@@ -51,7 +54,7 @@
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "Opencode 1.4.0 introduces breaking changes to the SDK's data model to address performance issues. Specifically, diff metadata now only includes a `patch` field with the unified diff, replacing the `to` and `from` fields, and the `UserMessage.variant` field is now nested under `model` as `userMessage.model.variant`. This release also adds the ability to export OTLP observability data and includes full HTTP proxy support. The `opencode run` command now accepts a `--dangerously-skip-permissions` flag to auto-approve non-denied permission prompts. Alibaba provider rate-limit errors are now retried, and OpenRouter provider issues have been resolved. TypeScript LSP memory usage has been reduced by using the native project config. A keybinding option for \"Switch model variant\" has been added to the TUI, along with PDF drag and drop for attachments. Subagent sessions in the desktop app have improved titles, navigation, and progress states, and auto-accept permissions have been moved to Settings. Due to the breaking changes in the SDK, upgrading requires code modifications to handle the new diff metadata format and the location of the `variant` field. Upgrading is recommended to take advantage of the performance improvements and new features, but ensure you address the breaking changes first."
+      "tldr": "Version 1.4.0 introduces breaking changes to the SDK's data model to address performance issues. Specifically, diff metadata now only contains a `patch` field with the unified diff, and the `variant` field in `UserMessage` is now nested under `model` as `userMessage.model.variant`. This release also adds OTLP observability export support, enabling developers to export observability data using the OpenTelemetry Protocol. Full HTTP proxy support has been added for improved network configuration. The `opencode run` command now accepts a `--dangerously-skip-permissions` flag to auto-approve non-denied permission prompts. Several fixes are included, such as resolving stale timeouts from failed web fetches, improving error messages for `opencode login`, retrying Alibaba provider rate-limit errors, fixing OpenRouter provider issues, aligning GitHub Copilot Anthropic reasoning levels, and reducing TypeScript LSP memory usage. TUI improvements include a keybinding option for switching model variants and PDF drag and drop for attachments. Desktop improvements include clearer subagent session titles, navigation, and progress states, moving auto-accept permissions into Settings, and showing full file names on attachment chips. Due to the breaking changes, a careful review and migration of affected code is recommended before upgrading. Upgrade is recommended to take advantage of the new features and fixes."
     },
     "features": [
       {
@@ -697,17 +700,6 @@
           "UserMessage object"
         ],
         "migration": "Update code to access the variant field as `userMessage.model.variant` instead of `userMessage.variant`.",
-        "source_url": ""
-      },
-      {
-        "id": "user-message-variant-nesting",
-        "version": "1.4.0",
-        "title": "`UserMessage.variant` field moved",
-        "description": "The `variant` field of the `UserMessage` object is now nested under the `model` field. It is now accessed as `userMessage.model.variant`.",
-        "affected": [
-          "Code using `UserMessage.variant`"
-        ],
-        "migration": "Update code to access the variant field as `userMessage.model.variant`.",
         "source_url": ""
       }
     ],
