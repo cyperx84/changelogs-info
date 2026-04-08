@@ -16,6 +16,22 @@
   },
   "releases": [
     {
+      "version": "v2.1.96",
+      "name": "v2.1.96",
+      "body": "## What's changed\n\n- Fixed Bedrock requests failing with `403 \"Authorization header is missing\"` when using `AWS_BEARER_TOKEN_BEDROCK` or `CLAUDE_CODE_SKIP_BEDROCK_AUTH` (regression in 2.1.94)\n",
+      "date": "2026-04-08T04:37:36Z",
+      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.96",
+      "prerelease": false
+    },
+    {
+      "version": "v2.1.94",
+      "name": "v2.1.94",
+      "body": "## What's changed\n\n- Added support for Amazon Bedrock powered by Mantle, set `CLAUDE_CODE_USE_MANTLE=1`\n- Changed default effort level from medium to high for API-key, Bedrock/Vertex/Foundry, Team, and Enterprise users (control this with `/effort`)\n- Added compact `Slacked #channel` header with a clickable channel link for Slack MCP send-message tool calls\n- Added `keep-coding-instructions` frontmatter field support for plugin output styles\n- Added `hookSpecificOutput.sessionTitle` to `UserPromptSubmit` hooks for setting the session title\n- Plugin skills declared via `\"skills\": [\"./\"]` now use the skill's frontmatter `name` for the invocation name instead of the directory basename, giving a stable name across install methods\n- Fixed agents appearing stuck after a 429 rate-limit response with a long Retry-After header — the error now surfaces immediately instead of silently waiting\n- Fixed Console login on macOS silently failing with \"Not logged in\" when the login keychain is locked or its password is out of sync — the error is now surfaced and `claude doctor` diagnoses the fix\n- Fixed plugin skill hooks defined in YAML frontmatter being silently ignored\n- Fixed plugin hooks failing with \"No such file or directory\" when `CLAUDE_PLUGIN_ROOT` was not set\n- Fixed `${CLAUDE_PLUGIN_ROOT}` resolving to the marketplace source directory instead of the installed cache for local-marketplace plugins on startup\n- Fixed scrollback showing the same diff repeated and blank pages in long-running sessions\n- Fixed multiline user prompts in the transcript indenting wrapped lines under the `❯` caret instead of under the text\n- Fixed Shift+Space inserting the literal word \"space\" instead of a space character in search inputs\n- Fixed hyperlinks opening two browser tabs when clicked inside tmux running in an xterm.js-based terminal (VS Code, Hyper, Tabby)\n- Fixed an alt-screen rendering bug where content height changes mid-scroll could leave compounding ghost lines\n- Fixed `FORCE_HYPERLINK` environment variable being ignored when set via `settings.json` `env`\n- Fixed native terminal cursor not tracking the selected tab in dialogs, so screen readers and magnifiers can follow tab navigation\n- Fixed Bedrock invocation of Sonnet 3.5 v2 by using the `us.` inference profile ID\n- Fixed SDK/print mode not preserving the partial assistant response in conversation history when interrupted mid-stream\n- Improved `--resume` to resume sessions from other worktrees of the same repo directly instead of printing a `cd` command\n- Fixed CJK and other multibyte text being corrupted with U+FFFD in stream-json input/output when chunk boundaries split a UTF-8 sequence\n- [VSCode] Reduced cold-open subprocess work on starting a session\n- [VSCode] Fixed dropdown menus selecting the wrong item when the mouse was over the list while typing or using arrow keys\n- [VSCode] Added a warning banner when `settings.json` files fail to parse, so users know their permission rules are not being applied\n",
+      "date": "2026-04-07T21:18:51Z",
+      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.94",
+      "prerelease": false
+    },
+    {
       "version": "v2.1.92",
       "name": "v2.1.92",
       "body": "## What's changed\n\n- Added `forceRemoteSettingsRefresh` policy setting: when set, the CLI blocks startup until remote managed settings are freshly fetched, and exits if the fetch fails (fail-closed)\n- Added interactive Bedrock setup wizard accessible from the login screen when selecting \"3rd-party platform\" — guides you through AWS authentication, region configuration, credential verification, and model pinning\n- Added per-model and cache-hit breakdown to `/cost` for subscription users\n- `/release-notes` is now an interactive version picker\n- Remote Control session names now use your hostname as the default prefix (e.g. `myhost-graceful-unicorn`), overridable with `--remote-control-session-name-prefix`\n- Pro users now see a footer hint when returning to a session after the prompt cache has expired, showing roughly how many tokens the next turn will send uncached\n- Fixed subagent spawning permanently failing with \"Could not determine pane count\" after tmux windows are killed or renumbered during a long-running session\n- Fixed prompt-type Stop hooks incorrectly failing when the small fast model returns `ok:false`, and restored `preventContinuation:true` semantics for non-Stop prompt-type hooks\n- Fixed tool input validation failures when streaming emits array/object fields as JSON-encoded strings\n- Fixed an API 400 error that could occur when extended thinking produced a whitespace-only text block alongside real content\n- Fixed accidental feedback survey submissions from auto-pilot keypresses and consecutive-prompt digit collisions\n- Fixed misleading \"esc to interrupt\" hint appearing alongside \"esc to clear\" when a text selection exists in fullscreen mode during processing\n- Fixed Homebrew install update prompts to use the cask's release channel (`claude-code` → stable, `claude-code@latest` → latest)\n- Fixed `ctrl+e` jumping to the end of the next line when already at end of line in multiline prompts\n- Fixed an issue where the same message could appear at two positions when scrolling up in fullscreen mode (iTerm2, Ghostty, and other terminals with DEC 2026 support)\n- Fixed idle-return \"/clear to save X tokens\" hint showing cumulative session tokens instead of current context size\n- Fixed plugin MCP servers stuck \"connecting\" on session start when they duplicate a claude.ai connector that is unauthenticated\n- Improved Write tool diff computation speed for large files (60% faster on files with tabs/`&`/`$`)\n- Removed `/tag` command\n- Removed `/vim` command (toggle vim mode via `/config` → Editor mode)\n- Linux sandbox now ships the `apply-seccomp` helper in both npm and native builds, restoring unix-socket blocking for sandboxed commands\n",
@@ -238,23 +254,7 @@
       "date": "2026-02-26T00:59:24Z",
       "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.59",
       "prerelease": false
-    },
-    {
-      "version": "v2.1.58",
-      "name": "v2.1.58",
-      "body": "## What's changed\n\n- Expand Remote Control to more users\n",
-      "date": "2026-02-25T20:00:11Z",
-      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.58",
-      "prerelease": false
-    },
-    {
-      "version": "v2.1.56",
-      "name": "v2.1.56",
-      "body": "## What's changed\n\n- VS Code: Fixed another cause of \"command 'claude-vscode.editor.openLast' not found\" crashes\n",
-      "date": "2026-02-25T06:27:48Z",
-      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.56",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-04-07T06:26:45.709Z"
+  "lastUpdated": "2026-04-08T06:27:43.412Z"
 }
