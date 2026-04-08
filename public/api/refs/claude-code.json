@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.94",
-  "generated_at": "2026-04-08T03:07:15.468Z",
+  "version": "2.1.96",
+  "generated_at": "2026-04-08T04:52:27.888Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,20 +14,12 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.94",
-    "to_version": "2.1.94",
-    "new_features": [
-      "mantle-support",
-      "slack-mcp-channel-header",
-      "keep-coding-instructions-frontmatter",
-      "userpromptsubmit-sessiontitle-hook",
-      "plugin-skill-name-from-frontmatter"
-    ],
+    "from_version": "2.1.96",
+    "to_version": "2.1.96",
+    "new_features": [],
     "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [
-      "CLAUDE_CODE_USE_MANTLE"
-    ],
+    "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -47,12 +39,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.94",
-      "latest_release_date": "2026-04-07",
+      "latest_stable": "2.1.96",
+      "latest_release_date": "2026-04-08",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces support for Amazon Bedrock powered by Mantle, enabled via the `CLAUDE_CODE_USE_MANTLE=1` environment variable, expanding the range of available models. The default effort level has been increased from medium to high for API-key, Bedrock/Vertex/Foundry, Team, and Enterprise users, though this can be controlled with the `/effort` command. A compact `Slacked #channel` header with a clickable channel link is now available for Slack MCP send-message tool calls, improving usability. Plugin output styles now support the `keep-coding-instructions` frontmatter field, and `UserPromptSubmit` hooks can now set the session title using `hookSpecificOutput.sessionTitle`. Plugin skills declared via `\"skills\": [\"./\"]` now use the skill's frontmatter `name` for invocation, providing a stable name across install methods. Several fixes address error surfacing, including immediate error display for 429 rate-limit responses and macOS Console login failures. Plugin skill hooks defined in YAML frontmatter are no longer silently ignored, and plugin hooks now function correctly when `CLAUDE_PLUGIN_ROOT` is not set. Additionally, `${CLAUDE_PLUGIN_ROOT}` now resolves to the installed cache for local-marketplace plugins on startup. Scrollback issues, multiline prompt indentation, Shift+Space behavior in search, hyperlink handling in tmux, alt-screen rendering, `FORCE_HYPERLINK` environment variable usage, native terminal cursor tracking, Bedrock invocation of Sonnet 3.5 v2, SDK/print mode conversation history preservation, `--resume` behavior, and CJK text corruption have all been resolved. VSCode users will see reduced cold-open subprocess work and a warning banner for `settings.json` parse failures. This is a recommended upgrade to benefit from the new features and bug fixes."
+      "tldr": "This release fixes a critical regression introduced in version 2.1.94 that caused Bedrock requests to fail with a `403 \"Authorization header is missing\"` error. This issue specifically affected users relying on `AWS_BEARER_TOKEN_BEDROCK` or `CLAUDE_CODE_SKIP_BEDROCK_AUTH` for authentication. Upgrading to 2.1.96 is highly recommended for all users of Bedrock, especially those who have adopted the aforementioned authentication methods. No other changes were included in this release."
     },
     "features": [
       {
