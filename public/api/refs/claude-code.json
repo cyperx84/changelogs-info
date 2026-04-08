@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.96",
-  "generated_at": "2026-04-08T21:19:05.474Z",
+  "version": "2.1.97",
+  "generated_at": "2026-04-08T22:15:59.533Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,9 +14,15 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.96",
-    "to_version": "2.1.96",
-    "new_features": [],
+    "from_version": "2.1.97",
+    "to_version": "2.1.97",
+    "new_features": [
+      "focus-view-toggle",
+      "refreshinterval-status-line-setting",
+      "workspace-git-worktree-status-line-json-input",
+      "running-indicator-agents",
+      "syntax-highlighting-cedar-policy-files"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -39,12 +45,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.96",
+      "latest_stable": "2.1.97",
       "latest_release_date": "2026-04-08",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release fixes a critical regression introduced in version 2.1.94 that caused Bedrock requests to fail with a `403 \"Authorization header is missing\"` error. This issue specifically affected users relying on `AWS_BEARER_TOKEN_BEDROCK` or `CLAUDE_CODE_SKIP_BEDROCK_AUTH` for authentication. Upgrading to 2.1.96 is highly recommended for all users of Bedrock integration to restore proper authentication and prevent service disruptions. There are no new features, commands, flags, or breaking changes in this release. This is primarily a bug fix release focused on restoring functionality. No specific migration steps are required, simply update to the latest version. Given the severity of the authentication issue, upgrading is strongly advised to ensure continued access to Bedrock services."
+      "tldr": "Version 2.1.97 introduces a focus view toggle (`Ctrl+O`) in `NO_FLICKER` mode, providing a consolidated view of the prompt, tool summary with edit diffstats, and the final response, enhancing the development workflow. A new `refreshInterval` setting allows for periodic re-execution of the status line command, while `workspace.git_worktree` is now included in the status line JSON input, indicating when the current directory is within a linked git worktree. The `/agents` command now displays a `● N running` indicator next to agent types with active subagent instances, and syntax highlighting has been added for Cedar policy files (`.cedar`, `.cedarpolicy`). Several critical fixes address permission handling, including preventing `--dangerously-skip-permissions` from downgrading to accept-edits mode, hardening Bash tool permissions, and resolving issues with permission rules conflicting with JavaScript prototype properties. Managed settings allow rules are now correctly deactivated after admin removal, and changes to `permissions.additionalDirectories` are applied mid-session as expected. MCP HTTP/SSE connection issues causing buffer accumulation have been resolved, and OAuth token refresh now correctly honors `oauth.authServerMetadataUrl`. Rate limit retries now implement exponential backoff, and various `/resume` picker issues have been addressed. Furthermore, improvements have been made to Accept Edits mode, auto mode, and bypass-permissions mode to streamline filesystem and network access approvals. Image handling has been optimized with compression, and slash command completion now triggers after CJK sentence punctuation. Bridge sessions now display local git repository information, and the footer layout has been improved. Session transcript size has been reduced by skipping empty hook entries and capping pre-edit file copies, and transcript accuracy has been enhanced with final token usage per block. Bash tool OTEL tracing now includes a W3C `TRACEPARENT` env var for subprocesses. The `/claude-api` skill now covers Managed Agents alongside the Claude API. This upgrade is recommended to take advantage of the new features and critical bug fixes."
     },
     "features": [
       {
@@ -713,6 +719,51 @@
         "status": "stable",
         "since": "2.1.94",
         "description": "Plugin skills declared via `\"skills\": [\"./\"]` now use the skill's frontmatter `name` for the invocation name instead of the directory basename, giving a stable name across install methods.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "focus-view-toggle",
+        "name": "Focus View Toggle",
+        "status": "stable",
+        "since": "2.1.97",
+        "description": "Added focus view toggle (`Ctrl+O`) in `NO_FLICKER` mode showing prompt, one-line tool summary with edit diffstats, and final response",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "refreshinterval-status-line-setting",
+        "name": "Refresh Interval Status Line Setting",
+        "status": "stable",
+        "since": "2.1.97",
+        "description": "Added `refreshInterval` status line setting to re-run the status line command every N seconds",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "workspace-git-worktree-status-line-json-input",
+        "name": "Workspace Git Worktree Status Line JSON Input",
+        "status": "stable",
+        "since": "2.1.97",
+        "description": "Added `workspace.git_worktree` to the status line JSON input, set when the current directory is inside a linked git worktree",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "running-indicator-agents",
+        "name": "Running Indicator in /agents",
+        "status": "stable",
+        "since": "2.1.97",
+        "description": "Added `● N running` indicator in `/agents` next to agent types with live subagent instances",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "syntax-highlighting-cedar-policy-files",
+        "name": "Syntax Highlighting for Cedar Policy Files",
+        "status": "stable",
+        "since": "2.1.97",
+        "description": "Added syntax highlighting for Cedar policy files (`.cedar`, `.cedarpolicy`)",
         "key_details": [],
         "source_url": ""
       }
