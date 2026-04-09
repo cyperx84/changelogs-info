@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
   "version": "1.4.0",
-  "generated_at": "2026-04-09T05:39:08.011Z",
+  "generated_at": "2026-04-09T06:37:28.772Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -25,8 +25,8 @@
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "diff-metadata",
-      "user-message-variant"
+      "diff-metadata-format",
+      "user-message-variant-nesting"
     ]
   },
   "payload": {
@@ -51,7 +51,7 @@
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "OpenCode 1.4.0 introduces breaking changes to the SDK's data model to address performance issues, requiring updates to how diff metadata and user message variants are accessed. Specifically, diffs now only contain a `patch` field instead of `to` and `from`, and the `variant` field is nested under `model` in `UserMessage`. This release also includes improvements to core functionality, such as retrying Alibaba provider rate-limit errors, fixing OpenRouter provider issues, and aligning GitHub Copilot Anthropic reasoning levels. The TUI gains a keybinding option for switching model variants and PDF drag-and-drop support for attachments. A new `--dangerously-skip-permissions` flag is added to the `opencode run` command to auto-approve non-denied permission prompts. Desktop improvements include clearer subagent session handling and full file names on attachment chips. Due to the breaking changes in the SDK, upgrading requires careful consideration and code modifications. Upgrading is recommended to take advantage of the bug fixes and new features, but ensure you address the data model changes first."
+      "tldr": "Opencode 1.4.0 introduces breaking changes to the SDK's data model to address performance issues. Specifically, diff metadata now only includes a `patch` field with the unified diff, replacing the `to` and `from` fields, and the `UserMessage.variant` field is now nested under `model` as `userMessage.model.variant`. This release also adds the ability to export OTLP observability data and includes full HTTP proxy support. The `opencode run` command now accepts a `--dangerously-skip-permissions` flag to auto-approve non-denied permission prompts. Alibaba provider rate-limit errors are now retried, and OpenRouter provider issues have been resolved. TypeScript LSP memory usage has been reduced by using the native project config. A keybinding option for \"Switch model variant\" has been added to the TUI, along with PDF drag and drop for attachments. Subagent sessions in the desktop app have improved titles, navigation, and progress states, and auto-accept permissions have been moved to Settings. Due to the breaking changes in the SDK, upgrading requires code modifications to handle the new diff metadata format and the location of the `variant` field. Upgrading is recommended to take advantage of the performance improvements and new features, but ensure you address the breaking changes first."
     },
     "features": [
       {
