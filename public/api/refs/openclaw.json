@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.4.8",
-  "generated_at": "2026-04-09T01:38:41.159Z",
+  "version": "2026.4.9",
+  "generated_at": "2026-04-09T03:07:54.831Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,9 +14,12 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.4.8",
-    "to_version": "2026.4.8",
-    "new_features": [],
+    "from_version": "2026.4.9",
+    "to_version": "2026.4.9",
+    "new_features": [
+      "character-vibes-evaluation-reports",
+      "provider-auth-aliases"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -40,13 +43,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.4.8",
-      "latest_release_date": "2026-04-08",
+      "latest_stable": "2026.4.9",
+      "latest_release_date": "2026-04-09",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release focuses on fixes and improvements to existing features. A key fix addresses issues with Telegram and bundled channels setup, ensuring that installed npm builds no longer try to import missing files during gateway startup by loading shared secret contracts through packaged top-level sidecars. This resolves a common startup error. Additionally, packaged plugin compatibility metadata is aligned with the release version, ensuring bundled channels and providers load correctly on OpenClaw 2026.4.8. The agents/progress feature now keeps `update_plan` available for OpenAI-family runs while returning compact success payloads, with an option to opt out using `tools.experimental.planTool=false`. The `/exec` command now reports current-default behavior aligned with real runtime behavior, ensuring `host=auto` sessions surface the correct host-aware fallback policy. Slack now honors ambient HTTP(S) proxy settings for Socket Mode WebSocket connections, including NO_PROXY exclusions, enabling proxy-only deployments to connect without monkey patches. Slack actions now pass the already resolved read token into `downloadFile`, resolving failures with SecretRef-backed bot tokens after a raw config re-read. Finally, the network/fetch guard now skips target DNS pinning when trusted env-proxy mode is active, allowing proxy-only sandboxes to let the trusted proxy resolve outbound hosts. This release is recommended for all users, especially those using Telegram, bundled channels, OpenAI agents, Slack integrations, or proxy-only sandboxes. No specific prerequisites are required for upgrading."
+      "tldr": "This release introduces grounded REM backfill lane with historical `rem-harness --path` for memory/dreaming, enabling diary commit/reset flows, cleaner durable-fact extraction, and live short-term promotion integration. The Control UI now features a structured diary view with timeline navigation, backfill/reset controls, traceable dreaming summaries, and a grounded Scene lane. Character-vibes evaluation reports have been added for live QA, allowing faster comparison of candidate behavior with model selection and parallel runs. Provider manifests can now declare `providerAuthAliases`, enabling provider variants to share env vars, auth profiles, config-backed auth, and API-key onboarding choices. Browser security has been enhanced by re-running blocked-destination safety checks after interaction-driven main-frame navigations. Runtime-control env vars and unsafe URL-style browser control override specifiers are now blocked from untrusted workspace `.env` files. Remote node `exec` events are now sanitized to prevent injection of trusted `System:` content. Several fixes address issues with plugin onboarding, dependency versions, Android pairing, Matrix gateway stability, Slack media loading, reply handling, session routing, model overrides, Slack ACP replies, Matrix DM policies, npm packaging, live QA auth, OpenAI reasoning effort, Ollama thinking output, Codex CLI prompts, auth profile persistence, agent timeouts, Z.ai vendor code classification, QQBot media tag parsing, memory/dreaming hardening, Android manual connect, Windows update builds, and plugin SDK contracts. It is recommended to upgrade to this version to benefit from the security enhancements and bug fixes. Before upgrading, review the changes to ensure compatibility with your existing configuration."
     },
     "features": [
       {
@@ -1327,6 +1330,24 @@
           "Runtime-ready provider auth exposed through `openclaw/plugin-sdk/provider-auth-runtime`.",
           "Allows native plugins and context engines to resolve request-ready credentials after provider-owned runtime exchanges."
         ],
+        "source_url": ""
+      },
+      {
+        "id": "character-vibes-evaluation-reports",
+        "name": "Character Vibes Evaluation Reports",
+        "status": "experimental",
+        "since": "2026.4.9",
+        "description": "Add character-vibes evaluation reports with model selection and parallel runs so live QA can compare candidate behavior faster.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "provider-auth-aliases",
+        "name": "Provider Auth Aliases",
+        "status": "stable",
+        "since": "2026.4.9",
+        "description": "Let provider manifests declare `providerAuthAliases` so provider variants can share env vars, auth profiles, config-backed auth, and API-key onboarding choices without core-specific wiring.",
+        "key_details": [],
         "source_url": ""
       }
     ],
