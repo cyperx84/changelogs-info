@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.97",
-  "generated_at": "2026-04-09T18:26:49.543Z",
+  "version": "2.1.98",
+  "generated_at": "2026-04-09T19:29:32.438Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,12 +14,23 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.97",
-    "to_version": "2.1.97",
-    "new_features": [],
+    "from_version": "2.1.98",
+    "to_version": "2.1.98",
+    "new_features": [
+      "interactive-vertex-ai-setup-wizard",
+      "monitor-tool",
+      "subprocess-sandboxing-with-pid-namespace-isolation"
+    ],
     "new_commands": [],
-    "new_flags": [],
-    "new_env_vars": [],
+    "new_flags": [
+      "--exclude-dynamic-system-prompt-sections"
+    ],
+    "new_env_vars": [
+      "CLAUDE_CODE_PERFORCE_MODE",
+      "CLAUDE_CODE_SUBPROCESS_ENV_SCRUB",
+      "CLAUDE_CODE_SCRIPT_CAPS",
+      "TRACEPARENT"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -39,12 +50,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.97",
-      "latest_release_date": "2026-04-08",
+      "latest_stable": "2.1.98",
+      "latest_release_date": "2026-04-09",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces several enhancements and fixes across various areas of claude-code. A new focus view toggle (`Ctrl+O` in `NO_FLICKER` mode) provides a streamlined view of prompts, tool summaries, and responses. The status line is now more configurable with the `refreshInterval` setting, allowing for periodic updates, and includes `workspace.git_worktree` information when inside a linked git worktree. The `/agents` command now displays a running indicator for agent types with live subagent instances. Syntax highlighting for Cedar policy files has been added. Several critical fixes address permission handling, including issues with `--dangerously-skip-permissions`, Bash tool permissions, and managed settings. MCP HTTP/SSE connection issues and rate-limit handling have been resolved, improving stability and performance. Numerous `/resume` picker issues have been fixed, enhancing the user experience when resuming sessions. Additionally, improvements have been made to image handling, slash command completion, and session transcript accuracy. Several fixes were made to `NO_FLICKER` mode to improve the user experience. It is highly recommended to upgrade to this version to benefit from the improved stability, security, and user experience. No specific migration steps are required."
+      "tldr": "Version 2.1.98 introduces an interactive Google Vertex AI setup wizard, streamlining the process of configuring Claude Code to use Google's platform. This simplifies GCP authentication, project and region configuration, credential verification, and model pinning. A new Monitor tool allows streaming events from background scripts, and subprocess sandboxing with PID namespace isolation is now available on Linux when `CLAUDE_CODE_SUBPROCESS_ENV_SCRUB` is set, along with `CLAUDE_CODE_SCRIPT_CAPS` to limit script invocations. The `CLAUDE_CODE_PERFORCE_MODE` environment variable now causes Edit/Write/NotebookEdit to fail on read-only files with a `p4 edit` hint, preventing accidental overwrites. A `--exclude-dynamic-system-prompt-sections` flag was added to print mode for improved prompt caching, and `workspace.git_worktree` is now included in the status line JSON input. Several Bash tool permission bypasses and prompting issues have been fixed, including those related to backslash-escaped flags, compound commands, read-only commands with env-var prefixes, and redirects to `/dev/tcp/...` or `/dev/udp/...`. MCP OAuth configuration overrides are now correctly honored, and various UI and usability issues have been resolved, including problems with terminal text replacements, fullscreen mode, and the `/resume` picker. Additionally, several fixes address permission rule matching and inheritance, and improvements have been made to the `/agents` command and Accept Edits mode. It is recommended to upgrade to this version to benefit from the improved security, stability, and usability. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
@@ -760,6 +771,33 @@
         "description": "Added syntax highlighting for Cedar policy files (`.cedar`, `.cedarpolicy`)",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "interactive-vertex-ai-setup-wizard",
+        "name": "Interactive Google Vertex AI Setup Wizard",
+        "status": "stable",
+        "since": "2.1.98",
+        "description": "An interactive wizard accessible from the login screen when selecting \"3rd-party platform\" that guides users through GCP authentication, project and region configuration, credential verification, and model pinning.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "monitor-tool",
+        "name": "Monitor Tool",
+        "status": "stable",
+        "since": "2.1.98",
+        "description": "A tool for streaming events from background scripts.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "subprocess-sandboxing-with-pid-namespace-isolation",
+        "name": "Subprocess Sandboxing with PID Namespace Isolation",
+        "status": "experimental",
+        "since": "2.1.98",
+        "description": "Subprocess sandboxing with PID namespace isolation on Linux when `CLAUDE_CODE_SUBPROCESS_ENV_SCRUB` is set, and `CLAUDE_CODE_SCRIPT_CAPS` env var to limit per-session script invocations.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1266,6 +1304,12 @@
           "description": "Overridable prefix for Remote Control session names (default: hostname)",
           "since": "2.1.92",
           "source_url": ""
+        },
+        {
+          "flag": "--exclude-dynamic-system-prompt-sections",
+          "description": "Improves cross-user prompt caching in print mode.",
+          "since": "2.1.98",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -1278,7 +1322,9 @@
           "source_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--exclude-dynamic-system-prompt-sections"
+      ]
     },
     "env_vars": [
       {
@@ -1425,6 +1471,27 @@
         "purpose": "Enables support for Amazon Bedrock powered by Mantle.",
         "status": "experimental",
         "since": "2.1.94",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_PERFORCE_MODE",
+        "purpose": "When set, Edit/Write/NotebookEdit fail on read-only files with a `p4 edit` hint instead of silently overwriting them.",
+        "status": "stable",
+        "since": "2.1.98",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_SCRIPT_CAPS",
+        "purpose": "Limits per-session script invocations when subprocess sandboxing is enabled.",
+        "status": "experimental",
+        "since": "2.1.98",
+        "source_url": ""
+      },
+      {
+        "name": "TRACEPARENT",
+        "purpose": "W3C `TRACEPARENT` env var to Bash tool subprocesses when OTEL tracing is enabled, so child-process spans correctly parent to Claude Code's trace tree",
+        "status": "stable",
+        "since": "2.1.98",
         "source_url": ""
       }
     ],
