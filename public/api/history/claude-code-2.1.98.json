@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.98",
-  "generated_at": "2026-04-09T20:20:12.405Z",
+  "generated_at": "2026-04-09T19:29:32.438Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -29,7 +29,7 @@
       "CLAUDE_CODE_PERFORCE_MODE",
       "CLAUDE_CODE_SUBPROCESS_ENV_SCRUB",
       "CLAUDE_CODE_SCRIPT_CAPS",
-      "W3C TRACEPARENT"
+      "TRACEPARENT"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -55,7 +55,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Version 2.1.98 introduces an interactive Google Vertex AI setup wizard, streamlining GCP authentication and model configuration. A new Monitor tool allows streaming events from background scripts, and subprocess sandboxing with PID namespace isolation is now available on Linux when `CLAUDE_CODE_SUBPROCESS_ENV_SCRUB` is set, along with `CLAUDE_CODE_SCRIPT_CAPS` to limit script invocations. The `CLAUDE_CODE_PERFORCE_MODE` environment variable now causes Edit/Write/NotebookEdit to fail on read-only files with a `p4 edit` hint. Several Bash tool permission bypasses have been fixed, including issues with backslash-escaped flags, compound commands, and redirects to `/dev/tcp/...` or `/dev/udp/...`. Rate limit retries now use exponential backoff, and MCP OAuth configuration overrides are properly honored after restart. The release also addresses various UI and functionality issues, including fixes for text replacements on macOS, `--dangerously-skip-permissions` downgrading, managed-settings allow rules persisting after removal, and `/resume` picker problems. The `/claude-api` skill has been updated to cover Managed Agents alongside Claude API. It is recommended to upgrade to address the security vulnerabilities and benefit from the new features and improvements. No specific migration steps are required."
+      "tldr": "Version 2.1.98 introduces an interactive Google Vertex AI setup wizard, streamlining the process of configuring Claude Code to use Google's platform. This simplifies GCP authentication, project and region configuration, credential verification, and model pinning. A new Monitor tool allows streaming events from background scripts, and subprocess sandboxing with PID namespace isolation is now available on Linux when `CLAUDE_CODE_SUBPROCESS_ENV_SCRUB` is set, along with `CLAUDE_CODE_SCRIPT_CAPS` to limit script invocations. The `CLAUDE_CODE_PERFORCE_MODE` environment variable now causes Edit/Write/NotebookEdit to fail on read-only files with a `p4 edit` hint, preventing accidental overwrites. A `--exclude-dynamic-system-prompt-sections` flag was added to print mode for improved prompt caching, and `workspace.git_worktree` is now included in the status line JSON input. Several Bash tool permission bypasses and prompting issues have been fixed, including those related to backslash-escaped flags, compound commands, read-only commands with env-var prefixes, and redirects to `/dev/tcp/...` or `/dev/udp/...`. MCP OAuth configuration overrides are now correctly honored, and various UI and usability issues have been resolved, including problems with terminal text replacements, fullscreen mode, and the `/resume` picker. Additionally, several fixes address permission rule matching and inheritance, and improvements have been made to the `/agents` command and Accept Edits mode. It is recommended to upgrade to this version to benefit from the improved security, stability, and usability. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
@@ -1490,13 +1490,6 @@
       {
         "name": "TRACEPARENT",
         "purpose": "W3C `TRACEPARENT` env var to Bash tool subprocesses when OTEL tracing is enabled, so child-process spans correctly parent to Claude Code's trace tree",
-        "status": "stable",
-        "since": "2.1.98",
-        "source_url": ""
-      },
-      {
-        "name": "W3C TRACEPARENT",
-        "purpose": "Added to Bash tool subprocesses when OTEL tracing is enabled, so child-process spans correctly parent to Claude Code's trace tree",
         "status": "stable",
         "since": "2.1.98",
         "source_url": ""
