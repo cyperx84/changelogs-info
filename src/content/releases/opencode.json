@@ -15,6 +15,30 @@
   },
   "releases": [
     {
+      "version": "v1.4.3",
+      "name": "v1.4.3",
+      "body": "## Core\n\n- Fixed `agent create` for OpenAI accounts authenticated with OAuth.\n- Interrupted Bash commands now keep their final output and truncation details instead of ending as aborted.\n- Added fast mode variants for supported Claude and GPT models.\n\n## TUI\n\n- Restored the hidden session scrollbar as the default.\n\n## Extensions\n\n- Added configurable OAuth redirect URIs for remote MCP servers. (@egze)\n\n**Thank you to 2 community contributors:**\n- @egze:\n  - feat(mcp): add OAuth redirect URI configuration for MCP servers (#21385)\n- @simonklee:\n  - opencode: lazy-load top-level CLI commands\n  - Revert \"opencode: lazy-load top-level CLI commands\" (#21726)\n",
+      "date": "2026-04-10T01:00:36Z",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.4.3",
+      "prerelease": false
+    },
+    {
+      "version": "v1.4.2",
+      "name": "v1.4.2",
+      "body": "## TUI\r\n- Fix subagents not being clickable until finished\r\n\r\n\r\n## Desktop\r\n\r\n- Removed the forced loading delay while the app connects\r\n",
+      "date": "2026-04-09T16:25:08Z",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.4.2",
+      "prerelease": false
+    },
+    {
+      "version": "v1.4.1",
+      "name": "v1.4.1",
+      "body": "## Core\n- Fix `clangd` choosing `CMakeLists.txt` or `Makefile` as the project root in C and C++ workspaces. (@nonbanana)\n- Add permission prompts for GitLab Duo Workflow tool calls instead of auto-running them. (@vglafirov)\n- Hide unsupported variants for Big Pickle models.\n\n## TUI\n- Show an OpenCode Go subscribe prompt when free usage limits are reached.\n- Simplify provider labels in the model and provider pickers.\n\n## Desktop\n- Fix terminal connections in same-origin desktop and web app setups. (@OpeOginni)\n- Fix session review and change lists when diff data arrives in inconsistent shapes.\n\n## SDK\n- Fix the generated SDK and OpenAPI types for `/providers` and session shell responses.\n\n**Thank you to 3 community contributors:**\n- @OpeOginni:\n  - fix(app): skip url password setting for same-origin server and web app (#19923)\n- @vglafirov:\n  - feat(llm): integrate GitLab DWS tool approval with permission system (#19955)\n- @nonbanana:\n  - fix(lsp): remove CMakeLists.txt and Makefile from clangd root markers (#21466)\n",
+      "date": "2026-04-09T07:12:43Z",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.4.1",
+      "prerelease": false
+    },
+    {
       "version": "v1.4.0",
       "name": "v1.4.0",
       "body": "## Breaking Changes in SDK\r\n\r\nDue to some performance issues we had to make a few breaking changes in our data model.\r\n\r\n### Diff metadata\r\nThe diffs contained in the metadata for the edit and patch tool will no longer contain a `to` and `from` field with full file contents. they will only contain a `patch` field with the unified diff\r\n\r\nAdditionally all snapshot diffs contained in user message and session diff will follow this format\r\n\r\n### `UserMessage.variant`\r\n\r\nBefore the user message had a `variant` field - it is now nested under `model` so `userMessage.model.variant`\r\n\r\n## Core\r\n- Added OTLP observability export support.\r\n- Fixed failed web fetches leaving stale timeouts behind.\r\n- Improved `opencode login` transport error messages.\r\n- Retried Alibaba provider rate-limit errors instead of failing immediately.\r\n- Kept model variants scoped to the selected model.\r\n- Added full HTTP proxy support.\r\n- Fixed OpenRouter provider issues.\r\n- Aligned GitHub Copilot Anthropic reasoning levels and removed incorrect Qwen variants.\r\n- Reduced TypeScript LSP memory use by using the native project config. (@derekbar90)\r\n\r\n## TUI\r\n- Added a keybinding option for \"Switch model variant\". (@ariane-emory)\r\n- Added PDF drag and drop for attachments. (@gitpush-gitpaid)\r\n- Added `opencode run --dangerously-skip-permissions` to auto-approve non-denied permission prompts.\r\n\r\n## Desktop\r\n- Improved subagent sessions with clearer titles, navigation, and progress states.\r\n- Moved auto-accept permissions into Settings.\r\n- Showed full file names on attachment chips.\r\n\r\n**Thank you to 4 community contributors:**\r\n- @derekbar90:\r\n  - fix(lsp): MEMORY LEAK: ensure typescript server uses native project config (#19953)\r\n- @mchenco:\r\n  - docs: update Cloudflare provider setup to reflect /connect prompt flow (#20589)\r\n- @gitpush-gitpaid:\r\n  - feat(opencode): Add PDF attachment Drag and Drop (#16926)\r\n- @ariane-emory:\r\n  - fix(tui): use sentence case for theme mode command palette items (#21192)\r\n  - feat(tui): allow variant_list keybind for the \"Switch model variant\" command (#21185)\r\n",
@@ -229,31 +253,7 @@
       "date": "2026-03-06T07:29:56Z",
       "url": "https://github.com/anomalyco/opencode/releases/tag/v1.2.20",
       "prerelease": false
-    },
-    {
-      "version": "v1.2.19",
-      "name": "v1.2.19",
-      "body": "## Core\n- Add GPT-5.4 to Codex allowed models list (@msadiks)\n- Replace Bun.stderr and Bun.color with Node.js equivalents\n- Replace Bun.connect with net.createConnection for better compatibility\n- Use SHA1 for hash instead of unsupported xxHash3-XXH64\n- Replace Bun.hash with Hash.fast using xxhash3-xxh64\n- Replace Bun.write with Filesystem.write in config files\n- Replace Bun.write/file with Filesystem utilities in snapshot\n- Replace Bun.sleep with Node.js timers for better compatibility\n## TUI\n- Use node:stream/consumers for stdin reading\n- Replace Bun.stdin.text with Node.js stream reading for better compatibility\n## Desktop\n- Fix stale show in app (@neriousy)\n- Remove keyboard shortcut tooltips from new session and new workspace buttons in the sidebar\n- Load tab when opening file\n\n**Thank you to 3 community contributors:**\n- @Seungjun0906:\n  - fix(console): follow-up for #13108 docs/en routing and locale cookie sync (#13608)\n- @neriousy:\n  - fix(app): stale show (#16236)\n- @msadiks:\n  - feat: add \"gpt-5.4\" to codex allowed models list (#16274)",
-      "date": "2026-03-06T04:29:31Z",
-      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.2.19",
-      "prerelease": false
-    },
-    {
-      "version": "v1.2.18",
-      "name": "v1.2.18",
-      "body": "## Core\n- Handle SIGHUP signal and kill process gracefully\n## TUI\n- Add onClick handler to InlineTool and Task components\n- Add options to auth login command to skip interactive questions (@dbpolito)\n- Don't let Dax touch the UI\n## Desktop\n- Fork Ghostty for web-based terminal implementation\n- Show errors for stale keyed components\n- Fixed locale error in app\n- Resolve stale read error in app\n- Improve provider settings consistency in app\n- Preserve question dock state across session switches (@ualtinok)\n- Fix icon jiggle in app\n- Open search with Mod+F even when editor is not focused\n- Improve error handling and translation in desktop server error formatting (@OpeOginni)\n- Improve agent selection logic to correctly pass configured models and variants (@OpeOginni)\n- Remove unnecessary macOS entitlements\n- Add desktop deep link support for creating new sessions\n- Prefer using useLocation hook instead of window.location in app\n## SDK\n- Update SDK package.json\n\n**Thank you to 4 community contributors:**\n- @stolinski:\n  - docs: Add opencode-sentry-monitor to ecosystem documentation (#16037)\n- @dbpolito:\n  - feat(opencode): Adding options to auth login to skip questions (#14470)\n- @OpeOginni:\n  - fix(app): improve agent selection logic passing in configured models and variants correctly (#16072)\n  - refactor(desktop): improve error handling and translation in server error formatting (#16171)\n- @ualtinok:\n  - fix(app): preserve question dock state across session switches (#16173)",
-      "date": "2026-03-05T19:01:30Z",
-      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.2.18",
-      "prerelease": false
-    },
-    {
-      "version": "v1.2.17",
-      "name": "v1.2.17",
-      "body": "## Core\r\n- Rework workspace integration and adaptor interface\r\n- Clarify output capture guidance in bash tool documentation\r\n## TUI\r\n- Show scrollbar by default\r\n- Prevent orphaned opencode subprocesses on shutdown\r\n- Validate agent when running with attach flag (@alberti42)\r\n## Desktop\r\n- Remove blur from todos in app\r\n- Delay dock animation on session load\r\n- Remove diff lines from sessions in sidebar\r\n- Loading session should be scrolled to the bottom\r\n- Close terminal tabs properly\r\n\r\n**Thank you to 3 community contributors:**\r\n- @Copilot:\r\n  - revert: undo turbo typecheck dependency change from #14828 (#15902)\r\n- @alberti42:\r\n  - fix: `run --attach` agent validation (#11812)\r\n- @Niraj12chaudhary:\r\n  - fix(docs): update dead opencode-daytona ecosystem link (#15979)",
-      "date": "2026-03-04T14:58:43Z",
-      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.2.17",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-04-09T06:28:24.831Z"
+  "lastUpdated": "2026-04-10T06:32:19.711Z"
 }
