@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.118.0",
-  "generated_at": "2026-04-10T22:13:28.672Z",
+  "version": "0.119.0",
+  "generated_at": "2026-04-10T23:14:01.671Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,19 +14,28 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.118.0",
-    "to_version": "0.118.0",
+    "from_version": "0.119.0",
+    "to_version": "0.119.0",
     "new_features": [
-      "windows-sandbox-proxy-only-networking-os-level",
-      "chatgpt-device-code-login-app-server",
-      "prompt-plus-stdin-workflow-codex-exec",
-      "dynamic-bearer-tokens-custom-model-providers"
+      "realtime-voice-sessions-v2-webrtc",
+      "mcp-apps-richer-support",
+      "remote-app-server-workflows-enhancements",
+      "tui-copy-latest-agent-response",
+      "resume-jump-to-session-by-id-name",
+      "tui-configurable-notifications",
+      "advanced-announcements-per-os-and-plans"
     ],
     "new_commands": [],
-    "new_flags": [],
-    "new_env_vars": [],
+    "new_flags": [
+      "--cd"
+    ],
+    "new_env_vars": [
+      "CODEX_SKIP_VENDORED_BWRAP"
+    ],
     "deprecated_commands": [],
-    "deprecated_flags": [],
+    "deprecated_flags": [
+      "--api-key"
+    ],
     "breaking_changes": []
   },
   "payload": {
@@ -44,14 +53,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.118.0",
+      "latest_stable": "0.119.0",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-03-31",
+      "latest_release_date": "2026-04-10",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release introduces several key improvements. Custom model providers can now dynamically fetch and refresh bearer tokens, enhancing security and flexibility. The `codex exec` command now supports piping input via stdin while still allowing a separate prompt on the command line, streamlining workflows. App-server clients can now initiate ChatGPT sign-in using a device code flow, providing a more reliable authentication method when browser callbacks are problematic. Windows sandbox environments can now enforce proxy-only networking using OS-level egress rules, improving security. Project-local `.codex` files are now protected on creation, preventing bypass of approval checks. Linux sandbox launches are more reliable due to improved `bwrap` detection. The app-server-backed TUI has regained missing workflows, including hook notifications, `/copy` and `/resume`, and a functional skills picker. MCP startup is more robust with longer timeouts and clearer error surfacing. On Windows, `apply_patch` is less prone to failure due to reduced ACL churn. Upgrade is recommended to take advantage of these security enhancements, workflow improvements, and bug fixes. No specific migration steps are required."
+      "tldr": "This release introduces significant improvements to realtime voice sessions, now defaulting to the v2 WebRTC path with enhanced configuration and media support. MCP Apps gain richer support with features like resource reads and server-driven elicitations, while remote workflows benefit from egress websocket transport and remote `--cd` forwarding. The TUI now allows copying the latest agent response with `Ctrl+O` and jumping to sessions by ID or name using `/resume`. TUI notifications are also more configurable, including Warp OSC 9 support. Several bug fixes enhance stability and performance, including faster TUI startup, more reliable resume flows, and smoother composer behavior. The deprecated `--api-key` flag for login has been removed, encouraging users to adopt alternative authentication methods. The `CODEX_SKIP_VENDORED_BWRAP` environment variable has been added to skip vendored bwrap. This release also includes numerous internal refactorings and dependency updates, improving code maintainability and build times. It is recommended to upgrade to this version to take advantage of the new features and bug fixes. Ensure you are using a supported authentication method as the `--api-key` flag is deprecated."
     },
     "features": [
       {
@@ -613,6 +622,81 @@
         "description": "Windows sandbox runs can now enforce proxy-only networking with OS-level egress rules, instead of relying on environment variables alone.",
         "key_details": [],
         "source_url": "#12220"
+      },
+      {
+        "id": "realtime-voice-sessions-v2-webrtc",
+        "name": "Realtime Voice Sessions v2 WebRTC",
+        "status": "stable",
+        "since": "0.119.0",
+        "description": "Realtime voice sessions now default to the v2 WebRTC path.",
+        "key_details": [
+          "Configurable transport",
+          "Voice selection",
+          "Native TUI media support",
+          "App-server coverage for the new flow"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "mcp-apps-richer-support",
+        "name": "MCP Apps Richer Support",
+        "status": "stable",
+        "since": "0.119.0",
+        "description": "MCP Apps and custom MCP servers gained richer support.",
+        "key_details": [
+          "Resource reads",
+          "Tool-call metadata",
+          "Custom-server tool search",
+          "Server-driven elicitations",
+          "File-parameter uploads",
+          "More reliable plugin cache refreshes"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "remote-app-server-workflows-enhancements",
+        "name": "Remote/App-Server Workflows Enhancements",
+        "status": "stable",
+        "since": "0.119.0",
+        "description": "Remote/app-server workflows now support egress websocket transport, remote `--cd` forwarding, runtime remote-control enablement, sandbox-aware filesystem APIs, and an experimental `codex exec-server` subcommand.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "tui-copy-latest-agent-response",
+        "name": "TUI Copy Latest Agent Response",
+        "status": "stable",
+        "since": "0.119.0",
+        "description": "The TUI can copy the latest agent response with `Ctrl+O`, including better clipboard behavior over SSH and across platforms.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "resume-jump-to-session-by-id-name",
+        "name": "Resume Jump to Session by ID/Name",
+        "status": "stable",
+        "since": "0.119.0",
+        "description": "`/resume` can now jump directly to a session by ID or name from the TUI.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "tui-configurable-notifications",
+        "name": "TUI Configurable Notifications",
+        "status": "stable",
+        "since": "0.119.0",
+        "description": "TUI notifications are more configurable, including Warp OSC 9 support and an opt-in mode for notifications even while the terminal is focused.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "advanced-announcements-per-os-and-plans",
+        "name": "Advanced Announcements per OS and Plans",
+        "status": "stable",
+        "since": "0.119.0",
+        "description": "Announcements can now be targeted per OS and plans.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -796,8 +880,18 @@
           "source_url": "https://github.com/openai/codex"
         }
       ],
-      "deprecated": [],
-      "new_since_previous": []
+      "deprecated": [
+        {
+          "flag": "--api-key",
+          "replaced_by": "other authentication methods",
+          "deprecated_since": "0.119.0",
+          "removed_in": null,
+          "source_url": ""
+        }
+      ],
+      "new_since_previous": [
+        "--cd"
+      ]
     },
     "env_vars": [
       {
@@ -805,6 +899,13 @@
         "purpose": "Required for API auth.",
         "status": "stable",
         "source_url": "https://github.com/openai/codex"
+      },
+      {
+        "name": "CODEX_SKIP_VENDORED_BWRAP",
+        "purpose": "Skips vendored bwrap",
+        "status": "stable",
+        "since": "0.119.0",
+        "source_url": ""
       }
     ],
     "models": [
