@@ -390,34 +390,31 @@ function getTldr(body: string): string[] {
             <span class="kc-s48">Latest Release</span>
           </div>
 
-          <div style={`padding: 1.5rem 2rem; border: 4px solid ${breaking ? 'var(--kc-primary)' : 'var(--kc-border)'}; background: ${breaking ? 'var(--kc-bg-surface)' : 'var(--kc-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--kc-primary);' : ''} margin-bottom: 2rem;`}>
-            <div class="kc-flex-11">
-              <div class="kc-flex-7">
-                <span class="kc-headline kc-s51">{latestForTldr.version}</span>
-                {breaking && (
-                  <span class="kc-s68">BREAKING</span>
-                )}
-                {latestForTldr.prerelease && (
-                  <span class="kc-s53">PRE</span>
-                )}
+          <div style={`border: 4px solid ${breaking ? 'var(--kc-primary)' : 'var(--kc-border)'}; background: ${breaking ? 'var(--kc-bg-surface)' : 'var(--kc-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--kc-primary);' : ''} overflow: hidden; border-radius: 4px;`}>
+            <div style="position:relative;height:200px;overflow:hidden;">
+              <img src="/images/guides/kilocode-tldr.jpg" alt="" style="width:100%;height:100%;object-fit:cover;display:block;" />
+              <div style={`position:absolute;bottom:0;left:0;right:0;height:60%;background:linear-gradient(to top, ${breaking ? 'var(--kc-bg-surface)' : 'var(--kc-bg-card)'}, transparent);`}></div>
+              <div style="position:absolute;bottom:1rem;left:2rem;right:2rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:0.75rem;">
+                <span class="kc-headline" style="font-size:2rem;font-weight:900;text-shadow:0 2px 8px rgba(0,0,0,0.7);">{latestForTldr.version}</span>
+                {breaking && (<span style="font-size:0.6rem;font-weight:900;padding:0.15rem 0.5rem;background:var(--kc-primary);color:white;letter-spacing:0.08em;">BREAKING</span>)}
+                {latestForTldr.prerelease && (<span style="font-size:0.6rem;font-weight:900;padding:0.15rem 0.5rem;border:2px solid var(--kc-border-dim);letter-spacing:0.08em;">PRE</span>)}
+                <span style="margin-left:auto;font-size:0.8rem;opacity:0.8;">{formatDate(latestForTldr.date)}</span>
               </div>
-              <span class="kc-s69">{formatDate(latestForTldr.date)}</span>
-            </div>            <img src="/images/guides/kilocode-tldr.jpg" alt="kilocode TLDR" style="width:100%;border-radius:12px;margin-bottom:1rem;border:2px solid var(--oc-border);" />
-
-            {summaryText ? (
-              <div class="kc-vstack-6">
+            </div>
+            <div style="padding: 1.25rem 2rem 1.5rem;">
+              {summaryText ? (
                 <p class="kc-s56">{summaryText}</p>
-              </div>
-            ) : items.length > 0 && (
-              <ul class="kc-vstack-7">
-                {items.map((item) => (
-                  <li class="kc-flex-9">
-                    <span class="kc-s59">▸</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
+              ) : items.length > 0 && (
+                <ul class="kc-vstack-7">
+                  {items.map((item) => (
+                    <li class="kc-flex-9">
+                      <span class="kc-s59">▸</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </section>
       );

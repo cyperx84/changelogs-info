@@ -1,18 +1,65 @@
 ---
 import HermesLayout from "../../layouts/HermesLayout.astro";
-import { getToolReleases, formatDate } from "../../lib/releases";
+import { getToolById, getToolReleases, formatDate, relativeTime } from "../../lib/releases";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
+const tool = getToolById("hermes-agent");
 const data = await getToolReleases("hermes-agent");
 const releases = data?.releases || [];
 const stableReleases = releases.filter((r) => !r.prerelease);
 const latestStable = stableReleases[0] || releases[0];
+const latestRelease = releases[0];
 
-function getTldr(body: string): string {
-  if (!body) return "No summary available.";
+const displayVersion = latestStable?.version || latestRelease?.version || "—";
+const lastUpdatedAgo = data?.lastUpdated ? relativeTime(data.lastUpdated) : null;
+
+const breakingCount = releases.filter((r) =>
+  r.body?.toLowerCase().includes("breaking")
+).length;
+
+function getPayloadTldr(toolId: string): string | null {
+  try {
+    const path = join(process.cwd(), "public", "api", "refs", `${toolId}.json`);
+    const payload = JSON.parse(readFileSync(path, "utf-8"));
+    return payload?.payload?.meta?.tldr ?? null;
+  } catch {
+    return null;
+  }
+}
+
+const llmTldr = getPayloadTldr("hermes-agent");
+
+function getTldr(body: string): string[] {
+  if (!body) return [];
   const lines = body.split("\n").filter((l) => l.trim() && !l.includes("<!--"));
   const bullets = lines.filter((l) => /^[-•*]/.test(l.trim()));
-  if (bullets.length === 0) return body.slice(0, 120) + "…";
-  return bullets.slice(0, 2).map((l) => l.replace(/^[-•*]\s*/, "").replace(/`([^`]+)`/g, "$1")).join(" · ") + ".";
+  if (bullets.length === 0) {
+    const fallback = body.slice(0, 120) + "…";
+    return [fallback];
+  }
+  return bullets.slice(0, 5).map((l) => l.replace(/^[-•*]\s*/, "").replace(/`([^`]+)`/g, "$1"));
+}
+
+function isBreaking(body: string = ""): boolean {
+  return body.toLowerCase().includes("breaking");
+}
+
+// Get recent releases for changelog display
+const recentReleases = releases.slice(0, 3);
+
+function buildChangelogCard(body: string): string {
+  if (!body) return "<p>No details available.</p>";
+  let html = body
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/^(#{1,3})\s+(.+)$/gm, (_, h, t) => `<strong>${t}</strong>`)
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+    .replace(/^[-*]\s+(.+)$/gm, "<li>$1</li>")
+    .replace(/(<li>.*<\/li>)/s, "<ul>$1</ul>")
+    .replace(/\n{2,}/g, "</p><p>")
+    .replace(/\n/g, "<br/>");
+  return `<p>${html}</p>`;
 }
 ---
 
@@ -34,7 +81,7 @@ function getTldr(body: string): string {
       </h1>
 
       <p style="font-family: var(--ha-font-body); font-size: 1.1rem; color: var(--ha-text-dim); line-height: 1.6; max-width: 36rem; margin: 0 0 2rem;">
-        Self-improving AI agent with persistent memory and a learning loop. Runs on Telegram, Discord, CLI, WhatsApp, Signal, and Slack. 40+ built-in tools, cron scheduling, and autonomous subagents.
+        {tool?.description || "Self-improving AI agent with persistent memory and a learning loop. Runs on Telegram, Discord, CLI, WhatsApp, Signal, and Slack. 40+ built-in tools, cron scheduling, and autonomous subagents."}
       </p>
 
       <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
@@ -63,114 +110,137 @@ function getTldr(body: string): string {
         <span style="color: var(--ha-primary);">⚡</span> TERMINAL
       </div>
       <div style="font-family: var(--ha-font-mono); font-size: 0.82rem; line-height: 1.8; color: var(--ha-text);">
-        <div><span style="color: var(--ha-text-muted);">$</span> <span style="color: var(--ha-primary-bright);">hermes</span></div>
-        <div style="color: var(--ha-text-dim); padding-left: 1rem;">⚡ Hermes Agent starting...</div>
-        <div style="color: var(--ha-text-dim); padding-left: 1rem;">🧠 Loading memory...</div>
-        <div style="color: var(--ha-text-dim); padding-left: 1rem;">✓ 40 tools ready</div>
-        <div style="margin-top: 0.5rem;"><span style="color: var(--ha-text-muted);">$</span> <span style="color: var(--ha-primary-bright);">hermes setup</span></div>
-        <div style="color: var(--ha-text-dim); padding-left: 1rem;">→ API key wizard</div>
-        <div style="margin-top: 0.5rem;"><span style="color: var(--ha-text-muted);">$</span> <span style="color: var(--ha-primary-bright);">hermes gateway</span></div>
-        <div style="color: var(--ha-text-dim); padding-left: 1rem;">→ multi-platform bridge</div>
-        <span class="ha-cursor" style="color: var(--ha-primary);">█</span>
+        <div><span style="color: var(--ha-text-muted);">$</span> <span style="color: var(--ha-primary-bright);">hermes status</span></div>
+        <div style="color: var(--ha-text-dim); padding-left: 1rem;">● Gateway: <span style="color: var(--ha-primary-bright);">running</span></div>
+        <div style="color: var(--ha-text-dim); padding-left: 1rem;">● Version: <span style="color: var(--ha-primary-bright);">{displayVersion}</span></div>
+        <div style="color: var(--ha-text-dim); padding-left: 1rem;">● Releases: <span style="color: var(--ha-primary-bright);">{releases.length}</span> tracked</div>
+        <div style="color: var(--ha-text-dim); padding-left: 1rem;">{breakingCount > 0 ? '⚠' : '●'} Breaking: <span style="color: {breakingCount > 0 ? 'var(--ha-primary-bright)' : 'var(--ha-text)'};">{breakingCount}</span></div>
+        <div style="color: var(--ha-text-dim); padding-left: 1rem;">● Updated: <span style="color: var(--ha-primary-bright);">{lastUpdatedAgo || "now"}</span></div>
+        <div style="margin-top: 0.5rem;"><span style="color: var(--ha-text-muted);">$</span> <span class="ha-cursor" style="color: var(--ha-primary);">█</span></div>
       </div>
     </div>
   </section>
 
-  <!-- Stats bar -->
-  <div class="ha-section-reveal" style="background: var(--ha-bg-surface); border-top: 4px solid var(--ha-border-dim); border-bottom: 4px solid var(--ha-border-dim); margin: 0 0 4rem;">
+  <!-- Stats Bar -->
+  <section class="ha-section-reveal" style="background: var(--ha-bg-surface); border-top: 4px solid var(--ha-border-dim); border-bottom: 4px solid var(--ha-border-dim); margin: 0 0 4rem;">
     <div style="max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));">
       {[
-        { label: "Total Releases", value: String(releases.length || "—") },
-        { label: "Built-in Tools", value: "40+" },
-        { label: "Platforms", value: "6" },
-        { label: "Memory", value: "∞" },
-        { label: "Learning", value: "Loop" },
-        { label: "Subagents", value: "Auto" },
-      ].map((stat) => (
-        <div class="ha-stats-cell" style="padding: 1.25rem 1rem; border-right: 2px solid var(--ha-border-dim); text-align: center;">
-          <div style="font-family: var(--ha-font-mono); font-size: 1.4rem; font-weight: 900; color: var(--ha-primary-bright);">{stat.value}</div>
+        { label: "Releases", value: String(releases.length) },
+        { label: "Breaking", value: String(breakingCount), red: true },
+        { label: "Stable", value: String(stableReleases.length) },
+        { label: "Latest", value: displayVersion },
+      ].map((stat, i) => (
+        <div style={`padding: 1.25rem 1rem; ${i < 3 ? 'border-right: 4px solid var(--ha-border-dim);' : ''} text-align: center; background: var(--ha-bg-card); cursor: crosshair; transition: background 150ms;`}>
+          <div style="font-family: var(--ha-font-mono); font-size: 1.4rem; font-weight: 900; color: ${stat.red ? 'var(--ha-primary-bright)' : 'var(--ha-primary-bright)'};">{stat.value}</div>
           <div style="font-family: var(--ha-font-mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ha-text-muted); margin-top: 0.25rem;">{stat.label}</div>
         </div>
       ))}
     </div>
-  </div>
+  </section>
 
-  <!-- Latest Release -->
-  {latestStable && (
-    <section style="max-width: 1280px; margin: 0 auto 4rem; padding: 0 1.5rem;">
-      <div style="font-family: var(--ha-font-mono); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ha-primary); margin-bottom: 1rem;">
-        ▸ LATEST RELEASE
-      </div>
-      <div style="border: 4px solid var(--ha-border); background: var(--ha-bg-card); padding: 2rem; box-shadow: var(--ha-shadow);">
-        <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 1rem; margin-bottom: 1rem;">
-          <span style="font-family: var(--ha-font-mono); font-size: 2.5rem; font-weight: 900; font-style: italic; letter-spacing: -0.02em; color: var(--ha-text);">{latestStable.version}</span>
-          <span style="font-family: var(--ha-font-mono); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--ha-text-muted); letter-spacing: 0.08em;">{formatDate(latestStable.date)}</span>
+  <!-- TLDR: Latest Release -->
+  {latestRelease && (() => {
+    const breaking = isBreaking(latestRelease.body);
+    const tldr = getTldr(latestRelease.body || "");
+    const summaryText = llmTldr?.trim() || null;
+
+    return (
+      <section style="max-width: 1280px; margin: 0 auto 4rem; padding: 0 1.5rem;">
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem;">
+          <h2 style="font-family: var(--ha-font-headline); font-size: 1.5rem; font-weight: 900; color: var(--ha-text); margin: 0; letter-spacing: -0.02em;">TL;DR</h2>
+          <div style="flex: 1; height: 4px; background: var(--ha-border-dim);"></div>
+          <span style="font-family: var(--ha-font-mono); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ha-text-muted);">Latest Release</span>
         </div>
-        <p style="font-family: var(--ha-font-body); font-size: 0.95rem; color: var(--ha-text-dim); line-height: 1.7; margin: 0 0 1rem; max-width: 56rem;">
-          {getTldr(latestStable.body)}
-        </p>
-        <a href="/hermes-agent/changelog/" style="font-family: var(--ha-font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ha-primary-bright); text-decoration: none; border-bottom: 2px solid var(--ha-primary); padding-bottom: 1px;">
-          Read full changelog →
-        </a>
-      </div>
-    </section>
-  )}
 
-  <!-- Cheatsheet quick reference -->
+        <div style={`padding: 1.5rem 2rem; border: 4px solid ${breaking ? 'var(--ha-primary)' : 'var(--ha-border)'}; background: ${breaking ? 'var(--ha-bg-surface)' : 'var(--ha-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--ha-primary);' : ''}`}>
+          <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 1rem; margin-bottom: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <span style="font-family: var(--ha-font-mono); font-size: 2.5rem; font-weight: 900; font-style: italic; letter-spacing: -0.02em; color: var(--ha-text);">{latestRelease.version}</span>
+              {breaking && (
+                <span style="font-family: var(--ha-font-mono); font-size: 0.6rem; font-weight: 900; padding: 0.2rem 0.5rem; background: var(--ha-primary); color: white; letter-spacing: 0.08em;">BREAKING</span>
+              )}
+              {latestRelease.prerelease && (
+                <span style="font-family: var(--ha-font-mono); font-size: 0.6rem; font-weight: 900; padding: 0.2rem 0.5rem; border: 2px solid var(--ha-border-dim); color: var(--ha-text-muted); letter-spacing: 0.08em;">PRE</span>
+              )}
+            </div>
+            <span style="font-family: var(--ha-font-mono); font-size: 0.75rem; font-weight: 700; color: var(--ha-text-muted);">{formatDate(latestRelease.date)}</span>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;">
+<div>
+              {summaryText ? (
+                <p style="font-family: var(--ha-font-body); font-size: 0.95rem; color: var(--ha-text-dim); line-height: 1.7; margin: 0;">{summaryText}</p>
+              ) : tldr.length > 0 && (
+                <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem;">
+                  {tldr.map((item) => (
+                    <li style="display: flex; align-items: flex-start; gap: 0.75rem; font-family: var(--ha-font-body); font-size: 0.9rem; color: var(--ha-text-dim);">
+                      <span style="color: var(--ha-primary-bright); flex-shrink: 0;">▸</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  })()}
+
+  <!-- Recent Changelog -->
   <section style="max-width: 1280px; margin: 0 auto 4rem; padding: 0 1.5rem;">
-    <div style="font-family: var(--ha-font-mono); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ha-primary); margin-bottom: 1.5rem;">
-      ▸ QUICK REFERENCE
+    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem;">
+      <div style="flex: 1; height: 4px; background: var(--ha-border-dim);"></div>
+      <span style="font-family: var(--ha-font-headline); font-size: 1.25rem; font-weight: 900; color: var(--ha-text); letter-spacing: -0.02em;">Recent Changelog</span>
+      <div style="flex: 1; height: 4px; background: var(--ha-border-dim);"></div>
     </div>
-    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem;">
-      {[
-        { cmd: "curl -fsSL https://hermes.ai/install | sh", desc: "One-line install script" },
-        { cmd: "hermes setup", desc: "Interactive setup wizard — API keys, platforms" },
-        { cmd: "hermes", desc: "Launch the agent interactively" },
-        { cmd: "hermes model", desc: "Switch the underlying LLM" },
-        { cmd: "hermes gateway", desc: "Start multi-platform bridge (Telegram, Discord, etc.)" },
-        { cmd: "hermes update", desc: "Update Hermes to the latest version" },
-        { cmd: "hermes memory show", desc: "Inspect persistent memory entries" },
-        { cmd: "hermes skill create", desc: "Create a new learnable skill" },
-        { cmd: "hermes cron add", desc: "Schedule a recurring task" },
-        { cmd: "hermes agent spawn", desc: "Launch an autonomous subagent" },
-      ].map((item) => (
-        <div style="background: var(--ha-bg-surface); border: 2px solid var(--ha-border-dim); padding: 1rem;">
-          <code style="font-family: var(--ha-font-mono); font-size: 0.72rem; color: var(--ha-primary-bright); font-weight: 700; display: block; margin-bottom: 0.35rem; word-break: break-all;">{item.cmd}</code>
-          <span style="font-family: var(--ha-font-body); font-size: 0.75rem; color: var(--ha-text-dim);">{item.desc}</span>
-        </div>
-      ))}
+
+    <div style="display: flex; flex-direction: column; gap: 1rem;">
+      {recentReleases.map((release) => {
+        const breaking = isBreaking(release.body);
+        const renderedBody = buildChangelogCard(release.body || "");
+        return (
+          <div style={`padding: 1.5rem 2rem; border: 4px solid ${breaking ? 'var(--ha-primary)' : 'var(--ha-border)'}; background: ${breaking ? 'var(--ha-bg-surface)' : 'var(--ha-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--ha-primary);' : ''}`}>
+            <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 1rem; margin-bottom: 1rem;">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <span style="font-family: var(--ha-font-mono); font-size: 1.75rem; font-weight: 900; font-style: italic; letter-spacing: -0.02em; color: var(--ha-text);">{release.version}</span>
+                {breaking && (
+                  <span style="font-family: var(--ha-font-mono); font-size: 0.6rem; font-weight: 900; padding: 0.2rem 0.5rem; background: var(--ha-primary); color: white; letter-spacing: 0.08em;">BREAKING</span>
+                )}
+              </div>
+              <span style="font-family: var(--ha-font-mono); font-size: 0.75rem; font-weight: 700; color: var(--ha-text-muted);">{formatDate(release.date)}</span>
+            </div>
+            <div
+              style="font-family: var(--ha-font-body); font-size: 0.9rem; color: var(--ha-text-dim); line-height: 1.7;"
+              set:html={renderedBody}
+            />
+          </div>
+        );
+      })}
+      <a
+        href="/hermes-agent/changelog/"
+        style="font-family: var(--ha-font-mono); font-size: 0.8rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ha-primary-bright); text-decoration: none; border-bottom: 2px solid var(--ha-primary); padding-bottom: 2px; display: inline-block; margin-top: 0.5rem;"
+      >
+        View full changelog →
+      </a>
     </div>
   </section>
 
-  <!-- Platforms -->
-  <section style="max-width: 1280px; margin: 0 auto 4rem; padding: 0 1.5rem;">
-    <div style="font-family: var(--ha-font-mono); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ha-primary); margin-bottom: 1.5rem;">
-      ▸ SUPPORTED PLATFORMS
-    </div>
-    <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
-      {["Telegram", "Discord", "CLI", "WhatsApp", "Signal", "Slack"].map((p) => (
-        <span style="font-family: var(--ha-font-mono); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 0.5rem 1.25rem; border: 3px solid var(--ha-primary); color: var(--ha-primary-bright);">
-          {p}
-        </span>
-      ))}
-    </div>
-  </section>
-
-  <!-- Quick links -->
+  <!-- Quick Links -->
   <section style="max-width: 1280px; margin: 0 auto 6rem; padding: 0 1.5rem;">
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem;">
       {[
-        { label: "Full Changelog", href: "/hermes-agent/changelog/", desc: "Every release in detail", icon: "⌘" },
-        { label: "Cheat Sheet", href: "/hermes-agent/cheatsheet/", desc: "Commands & workflows", icon: "≡" },
-        { label: "All Releases", href: "/hermes-agent/releases/", desc: "Version grid view", icon: "◎" },
-        { label: "RSS Feed", href: "/feed/all.xml", desc: "Subscribe to updates", icon: "⟳" },
+        { label: "Guide", href: "/hermes-agent/guide/", desc: "Setup, tips & commands", icon: "📖" },
+        { label: "Full Changelog", href: "/hermes-agent/changelog/", desc: "Every release in detail", icon: "📋" },
+        { label: "All Releases", href: "/hermes-agent/releases/", desc: "Version grid view", icon: "📦" },
+        { label: "RSS Feed", href: "/feed/all.xml", desc: "Subscribe to updates", icon: "📡" },
       ].map((link) => (
         <a
           href={link.href}
           class="ha-quick-link"
-          style="display: block; border: 4px solid var(--ha-border-dim); background: var(--ha-bg-card); padding: 1.5rem; text-decoration: none; box-shadow: var(--ha-shadow-sm);"
+          style="display: block; border: 4px solid var(--ha-border-dim); background: var(--ha-bg-card); padding: 1.5rem; text-decoration: none; box-shadow: var(--ha-shadow-sm); transition: border-color 150ms, background 150ms;"
         >
-          <div style="font-family: var(--ha-font-mono); font-size: 1.25rem; color: var(--ha-primary); margin-bottom: 0.5rem;">{link.icon}</div>
+          <div style="font-size: 1.25rem; margin-bottom: 0.5rem;">{link.icon}</div>
           <div style="font-family: var(--ha-font-mono); font-size: 0.85rem; font-weight: 900; text-transform: uppercase; color: var(--ha-text); margin-bottom: 0.25rem;">{link.label}</div>
           <div style="font-family: var(--ha-font-body); font-size: 0.75rem; color: var(--ha-text-muted);">{link.desc}</div>
         </a>

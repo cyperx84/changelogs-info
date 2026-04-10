@@ -397,34 +397,31 @@ function getTldr(body: string): string[] {
             <span class="oc-s50">Latest Release</span>
           </div>
 
-          <div style={`padding: 1.5rem 2rem; border: 4px solid ${breaking ? 'var(--oc-primary)' : 'var(--oc-border)'}; background: ${breaking ? 'var(--oc-bg-surface)' : 'var(--oc-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--oc-primary);' : ''}`}>
-            <div class="oc-flex-11">
-              <div class="oc-flex-7">
-                <span class="oc-headline oc-s53">{latestForTldr.version}</span>
-                {breaking && (
-                  <span class="oc-s70">BREAKING</span>
-                )}
-                {latestForTldr.prerelease && (
-                  <span class="oc-s55">PRE</span>
-                )}
+          <div style={`border: 4px solid ${breaking ? 'var(--oc-primary)' : 'var(--oc-border)'}; background: ${breaking ? 'var(--oc-bg-surface)' : 'var(--oc-bg-card)'}; ${breaking ? 'border-left: 8px solid var(--oc-primary);' : ''} overflow: hidden; border-radius: 4px;`}>
+            <div style="position:relative;height:200px;overflow:hidden;">
+              <img src="/images/guides/openclaw-tldr.jpg" alt="" style="width:100%;height:100%;object-fit:cover;display:block;" />
+              <div style={`position:absolute;bottom:0;left:0;right:0;height:60%;background:linear-gradient(to top, ${breaking ? 'var(--oc-bg-surface)' : 'var(--oc-bg-card)'}, transparent);`}></div>
+              <div style="position:absolute;bottom:1rem;left:2rem;right:2rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:0.75rem;">
+                <span class="oc-headline" style="font-size:2rem;font-weight:900;text-shadow:0 2px 8px rgba(0,0,0,0.7);">{latestForTldr.version}</span>
+                {breaking && (<span style="font-size:0.6rem;font-weight:900;padding:0.15rem 0.5rem;background:var(--oc-primary);color:white;letter-spacing:0.08em;">BREAKING</span>)}
+                {latestForTldr.prerelease && (<span style="font-size:0.6rem;font-weight:900;padding:0.15rem 0.5rem;border:2px solid var(--oc-border-dim);letter-spacing:0.08em;">PRE</span>)}
+                <span style="margin-left:auto;font-size:0.8rem;opacity:0.8;">{formatDate(latestForTldr.date)}</span>
               </div>
-              <span class="oc-s71">{formatDate(latestForTldr.date)}</span>
             </div>
-            <img src="/images/guides/openclaw-tldr.jpg" alt="openclaw TLDR" style="width:100%;border-radius:12px;margin-bottom:1rem;border:2px solid var(--oc-border);" />
-            {summaryText ? (
-              <div class="oc-vstack-6">
+            <div style="padding: 1.25rem 2rem 1.5rem;">
+              {summaryText ? (
                 <p class="oc-s58">{summaryText}</p>
-              </div>
-            ) : items.length > 0 && (
-              <ul class="oc-vstack-7">
-                {items.map((item) => (
-                  <li class="oc-flex-9">
-                    <span class="oc-s61">▸</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
+              ) : items.length > 0 && (
+                <ul class="oc-vstack-7">
+                  {items.map((item) => (
+                    <li class="oc-flex-9">
+                      <span class="oc-s61">▸</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </section>
       );
@@ -687,6 +684,10 @@ function getTldr(body: string): string[] {
       }
       section[style*="display: flex; flex-wrap: wrap; gap: 0;"] > div:last-child {
         border-bottom: none !important;
+      }
+      /* Stack TLDR image + text on mobile */
+      div[style*="grid-template-columns: 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
       }
     }
 
