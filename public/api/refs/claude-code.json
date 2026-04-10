@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.100",
-  "generated_at": "2026-04-10T18:20:12.776Z",
+  "version": "2.1.101",
+  "generated_at": "2026-04-10T19:21:21.016Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,12 +14,16 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.100",
-    "to_version": "2.1.100",
+    "from_version": "2.1.101",
+    "to_version": "2.1.101",
     "new_features": [],
-    "new_commands": [],
+    "new_commands": [
+      "/team-onboarding"
+    ],
     "new_flags": [],
-    "new_env_vars": [],
+    "new_env_vars": [
+      "CLAUDE_CODE_CERT_STORE"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -39,12 +43,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.100",
+      "latest_stable": "2.1.101",
       "latest_release_date": "2026-04-10",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release of claude-code (2.1.100) does not contain any new features, updated features, new commands, new flags, deprecated flags, deprecated commands, breaking changes, or new environment variables. Therefore, there are no specific changes that would necessitate an immediate upgrade. Developers can continue using the existing version (2.1.100) without any loss of functionality or compatibility issues. No migration steps or configuration changes are required. It is recommended to stay informed about future releases for potential enhancements and bug fixes. There are no prerequisites for remaining on the current version."
+      "tldr": "Version 2.1.101 introduces the `/team-onboarding` command, which generates a teammate ramp-up guide based on your local Claude Code usage, streamlining the onboarding process. Enterprise TLS proxies are now supported by default through OS CA certificate store trust; use `CLAUDE_CODE_CERT_STORE=bundled` to revert to bundled CAs only. Remote-session features like `/ultraplan` now auto-create a default cloud environment, simplifying initial setup. Brief mode has been improved to retry once when Claude responds with plain text instead of a structured message. Focus mode now generates more self-contained summaries. Tool-not-available errors now provide more context on why a tool is unavailable and how to proceed. Rate-limit retry messages now display the specific limit hit and its reset time. Refusal error messages now include API-provided explanations when available. `claude -p --resume <name>` now accepts session titles set via `/rename` or `--name`. Settings resilience has been improved, preventing unrecognized hook event names from causing the entire `settings.json` file to be ignored. Plugin hooks from force-enabled plugins now run when `allowManagedHooksOnly` is set. Marketplace refresh failures are now surfaced as warnings in `/plugin` and `claude plugin update`. Plan mode now hides the \"Refine with Ultraplan\" option when the user's org or auth setup can't reach Claude Code on the web. Beta tracing now respects `OTEL_LOG_USER_PROMPTS`, `OTEL_LOG_TOOL_DETAILS`, and `OTEL_LOG_TOOL_CONTENT`. A command injection vulnerability in the POSIX `which` fallback used by LSP binary detection has been fixed. Several fixes address memory leaks, `--resume` issues, crashes, request timeouts, permission denials, setting source issues, Bedrock authentication failures, worktree issues, subagent issues, sandboxing issues, MCP client issues, RemoteTrigger tool issues, `/resume` picker issues, Grep tool ENOENT errors, `/btw` performance, `/context` discrepancies, plugin issues, `/mcp` menu issues, keybinding issues, `/login` OAuth URL rendering, rendering issues, `settings.json` env value crashes, in-app settings write issues, custom keybinding loading issues, `--continue -p` issues, and Remote Control issues. It is recommended to upgrade to this version to benefit from the new features, improvements, and bug fixes. No specific prerequisites are required."
     },
     "features": [
       {
@@ -1106,6 +1110,14 @@
         "since": "2.1.92",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "/team-onboarding",
+        "syntax": "/team-onboarding",
+        "description": "Generates a teammate ramp-up guide from your local Claude Code usage.",
+        "since": "2.1.101",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -1486,6 +1498,13 @@
         "purpose": "Added to Bash tool subprocesses when OTEL tracing is enabled, so child-process spans correctly parent to Claude Code's trace tree",
         "status": "stable",
         "since": "2.1.98",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_CERT_STORE",
+        "purpose": "Configures the CA certificate store to use. Setting it to `bundled` uses only bundled CAs, bypassing the OS CA certificate store.",
+        "status": "stable",
+        "since": "2.1.101",
         "source_url": ""
       }
     ],
