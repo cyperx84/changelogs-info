@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.119.0",
-  "generated_at": "2026-04-11T00:30:44.925Z",
+  "generated_at": "2026-04-10T23:14:01.671Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -17,20 +17,25 @@
     "from_version": "0.119.0",
     "to_version": "0.119.0",
     "new_features": [
-      "realtime-voice-sessions-v2-webrtc-default",
+      "realtime-voice-sessions-v2-webrtc",
       "mcp-apps-richer-support",
       "remote-app-server-workflows-enhancements",
-      "tui-copy-latest-agent-response-ctrl-o",
+      "tui-copy-latest-agent-response",
       "resume-jump-to-session-by-id-name",
-      "tui-configurable-notifications"
+      "tui-configurable-notifications",
+      "advanced-announcements-per-os-and-plans"
     ],
     "new_commands": [],
-    "new_flags": [],
+    "new_flags": [
+      "--cd"
+    ],
     "new_env_vars": [
       "CODEX_SKIP_VENDORED_BWRAP"
     ],
     "deprecated_commands": [],
-    "deprecated_flags": [],
+    "deprecated_flags": [
+      "--api-key"
+    ],
     "breaking_changes": []
   },
   "payload": {
@@ -55,7 +60,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release defaults realtime voice sessions to the v2 WebRTC path, offering configurable transport, voice selection, native TUI media support, and app-server coverage. MCP Apps and custom MCP servers gain richer support, including resource reads, tool-call metadata, custom-server tool search, server-driven elicitations, file-parameter uploads, and more reliable plugin cache refreshes. Remote/app-server workflows now support egress websocket transport, remote `--cd` forwarding, runtime remote-control enablement, sandbox-aware filesystem APIs, and an experimental `codex exec-server` subcommand. The TUI can now copy the latest agent response with `Ctrl+O`, improving clipboard behavior over SSH and across platforms. The `/resume` command can now jump directly to a session by ID or name from the TUI. TUI notifications are more configurable, with Warp OSC 9 support and an opt-in mode for notifications even when the terminal is focused. The TUI starts faster due to asynchronous rate limit fetching, and `/status` refreshes stale limits. Resume flows are more stable, and composer/chat behavior is smoother with fixes for paste teardown, CJK word navigation, and stale `/copy` output. This release also includes numerous bug fixes related to fast mode, MCP status, sandbox/network edge cases, and documentation updates. A new environment variable, `CODEX_SKIP_VENDORED_BWRAP`, allows skipping the vendored bubblewrap installation. Upgrade is recommended for all users to benefit from the performance improvements, bug fixes, and new features."
+      "tldr": "This release introduces significant improvements to realtime voice sessions, now defaulting to the v2 WebRTC path with enhanced configuration and media support. MCP Apps gain richer support with features like resource reads and server-driven elicitations, while remote workflows benefit from egress websocket transport and remote `--cd` forwarding. The TUI now allows copying the latest agent response with `Ctrl+O` and jumping to sessions by ID or name using `/resume`. TUI notifications are also more configurable, including Warp OSC 9 support. Several bug fixes enhance stability and performance, including faster TUI startup, more reliable resume flows, and smoother composer behavior. The deprecated `--api-key` flag for login has been removed, encouraging users to adopt alternative authentication methods. The `CODEX_SKIP_VENDORED_BWRAP` environment variable has been added to skip vendored bwrap. This release also includes numerous internal refactorings and dependency updates, improving code maintainability and build times. It is recommended to upgrade to this version to take advantage of the new features and bug fixes. Ensure you are using a supported authentication method as the `--api-key` flag is deprecated."
     },
     "features": [
       {
@@ -692,29 +697,6 @@
         "description": "Announcements can now be targeted per OS and plans.",
         "key_details": [],
         "source_url": ""
-      },
-      {
-        "id": "realtime-voice-sessions-v2-webrtc-default",
-        "name": "Realtime Voice Sessions v2 WebRTC Default",
-        "status": "stable",
-        "since": "0.119.0",
-        "description": "Realtime voice sessions now default to the v2 WebRTC path.",
-        "key_details": [
-          "Configurable transport",
-          "Voice selection",
-          "Native TUI media support",
-          "App-server coverage for the new flow"
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "tui-copy-latest-agent-response-ctrl-o",
-        "name": "TUI Copy Latest Agent Response (Ctrl+O)",
-        "status": "stable",
-        "since": "0.119.0",
-        "description": "The TUI can copy the latest agent response with `Ctrl+O`, including better clipboard behavior over SSH and across platforms.",
-        "key_details": [],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -907,7 +889,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--cd"
+      ]
     },
     "env_vars": [
       {
