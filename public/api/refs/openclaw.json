@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.10",
-  "generated_at": "2026-04-11T14:14:52.538Z",
+  "generated_at": "2026-04-11T15:12:51.338Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -19,18 +19,19 @@
     "new_features": [
       "active-memory-plugin",
       "local-mlx-speech-provider",
-      "qa-multipass-runner",
+      "qa-matrix-lane",
+      "qa-telegram-lane",
+      "multipass-qa-runner-lane",
+      "local-exec-policy-command",
       "commands-list-rpc",
       "per-provider-request-allow-private-network",
-      "chatgpt-import-ingestion"
+      "chatgpt-import-ingestion",
+      "microsoft-teams-message-actions"
     ],
-    "new_commands": [
-      "openclaw exec-policy",
-      "openclaw qa matrix",
-      "openclaw qa telegram"
-    ],
+    "new_commands": [],
     "new_flags": [
-      "--runner multipass"
+      "--runner multipass",
+      "--media"
     ],
     "new_env_vars": [],
     "deprecated_commands": [],
@@ -59,7 +60,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces the experimental Active Memory plugin, which provides a dedicated memory sub-agent to automatically pull in relevant context for ongoing chats, improving user experience by eliminating the need for manual memory recall. A local MLX speech provider is added for Talk Mode on macOS, offering local utterance playback and system-voice fallback. The `openclaw qa` suite gains a `--runner multipass` flag to execute QA scenarios within a disposable Linux VM. A new `openclaw exec-policy` command manages local execution approval configurations, enhancing security. Remote gateway clients can now discover runtime commands via the `commands.list` RPC. Per-provider private network access control is introduced via `models.providers.*.request.allowPrivateNetwork` for self-hosted endpoints. Microsoft Teams gets message actions, and Matrix streaming supports live markers for draft previews. Several fixes address browser security, OpenAI/Codex integration, Microsoft Teams functionality, gateway stability, WhatsApp connectivity, and agent behavior. Additionally, QQBot streaming is now configurable, and ChatGPT import is supported for Dreaming. Upgrade is recommended for users of Active Memory, macOS Talk Mode, QA suites, and those requiring enhanced security and stability. No specific migration steps are required."
+      "tldr": "This release introduces the Active Memory plugin, which provides a dedicated memory sub-agent to automatically pull in relevant context during chats, improving user experience by eliminating manual memory searches. A local MLX speech provider is added for macOS Talk Mode, offering local utterance playback and system-voice fallback. The release also includes new QA lanes for Matrix and Telegram, enhancing testing capabilities with disposable environments and preserved threading. The `openclaw exec-policy` command is introduced for synchronizing tool execution policies, improving security and control. \n\nKey fixes address browser and sandbox security, hardening defenses against SSRF and other vulnerabilities. Microsoft Teams integration sees significant improvements, including restored media downloads and enhanced context handling. Gateway startup is optimized to maintain WebSocket RPC availability, and WhatsApp connections are made more resilient with improved handling of inbound replies and outbound deliveries. \n\nAdditionally, the release addresses issues with model fallback, BTW side questions, command targeting, and iMessage self-chat. Several fixes improve stability and reliability across various channels and features, including Matrix, Telegram, Agents, Skills, Windows exec, Browser sandbox, QQBot, Dreaming, Cron, Tasks, Sessions, and Status reporting. This is a recommended upgrade to benefit from the security enhancements, stability improvements, and new features. No specific migration steps are required."
     },
     "features": [
       {
@@ -1928,7 +1929,8 @@
         }
       ],
       "new_since_previous": [
-        "--runner multipass"
+        "--runner multipass",
+        "--media"
       ]
     },
     "env_vars": [
