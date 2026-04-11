@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.119.0",
-  "generated_at": "2026-04-11T00:30:44.925Z",
+  "generated_at": "2026-04-11T01:36:49.418Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -17,12 +17,12 @@
     "from_version": "0.119.0",
     "to_version": "0.119.0",
     "new_features": [
-      "realtime-voice-sessions-v2-webrtc-default",
-      "mcp-apps-richer-support",
-      "remote-app-server-workflows-enhancements",
-      "tui-copy-latest-agent-response-ctrl-o",
-      "resume-jump-to-session-by-id-name",
-      "tui-configurable-notifications"
+      "realtime-voice-sessions-v2-webrtc-configurable",
+      "mcp-apps-richer-support-v2",
+      "remote-app-server-workflows-enhancements-v2",
+      "tui-copy-latest-agent-response-ctrl-o-v2",
+      "resume-jump-to-session-by-id-name-v2",
+      "tui-configurable-notifications-v2"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -55,7 +55,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release defaults realtime voice sessions to the v2 WebRTC path, offering configurable transport, voice selection, native TUI media support, and app-server coverage. MCP Apps and custom MCP servers gain richer support, including resource reads, tool-call metadata, custom-server tool search, server-driven elicitations, file-parameter uploads, and more reliable plugin cache refreshes. Remote/app-server workflows now support egress websocket transport, remote `--cd` forwarding, runtime remote-control enablement, sandbox-aware filesystem APIs, and an experimental `codex exec-server` subcommand. The TUI can now copy the latest agent response with `Ctrl+O`, improving clipboard behavior over SSH and across platforms. The `/resume` command can now jump directly to a session by ID or name from the TUI. TUI notifications are more configurable, with Warp OSC 9 support and an opt-in mode for notifications even when the terminal is focused. The TUI starts faster due to asynchronous rate limit fetching, and `/status` refreshes stale limits. Resume flows are more stable, and composer/chat behavior is smoother with fixes for paste teardown, CJK word navigation, and stale `/copy` output. This release also includes numerous bug fixes related to fast mode, MCP status, sandbox/network edge cases, and documentation updates. A new environment variable, `CODEX_SKIP_VENDORED_BWRAP`, allows skipping the vendored bubblewrap installation. Upgrade is recommended for all users to benefit from the performance improvements, bug fixes, and new features."
+      "tldr": "This release introduces significant enhancements to realtime voice sessions, now defaulting to the v2 WebRTC path with configurable transport, voice selection, and native TUI media support. MCP Apps gain richer support with resource reads, tool-call metadata, custom-server tool search, server-driven elicitations, and file-parameter uploads. Remote/app-server workflows now support egress websocket transport, remote `--cd` forwarding, runtime remote-control enablement, and sandbox-aware filesystem APIs, alongside an experimental `codex exec-server` subcommand. The TUI now allows copying the latest agent response with `Ctrl+O`, improving clipboard behavior across platforms. The `/resume` command can now jump directly to a session by ID or name from the TUI. TUI notifications are more configurable, with Warp OSC 9 support and an opt-in mode for notifications even when the terminal is focused. Bug fixes include faster TUI startup, more stable resume flows, smoother composer and chat behavior, and tightened sandbox/network edge cases. The `CODEX_SKIP_VENDORED_BWRAP` environment variable is introduced to skip vendored bwrap. This is a recommended upgrade, especially for users leveraging realtime voice sessions, MCP Apps, or remote workflows. No specific prerequisites are mentioned."
     },
     "features": [
       {
@@ -714,6 +714,87 @@
         "since": "0.119.0",
         "description": "The TUI can copy the latest agent response with `Ctrl+O`, including better clipboard behavior over SSH and across platforms.",
         "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "realtime-voice-sessions-v2-webrtc-configurable",
+        "name": "Realtime Voice Sessions v2 WebRTC Configurable",
+        "status": "stable",
+        "since": "0.119.0",
+        "description": "Realtime voice sessions now default to the v2 WebRTC path, with configurable transport, voice selection, native TUI media support, and app-server coverage for the new flow.",
+        "key_details": [
+          "Configurable transport for WebRTC.",
+          "Voice selection options.",
+          "Native TUI media support.",
+          "App-server coverage for the new flow."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "mcp-apps-richer-support-v2",
+        "name": "MCP Apps Richer Support",
+        "status": "stable",
+        "since": "0.119.0",
+        "description": "MCP Apps and custom MCP servers gained richer support, including resource reads, tool-call metadata, custom-server tool search, server-driven elicitations, file-parameter uploads, and more reliable plugin cache refreshes.",
+        "key_details": [
+          "Resource reads for MCP Apps.",
+          "Tool-call metadata support.",
+          "Custom-server tool search.",
+          "Server-driven elicitations.",
+          "File-parameter uploads.",
+          "More reliable plugin cache refreshes."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "remote-app-server-workflows-enhancements-v2",
+        "name": "Remote/App-Server Workflows Enhancements",
+        "status": "stable",
+        "since": "0.119.0",
+        "description": "Remote/app-server workflows now support egress websocket transport, remote `--cd` forwarding, runtime remote-control enablement, sandbox-aware filesystem APIs, and an experimental `codex exec-server` subcommand.",
+        "key_details": [
+          "Egress websocket transport support.",
+          "Remote `--cd` forwarding.",
+          "Runtime remote-control enablement.",
+          "Sandbox-aware filesystem APIs.",
+          "Experimental `codex exec-server` subcommand."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "tui-copy-latest-agent-response-ctrl-o-v2",
+        "name": "TUI Copy Latest Agent Response with Ctrl+O",
+        "status": "stable",
+        "since": "0.119.0",
+        "description": "The TUI can copy the latest agent response with `Ctrl+O`, including better clipboard behavior over SSH and across platforms.",
+        "key_details": [
+          "Copy latest agent response with `Ctrl+O`.",
+          "Improved clipboard behavior over SSH.",
+          "Cross-platform clipboard support."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "resume-jump-to-session-by-id-name-v2",
+        "name": "Resume Jump to Session by ID/Name",
+        "status": "stable",
+        "since": "0.119.0",
+        "description": "`/resume` can now jump directly to a session by ID or name from the TUI.",
+        "key_details": [
+          "`/resume` command can jump to a session by ID or name."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "tui-configurable-notifications-v2",
+        "name": "TUI Configurable Notifications",
+        "status": "stable",
+        "since": "0.119.0",
+        "description": "TUI notifications are more configurable, including Warp OSC 9 support and an opt-in mode for notifications even while the terminal is focused.",
+        "key_details": [
+          "Warp OSC 9 support for notifications.",
+          "Opt-in mode for notifications while the terminal is focused."
+        ],
         "source_url": ""
       }
     ],
