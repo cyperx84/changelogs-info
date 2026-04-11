@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.120.0",
-  "generated_at": "2026-04-11T04:41:08.092Z",
+  "generated_at": "2026-04-11T05:32:35.930Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -17,7 +17,7 @@
     "from_version": "0.120.0",
     "to_version": "0.120.0",
     "new_features": [
-      "realtime-v2-background-agent-progress-streaming",
+      "realtime-v2-background-agent-progress-streaming-and-queueing",
       "improved-hook-activity-tui",
       "custom-tui-status-line-thread-title",
       "code-mode-tool-declarations-output-schema",
@@ -52,7 +52,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release introduces streaming background agent progress in Realtime V2, allowing users to see progress updates while work is ongoing and queue follow-up responses. The TUI hook activity display is improved for better readability, separating live and completed hooks. Custom TUI status lines can now display the thread title. Code-mode tool declarations now include MCP `outputSchema` details for more precise typing of structured tool results. SessionStart hooks can now differentiate between sessions created by `/clear` and other session types. This release fixes Windows elevated sandbox handling for split filesystem policies and sandbox permission handling for symlinked writable roots. It also resolves panics with `codex --remote wss://...` by installing the Rustls crypto provider. Tool search result ordering is now preserved. Live Stop-hook prompts now appear immediately. App-server MCP cleanup on disconnect is fixed. Rollout recording is made more reliable. Analytics schemas and metadata wiring are added for compaction and Guardian review events. Guardian follow-up efficiency is improved by sending transcript deltas. Stable Guardian review IDs are added. It is recommended to upgrade to this version to benefit from these improvements and fixes."
+      "tldr": "This release introduces streaming background agent progress in Realtime V2, allowing users to see progress updates while work is ongoing and queue follow-up responses. This provides a more responsive and informative user experience. The TUI hook activity display is improved, separating live running hooks and selectively retaining completed hook output for better readability. Custom TUI status lines can now include the thread title, offering more context. Code-mode tool declarations now include MCP `outputSchema` details, enabling more precise typing of structured tool results. SessionStart hooks can now differentiate between sessions created by `/clear` and other session types. Bug fixes include addressing Windows elevated sandbox handling, sandbox permission issues with symlinked writable roots, and a panic with remote websocket connections. Tool search result ordering is now preserved. Live Stop-hook prompts now appear immediately. App-server MCP cleanup on disconnect is fixed. Rollout recording is made more reliable. Guardian follow-up efficiency is improved by sending transcript deltas. Stable Guardian review IDs are added. It is recommended to upgrade to this version to benefit from the new features and bug fixes."
     },
     "features": [
       {
@@ -842,6 +842,15 @@
       {
         "id": "realtime-v2-background-agent-progress-streaming",
         "name": "Realtime V2 Background Agent Progress Streaming",
+        "status": "stable",
+        "since": "0.120.0",
+        "description": "Realtime V2 can now stream background agent progress while work is still running and queue follow-up responses until the active response completes.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "realtime-v2-background-agent-progress-streaming-and-queueing",
+        "name": "Realtime V2 Background Agent Progress Streaming and Queueing",
         "status": "stable",
         "since": "0.120.0",
         "description": "Realtime V2 can now stream background agent progress while work is still running and queue follow-up responses until the active response completes.",

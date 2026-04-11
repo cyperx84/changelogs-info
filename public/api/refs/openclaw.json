@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.10",
-  "generated_at": "2026-04-11T04:41:25.108Z",
+  "generated_at": "2026-04-11T05:32:53.173Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -19,16 +19,20 @@
     "new_features": [
       "active-memory-plugin",
       "local-mlx-speech-provider",
-      "microsoft-teams-message-actions",
+      "seedance-2-0-model-refs",
       "qa-matrix-lane",
       "qa-telegram-lane",
-      "multipass-qa-runner",
-      "per-provider-request-allow-private-network"
+      "multipass-qa-runner-lane",
+      "commands-list-rpc",
+      "chatgpt-import-ingestion"
     ],
-    "new_commands": [],
+    "new_commands": [
+      "openclaw qa matrix",
+      "openclaw qa telegram",
+      "openclaw exec-policy"
+    ],
     "new_flags": [
-      "--runner multipass",
-      "--media"
+      "--runner multipass"
     ],
     "new_env_vars": [],
     "deprecated_commands": [],
@@ -57,7 +61,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces the experimental Active Memory plugin, which provides a dedicated memory sub-agent to automatically pull in relevant context for ongoing chats, improving user experience by eliminating the need for manual memory recall. Microsoft Teams gains message actions like pin, react, and read. A new `openclaw qa matrix` lane facilitates QA testing with a disposable Matrix homeserver, while `openclaw qa telegram` enhances Telegram bot testing. The `--runner multipass` flag for `openclaw qa suite` enables QA scenarios within a disposable Linux VM. The `openclaw exec-policy` command manages local execution approvals.  Per-provider private network access is now configurable via `models.providers.*.request.allowPrivateNetwork`. Feishu request user agents are standardized, and Matrix streaming benefits from MSC4357 live markers.  Numerous fixes address browser and tool security, OpenAI/Codex integration, Microsoft Teams functionality, gateway stability, WhatsApp connectivity, and more.  Gateway startup is improved, and thread routing is enhanced.  Model fallback is more robust, and BTW side questions are better handled.  This release includes several security enhancements, particularly around browser navigation and sandbox environments. Upgrading is recommended to benefit from the new features, security fixes, and stability improvements. No specific migration steps are required."
+      "tldr": "This release introduces the experimental Active Memory plugin, which provides a dedicated memory sub-agent to automatically pull in relevant context during chats, enhancing user experience by eliminating manual memory recall. A local MLX speech provider for Talk Mode is also added, offering explicit provider selection and local utterance playback. The `openclaw qa matrix` and `openclaw qa telegram` commands enable live QA lanes for Matrix and Telegram, respectively, while the `--runner multipass` flag allows QA scenarios to run in a disposable Linux VM. The `openclaw exec-policy` command facilitates synchronization of `tools.exec.*` configurations with the local exec approvals file, improving security and management. Microsoft Teams gains message actions, and Feishu now standardizes request user agents for consistent identification. Browser security is significantly tightened with SSRF defenses and sandbox navigation improvements. Several fixes address issues in Microsoft Teams, WhatsApp, gateway thread routing, and model fallback. Upgrade is recommended for enhanced security, new features, and improved stability. No specific prerequisites are required, but review the updated documentation for Active Memory and exec policy management."
     },
     "features": [
       {
@@ -1457,6 +1461,33 @@
         "description": "Added per-provider `models.providers.*.request.allowPrivateNetwork` for trusted self-hosted OpenAI-compatible endpoints, keeping the opt-in scoped to model request surfaces, and refreshing cached WebSocket managers when request transport overrides change.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "seedance-2-0-model-refs",
+        "name": "Seedance 2.0 Model Refs",
+        "status": "stable",
+        "since": "2026.4.10",
+        "description": "Adds Seedance 2.0 model refs to the bundled fal provider and submits the provider-specific duration, resolution, audio, and seed metadata fields needed for live Seedance 2.0 runs.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "multipass-qa-runner-lane",
+        "name": "Multipass QA Runner Lane",
+        "status": "stable",
+        "since": "2026.4.10",
+        "description": "Adds a `--runner multipass` lane for `openclaw qa suite` so repo-backed QA scenarios can run inside a disposable Linux VM and write back the usual report, summary, and VM logs.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "chatgpt-import-ingestion",
+        "name": "ChatGPT Import Ingestion",
+        "status": "stable",
+        "since": "2026.4.10",
+        "description": "Adds ChatGPT import ingestion plus new `Imported Insights` and `Memory Palace` diary subtabs so Dreaming can inspect imported source chats, compiled wiki pages, and full source pages directly from the UI.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1675,6 +1706,22 @@
         "since": "2026.4.10",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "openclaw qa matrix",
+        "syntax": "openclaw qa matrix",
+        "description": "Starts a live QA lane backed by a disposable Matrix homeserver.",
+        "since": "2026.4.10",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "openclaw qa telegram",
+        "syntax": "openclaw qa telegram",
+        "description": "Starts a live QA lane for private-group bot-to-bot checks.",
+        "since": "2026.4.10",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -1865,8 +1912,7 @@
         }
       ],
       "new_since_previous": [
-        "--runner multipass",
-        "--media"
+        "--runner multipass"
       ]
     },
     "env_vars": [
