@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.10",
-  "generated_at": "2026-04-11T22:09:17.045Z",
+  "generated_at": "2026-04-11T23:11:43.964Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -18,19 +18,11 @@
     "to_version": "2026.4.10",
     "new_features": [
       "active-memory-plugin",
-      "local-mlx-speech-provider",
-      "qa-matrix-lane",
-      "qa-telegram-lane",
-      "multipass-qa-runner-lane",
-      "local-exec-policy-command",
-      "commands-list-rpc",
-      "per-provider-request-allow-private-network",
-      "chatgpt-import-ingestion"
+      "local-mlx-speech-provider"
     ],
     "new_commands": [],
     "new_flags": [
-      "--runner multipass",
-      "--media"
+      "--runner multipass"
     ],
     "new_env_vars": [],
     "deprecated_commands": [],
@@ -59,7 +51,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces the Active Memory plugin, which provides a dedicated memory sub-agent for ongoing chats, automatically pulling in relevant context and preferences. It also adds a local MLX speech provider for Talk Mode on macOS. The `openclaw qa matrix` and `openclaw qa telegram` commands enable live QA lanes for Matrix and Telegram, respectively, while the `--runner multipass` flag allows running QA suites in a disposable Linux VM. A new `openclaw exec-policy` command synchronizes `tools.exec.*` config with the local exec approvals file. The `commands.list` RPC allows remote gateway clients to discover runtime commands. Per-provider `models.providers.*.request.allowPrivateNetwork` is added for trusted self-hosted OpenAI-compatible endpoints. Security is enhanced with tightened browser and sandbox navigation defenses, along with hardened exec preflight reads and dependency scanning. Microsoft Teams integration receives numerous fixes, including media download restoration and improved thread handling. Gateway startup is improved with better lifecycle sequencing and WebSocket RPC availability. Several fixes address issues with WhatsApp, Matrix, models fallback, agents, control UI, commands targeting, iMessage, Telegram, skills, Windows exec, browser sandbox, QQBot, Dreaming, cron, tasks, sessions, status, context detail, plugins, Claude CLI, Discord, BlueBubbles, Feishu, web_fetch, memory, UI, Git metadata, TUI, Codex auth, ACP, Gemini, assistant text, daemon, OpenAI compat, subagents, dependencies, hooks, launchd, and vLLM. It is recommended to upgrade to this release to benefit from the new features, security enhancements, and bug fixes. No specific prerequisites are mentioned."
+      "tldr": "This release introduces the Active Memory plugin, which provides a dedicated memory sub-agent to automatically pull in relevant context during chats, enhancing user experience by eliminating manual memory searches. It also adds a local MLX speech provider for macOS Talk Mode, offering local utterance playback and system-voice fallback. Microsoft Teams gains message actions like pin, react, and list reactions. A new `openclaw qa matrix` lane is available for live testing with a disposable Matrix homeserver, and `openclaw qa telegram` lane for bot-to-bot checks. The `openclaw exec-policy` command now synchronizes `tools.exec.*` config with the local exec approvals file. Security enhancements include tightened browser and sandbox navigation defenses, along with hardened exec preflight reads and plugin install dependency scanning. Several fixes address issues in Microsoft Teams, WhatsApp, Gateway thread routing, and model fallback. It's recommended to upgrade to leverage the new features and security improvements. No specific prerequisites are mentioned."
     },
     "features": [
       {
@@ -1928,8 +1920,7 @@
         }
       ],
       "new_since_previous": [
-        "--runner multipass",
-        "--media"
+        "--runner multipass"
       ]
     },
     "env_vars": [
