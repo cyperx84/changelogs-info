@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.10",
-  "generated_at": "2026-04-11T10:13:34.652Z",
+  "generated_at": "2026-04-11T11:11:34.345Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -23,12 +23,12 @@
       "qa-telegram-lane",
       "multipass-qa-runner-lane",
       "commands-list-rpc",
-      "chatgpt-import-ingestion"
+      "microsoft-teams-message-actions"
     ],
-    "new_commands": [],
-    "new_flags": [
-      "--runner multipass"
+    "new_commands": [
+      "openclaw exec-policy"
     ],
+    "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -56,7 +56,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces the Active Memory plugin, which enhances chat context awareness by automatically pulling in relevant information without requiring manual user prompts. It also adds a local MLX speech provider for macOS Talk Mode, improving local speech processing. QA processes are enhanced with new Matrix and Telegram lanes, and a Multipass runner for isolated testing. The `openclaw exec-policy` command gains subcommands for managing execution policies. Remote gateway clients can now discover commands via the `commands.list` RPC. Security is a major focus, with tightened browser and sandbox navigation defenses, and hardened exec preflight reads. Microsoft Teams integration sees improvements in media downloads and thread handling. Gateway startup is made more robust, and WhatsApp connection handling is improved. Several fixes address issues in model fallback, agent behavior, control UI, and various channel integrations. This release also includes updates to OpenAI/Codex integration, Feishu, Matrix streaming, and Dreaming features. Upgrade is recommended for all users to benefit from the security enhancements and bug fixes. No specific prerequisites are required."
+      "tldr": "This release introduces the Active Memory plugin, which provides a dedicated memory sub-agent to automatically pull in relevant context during chats, improving user experience by eliminating manual memory recall. A local MLX speech provider is added for Talk Mode, offering local utterance playback and system-voice fallback. The `openclaw exec-policy` command is introduced to synchronize `tools.exec.*` config with local exec approvals, enhancing security and control. QA lanes for Matrix and Telegram are added, enabling bot-to-bot checks and preserving native command reply threading. Microsoft Teams gains message actions like pin, unpin, and react. Browser security is tightened with SSRF defenses and sandbox navigation controls. The release also includes numerous fixes for Microsoft Teams, WhatsApp, Gateway thread routing, and model fallback. OpenAI/Codex tool schema compatibility is added, and the release addresses issues with CLI WhatsApp media sends, iMessage self-chat, and QQBot streaming. Upgrade is recommended for all users to benefit from the security enhancements and new features. No specific prerequisites are mentioned."
     },
     "features": [
       {
@@ -1906,9 +1906,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--runner multipass"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
