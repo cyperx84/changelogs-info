@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.119.0",
-  "generated_at": "2026-04-11T01:36:49.418Z",
+  "version": "0.120.0",
+  "generated_at": "2026-04-11T03:05:53.546Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,21 +14,18 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.119.0",
-    "to_version": "0.119.0",
+    "from_version": "0.120.0",
+    "to_version": "0.120.0",
     "new_features": [
-      "realtime-voice-sessions-v2-webrtc-configurable",
-      "mcp-apps-richer-support-v2",
-      "remote-app-server-workflows-enhancements-v2",
-      "tui-copy-latest-agent-response-ctrl-o-v2",
-      "resume-jump-to-session-by-id-name-v2",
-      "tui-configurable-notifications-v2"
+      "realtime-v2-background-agent-progress",
+      "improved-hook-activity-tui",
+      "custom-tui-status-line-thread-title",
+      "code-mode-tool-declarations-output-schema",
+      "session-start-hooks-clear-distinction"
     ],
     "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [
-      "CODEX_SKIP_VENDORED_BWRAP"
-    ],
+    "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -48,14 +45,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.119.0",
+      "latest_stable": "0.120.0",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-04-10",
+      "latest_release_date": "2026-04-11",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release introduces significant enhancements to realtime voice sessions, now defaulting to the v2 WebRTC path with configurable transport, voice selection, and native TUI media support. MCP Apps gain richer support with resource reads, tool-call metadata, custom-server tool search, server-driven elicitations, and file-parameter uploads. Remote/app-server workflows now support egress websocket transport, remote `--cd` forwarding, runtime remote-control enablement, and sandbox-aware filesystem APIs, alongside an experimental `codex exec-server` subcommand. The TUI now allows copying the latest agent response with `Ctrl+O`, improving clipboard behavior across platforms. The `/resume` command can now jump directly to a session by ID or name from the TUI. TUI notifications are more configurable, with Warp OSC 9 support and an opt-in mode for notifications even when the terminal is focused. Bug fixes include faster TUI startup, more stable resume flows, smoother composer and chat behavior, and tightened sandbox/network edge cases. The `CODEX_SKIP_VENDORED_BWRAP` environment variable is introduced to skip vendored bwrap. This is a recommended upgrade, especially for users leveraging realtime voice sessions, MCP Apps, or remote workflows. No specific prerequisites are mentioned."
+      "tldr": "This release introduces Realtime V2 background agent progress streaming, allowing users to see agent progress in real-time and queue follow-up responses. This enhances the user experience by providing more immediate feedback during long-running tasks. Hook activity in the TUI is improved with live running hooks shown separately and completed hook output kept only when useful, making it easier to monitor hook execution. Custom TUI status lines can now include the renamed thread title, providing more context. Code-mode tool declarations now include MCP `outputSchema` details, improving the precision of structured tool results. SessionStart hooks can now distinguish sessions created by `/clear` from fresh startup or resume sessions, enabling more nuanced hook behavior. A bug was fixed in Windows elevated sandbox handling for split filesystem policies, including read-only carveouts under writable roots. Another fix addresses sandbox permission handling for symlinked writable roots and carveouts, preventing failures in shell and `apply_patch` workflows. A panic with `codex --remote wss://...` was resolved by installing the Rustls crypto provider. Tool search result ordering is now preserved. Live Stop-hook prompts now appear immediately. App-server MCP cleanup on disconnect is fixed. Rollout recording is made more reliable. Guardian follow-up efficiency is improved by sending transcript deltas. Upgrade is recommended for all users to benefit from these improvements and fixes."
     },
     "features": [
       {
@@ -796,6 +793,51 @@
           "Opt-in mode for notifications while the terminal is focused."
         ],
         "source_url": ""
+      },
+      {
+        "id": "realtime-v2-background-agent-progress",
+        "name": "Realtime V2 Background Agent Progress Streaming",
+        "status": "stable",
+        "since": "0.120.0",
+        "description": "Realtime V2 can now stream background agent progress while work is still running and queue follow-up responses until the active response completes.",
+        "key_details": [],
+        "source_url": "#17264, #17306"
+      },
+      {
+        "id": "improved-hook-activity-tui",
+        "name": "Improved Hook Activity in TUI",
+        "status": "stable",
+        "since": "0.120.0",
+        "description": "Hook activity in the TUI is easier to scan, with live running hooks shown separately and completed hook output kept only when useful.",
+        "key_details": [],
+        "source_url": "#17266"
+      },
+      {
+        "id": "custom-tui-status-line-thread-title",
+        "name": "Custom TUI Status Line with Thread Title",
+        "status": "stable",
+        "since": "0.120.0",
+        "description": "Custom TUI status lines can include the renamed thread title.",
+        "key_details": [],
+        "source_url": "#17187"
+      },
+      {
+        "id": "code-mode-tool-declarations-output-schema",
+        "name": "Code-mode Tool Declarations with Output Schema",
+        "status": "stable",
+        "since": "0.120.0",
+        "description": "Code-mode tool declarations now include MCP `outputSchema` details so structured tool results are typed more precisely.",
+        "key_details": [],
+        "source_url": "#17210"
+      },
+      {
+        "id": "session-start-hooks-clear-distinction",
+        "name": "SessionStart Hooks Clear Distinction",
+        "status": "stable",
+        "since": "0.120.0",
+        "description": "SessionStart hooks can distinguish sessions created by `/clear` from fresh startup or resume sessions.",
+        "key_details": [],
+        "source_url": "#17073"
       }
     ],
     "commands": [

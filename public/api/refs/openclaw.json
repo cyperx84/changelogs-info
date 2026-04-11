@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.4.9",
-  "generated_at": "2026-04-11T01:36:59.858Z",
+  "version": "2026.4.10",
+  "generated_at": "2026-04-11T03:06:10.530Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,11 +14,23 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.4.9",
-    "to_version": "2026.4.9",
-    "new_features": [],
-    "new_commands": [],
-    "new_flags": [],
+    "from_version": "2026.4.10",
+    "to_version": "2026.4.10",
+    "new_features": [
+      "active-memory-plugin",
+      "local-mlx-speech-provider",
+      "qa-matrix-lane",
+      "qa-telegram-lane",
+      "multipass-qa-runner",
+      "commands-list-rpc"
+    ],
+    "new_commands": [
+      "openclaw exec-policy"
+    ],
+    "new_flags": [
+      "--runner multipass",
+      "--media"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -40,13 +52,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.4.9",
-      "latest_release_date": "2026-04-09",
+      "latest_stable": "2026.4.10",
+      "latest_release_date": "2026-04-11",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces a grounded REM backfill lane for memory/dreaming, enabling historical `rem-harness --path` integration and diary commit/reset flows. This allows old daily notes to replay into Dreams and durable memory without a second memory stack. A structured diary view is added to the Control UI, featuring timeline navigation, backfill/reset controls, traceable dreaming summaries, and a grounded Scene lane. Character-vibes evaluation reports are now available for live QA, allowing faster comparison of candidate behavior through model selection and parallel runs. Provider manifests can now declare `providerAuthAliases`, enabling provider variants to share env vars, auth profiles, config-backed auth, and API-key onboarding choices. Browser security is enhanced by re-running blocked-destination safety checks after interaction-driven main-frame navigations. Runtime-control env vars and unsafe browser-control override specifiers are blocked from untrusted workspace `.env` files. Remote node exec events are now sanitized to prevent injection of trusted `System:` content. Several fixes address issues with plugin onboarding, dependency versions, Android pairing, Matrix gateway stability, Slack media loading, reply handling, session routing, model overrides, ACP block replies, partial streaming, Matrix doctor, npm packaging, live QA, OpenAI reasoning effort, Ollama thinking output, Codex CLI prompts, auth profile persistence, agent timeouts, Z.ai failover classification, QQBot media tags, memory/dreaming hardening, Android manual connect, Windows update memory, Plugin SDK exports, plugin contracts, Control UI model refs, Plugin SDK command auth, and wizard plugin config. It is recommended to upgrade to this version to benefit from the security enhancements and bug fixes. No specific migration steps are required."
+      "tldr": "This release introduces the Active Memory plugin, which automatically pulls in relevant context and preferences into ongoing chats, and an experimental local MLX speech provider for Talk Mode. Microsoft Teams gains message actions like pin/unpin/react, while the fal provider now supports Seedance 2.0 with specific metadata fields. A new `openclaw exec-policy` command helps synchronize `tools.exec.*` config with local exec approvals. Security is a major focus, with tightened browser and sandbox navigation defenses, hardened exec preflight reads, and dependency denylisting. WhatsApp media sends are fixed to preserve media access context, and Microsoft Teams receives numerous fixes for media downloads, SSO, and cron announcements. Gateway startup is improved to maintain WebSocket RPC availability, and thread routing is preserved across various channels. Other fixes address model fallback, BTW behavior, command targeting, conversation bindings, iMessage self-chat, Matrix consistency, Telegram security, agent timeouts, skill loading, Windows exec hangs, browser sandbox issues, QQBot streaming, Dreaming gateway auth, browser control, channel setup, memory startup, config validation, daemon install, cron scheduling, task cancellation, session model selection, context detail reporting, session reset hooks, plugin commands, agent auth, Claude CLI, Discord config, BlueBubbles config, Feishu webhooks, web_fetch, Dreaming cron, memory/lancedb, Dreaming UI, Dreaming narrative, Dreaming diary, heartbeats, run cleanup, UI compaction, cron tool schemas, git metadata, gateway commands, TUI, Codex auth, ACP/gateway chat, Claude CLI/skills, Discord title generation, heartbeat templates, reply/skills, Dreaming startup, plugin registration, Discord/TTS, config/plugins, agents/Gemini, assistant text, daemon/gateway, agents/exec, gateway/OpenAI compat, Matrix/migration, Matrix/ACP thread bindings, agents/subagents, agents/exec, agents/subagents, cron/isolated agent, Discord/sandbox, agents/exec, security/dependencies, browser/security, hooks/security, daemon/launchd, plugins/context engines, heartbeat, agents/OpenAI replay, heartbeat/config, CLI/devices, media/security, browser/security, models/vLLM, and heartbeat/scheduling. It is highly recommended to upgrade to benefit from the security fixes and new features."
     },
     "features": [
       {
@@ -1364,6 +1376,70 @@
         "description": "Adds a grounded REM backfill lane with historical `rem-harness --path`, diary commit/reset flows, cleaner durable-fact extraction, and live short-term promotion integration so old daily notes can replay into Dreams and durable memory without a second memory stack.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "active-memory-plugin",
+        "name": "Active Memory Plugin",
+        "status": "experimental",
+        "since": "2026.4.10",
+        "description": "Adds a dedicated memory sub-agent right before the main reply, automatically pulling in relevant preferences, context, and past details without manual user input. Includes configurable message/recent/full context modes, live `/verbose` inspection, advanced prompt/thinking overrides, and opt-in transcript persistence.",
+        "key_details": [
+          "Configurable message/recent/full context modes",
+          "Live `/verbose` inspection",
+          "Advanced prompt/thinking overrides",
+          "Opt-in transcript persistence for debugging"
+        ],
+        "source_url": "https://docs.openclaw.ai/concepts/active-memory"
+      },
+      {
+        "id": "local-mlx-speech-provider",
+        "name": "Local MLX Speech Provider",
+        "status": "experimental",
+        "since": "2026.4.10",
+        "description": "Adds an experimental local MLX speech provider for Talk Mode, with explicit provider selection, local utterance playback, interruption handling, and system-voice fallback.",
+        "key_details": [
+          "Explicit provider selection",
+          "Local utterance playback",
+          "Interruption handling",
+          "System-voice fallback"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "qa-matrix-lane",
+        "name": "QA Matrix Lane",
+        "status": "stable",
+        "since": "2026.4.10",
+        "description": "Adds a live `openclaw qa matrix` lane backed by a disposable Matrix homeserver, shared live-transport seams, and Matrix-specific transport coverage for threading, reactions, restart, and allowlist behavior.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "qa-telegram-lane",
+        "name": "QA Telegram Lane",
+        "status": "stable",
+        "since": "2026.4.10",
+        "description": "Adds a live `openclaw qa telegram` lane for private-group bot-to-bot checks, hardens its artifact handling, and preserves native Telegram command reply threading for QA verification.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "multipass-qa-runner",
+        "name": "Multipass QA Runner",
+        "status": "stable",
+        "since": "2026.4.10",
+        "description": "Adds a `--runner multipass` lane for `openclaw qa suite` so repo-backed QA scenarios can run inside a disposable Linux VM and write back the usual report, summary, and VM logs.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "commands-list-rpc",
+        "name": "Commands List RPC",
+        "status": "stable",
+        "since": "2026.4.10",
+        "description": "Adds a `commands.list` RPC so remote gateway clients can discover runtime-native, text, skill, and plugin commands with surface-aware naming and serialized argument metadata.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1574,6 +1650,14 @@
         "since": "2026.4.7",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "openclaw exec-policy",
+        "syntax": "openclaw exec-policy [show|preset|set]",
+        "description": "A local command with `show`, `preset`, and `set` subcommands for synchronizing requested `tools.exec.*` config with the local exec approvals file, plus follow-up hardening for node-host rejection, rollback safety, and sync conflict detection.",
+        "since": "2026.4.10",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -1634,6 +1718,18 @@
           "flag": "--tools",
           "description": "Per-job tool allowlists for cron jobs.",
           "since": "2026.4.1",
+          "source_url": ""
+        },
+        {
+          "flag": "--runner multipass",
+          "description": "A flag for `openclaw qa suite` to run repo-backed QA scenarios inside a disposable Linux VM.",
+          "since": "2026.4.10",
+          "source_url": ""
+        },
+        {
+          "flag": "--media",
+          "description": "A flag for `openclaw` to route gateway-mode outbound WhatsApp sends through the channel `sendMedia` path and preserve media access context.",
+          "since": "2026.4.10",
           "source_url": ""
         }
       ],
@@ -1751,7 +1847,10 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--runner multipass",
+        "--media"
+      ]
     },
     "env_vars": [
       {
