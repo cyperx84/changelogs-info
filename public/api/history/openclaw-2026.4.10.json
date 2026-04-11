@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.10",
-  "generated_at": "2026-04-11T04:41:25.108Z",
+  "generated_at": "2026-04-11T03:06:10.530Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -19,13 +19,14 @@
     "new_features": [
       "active-memory-plugin",
       "local-mlx-speech-provider",
-      "microsoft-teams-message-actions",
       "qa-matrix-lane",
       "qa-telegram-lane",
       "multipass-qa-runner",
-      "per-provider-request-allow-private-network"
+      "commands-list-rpc"
     ],
-    "new_commands": [],
+    "new_commands": [
+      "openclaw exec-policy"
+    ],
     "new_flags": [
       "--runner multipass",
       "--media"
@@ -57,7 +58,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces the experimental Active Memory plugin, which provides a dedicated memory sub-agent to automatically pull in relevant context for ongoing chats, improving user experience by eliminating the need for manual memory recall. Microsoft Teams gains message actions like pin, react, and read. A new `openclaw qa matrix` lane facilitates QA testing with a disposable Matrix homeserver, while `openclaw qa telegram` enhances Telegram bot testing. The `--runner multipass` flag for `openclaw qa suite` enables QA scenarios within a disposable Linux VM. The `openclaw exec-policy` command manages local execution approvals.  Per-provider private network access is now configurable via `models.providers.*.request.allowPrivateNetwork`. Feishu request user agents are standardized, and Matrix streaming benefits from MSC4357 live markers.  Numerous fixes address browser and tool security, OpenAI/Codex integration, Microsoft Teams functionality, gateway stability, WhatsApp connectivity, and more.  Gateway startup is improved, and thread routing is enhanced.  Model fallback is more robust, and BTW side questions are better handled.  This release includes several security enhancements, particularly around browser navigation and sandbox environments. Upgrading is recommended to benefit from the new features, security fixes, and stability improvements. No specific migration steps are required."
+      "tldr": "This release introduces the Active Memory plugin, which automatically pulls in relevant context and preferences into ongoing chats, and an experimental local MLX speech provider for Talk Mode. Microsoft Teams gains message actions like pin/unpin/react, while the fal provider now supports Seedance 2.0 with specific metadata fields. A new `openclaw exec-policy` command helps synchronize `tools.exec.*` config with local exec approvals. Security is a major focus, with tightened browser and sandbox navigation defenses, hardened exec preflight reads, and dependency denylisting. WhatsApp media sends are fixed to preserve media access context, and Microsoft Teams receives numerous fixes for media downloads, SSO, and cron announcements. Gateway startup is improved to maintain WebSocket RPC availability, and thread routing is preserved across various channels. Other fixes address model fallback, BTW behavior, command targeting, conversation bindings, iMessage self-chat, Matrix consistency, Telegram security, agent timeouts, skill loading, Windows exec hangs, browser sandbox issues, QQBot streaming, Dreaming gateway auth, browser control, channel setup, memory startup, config validation, daemon install, cron scheduling, task cancellation, session model selection, context detail reporting, session reset hooks, plugin commands, agent auth, Claude CLI, Discord config, BlueBubbles config, Feishu webhooks, web_fetch, Dreaming cron, memory/lancedb, Dreaming UI, Dreaming narrative, Dreaming diary, heartbeats, run cleanup, UI compaction, cron tool schemas, git metadata, gateway commands, TUI, Codex auth, ACP/gateway chat, Claude CLI/skills, Discord title generation, heartbeat templates, reply/skills, Dreaming startup, plugin registration, Discord/TTS, config/plugins, agents/Gemini, assistant text, daemon/gateway, agents/exec, gateway/OpenAI compat, Matrix/migration, Matrix/ACP thread bindings, agents/subagents, agents/exec, agents/subagents, cron/isolated agent, Discord/sandbox, agents/exec, security/dependencies, browser/security, hooks/security, daemon/launchd, plugins/context engines, heartbeat, agents/OpenAI replay, heartbeat/config, CLI/devices, media/security, browser/security, models/vLLM, and heartbeat/scheduling. It is highly recommended to upgrade to benefit from the security fixes and new features."
     },
     "features": [
       {
@@ -1437,24 +1438,6 @@
         "status": "stable",
         "since": "2026.4.10",
         "description": "Adds a `commands.list` RPC so remote gateway clients can discover runtime-native, text, skill, and plugin commands with surface-aware naming and serialized argument metadata.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "microsoft-teams-message-actions",
-        "name": "Microsoft Teams Message Actions",
-        "status": "stable",
-        "since": "2026.4.10",
-        "description": "Added message actions for pin, unpin, read, react, and listing reactions in Microsoft Teams.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "per-provider-request-allow-private-network",
-        "name": "Per-Provider Private Network Access",
-        "status": "stable",
-        "since": "2026.4.10",
-        "description": "Added per-provider `models.providers.*.request.allowPrivateNetwork` for trusted self-hosted OpenAI-compatible endpoints, keeping the opt-in scoped to model request surfaces, and refreshing cached WebSocket managers when request transport overrides change.",
         "key_details": [],
         "source_url": ""
       }
