@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.4.10",
-  "generated_at": "2026-04-11T23:11:43.964Z",
+  "version": "2026.4.11",
+  "generated_at": "2026-04-12T00:35:19.932Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,16 +14,20 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.4.10",
-    "to_version": "2026.4.10",
+    "from_version": "2026.4.11",
+    "to_version": "2026.4.11",
     "new_features": [
-      "active-memory-plugin",
-      "local-mlx-speech-provider"
+      "plugin-manifest-activation-setup-descriptors",
+      "url-only-generated-asset-delivery",
+      "typed-provider-options",
+      "reference-audio-inputs",
+      "per-asset-role-hints",
+      "adaptive-aspect-ratio-support",
+      "higher-image-input-cap",
+      "imported-insights-memory-palace-diary-subtabs"
     ],
     "new_commands": [],
-    "new_flags": [
-      "--runner multipass"
-    ],
+    "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -45,13 +49,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.4.10",
-      "latest_release_date": "2026-04-11",
+      "latest_stable": "2026.4.11",
+      "latest_release_date": "2026-04-12",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces the Active Memory plugin, which provides a dedicated memory sub-agent to automatically pull in relevant context during chats, enhancing user experience by eliminating manual memory searches. It also adds a local MLX speech provider for macOS Talk Mode, offering local utterance playback and system-voice fallback. Microsoft Teams gains message actions like pin, react, and list reactions. A new `openclaw qa matrix` lane is available for live testing with a disposable Matrix homeserver, and `openclaw qa telegram` lane for bot-to-bot checks. The `openclaw exec-policy` command now synchronizes `tools.exec.*` config with the local exec approvals file. Security enhancements include tightened browser and sandbox navigation defenses, along with hardened exec preflight reads and plugin install dependency scanning. Several fixes address issues in Microsoft Teams, WhatsApp, Gateway thread routing, and model fallback. It's recommended to upgrade to leverage the new features and security improvements. No specific prerequisites are mentioned."
+      "tldr": "This release introduces several enhancements, most notably the ability to import ChatGPT conversations into Dreaming and inspect them via the new `Imported Insights` and `Memory Palace` diary subtabs. Video generation tools gain significant capabilities, including URL-only asset delivery, typed provider options, audio input referencing, per-asset role hints, adaptive aspect ratio support, and a higher image input cap, enabling richer generation modes. Feishu document comment sessions are improved with richer context parsing, comment reactions, and typing feedback, making them more chat-like. Microsoft Teams now supports reactions, reaction listing, Graph pagination, and delegated OAuth setup for sending reactions. Ollama model discovery now caches `/api/show` metadata to reduce redundant API calls. OpenAI/Codex OAuth is fixed to prevent `invalid_scope` errors during sign-in. Audio transcription is improved by disabling pinned DNS only for OpenAI-compatible multipart requests. Several UI and agent-related fixes address issues with macOS Talk Mode, webchat history, WhatsApp account handling, ACP stream updates, agent timeouts, and config schema validation. Google Veo runs are fixed by removing the unsupported `numberOfVideos` request field. QA packaging is improved to prevent errors related to repo-only QA scenarios. Codex QA is enhanced to filter out app-server chatter and classify leaked harness meta text as failures. WhatsApp message reactions are now routed through the gateway-owned action path. Auto-reply for WhatsApp preserves inbound image attachment notes. Telegram sessions now maintain topic-scoped session initialization. Agent failover is improved to scope fallback classification to the current attempt. MiniMax OAuth configuration is updated to ensure Bearer auth routing works correctly. Upgrading is recommended to take advantage of these improvements and fixes. No specific prerequisites are mentioned."
     },
     "features": [
       {
@@ -1496,6 +1500,78 @@
         "description": "Adds a `--runner multipass` lane for `openclaw qa suite` so repo-backed QA scenarios can run inside a disposable Linux VM and write back the usual report, summary, and VM logs.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "plugin-manifest-activation-setup-descriptors",
+        "name": "Plugin Manifest Activation and Setup Descriptors",
+        "status": "stable",
+        "since": "2026.4.11",
+        "description": "Allow plugin manifests to declare activation and setup descriptors so plugin setup flows can describe required auth, pairing, and configuration steps without hardcoded core special cases.",
+        "key_details": [],
+        "source_url": "#64780"
+      },
+      {
+        "id": "url-only-generated-asset-delivery",
+        "name": "URL-only Generated Asset Delivery",
+        "status": "stable",
+        "since": "2026.4.11",
+        "description": "Add URL-only generated asset delivery for video generation tools.",
+        "key_details": [],
+        "source_url": "#61987"
+      },
+      {
+        "id": "typed-provider-options",
+        "name": "Typed Provider Options",
+        "status": "stable",
+        "since": "2026.4.11",
+        "description": "Add typed `providerOptions` for video generation tools.",
+        "key_details": [],
+        "source_url": "#61987"
+      },
+      {
+        "id": "reference-audio-inputs",
+        "name": "Reference Audio Inputs",
+        "status": "stable",
+        "since": "2026.4.11",
+        "description": "Add reference audio inputs for video generation tools.",
+        "key_details": [],
+        "source_url": "#61987"
+      },
+      {
+        "id": "per-asset-role-hints",
+        "name": "Per-Asset Role Hints",
+        "status": "stable",
+        "since": "2026.4.11",
+        "description": "Add per-asset role hints for video generation tools.",
+        "key_details": [],
+        "source_url": "#61987"
+      },
+      {
+        "id": "adaptive-aspect-ratio-support",
+        "name": "Adaptive Aspect Ratio Support",
+        "status": "stable",
+        "since": "2026.4.11",
+        "description": "Add `adaptive` aspect-ratio support for video generation tools.",
+        "key_details": [],
+        "source_url": "#61987"
+      },
+      {
+        "id": "higher-image-input-cap",
+        "name": "Higher Image Input Cap",
+        "status": "stable",
+        "since": "2026.4.11",
+        "description": "Add a higher image-input cap for video generation tools.",
+        "key_details": [],
+        "source_url": "#61987"
+      },
+      {
+        "id": "imported-insights-memory-palace-diary-subtabs",
+        "name": "Imported Insights and Memory Palace Diary Subtabs",
+        "status": "stable",
+        "since": "2026.4.11",
+        "description": "Add `Imported Insights` and `Memory Palace` diary subtabs so Dreaming can inspect imported source chats, compiled wiki pages, and full source pages directly from the UI.",
+        "key_details": [],
+        "source_url": "#64505"
       }
     ],
     "commands": [
@@ -1919,9 +1995,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--runner multipass"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
