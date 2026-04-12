@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.11",
-  "generated_at": "2026-04-12T01:36:26.662Z",
+  "generated_at": "2026-04-12T00:35:19.932Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -17,9 +17,14 @@
     "from_version": "2026.4.11",
     "to_version": "2026.4.11",
     "new_features": [
-      "embed-rich-output-tag",
       "plugin-manifest-activation-setup-descriptors",
-      "gpt-5-4-vs-opus-4-6-agentic-parity-report-gate"
+      "url-only-generated-asset-delivery",
+      "typed-provider-options",
+      "reference-audio-inputs",
+      "per-asset-role-hints",
+      "adaptive-aspect-ratio-support",
+      "higher-image-input-cap",
+      "imported-insights-memory-palace-diary-subtabs"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -50,7 +55,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces structured chat bubbles in the Control UI/webchat, rendering assistant media/reply/voice directives and adding the `[embed ...]` rich output tag for embedding external URLs, enhancing the user experience. Dreaming now supports ChatGPT import ingestion with new `Imported Insights` and `Memory Palace` diary subtabs for inspecting imported source chats and wiki pages. The video generation tool gains URL-only asset delivery, typed provider options, reference audio inputs, adaptive aspect ratio support, and a higher image input cap, enabling richer generation modes. Feishu document comment sessions are improved with richer context parsing, comment reactions, and typing feedback, while Microsoft Teams gets reaction support, Graph pagination, and delegated OAuth setup. Plugin manifests can now declare activation and setup descriptors, simplifying plugin setup flows. Ollama model discovery now caches context-window metadata, and OpenAI-compatible endpoint classifications are surfaced in debug logs. Fixes include addressing OpenAI/Codex OAuth scope issues, audio transcription problems, macOS Talk Mode activation, webchat history persistence, WhatsApp account handling, ACP agent commentary suppression, agent timeout alignment, config schema updates, Google Veo request field issues, QA packaging problems, Codex QA leak prevention, WhatsApp reaction routing, auto-reply image attachment preservation, Telegram session topic handling, agent failover classification, and MiniMax OAuth config patching. Upgrading is recommended to take advantage of these improvements and fixes. No specific migration steps are required."
+      "tldr": "This release introduces several enhancements, most notably the ability to import ChatGPT conversations into Dreaming and inspect them via the new `Imported Insights` and `Memory Palace` diary subtabs. Video generation tools gain significant capabilities, including URL-only asset delivery, typed provider options, audio input referencing, per-asset role hints, adaptive aspect ratio support, and a higher image input cap, enabling richer generation modes. Feishu document comment sessions are improved with richer context parsing, comment reactions, and typing feedback, making them more chat-like. Microsoft Teams now supports reactions, reaction listing, Graph pagination, and delegated OAuth setup for sending reactions. Ollama model discovery now caches `/api/show` metadata to reduce redundant API calls. OpenAI/Codex OAuth is fixed to prevent `invalid_scope` errors during sign-in. Audio transcription is improved by disabling pinned DNS only for OpenAI-compatible multipart requests. Several UI and agent-related fixes address issues with macOS Talk Mode, webchat history, WhatsApp account handling, ACP stream updates, agent timeouts, and config schema validation. Google Veo runs are fixed by removing the unsupported `numberOfVideos` request field. QA packaging is improved to prevent errors related to repo-only QA scenarios. Codex QA is enhanced to filter out app-server chatter and classify leaked harness meta text as failures. WhatsApp message reactions are now routed through the gateway-owned action path. Auto-reply for WhatsApp preserves inbound image attachment notes. Telegram sessions now maintain topic-scoped session initialization. Agent failover is improved to scope fallback classification to the current attempt. MiniMax OAuth configuration is updated to ensure Bearer auth routing works correctly. Upgrading is recommended to take advantage of these improvements and fixes. No specific prerequisites are mentioned."
     },
     "features": [
       {
@@ -1567,24 +1572,6 @@
         "description": "Add `Imported Insights` and `Memory Palace` diary subtabs so Dreaming can inspect imported source chats, compiled wiki pages, and full source pages directly from the UI.",
         "key_details": [],
         "source_url": "#64505"
-      },
-      {
-        "id": "embed-rich-output-tag",
-        "name": "[embed ...] rich output tag",
-        "status": "stable",
-        "since": "2026.4.11",
-        "description": "Adds the `[embed ...]` rich output tag for embedding external URLs in webchat, gated behind configuration.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "gpt-5-4-vs-opus-4-6-agentic-parity-report-gate",
-        "name": "GPT-5.4 vs Opus 4.6 Agentic Parity Report Gate",
-        "status": "stable",
-        "since": "2026.4.11",
-        "description": "Adds the GPT-5.4 vs Opus 4.6 agentic parity report gate with shared scenario coverage checks, stricter evidence heuristics, and skipped-scenario accounting for maintainer review.",
-        "key_details": [],
-        "source_url": ""
       }
     ],
     "commands": [
