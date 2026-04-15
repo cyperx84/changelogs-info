@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.108",
-  "generated_at": "2026-04-15T00:38:05.861Z",
+  "generated_at": "2026-04-15T01:36:42.428Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -16,17 +16,18 @@
   "delta": {
     "from_version": "2.1.108",
     "to_version": "2.1.108",
-    "new_features": [
-      "recap-feature"
-    ],
+    "new_features": [],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [
       "ENABLE_PROMPT_CACHING_1H",
-      "FORCE_PROMPT_CACHING_5M"
+      "FORCE_PROMPT_CACHING_5M",
+      "CLAUDE_CODE_ENABLE_AWAY_SUMMARY"
     ],
     "deprecated_commands": [],
-    "deprecated_flags": [],
+    "deprecated_flags": [
+      "ENABLE_PROMPT_CACHING_1H_BEDROCK"
+    ],
     "breaking_changes": []
   },
   "payload": {
@@ -49,7 +50,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces prompt caching controls and a session recap feature to improve performance and context retention. You can now use `ENABLE_PROMPT_CACHING_1H` to opt into a 1-hour prompt cache TTL or `FORCE_PROMPT_CACHING_5M` to force a 5-minute TTL. The new recap feature, configurable via `/config` or manually invoked with `/recap`, provides context when returning to a session, and can be forced with `CLAUDE_CODE_ENABLE_AWAY_SUMMARY` if telemetry is disabled. The model can now discover and invoke built-in slash commands like `/init`, `/review`, and `/security-review` via the Skill tool, and `/undo` is now an alias for `/rewind`. The `/model` command now warns before switching models mid-conversation, and the `/resume` picker defaults to sessions from the current directory. Error messages have been improved to distinguish between server rate limits and plan usage limits, and to suggest the closest match for unknown slash commands. Memory footprint for file reads, edits, and syntax highlighting has been reduced by loading language grammars on demand. A warning is now displayed at startup when prompt caching is disabled via `DISABLE_PROMPT_CACHING*` environment variables. Several bugs have been fixed, including issues with pasting in the `/login` code prompt, subscribers falling back to 5-minute prompt cache TTL, and various issues with session titles, terminal escape codes, and the `/feedback` command. Upgrading is recommended to take advantage of the new features and bug fixes. No specific migration steps are required."
+      "tldr": "This release introduces prompt caching configuration via environment variables, allowing developers to fine-tune caching behavior for different platforms. `ENABLE_PROMPT_CACHING_1H` enables a 1-hour TTL, while `FORCE_PROMPT_CACHING_5M` forces a 5-minute TTL. The `ENABLE_PROMPT_CACHING_1H_BEDROCK` env var is now deprecated. The recap feature, which provides context when returning to a session, is now configurable via `/config` and manually invocable with `/recap`. The `CLAUDE_CODE_ENABLE_AWAY_SUMMARY` env var can force enable the recap feature if telemetry is disabled. The model can now discover and invoke built-in slash commands like `/init`, `/review`, and `/security-review` via the Skill tool. `/undo` is now an alias for `/rewind`. The `/model` command now warns before switching models mid-conversation. The `/resume` picker defaults to sessions from the current directory. Error messages have been improved to distinguish between server rate limits and plan usage limits. Memory footprint for file reads, edits, and syntax highlighting has been reduced. Several bugs have been fixed, including issues with pasting in the `/login` prompt, subscribers falling back to incorrect prompt cache TTL, Agent tool prompting for permission in auto mode, Bash tool producing no output, session titles showing placeholder text, terminal escape codes appearing as garbage text, `/feedback` retry failing, `--teleport` and `--resume` precondition errors exiting silently, Remote Control session titles being overwritten, `--resume` truncating sessions, transcript write failures being silently dropped, diacritical marks being dropped from responses, and policy-managed plugins never auto-updating. It is recommended to upgrade to this version to take advantage of the new prompt caching configuration options, improved error messages, and bug fixes. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
@@ -1335,6 +1336,13 @@
           "removed_in": null,
           "note": "Still works as alias but will be removed in future. Migrate all scripts.",
           "source_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md"
+        },
+        {
+          "flag": "ENABLE_PROMPT_CACHING_1H_BEDROCK",
+          "replaced_by": "ENABLE_PROMPT_CACHING_1H",
+          "deprecated_since": "2.1.108",
+          "removed_in": null,
+          "source_url": ""
         }
       ],
       "new_since_previous": []
@@ -1531,6 +1539,13 @@
       {
         "name": "FORCE_PROMPT_CACHING_5M",
         "purpose": "Forces 5-minute TTL for prompt caching.",
+        "status": "stable",
+        "since": "2.1.108",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_ENABLE_AWAY_SUMMARY",
+        "purpose": "Force enable recap feature if telemetry is disabled.",
         "status": "stable",
         "since": "2.1.108",
         "source_url": ""

@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
   "version": "1.4.4",
-  "generated_at": "2026-04-15T01:37:10.041Z",
+  "generated_at": "2026-04-15T00:38:34.840Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -17,9 +17,9 @@
     "from_version": "1.4.4",
     "to_version": "1.4.4",
     "new_features": [
-      "compaction-autocontinue-hook",
-      "alibaba-provider-support-with-cache",
-      "session-permission-updates"
+      "alibaba-provider-support",
+      "custom-workspace-adaptors",
+      "compaction-autocontinue-hook"
     ],
     "new_commands": [
       "/export"
@@ -54,7 +54,7 @@
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "This release focuses on improving core functionality and adding new provider support. A key update restores instance and logger context during prompt runs, ensuring prompt-time tools and logging behave correctly. The `opencode export` command now includes a `--sanitize` flag to redact PII and confidential data from transcripts. Alibaba provider support with caching has been added, expanding provider options. Sessions can now update project permissions mid-run, offering more dynamic control. An experimental `compaction.autocontinue` hook allows stopping auto-continuation after compaction. Snapshots now fully respect `.gitignore`, including previously tracked files, and reading images no longer counts against quota. Several fixes address issues like GitHub Copilot compaction requests, question API responses, MCP OAuth connections, duplicate user messages in ACP clients, and reasoning summary injection for `@ai-sdk/openai-compatible` providers. Plugin authentication in the TUI now correctly prompts for API keys only when the plugin requires authorization. Additionally, the JavaScript SDK now provides clearer error messages when encountering older server responses. Upgrading is recommended to benefit from these improvements and fixes. No specific migration steps are required."
+      "tldr": "Opencode 1.4.4 restores instance and logger context during prompt runs, ensuring prompt-time tools and logging function correctly. This release introduces Alibaba provider support with caching, expanding provider options. A new experimental `compaction.autocontinue` hook allows stopping auto-continuation after compaction. The `opencode export --sanitize` command redacts PII and confidential data during export, enhancing privacy. Snapshots now fully respect `.gitignore`, including previously tracked files, improving session review. Sessions can now update project permissions mid-run, providing more dynamic control. Plugin auth login now prompts for an API key when required, and only when the plugin has an `authorize` method. Reading images no longer counts against quota. Several fixes address issues like GitHub Copilot compaction requests, question API responses, MCP OAuth connections, duplicate user messages in ACP clients, and reasoning summary injection for `@ai-sdk/openai-compatible` providers. Additionally, a Windows desktop backend hang before shutdown has been resolved. Upgrade is recommended to benefit from these improvements and fixes, with no specific prerequisites."
     },
     "features": [
       {
@@ -498,24 +498,6 @@
         "status": "experimental",
         "since": "1.4.4",
         "description": "Added the experimental `compaction.autocontinue` hook to stop auto-continuing after compaction.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "alibaba-provider-support-with-cache",
-        "name": "Alibaba Provider Support with Cache",
-        "status": "stable",
-        "since": "1.4.4",
-        "description": "Added Alibaba provider support with cache support.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "session-permission-updates",
-        "name": "Session Permission Updates",
-        "status": "stable",
-        "since": "1.4.4",
-        "description": "Sessions can now update project permissions mid-run.",
         "key_details": [],
         "source_url": ""
       }

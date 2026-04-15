@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "gemini-cli",
   "version": "0.38.0",
-  "generated_at": "2026-04-15T01:37:04.646Z",
+  "generated_at": "2026-04-15T00:38:28.596Z",
   "extracted_from_sources": [
     "https://github.com/google-gemini/gemini-cli/releases/tag/v0.33.0",
     "https://github.com/google-gemini/gemini-cli/releases"
@@ -17,32 +17,27 @@
     "from_version": "0.38.0",
     "to_version": "0.38.0",
     "new_features": [
-      "context-aware-persistent-policy-approvals",
-      "terminalbuffer-mode",
-      "minimalist-sandbox-status-labels",
+      "background-memory-service-for-skill-extraction",
       "context-compression-service",
       "selective-topic-expansion-and-click-to-expand",
-      "display-hook-system-messages-in-ui",
       "agent-protocol-ui-types-and-experimental-flag",
-      "role-specific-metrics-to-stats",
-      "background-process-monitoring-and-inspection-tools",
-      "support-default-values-for-environment-variables",
-      "scope-subagent-workspace-directories-via-asynclocalstorage",
-      "high-signal-pr-regression-check-for-evaluations",
-      "change-default-loadingphrases-to-off-to-hide-tips",
-      "add-background-memory-service-for-skill-extraction",
-      "enhance-tool-confirmation-ui-and-selection-layout",
       "scrollbar-for-input-prompt",
+      "minimalist-sandbox-status-labels",
+      "terminalbuffer-mode",
+      "support-default-values-for-environment-variables",
+      "background-process-monitoring-and-inspection-tools",
+      "context-aware-persistent-policy-approvals",
+      "role-specific-metrics-to-stats",
       "browser-agent-clearcut-metrics",
-      "auto-configure-memory",
-      "compact-tool-output-by-default",
-      "add-flag-for-ept-size-and-increased-default-size"
+      "display-hook-system-messages-in-ui",
+      "experimental-adk-agentsessionnoninteractiveenabled-setting"
     ],
     "new_commands": [
-      "/about",
-      "/help"
+      "/about"
     ],
-    "new_flags": [],
+    "new_flags": [
+      "--ept-size"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -70,7 +65,7 @@
       "runtime": "node",
       "written_in": "typescript",
       "release_cadence": "Stable on Tuesdays. Preview: Tuesdays UTC 23:59. Nightly: daily UTC 00:00.",
-      "tldr": "This release introduces several key enhancements and fixes. The most notable change is the addition of context-aware persistent policy approvals, which streamlines workflows by remembering and automatically approving policies based on context. A new TerminalBuffer mode resolves UI flickering issues, while minimalist sandbox status labels improve clarity. The release also incorporates a context compression service for optimized context usage and supports selective topic expansion with click-to-expand functionality. Background process monitoring tools and default environment variable values have been added for better system management and configuration. Important fixes include ensuring `complete_task` tool calls are recorded in chat history, resolving ARG_MAX crashes in the Linux sandbox, and improving Windows sandbox reliability. The default for `loadingPhrases` has been changed to 'off' to hide loading tips. The `/about` and `/help` commands have been added. Additionally, role-specific metrics are now available via the `/stats` command. There are no breaking changes or specific migration steps required. Upgrading is recommended to take advantage of these improvements and fixes. Ensure all dependencies are up to date before upgrading."
+      "tldr": "This release introduces several enhancements and fixes, focusing on improved sandboxing, browser agent functionality, and UI improvements. A key addition is the context compression service, which optimizes context management. The release also includes a background memory service for skill extraction, enhancing the agent's ability to learn and adapt. Sandboxing receives significant attention with improved reliability on Windows, better error handling, and more flexible configuration, ensuring a safer execution environment. Browser agent capabilities are expanded with better handling of computer-use model detection and improved isolation of concurrent instances. UI enhancements include a scrollbar for the input prompt, minimalist sandbox status labels, and a TerminalBuffer mode to reduce flicker. The `/stats` command now includes role-specific metrics, providing more detailed performance insights. Other notable changes include support for default values in environment variables, context-aware policy approvals, and the ability to selectively expand topics in the UI. The default loading phrases are now off, hiding tips during startup. This release also fixes several bugs related to tool execution, UI rendering, and sandbox behavior. It is recommended to upgrade to this version to benefit from the improved stability, security, and enhanced features. There are no specific migration steps required."
     },
     "features": [
       {
@@ -1203,78 +1198,6 @@
         "description": "Adds an experimental setting `experimental.adk.agentSessionNoninteractiveEnabled`.",
         "key_details": [],
         "source_url": "https://github.com/google-gemini/gemini-cli/pull/24439"
-      },
-      {
-        "id": "scope-subagent-workspace-directories-via-asynclocalstorage",
-        "name": "Scope Subagent Workspace Directories via AsyncLocalStorage",
-        "status": "stable",
-        "since": "0.38.0",
-        "description": "Scopes subagent workspace directories using AsyncLocalStorage for improved isolation.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24445"
-      },
-      {
-        "id": "high-signal-pr-regression-check-for-evaluations",
-        "name": "High-Signal PR Regression Check for Evaluations",
-        "status": "stable",
-        "since": "0.38.0",
-        "description": "Implements a high-signal PR regression check for evaluations to improve code quality.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/23937"
-      },
-      {
-        "id": "change-default-loadingphrases-to-off-to-hide-tips",
-        "name": "Change Default loadingPhrases to 'off' to Hide Tips",
-        "status": "stable",
-        "since": "0.38.0",
-        "description": "Changes the default value of `loadingPhrases` to 'off' to hide tips during loading.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24342"
-      },
-      {
-        "id": "add-background-memory-service-for-skill-extraction",
-        "name": "Add Background Memory Service for Skill Extraction",
-        "status": "stable",
-        "since": "0.38.0",
-        "description": "Adds a background memory service for skill extraction, improving skill management.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24274"
-      },
-      {
-        "id": "enhance-tool-confirmation-ui-and-selection-layout",
-        "name": "Enhance Tool Confirmation UI and Selection Layout",
-        "status": "stable",
-        "since": "0.38.0",
-        "description": "Enhances the tool confirmation UI and selection layout for a better user experience.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24376"
-      },
-      {
-        "id": "auto-configure-memory",
-        "name": "Auto Configure Memory",
-        "status": "stable",
-        "since": "0.38.0",
-        "description": "Automatically configures memory settings for optimized performance.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24474"
-      },
-      {
-        "id": "compact-tool-output-by-default",
-        "name": "Enable Compact Tool Output by Default",
-        "status": "stable",
-        "since": "0.38.0",
-        "description": "Enables compact tool output by default, reducing verbosity.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24510"
-      },
-      {
-        "id": "add-flag-for-ept-size-and-increased-default-size",
-        "name": "Add Flag for EPT Size and Increased Default Size",
-        "status": "stable",
-        "since": "0.38.0",
-        "description": "Adds a flag for configuring the EPT size and increases the default size for improved performance.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24859"
       }
     ],
     "commands": [
@@ -1463,7 +1386,9 @@
           "source_url": "https://github.com/google-gemini/gemini-cli/pull/21171"
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--ept-size"
+      ]
     },
     "env_vars": [
       {
