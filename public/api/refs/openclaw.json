@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.14",
-  "generated_at": "2026-04-15T19:33:17.979Z",
+  "generated_at": "2026-04-15T20:20:47.408Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -23,8 +23,8 @@
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "gateway-tool-config-patch-security",
-      "browser-ssrf-policy",
+      "agents-gateway-tool-config-patch-apply-restrictions",
+      "browser-ssrf-policy-normalization",
       "feishu-allowlist-canonicalization"
     ]
   },
@@ -50,7 +50,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces forward-compatibility for OpenAI's `gpt-5.4-pro` models, ensuring seamless integration as the upstream catalog catches up. Telegram forum topics now surface human-readable names in agent context, enhancing clarity. A significant security update prevents the model-facing gateway tool from enabling potentially dangerous flags via `config.patch` or `config.apply`, requiring direct operator RPC calls for such changes. Legacy browser SSRF policies are now strictly enforced, and Feishu allowlists are canonicalized to prevent unintended access. Several fixes address issues with Ollama timeouts, Codex model validation, image and PDF tool model references, Slack interaction allowlists, media attachment handling, Google image generation, Telegram topic persistence, systemd dotenv secrets, Ollama usage reporting, plugin catalog lookups, GitHub Copilot reasoning, memory embedding providers, local model hints, browser SSRF policies, onboarding checks, subagent registry imports, media-understanding proxy environments, Telegram media downloads, browser CDP readiness, context engine compaction, Codex CLI auth diagnostics, Discord native commands, Ollama session-memory slug generation, media transcription, WhatsApp media uploads, UI markdown parsing, auto-reply send policies, BlueBubbles server-info caching, heartbeat security, Microsoft Teams SSO security, config redaction, context engine maintenance, plugin status reporting, context engine validation, WhatsApp media encryption, gateway update paths, heartbeat Telegram topics, browser CDP control, gateway session metadata, cron scheduling, outbound delivery queues, memory Ollama adapter, auto-reply queue authorization, Dreaming cron events, Control UI Dreaming, agent tool retries, active memory display, memory QMD recall, subagent runtime imports, OpenAI reasoning, voice-call media-stream limits, Telegram status commands, TTS reply media, agent tool paths on Windows, OpenAI embedded runs, outbound relay status, Slack doctor contracts, session-memory hooks, CLI approvals timeouts, media store limits, plugin setup-entry secrets, and CLI update processes. Upgrade is recommended to benefit from the security enhancements and bug fixes. Ensure that any necessary flags are enabled through direct authenticated operator RPC calls. Review and update Feishu allowlist entries to ensure they are correctly configured after the update."
+      "tldr": "This release introduces forward-compatibility for `gpt-5.4-pro` models and surfaces human topic names in Telegram forum contexts. A significant security enhancement restricts the model-facing gateway tool from enabling potentially dangerous flags via `config.patch` or `config.apply`, requiring alternative methods for enabling such flags. Additionally, the release normalizes browser SSRF policies to preserve strict mode for existing configurations and canonicalizes Feishu allowlist entries to prevent unintended matching behavior. Several fixes address issues with Ollama timeouts, Codex model validation, image and PDF tool model references, Slack interaction allowlists, media attachment path resolution, Google image generation, Telegram topic persistence, systemd dotenv secrets, Ollama usage reporting, plugin catalog lookups, GitHub Copilot reasoning, memory embedding providers, local model hints, browser SSRF policy, onboarding verification probes, subagent registry imports, media-understanding proxy environments, Telegram media downloads, browser CDP readiness, context engine compaction, Codex CLI auth diagnostics, Discord native commands, Ollama session memory slug generation, media transcription, WhatsApp media uploads, UI markdown parsing, auto-reply send policy, BlueBubbles server-info cache, heartbeat security, Microsoft Teams SSO security, config redaction, context engine maintenance, plugin status reporting, context engine validation, WhatsApp media encryption, gateway update paths, heartbeat Telegram topics, browser CDP policy, gateway session metadata, cron scheduler retries, outbound delivery queue context, memory Ollama adapter, auto-reply queue authorization, Dreaming cron events, Control UI Dreaming, agent tool retries, active memory display, memory QMD recall, agent subagent runtime, agent OpenAI reasoning, voice call media stream, Telegram status commands, TTS reply media, agent tool paths, agent OpenAI embedded runs, outbound relay status, Slack doctor contract, session memory hooks, CLI approvals timeout, media store limits, plugin setup entry, CLI update pruning, and gateway exec event deduplication. Users relying on the model-facing gateway tool to enable restricted flags should review their configurations. It is recommended to upgrade to this release to benefit from the security enhancements and bug fixes. Verify Feishu allowlist configurations and browser SSRF policies after upgrading."
     },
     "features": [
       {
@@ -2816,6 +2816,17 @@
           "Users with legacy `browser.ssrfPolicy.allowPrivateNetwork: false` configurations."
         ],
         "migration": "Verify that the browser SSRF policy is correctly configured after the update.",
+        "source_url": ""
+      },
+      {
+        "id": "agents-gateway-tool-config-patch-apply-restrictions",
+        "version": "2026.4.14",
+        "title": "Restrict `config.patch` and `config.apply` calls from model-facing gateway tool",
+        "description": "The model-facing gateway tool now rejects `config.patch` and `config.apply` calls that would newly enable flags enumerated by `openclaw security audit` (e.g., `dangerouslyDisableDeviceAuth`, `allowInsecureAuth`, `dangerouslyAllowHostHeaderOriginFallback`, `hooks.gmail.allowUnsafeExternalContent`, `tools.exec.applyPatch.workspaceOnly: false`). Already-enabled flags pass through unchanged, and direct authenticated operator RPC behavior is unchanged.",
+        "affected": [
+          "Users relying on the model-facing gateway tool to enable potentially dangerous flags."
+        ],
+        "migration": "Review and adjust configurations to ensure no critical functionality relies on enabling restricted flags via the model-facing gateway tool. Consider alternative methods for enabling these flags if necessary, such as direct operator RPC calls.",
         "source_url": ""
       }
     ],
