@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.108",
-  "generated_at": "2026-04-15T00:38:05.861Z",
+  "generated_at": "2026-04-14T19:32:24.976Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,17 +14,12 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.108",
-    "to_version": "2.1.108",
-    "new_features": [
-      "recap-feature"
-    ],
+    "from_version": "2.1.104",
+    "to_version": "2.1.104",
+    "new_features": [],
     "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [
-      "ENABLE_PROMPT_CACHING_1H",
-      "FORCE_PROMPT_CACHING_5M"
-    ],
+    "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -49,7 +44,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces prompt caching controls and a session recap feature to improve performance and context retention. You can now use `ENABLE_PROMPT_CACHING_1H` to opt into a 1-hour prompt cache TTL or `FORCE_PROMPT_CACHING_5M` to force a 5-minute TTL. The new recap feature, configurable via `/config` or manually invoked with `/recap`, provides context when returning to a session, and can be forced with `CLAUDE_CODE_ENABLE_AWAY_SUMMARY` if telemetry is disabled. The model can now discover and invoke built-in slash commands like `/init`, `/review`, and `/security-review` via the Skill tool, and `/undo` is now an alias for `/rewind`. The `/model` command now warns before switching models mid-conversation, and the `/resume` picker defaults to sessions from the current directory. Error messages have been improved to distinguish between server rate limits and plan usage limits, and to suggest the closest match for unknown slash commands. Memory footprint for file reads, edits, and syntax highlighting has been reduced by loading language grammars on demand. A warning is now displayed at startup when prompt caching is disabled via `DISABLE_PROMPT_CACHING*` environment variables. Several bugs have been fixed, including issues with pasting in the `/login` code prompt, subscribers falling back to 5-minute prompt cache TTL, and various issues with session titles, terminal escape codes, and the `/feedback` command. Upgrading is recommended to take advantage of the new features and bug fixes. No specific migration steps are required."
+      "tldr": "This release of claude-code (2.1.104) does not contain any new features, updated features, new commands, new flags, deprecated flags, deprecated commands, breaking changes, or new environment variables. Therefore, there are no specific changes that would necessitate an immediate upgrade. Developers can continue using the existing version without any loss of functionality or compatibility issues. No migration steps or configuration changes are required. This release focuses on stability and maintenance, ensuring a consistent experience for users. Upgrading is optional and can be performed at the user's convenience. There are no prerequisites for upgrading to this version."
     },
     "features": [
       {
@@ -792,19 +787,6 @@
         "description": "Subprocess sandboxing with PID namespace isolation on Linux when `CLAUDE_CODE_SUBPROCESS_ENV_SCRUB` is set, and `CLAUDE_CODE_SCRIPT_CAPS` env var to limit per-session script invocations.",
         "key_details": [],
         "source_url": ""
-      },
-      {
-        "id": "recap-feature",
-        "name": "Recap Feature",
-        "status": "stable",
-        "since": "2.1.108",
-        "description": "Adds a recap feature to provide context when returning to a session.",
-        "key_details": [
-          "Configurable in /config.",
-          "Manually invocable with /recap.",
-          "Can be forced with `CLAUDE_CODE_ENABLE_AWAY_SUMMARY` if telemetry is disabled."
-        ],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -1519,20 +1501,6 @@
         "purpose": "Configures the CA certificate store to use. Setting it to `bundled` uses only bundled CAs, bypassing the OS CA certificate store.",
         "status": "stable",
         "since": "2.1.101",
-        "source_url": ""
-      },
-      {
-        "name": "ENABLE_PROMPT_CACHING_1H",
-        "purpose": "Opts into 1-hour prompt cache TTL on API key, Bedrock, Vertex, and Foundry.",
-        "status": "stable",
-        "since": "2.1.108",
-        "source_url": ""
-      },
-      {
-        "name": "FORCE_PROMPT_CACHING_5M",
-        "purpose": "Forces 5-minute TTL for prompt caching.",
-        "status": "stable",
-        "since": "2.1.108",
         "source_url": ""
       }
     ],

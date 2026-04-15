@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
-  "version": "1.4.3",
-  "generated_at": "2026-04-13T05:06:34.143Z",
+  "version": "1.4.4",
+  "generated_at": "2026-04-15T00:38:34.840Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -14,11 +14,19 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "1.4.3",
-    "to_version": "1.4.3",
-    "new_features": [],
-    "new_commands": [],
-    "new_flags": [],
+    "from_version": "1.4.4",
+    "to_version": "1.4.4",
+    "new_features": [
+      "alibaba-provider-support",
+      "custom-workspace-adaptors",
+      "compaction-autocontinue-hook"
+    ],
+    "new_commands": [
+      "/export"
+    ],
+    "new_flags": [
+      "--sanitize"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -40,13 +48,13 @@
       "changelog_url": "https://github.com/anomalyco/opencode/releases",
       "repo_url": "https://github.com/anomalyco/opencode",
       "license": "mit",
-      "latest_stable": "1.4.3",
-      "latest_release_date": "2026-04-10",
+      "latest_stable": "1.4.4",
+      "latest_release_date": "2026-04-15",
       "status": "active",
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "This release fixes a critical bug where `agent create` was failing for OpenAI accounts using OAuth, ensuring seamless agent creation for these users. Interrupted Bash commands now preserve their final output and truncation details, preventing data loss and improving debugging. Fast mode variants have been added for supported Claude and GPT models, enabling faster processing for users who prioritize speed. The previously hidden session scrollbar in the TUI has been restored as the default, improving usability and navigation. A new configurable OAuth redirect URI feature has been added for remote MCP servers, enhancing security and flexibility for multi-cloud deployments. These changes improve stability, performance, and security across core functionalities, the TUI, and extensions. Users of OpenAI OAuth authentication should upgrade immediately to resolve the agent creation issue. The remaining changes are enhancements and bug fixes that improve the overall user experience and are recommended for all users."
+      "tldr": "Opencode 1.4.4 restores instance and logger context during prompt runs, ensuring prompt-time tools and logging function correctly. This release introduces Alibaba provider support with caching, expanding provider options. A new experimental `compaction.autocontinue` hook allows stopping auto-continuation after compaction. The `opencode export --sanitize` command redacts PII and confidential data during export, enhancing privacy. Snapshots now fully respect `.gitignore`, including previously tracked files, improving session review. Sessions can now update project permissions mid-run, providing more dynamic control. Plugin auth login now prompts for an API key when required, and only when the plugin has an `authorize` method. Reading images no longer counts against quota. Several fixes address issues like GitHub Copilot compaction requests, question API responses, MCP OAuth connections, duplicate user messages in ACP clients, and reasoning summary injection for `@ai-sdk/openai-compatible` providers. Additionally, a Windows desktop backend hang before shutdown has been resolved. Upgrade is recommended to benefit from these improvements and fixes, with no specific prerequisites."
     },
     "features": [
       {
@@ -465,6 +473,33 @@
         "description": "Adds full support for using HTTP proxies.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "alibaba-provider-support",
+        "name": "Alibaba Provider Support",
+        "status": "stable",
+        "since": "1.4.4",
+        "description": "Adds support for the Alibaba provider, including cache support.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "custom-workspace-adaptors",
+        "name": "Custom Workspace Adaptors",
+        "status": "stable",
+        "since": "1.4.4",
+        "description": "Plugins can now register custom workspace adaptors that appear in workspace creation.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "compaction-autocontinue-hook",
+        "name": "Compaction Autocontinue Hook",
+        "status": "experimental",
+        "since": "1.4.4",
+        "description": "Added the experimental `compaction.autocontinue` hook to stop auto-continuing after compaction.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -515,6 +550,14 @@
         "since": "0.5.0",
         "status": "stable",
         "source_url": "https://opencode.ai"
+      },
+      {
+        "name": "/export",
+        "syntax": "opencode export --sanitize",
+        "description": "Redacts PII and confidential transcript data from exported data.",
+        "since": "1.4.4",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -552,10 +595,18 @@
           "description": "Auto-approves non-denied permission prompts when used with the `opencode run` command.",
           "since": "1.4.0",
           "source_url": ""
+        },
+        {
+          "flag": "--sanitize",
+          "description": "Redacts PII and confidential transcript data during export.",
+          "since": "1.4.4",
+          "source_url": ""
         }
       ],
       "deprecated": [],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--sanitize"
+      ]
     },
     "env_vars": [
       {
