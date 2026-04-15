@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.14",
-  "generated_at": "2026-04-15T01:37:16.961Z",
+  "generated_at": "2026-04-15T03:08:06.438Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -24,7 +24,8 @@
     "deprecated_flags": [],
     "breaking_changes": [
       "agents-gateway-tool-config-patch-apply-security",
-      "browser-ssrf-policy-strict-mode"
+      "browser-ssrf-policy-normalization",
+      "feishu-allowlist-canonicalization"
     ]
   },
   "payload": {
@@ -49,7 +50,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces forward compatibility for OpenAI's `gpt-5.4-pro` model, ensuring seamless integration when the upstream catalog catches up. A critical security fix prevents models from escalating privileges by enabling security-sensitive flags via the gateway tool's `config.patch` and `config.apply` calls; existing configurations with already-enabled flags are unaffected. Telegram forum topics now surface human-readable topic names in agent context, enhancing usability. Several fixes address issues with Ollama, including proper timeout handling and model reference normalization for image and PDF tools. Slack interactions now enforce configured `allowFrom` owner allowlists, preventing bypasses in channels without a `users` list. A breaking change ensures that strict browser SSRF policies are not unintentionally relaxed. Other notable fixes include persisting Telegram topic names across restarts, preventing dotenv-backed secrets from being re-embedded in systemd units, and ensuring accurate usage reporting for Ollama streaming completions. Additionally, the release addresses issues with media handling, such as remapping `.aac` filenames to `.m4a` for OpenAI-compatible audio uploads and preventing OOM regressions in WhatsApp media uploads. It is highly recommended to upgrade to this version to benefit from the security enhancements and bug fixes. No specific prerequisites are required for the upgrade."
+      "tldr": "This release introduces forward compatibility for OpenAI's `gpt-5.4-pro` models and surfaces human topic names in Telegram forum topics within agent context. A significant security fix restricts the model-facing gateway tool from enabling security-sensitive flags via `config.patch` or `config.apply`, requiring direct operator RPC for such changes. Additionally, the release normalizes browser SSRF policy to preserve strict navigation mode for legacy configurations. Several fixes address issues with Ollama, Codex, Slack interactions, media understanding, and other components. Specifically, Ollama runs now respect configured timeouts, and Codex provider catalog output includes the `apiKey`. Slack interactions now enforce the configured `allowFrom` owner allowlist. Media understanding now fails closed when a local attachment path cannot be resolved. Telegram media fetches now trust an operator-configured explicit proxy for target DNS resolution. Other notable fixes include improvements to cron scheduling, memory management, agent context, and various channel integrations like Discord, WhatsApp, and Feishu. Feishu allowlist entries are now canonicalized to prevent unintended matches. It is recommended to upgrade to this version to benefit from the security enhancements and bug fixes. Review the breaking changes related to the gateway tool and browser SSRF policy to ensure compatibility with your existing configurations."
     },
     "features": [
       {
@@ -2769,6 +2770,30 @@
           "Users with `browser.ssrfPolicy.allowPrivateNetwork: false` configured."
         ],
         "migration": "No direct migration steps are required, but verify that your browser SSRF policy remains as intended after the upgrade.",
+        "source_url": ""
+      },
+      {
+        "id": "browser-ssrf-policy-normalization",
+        "version": "2026.4.14",
+        "title": "Browser SSRF Policy Normalization",
+        "description": "Explicit strict browser navigation mode for legacy `browser.ssrfPolicy.allowPrivateNetwork: false` configs is now normalized to the canonical strict marker instead of silently widening those installs to the default non-strict hostname-navigation path. This ensures that existing configurations that explicitly disabled private network access for browser navigation continue to do so.",
+        "affected": [
+          "Browser",
+          "SSRF Policy"
+        ],
+        "migration": "If you relied on the previous behavior where `browser.ssrfPolicy.allowPrivateNetwork: false` implicitly allowed hostname navigation, you may need to explicitly configure the desired SSRF policy.",
+        "source_url": ""
+      },
+      {
+        "id": "feishu-allowlist-canonicalization",
+        "version": "2026.4.14",
+        "title": "Feishu Allowlist Canonicalization",
+        "description": "Feishu allowlist entries are now canonicalized by explicit `user`/`chat` kind, repeated `feishu:`/`lark:` provider prefixes are stripped, and opaque Feishu IDs are no longer folded to lowercase. This prevents allowlist matching from crossing user/chat namespaces or widening to case-insensitive ID matches the operator did not intend.",
+        "affected": [
+          "Feishu",
+          "Allowlist"
+        ],
+        "migration": "Review your Feishu allowlist entries to ensure they are correctly specified with explicit `user`/`chat` kinds and that opaque IDs are case-sensitive. Remove any redundant `feishu:`/`lark:` prefixes.",
         "source_url": ""
       }
     ],
