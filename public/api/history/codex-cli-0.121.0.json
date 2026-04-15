@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.121.0",
-  "generated_at": "2026-04-15T22:17:38.275Z",
+  "generated_at": "2026-04-15T21:20:29.111Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -17,7 +17,7 @@
     "from_version": "0.121.0",
     "to_version": "0.121.0",
     "new_features": [
-      "plugin-marketplace-installation",
+      "plugin-marketplace-support",
       "tui-prompt-history-improvements",
       "tui-and-app-server-memory-controls",
       "expanded-mcp-plugin-support",
@@ -25,7 +25,7 @@
       "secure-devcontainer-profile"
     ],
     "new_commands": [
-      "/marketplace add"
+      "/marketplace"
     ],
     "new_flags": [],
     "new_env_vars": [],
@@ -55,7 +55,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release introduces plugin marketplace support, allowing installation from GitHub, git URLs, local directories, and direct `marketplace.json` URLs. The TUI prompt history is improved with `Ctrl+R` reverse search and local recall for accepted slash commands. New TUI and app-server controls manage memory mode, reset/deletion, and extension cleanup. MCP/plugin support expands with MCP Apps tool calls, namespaced registration, parallel-call opt-in, and sandbox-state metadata. Realtime and app-server APIs now support output modality, transcript completion events, raw turn item injection, and symlink-aware filesystem metadata. A secure devcontainer profile with bubblewrap and macOS Unix socket allowlists is added. macOS sandbox handling is fixed for private DNS, and Windows cwd/session matching is corrected for verbatim paths. Guardian timeouts are now distinct from policy denials, with specific guidance. App-server behavior is stabilized by avoiding premature thread unloads and tolerating failed trust persistence. Supply-chain and CI inputs are hardened by pinning dependencies. Upgrade is recommended for access to new features and bug fixes. Ensure bubblewrap is installed if using the secure devcontainer profile."
+      "tldr": "This release introduces plugin marketplace support, allowing installation from GitHub, git URLs, local directories, and direct `marketplace.json` URLs using the `codex marketplace add` command. The TUI now features improved prompt history with `Ctrl+R` reverse search and local recall for slash commands. Memory management is enhanced with TUI and app-server controls for memory mode, reset/deletion, and extension cleanup. MCP/plugin support expands with MCP Apps tool calls, namespaced registration, parallel-call opt-in, and sandbox-state metadata. New realtime and app-server APIs enable output modality, transcript completion events, turn item injection, and symlink-aware filesystem metadata. A secure devcontainer profile with bubblewrap and macOS sandbox Unix socket allowlists is now available. macOS sandbox handling is fixed for private DNS, and Windows cwd/session matching is improved for verbatim paths. Guardian timeouts are now distinct from policy denials, with specific guidance. App-server stability is improved by avoiding premature thread unloads and tolerating failed trust persistence. Supply-chain and CI inputs are hardened with pinned dependencies. Upgrade is recommended for enhanced functionality and stability; ensure bubblewrap is configured if using the secure devcontainer profile."
     },
     "features": [
       {
@@ -936,20 +936,6 @@
           "Adds macOS sandbox allowlists for Unix sockets."
         ],
         "source_url": ""
-      },
-      {
-        "id": "plugin-marketplace-installation",
-        "name": "Plugin Marketplace Installation",
-        "status": "stable",
-        "since": "0.121.0",
-        "description": "Adds support for installing plugin marketplaces from various sources.",
-        "key_details": [
-          "Install plugin marketplaces from GitHub repositories.",
-          "Install plugin marketplaces from git URLs.",
-          "Install plugin marketplaces from local directories.",
-          "Install plugin marketplaces from direct `marketplace.json` URLs."
-        ],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -1061,14 +1047,6 @@
         "name": "/marketplace",
         "syntax": "/marketplace add [source]",
         "description": "Installs a plugin marketplace from a given source.",
-        "since": "0.121.0",
-        "status": "stable",
-        "source_url": ""
-      },
-      {
-        "name": "/marketplace add",
-        "syntax": "/marketplace add [source]",
-        "description": "Installs a plugin marketplace from a specified source.",
         "since": "0.121.0",
         "status": "stable",
         "source_url": ""

@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.109",
-  "generated_at": "2026-04-15T21:20:20.343Z",
+  "version": "2.1.110",
+  "generated_at": "2026-04-15T22:17:27.279Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,15 +14,24 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.109",
-    "to_version": "2.1.109",
-    "new_features": [],
-    "new_commands": [],
+    "from_version": "2.1.110",
+    "to_version": "2.1.110",
+    "new_features": [
+      "tui-mode",
+      "auto-scroll-config",
+      "commented-context-in-editor"
+    ],
+    "new_commands": [
+      "/tui",
+      "/focus"
+    ],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "ctrl-o-behavior-change"
+    ]
   },
   "payload": {
     "meta": {
@@ -39,12 +48,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.109",
+      "latest_stable": "2.1.110",
       "latest_release_date": "2026-04-15",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release enhances the user experience by improving the extended-thinking indicator for running agents. The indicator now includes a rotating progress hint, providing more visual feedback during agent processing. This enhancement helps users better understand when agents are actively working and reduces perceived latency. There are no new features, commands, flags, deprecations, breaking changes, or environment variables in this release. Upgrading is recommended to benefit from the improved visual feedback during agent execution. No specific prerequisites are required for this update."
+      "tldr": "Version 2.1.110 introduces a new `/tui` command to switch to a flicker-free rendering mode within the current conversation, enhancing the user experience. The `Ctrl+O` shortcut's behavior has changed; it now toggles transcript verbosity, while focus view is controlled by the new `/focus` command. A new `autoScrollEnabled` config option allows disabling conversation auto-scrolling in fullscreen mode. Additionally, Claude's last response can now be displayed as commented context in the external editor via a config setting. The `/plugin` command's Installed tab has been improved with better organization and favoriting. The `/doctor` command now warns about MCP server conflicts across config scopes. The `--resume` flag now correctly resurrects unexpired scheduled tasks. Several fixes address issues like MCP tool call hangs, non-streaming fallback retries, focus mode display problems, high CPU usage, plugin dependency handling, skill invocation failures, and session cleanup issues. Remote Control sessions and startup rendering have also been improved. Finally, session recap is now enabled for all users, regardless of telemetry settings, and can be disabled via `/config` or `CLAUDE_CODE_ENABLE_AWAY_SUMMARY=0`. Upgrading is recommended to benefit from these improvements and fixes. No specific prerequisites are required."
     },
     "features": [
       {
@@ -800,6 +809,33 @@
           "Can be forced with `CLAUDE_CODE_ENABLE_AWAY_SUMMARY` if telemetry is disabled."
         ],
         "source_url": ""
+      },
+      {
+        "id": "tui-mode",
+        "name": "TUI Mode",
+        "status": "stable",
+        "since": "2.1.110",
+        "description": "Adds a TUI (Text User Interface) mode for flicker-free rendering within the same conversation.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "auto-scroll-config",
+        "name": "Auto Scroll Configuration",
+        "status": "stable",
+        "since": "2.1.110",
+        "description": "Adds a configuration option to disable conversation auto-scroll in fullscreen mode.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "commented-context-in-editor",
+        "name": "Commented Context in Editor",
+        "status": "stable",
+        "since": "2.1.110",
+        "description": "Adds an option to show Claude's last response as commented context in the external editor opened with `Ctrl+G`.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1125,6 +1161,22 @@
         "syntax": "/team-onboarding",
         "description": "Generates a teammate ramp-up guide from your local Claude Code usage.",
         "since": "2.1.101",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "/tui",
+        "syntax": "/tui [fullscreen]",
+        "description": "Switches to flicker-free rendering in the same conversation.",
+        "since": "2.1.110",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "/focus",
+        "syntax": "/focus",
+        "description": "Toggles focus view.",
+        "since": "2.1.110",
         "status": "stable",
         "source_url": ""
       }
@@ -1696,6 +1748,15 @@
         "description": "The `/vim` command has been removed.",
         "affected": [],
         "migration": "Toggle vim mode via `/config` → Editor mode.",
+        "source_url": ""
+      },
+      {
+        "id": "ctrl-o-behavior-change",
+        "version": "2.1.110",
+        "title": "`Ctrl+O` behavior changed",
+        "description": "`Ctrl+O` now toggles between normal and verbose transcript only. Focus view is now toggled separately with the new `/focus` command.",
+        "affected": [],
+        "migration": "Use `/focus` command to toggle focus view.",
         "source_url": ""
       }
     ],
