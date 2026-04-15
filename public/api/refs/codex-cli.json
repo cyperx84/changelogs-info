@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.120.0",
-  "generated_at": "2026-04-15T20:20:32.080Z",
+  "version": "0.121.0",
+  "generated_at": "2026-04-15T21:20:29.111Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,16 +14,19 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.120.0",
-    "to_version": "0.120.0",
+    "from_version": "0.121.0",
+    "to_version": "0.121.0",
     "new_features": [
-      "realtime-v2-background-agent-progress-streaming-and-queueing",
-      "improved-hook-activity-tui",
-      "custom-tui-status-line-thread-title",
-      "code-mode-tool-declarations-output-schema",
-      "session-start-hooks-clear-distinction"
+      "plugin-marketplace-support",
+      "tui-prompt-history-improvements",
+      "tui-and-app-server-memory-controls",
+      "expanded-mcp-plugin-support",
+      "realtime-and-app-server-apis",
+      "secure-devcontainer-profile"
     ],
-    "new_commands": [],
+    "new_commands": [
+      "/marketplace"
+    ],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
@@ -45,14 +48,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.120.0",
+      "latest_stable": "0.121.0",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-04-11",
+      "latest_release_date": "2026-04-15",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release introduces streaming background agent progress in Realtime V2, allowing users to see progress updates while work is ongoing and queue follow-up responses. This enhances the user experience by providing more immediate feedback. The TUI hook activity display is improved, separating live running hooks and selectively retaining completed hook output for better readability. Custom TUI status lines can now include the thread title, offering more customization options. Code-mode tool declarations now include MCP `outputSchema` details, enabling more precise typing of structured tool results. SessionStart hooks can now differentiate between sessions created by `/clear` and other session types, providing more context for hook execution. Bug fixes include addressing Windows elevated sandbox handling, sandbox permission issues with symlinked writable roots, and a panic related to remote websocket connections. Tool search result ordering is now preserved, and live Stop-hook prompts appear immediately. App-server MCP cleanup on disconnect is also fixed. It is recommended to upgrade to this version to benefit from the new features and bug fixes. No specific migration steps are required."
+      "tldr": "This release introduces plugin marketplace support, allowing installation from GitHub, git URLs, local directories, and direct `marketplace.json` URLs using the `codex marketplace add` command. The TUI now features improved prompt history with `Ctrl+R` reverse search and local recall for slash commands. Memory management is enhanced with TUI and app-server controls for memory mode, reset/deletion, and extension cleanup. MCP/plugin support expands with MCP Apps tool calls, namespaced registration, parallel-call opt-in, and sandbox-state metadata. New realtime and app-server APIs enable output modality, transcript completion events, turn item injection, and symlink-aware filesystem metadata. A secure devcontainer profile with bubblewrap and macOS sandbox Unix socket allowlists is now available. macOS sandbox handling is fixed for private DNS, and Windows cwd/session matching is improved for verbatim paths. Guardian timeouts are now distinct from policy denials, with specific guidance. App-server stability is improved by avoiding premature thread unloads and tolerating failed trust persistence. Supply-chain and CI inputs are hardened with pinned dependencies. Upgrade is recommended for enhanced functionality and stability; ensure bubblewrap is configured if using the secure devcontainer profile."
     },
     "features": [
       {
@@ -856,6 +859,83 @@
         "description": "Realtime V2 can now stream background agent progress while work is still running and queue follow-up responses until the active response completes.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "plugin-marketplace-support",
+        "name": "Plugin Marketplace Support",
+        "status": "stable",
+        "since": "0.121.0",
+        "description": "Adds support for installing plugin marketplaces from GitHub, git URLs, local directories, and direct `marketplace.json` URLs.",
+        "key_details": [
+          "Supports GitHub, git URLs, local directories, and direct `marketplace.json` URLs.",
+          "Uses the `codex marketplace add` command."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "tui-prompt-history-improvements",
+        "name": "TUI Prompt History Improvements",
+        "status": "stable",
+        "since": "0.121.0",
+        "description": "Improves TUI prompt history, including `Ctrl+R` reverse search and local recall for accepted slash commands.",
+        "key_details": [
+          "Adds `Ctrl+R` reverse search.",
+          "Enables local recall for accepted slash commands."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "tui-and-app-server-memory-controls",
+        "name": "TUI and App-Server Memory Controls",
+        "status": "stable",
+        "since": "0.121.0",
+        "description": "Adds TUI and app-server controls for memory mode, memory reset/deletion, and memory-extension cleanup.",
+        "key_details": [
+          "Adds controls for memory mode.",
+          "Adds controls for memory reset/deletion.",
+          "Adds controls for memory-extension cleanup."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "expanded-mcp-plugin-support",
+        "name": "Expanded MCP/Plugin Support",
+        "status": "stable",
+        "since": "0.121.0",
+        "description": "Expands MCP/plugin support with MCP Apps tool calls, namespaced MCP registration, parallel-call opt-in, and sandbox-state metadata for MCP servers.",
+        "key_details": [
+          "Supports MCP Apps tool calls.",
+          "Supports namespaced MCP registration.",
+          "Adds parallel-call opt-in.",
+          "Adds sandbox-state metadata for MCP servers."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "realtime-and-app-server-apis",
+        "name": "Realtime and App-Server APIs",
+        "status": "stable",
+        "since": "0.121.0",
+        "description": "Adds realtime and app-server APIs for output modality, transcript completion events, raw turn item injection, and symlink-aware filesystem metadata.",
+        "key_details": [
+          "Adds APIs for output modality.",
+          "Adds APIs for transcript completion events.",
+          "Adds APIs for raw turn item injection.",
+          "Adds APIs for symlink-aware filesystem metadata."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "secure-devcontainer-profile",
+        "name": "Secure Devcontainer Profile",
+        "status": "stable",
+        "since": "0.121.0",
+        "description": "Adds a secure devcontainer profile with bubblewrap support, plus macOS sandbox allowlists for Unix sockets.",
+        "key_details": [
+          "Adds a secure devcontainer profile with bubblewrap support.",
+          "Adds macOS sandbox allowlists for Unix sockets."
+        ],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -960,6 +1040,14 @@
         "syntax": "/title [title]",
         "description": "Allows the user to configure the terminal title.",
         "since": "0.117.0",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "/marketplace",
+        "syntax": "/marketplace add [source]",
+        "description": "Installs a plugin marketplace from a given source.",
+        "since": "0.121.0",
         "status": "stable",
         "source_url": ""
       }
