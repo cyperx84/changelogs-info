@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.110",
-  "generated_at": "2026-04-16T10:31:18.853Z",
+  "generated_at": "2026-04-16T11:26:56.522Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -17,10 +17,15 @@
     "from_version": "2.1.110",
     "to_version": "2.1.110",
     "new_features": [
-      "push-notification-tool"
+      "push-notification-tool",
+      "auto-scroll-config",
+      "commented-context-in-editor"
     ],
     "new_commands": [],
-    "new_flags": [],
+    "new_flags": [
+      "--resume",
+      "--continue"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -48,7 +53,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces flicker-free rendering in the same conversation using the `/tui fullscreen` command and `tui` setting, enhancing the TUI mode experience. Mobile push notifications are now available via the push notification tool when Remote Control and \"Push when Claude decides\" config are enabled. The `Ctrl+O` shortcut now toggles between normal and verbose transcript only; use the new `/focus` command to toggle focus view. A new `autoScrollEnabled` config option disables conversation auto-scroll in fullscreen mode. You can now show Claude's last response as commented context in the `Ctrl+G` external editor, enabled via `/config`. The `/plugin` Installed tab is improved with better organization, and `/doctor` warns about MCP server conflicts. `--resume`/`--continue` now resurrects unexpired scheduled tasks, and `/context`, `/exit`, and `/reload-plugins` work from Remote Control. Session recap is now enabled for all users, configurable via `/config` or `CLAUDE_CODE_ENABLE_AWAY_SUMMARY=0`. This release fixes several bugs, including MCP tool call hangs, non-streaming fallback retries, and issues with session recap and focus mode. It also addresses plugin dependency handling, skill invocation, and session cleanup. Upgrade is recommended for all users to benefit from the new features and bug fixes. No specific prerequisites are required."
+      "tldr": "This release introduces a new `/tui` command and `tui` setting for flicker-free rendering in the same conversation, enhancing the terminal user interface. Mobile push notifications are now available via the push notification tool when Remote Control and \"Push when Claude decides\" config are enabled, allowing Claude to proactively send updates. The `Ctrl+O` shortcut now toggles between normal and verbose transcript only, with focus view now toggled separately using the new `/focus` command. A new `autoScrollEnabled` config option disables conversation auto-scroll in fullscreen mode, and users can now show Claude's last response as commented context in the `Ctrl+G` external editor via `/config`. The `/plugin` Installed tab has been improved with better organization, and `/doctor` now warns about MCP server conflicts. The `--resume`/`--continue` flags now resurrect unexpired scheduled tasks, and `/context`, `/exit`, and `/reload-plugins` now work from Remote Control clients. Several bug fixes address issues such as MCP tool call hangs, non-streaming fallback retries, session recap display in focus mode, high CPU usage in fullscreen, plugin dependency handling, skill invocation, session restoration, message queuing, session cleanup, keystroke drops, startup rendering, command injection, permission request checks, tool call context, stdio MCP server disconnections, headless/SDK session auto-title, memory allocation, `/skills` menu scrolling, Remote Control session errors, and Remote Control session renames. Session recap is now enabled for users with telemetry disabled, configurable via `/config` or `CLAUDE_CODE_ENABLE_AWAY_SUMMARY=0`. Upgrading is recommended to benefit from the new features and bug fixes. No specific prerequisites are required."
     },
     "features": [
       {
@@ -1402,7 +1407,10 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--resume",
+        "--continue"
+      ]
     },
     "env_vars": [
       {
