@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.110",
-  "generated_at": "2026-04-16T14:39:10.519Z",
+  "version": "2.1.111",
+  "generated_at": "2026-04-16T15:35:34.371Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,24 +14,27 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.110",
-    "to_version": "2.1.110",
+    "from_version": "2.1.111",
+    "to_version": "2.1.111",
     "new_features": [
-      "push-notification-tool",
-      "auto-scroll-config",
-      "commented-context-in-editor"
+      "auto-mode-opus-4-7",
+      "xhigh-effort-level",
+      "interactive-effort-slider",
+      "auto-match-terminal-theme",
+      "less-permission-prompts-skill",
+      "ultrareview-command"
     ],
     "new_commands": [],
     "new_flags": [
-      "--resume",
-      "--continue"
+      "--effort"
     ],
-    "new_env_vars": [],
+    "new_env_vars": [
+      "CLAUDE_CODE_USE_POWERSHELL_TOOL",
+      "OTEL_LOG_RAW_API_BODIES"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "focus-view-toggle-change"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -48,12 +51,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.110",
-      "latest_release_date": "2026-04-15",
+      "latest_stable": "2.1.111",
+      "latest_release_date": "2026-04-16",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces a new `/tui` command and `tui` setting for flicker-free rendering in the same conversation, enhancing the terminal user interface. Mobile push notifications are now available via the push notification tool when Remote Control and \"Push when Claude decides\" config are enabled, allowing Claude to proactively send updates. The `Ctrl+O` shortcut now toggles between normal and verbose transcript only, with focus view now toggled separately using the new `/focus` command. A new `autoScrollEnabled` config option disables conversation auto-scroll in fullscreen mode, and users can now show Claude's last response as commented context in the `Ctrl+G` external editor via `/config`. The `/plugin` Installed tab has been improved with better organization, and `/doctor` now warns about MCP server conflicts. The `--resume`/`--continue` flags now resurrect unexpired scheduled tasks, and `/context`, `/exit`, and `/reload-plugins` now work from Remote Control clients. Several bug fixes address issues such as MCP tool call hangs, non-streaming fallback retries, session recap display in focus mode, high CPU usage in fullscreen, plugin dependency handling, skill invocation, session restoration, message queuing, session cleanup, keystroke drops, startup rendering, command injection, permission request checks, tool call context, stdio MCP server disconnections, headless/SDK session auto-title, memory allocation, `/skills` menu scrolling, Remote Control session errors, and Remote Control session renames. Session recap is now enabled for users with telemetry disabled, configurable via `/config` or `CLAUDE_CODE_ENABLE_AWAY_SUMMARY=0`. Upgrading is recommended to benefit from the new features and bug fixes. No specific prerequisites are required."
+      "tldr": "Claude Code 2.1.111 introduces Claude Opus 4.7 xhigh, offering a new effort level between `high` and `max` for finer control over speed vs. intelligence, accessible via `/effort` and `--effort`. Max subscribers can now leverage Auto mode with Opus 4.7 for automatic effort level adjustments. The `/effort` command now features an interactive slider for easier effort level selection. A new `/less-permission-prompts` skill automatically generates a permission allowlist, reducing unnecessary prompts. The `/ultrareview` command provides comprehensive code review using parallel multi-agent analysis, streamlining the review process. PowerShell tool support is expanding, configurable via the `CLAUDE_CODE_USE_POWERSHELL_TOOL` environment variable. This release also includes improvements to `/setup-vertex` and `/setup-bedrock`, displaying the `settings.json` path and offering a \"with 1M context\" option. Several fixes address terminal display issues, file suggestion problems, LSP diagnostics, and plugin error handling. Additionally, plan files are now named after your prompt for better organization. It is recommended to upgrade to benefit from the new features, improved performance, and bug fixes. No specific migration steps are required unless you are using the PowerShell tool and need to configure the environment variable."
     },
     "features": [
       {
@@ -845,6 +848,60 @@
         "description": "Claude can send mobile push notifications when Remote Control and \"Push when Claude decides\" config are enabled.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "auto-mode-opus-4-7",
+        "name": "Auto mode for Opus 4.7",
+        "status": "stable",
+        "since": "2.1.111",
+        "description": "Auto mode is now available for Max subscribers when using Opus 4.7. This feature automatically adjusts the effort level based on the task.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "xhigh-effort-level",
+        "name": "xhigh effort level",
+        "status": "stable",
+        "since": "2.1.111",
+        "description": "Added `xhigh` effort level for Opus 4.7, sitting between `high` and `max`. Available via `/effort`, `--effort`, and the model picker; other models fall back to `high`.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "interactive-effort-slider",
+        "name": "Interactive effort slider",
+        "status": "stable",
+        "since": "2.1.111",
+        "description": "`/effort` now opens an interactive slider when called without arguments, with arrow-key navigation between levels and Enter to confirm.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "auto-match-terminal-theme",
+        "name": "Auto (match terminal) theme",
+        "status": "stable",
+        "since": "2.1.111",
+        "description": "Added \"Auto (match terminal)\" theme option that matches your terminal's dark/light mode — select it from `/theme`.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "less-permission-prompts-skill",
+        "name": "/less-permission-prompts skill",
+        "status": "stable",
+        "since": "2.1.111",
+        "description": "Added `/less-permission-prompts` skill — scans transcripts for common read-only Bash and MCP tool calls and proposes a prioritized allowlist for `.claude/settings.json`.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "ultrareview-command",
+        "name": "/ultrareview command",
+        "status": "stable",
+        "since": "2.1.111",
+        "description": "Added `/ultrareview` for running comprehensive code review in the cloud using parallel multi-agent analysis and critique — invoke with no arguments to review your current branch, or `/ultrareview <PR#>` to fetch and review a specific GitHub PR.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1408,8 +1465,7 @@
         }
       ],
       "new_since_previous": [
-        "--resume",
-        "--continue"
+        "--effort"
       ]
     },
     "env_vars": [
@@ -1613,6 +1669,20 @@
         "purpose": "Force enable recap feature if telemetry is disabled.",
         "status": "stable",
         "since": "2.1.108",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_USE_POWERSHELL_TOOL",
+        "purpose": "Enables or disables the PowerShell tool. On Windows, this is an opt-in/out. On Linux and macOS, set to `1` to enable.",
+        "status": "stable",
+        "since": "2.1.111",
+        "source_url": ""
+      },
+      {
+        "name": "OTEL_LOG_RAW_API_BODIES",
+        "purpose": "Emits full API request and response bodies as OpenTelemetry log events for debugging.",
+        "status": "stable",
+        "since": "2.1.111",
         "source_url": ""
       }
     ],
