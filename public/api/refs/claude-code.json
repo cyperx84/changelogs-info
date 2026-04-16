@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.111",
-  "generated_at": "2026-04-16T18:28:48.445Z",
+  "generated_at": "2026-04-16T19:31:37.568Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -21,7 +21,10 @@
       "ultrareview-command",
       "auto-match-terminal-theme"
     ],
-    "new_commands": [],
+    "new_commands": [
+      "/less-permission-prompts",
+      "/ultrareview"
+    ],
     "new_flags": [
       "--effort"
     ],
@@ -55,7 +58,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Claude Code 2.1.111 introduces Claude Opus 4.7 xhigh, offering a new level of speed vs. intelligence tuning via `/effort`. Auto mode is now available for Max subscribers using Opus 4.7 without needing `--enable-auto-mode`. The `/less-permission-prompts` skill helps streamline permission management by suggesting allowlists, while `/ultrareview` provides comprehensive code reviews using parallel multi-agent analysis. PowerShell tool support is progressively rolling out on Windows, configurable via the `CLAUDE_CODE_USE_POWERSHELL_TOOL` environment variable. This release also improves usability with an interactive `/effort` slider, automatic terminal theme matching, and enhanced command-line suggestions. Key fixes address terminal display tearing in iTerm2 + tmux, file suggestion issues, and rate-limit errors on Bedrock/Vertex/Foundry. The cap on non-streaming fallback retries has been reverted to address outright failures during API overload. The `OTEL_LOG_RAW_API_BODIES` environment variable enables detailed API logging for debugging. Upgrading is recommended to leverage the new Opus 4.7 features and benefit from the stability improvements. Ensure `pwsh` is on your PATH if enabling the PowerShell tool on Linux or macOS."
+      "tldr": "Claude Code 2.1.111 introduces Claude Opus 4.7 xhigh, offering a new level of intelligence and speed tuning via the `/effort` command and `--effort` flag. Auto mode is now available for Max subscribers using Opus 4.7 without requiring the `--enable-auto-mode` flag. A new `/less-permission-prompts` skill automatically generates a prioritized allowlist for `.claude/settings.json` based on transcript analysis, reducing unnecessary permission prompts. The `/ultrareview` command provides comprehensive code review using parallel multi-agent analysis. This release also includes an \"Auto (match terminal)\" theme option that adapts to your terminal's dark/light mode. PowerShell tool support is progressively rolling out on Windows, configurable via the `CLAUDE_CODE_USE_POWERSHELL_TOOL` environment variable. Several fixes address terminal display issues, file suggestion behavior, LSP diagnostics, and plugin error handling. The `OTEL_LOG_RAW_API_BODIES` environment variable enables detailed API logging for debugging. It is recommended to upgrade to benefit from the new features and fixes. No specific prerequisites are required, but ensure `pwsh` is on the PATH for PowerShell tool usage on Linux and macOS."
     },
     "features": [
       {
@@ -1260,6 +1263,22 @@
         "syntax": "/focus",
         "description": "Toggles focus view.",
         "since": "2.1.110",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "/less-permission-prompts",
+        "syntax": "/less-permission-prompts",
+        "description": "Scans transcripts for common read-only Bash and MCP tool calls and proposes a prioritized allowlist for `.claude/settings.json`",
+        "since": "2.1.111",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "/ultrareview",
+        "syntax": "/ultrareview [PR#]",
+        "description": "Runs comprehensive code review in the cloud using parallel multi-agent analysis and critique. Invoke with no arguments to review your current branch, or `/ultrareview <PR#>` to fetch and review a specific GitHub PR",
+        "since": "2.1.111",
         "status": "stable",
         "source_url": ""
       }
