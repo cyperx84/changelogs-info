@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.4.14",
-  "generated_at": "2026-04-16T21:18:46.384Z",
+  "version": "2026.4.15",
+  "generated_at": "2026-04-16T22:16:35.332Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,18 +14,18 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.4.14",
-    "to_version": "2026.4.14",
-    "new_features": [],
+    "from_version": "2026.4.15",
+    "to_version": "2026.4.15",
+    "new_features": [
+      "gemini-text-to-speech-support"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "agents-gateway-tool-config-patch-apply-security",
-      "browser-ssrf-policy-strict-mode-normalization",
-      "feishu-allowlist-canonicalization"
+      "gateway-tool-trust-validation"
     ]
   },
   "payload": {
@@ -44,13 +44,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.4.14",
-      "latest_release_date": "2026-04-14",
+      "latest_stable": "2026.4.15",
+      "latest_release_date": "2026-04-16",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces forward compatibility for OpenAI's `gpt-5.4-pro` model and surfaces human topic names in Telegram forum topics within agent context. A significant security enhancement prevents privilege escalation via the gateway tool by rejecting `config.patch` and `config.apply` calls that enable security-sensitive flags. Strict browser SSRF policies are now correctly preserved, and Feishu allowlist entries are canonicalized to prevent unintended matches. Several fixes address issues with Ollama, Codex, Slack interactions, media understanding, Google image generation, Telegram topics, systemd, GitHub Copilot, memory embeddings, local models, browser SSRF, onboarding, subagents, media-understanding proxy, Telegram media downloads, context engine, OpenAI Codex auth, Discord native commands, Ollama hooks, media transcription, WhatsApp media upload, UI security, auto-reply policy, BlueBubbles, heartbeat security, Microsoft Teams security, config security, context engines, plugins status, WhatsApp postinstall, gateway update, heartbeat Telegram topics, browser CDP, gateway sessions, cron scheduler, outbound delivery queue, memory Ollama, auto-reply queue, dreaming memory-core, control UI Dreaming, agents tools, memory active-memory, memory QMD, agents subagents, agents OpenAI, voice-call media-stream, Telegram status commands, TTS reply media, agents tools on Windows, agents OpenAI embedded runs, outbound relay-status, Slack doctor, hooks session-memory, CLI approvals, media store, plugins setup-entry, CLI update, and gateway exec events. Key fixes include resolving Ollama timeout issues, preventing silent drops of voice-note replies, and ensuring correct media policy context after restarts. It's recommended to upgrade to benefit from these security enhancements and bug fixes. No specific prerequisites are mentioned, but review Feishu allowlists and ensure correct configuration."
+      "tldr": "This release introduces Gemini text-to-speech support via the bundled `google` plugin, enabling voice selection, WAV/PCM output, and telephony integration. A breaking change has been introduced to gateway tool trust validation, preventing client-supplied tools from inheriting local-media trust if their names collide with built-in tools, requiring renaming of conflicting client tools. Anthropic models now bundle image understanding to Claude Opus 4.7. Agent skills now sort `available_skills` by name, stabilizing prompt-cache prefixes. Agent context and memory have been optimized with trimmed prompt budgets and capped `memory_get` excerpts, improving long-session context retrieval. BlueBubbles inbound image attachment downloads are restored on Node 22+ with fixes for attachment handling and retries. CLI updates now prune stale `dist` chunks and maintain compat-safe inventory checks. OpenAI Codex models now normalize stale native transport metadata, self-healing broken HTML/Cloudflare paths. It is recommended to upgrade to this version to take advantage of the new Gemini TTS feature and benefit from the various fixes and optimizations. Ensure client-supplied tool names do not collide with built-in tool names before upgrading."
     },
     "features": [
       {
@@ -1585,6 +1585,21 @@
         "description": "Adds the GPT-5.4 vs Opus 4.6 agentic parity report gate with shared scenario coverage checks, stricter evidence heuristics, and skipped-scenario accounting for maintainer review.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "gemini-text-to-speech-support",
+        "name": "Gemini Text-to-Speech Support",
+        "status": "stable",
+        "since": "2026.4.15",
+        "description": "Adds Gemini text-to-speech support to the bundled `google` plugin.",
+        "key_details": [
+          "Provider registration",
+          "Voice selection",
+          "WAV reply output",
+          "PCM telephony output",
+          "Setup/docs guidance"
+        ],
+        "source_url": "https://github.com/org/repo/pull/67515"
       }
     ],
     "commands": [
@@ -2839,6 +2854,17 @@
         ],
         "migration": "No direct migration is needed, but verify that the intended strict SSRF policy is still in effect after the upgrade.",
         "source_url": ""
+      },
+      {
+        "id": "gateway-tool-trust-validation",
+        "version": "2026.4.15",
+        "title": "Gateway Tool Trust Validation",
+        "description": "Anchors trusted local `MEDIA:` tool-result passthrough on the exact raw name of this run's registered built-in tools. Rejects client tool definitions whose names normalize-collide with a built-in or with another client tool in the same request (`400 invalid_request_error` on both JSON and SSE paths).",
+        "affected": [
+          "Client-supplied tools with names that normalize-collide with built-in tools"
+        ],
+        "migration": "Ensure client-supplied tool names do not collide with built-in tool names or other client-supplied tool names in the same request.",
+        "source_url": "https://github.com/org/repo/pull/67303"
       }
     ],
     "deprecations": [],
