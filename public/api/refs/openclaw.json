@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.15",
-  "generated_at": "2026-04-16T23:17:19.373Z",
+  "generated_at": "2026-04-17T00:36:46.990Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -17,6 +17,10 @@
     "from_version": "2026.4.15",
     "to_version": "2026.4.15",
     "new_features": [
+      "model-auth-status-card",
+      "cloud-storage-support-memory-lancedb",
+      "github-copilot-embedding-provider",
+      "agents-defaults-experimental-local-model-lean",
       "gemini-text-to-speech-support"
     ],
     "new_commands": [],
@@ -25,7 +29,7 @@
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "gateway-tool-trust-validation"
+      "dreaming-storage-mode-change"
     ]
   },
   "payload": {
@@ -50,7 +54,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces Gemini text-to-speech support to the bundled `google` plugin, enabling voice selection, WAV reply output, and PCM telephony output. A breaking change has been introduced to the gateway, where client tool definitions with names that normalize-collide with built-in tools or other client tools in the same request will now be rejected, preventing client-supplied tools from inheriting local-media trust intended for built-in tools. Anthropic models now default to Claude Opus 4.7 and include bundled image understanding. The `available_skills` entries are now sorted by skill name, ensuring consistent prompt-cache prefixes. Context and memory handling has been improved by trimming default prompt budgets and capping `memory_get` excerpts. BlueBubbles inbound image attachment downloads have been restored on Node 22+, and attachment handling has been improved. CLI updates now prune stale packaged `dist` chunks, and OpenAI Codex models now self-heal to the canonical Codex transport. It is recommended to upgrade to this version to take advantage of the new Gemini TTS feature and security fixes. Ensure client-supplied tool names do not collide with built-in tool names to avoid breaking changes."
+      "tldr": "This release introduces a Model Auth status card in the Control UI, providing insights into OAuth token health and rate limits, backed by a new gateway method. Gemini text-to-speech support is now available in the bundled `google` plugin, offering voice selection and various output formats. A GitHub Copilot embedding provider has been added for memory search, along with a Copilot embedding host helper. Cloud storage support is now available for `memory-lancedb`, enabling durable memory indexes on remote object storage. The default `dreaming.storage.mode` has changed to `separate`, storing dreaming phase blocks in dedicated files; revert to `inline` mode via config if needed. A critical security fix anchors trusted local `MEDIA:` tool-result passthrough on the exact raw name of this run's registered built-in tools, preventing client-supplied tools from inheriting local-media trust. This release also fixes a spurious SIGUSR1 restart loop on Linux/systemd and addresses numerous bugs related to agent replays, matrix pairing, docker builds, cron announcements, plugin packaging, and more. It is highly recommended to upgrade to address the security vulnerability and benefit from the new features and bug fixes. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
@@ -1600,6 +1604,42 @@
           "Setup/docs guidance"
         ],
         "source_url": "https://github.com/org/repo/pull/67515"
+      },
+      {
+        "id": "model-auth-status-card",
+        "name": "Model Auth status card",
+        "status": "stable",
+        "since": "2026.4.15",
+        "description": "Adds a Model Auth status card to the Control UI/Overview, displaying OAuth token health and provider rate-limit pressure. It shows attention callouts when OAuth tokens are expiring or expired. Backed by a new `models.authStatus` gateway method that strips credentials and caches for 60s.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "cloud-storage-support-memory-lancedb",
+        "name": "Cloud storage support for Memory/LanceDB",
+        "status": "stable",
+        "since": "2026.4.15",
+        "description": "Adds cloud storage support to `memory-lancedb` so durable memory indexes can run on remote object storage instead of local disk only.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "github-copilot-embedding-provider",
+        "name": "GitHub Copilot embedding provider",
+        "status": "stable",
+        "since": "2026.4.15",
+        "description": "Adds a GitHub Copilot embedding provider for memory search, and exposes a dedicated Copilot embedding host helper so plugins can reuse the transport while honoring remote overrides, token refresh, and safer payload validation.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "agents-defaults-experimental-local-model-lean",
+        "name": "Agents/local models lean mode",
+        "status": "experimental",
+        "since": "2026.4.15",
+        "description": "Adds experimental `agents.defaults.experimental.localModelLean: true` to drop heavyweight default tools like `browser`, `cron`, and `message`, reducing prompt size for weaker local-model setups without changing the normal path.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -2865,6 +2905,18 @@
         ],
         "migration": "Ensure client-supplied tool names do not collide with built-in tool names or other client-supplied tool names in the same request.",
         "source_url": "https://github.com/org/repo/pull/67303"
+      },
+      {
+        "id": "dreaming-storage-mode-change",
+        "version": "2026.4.15",
+        "title": "Dreaming storage mode change",
+        "description": "The default `dreaming.storage.mode` has changed from `inline` to `separate`. Dreaming phase blocks (`## Light Sleep`, `## REM Sleep`) now land in `memory/dreaming/{phase}/YYYY-MM-DD.md` instead of being injected into `memory/YYYY-MM-DD.md`.",
+        "affected": [
+          "Memory",
+          "Dreaming"
+        ],
+        "migration": "Operators who want the previous behavior can opt in by setting `plugins.entries.memory-core.config.dreaming.storage.mode: \"inline\"`.",
+        "source_url": ""
       }
     ],
     "deprecations": [],
