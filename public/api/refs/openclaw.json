@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.15",
-  "generated_at": "2026-04-18T15:16:13.319Z",
+  "generated_at": "2026-04-18T16:13:51.293Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -23,7 +23,7 @@
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "dreaming-storage-mode-change"
+      "dreaming-storage-mode"
     ]
   },
   "payload": {
@@ -48,7 +48,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces Gemini text-to-speech support in the Google plugin, enabling voice selection, WAV/PCM output, and telephony integration. A Model Auth status card in the Control UI provides OAuth token health and rate-limit monitoring, backed by a new `models.authStatus` gateway method. Cloud storage support is added to `memory-lancedb`, allowing durable memory indexes on remote object storage. A GitHub Copilot embedding provider enhances memory search, with a dedicated helper for plugin reuse. An experimental `agents.defaults.experimental.localModelLean: true` setting reduces prompt size for local models by dropping heavyweight default tools. The default `dreaming.storage.mode` has changed from `inline` to `separate`, requiring a config change to revert. Other fixes include trusted local `MEDIA:` tool-result passthrough, agent replay recovery, webchat audio embedding path enforcement, and Matrix pairing security. Bundled plugin runtime dependencies are localized, and QA/Matrix live QA is split into a source-linked runner. It is recommended to upgrade to benefit from these improvements and security fixes. No specific prerequisites are required."
+      "tldr": "This release introduces Gemini text-to-speech support, enabling voice selection and various output formats within the `google` plugin. A Model Auth status card is added to the Control UI, providing OAuth token health and rate-limit monitoring. Cloud storage support is now available for `memory-lancedb`, allowing durable memory indexes to run on remote object storage. A GitHub Copilot embedding provider enhances memory search, and an experimental `agents.defaults.experimental.localModelLean: true` setting reduces prompt size for local models by dropping heavyweight default tools. The default `dreaming.storage.mode` has changed to `separate`, requiring a config change (`plugins.entries.memory-core.config.dreaming.storage.mode: \"inline\"`) to revert to the previous behavior. Several fixes address gateway tool trust, agent replay recovery, webchat audio embedding paths, Matrix pairing, Docker build issues, Matrix E2EE, cron announce delivery, plugin bundling, agent context and memory, Matrix commands, memory-core dreaming, agent local models, control UI overview, dashboard overflow, agent CLI transcripts, Discord tool-call text, WhatsApp web-session, BlueBubbles catchup, Ollama chat, agent tools, speech TTS, OpenAI Codex models, agent failover, gateway skills, agent tool-loop, TUI streaming, extensions LMStudio, agent replay, gateway startup, Codex harness, OpenAI Codex CLI, Codex app-server, cron announce delivery, sessions Codex, auto-reply prompt-cache, BlueBubbles inbound, agents skills, agents OpenAI Responses, agents context engines, memory dreaming, agents errors, security approvals, CLI configure, CLI update, onboarding CLI, video generation live tests, memory-core QMD `memory_get`, cron agents, setup providers, Matrix security, Telegram documents, gateway auth, agents compaction, agents OpenAI Responses, agents failover, onboarding channels, Slack native commands, Feishu webhook, agents workspace files, gateway MCP loopback, auto-reply billing, agents fallback, reply secrets, agents Anthropic, agents context engines, BlueBubbles inbound, secrets plugins status, memory dreaming, Telegram documents, Telegram native commands, OpenRouter Qwen3, BlueBubbles catchup, Telegram native commands, audio self-hosted STT, auto-reply media, WhatsApp Baileys media upload, QQBot cron, CLI plugins, Claude CLI sessions, context engine, control UI chat, media Slack, Ollama onboarding, webchat security, dreaming memory-core, node-host tools.exec, Codex gateway, Slack streaming, OpenRouter streaming, models OpenRouter aliases, and OpenRouter Arcee. Upgrade is recommended to benefit from the new features and fixes."
     },
     "features": [
       {
@@ -2904,6 +2904,18 @@
         "id": "dreaming-storage-mode-change",
         "version": "2026.4.15",
         "title": "Dreaming storage mode change",
+        "description": "The default `dreaming.storage.mode` has changed from `inline` to `separate`. Dreaming phase blocks (`## Light Sleep`, `## REM Sleep`) now land in `memory/dreaming/{phase}/YYYY-MM-DD.md` instead of being injected into `memory/YYYY-MM-DD.md`.",
+        "affected": [
+          "Memory",
+          "Dreaming"
+        ],
+        "migration": "Operators who want the previous behavior can opt in by setting `plugins.entries.memory-core.config.dreaming.storage.mode: \"inline\"`.",
+        "source_url": ""
+      },
+      {
+        "id": "dreaming-storage-mode",
+        "version": "2026.4.15",
+        "title": "Dreaming storage mode changed to separate",
         "description": "The default `dreaming.storage.mode` has changed from `inline` to `separate`. Dreaming phase blocks (`## Light Sleep`, `## REM Sleep`) now land in `memory/dreaming/{phase}/YYYY-MM-DD.md` instead of being injected into `memory/YYYY-MM-DD.md`.",
         "affected": [
           "Memory",
