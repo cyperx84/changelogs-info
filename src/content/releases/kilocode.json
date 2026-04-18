@@ -17,6 +17,22 @@
   },
   "releases": [
     {
+      "version": "v7.2.14",
+      "name": "v7.2.14",
+      "body": "### Minor Changes\n\n- [#8976](https://github.com/Kilo-Org/kilocode/pull/8976) [`4ef6bbf`](https://github.com/Kilo-Org/kilocode/commit/4ef6bbff5093dc68a607f1f268e6ab662781922e) - Support browsing and resuming sessions from Agent Manager with `/sessions`.\n\n- [#9023](https://github.com/Kilo-Org/kilocode/pull/9023) [`5301258`](https://github.com/Kilo-Org/kilocode/commit/530125828e891d3c50fe8d783201b65e3c4db8e4) - Support mentioning folders in the prompt with @ references, including top-level folder file contents.\n\n### Patch Changes\n\n- [#9121](https://github.com/Kilo-Org/kilocode/pull/9121) [`c8fd421`](https://github.com/Kilo-Org/kilocode/commit/c8fd4218236afb7d9f525ca667ddf53734c47d4a) - Fix the sidebar \"Show Changes\" diff viewer: the file tree now renders correctly (previously the file rows were cramped onto a single line due to missing styles), and per-file revert buttons are available, matching the Agent Manager.\n\n- [#9046](https://github.com/Kilo-Org/kilocode/pull/9046) [`671129d`](https://github.com/Kilo-Org/kilocode/commit/671129d4d70587352f963f9f409d6c24e9e86436) - Fix a native memory leak on Windows where `kilo serve` would grow to several GB of RAM within minutes of opening the Agent Manager. Git diff polling now runs directly in the extension host instead of routing through the CLI subprocess, and the diff detail view caps per-file reads at 20 MB to prevent memory spikes when opening very large files.\n\n- [#9118](https://github.com/Kilo-Org/kilocode/pull/9118) [`343455b`](https://github.com/Kilo-Org/kilocode/commit/343455b87895a0551760b5710b1ffe58fae21efd) - Respect per-agent model selections when an agent has a `model` configured in `kilo.jsonc`. Switching the model for such an agent now sticks across agent switches and CLI restarts. To pick up a newly edited agent default, re-select the model once (or clear `~/.local/share/kilo/storage/model.json`).\n\n- [#9067](https://github.com/Kilo-Org/kilocode/pull/9067) [`959a8b4`](https://github.com/Kilo-Org/kilocode/commit/959a8b498de6efd28756683162296dd40eb9b454) - Fix \"assistant prefill\" errors when a user queues a prompt while the previous turn is still streaming. The queued message no longer lands in the middle of the prior turn's history, so the next request always ends with the user prompt.\n\n- [#9123](https://github.com/Kilo-Org/kilocode/pull/9123) [`9749cc1`](https://github.com/Kilo-Org/kilocode/commit/9749cc178d999f96669cc815709a7cdf3129aefd) - Show MCP tool call inputs alongside outputs in chat, with JSON syntax highlighting for both.\n\n- [#8911](https://github.com/Kilo-Org/kilocode/pull/8911) [`eac2dba`](https://github.com/Kilo-Org/kilocode/commit/eac2dbafa009adedeb4b44016956f2c6cd96b715) - Make switching between sessions in Agent Manager near-instant. Long sessions no longer freeze the UI when selected, and the chat view self-heals if it missed any messages while the session was in the background.\n\n- [`f270639`](https://github.com/Kilo-Org/kilocode/commit/f27063987765bba2443f559629bc8c05fad996df) - Show an inline error in the Settings save bar when the configuration fails to save (for example, due to an invalid value) so the user can correct the config and retry instead of losing their unsaved changes silently.\n\n- Updated dependencies [[`eac2dba`](https://github.com/Kilo-Org/kilocode/commit/eac2dbafa009adedeb4b44016956f2c6cd96b715)]:\n  - @opencode-ai/ui@7.2.13\n  - @kilocode/kilo-ui@7.2.13",
+      "date": "2026-04-17T18:09:25Z",
+      "url": "https://github.com/Kilo-Org/kilocode/releases/tag/v7.2.14",
+      "prerelease": false
+    },
+    {
+      "version": "v7.2.12",
+      "name": "v7.2.12",
+      "body": "### Minor Changes\n\n- [#9099](https://github.com/Kilo-Org/kilocode/pull/9099) [`49b283e`](https://github.com/Kilo-Org/kilocode/commit/49b283e72a7307a1398c38c0862214faa043c128) - Add a \"Contribute on GitHub\" call-to-action in the Marketplace view so users can easily propose a new skill, mode, or MCP server. The CTA appears as a subtle footer below the card grid and inside the empty search-results state, linking to the `kilo-marketplace` repository.\n\n### Patch Changes\n\n- [#9066](https://github.com/Kilo-Org/kilocode/pull/9066) [`79ba643`](https://github.com/Kilo-Org/kilocode/commit/79ba643cba201971a9779e454fe66769019a7a5a) - Add `xhigh` reasoning effort option to custom provider model variants so users can access the highest tier on models that support it (gpt-5.2, gpt-5.3, gpt-5.4, gpt-5.1-codex-max, etc.).\n\n- [#9068](https://github.com/Kilo-Org/kilocode/pull/9068) [`e65c2d9`](https://github.com/Kilo-Org/kilocode/commit/e65c2d99c0d234d3dc1dff2e75e58e22bea8ce7f) Thanks [@kilo-code-bot](https://github.com/apps/kilo-code-bot)! - Hide Kilo Gateway models that do not support tool calling from the model list.\n\n- [#9040](https://github.com/Kilo-Org/kilocode/pull/9040) [`7d2f5a7`](https://github.com/Kilo-Org/kilocode/commit/7d2f5a7eced0b3599231f75656c0a27c68770d74) - Preserve local Agent Manager sessions after the panel reloads while still pruning stale worktree sessions.\n\n- [#9057](https://github.com/Kilo-Org/kilocode/pull/9057) [`1526a4b`](https://github.com/Kilo-Org/kilocode/commit/1526a4b8a890e01c0c890b4e17b595f35bfd745b) - Keep the active chat session responsive while other sessions stream in the background. Applies to both the sidebar and the Agent Manager.",
+      "date": "2026-04-17T09:30:45Z",
+      "url": "https://github.com/Kilo-Org/kilocode/releases/tag/v7.2.12",
+      "prerelease": true
+    },
+    {
       "version": "v7.2.11",
       "name": "v7.2.11",
       "body": "No notable changes",
@@ -239,23 +255,7 @@
       "date": "2026-03-26T18:42:42Z",
       "url": "https://github.com/Kilo-Org/kilocode/releases/tag/v7.1.7",
       "prerelease": false
-    },
-    {
-      "version": "v7.1.6",
-      "name": "v7.1.6",
-      "body": "## Core\n- Isolate checkpoints per worktree\n- Strip bloated file contents from tool metadata to fix session loading performance\n- Use load-time constant for KILO_SESSION_RETRY_LIMIT\n- Hide commit-message git windows on Windows\n- Clean up code quality issues in CLI\n- Reuse MAX_DIFF_SIZE constant across CLI\n- Add missing kilocode_change markers to CLI code\n- Add configurable session retry limit\n- Extract maximum diff size constant in CLI\n- Remove /new worker/subprocess restart functionality\n- Update Vercel AI SDK OpenAI Provider to support phase configuration\n- Use subprocess instead of Worker thread for actual memory reclamation\n- Restart worker on /new to reclaim native memory\n- Use byte length for size check in CLI\n- Scrub oversized diffs from stored session_diff on read\n- Use git cat-file -s to pre-check size before reading file content\n- Cap file content at 256 KB in Snapshot.diffFull()\n## TUI\n- Add kilocode_change markers to CLI code\n- Replay workspace after restart\n- Detach RPC listener on cleanup\n- Evict child sessions recursively\n- Strip summary.diffs from messages in TUI store\n- Keep permission and question on evict\n- Evict per-session data from TUI store on navigation\n- Strip before/after from TUI session_diff store",
-      "date": "2026-03-26T17:31:09Z",
-      "url": "https://github.com/Kilo-Org/kilocode/releases/tag/v7.1.6",
-      "prerelease": false
-    },
-    {
-      "version": "v7.1.5",
-      "name": "v7.1.5",
-      "body": "## Core\n- Deny task tool usage in subagent sessions unless explicitly allowed by agent (@Githubguy132010)\n- Always deny task permission in subagent sessions (@Githubguy132010)\n\n**Thank you to 3 community contributors:**\n- @Githubguy132010:\n  - fix: always deny task permission in subagent sessions\n  - fix: deny task in subagent sessions unless agent explicitly allows it\n  - Merge branch 'main' into fix/block-subagents-spawning-subagents\n- @AnDr-WaY:\n  - feat(vscode): add open locally action for unassigned sessions (#7627)\n- @ScuttleBot:\n  - docs: add Inception to supported BYOK providers list (#7638)",
-      "date": "2026-03-26T09:56:34Z",
-      "url": "https://github.com/Kilo-Org/kilocode/releases/tag/v7.1.5",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-04-17T06:32:43.951Z"
+  "lastUpdated": "2026-04-18T06:22:14.454Z"
 }

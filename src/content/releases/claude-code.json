@@ -16,6 +16,22 @@
   },
   "releases": [
     {
+      "version": "v2.1.114",
+      "name": "v2.1.114",
+      "body": "## What's changed\n\n- Fixed a crash in the permission dialog when an agent teams teammate requested tool permission\n",
+      "date": "2026-04-18T01:34:30Z",
+      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.114",
+      "prerelease": false
+    },
+    {
+      "version": "v2.1.113",
+      "name": "v2.1.113",
+      "body": "## What's changed\n\n- Changed the CLI to spawn a native Claude Code binary (via a per-platform optional dependency) instead of bundled JavaScript\n- Added `sandbox.network.deniedDomains` setting to block specific domains even when a broader `allowedDomains` wildcard would otherwise permit them\n- Fullscreen mode: Shift+↑/↓ now scrolls the viewport when extending a selection past the visible edge\n- `Ctrl+A` and `Ctrl+E` now move to the start/end of the current logical line in multiline input, matching readline behavior\n- Windows: `Ctrl+Backspace` now deletes the previous word\n- Long URLs in responses and bash output stay clickable when they wrap across lines (in terminals with OSC 8 hyperlinks)\n- Improved `/loop`: pressing Esc now cancels pending wakeups, and wakeups display as \"Claude resuming /loop wakeup\" for clarity\n- `/extra-usage` now works from Remote Control (mobile/web) clients\n- Remote Control clients can now query `@`-file autocomplete suggestions\n- Improved `/ultrareview`: faster launch with parallelized checks, diffstat in the launch dialog, and animated launching state\n- Subagents that stall mid-stream now fail with a clear error after 10 minutes instead of hanging silently\n- Bash tool: multi-line commands whose first line is a comment now show the full command in the transcript, closing a UI-spoofing vector\n- Running `cd <current-directory> && git …` no longer triggers a permission prompt when the `cd` is a no-op\n- Security: on macOS, `/private/{etc,var,tmp,home}` paths are now treated as dangerous removal targets under `Bash(rm:*)` allow rules\n- Security: Bash deny rules now match commands wrapped in `env`/`sudo`/`watch`/`ionice`/`setsid` and similar exec wrappers\n- Security: `Bash(find:*)` allow rules no longer auto-approve `find -exec`/`-delete`\n- Fixed MCP concurrent-call timeout handling where a message for one tool call could silently disarm another call's watchdog\n- Fixed Cmd-backspace / `Ctrl+U` to once again delete from the cursor to the start of the line\n- Fixed markdown tables breaking when a cell contains an inline code span with a pipe character\n- Fixed session recap auto-firing while composing unsent text in the prompt\n- Fixed `/copy` \"Full response\" not aligning markdown table columns for pasting into GitHub, Notion, or Slack\n- Fixed messages typed while viewing a running subagent being hidden from its transcript and misattributed to the parent AI\n- Fixed Bash `dangerouslyDisableSandbox` running commands outside the sandbox without a permission prompt\n- Fixed `/effort auto` confirmation — now says \"Effort level set to max\" to match the status bar label\n- Fixed the \"copied N chars\" toast overcounting emoji and other multi-code-unit characters\n- Fixed `/insights` crashing with `EBUSY` on Windows\n- Fixed exit confirmation dialog mislabeling one-shot scheduled tasks as recurring — now shows a countdown\n- Fixed slash/@ completion menu not sitting flush against the prompt border in fullscreen mode\n- Fixed `CLAUDE_CODE_EXTRA_BODY` `output_config.effort` causing 400 errors on subagent calls to models that don't support effort and on Vertex AI\n- Fixed prompt cursor disappearing when `NO_COLOR` is set\n- Fixed `ToolSearch` ranking so pasted MCP tool names surface the actual tool instead of description-matching siblings\n- Fixed compacting a resumed long-context session failing with \"Extra usage is required for long context requests\"\n- Fixed `plugin install` succeeding when a dependency version conflicts with an already-installed plugin — now reports `range-conflict`\n- Fixed \"Refine with Ultraplan\" not showing the remote session URL in the transcript\n- Fixed SDK image content blocks that fail to process crashing the session — now degrade to a text placeholder\n- Fixed Remote Control sessions not streaming subagent transcripts\n- Fixed Remote Control sessions not being archived when Claude Code exits\n- Fixed `thinking.type.enabled is not supported` 400 error when using Opus 4.7 via a Bedrock Application Inference Profile ARN\n",
+      "date": "2026-04-17T19:34:41Z",
+      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.113",
+      "prerelease": false
+    },
+    {
       "version": "v2.1.112",
       "name": "v2.1.112",
       "body": "## What's changed\n\n- Fixed \"claude-opus-4-7 is temporarily unavailable\" for auto mode\n",
@@ -238,23 +254,7 @@
       "date": "2026-03-17T00:28:12Z",
       "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.77",
       "prerelease": false
-    },
-    {
-      "version": "v2.1.76",
-      "name": "v2.1.76",
-      "body": "## What's changed\n\n- Added MCP elicitation support — MCP servers can now request structured input mid-task via an interactive dialog (form fields or browser URL)\n- Added new `Elicitation` and `ElicitationResult` hooks to intercept and override responses before they're sent back\n- Added `-n` / `--name <name>` CLI flag to set a display name for the session at startup\n- Added `worktree.sparsePaths` setting for `claude --worktree` in large monorepos to check out only the directories you need via git sparse-checkout\n- Added `PostCompact` hook that fires after compaction completes\n- Added `/effort` slash command to set model effort level\n- Added session quality survey — enterprise admins can configure the sample rate via the `feedbackSurveyRate` setting\n- Fixed deferred tools (loaded via `ToolSearch`) losing their input schemas after conversation compaction, causing array and number parameters to be rejected with type errors\n- Fixed slash commands showing \"Unknown skill\"\n- Fixed plan mode asking for re-approval after the plan was already accepted\n- Fixed voice mode swallowing keypresses while a permission dialog or plan editor was open\n- Fixed `/voice` not working on Windows when installed via npm\n- Fixed spurious \"Context limit reached\" when invoking a skill with `model:` frontmatter on a 1M-context session\n- Fixed \"adaptive thinking is not supported on this model\" error when using non-standard model strings\n- Fixed `Bash(cmd:*)` permission rules not matching when a quoted argument contains `#`\n- Fixed \"don't ask again\" in the Bash permission dialog showing the full raw command for pipes and compound commands\n- Fixed auto-compaction retrying indefinitely after consecutive failures — a circuit breaker now stops after 3 attempts\n- Fixed MCP reconnect spinner persisting after successful reconnection\n- Fixed LSP plugins not registering servers when the LSP Manager initialized before marketplaces were reconciled\n- Fixed clipboard copying in tmux over SSH — now attempts both direct terminal write and tmux clipboard integration\n- Fixed `/export` showing only the filename instead of the full file path in the success message\n- Fixed transcript not auto-scrolling to new messages after selecting text\n- Fixed Escape key not working to exit the login method selection screen\n- Fixed several Remote Control issues: sessions silently dying when the server reaps an idle environment, rapid messages being queued one-at-a-time instead of batched, and stale work items causing redelivery after JWT refresh\n- Fixed bridge sessions failing to recover after extended WebSocket disconnects\n- Fixed slash commands not found when typing the exact name of a soft-hidden command\n- Improved `--worktree` startup performance by reading git refs directly and skipping redundant `git fetch` when the remote branch is already available locally\n- Improved background agent behavior — killing a background agent now preserves its partial results in the conversation context\n- Improved model fallback notifications — now always visible instead of hidden behind verbose mode, with human-friendly model names\n- Improved blockquote readability on dark terminal themes — text is now italic with a left bar instead of dim\n- Improved stale worktree cleanup — worktrees left behind after an interrupted parallel run are now automatically cleaned up\n- Improved Remote Control session titles — now derived from your first prompt instead of showing \"Interactive session\"\n- Improved `/voice` to show your dictation language on enable and warn when your `language` setting isn't supported for voice input\n- Updated `--plugin-dir` to only accept one path to support subcommands — use repeated `--plugin-dir` for multiple directories\n- [VSCode] Fixed gitignore patterns containing commas silently excluding entire filetypes from the @-mention file picker\n",
-      "date": "2026-03-14T01:23:58Z",
-      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.76",
-      "prerelease": false
-    },
-    {
-      "version": "v2.1.75",
-      "name": "v2.1.75",
-      "body": "\n",
-      "date": "2026-03-13T17:09:08Z",
-      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.75",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-04-17T06:32:34.000Z"
+  "lastUpdated": "2026-04-18T06:22:05.115Z"
 }
