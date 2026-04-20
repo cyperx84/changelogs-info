@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.122.0",
-  "generated_at": "2026-04-20T20:17:28.957Z",
+  "generated_at": "2026-04-20T21:19:18.730Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -17,16 +17,18 @@
     "from_version": "0.122.0",
     "to_version": "0.122.0",
     "new_features": [
+      "standalone-installs-self-contained",
       "tui-side-conversations-queued-input",
       "plan-mode-fresh-context",
       "plugin-workflows-tabbed-browsing-marketplace-removal",
       "filesystem-permissions-deny-read-policies",
-      "tool-discovery-image-generation-default",
-      "standalone-installs-windows-intel-macs"
+      "tool-discovery-image-generation-default"
     ],
     "new_commands": [
       "/side",
-      "/marketplace remove"
+      "/marketplace add",
+      "/plugins",
+      "codex debug models"
     ],
     "new_flags": [
       "--ignore-user-config",
@@ -61,7 +63,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release enhances standalone installs, ensuring `codex app` correctly opens or installs Desktop on Windows and Intel Macs. The TUI gains `/side` conversations for quick side questions, and queued input now supports slash commands and shell prompts. Plan Mode can now start implementation in a fresh context, displaying context usage before proceeding. Plugin workflows are improved with tabbed browsing, inline enable/disable toggles, marketplace removal via `/marketplace remove`, and support for remote, cross-repo, or local marketplace sources. Filesystem permissions now support deny-read glob policies, managed deny-read requirements, platform sandbox enforcement, and isolated `codex exec` runs that ignore user config or rules using `--ignore-user-config` and `--ignore-rules`. Tool discovery and image generation are enabled by default, with higher-detail image handling. Bug fixes address stale TUI prompts, remote-control startup issues, and token usage replay in resumed threads. Security is tightened with ChatGPT token revocation on logout, trusted workspaces for project hooks and exec policies, and Windows sandbox improvements. The `--use_legacy_landlock` flag has been deprecated. This is a recommended upgrade, especially for users of standalone installs, the TUI, Plan Mode, plugins, or those requiring enhanced filesystem permissions."
+      "tldr": "This release enhances standalone installs, making them more self-contained and ensuring `codex app` correctly opens or installs Desktop on Windows and Intel Macs. The TUI gains the ability to open `/side` conversations for quick side questions, and queued input now supports slash commands and shell prompts. Plan Mode can now start implementation in a fresh context, displaying context usage before proceeding. Plugin workflows are improved with tabbed browsing, inline enable/disable toggles, marketplace removal, and support for remote, cross-repo, or local marketplace sources. Filesystem permissions now support deny-read glob policies, managed deny-read requirements, platform sandbox enforcement, and isolated `codex exec` runs that ignore user config or rules using the new `--ignore-user-config` and `--ignore-rules` flags. Tool discovery and image generation are enabled by default, with higher-detail image handling. Stale app-server requests are now dismissed from the TUI upon remote resolution. Security is tightened with logout revoking managed ChatGPT tokens, project hooks and exec policies requiring trusted workspaces, and Windows sandbox setup avoiding broad user-profile and SSH-root grants. The `--use_legacy_landlock` flag has been deprecated. Upgrade is recommended for enhanced functionality and security."
     },
     "features": [
       {
@@ -1194,6 +1196,15 @@
         "description": "Tool discovery and image generation are now enabled by default, with higher-detail image handling and original-detail metadata support for MCP and `js_repl` image outputs.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "standalone-installs-self-contained",
+        "name": "Standalone Installs Self-Contained",
+        "status": "stable",
+        "since": "0.122.0",
+        "description": "Standalone installs are more self-contained, and `codex app` now opens or installs Desktop correctly on Windows and Intel Macs.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1332,6 +1343,22 @@
         "since": "0.122.0",
         "status": "stable",
         "source_url": "#17752"
+      },
+      {
+        "name": "/plugins",
+        "syntax": "/plugins [args]",
+        "description": "Adds v2 tabbed marketplace menu.",
+        "since": "0.122.0",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "codex debug models",
+        "syntax": "codex debug models",
+        "description": "Shows the model catalog.",
+        "since": "0.122.0",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -1442,6 +1469,13 @@
           "deprecated_since": "0.122.0",
           "removed_in": null,
           "source_url": "#17971"
+        },
+        {
+          "flag": "--use_legacy_landlock",
+          "replaced_by": "platform sandbox enforcement",
+          "deprecated_since": "0.122.0",
+          "removed_in": null,
+          "source_url": ""
         }
       ],
       "new_since_previous": [

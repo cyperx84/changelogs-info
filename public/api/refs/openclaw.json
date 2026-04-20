@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.15",
-  "generated_at": "2026-04-20T20:17:52.674Z",
+  "generated_at": "2026-04-20T21:19:48.946Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -16,14 +16,21 @@
   "delta": {
     "from_version": "2026.4.15",
     "to_version": "2026.4.15",
-    "new_features": [],
+    "new_features": [
+      "model-auth-status-card",
+      "cloud-storage-support-memory-lancedb",
+      "github-copilot-embedding-provider",
+      "agents-defaults-experimental-local-model-lean",
+      "gemini-text-to-speech"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "dreaming-storage-mode-change"
+      "dreaming-storage-mode-change",
+      "memory-qmd-workspace-file-read-restriction"
     ]
   },
   "payload": {
@@ -48,7 +55,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces Gemini text-to-speech support in the Google plugin, enabling voice selection and various output formats. A Model Auth status card in the Control UI provides OAuth token health and rate-limit monitoring. LanceDB now supports cloud storage for durable memory indexes. A breaking change moves Dreaming phase blocks to separate files, requiring a config change to revert to the previous behavior: `plugins.entries.memory-core.config.dreaming.storage.mode: \"inline\"`. A GitHub Copilot embedding provider is added for memory search, and local model setups can now drop heavyweight default tools to reduce prompt size. Gateway tool result passthrough is anchored to exact raw names, preventing client tool definitions from inheriting local-media trust. The default dreaming storage mode change impacts memory organization, separating dream phases into dedicated files. Several fixes address issues with agent replay recovery, webchat audio embedding, Matrix pairing, Docker builds, cron announce delivery, bundled plugin caches, and more. Upgrade is recommended to benefit from the new features, security enhancements, and bug fixes. Be sure to review the breaking change regarding dreaming storage mode and adjust your configuration accordingly."
+      "tldr": "This release introduces Gemini text-to-speech support, enabling voice output in the `google` plugin with various configuration options. The Control UI now features a Model Auth status card, providing insights into OAuth token health and rate-limit pressure, backed by a new gateway method. Cloud storage support has been added to `memory-lancedb`, allowing durable memory indexes to run on remote object storage. A GitHub Copilot embedding provider is now available for memory search, along with a dedicated Copilot embedding host helper. An experimental `agents.defaults.experimental.localModelLean` setting reduces prompt size for weaker local-model setups by dropping heavyweight default tools. The default `dreaming.storage.mode` has changed from `inline` to `separate`, requiring a config change to revert to the previous behavior. The QMD memory backend can no longer be used as a generic workspace-file read shim. Trusted local `MEDIA:` tool-result passthrough is now anchored on the exact raw name of this run's registered built-in tools. This release also includes numerous bug fixes, including replay recovery for agents, webchat audio embedding path enforcement, and Docker build issues. It is recommended to upgrade to this version to benefit from the new features and bug fixes. Ensure to update your configuration if you rely on the previous `dreaming.storage.mode` or QMD memory backend behavior."
     },
     "features": [
       {
@@ -2931,6 +2938,18 @@
           "Dreaming"
         ],
         "migration": "Operators who want the previous behavior can opt in by setting `plugins.entries.memory-core.config.dreaming.storage.mode: \"inline\"`.",
+        "source_url": ""
+      },
+      {
+        "id": "memory-qmd-workspace-file-read-restriction",
+        "version": "2026.4.15",
+        "title": "Memory QMD workspace file read restriction",
+        "description": "The QMD memory backend can no longer be used as a generic workspace-file read shim that bypasses `read` tool-policy denials. `memory_get` now rejects reads of arbitrary workspace markdown paths and only allows canonical memory files (`MEMORY.md`, `memory.md`, `DREAMS.md`, `dreams.md`, `memory/**`) plus exact paths of active indexed QMD workspace documents.",
+        "affected": [
+          "Memory",
+          "QMD"
+        ],
+        "migration": "Ensure `memory_get` calls only target canonical memory files or active indexed QMD workspace documents.",
         "source_url": ""
       }
     ],
