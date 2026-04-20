@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.15",
-  "generated_at": "2026-04-20T07:38:57.933Z",
+  "generated_at": "2026-04-20T08:49:08.197Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -16,13 +16,7 @@
   "delta": {
     "from_version": "2026.4.15",
     "to_version": "2026.4.15",
-    "new_features": [
-      "gemini-text-to-speech",
-      "github-copilot-embedding-provider",
-      "model-auth-status-card",
-      "cloud-storage-support-memory-lancedb",
-      "agents-defaults-experimental-local-model-lean"
-    ],
+    "new_features": [],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -54,7 +48,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces Gemini text-to-speech support, enabling voice output in the `google` plugin with various configuration options. A new Model Auth status card provides insights into OAuth token health and rate limits, improving monitoring. LanceDB now supports cloud storage for durable memory indexes, enhancing scalability. GitHub Copilot embedding provider is added for memory search, facilitating integration with Copilot. The default `dreaming.storage.mode` has changed from `inline` to `separate`, requiring a config change to revert to the previous behavior. Trusted local `MEDIA:` tool-result passthrough is now anchored on the exact raw name of registered built-in tools, preventing client-supplied tools from inheriting local-media trust. A persistent file-backed GUID dedupe is added to BlueBubbles to prevent re-replying to already-handled messages after gateway restart. The release also includes numerous fixes, such as preventing tool-loop timeouts, addressing Matrix pairing issues, and improving error handling for various providers. It is recommended to upgrade to benefit from these enhancements and fixes. If you rely on the previous dreaming storage behavior, set `plugins.entries.memory-core.config.dreaming.storage.mode: \"inline\"`."
+      "tldr": "This release introduces Gemini text-to-speech support in the Google plugin, enabling voice selection and various output formats. A Model Auth status card in the Control UI provides OAuth token health and rate-limit monitoring. LanceDB now supports cloud storage for durable memory indexes. A breaking change moves Dreaming phase blocks to separate files, requiring a config change to revert to the previous behavior: `plugins.entries.memory-core.config.dreaming.storage.mode: \"inline\"`. A GitHub Copilot embedding provider is added for memory search, and local model setups can now drop heavyweight default tools to reduce prompt size. Gateway tool result passthrough is anchored to exact raw names, preventing client tool definitions from inheriting local-media trust. The default dreaming storage mode change impacts memory organization, separating dream phases into dedicated files. Several fixes address issues with agent replay recovery, webchat audio embedding, Matrix pairing, Docker builds, cron announce delivery, bundled plugin caches, and more. Upgrade is recommended to benefit from the new features, security enhancements, and bug fixes. Be sure to review the breaking change regarding dreaming storage mode and adjust your configuration accordingly."
     },
     "features": [
       {
