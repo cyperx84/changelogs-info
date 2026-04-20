@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.122.0",
-  "generated_at": "2026-04-20T20:17:28.957Z",
+  "generated_at": "2026-04-20T19:27:34.383Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -17,16 +17,15 @@
     "from_version": "0.122.0",
     "to_version": "0.122.0",
     "new_features": [
+      "standalone-installs-windows-intel-macs",
       "tui-side-conversations-queued-input",
       "plan-mode-fresh-context",
       "plugin-workflows-tabbed-browsing-marketplace-removal",
       "filesystem-permissions-deny-read-policies",
-      "tool-discovery-image-generation-default",
-      "standalone-installs-windows-intel-macs"
+      "tool-discovery-image-generation-default"
     ],
     "new_commands": [
-      "/side",
-      "/marketplace remove"
+      "/side"
     ],
     "new_flags": [
       "--ignore-user-config",
@@ -61,7 +60,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release enhances standalone installs, ensuring `codex app` correctly opens or installs Desktop on Windows and Intel Macs. The TUI gains `/side` conversations for quick side questions, and queued input now supports slash commands and shell prompts. Plan Mode can now start implementation in a fresh context, displaying context usage before proceeding. Plugin workflows are improved with tabbed browsing, inline enable/disable toggles, marketplace removal via `/marketplace remove`, and support for remote, cross-repo, or local marketplace sources. Filesystem permissions now support deny-read glob policies, managed deny-read requirements, platform sandbox enforcement, and isolated `codex exec` runs that ignore user config or rules using `--ignore-user-config` and `--ignore-rules`. Tool discovery and image generation are enabled by default, with higher-detail image handling. Bug fixes address stale TUI prompts, remote-control startup issues, and token usage replay in resumed threads. Security is tightened with ChatGPT token revocation on logout, trusted workspaces for project hooks and exec policies, and Windows sandbox improvements. The `--use_legacy_landlock` flag has been deprecated. This is a recommended upgrade, especially for users of standalone installs, the TUI, Plan Mode, plugins, or those requiring enhanced filesystem permissions."
+      "tldr": "This release enhances standalone installs, ensuring `codex app` functions correctly on Windows and Intel Macs. The TUI gains `/side` conversations for quick questions, and queued input now supports slash commands and shell prompts. Plan Mode can start with a fresh context, displaying context usage before proceeding. Plugin workflows are significantly improved with tabbed browsing, inline enable/disable, marketplace removal, and support for remote, cross-repo, and local sources. Filesystem permissions now include deny-read glob policies, managed deny-read requirements, and platform sandbox enforcement. Isolated `codex exec` runs can now ignore user config or rules using `--ignore-user-config` and `--ignore-rules`. Tool discovery and image generation are enabled by default, with higher-detail image handling. Security is tightened with logout revoking ChatGPT tokens, project hooks requiring trusted workspaces, and Windows sandbox setup avoiding broad grants. The `--use_legacy_landlock` flag is deprecated. Several TUI bugs are fixed, including stale app-server requests and resume hint issues. Upgrade is recommended for improved functionality and security."
     },
     "features": [
       {
@@ -1324,14 +1323,6 @@
         "since": "0.122.0",
         "status": "stable",
         "source_url": ""
-      },
-      {
-        "name": "/marketplace remove",
-        "syntax": "/marketplace remove [plugin]",
-        "description": "Removes a plugin from the marketplace.",
-        "since": "0.122.0",
-        "status": "stable",
-        "source_url": "#17752"
       }
     ],
     "flags": {
@@ -1435,13 +1426,6 @@
           "deprecated_since": "0.122.0",
           "removed_in": null,
           "source_url": ""
-        },
-        {
-          "flag": "--use_legacy_landlock",
-          "replaced_by": "platform sandbox enforcement",
-          "deprecated_since": "0.122.0",
-          "removed_in": null,
-          "source_url": "#17971"
         }
       ],
       "new_since_previous": [
