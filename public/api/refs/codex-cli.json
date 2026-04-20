@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.121.0",
-  "generated_at": "2026-04-20T18:23:32.160Z",
+  "version": "0.122.0",
+  "generated_at": "2026-04-20T19:27:34.383Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,21 +14,28 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.121.0",
-    "to_version": "0.121.0",
+    "from_version": "0.122.0",
+    "to_version": "0.122.0",
     "new_features": [
-      "plugin-marketplace-installation-from-github-git-local-json",
-      "tui-prompt-history-improvements-reverse-search-and-local-recall",
-      "tui-and-app-server-memory-controls-mode-reset-deletion-and-extension-cleanup",
-      "expanded-mcp-plugin-support-mcp-apps-tool-calls-namespaced-registration-parallel-call-opt-in-sandbox-state-metadata",
-      "realtime-and-app-server-apis-output-modality-transcript-completion-events-raw-turn-item-injection-symlink-aware-filesystem-metadata",
-      "secure-devcontainer-profile-with-bubblewrap-support-and-macos-sandbox-allowlists"
+      "standalone-installs-windows-intel-macs",
+      "tui-side-conversations-queued-input",
+      "plan-mode-fresh-context",
+      "plugin-workflows-tabbed-browsing-marketplace-removal",
+      "filesystem-permissions-deny-read-policies",
+      "tool-discovery-image-generation-default"
     ],
-    "new_commands": [],
-    "new_flags": [],
+    "new_commands": [
+      "/side"
+    ],
+    "new_flags": [
+      "--ignore-user-config",
+      "--ignore-rules"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
-    "deprecated_flags": [],
+    "deprecated_flags": [
+      "--use_legacy_landlock"
+    ],
     "breaking_changes": []
   },
   "payload": {
@@ -46,14 +53,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.121.0",
+      "latest_stable": "0.122.0",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-04-15",
+      "latest_release_date": "2026-04-20",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "Version 0.121.0 introduces several key enhancements, including the ability to install plugin marketplaces from various sources like GitHub, git URLs, local directories, and direct `marketplace.json` URLs using the `codex marketplace add` command. The TUI now features improved prompt history with `Ctrl+R` for reverse search and local recall of accepted slash commands, enhancing user experience. Memory management is significantly improved with new TUI and app-server controls for memory mode, reset/deletion, and extension cleanup, providing better control over memory usage. MCP/plugin support is expanded with MCP Apps tool calls, namespaced registration, parallel-call opt-in, and sandbox-state metadata, enabling more robust plugin integrations. Realtime and app-server APIs now support output modality, transcript completion events, raw turn item injection, and symlink-aware filesystem metadata, offering richer data handling capabilities. A secure devcontainer profile with bubblewrap support and macOS sandbox allowlists for Unix sockets is introduced, enhancing security. Bug fixes address macOS sandbox/proxy handling, Windows cwd/session matching, rate-limit handling for `prolite` plans, and Guardian timeout semantics. Supply-chain and CI inputs are hardened, and Bazel release-build verification is added. It is highly recommended to upgrade to this version to take advantage of the new features, improved stability, and enhanced security. No specific migration steps are required."
+      "tldr": "This release enhances standalone installs, ensuring `codex app` functions correctly on Windows and Intel Macs. The TUI gains `/side` conversations for quick questions, and queued input now supports slash commands and shell prompts. Plan Mode can start with a fresh context, displaying context usage before proceeding. Plugin workflows are significantly improved with tabbed browsing, inline enable/disable, marketplace removal, and support for remote, cross-repo, and local sources. Filesystem permissions now include deny-read glob policies, managed deny-read requirements, and platform sandbox enforcement. Isolated `codex exec` runs can now ignore user config or rules using `--ignore-user-config` and `--ignore-rules`. Tool discovery and image generation are enabled by default, with higher-detail image handling. Security is tightened with logout revoking ChatGPT tokens, project hooks requiring trusted workspaces, and Windows sandbox setup avoiding broad grants. The `--use_legacy_landlock` flag is deprecated. Several TUI bugs are fixed, including stale app-server requests and resume hint issues. Upgrade is recommended for improved functionality and security."
     },
     "features": [
       {
@@ -1132,6 +1139,60 @@
           "Adds macOS sandbox allowlists for Unix sockets."
         ],
         "source_url": ""
+      },
+      {
+        "id": "standalone-installs-windows-intel-macs",
+        "name": "Improved Standalone Installs",
+        "status": "stable",
+        "since": "0.122.0",
+        "description": "Standalone installs are now more self-contained, and `codex app` correctly opens or installs Desktop on Windows and Intel Macs.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "tui-side-conversations-queued-input",
+        "name": "TUI Side Conversations and Queued Input Enhancements",
+        "status": "stable",
+        "since": "0.122.0",
+        "description": "The TUI can now open `/side` conversations for quick side questions. Queued input now supports slash commands and `!` shell prompts while work is running.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "plan-mode-fresh-context",
+        "name": "Plan Mode with Fresh Context",
+        "status": "stable",
+        "since": "0.122.0",
+        "description": "Plan Mode can now start implementation in a fresh context, with context-usage shown before deciding whether to carry the planning thread forward.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "plugin-workflows-tabbed-browsing-marketplace-removal",
+        "name": "Enhanced Plugin Workflows",
+        "status": "stable",
+        "since": "0.122.0",
+        "description": "Plugin workflows now include tabbed browsing, inline enable/disable toggles, marketplace removal, and remote, cross-repo, or local marketplace sources.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "filesystem-permissions-deny-read-policies",
+        "name": "Filesystem Permissions Enhancements",
+        "status": "stable",
+        "since": "0.122.0",
+        "description": "Filesystem permissions now support deny-read glob policies, managed deny-read requirements, platform sandbox enforcement, and isolated `codex exec` runs that ignore user config or rules using `--ignore-user-config` and `--ignore-rules`.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "tool-discovery-image-generation-default",
+        "name": "Default Tool Discovery and Image Generation",
+        "status": "stable",
+        "since": "0.122.0",
+        "description": "Tool discovery and image generation are now enabled by default, with higher-detail image handling and original-detail metadata support for MCP and `js_repl` image outputs.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1254,6 +1315,14 @@
         "since": "0.121.0",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "/side",
+        "syntax": "/side",
+        "description": "Opens a side conversation in the TUI.",
+        "since": "0.122.0",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -1329,6 +1398,18 @@
           "description": "Specify cloud environment ID for cloud tasks.",
           "since": "0.90.0",
           "source_url": "https://github.com/openai/codex"
+        },
+        {
+          "flag": "--ignore-user-config",
+          "description": "Ignores user configuration during `codex exec` runs.",
+          "since": "0.122.0",
+          "source_url": ""
+        },
+        {
+          "flag": "--ignore-rules",
+          "description": "Ignores rules during `codex exec` runs.",
+          "since": "0.122.0",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -1338,9 +1419,19 @@
           "deprecated_since": "0.119.0",
           "removed_in": null,
           "source_url": ""
+        },
+        {
+          "flag": "--use_legacy_landlock",
+          "replaced_by": "platform sandbox enforcement",
+          "deprecated_since": "0.122.0",
+          "removed_in": null,
+          "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--ignore-user-config",
+        "--ignore-rules"
+      ]
     },
     "env_vars": [
       {
