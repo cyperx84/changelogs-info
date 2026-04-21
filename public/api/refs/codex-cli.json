@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.122.0",
-  "generated_at": "2026-04-21T19:30:10.777Z",
+  "generated_at": "2026-04-21T20:20:36.938Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -17,6 +17,7 @@
     "from_version": "0.122.0",
     "to_version": "0.122.0",
     "new_features": [
+      "standalone-installs-self-contained",
       "tui-side-conversations-queued-input",
       "plan-mode-fresh-context",
       "plugin-workflows-tabbed-browsing-marketplace-removal",
@@ -57,7 +58,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release enhances standalone installs, making `codex app` more reliable on Windows and Intel Macs. The TUI gains support for `/side` conversations for quick questions, and slash commands and shell prompts can now be queued while work is running. Plan Mode can now start with a fresh context, displaying context usage before proceeding. Plugin workflows are improved with tabbed browsing, inline enable/disable toggles, marketplace removal, and support for remote, cross-repo, and local marketplace sources. Filesystem permissions now include deny-read glob policies, managed deny-read requirements, platform sandbox enforcement, and isolated `codex exec` runs with `--ignore-user-config` and `--ignore-rules`. Tool discovery and image generation are enabled by default, with better image handling. Security is tightened by revoking ChatGPT tokens on logout and requiring trusted workspaces for project hooks and exec policies. Several TUI bugs are fixed, including stale app-server requests, fatal skills-list failures, and redundant memory notices. It is recommended to upgrade to benefit from these improvements and security enhancements. Note that the `use_legacy_landlock` feature flag has been deprecated."
+      "tldr": "This release enhances standalone installs, making them more self-contained and ensuring `codex app` correctly opens or installs Desktop on Windows and Intel Macs. The TUI now supports `/side` conversations for quick side questions, and queued input handles slash commands and `!` shell prompts during ongoing tasks. Plan Mode can initiate implementation in a fresh context, displaying context usage before proceeding. Plugin workflows gain tabbed browsing, inline enable/disable toggles, marketplace removal, and support for remote, cross-repo, or local marketplace sources. Filesystem permissions introduce deny-read glob policies, managed deny-read requirements, platform sandbox enforcement, and isolated `codex exec` runs with `--ignore-user-config` and `--ignore-rules` flags. Tool discovery and image generation are enabled by default, with improved image handling. Security is tightened with ChatGPT token revocation on logout, trusted workspaces for project hooks and exec policies, and refined Windows sandbox setup. The `use_legacy_landlock` feature flag is deprecated. Several TUI issues are resolved, including stale prompts, resume hints, and terminal title quoting. Upgrade is recommended to leverage these new features and security enhancements."
     },
     "features": [
       {
@@ -1603,6 +1604,13 @@
           "deprecated_since": "0.122.0",
           "removed_in": null,
           "source_url": ""
+        },
+        {
+          "flag": "use_legacy_landlock",
+          "replaced_by": null,
+          "deprecated_since": "0.122.0",
+          "removed_in": null,
+          "source_url": "#17971"
         }
       ],
       "new_since_previous": [

@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.20",
-  "generated_at": "2026-04-21T20:20:49.188Z",
+  "generated_at": "2026-04-21T19:30:26.902Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -16,10 +16,10 @@
   "delta": {
     "from_version": "2026.4.20",
     "to_version": "2026.4.20",
-    "new_features": [
-      "bluebubbles-coalesce-same-sender-dms"
+    "new_features": [],
+    "new_commands": [
+      "/reset soft"
     ],
-    "new_commands": [],
     "new_flags": [
       "--allow-failures"
     ],
@@ -50,7 +50,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release focuses on stability, usability, and security enhancements. A key improvement is the restyled onboard/wizard setup with clearer security disclaimers and loading indicators. The default agent system prompt is strengthened with better completion bias and error recovery. Tiered model pricing is now supported, including bundled Moonshot Kimi cost estimates. Session maintenance enforces entry caps and prunes oversized stores to prevent OOM errors.  A new `channels.bluebubbles.coalesceSameSenderDms` option merges split BlueBubbles DMs for a smoother experience.  Several fixes address issues with OpenAI Codex, Anthropic plugins, QQ bot security, and gateway session key enforcement.  The `/reset soft [message]` command provides an in-place session reset.  Security is enhanced by blocking `OPENCLAW_*` keys from untrusted `.env` files and restricting paired-device session actions.  It is recommended to upgrade to benefit from these improvements and security fixes. No specific migration steps are required unless you are using BlueBubbles and want to enable the DM coalescing feature."
+      "tldr": "This release focuses on stability and usability improvements. The default agent system prompt is strengthened with clearer completion bias and live-state checks. Tiered model pricing is now supported, including bundled Moonshot Kimi K2.6/K2.5 cost estimates. A new `/reset soft [message]` command provides an in-place session reset. Mattermost now streams thinking, tool activity, and partial reply text into a single draft preview post. QA suites now fail by default when scenarios fail, with a new `--allow-failures` flag for artifact-only runs. Several fixes address issues with OpenAI Codex, Anthropic plugins, QQ bot, gateway session keys, and browser connectivity. BlueBubbles receives significant improvements, including coalescing split-send DMs and better handling of iMessage/SMS routing. Cron jobs now handle delivery modes more consistently, and Matrix allowlists hot-reload. This is a recommended upgrade, especially for users of BlueBubbles, Cron, Matrix, and OpenAI Codex. No specific prerequisites are required."
     },
     "features": [
       {
@@ -1645,20 +1645,6 @@
         "description": "Adds Gemini text-to-speech support to the bundled `google` plugin, including provider registration, voice selection, WAV reply output, PCM telephony output, and setup/docs guidance.",
         "key_details": [],
         "source_url": "https://github.com/smol-ai/OpenClaw/pull/67515"
-      },
-      {
-        "id": "bluebubbles-coalesce-same-sender-dms",
-        "name": "BlueBubbles Coalesce Same Sender DMs",
-        "status": "experimental",
-        "since": "2026.4.20",
-        "description": "Adds opt-in `channels.bluebubbles.coalesceSameSenderDms` to merge split-send DMs (text + URL) into a single agent turn.",
-        "key_details": [
-          "Enabled via `channels.bluebubbles.coalesceSameSenderDms`.",
-          "Merges messages not linked via `associatedMessageGuid` within a debounce window.",
-          "Debounce window widens from 500ms to 2500ms when enabled.",
-          "Merged output is bounded to ≤4000 chars text, ≤20 attachments, and first-plus-latest sampling beyond 10 source entries."
-        ],
-        "source_url": ""
       }
     ],
     "commands": [
