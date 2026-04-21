@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.15",
-  "generated_at": "2026-04-21T03:07:59.737Z",
+  "generated_at": "2026-04-21T05:02:02.747Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -16,21 +16,14 @@
   "delta": {
     "from_version": "2026.4.15",
     "to_version": "2026.4.15",
-    "new_features": [
-      "model-auth-status-card",
-      "cloud-storage-support-memory-lancedb",
-      "github-copilot-embedding-provider",
-      "agents-defaults-experimental-local-model-lean",
-      "gemini-text-to-speech"
-    ],
+    "new_features": [],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "dreaming-storage-mode-change",
-      "memory-qmd-workspace-file-read-restriction"
+      "dreaming-storage-mode-change"
     ]
   },
   "payload": {
@@ -55,7 +48,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces Gemini text-to-speech support, enabling voice output in the `google` plugin with various configuration options. The Control UI now features a Model Auth status card, providing insights into OAuth token health and rate-limit pressure, backed by a new gateway method. Cloud storage support has been added to `memory-lancedb`, allowing durable memory indexes to run on remote object storage. A GitHub Copilot embedding provider is now available for memory search, along with a dedicated Copilot embedding host helper. An experimental `agents.defaults.experimental.localModelLean` setting reduces prompt size for weaker local-model setups by dropping heavyweight default tools. The default `dreaming.storage.mode` has changed from `inline` to `separate`, requiring a config change to revert to the previous behavior. The QMD memory backend can no longer be used as a generic workspace-file read shim. Trusted local `MEDIA:` tool-result passthrough is now anchored on the exact raw name of this run's registered built-in tools. This release also includes numerous bug fixes, including replay recovery for agents, webchat audio embedding path enforcement, and Docker build issues. It is recommended to upgrade to this version to benefit from the new features and bug fixes. Ensure to update your configuration if you rely on the previous `dreaming.storage.mode` or QMD memory backend behavior."
+      "tldr": "This release introduces Gemini text-to-speech support in the Google plugin, enabling voice selection and various output formats. A new Model Auth status card provides OAuth token health and rate-limit visibility in the Control UI. LanceDB now supports cloud storage for durable memory indexes. A GitHub Copilot embedding provider is available for memory search, with a helper for plugin reuse. The default `dreaming.storage.mode` has changed from `inline` to `separate`, storing dreaming phases in separate files; revert by setting `plugins.entries.memory-core.config.dreaming.storage.mode: \"inline\"`. Experimental `agents.defaults.experimental.localModelLean: true` drops heavyweight default tools for weaker local models. Several fixes address gateway tool trust, agent replay recovery, webchat audio embedding, Matrix pairing, Docker builds, Matrix E2EE, cron announce delivery, bundled plugin caches, agent context and memory, Matrix commands, memory dreaming, agent local models, control UI alerts, dashboard overflow, agent CLI transcripts, Discord tool-call text, WhatsApp web-session, BlueBubbles catchup, Ollama chat, agent tools, speech TTS, OpenAI Codex models, agent failover, gateway skills, agent tool-loop, TUI streaming, LMStudio extensions, agent replay, gateway startup, Codex harness, OpenAI Codex CLI, Codex app-server, cron announce delivery, sessions Codex, auto-reply prompt-cache, BlueBubbles inbound, agent skills, agent OpenAI Responses, agent context engines, memory dreaming, agent errors, security approvals, CLI configure, CLI update, onboarding CLI, video generation live tests, memory-core QMD `memory_get`, cron agents, setup providers, Matrix security, Telegram documents, gateway auth, agent compaction, agent OpenAI Responses, agent failover, onboarding channels, Slack native commands, Feishu webhook, agent workspace files, gateway MCP loopback, auto-reply billing, agent fallback, reply secrets, agent Anthropic, agent context engines, BlueBubbles inbound, secrets plugins status, memory dreaming, Telegram documents, Telegram native commands, OpenRouter Qwen3, BlueBubbles catchup, Telegram native commands, audio self-hosted STT, auto-reply media, WhatsApp Baileys media upload, QQBot cron, CLI plugins, Claude CLI sessions, context engine, control UI chat, media Slack, Ollama onboarding, webchat security, dreaming memory-core, node-host tools.exec, Codex gateway, Slack streaming, OpenRouter streaming, models OpenRouter aliases, and OpenRouter Arcee. Upgrade is recommended to benefit from the new features and fixes. Ensure to review the breaking change regarding dreaming storage mode and adjust your configuration accordingly."
     },
     "features": [
       {
