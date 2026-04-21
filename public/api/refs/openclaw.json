@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.4.15",
-  "generated_at": "2026-04-21T18:26:26.416Z",
+  "version": "2026.4.20",
+  "generated_at": "2026-04-21T19:30:26.902Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,17 +14,19 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.4.15",
-    "to_version": "2026.4.15",
+    "from_version": "2026.4.20",
+    "to_version": "2026.4.20",
     "new_features": [],
-    "new_commands": [],
-    "new_flags": [],
+    "new_commands": [
+      "/reset soft"
+    ],
+    "new_flags": [
+      "--allow-failures"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "dreaming-storage-mode-change"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -42,13 +44,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.4.15",
-      "latest_release_date": "2026-04-16",
+      "latest_stable": "2026.4.20",
+      "latest_release_date": "2026-04-21",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces Gemini text-to-speech support in the Google plugin, enabling voice selection and various output formats. A new Model Auth status card provides OAuth token health and rate-limit visibility in the Control UI. LanceDB now supports cloud storage for durable memory indexes. A GitHub Copilot embedding provider is available for memory search, with a helper for plugin reuse. The default `dreaming.storage.mode` has changed from `inline` to `separate`, storing dreaming phases in separate files; revert by setting `plugins.entries.memory-core.config.dreaming.storage.mode: \"inline\"`. Experimental `agents.defaults.experimental.localModelLean: true` drops heavyweight default tools for weaker local models. Several fixes address gateway tool trust, agent replay recovery, webchat audio embedding, Matrix pairing, Docker builds, Matrix E2EE, cron announce delivery, bundled plugin caches, agent context and memory, Matrix commands, memory dreaming, agent local models, control UI alerts, dashboard overflow, agent CLI transcripts, Discord tool-call text, WhatsApp web-session, BlueBubbles catchup, Ollama chat, agent tools, speech TTS, OpenAI Codex models, agent failover, gateway skills, agent tool-loop, TUI streaming, LMStudio extensions, agent replay, gateway startup, Codex harness, OpenAI Codex CLI, Codex app-server, cron announce delivery, sessions Codex, auto-reply prompt-cache, BlueBubbles inbound, agent skills, agent OpenAI Responses, agent context engines, memory dreaming, agent errors, security approvals, CLI configure, CLI update, onboarding CLI, video generation live tests, memory-core QMD `memory_get`, cron agents, setup providers, Matrix security, Telegram documents, gateway auth, agent compaction, agent OpenAI Responses, agent failover, onboarding channels, Slack native commands, Feishu webhook, agent workspace files, gateway MCP loopback, auto-reply billing, agent fallback, reply secrets, agent Anthropic, agent context engines, BlueBubbles inbound, secrets plugins status, memory dreaming, Telegram documents, Telegram native commands, OpenRouter Qwen3, BlueBubbles catchup, Telegram native commands, audio self-hosted STT, auto-reply media, WhatsApp Baileys media upload, QQBot cron, CLI plugins, Claude CLI sessions, context engine, control UI chat, media Slack, Ollama onboarding, webchat security, dreaming memory-core, node-host tools.exec, Codex gateway, Slack streaming, OpenRouter streaming, models OpenRouter aliases, and OpenRouter Arcee. Upgrade is recommended to benefit from the new features and fixes. Ensure to review the breaking change regarding dreaming storage mode and adjust your configuration accordingly."
+      "tldr": "This release focuses on stability and usability improvements. The default agent system prompt is strengthened with clearer completion bias and live-state checks. Tiered model pricing is now supported, including bundled Moonshot Kimi K2.6/K2.5 cost estimates. A new `/reset soft [message]` command provides an in-place session reset. Mattermost now streams thinking, tool activity, and partial reply text into a single draft preview post. QA suites now fail by default when scenarios fail, with a new `--allow-failures` flag for artifact-only runs. Several fixes address issues with OpenAI Codex, Anthropic plugins, QQ bot, gateway session keys, and browser connectivity. BlueBubbles receives significant improvements, including coalescing split-send DMs and better handling of iMessage/SMS routing. Cron jobs now handle delivery modes more consistently, and Matrix allowlists hot-reload. This is a recommended upgrade, especially for users of BlueBubbles, Cron, Matrix, and OpenAI Codex. No specific prerequisites are required."
     },
     "features": [
       {
@@ -1877,6 +1879,14 @@
         "since": "2026.4.10",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "/reset soft",
+        "syntax": "/reset soft [message]",
+        "description": "An in-place reset that keeps the current transcript/session while clearing reused CLI backend bindings and reloading startup/bootstrap context.",
+        "since": "2026.4.20",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -1949,6 +1959,12 @@
           "flag": "--media",
           "description": "A flag for `openclaw` to route gateway-mode outbound WhatsApp sends through the channel `sendMedia` path and preserve media access context.",
           "since": "2026.4.10",
+          "source_url": ""
+        },
+        {
+          "flag": "--allow-failures",
+          "description": "Allow failures in QA suites for artifact-only runs.",
+          "since": "2026.4.20",
           "source_url": ""
         }
       ],
@@ -2066,7 +2082,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--allow-failures"
+      ]
     },
     "env_vars": [
       {

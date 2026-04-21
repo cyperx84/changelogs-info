@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
-  "version": "1.14.19",
-  "generated_at": "2026-04-21T18:26:18.660Z",
+  "version": "1.14.20",
+  "generated_at": "2026-04-21T19:30:20.518Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -14,9 +14,12 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "1.14.19",
-    "to_version": "1.14.19",
-    "new_features": [],
+    "from_version": "1.14.20",
+    "to_version": "1.14.20",
+    "new_features": [
+      "http-api-get-config",
+      "session-progress-bar-setting"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -40,13 +43,13 @@
       "changelog_url": "https://github.com/anomalyco/opencode/releases",
       "repo_url": "https://github.com/anomalyco/opencode",
       "license": "mit",
-      "latest_stable": "1.14.19",
-      "latest_release_date": "2026-04-20",
+      "latest_stable": "1.14.20",
+      "latest_release_date": "2026-04-21",
       "status": "active",
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "This release focuses on improving session compaction and NVIDIA provider support. The compaction setting has been renamed to `preserve_recent_tokens` to better reflect its purpose of keeping recent conversation turns verbatim, ensuring follow-up work retains more local context. The system now falls back to summarizing the full conversation if preserved turns include too much media. NVIDIA has been added as a built-in provider option, complete with connection documentation and required attribution headers, simplifying integration for users of NVIDIA's services. Concurrent edits to the same file are now preserved, preventing parallel edits from overwriting each other. Managed installs on Windows have been fixed, and ripgrep support has been bundled for Windows ARM64. Loading flicker when opening projects and bringing prompt controls online has been reduced. A separate terminal font setting has been added, and JetBrainsMono Nerd Font Mono is now bundled. It is recommended to upgrade to benefit from these improvements and fixes. No specific migration steps are required."
+      "tldr": "Version 1.14.20 introduces a new `GET /config` endpoint to the experimental HTTP API, allowing developers to retrieve configuration details programmatically. A new setting has been added to the desktop application to hide the session progress bar while the agent is working, providing a cleaner user interface when detailed progress information is not required. This release also addresses several key issues across the core, TUI, desktop, and SDK components. A system theme regression in the TUI has been resolved, and local dynamic imports on Windows under Node are now fixed, improving plugin and tool loading reliability. Permission replies using remote workspaces in the TUI are now correctly routed to the appropriate workspace. The desktop application no longer replays the fade-in animation on prompt controls unnecessarily, and synced project updates now apply reliably, ensuring consistent project state. Sidebar project avatars now fall back to `icon.url` when no override is set, enhancing visual consistency. The `WorkspaceAdaptor.create` type in the SDK has been updated to include the `env` parameter, providing more comprehensive workspace creation capabilities. This is a recommended update to improve stability and incorporate the new features."
     },
     "features": [
       {
@@ -544,6 +547,24 @@
         "status": "stable",
         "since": "1.14.19",
         "description": "Added a separate terminal font setting and bundled JetBrainsMono Nerd Font Mono.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "http-api-get-config",
+        "name": "HTTP API GET /config endpoint",
+        "status": "experimental",
+        "since": "1.14.20",
+        "description": "Adds a `GET /config` endpoint to the experimental HTTP API.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "session-progress-bar-setting",
+        "name": "Session Progress Bar Setting",
+        "status": "stable",
+        "since": "1.14.20",
+        "description": "Adds a setting to hide the session progress bar while the agent is working.",
         "key_details": [],
         "source_url": ""
       }
