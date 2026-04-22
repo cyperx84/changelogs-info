@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.20",
-  "generated_at": "2026-04-22T01:37:34.495Z",
+  "generated_at": "2026-04-22T03:08:10.750Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -18,7 +18,9 @@
     "to_version": "2026.4.20",
     "new_features": [],
     "new_commands": [],
-    "new_flags": [],
+    "new_flags": [
+      "--allow-failures"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -46,7 +48,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release focuses on stability and refinement across several key areas. The default agent system prompt has been strengthened with clearer completion bias and improved error recovery. Tiered model pricing is now supported, including bundled Moonshot Kimi K2.6/K2.5 cost estimates. Session maintenance now enforces entry caps and age pruning by default, preventing potential OOM issues. Cron job definitions are now more stable with runtime execution state split into a separate file. Several fixes address critical issues: YOLO exec is restored in `security=full` mode, OpenAI Codex transport overrides are normalized, and SSRF guards are added to QQ Bot. BlueBubbles outbound HTTP is consolidated for better SSRF policy enforcement, and the send timeout is increased to 30s. Matrix allowlist changes now hot-reload without requiring a channel restart. The agent-facing `gateway` tool's config mutation guard is extended to prevent rewriting operator-trusted paths. Device pairing now provides reason-specific details and remediation hints. It is recommended to upgrade to this version for improved stability, security, and feature enhancements. No specific prerequisites are required for this upgrade."
+      "tldr": "This release focuses on improving stability, security, and user experience. The default system prompt and OpenAI GPT-5 overlay have been strengthened with clearer completion bias and improved error handling. Tiered model pricing is now supported, including bundled Moonshot Kimi K2.6/K2.5 cost estimates. Session maintenance now enforces entry caps and prunes oversized stores to prevent OOM errors. The `openclaw qa suite` and `openclaw qa telegram` commands now fail by default on scenario failures, with a new `--allow-failures` flag for artifact-only runs.\n\nKey fixes include preventing gateway-host exec rejection in YOLO mode, normalizing OpenAI Codex transport overrides, and scoping Anthropic API defaulting. QQ Bot direct-upload URLs now have SSRF guards, and template-rendered mapping sessionKeys enforce allowRequestSessionKey. Browser/Chrome MCP surfaces DevToolsActivePort attach failures, and webchat handles inline image attachments correctly. Discord's `/think` autocomplete and thinking mode selection are now more accurate. Gateway pairing now treats loopback clients as local, and active memory degrades gracefully on recall failures.\n\nSecurity enhancements block MINIMAX_API_HOST workspace env injection and all `OPENCLAW_*` keys from untrusted `.env` files. The agent-facing `gateway` tool's config mutation guard has been extended to prevent rewriting operator-trusted paths. Gateway websocket broadcasts now require `operator.read` or higher for chat, agent, and tool-result event frames. This release is recommended for all users to improve stability and security. No specific migration steps are required."
     },
     "features": [
       {
@@ -2092,7 +2094,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--allow-failures"
+      ]
     },
     "env_vars": [
       {
