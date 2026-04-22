@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.21",
-  "generated_at": "2026-04-22T07:36:57.903Z",
+  "generated_at": "2026-04-22T08:39:04.414Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -21,7 +21,9 @@
       "plugin-sdk-channels-presentation-skills-runtime-contracts",
       "qqbot-self-contained-engine-architecture"
     ],
-    "new_commands": [],
+    "new_commands": [
+      "/bot-approve"
+    ],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
@@ -50,7 +52,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces the Skill Workshop plugin, enabling the capture of reusable workflow corrections as skills, improving completion bias and safety. The plugin SDK now features presentation and skills runtime contracts, allowing plugins to own richer interactive surfaces across channels. QQBot receives a self-contained engine architecture with QR-code onboarding and native approval handling. OpenAI image generation defaults to `gpt-image-2` with updated size hints. Onboarding is simplified with searchable autocompletes. Tool progress is now streamed into live preview edits for Discord, Slack, and Telegram. Matrix and Telegram plugin startup times are significantly reduced. Security is enhanced by stripping special tokens from external content and validating URLs in Synology Chat, LINE, and Tlon uploads. Owner-only command enforcement is tightened. GitHub Copilot is updated to use `claude-opus-4.7`. Ollama is registered as an image-capable media-understanding provider. It is recommended to upgrade to benefit from these new features, performance improvements, and security enhancements. No specific prerequisites are mentioned."
+      "tldr": "This release introduces the Skill Workshop plugin, enabling the capture of reusable workflow corrections as skills, improving completion bias and safety. The Plugin SDK now supports decoupled channel presentation rendering, allowing plugins to own richer interactive surfaces. QQBot features a self-contained engine architecture with QR-code onboarding and native approval handling via `/bot-approve`. OpenAI image generation defaults to `gpt-image-2` with updated size hints. Onboarding pickers now use searchable autocompletes. Tool progress updates stream into live preview edits for Discord, Slack, and Telegram. A fix prevents parent/child echo loops in agent communication. Security enhancements include stripping special-token literals from external content and validating outbound media URLs. The default GitHub Copilot Opus model is updated to `claude-opus-4.7`. This release also addresses several SSRF vulnerabilities and improves startup performance for Matrix, Telegram, and Discord plugins. It is recommended to upgrade to benefit from these new features, security fixes, and performance improvements. No specific migration steps are required."
     },
     "features": [
       {
@@ -1926,6 +1928,14 @@
         "syntax": "/reset soft [message]",
         "description": "An in-place reset that keeps the current transcript/session while clearing reused CLI backend bindings and reloading startup/bootstrap context.",
         "since": "2026.4.20",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "/bot-approve",
+        "syntax": "/bot-approve",
+        "description": "Native approval handling for QQBot.",
+        "since": "2026.4.21",
         "status": "stable",
         "source_url": ""
       }
