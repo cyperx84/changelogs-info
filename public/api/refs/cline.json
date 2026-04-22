@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "3.79.0",
-  "generated_at": "2026-04-22T18:26:50.343Z",
+  "version": "3.80.0",
+  "generated_at": "2026-04-22T19:32:33.785Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,15 +19,21 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "3.79.0",
-    "to_version": "3.79.0",
-    "new_features": [],
+    "from_version": "3.80.0",
+    "to_version": "3.80.0",
+    "new_features": [
+      "enterprise-managed-global-skills",
+      "dynamic-recommended-models-onboarding",
+      "quota-exceeded-error-message"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "remove-foreground-terminal-mode"
+    ]
   },
   "payload": {
     "meta": {
@@ -45,12 +51,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "3.79.0",
-      "latest_release_date": "2026-04-16",
+      "latest_stable": "3.80.0",
+      "latest_release_date": "2026-04-22",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "This release focuses on expanding model and storage provider support, along with important bug fixes and a cleanup of deprecated features. Claude Opus 4.7 model support has been added, providing access to the latest capabilities of the Claude model family. Azure Blob Storage is now supported as a storage provider, enabling integration with Azure's cloud storage services. A critical fix addresses a cache reflection issue affecting Cline and Vercel API handlers, ensuring data consistency. Another fix resolves a stuck `command_output` issue that occurred when terminal commands ended unexpectedly, improving the reliability of command execution. The `use_subagents` parameter has been added to the system prompt for GLM, Hermes, and XS models, potentially influencing their behavior. An action injection security risk has been addressed, enhancing the overall security posture of the tool. Finally, the deprecated evals tool has been removed, streamlining the toolset. Upgrading is recommended to take advantage of the new model and storage provider support, as well as the important bug fixes and security enhancements. No specific prerequisites are required for this upgrade."
+      "tldr": "Version 3.80.0 introduces a significant change by removing foreground terminal mode, defaulting all task command executions to the background. This eliminates the dependency on the VS Code integrated terminal and its associated settings UI, simplifying the user experience. Enterprise users benefit from the integration of remote `globalSkills` from enterprise remote config, now fully supported with UI, toggle options, and system prompt integration, appearing under a dedicated \"Enterprise Skills\" section with `alwaysEnabled` enforcement. The onboarding flow now dynamically fetches recommended models, improving the initial setup experience, and a dedicated \"Quota Exceeded\" error message is displayed in the chat UI when spend caps are reached, providing clearer feedback. An OOM crash during long conversations has been fixed by setting `--max-old-space-size=8192` for the cline-core Node.js process, increasing the memory allocation. Error information in the chat error row is now more detailed, and `axios` has been updated to 1.15.0 across all packages. Old hardcoded announcement banners have also been removed. Upgrading to 3.80.0 is recommended to take advantage of these improvements and bug fixes, especially the memory allocation fix for long conversations. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
@@ -205,13 +211,63 @@
         "description": "Enables inline value reuse in user-level remote-config discovery.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "enterprise-managed-global-skills",
+        "name": "Enterprise Managed Global Skills",
+        "status": "stable",
+        "since": "3.80.0",
+        "description": "Remote `globalSkills` from enterprise remote config are now fully integrated with UI, toggle support, and system prompt integration. Enterprise-managed skills appear under a dedicated \"Enterprise Skills\" section and support `alwaysEnabled` enforcement.",
+        "key_details": [
+          "Skills appear under \"Enterprise Skills\" section.",
+          "Supports `alwaysEnabled` enforcement."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "dynamic-recommended-models-onboarding",
+        "name": "Dynamic Recommended Models Onboarding",
+        "status": "stable",
+        "since": "3.80.0",
+        "description": "The onboarding flow now uses dynamically fetched recommended models instead of a hardcoded list, with a fallback to the welcome view on failure.",
+        "key_details": [
+          "Fetches recommended models dynamically.",
+          "Falls back to welcome view on failure."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "quota-exceeded-error-message",
+        "name": "Quota Exceeded Error Message",
+        "status": "stable",
+        "since": "3.80.0",
+        "description": "A dedicated \"Quota Exceeded\" error message is now displayed in the chat error UI when Cline account spend caps are hit.",
+        "key_details": [
+          "Displays a dedicated \"Quota Exceeded\" error message.",
+          "Appears in the chat error UI."
+        ],
+        "source_url": ""
       }
     ],
     "commands": [],
     "flags": [],
     "env_vars": [],
     "models": [],
-    "breaking_changes": [],
+    "breaking_changes": [
+      {
+        "id": "remove-foreground-terminal-mode",
+        "version": "3.80.0",
+        "title": "Remove Foreground Terminal Mode",
+        "description": "Foreground terminal mode has been removed. All task command execution now defaults to background mode, removing the VS Code integrated terminal dependency and related settings UI.",
+        "affected": [
+          "Task command execution",
+          "VS Code integrated terminal dependency",
+          "Related settings UI"
+        ],
+        "migration": "No migration is required. All task commands will now execute in the background.",
+        "source_url": ""
+      }
+    ],
     "deprecations": [],
     "install": {
       "vscode": "ext install saoudrizwan.claude-dev",
