@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.21",
-  "generated_at": "2026-04-22T05:50:18.047Z",
+  "generated_at": "2026-04-22T05:00:41.780Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -26,7 +26,13 @@
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "auth-commands-owner-enforcement",
+      "control-ui-csp-tighten-img-src",
+      "gateway-control-ui-require-auth-on-avatar-route",
+      "exec-allowlist-reject-posix-parameter-expansion-in-heredocs",
+      "gateway-mcp-loopback-derive-owner-only-tool-visibility-from-authenticated-owner"
+    ]
   },
   "payload": {
     "meta": {
@@ -50,7 +56,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces the Skill Workshop plugin, enabling the capture of reusable workflow corrections as skills, improving completion bias and safety. The plugin SDK now features presentation and skills runtime contracts, allowing plugins to own richer interactive surfaces across channels. QQBot receives a self-contained engine architecture with QR-code onboarding and native approval handling. OpenAI image generation defaults to `gpt-image-2` with updated size hints. Onboarding is simplified with searchable autocompletes. Tool progress is now streamed into live preview edits for Discord, Slack, and Telegram. Matrix and Telegram plugin startup times are significantly reduced. Security is enhanced by stripping special tokens from external content and validating URLs in Synology Chat, LINE, and Tlon uploads. Owner-only command enforcement is tightened. GitHub Copilot is updated to use `claude-opus-4.7`. Ollama is registered as an image-capable media-understanding provider. It is recommended to upgrade to benefit from these new features, performance improvements, and security enhancements. No specific prerequisites are mentioned."
+      "tldr": "This release introduces the Skill Workshop plugin for capturing and applying reusable workflow corrections, enhancing completion bias and safety. The plugin SDK now supports presentation and skills runtime contracts, enabling richer interactive surfaces without channel-specific code. QQBot receives a self-contained engine architecture with QR-code onboarding and native approval handling via `/bot-approve`. OpenAI image generation defaults to `gpt-image-2` with updated size hints. Onboarding now uses searchable autocompletes for providers and model filtering. Tool progress is streamed into live preview edits for Discord, Slack, and Telegram. Ollama model lists are populated from `ollama.com/api/tags`. Several fixes address security vulnerabilities: owner identity is now strictly required for owner-enforced commands, Control UI avatar image sources are restricted, outbound webhook `file_url` values are validated for Synology Chat, and POSIX parameter expansion is rejected in unquoted heredocs during shell approval analysis. The GitHub Copilot default Opus model is updated to `claude-opus-4.7`. Additionally, gateway authentication is now required on the Control UI avatar route. It is recommended to upgrade to address these security concerns and take advantage of the new features. No specific prerequisites are mentioned."
     },
     "features": [
       {
