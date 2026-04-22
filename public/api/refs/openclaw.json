@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.4.20",
-  "generated_at": "2026-04-22T03:08:10.750Z",
+  "version": "2026.4.21",
+  "generated_at": "2026-04-22T05:00:41.780Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,17 +14,25 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.4.20",
-    "to_version": "2026.4.20",
-    "new_features": [],
-    "new_commands": [],
-    "new_flags": [
-      "--allow-failures"
+    "from_version": "2026.4.21",
+    "to_version": "2026.4.21",
+    "new_features": [
+      "skill-workshop-plugin",
+      "plugin-sdk-channels-presentation-skills-runtime-contracts",
+      "qqbot-self-contained-engine-architecture"
     ],
+    "new_commands": [],
+    "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "auth-commands-owner-enforcement",
+      "control-ui-csp-tighten-img-src",
+      "gateway-control-ui-require-auth-on-avatar-route",
+      "exec-allowlist-reject-posix-parameter-expansion-in-heredocs",
+      "gateway-mcp-loopback-derive-owner-only-tool-visibility-from-authenticated-owner"
+    ]
   },
   "payload": {
     "meta": {
@@ -42,13 +50,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.4.20",
-      "latest_release_date": "2026-04-21",
+      "latest_stable": "2026.4.21",
+      "latest_release_date": "2026-04-22",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release focuses on improving stability, security, and user experience. The default system prompt and OpenAI GPT-5 overlay have been strengthened with clearer completion bias and improved error handling. Tiered model pricing is now supported, including bundled Moonshot Kimi K2.6/K2.5 cost estimates. Session maintenance now enforces entry caps and prunes oversized stores to prevent OOM errors. The `openclaw qa suite` and `openclaw qa telegram` commands now fail by default on scenario failures, with a new `--allow-failures` flag for artifact-only runs.\n\nKey fixes include preventing gateway-host exec rejection in YOLO mode, normalizing OpenAI Codex transport overrides, and scoping Anthropic API defaulting. QQ Bot direct-upload URLs now have SSRF guards, and template-rendered mapping sessionKeys enforce allowRequestSessionKey. Browser/Chrome MCP surfaces DevToolsActivePort attach failures, and webchat handles inline image attachments correctly. Discord's `/think` autocomplete and thinking mode selection are now more accurate. Gateway pairing now treats loopback clients as local, and active memory degrades gracefully on recall failures.\n\nSecurity enhancements block MINIMAX_API_HOST workspace env injection and all `OPENCLAW_*` keys from untrusted `.env` files. The agent-facing `gateway` tool's config mutation guard has been extended to prevent rewriting operator-trusted paths. Gateway websocket broadcasts now require `operator.read` or higher for chat, agent, and tool-result event frames. This release is recommended for all users to improve stability and security. No specific migration steps are required."
+      "tldr": "This release introduces the Skill Workshop plugin for capturing and applying reusable workflow corrections, enhancing completion bias and safety. The plugin SDK now supports presentation and skills runtime contracts, enabling richer interactive surfaces without channel-specific code. QQBot receives a self-contained engine architecture with QR-code onboarding and native approval handling via `/bot-approve`. OpenAI image generation defaults to `gpt-image-2` with updated size hints. Onboarding now uses searchable autocompletes for providers and model filtering. Tool progress is streamed into live preview edits for Discord, Slack, and Telegram. Ollama model lists are populated from `ollama.com/api/tags`. Several fixes address security vulnerabilities: owner identity is now strictly required for owner-enforced commands, Control UI avatar image sources are restricted, outbound webhook `file_url` values are validated for Synology Chat, and POSIX parameter expansion is rejected in unquoted heredocs during shell approval analysis. The GitHub Copilot default Opus model is updated to `claude-opus-4.7`. Additionally, gateway authentication is now required on the Control UI avatar route. It is recommended to upgrade to address these security concerns and take advantage of the new features. No specific prerequisites are mentioned."
     },
     "features": [
       {
@@ -1657,6 +1665,33 @@
           "Merged output is bounded to ≤4000 chars text, ≤20 attachments, and first-plus-latest sampling beyond 10 source entries."
         ],
         "source_url": ""
+      },
+      {
+        "id": "skill-workshop-plugin",
+        "name": "Skill Workshop plugin",
+        "status": "experimental",
+        "since": "2026.4.21",
+        "description": "Adds the Skill Workshop plugin, which captures reusable workflow corrections as pending or auto-applied workspace skills, runs threshold-based reviewer passes for stronger completion bias on reusable procedures, quarantines unsafe proposals, and refreshes skill availability after safe writes.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "plugin-sdk-channels-presentation-skills-runtime-contracts",
+        "name": "Plugin SDK/channels presentation and skills runtime contracts",
+        "status": "experimental",
+        "since": "2026.4.21",
+        "description": "Adds presentation and skills runtime contracts, decouples channel presentation rendering, and documents message presentation cards so plugins can own richer interactive surfaces without channel-specific glue.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "qqbot-self-contained-engine-architecture",
+        "name": "QQBot self-contained engine architecture",
+        "status": "experimental",
+        "since": "2026.4.21",
+        "description": "Extracts a self-contained engine architecture with QR-code onboarding, native approval handling via `/bot-approve`, per-account resource stacks, credential backup/restore, shared media storage, and unified API/bridge/gateway modules.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -2094,9 +2129,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--allow-failures"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
@@ -2973,6 +3006,61 @@
           "QMD"
         ],
         "migration": "Ensure `memory_get` calls only target canonical memory files or active indexed QMD workspace documents.",
+        "source_url": ""
+      },
+      {
+        "id": "auth-commands-owner-enforcement",
+        "version": "2026.4.21",
+        "title": "Auth/commands: require owner identity for owner-enforced commands",
+        "description": "Requires owner identity (an owner-candidate match or internal `operator.admin`) for owner-enforced commands instead of treating wildcard channel `allowFrom` or empty owner-candidate lists as sufficient, so non-owner senders can no longer reach owner-only commands through a permissive fallback when `enforceOwnerForCommands=true` and `commands.ownerAllowFrom` is unset.",
+        "affected": [
+          "Commands with owner enforcement enabled"
+        ],
+        "migration": "Ensure that owner-enforced commands are only accessible to authorized users by properly configuring owner candidates or using the `operator.admin` role.",
+        "source_url": ""
+      },
+      {
+        "id": "control-ui-csp-tighten-img-src",
+        "version": "2026.4.21",
+        "title": "Control UI/CSP: tighten `img-src` to `'self' data:` only",
+        "description": "Tightens `img-src` to `'self' data:` only, and makes Control UI avatar helpers drop remote `http(s)` and protocol-relative URLs so the UI falls back to the built-in logo/badge instead of issuing arbitrary remote image fetches. Same-origin avatar routes (relative paths) and `data:image/...` avatars still render.",
+        "affected": [
+          "Control UI avatars"
+        ],
+        "migration": "Use same-origin avatar routes (relative paths) or `data:image/...` avatars for Control UI avatars.",
+        "source_url": ""
+      },
+      {
+        "id": "gateway-control-ui-require-auth-on-avatar-route",
+        "version": "2026.4.21",
+        "title": "Gateway/Control UI: require gateway auth on the Control UI avatar route",
+        "description": "Requires gateway auth on the Control UI avatar route (`GET /avatar/<agentId>` and `?meta=1` metadata) when auth is configured, matching the sibling assistant-media route, and propagate the existing gateway token through the UI avatar fetch (bearer header + authenticated blob URL) so authenticated dashboards still load local avatars.",
+        "affected": [
+          "Control UI avatar route"
+        ],
+        "migration": "Ensure gateway authentication is configured for the Control UI avatar route.",
+        "source_url": ""
+      },
+      {
+        "id": "exec-allowlist-reject-posix-parameter-expansion-in-heredocs",
+        "version": "2026.4.21",
+        "title": "Exec/allowlist: reject POSIX parameter expansion forms in unquoted heredocs",
+        "description": "Rejects POSIX parameter expansion forms such as `$VAR`, `$?`, `$$`, `$1`, and `$@` inside unquoted heredocs during shell approval analysis, so these heredocs no longer pass allowlist review as plain text.",
+        "affected": [
+          "Shell approval analysis"
+        ],
+        "migration": "Avoid using POSIX parameter expansion forms in unquoted heredocs during shell approval analysis.",
+        "source_url": ""
+      },
+      {
+        "id": "gateway-mcp-loopback-derive-owner-only-tool-visibility-from-authenticated-owner",
+        "version": "2026.4.21",
+        "title": "Gateway/MCP loopback: derive owner-only tool visibility from distinct authenticated owner",
+        "description": "Derives owner-only tool visibility from distinct authenticated owner vs non-owner loopback bearers instead of the caller-controlled owner header, so non-owner MCP child processes cannot recover owner access by spoofing request metadata.",
+        "affected": [
+          "MCP child processes"
+        ],
+        "migration": "Ensure that MCP child processes cannot recover owner access by spoofing request metadata.",
         "source_url": ""
       }
     ],
