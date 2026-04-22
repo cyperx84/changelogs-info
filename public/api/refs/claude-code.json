@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.116",
-  "generated_at": "2026-04-21T23:15:31.262Z",
+  "version": "2.1.117",
+  "generated_at": "2026-04-22T00:34:05.642Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,12 +14,17 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.116",
-    "to_version": "2.1.116",
-    "new_features": [],
+    "from_version": "2.1.117",
+    "to_version": "2.1.117",
+    "new_features": [
+      "advisor-tool"
+    ],
     "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [],
+    "new_env_vars": [
+      "CLAUDE_CODE_FORK_SUBAGENT",
+      "OTEL_LOG_TOOL_DETAILS"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -39,12 +44,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.116",
-      "latest_release_date": "2026-04-20",
+      "latest_stable": "2.1.117",
+      "latest_release_date": "2026-04-22",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "The `/resume` command is significantly faster on large sessions, with up to a 67% improvement on sessions larger than 40MB, and handles sessions with many dead-fork entries more efficiently. MCP startup is faster when multiple stdio servers are configured, and `resources/templates/list` is now deferred until the first `@`-mention. Fullscreen scrolling in VS Code, Cursor, and Windsurf terminals is smoother, with `/terminal-setup` now configuring the editor's scroll sensitivity. The thinking spinner now shows progress inline, replacing the separate hint row. The `/config` search now matches option values, and `/doctor` can be opened while Claude is responding. `/reload-plugins` and background plugin auto-update now auto-install missing plugin dependencies from marketplaces you've already added. The Bash tool now surfaces a hint when `gh` commands hit GitHub's API rate limit. The Usage tab in Settings now shows your 5-hour and weekly usage immediately and no longer fails when the usage endpoint is rate-limited. Agent frontmatter `hooks:` now fire when running as a main-thread agent via `--agent`. The slash command menu now shows \"No commands match\" when your filter has zero results. A security fix prevents sandbox auto-allow from bypassing the dangerous-path safety check for `rm`/`rmdir` targeting `/`, `$HOME`, or other critical system directories. Several terminal UI rendering and keyboard protocol issues have been resolved, including fixes for Devanagari script alignment, Ctrl+-, Cmd+Left/Right, Ctrl+Z hanging, scrollback duplication, modal search dialog overflow, blank cells in VS Code, and an API 400 error related to cache control. The `/branch` command no longer rejects conversations with transcripts larger than 50MB, and `/resume` now reports load errors instead of silently showing an empty conversation. The `/plugin` Installed tab no longer shows the same item twice, and `/update` and `/tui` now work after entering a worktree mid-session. This release includes several important performance improvements and bug fixes, making it highly recommended to upgrade."
+      "tldr": "This release introduces the experimental Advisor Tool, providing users with an enhanced advisory experience. Forked subagents can now be enabled on external builds using the `CLAUDE_CODE_FORK_SUBAGENT` environment variable. The `/model` command now persists selections across restarts, indicating whether the active model is project-pinned or managed-settings-pinned. The `/resume` command now offers to summarize stale, large sessions before re-reading them. Plugin installation now resolves missing dependencies automatically, and managed-settings for blocked/strict marketplaces are enforced during plugin operations. OpenTelemetry events now include command details and effort attributes, with redaction controlled by `OTEL_LOG_TOOL_DETAILS`. Native builds on macOS and Linux now use embedded `bfs` and `ugrep` for faster searches. Pro/Max subscribers on Opus 4.6 and Sonnet 4.6 now default to `high` effort. Several fixes address issues such as OAuth token expiration, `WebFetch` hanging, HTTP 204 errors, `/login` failures, prompt-input undo behavior, `NO_PROXY` not being respected, spurious escape/return triggers, SDK `reload_plugins` failures, Bedrock application-inference-profile request failures, MCP `elicitation/create` request auto-cancellation, subagent model mismatches, idle re-render loops, VSCode panel breakage, and inflated `/context` percentages for Opus 4.7. The `cleanupPeriodDays` retention sweep now covers additional directories. Upgrading is recommended to benefit from the new features and bug fixes. No specific prerequisites are required."
     },
     "features": [
       {
@@ -908,6 +913,15 @@
         "description": "Added `xhigh` effort level for Opus 4.7, sitting between `high` and `max`. Available via `/effort`, `--effort`, and the model picker; other models fall back to `high`.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "advisor-tool",
+        "name": "Advisor Tool",
+        "status": "experimental",
+        "since": "2.1.117",
+        "description": "Experimental Advisor Tool with dialog label, learn-more link, and startup notification.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1711,6 +1725,20 @@
         "purpose": "Emits full API request and response bodies as OpenTelemetry log events for debugging.",
         "status": "stable",
         "since": "2.1.111",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_FORK_SUBAGENT",
+        "purpose": "Enables forked subagents on external builds.",
+        "status": "stable",
+        "since": "2.1.117",
+        "source_url": ""
+      },
+      {
+        "name": "OTEL_LOG_TOOL_DETAILS",
+        "purpose": "Enables redaction of custom/MCP command names in OpenTelemetry events.",
+        "status": "stable",
+        "since": "2.1.117",
         "source_url": ""
       }
     ],
