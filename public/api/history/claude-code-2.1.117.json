@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.117",
-  "generated_at": "2026-04-22T01:37:13.180Z",
+  "generated_at": "2026-04-22T00:34:05.642Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -16,7 +16,9 @@
   "delta": {
     "from_version": "2.1.117",
     "to_version": "2.1.117",
-    "new_features": [],
+    "new_features": [
+      "advisor-tool"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [
@@ -47,7 +49,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces several improvements and fixes across various areas of claude-code. Forked subagents can now be enabled on external builds using the `CLAUDE_CODE_FORK_SUBAGENT=1` environment variable. The `/model` command now persists selections across restarts, even when the project pins a different model, and the startup header indicates the source of the active model. The `/resume` command now offers to summarize stale, large sessions before re-reading them. Plugin installation has been enhanced to install missing dependencies and auto-resolve them from configured marketplaces, with managed-settings enforcing `blockedMarketplaces` and `strictKnownMarketplaces`. The Advisor Tool now includes an \"experimental\" label and resolves issues with stuck sessions. OpenTelemetry events now include `command_name` and `command_source` for slash commands, and `cost.usage`, `token.usage`, `api_request`, and `api_error` now include an `effort` attribute when the model supports effort levels; custom/MCP command names are redacted unless `OTEL_LOG_TOOL_DETAILS=1` is set. Native builds on macOS and Linux now use embedded `bfs` and `ugrep` for faster searches. Several fixes address issues such as Plain-CLI OAuth sessions expiring, `WebFetch` hanging on large HTML pages, proxy errors, `/login` not working with expired tokens, prompt-input undo behavior, `NO_PROXY` not being respected under Bun, spurious escape/return triggers, SDK `reload_plugins` reconnecting user MCP servers serially, Bedrock application-inference-profile requests failing, MCP `elicitation/create` requests auto-cancelling, subagents running different models flagging file reads, idle re-render loops, and the \"Manage Plugins\" panel breaking in VSCode. Opus 4.7 sessions now correctly compute `/context` percentages. Pro/Max subscribers on Opus 4.6 and Sonnet 4.6 now default to `high` effort. This release is recommended for all users to take advantage of the improvements and fixes."
+      "tldr": "This release introduces the experimental Advisor Tool, providing users with an enhanced advisory experience. Forked subagents can now be enabled on external builds using the `CLAUDE_CODE_FORK_SUBAGENT` environment variable. The `/model` command now persists selections across restarts, indicating whether the active model is project-pinned or managed-settings-pinned. The `/resume` command now offers to summarize stale, large sessions before re-reading them. Plugin installation now resolves missing dependencies automatically, and managed-settings for blocked/strict marketplaces are enforced during plugin operations. OpenTelemetry events now include command details and effort attributes, with redaction controlled by `OTEL_LOG_TOOL_DETAILS`. Native builds on macOS and Linux now use embedded `bfs` and `ugrep` for faster searches. Pro/Max subscribers on Opus 4.6 and Sonnet 4.6 now default to `high` effort. Several fixes address issues such as OAuth token expiration, `WebFetch` hanging, HTTP 204 errors, `/login` failures, prompt-input undo behavior, `NO_PROXY` not being respected, spurious escape/return triggers, SDK `reload_plugins` failures, Bedrock application-inference-profile request failures, MCP `elicitation/create` request auto-cancellation, subagent model mismatches, idle re-render loops, VSCode panel breakage, and inflated `/context` percentages for Opus 4.7. The `cleanupPeriodDays` retention sweep now covers additional directories. Upgrading is recommended to benefit from the new features and bug fixes. No specific prerequisites are required."
     },
     "features": [
       {
