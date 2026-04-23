@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "gemini-cli",
   "version": "0.39.0",
-  "generated_at": "2026-04-23T10:34:36.906Z",
+  "generated_at": "2026-04-23T11:28:25.967Z",
   "extracted_from_sources": [
     "https://github.com/google-gemini/gemini-cli/releases/tag/v0.33.0",
     "https://github.com/google-gemini/gemini-cli/releases"
@@ -20,7 +20,7 @@
       "memory-inbox-command",
       "activate-skill-confirmation-in-plan-mode",
       "cpu-performance-integration-test-harness",
-      "use-agent-stream-hook",
+      "use-agent-stream",
       "chat-recording-to-jsonl-streaming",
       "high-volume-shell-test",
       "debug-rainbow-setting",
@@ -38,7 +38,9 @@
     ],
     "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [],
+    "new_env_vars": [
+      "GEMINI_PLANS_DIR"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -65,7 +67,7 @@
       "runtime": "node",
       "written_in": "typescript",
       "release_cadence": "Stable on Tuesdays. Preview: Tuesdays UTC 23:59. Nightly: daily UTC 00:00.",
-      "tldr": "This release introduces several enhancements and fixes, focusing on memory management, performance, and usability. A key addition is the `/memory inbox` command, enabling users to review extracted skills directly. Plan Mode now requires user confirmation for `activate_skill`, enhancing control over automated actions. Performance improvements include a CPU performance integration test harness and a high-volume shell test, alongside optimizations for Windows sandbox initialization. Memory leaks have been addressed by clearing timeouts in the OAuth flow and remediating subagent memory leaks using AbortSignal. The chat recording feature has been migrated to JSONL streaming for improved efficiency. Usability enhancements include enabling Ctrl+Backspace for word deletion in Windows Terminal and mouse clicking for cursor positioning in AskUser multi-line answers. The release also refines shell tool description display logic and tool output formatting in compact mode. Additionally, skill patching support is now integrated with the `/memory inbox`. This upgrade is recommended for all users to benefit from the performance improvements, memory leak fixes, and enhanced usability features. No specific migration steps are required."
+      "tldr": "The Gemini CLI has been updated to version 0.39.0, introducing several new features and improvements. A key addition is the `/memory inbox` command, which allows users to review extracted skills, enhancing control over agent behavior. Plan Mode now requires user confirmation for `activate_skill`, adding a layer of security and control. The `useAgentStream` hook has been implemented, and chat recording is now streamed in JSONL format for improved efficiency. This release also introduces a debug rainbow setting for UI debugging. Several fixes address memory leaks, sandbox issues, and UI glitches, improving stability and performance. The tool output formatting has been refined for compact mode, and skill patching now integrates with the `/memory inbox` command. A new environment variable, `GEMINI_PLANS_DIR`, exposes the plans directory to the hook environment, enabling greater customization. Mouse clicking is now supported for cursor positioning in AskUser multi-line answers. Upgrade to version 0.39.0 to take advantage of these enhancements and fixes, ensuring a more stable and feature-rich experience. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
@@ -1495,6 +1497,15 @@
         "description": "Migrates chat recording functionality to use JSONL streaming for more efficient data handling.",
         "key_details": [],
         "source_url": "https://github.com/google-gemini/gemini-cli/pull/23749"
+      },
+      {
+        "id": "use-agent-stream",
+        "name": "Use Agent Stream Hook",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Implements `useAgentStream` hook and wires it up in AppContainer.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24292"
       }
     ],
     "commands": [
