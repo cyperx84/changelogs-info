@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.22",
-  "generated_at": "2026-04-23T19:33:52.047Z",
+  "generated_at": "2026-04-23T14:50:33.498Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,35 +14,23 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.4.22",
-    "to_version": "2026.4.22",
+    "from_version": "2026.4.21",
+    "to_version": "2026.4.21",
     "new_features": [
-      "local-embedded-tui-mode",
-      "configurable-whatsapp-native-reply-quoting",
-      "whatsapp-group-direct-system-prompt-config",
-      "agents-sessions-list-filters",
-      "operator-personal-identity",
-      "gateway-diagnostics-export",
-      "agents-trajectory-export",
-      "tencent-cloud-provider-plugin",
-      "tokenjuice-plugin",
-      "openclaw-tools-mcp-bridge",
-      "cli-debug-timing-helper",
-      "thai-translation-support"
+      "skill-workshop-plugin",
+      "plugin-sdk-channels-presentation-skills-runtime-contracts",
+      "qqbot-self-contained-engine-architecture"
     ],
-    "new_commands": [
-      "/models add",
-      "/export-trajectory"
-    ],
+    "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [
-      "OPENCLAW_CHILD_OOM_SCORE_ADJ"
-    ],
+    "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "codex-cli-auth-import-removal",
-      "legacy-codex-app-server-guardian-shortcut-removed"
+      "auth-commands-owner-enforcement",
+      "control-ui-csp-avatar-restrictions",
+      "gateway-mcp-loopback-owner-visibility",
+      "openshell-sandbox-write-restrictions"
     ]
   },
   "payload": {
@@ -67,7 +55,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces xAI provider support for image generation, text-to-speech, and speech-to-text, including realtime transcription for Voice Call streaming, significantly expanding media capabilities. A new local embedded TUI mode allows terminal chats without a Gateway, enforcing plugin approval gates for enhanced security. The `/models add` command enables registering models from chat without restarting the gateway, streamlining model management. Key fixes address agent failover by classifying undici transport failures as timeouts, ensuring proper fallback behavior, and resolve issues with OpenAI Codex authentication by removing the CLI auth import path, promoting browser login or device pairing instead. WhatsApp now supports configurable native reply quoting and per-group/direct system prompt configuration, enhancing chat customization. Agents gain mailbox-style session list filters for improved session management. The release also includes a gateway diagnostics export for easier bug reporting and an agents trajectory export for reproducible debugging. It is recommended to upgrade to benefit from these new features and fixes. Note that the legacy `OPENCLAW_CODEX_APP_SERVER_GUARDIAN` shortcut is removed; use plugin config `appServer.mode: \"guardian\"` or `OPENCLAW_CODEX_APP_SERVER_MODE=guardian` instead. Additionally, the Codex CLI auth import path has been removed, requiring browser login or device pairing. Upgrade is recommended for all users to take advantage of the stability improvements and new functionalities."
+      "tldr": "This release introduces the Skill Workshop plugin for capturing and applying reusable workflow corrections, enhancing completion bias and safety. The Plugin SDK now supports decoupled channel presentation rendering, enabling richer interactive surfaces owned by plugins. QQBot features a self-contained engine architecture with QR-code onboarding and native approval handling via `/bot-approve`. OpenAI image generation defaults to `gpt-image-2` with 2K/4K size hints. Onboarding pickers are replaced with searchable autocompletes. Tool-progress updates stream into live preview edits for Discord, Slack, and Telegram. Owner enforcement for commands now requires owner identity, and Control UI avatar CSP is tightened. Gateway/MCP loopback owner visibility is derived from authenticated bearers, and OpenShell sandbox writes are restricted to the mounted root. The default GitHub Copilot Opus model is updated to `claude-opus-4.7`. Ollama model list is populated from `ollama.com/api/tags`. Telegram and Discord plugin startup times are significantly reduced. It is highly recommended to upgrade to this version to benefit from the new features, security enhancements, and performance improvements. Pay close attention to the breaking changes related to command authorization and avatar rendering."
     },
     "features": [
       {
@@ -1703,114 +1691,6 @@
         "description": "Extracts a self-contained engine architecture with QR-code onboarding, native approval handling via `/bot-approve`, per-account resource stacks, credential backup/restore, shared media storage, and unified API/bridge/gateway modules.",
         "key_details": [],
         "source_url": ""
-      },
-      {
-        "id": "local-embedded-tui-mode",
-        "name": "Local Embedded TUI Mode",
-        "status": "stable",
-        "since": "2026.4.22",
-        "description": "Adds a local embedded mode for running terminal chats without a Gateway while keeping plugin approval gates enforced.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "configurable-whatsapp-native-reply-quoting",
-        "name": "Configurable WhatsApp Native Reply Quoting",
-        "status": "stable",
-        "since": "2026.4.22",
-        "description": "Adds configurable native reply quoting with replyToMode for WhatsApp conversations.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "whatsapp-group-direct-system-prompt-config",
-        "name": "WhatsApp Group+Direct System Prompt Config",
-        "status": "stable",
-        "since": "2026.4.22",
-        "description": "Forwards per-group and per-direct `systemPrompt` config into inbound context `GroupSystemPrompt` so configured per-chat behavioral instructions are injected on every turn. Supports `\"*\"` wildcard fallback and account-scoped overrides under `channels.whatsapp.accounts.<id>.{groups,direct}`.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "agents-sessions-list-filters",
-        "name": "Agents Sessions List Filters",
-        "status": "stable",
-        "since": "2026.4.22",
-        "description": "Adds mailbox-style `sessions_list` filters for label, agent, and search plus visibility-scoped derived title and last-message previews.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "operator-personal-identity",
-        "name": "Operator Personal Identity",
-        "status": "stable",
-        "since": "2026.4.22",
-        "description": "Adds a browser-local personal identity for the operator (name plus local-safe avatar), route user identity rendering through the shared chat/avatar path used by assistant and agent surfaces, and tighten Quick Settings, agent fallback chips, and narrow-screen chat layouts so personalization no longer wastes space or clips controls.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "gateway-diagnostics-export",
-        "name": "Gateway Diagnostics Export",
-        "status": "stable",
-        "since": "2026.4.22",
-        "description": "Enables payload-free stability recording by default and add a support-ready diagnostics export with sanitized logs, status, health, config, and stability snapshots for bug reports.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "agents-trajectory-export",
-        "name": "Agents Trajectory Export",
-        "status": "stable",
-        "since": "2026.4.22",
-        "description": "Adds default-on local trajectory capture plus `/export-trajectory` bundles with redacted transcripts, runtime events, prompts, metadata, and artifacts for reproducible debugging and dataset export.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "tencent-cloud-provider-plugin",
-        "name": "Tencent Cloud Provider Plugin",
-        "status": "stable",
-        "since": "2026.4.22",
-        "description": "Adds the bundled Tencent Cloud provider plugin with TokenHub onboarding, docs, `hy3-preview` model catalog entries, and tiered Hy3 pricing metadata.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "tokenjuice-plugin",
-        "name": "Tokenjuice Plugin",
-        "status": "stable",
-        "since": "2026.4.22",
-        "description": "Adds bundled native OpenClaw support for tokenjuice as an opt-in plugin that compacts noisy `exec` and `bash` tool results in Pi embedded runs.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "openclaw-tools-mcp-bridge",
-        "name": "OpenClaw Tools MCP Bridge",
-        "status": "stable",
-        "since": "2026.4.22",
-        "description": "Adds an explicit `openClawToolsMcpBridge` option that injects a core OpenClaw MCP server for selected built-in tools, starting with `cron`.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "cli-debug-timing-helper",
-        "name": "CLI Debug Timing Helper",
-        "status": "stable",
-        "since": "2026.4.22",
-        "description": "Adds an opt-in temporary debug timing helper for local CLI performance investigations, with readable stderr output, JSONL capture, and docs for removing probes before landing fixes.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "thai-translation-support",
-        "name": "Thai Translation Support",
-        "status": "stable",
-        "since": "2026.4.22",
-        "description": "Adds Thai translation support for the docs site.",
-        "key_details": [],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -2061,22 +1941,6 @@
         "since": "2026.4.21",
         "status": "stable",
         "source_url": ""
-      },
-      {
-        "name": "/models add",
-        "syntax": "/models add <provider> <modelId>",
-        "description": "Registers a model from chat and use it without restarting the gateway.",
-        "since": "2026.4.22",
-        "status": "stable",
-        "source_url": ""
-      },
-      {
-        "name": "/export-trajectory",
-        "syntax": "/export-trajectory",
-        "description": "Bundles redacted transcripts, runtime events, prompts, metadata, and artifacts for reproducible debugging and dataset export.",
-        "since": "2026.4.22",
-        "status": "stable",
-        "source_url": ""
       }
     ],
     "flags": {
@@ -2294,13 +2158,6 @@
         "purpose": "API key for Arcee AI provider.",
         "status": "stable",
         "since": "2026.4.5",
-        "source_url": ""
-      },
-      {
-        "name": "OPENCLAW_CHILD_OOM_SCORE_ADJ",
-        "purpose": "Controls the `oom_score_adj` value for gateway-managed child processes on Linux. Setting it to `0` disables the adjustment.",
-        "status": "stable",
-        "since": "2026.4.22",
         "source_url": ""
       }
     ],
@@ -3292,28 +3149,6 @@
           "Shell approval analysis"
         ],
         "migration": "Ensure that heredocs do not contain POSIX parameter expansion forms or are properly quoted.",
-        "source_url": ""
-      },
-      {
-        "id": "codex-cli-auth-import-removal",
-        "version": "2026.4.22",
-        "title": "Codex CLI Auth Import Removed",
-        "description": "The Codex CLI auth import path has been removed from onboarding and provider discovery. OpenClaw no longer copies `~/.codex` OAuth material into agent auth stores.",
-        "affected": [
-          "Users who previously relied on the automatic import of Codex CLI authentication."
-        ],
-        "migration": "Use browser login or device pairing instead.",
-        "source_url": ""
-      },
-      {
-        "id": "legacy-codex-app-server-guardian-shortcut-removed",
-        "version": "2026.4.22",
-        "title": "Legacy Codex App Server Guardian Shortcut Removed",
-        "description": "The legacy `OPENCLAW_CODEX_APP_SERVER_GUARDIAN` shortcut is removed; use plugin config `appServer.mode: \"guardian\"` or `OPENCLAW_CODEX_APP_SERVER_MODE=guardian`.",
-        "affected": [
-          "Users who used the `OPENCLAW_CODEX_APP_SERVER_GUARDIAN` environment variable to configure the Codex app server mode."
-        ],
-        "migration": "Use plugin config `appServer.mode: \"guardian\"` or `OPENCLAW_CODEX_APP_SERVER_MODE=guardian` instead.",
         "source_url": ""
       }
     ],

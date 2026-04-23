@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.123.0",
-  "generated_at": "2026-04-23T16:37:04.432Z",
+  "version": "0.124.0",
+  "generated_at": "2026-04-23T19:32:26.472Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,14 +14,15 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.123.0",
-    "to_version": "0.123.0",
+    "from_version": "0.124.0",
+    "to_version": "0.124.0",
     "new_features": [
-      "amazon-bedrock-model-provider",
-      "mcp-verbose-diagnostics",
-      "plugin-mcp-loading-flexibility",
-      "improved-realtime-handoffs",
-      "host-specific-remote-sandbox-config"
+      "tui-quick-reasoning-controls",
+      "app-server-multi-environment-management",
+      "amazon-bedrock-support",
+      "remote-plugin-marketplace-support",
+      "stable-hooks-with-mcp-tool-observation",
+      "default-fast-service-tier-for-chatgpt-plans"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -45,14 +46,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.123.0",
+      "latest_stable": "0.124.0",
       "latest_prerelease": "0.115.0-alpha.6",
       "latest_release_date": "2026-04-23",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release introduces several key enhancements. The most notable is the addition of a built-in `amazon-bedrock` model provider, allowing users to leverage Amazon Bedrock models with configurable AWS profile support. This expands the range of available models and provides more flexibility in model selection. A new `/mcp verbose` command offers comprehensive MCP server diagnostics, while the existing `/mcp` command remains fast for regular use. Plugin MCP loading now supports both `mcpServers` and top-level server maps in `.mcp.json`, increasing configuration flexibility. Realtime handoffs are improved, enabling background agents to receive transcript deltas and remain silent when necessary. Host-specific `remote_sandbox_config` requirements are added for remote environments, enhancing security. The `/copy` command now correctly copies the latest visible assistant response after a rollback. A bug causing stuck `Working` states due to queued follow-up text during manual shell commands has been resolved. Unicode/dead-key input issues in VS Code WSL terminals are fixed by disabling enhanced keyboard mode. Stale proxy environment variables are now prevented from being restored from shell snapshots. The `codex exec` command now inherits root-level shared flags. The Code Review skill instructions have been refined. It is recommended to upgrade to this version to benefit from the new features, bug fixes, and improved stability. No specific migration steps are required."
+      "tldr": "This release introduces several key enhancements, most notably the new TUI quick reasoning controls (`Alt+,` and `Alt+.`) for adjusting reasoning levels on the fly and resetting them on model upgrades. App-server sessions can now manage multiple environments, allowing for per-turn environment and working directory selection, which streamlines multi-workspace and remote setups. First-class Amazon Bedrock support has been added, including AWS SigV4 signing and credential-based authentication. Remote plugin marketplaces can now be listed and read directly, offering more reliable detail lookups and larger result pages. Hooks are now stable and can be configured inline in `config.toml` and managed in `requirements.toml`, with the ability to observe MCP tools, `apply_patch`, and long-running Bash sessions. Additionally, eligible ChatGPT plans now default to the Fast service tier unless explicitly opted out. This release also fixes issues with Cloudflare cookie preservation, remote app-server reliability, permission-mode drift, `wait_agent` timeouts, and local stdio MCP launches. Startup failures on managed config edge cases are now less frequent, with clearer error messages. It is recommended to upgrade to this version to take advantage of the new features and bug fixes. No specific migration steps are required."
     },
     "features": [
       {
@@ -1248,6 +1249,81 @@
           "`remote_sandbox_config`"
         ],
         "source_url": "https://github.com/openai/codex/pull/18763"
+      },
+      {
+        "id": "tui-quick-reasoning-controls",
+        "name": "TUI Quick Reasoning Controls",
+        "status": "stable",
+        "since": "0.124.0",
+        "description": "The TUI now has quick reasoning controls: `Alt+,` lowers reasoning, `Alt+.` raises it, and accepted model upgrades now reset reasoning to the new model’s default instead of carrying over stale settings.",
+        "key_details": [
+          "`Alt+,` lowers reasoning",
+          "`Alt+.` raises reasoning",
+          "Model upgrades reset reasoning to the new model’s default"
+        ],
+        "source_url": "https://github.com/openai/codex/pull/18866"
+      },
+      {
+        "id": "app-server-multi-environment-management",
+        "name": "App-Server Multi-Environment Management",
+        "status": "stable",
+        "since": "0.124.0",
+        "description": "App-server sessions can now manage multiple environments and choose an environment and working directory per turn, which makes multi-workspace and remote setups easier to target precisely.",
+        "key_details": [
+          "Manage multiple environments per session",
+          "Choose environment and working directory per turn"
+        ],
+        "source_url": "https://github.com/openai/codex/pull/18401"
+      },
+      {
+        "id": "amazon-bedrock-support",
+        "name": "Amazon Bedrock Support",
+        "status": "stable",
+        "since": "0.124.0",
+        "description": "Added first-class Amazon Bedrock support for OpenAI-compatible providers, including AWS SigV4 signing and AWS credential-based auth.",
+        "key_details": [
+          "AWS SigV4 signing",
+          "AWS credential-based auth"
+        ],
+        "source_url": "https://github.com/openai/codex/pull/17820"
+      },
+      {
+        "id": "remote-plugin-marketplace-support",
+        "name": "Remote Plugin Marketplace Support",
+        "status": "stable",
+        "since": "0.124.0",
+        "description": "Remote plugin marketplaces can now be listed and read directly, with more reliable detail lookups and larger result pages.",
+        "key_details": [
+          "List and read remote plugin marketplaces directly",
+          "More reliable detail lookups",
+          "Larger result pages"
+        ],
+        "source_url": "https://github.com/openai/codex/pull/18452"
+      },
+      {
+        "id": "stable-hooks-with-mcp-tool-observation",
+        "name": "Stable Hooks with MCP Tool Observation",
+        "status": "stable",
+        "since": "0.124.0",
+        "description": "Hooks are now stable, can be configured inline in `config.toml` and managed `requirements.toml`, and can observe MCP tools as well as `apply_patch` and long-running Bash sessions.",
+        "key_details": [
+          "Hooks are now stable",
+          "Configured inline in `config.toml`",
+          "Managed in `requirements.toml`",
+          "Observe MCP tools, `apply_patch`, and long-running Bash sessions"
+        ],
+        "source_url": "https://github.com/openai/codex/pull/18893"
+      },
+      {
+        "id": "default-fast-service-tier-for-chatgpt-plans",
+        "name": "Default Fast Service Tier for ChatGPT Plans",
+        "status": "stable",
+        "since": "0.124.0",
+        "description": "Eligible ChatGPT plans now default to the Fast service tier unless you explicitly opt out.",
+        "key_details": [
+          "Eligible ChatGPT plans default to Fast service tier"
+        ],
+        "source_url": "https://github.com/openai/codex/pull/19053"
       }
     ],
     "commands": [
