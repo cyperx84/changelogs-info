@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.118",
-  "generated_at": "2026-04-23T03:07:55.434Z",
+  "generated_at": "2026-04-23T01:37:17.341Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -17,14 +17,16 @@
     "from_version": "2.1.118",
     "to_version": "2.1.118",
     "new_features": [
+      "vim-visual-mode",
       "custom-themes",
+      "mcp-tool-invocation-from-hooks",
       "wsl-windows-settings-inheritance",
       "auto-mode-defaults-inclusion",
       "auto-mode-opt-in-prompt",
       "plugin-tag-command"
     ],
     "new_commands": [
-      "/usage"
+      "/theme"
     ],
     "new_flags": [
       "--continue",
@@ -39,7 +41,7 @@
     ],
     "deprecated_flags": [],
     "breaking_changes": [
-      "cost-stats-commands-merged"
+      "cost-stats-merged-into-usage"
     ]
   },
   "payload": {
@@ -62,7 +64,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces several key improvements. The `/cost` and `/stats` commands have been merged into `/usage`, though the original commands remain as shortcuts. Custom themes can now be created and managed via `/theme` or by editing JSON files in `~/.claude/themes/`, with plugin support for theme distribution. A new `DISABLE_UPDATES` environment variable provides a stricter method to block all update paths, including manual updates. WSL on Windows can now inherit Windows-side managed settings using the `wslInheritsWindowsSettings` policy key. Auto mode now supports including custom rules alongside built-in defaults by using `\"$defaults\"` in `autoMode.allow`, `autoMode.soft_deny`, or `autoMode.environment`. A \"Don't ask again\" option has been added to the auto mode opt-in prompt. The `claude plugin tag` command simplifies plugin release tagging with version validation. Additionally, `/color` now syncs session accent colors with claude.ai/code when Remote Control is active. Several bug fixes address issues with MCP authentication, OAuth token refresh, credential saving, and remote session handling. Upgrading is recommended to take advantage of these new features and fixes. No specific prerequisites are required."
+      "tldr": "Version 2.1.118 introduces Vim visual mode, enabling selection, operators, and visual feedback within the editor using `v` and `V`. This enhances code editing workflows with familiar Vim keybindings. The `/cost` and `/stats` commands have been merged into `/usage`, though the former commands remain as typing shortcuts. Custom themes can now be created and switched via the `/theme` command or by editing JSON files in `~/.claude/themes/`, with plugins also able to ship themes. Hooks can now directly invoke MCP tools using `type: \"mcp_tool\"`, expanding automation capabilities. A new `DISABLE_UPDATES` environment variable provides a stricter way to block all update paths, including manual updates. WSL on Windows can now inherit Windows-side managed settings via the `wslInheritsWindowsSettings` policy key. Auto mode now allows including `\"$defaults\"` in its configuration to extend built-in rules. A \"Don't ask again\" option has been added to the auto mode opt-in prompt. The `claude plugin tag` command facilitates creating release git tags for plugins with version validation. Several fixes address issues with MCP authentication, OAuth token refresh, credential saving, and remote control sessions. Upgrading is recommended to take advantage of the new features and fixes, with no specific prerequisites beyond the usual update process."
     },
     "features": [
       {
@@ -1373,14 +1375,6 @@
         "since": "2.1.118",
         "status": "stable",
         "source_url": ""
-      },
-      {
-        "name": "/usage",
-        "syntax": "/usage",
-        "description": "Opens the relevant tab for cost and stats.",
-        "since": "2.1.118",
-        "status": "stable",
-        "source_url": ""
       }
     ],
     "flags": {
@@ -2024,17 +2018,6 @@
         "description": "The `/cost` and `/stats` commands have been merged into a single `/usage` command. Both `/cost` and `/stats` will continue to function as typing shortcuts.",
         "affected": [
           "Users who rely on the `/cost` and `/stats` commands"
-        ],
-        "migration": "Use the `/usage` command instead. The old commands will continue to work as shortcuts.",
-        "source_url": ""
-      },
-      {
-        "id": "cost-stats-commands-merged",
-        "version": "2.1.118",
-        "title": "/cost and /stats commands merged into /usage",
-        "description": "The `/cost` and `/stats` commands have been merged into a single `/usage` command. Both `/cost` and `/stats` will continue to function as typing shortcuts.",
-        "affected": [
-          "Users who rely on the `/cost` or `/stats` commands."
         ],
         "migration": "Use the `/usage` command instead. The old commands will continue to work as shortcuts.",
         "source_url": ""
@@ -3233,18 +3216,6 @@
         "name": "/vim",
         "replaced_by": "/config → Editor mode",
         "deprecated_since": "2.1.92",
-        "source_url": ""
-      },
-      {
-        "name": "/cost",
-        "replaced_by": "/usage",
-        "deprecated_since": "2.1.118",
-        "source_url": ""
-      },
-      {
-        "name": "/stats",
-        "replaced_by": "/usage",
-        "deprecated_since": "2.1.118",
         "source_url": ""
       },
       {
