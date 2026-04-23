@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "gemini-cli",
-  "version": "0.38.2",
-  "generated_at": "2026-04-23T03:08:07.238Z",
+  "version": "0.39.0",
+  "generated_at": "2026-04-23T05:03:45.242Z",
   "extracted_from_sources": [
     "https://github.com/google-gemini/gemini-cli/releases/tag/v0.33.0",
     "https://github.com/google-gemini/gemini-cli/releases"
@@ -14,12 +14,36 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "0.38.2",
-    "to_version": "0.38.2",
-    "new_features": [],
-    "new_commands": [],
+    "from_version": "0.39.0",
+    "to_version": "0.39.0",
+    "new_features": [
+      "memory-inbox-command",
+      "cpu-performance-integration-test-harness",
+      "refine-shell-tool-description-display-logic",
+      "generalize-evals-infra",
+      "use-agent-stream-hook",
+      "high-volume-shell-test",
+      "debug-rainbow-setting",
+      "strategic-re-evaluation-guidance",
+      "large-memory-regression-test",
+      "skill-patching-support",
+      "extract-quotacontext",
+      "scroll-momentum-enhancements",
+      "tool-controlled-display-protocol",
+      "auth-block-in-mcp-servers-config",
+      "silent-fallback-for-plan-mode-model-routing",
+      "decoupled-contextmanager-and-sidecar-architecture",
+      "plan-mode-prompt-update",
+      "asian-language-performance-test",
+      "mouse-clicking-for-askuser-multi-line-answers"
+    ],
+    "new_commands": [
+      "/memory"
+    ],
     "new_flags": [],
-    "new_env_vars": [],
+    "new_env_vars": [
+      "GEMINI_PLANS_DIR"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -39,14 +63,14 @@
       "changelog_url": "https://github.com/google-gemini/gemini-cli/releases",
       "repo_url": "https://github.com/google-gemini/gemini-cli",
       "license": "apache-2.0",
-      "latest_stable": "0.38.2",
+      "latest_stable": "0.39.0",
       "latest_prerelease": "0.34.0-preview",
-      "latest_release_date": "2026-04-17",
+      "latest_release_date": "2026-04-23",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
       "release_cadence": "Stable on Tuesdays. Preview: Tuesdays UTC 23:59. Nightly: daily UTC 00:00.",
-      "tldr": "This release, version 0.38.2, is a patch release addressing an issue identified in version 0.38.1. Specifically, it cherry-picks commit 14b2f35 from the development branch to address a bug. Given the nature of a patch release, it primarily focuses on stability and bug fixes rather than introducing new features or significant changes. Users experiencing the issue addressed by commit 14b2f35 should upgrade to this version to resolve it. There are no new features, commands, flags, or breaking changes introduced in this release. No specific migration steps are required. Upgrading is recommended for users affected by the bug fixed in this patch. No prerequisites are necessary for upgrading."
+      "tldr": "This release of gemini-cli introduces several key improvements and new features. The highlight is the addition of the `/memory inbox` command, enabling users to review extracted skills directly within the CLI. This simplifies skill management and enhances the user experience. A significant refactoring of subagent tools consolidates them into a unified `invoke_subagent` tool, improving consistency and maintainability. Plan Mode now requires user confirmation for `activate_skill`, adding a layer of security and control. Several fixes address memory leaks, including those in subagents and OAuth flows, ensuring more stable and efficient operation. The release also includes performance enhancements, such as optimized Windows sandbox initialization and a new high-volume shell test. Sandbox security is strengthened with centralized path resolution and read-only enforcement for git worktrees. The tool output formatting for compact mode has been refined for better readability. Additionally, the release introduces a decoupled ContextManager and Sidecar architecture. This upgrade is recommended for all users to benefit from the improved stability, security, and new features. No specific migration steps are required."
     },
     "features": [
       {
@@ -1269,6 +1293,177 @@
         "description": "Added flag for ept size and increased default size.",
         "key_details": [],
         "source_url": "https://github.com/google-gemini/gemini-cli/pull/24859"
+      },
+      {
+        "id": "memory-inbox-command",
+        "name": "/memory inbox command",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Adds a /memory inbox command for reviewing extracted skills.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24544"
+      },
+      {
+        "id": "cpu-performance-integration-test-harness",
+        "name": "CPU performance integration test harness",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Adds a CPU performance integration test harness.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24951"
+      },
+      {
+        "id": "refine-shell-tool-description-display-logic",
+        "name": "Refine shell tool description display logic",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Refines the shell tool description display logic.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24903"
+      },
+      {
+        "id": "generalize-evals-infra",
+        "name": "Generalize evals infra",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Generalizes evals infrastructure to support more types of evals, organization, and queuing of named suites.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24941"
+      },
+      {
+        "id": "use-agent-stream-hook",
+        "name": "useAgentStream hook",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Implements useAgentStream hook and wires it up in AppContainer.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24292"
+      },
+      {
+        "id": "high-volume-shell-test",
+        "name": "High-volume shell test",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Adds a high-volume shell test and refines the perf harness.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24983"
+      },
+      {
+        "id": "debug-rainbow-setting",
+        "name": "debugRainbow setting",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Adds an optional debugRainbow setting.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25088"
+      },
+      {
+        "id": "strategic-re-evaluation-guidance",
+        "name": "Strategic Re-evaluation guidance",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Adds Strategic Re-evaluation guidance to the system prompt.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25062"
+      },
+      {
+        "id": "large-memory-regression-test",
+        "name": "Large memory regression test",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Adds a large memory regression test.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25059"
+      },
+      {
+        "id": "skill-patching-support",
+        "name": "Skill patching support",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Adds skill patching support with /memory inbox integration.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25148"
+      },
+      {
+        "id": "extract-quotacontext",
+        "name": "Extract QuotaContext",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Extracts QuotaContext and resolves infinite render loop.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24959"
+      },
+      {
+        "id": "scroll-momentum-enhancements",
+        "name": "Scroll momentum enhancements",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Adds enhancements to scroll momentum.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24447"
+      },
+      {
+        "id": "tool-controlled-display-protocol",
+        "name": "Tool-controlled display protocol",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Implements tool-controlled display protocol (Steps 2-3).",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25134"
+      },
+      {
+        "id": "auth-block-in-mcp-servers-config",
+        "name": "Auth block in MCP servers config",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Supports auth block in MCP servers config in agents.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24770"
+      },
+      {
+        "id": "silent-fallback-for-plan-mode-model-routing",
+        "name": "Silent fallback for Plan Mode model routing",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Implements silent fallback for Plan Mode model routing.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25317"
+      },
+      {
+        "id": "decoupled-contextmanager-and-sidecar-architecture",
+        "name": "Decoupled ContextManager and Sidecar architecture",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Introduces decoupled ContextManager and Sidecar architecture.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24752"
+      },
+      {
+        "id": "plan-mode-prompt-update",
+        "name": "Plan mode prompt update",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Updates plan mode prompt to allow showing plan content.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25058"
+      },
+      {
+        "id": "asian-language-performance-test",
+        "name": "Asian language performance test",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Adds a performance test in asian language.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25392"
+      },
+      {
+        "id": "mouse-clicking-for-askuser-multi-line-answers",
+        "name": "Mouse clicking for AskUser multi-line answers",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Enables mouse clicking for cursor positioning in AskUser multi-line answers.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24630"
       }
     ],
     "commands": [
@@ -1375,6 +1570,14 @@
         "since": "0.38.0",
         "status": "stable",
         "source_url": "https://github.com/google-gemini/gemini-cli/pull/24649"
+      },
+      {
+        "name": "/memory",
+        "syntax": "/memory inbox",
+        "description": "Reviews extracted skills.",
+        "since": "0.39.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24544"
       }
     ],
     "flags": {
@@ -1487,6 +1690,13 @@
         "status": "stable",
         "since": "0.34.0",
         "source_url": "https://github.com/google-gemini/gemini-cli/pull/20463"
+      },
+      {
+        "name": "GEMINI_PLANS_DIR",
+        "purpose": "Exposes GEMINI_PLANS_DIR to hook environment.",
+        "status": "stable",
+        "since": "0.39.0",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25296"
       }
     ],
     "models": [
