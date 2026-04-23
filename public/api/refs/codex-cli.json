@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.122.0",
-  "generated_at": "2026-04-23T00:39:10.910Z",
+  "version": "0.123.0",
+  "generated_at": "2026-04-23T01:37:26.795Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,25 +14,20 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.122.0",
-    "to_version": "0.122.0",
+    "from_version": "0.123.0",
+    "to_version": "0.123.0",
     "new_features": [
-      "tui-side-conversations-queued-input",
-      "plan-mode-fresh-context",
-      "plugin-workflows-tabbed-browsing-marketplace-removal",
-      "filesystem-permissions-deny-read-policies",
-      "tool-discovery-image-generation-default"
+      "amazon-bedrock-model-provider",
+      "mcp-verbose-diagnostics",
+      "plugin-mcp-loading-flexibility",
+      "improved-realtime-handoffs",
+      "host-specific-remote-sandbox-config"
     ],
     "new_commands": [],
-    "new_flags": [
-      "--ignore-user-config",
-      "--ignore-rules"
-    ],
+    "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
-    "deprecated_flags": [
-      "use_legacy_landlock"
-    ],
+    "deprecated_flags": [],
     "breaking_changes": []
   },
   "payload": {
@@ -50,14 +45,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.122.0",
+      "latest_stable": "0.123.0",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-04-20",
+      "latest_release_date": "2026-04-23",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release enhances standalone installs, making `codex app` more reliable on Windows and Intel Macs. The TUI gains support for `/side` conversations for quick questions, and slash commands and shell prompts can now be queued while work is running. Plan Mode can now start with a fresh context, displaying context usage before proceeding. Plugin workflows are improved with tabbed browsing, inline enable/disable toggles, marketplace removal, and support for remote, cross-repo, and local marketplace sources. Filesystem permissions now include deny-read glob policies, managed deny-read requirements, platform sandbox enforcement, and isolated `codex exec` runs with `--ignore-user-config` and `--ignore-rules`. Tool discovery and image generation are enabled by default, with better image handling. Security is tightened by revoking ChatGPT tokens on logout and requiring trusted workspaces for project hooks and exec policies. Several TUI bugs are fixed, including stale app-server requests, fatal skills-list failures, and redundant memory notices. It is recommended to upgrade to benefit from these improvements and security enhancements. Note that the `use_legacy_landlock` feature flag has been deprecated."
+      "tldr": "Version 0.123.0 introduces a built-in Amazon Bedrock model provider, enabling developers to leverage Bedrock models with configurable AWS profile support. This simplifies integration with AWS services and expands the range of available models. The `/mcp verbose` command provides comprehensive MCP server diagnostics, aiding in debugging and resource management, while the existing `/mcp` command remains fast for regular use. Plugin MCP loading now supports both `mcpServers` and top-level server maps in `.mcp.json`, offering greater flexibility in plugin configuration. Realtime handoffs are enhanced, allowing background agents to receive transcript deltas and control their silence, improving agent collaboration. Host-specific `remote_sandbox_config` requirements are added for remote environments, ensuring consistent sandboxing across different hosts. The `/copy` command now correctly copies the latest visible assistant response after a rollback. Queued follow-up text submitted during manual shell commands prevents stuck `Working` states. Unicode/dead-key input is fixed in VS Code WSL terminals by disabling enhanced keyboard mode. Stale proxy environment variables are no longer restored from shell snapshots. `codex exec` now inherits root-level shared flags. Code Review skill instructions have been tightened. This release also includes dependency updates and internal refactoring. It is recommended to upgrade to this version to benefit from the new features, bug fixes, and improved stability. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
@@ -1199,6 +1194,60 @@
         "description": "Standalone installs are more self-contained, and `codex app` now opens or installs Desktop correctly on Windows and Intel Macs.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "amazon-bedrock-model-provider",
+        "name": "Amazon Bedrock Model Provider",
+        "status": "stable",
+        "since": "0.123.0",
+        "description": "Added a built-in `amazon-bedrock` model provider with configurable AWS profile support.",
+        "key_details": [
+          "AWS profile configuration"
+        ],
+        "source_url": "https://github.com/openai/codex/pull/18744"
+      },
+      {
+        "id": "mcp-verbose-diagnostics",
+        "name": "Verbose MCP Diagnostics",
+        "status": "stable",
+        "since": "0.123.0",
+        "description": "Added `/mcp verbose` for full MCP server diagnostics, resources, and resource templates while keeping plain `/mcp` fast.",
+        "key_details": [],
+        "source_url": "https://github.com/openai/codex/pull/18610"
+      },
+      {
+        "id": "plugin-mcp-loading-flexibility",
+        "name": "Flexible Plugin MCP Loading",
+        "status": "stable",
+        "since": "0.123.0",
+        "description": "Made plugin MCP loading accept both `mcpServers` and top-level server maps in `.mcp.json`.",
+        "key_details": [
+          "`.mcp.json` configuration"
+        ],
+        "source_url": "https://github.com/openai/codex/pull/18780"
+      },
+      {
+        "id": "improved-realtime-handoffs",
+        "name": "Improved Realtime Handoffs",
+        "status": "stable",
+        "since": "0.123.0",
+        "description": "Improved realtime handoffs so background agents receive transcript deltas and can explicitly stay silent when appropriate.",
+        "key_details": [
+          "Transcript deltas for background agents",
+          "Agent silence control"
+        ],
+        "source_url": "https://github.com/openai/codex/pull/18597"
+      },
+      {
+        "id": "host-specific-remote-sandbox-config",
+        "name": "Host-Specific Remote Sandbox Config",
+        "status": "stable",
+        "since": "0.123.0",
+        "description": "Added host-specific `remote_sandbox_config` requirements for remote environments.",
+        "key_details": [
+          "`remote_sandbox_config`"
+        ],
+        "source_url": "https://github.com/openai/codex/pull/18763"
       }
     ],
     "commands": [
@@ -1801,10 +1850,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--ignore-user-config",
-        "--ignore-rules"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {

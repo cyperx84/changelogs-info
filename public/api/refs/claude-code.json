@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.117",
-  "generated_at": "2026-04-23T00:39:02.162Z",
+  "version": "2.1.118",
+  "generated_at": "2026-04-23T01:37:17.341Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,18 +14,35 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.117",
-    "to_version": "2.1.117",
-    "new_features": [],
-    "new_commands": [],
-    "new_flags": [],
-    "new_env_vars": [
-      "CLAUDE_CODE_FORK_SUBAGENT",
-      "OTEL_LOG_TOOL_DETAILS"
+    "from_version": "2.1.118",
+    "to_version": "2.1.118",
+    "new_features": [
+      "vim-visual-mode",
+      "custom-themes",
+      "mcp-tool-invocation-from-hooks",
+      "wsl-windows-settings-inheritance",
+      "auto-mode-defaults-inclusion",
+      "auto-mode-opt-in-prompt",
+      "plugin-tag-command"
     ],
-    "deprecated_commands": [],
+    "new_commands": [
+      "/theme"
+    ],
+    "new_flags": [
+      "--continue",
+      "--resume"
+    ],
+    "new_env_vars": [
+      "DISABLE_UPDATES"
+    ],
+    "deprecated_commands": [
+      "/cost",
+      "/stats"
+    ],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "cost-stats-merged-into-usage"
+    ]
   },
   "payload": {
     "meta": {
@@ -42,12 +59,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.117",
-      "latest_release_date": "2026-04-22",
+      "latest_stable": "2.1.118",
+      "latest_release_date": "2026-04-23",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces several improvements and fixes across various areas of claude-code. Forked subagents can now be enabled on external builds using the `CLAUDE_CODE_FORK_SUBAGENT=1` environment variable. The `/model` command now persists selections across restarts, even when the project pins a different model, and the startup header indicates the source of the active model. The `/resume` command now offers to summarize stale, large sessions before re-reading them. Plugin installation has been enhanced to install missing dependencies and auto-resolve them from configured marketplaces, with managed-settings enforcing `blockedMarketplaces` and `strictKnownMarketplaces`. The Advisor Tool now includes an \"experimental\" label and resolves issues with stuck sessions. OpenTelemetry events now include `command_name` and `command_source` for slash commands, and `cost.usage`, `token.usage`, `api_request`, and `api_error` now include an `effort` attribute when the model supports effort levels; custom/MCP command names are redacted unless `OTEL_LOG_TOOL_DETAILS=1` is set. Native builds on macOS and Linux now use embedded `bfs` and `ugrep` for faster searches. Several fixes address issues such as Plain-CLI OAuth sessions expiring, `WebFetch` hanging on large HTML pages, proxy errors, `/login` not working with expired tokens, prompt-input undo behavior, `NO_PROXY` not being respected under Bun, spurious escape/return triggers, SDK `reload_plugins` reconnecting user MCP servers serially, Bedrock application-inference-profile requests failing, MCP `elicitation/create` requests auto-cancelling, subagents running different models flagging file reads, idle re-render loops, and the \"Manage Plugins\" panel breaking in VSCode. Opus 4.7 sessions now correctly compute `/context` percentages. Pro/Max subscribers on Opus 4.6 and Sonnet 4.6 now default to `high` effort. This release is recommended for all users to take advantage of the improvements and fixes."
+      "tldr": "Version 2.1.118 introduces Vim visual mode, enabling selection, operators, and visual feedback within the editor using `v` and `V`. This enhances code editing workflows with familiar Vim keybindings. The `/cost` and `/stats` commands have been merged into `/usage`, though the former commands remain as typing shortcuts. Custom themes can now be created and switched via the `/theme` command or by editing JSON files in `~/.claude/themes/`, with plugins also able to ship themes. Hooks can now directly invoke MCP tools using `type: \"mcp_tool\"`, expanding automation capabilities. A new `DISABLE_UPDATES` environment variable provides a stricter way to block all update paths, including manual updates. WSL on Windows can now inherit Windows-side managed settings via the `wslInheritsWindowsSettings` policy key. Auto mode now allows including `\"$defaults\"` in its configuration to extend built-in rules. A \"Don't ask again\" option has been added to the auto mode opt-in prompt. The `claude plugin tag` command facilitates creating release git tags for plugins with version validation. Several fixes address issues with MCP authentication, OAuth token refresh, credential saving, and remote control sessions. Upgrading is recommended to take advantage of the new features and fixes, with no specific prerequisites beyond the usual update process."
     },
     "features": [
       {
@@ -920,6 +937,69 @@
         "description": "Experimental Advisor Tool with dialog label, learn-more link, and startup notification.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "vim-visual-mode",
+        "name": "Vim Visual Mode",
+        "status": "stable",
+        "since": "2.1.118",
+        "description": "Added vim visual mode (`v`) and visual-line mode (`V`) with selection, operators, and visual feedback.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "custom-themes",
+        "name": "Custom Themes",
+        "status": "stable",
+        "since": "2.1.118",
+        "description": "Create and switch between named custom themes from `/theme`, or hand-edit JSON files in `~/.claude/themes/`; plugins can also ship themes via a `themes/` directory.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "mcp-tool-invocation-from-hooks",
+        "name": "MCP Tool Invocation from Hooks",
+        "status": "stable",
+        "since": "2.1.118",
+        "description": "Hooks can now invoke MCP tools directly via `type: \"mcp_tool\"`.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "wsl-windows-settings-inheritance",
+        "name": "WSL Windows Settings Inheritance",
+        "status": "stable",
+        "since": "2.1.118",
+        "description": "WSL on Windows can now inherit Windows-side managed settings via the `wslInheritsWindowsSettings` policy key.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "auto-mode-defaults-inclusion",
+        "name": "Auto Mode Defaults Inclusion",
+        "status": "stable",
+        "since": "2.1.118",
+        "description": "Auto mode: include `\"$defaults\"` in `autoMode.allow`, `autoMode.soft_deny`, or `autoMode.environment` to add custom rules alongside the built-in list instead of replacing it.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "auto-mode-opt-in-prompt",
+        "name": "Auto Mode Opt-in Prompt",
+        "status": "stable",
+        "since": "2.1.118",
+        "description": "Added a \"Don't ask again\" option to the auto mode opt-in prompt.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "plugin-tag-command",
+        "name": "Plugin Tag Command",
+        "status": "stable",
+        "since": "2.1.118",
+        "description": "Added `claude plugin tag` to create release git tags for plugins with version validation.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1287,6 +1367,14 @@
         "since": "2.1.113",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "/theme",
+        "syntax": "/theme",
+        "description": "Create and switch between named custom themes.",
+        "since": "2.1.118",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -1506,7 +1594,10 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--continue",
+        "--resume"
+      ]
     },
     "env_vars": [
       {
@@ -1738,6 +1829,13 @@
         "status": "stable",
         "since": "2.1.117",
         "source_url": ""
+      },
+      {
+        "name": "DISABLE_UPDATES",
+        "purpose": "Completely block all update paths including manual `claude update` — stricter than `DISABLE_AUTOUPDATER`",
+        "status": "stable",
+        "since": "2.1.118",
+        "source_url": ""
       }
     ],
     "models": [
@@ -1911,6 +2009,17 @@
         "description": "Auto mode no longer requires the `--enable-auto-mode` flag.",
         "affected": [],
         "migration": "Remove the `--enable-auto-mode` flag when using auto mode.",
+        "source_url": ""
+      },
+      {
+        "id": "cost-stats-merged-into-usage",
+        "version": "2.1.118",
+        "title": "/cost and /stats commands merged into /usage",
+        "description": "The `/cost` and `/stats` commands have been merged into a single `/usage` command. Both `/cost` and `/stats` will continue to function as typing shortcuts.",
+        "affected": [
+          "Users who rely on the `/cost` and `/stats` commands"
+        ],
+        "migration": "Use the `/usage` command instead. The old commands will continue to work as shortcuts.",
         "source_url": ""
       }
     ],
@@ -3107,6 +3216,18 @@
         "name": "/vim",
         "replaced_by": "/config → Editor mode",
         "deprecated_since": "2.1.92",
+        "source_url": ""
+      },
+      {
+        "name": "/cost",
+        "replaced_by": "/usage",
+        "deprecated_since": "2.1.118",
+        "source_url": ""
+      },
+      {
+        "name": "/stats",
+        "replaced_by": "/usage",
+        "deprecated_since": "2.1.118",
         "source_url": ""
       }
     ],
