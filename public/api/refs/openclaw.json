@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.22",
-  "generated_at": "2026-04-23T19:33:52.047Z",
+  "generated_at": "2026-04-23T20:23:56.703Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -17,22 +17,26 @@
     "from_version": "2026.4.22",
     "to_version": "2026.4.22",
     "new_features": [
+      "xai-image-text-speech-support",
+      "voice-call-streaming-transcription",
       "local-embedded-tui-mode",
-      "configurable-whatsapp-native-reply-quoting",
+      "auto-install-missing-plugins",
+      "openai-native-web-search",
+      "configurable-native-reply-quoting",
       "whatsapp-group-direct-system-prompt-config",
-      "agents-sessions-list-filters",
+      "mailbox-style-sessions-list-filters",
       "operator-personal-identity",
-      "gateway-diagnostics-export",
-      "agents-trajectory-export",
+      "payload-free-stability-recording",
+      "local-trajectory-capture",
       "tencent-cloud-provider-plugin",
+      "claude-opus-4-7-mantle-support",
+      "gpt-5-prompt-overlay",
       "tokenjuice-plugin",
       "openclaw-tools-mcp-bridge",
-      "cli-debug-timing-helper",
       "thai-translation-support"
     ],
     "new_commands": [
-      "/models add",
-      "/export-trajectory"
+      "/models add"
     ],
     "new_flags": [],
     "new_env_vars": [
@@ -42,7 +46,7 @@
     "deprecated_flags": [],
     "breaking_changes": [
       "codex-cli-auth-import-removal",
-      "legacy-codex-app-server-guardian-shortcut-removed"
+      "legacy-codex-app-server-guardian-shortcut-removal"
     ]
   },
   "payload": {
@@ -67,7 +71,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces xAI provider support for image generation, text-to-speech, and speech-to-text, including realtime transcription for Voice Call streaming, significantly expanding media capabilities. A new local embedded TUI mode allows terminal chats without a Gateway, enforcing plugin approval gates for enhanced security. The `/models add` command enables registering models from chat without restarting the gateway, streamlining model management. Key fixes address agent failover by classifying undici transport failures as timeouts, ensuring proper fallback behavior, and resolve issues with OpenAI Codex authentication by removing the CLI auth import path, promoting browser login or device pairing instead. WhatsApp now supports configurable native reply quoting and per-group/direct system prompt configuration, enhancing chat customization. Agents gain mailbox-style session list filters for improved session management. The release also includes a gateway diagnostics export for easier bug reporting and an agents trajectory export for reproducible debugging. It is recommended to upgrade to benefit from these new features and fixes. Note that the legacy `OPENCLAW_CODEX_APP_SERVER_GUARDIAN` shortcut is removed; use plugin config `appServer.mode: \"guardian\"` or `OPENCLAW_CODEX_APP_SERVER_MODE=guardian` instead. Additionally, the Codex CLI auth import path has been removed, requiring browser login or device pairing. Upgrade is recommended for all users to take advantage of the stability improvements and new functionalities."
+      "tldr": "This release introduces significant enhancements, most notably xAI provider support with image generation, text-to-speech, and speech-to-text capabilities, including realtime transcription for voice calls. A local embedded TUI mode allows terminal chats without a gateway, and missing plugins are now auto-installed during setup. The `/models add` command allows registering models from chat without restarting the gateway. WhatsApp gains configurable native reply quoting and per-group/direct system prompt configuration via `channels.whatsapp.accounts.<id>.{groups,direct}`. A breaking change removes the Codex CLI auth import path, requiring browser login or device pairing instead. Other key updates include mailbox-style session list filters, a Tencent Cloud provider plugin, Claude Opus 4.7 support via Mantle, and a GPT-5 prompt overlay. Several fixes address agent failover, model pricing, plugin installation, and various channel integrations. The legacy `OPENCLAW_CODEX_APP_SERVER_GUARDIAN` environment variable is removed, replaced by plugin configuration. It is highly recommended to upgrade to benefit from the new features, improved stability, and security fixes. Ensure to migrate from the Codex CLI auth import and update Codex app server guardian configuration if applicable."
     },
     "features": [
       {
@@ -1811,6 +1815,109 @@
         "description": "Adds Thai translation support for the docs site.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "xai-image-text-speech-support",
+        "name": "xAI Image, Text, and Speech Support",
+        "status": "stable",
+        "since": "2026.4.22",
+        "description": "Adds image generation, text-to-speech, and speech-to-text support for xAI, including `grok-imagine-image` / `grok-imagine-image-pro`, reference-image edits, six live xAI voices, MP3/WAV/PCM/G.711 TTS formats, `grok-stt` audio transcription, and xAI realtime transcription for Voice Call streaming.",
+        "key_details": [
+          "Supports `grok-imagine-image` and `grok-imagine-image-pro` for image generation.",
+          "Offers reference-image edits.",
+          "Provides six live xAI voices for TTS.",
+          "Supports MP3, WAV, PCM, and G.711 TTS formats.",
+          "Includes `grok-stt` for audio transcription.",
+          "Enables xAI realtime transcription for Voice Call streaming."
+        ],
+        "source_url": "https://github.com/joonix/openclaw/issues/68694"
+      },
+      {
+        "id": "voice-call-streaming-transcription",
+        "name": "Voice Call Streaming Transcription",
+        "status": "stable",
+        "since": "2026.4.22",
+        "description": "Adds Voice Call streaming transcription for Deepgram, ElevenLabs, and Mistral, alongside the existing OpenAI and xAI realtime STT paths; ElevenLabs also gains Scribe v2 batch audio transcription for inbound media.",
+        "key_details": [
+          "Supports Voice Call streaming transcription for Deepgram, ElevenLabs, and Mistral.",
+          "ElevenLabs gains Scribe v2 batch audio transcription for inbound media."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "auto-install-missing-plugins",
+        "name": "Auto-Install Missing Plugins",
+        "status": "stable",
+        "since": "2026.4.22",
+        "description": "Auto-installs missing provider and channel plugins during setup so first-run configuration can complete without manual plugin recovery.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "openai-native-web-search",
+        "name": "OpenAI Native Web Search",
+        "status": "stable",
+        "since": "2026.4.22",
+        "description": "Uses OpenAI's native `web_search` tool automatically for direct OpenAI Responses models when web search is enabled and no managed search provider is pinned; explicit providers such as Brave keep the managed `web_search` tool.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "configurable-native-reply-quoting",
+        "name": "Configurable Native Reply Quoting",
+        "status": "stable",
+        "since": "2026.4.22",
+        "description": "Adds configurable native reply quoting with replyToMode for WhatsApp conversations.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "mailbox-style-sessions-list-filters",
+        "name": "Mailbox-Style Sessions List Filters",
+        "status": "stable",
+        "since": "2026.4.22",
+        "description": "Adds mailbox-style `sessions_list` filters for label, agent, and search plus visibility-scoped derived title and last-message previews.",
+        "key_details": [],
+        "source_url": "https://github.com/joonix/openclaw/issues/69839"
+      },
+      {
+        "id": "payload-free-stability-recording",
+        "name": "Payload-Free Stability Recording",
+        "status": "stable",
+        "since": "2026.4.22",
+        "description": "Enables payload-free stability recording by default and add a support-ready diagnostics export with sanitized logs, status, health, config, and stability snapshots for bug reports.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "local-trajectory-capture",
+        "name": "Local Trajectory Capture",
+        "status": "stable",
+        "since": "2026.4.22",
+        "description": "Adds default-on local trajectory capture plus `/export-trajectory` bundles with redacted transcripts, runtime events, prompts, metadata, and artifacts for reproducible debugging and dataset export.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "claude-opus-4-7-mantle-support",
+        "name": "Claude Opus 4.7 Mantle Support",
+        "status": "stable",
+        "since": "2026.4.22",
+        "description": "Adds Claude Opus 4.7 through Mantle's Anthropic Messages route with provider-owned bearer-auth streaming, so the model is actually callable without treating AWS bearer tokens like Anthropic API keys.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "gpt-5-prompt-overlay",
+        "name": "GPT-5 Prompt Overlay",
+        "status": "stable",
+        "since": "2026.4.22",
+        "description": "Moves the GPT-5 prompt overlay into the shared provider runtime so compatible GPT-5 models receive the same behavior and heartbeat guidance through OpenAI, OpenRouter, OpenCode, Codex, and other GPT providers; add `agents.defaults.promptOverlays.gpt5.personality` as the global friendly-style toggle while keeping the OpenAI plugin setting as a fallback.",
+        "key_details": [
+          "Shared provider runtime for GPT-5 prompt overlay.",
+          "`agents.defaults.promptOverlays.gpt5.personality` for global friendly-style toggle."
+        ],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -3312,6 +3419,17 @@
         "description": "The legacy `OPENCLAW_CODEX_APP_SERVER_GUARDIAN` shortcut is removed; use plugin config `appServer.mode: \"guardian\"` or `OPENCLAW_CODEX_APP_SERVER_MODE=guardian`.",
         "affected": [
           "Users who used the `OPENCLAW_CODEX_APP_SERVER_GUARDIAN` environment variable to configure the Codex app server mode."
+        ],
+        "migration": "Use plugin config `appServer.mode: \"guardian\"` or `OPENCLAW_CODEX_APP_SERVER_MODE=guardian` instead.",
+        "source_url": ""
+      },
+      {
+        "id": "legacy-codex-app-server-guardian-shortcut-removal",
+        "version": "2026.4.22",
+        "title": "Legacy Codex App Server Guardian Shortcut Removed",
+        "description": "The legacy `OPENCLAW_CODEX_APP_SERVER_GUARDIAN` shortcut is removed; use plugin config `appServer.mode: \"guardian\"` or `OPENCLAW_CODEX_APP_SERVER_MODE=guardian`.",
+        "affected": [
+          "Users who used the `OPENCLAW_CODEX_APP_SERVER_GUARDIAN` environment variable to configure Codex app server guardian mode."
         ],
         "migration": "Use plugin config `appServer.mode: \"guardian\"` or `OPENCLAW_CODEX_APP_SERVER_MODE=guardian` instead.",
         "source_url": ""
