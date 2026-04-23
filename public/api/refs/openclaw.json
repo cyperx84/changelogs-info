@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.22",
-  "generated_at": "2026-04-23T20:23:56.703Z",
+  "generated_at": "2026-04-23T22:18:33.978Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -17,10 +17,10 @@
     "from_version": "2026.4.22",
     "to_version": "2026.4.22",
     "new_features": [
-      "xai-image-text-speech-support",
-      "voice-call-streaming-transcription",
+      "xai-image-generation-text-to-speech-speech-to-text-support",
+      "voice-call-streaming-transcription-for-deepgram-elevenlabs-mistral",
       "local-embedded-tui-mode",
-      "auto-install-missing-plugins",
+      "auto-install-missing-provider-and-channel-plugins-during-setup",
       "openai-native-web-search",
       "configurable-native-reply-quoting",
       "whatsapp-group-direct-system-prompt-config",
@@ -45,8 +45,8 @@
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "codex-cli-auth-import-removal",
-      "legacy-codex-app-server-guardian-shortcut-removal"
+      "codex-cli-auth-import-removed",
+      "legacy-codex-app-server-guardian-shortcut-removed"
     ]
   },
   "payload": {
@@ -71,7 +71,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces significant enhancements, most notably xAI provider support with image generation, text-to-speech, and speech-to-text capabilities, including realtime transcription for voice calls. A local embedded TUI mode allows terminal chats without a gateway, and missing plugins are now auto-installed during setup. The `/models add` command allows registering models from chat without restarting the gateway. WhatsApp gains configurable native reply quoting and per-group/direct system prompt configuration via `channels.whatsapp.accounts.<id>.{groups,direct}`. A breaking change removes the Codex CLI auth import path, requiring browser login or device pairing instead. Other key updates include mailbox-style session list filters, a Tencent Cloud provider plugin, Claude Opus 4.7 support via Mantle, and a GPT-5 prompt overlay. Several fixes address agent failover, model pricing, plugin installation, and various channel integrations. The legacy `OPENCLAW_CODEX_APP_SERVER_GUARDIAN` environment variable is removed, replaced by plugin configuration. It is highly recommended to upgrade to benefit from the new features, improved stability, and security fixes. Ensure to migrate from the Codex CLI auth import and update Codex app server guardian configuration if applicable."
+      "tldr": "This release introduces xAI provider support for image generation, text-to-speech, and speech-to-text, enabling richer multimodal interactions. It also adds voice call streaming transcription for Deepgram, ElevenLabs, and Mistral, expanding STT capabilities. A new `/models add` command allows registering models from chat without restarting the gateway. WhatsApp now supports configurable native reply quoting and per-group/direct system prompt configuration, enhancing channel customization. Mailbox-style session list filters improve session management, and a local trajectory capture feature aids in debugging. \n\nKey new features include local embedded TUI mode for terminal chats without a gateway, auto-installation of missing plugins during setup, and the Tencent Cloud provider plugin. Several fixes address critical issues, such as classifying undici transport failures for agent failover, restoring ADC-backed model discovery for Anthropic Vertex, and preventing duplicate cron sends in WhatsApp. The release also improves stability by waiting for WebSocket teardown before CLI process exits and by fetching OpenRouter/LiteLLM pricing asynchronously. \n\nBreaking changes include the removal of the Codex CLI auth import path, requiring browser login or device pairing instead, and the removal of the legacy `OPENCLAW_CODEX_APP_SERVER_GUARDIAN` shortcut, replaced by plugin configuration. The `OPENCLAW_CHILD_OOM_SCORE_ADJ` environment variable is introduced to control the `oom_score_adj` of child processes on Linux. It is highly recommended to upgrade to this release to benefit from the new features, critical fixes, and improved stability. Ensure to migrate from the Codex CLI auth import and update Codex app-server configuration if applicable."
     },
     "features": [
       {
@@ -1918,6 +1918,41 @@
           "`agents.defaults.promptOverlays.gpt5.personality` for global friendly-style toggle."
         ],
         "source_url": ""
+      },
+      {
+        "id": "xai-image-generation-text-to-speech-speech-to-text-support",
+        "name": "xAI Image Generation, Text-to-Speech, and Speech-to-Text Support",
+        "status": "stable",
+        "since": "2026.4.22",
+        "description": "Adds image generation, text-to-speech, and speech-to-text support to the xAI provider, including `grok-imagine-image` / `grok-imagine-image-pro`, reference-image edits, six live xAI voices, MP3/WAV/PCM/G.711 TTS formats, `grok-stt` audio transcription, and xAI realtime transcription for Voice Call streaming.",
+        "key_details": [
+          "`grok-imagine-image`",
+          "`grok-imagine-image-pro`",
+          "Reference-image edits",
+          "Six live xAI voices",
+          "MP3/WAV/PCM/G.711 TTS formats",
+          "`grok-stt` audio transcription",
+          "xAI realtime transcription for Voice Call streaming"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "voice-call-streaming-transcription-for-deepgram-elevenlabs-mistral",
+        "name": "Voice Call Streaming Transcription for Deepgram, ElevenLabs, and Mistral",
+        "status": "stable",
+        "since": "2026.4.22",
+        "description": "Adds Voice Call streaming transcription for Deepgram, ElevenLabs, and Mistral, alongside the existing OpenAI and xAI realtime STT paths; ElevenLabs also gains Scribe v2 batch audio transcription for inbound media.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "auto-install-missing-provider-and-channel-plugins-during-setup",
+        "name": "Auto-install Missing Provider and Channel Plugins During Setup",
+        "status": "stable",
+        "since": "2026.4.22",
+        "description": "Auto-installs missing provider and channel plugins during setup so first-run configuration can complete without manual plugin recovery.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -3432,6 +3467,17 @@
           "Users who used the `OPENCLAW_CODEX_APP_SERVER_GUARDIAN` environment variable to configure Codex app server guardian mode."
         ],
         "migration": "Use plugin config `appServer.mode: \"guardian\"` or `OPENCLAW_CODEX_APP_SERVER_MODE=guardian` instead.",
+        "source_url": ""
+      },
+      {
+        "id": "codex-cli-auth-import-removed",
+        "version": "2026.4.22",
+        "title": "Codex CLI Auth Import Removed",
+        "description": "The Codex CLI auth import path has been removed from onboarding and provider discovery. OpenClaw no longer copies `~/.codex` OAuth material into agent auth stores.",
+        "affected": [
+          "Users who previously relied on the automatic import of Codex CLI authentication"
+        ],
+        "migration": "Use browser login or device pairing instead.",
         "source_url": ""
       }
     ],
