@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.118",
-  "generated_at": "2026-04-23T06:42:16.663Z",
+  "generated_at": "2026-04-23T07:37:09.033Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -18,12 +18,9 @@
     "to_version": "2.1.118",
     "new_features": [
       "custom-themes",
-      "mcp-tool-invocation-from-hooks",
       "wsl-windows-settings-inheritance",
       "auto-mode-defaults-inclusion",
-      "auto-mode-opt-in-prompt",
-      "plugin-tag-command",
-      "vim-visual-mode"
+      "plugin-tag-command"
     ],
     "new_commands": [],
     "new_flags": [
@@ -39,7 +36,7 @@
     ],
     "deprecated_flags": [],
     "breaking_changes": [
-      "cost-stats-commands-merged"
+      "cost-stats-merged-into-usage"
     ]
   },
   "payload": {
@@ -62,7 +59,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Version 2.1.118 introduces several enhancements, including the merging of `/cost` and `/stats` into the unified `/usage` command, though the former commands remain as shortcuts. Custom themes can now be created and switched via `/theme`, with themes also shippable via plugins. Hooks gain the ability to directly invoke MCP tools, streamlining automation workflows. A new `DISABLE_UPDATES` environment variable provides a stricter control over updates, blocking all update paths. WSL on Windows can now inherit Windows-side managed settings, simplifying configuration. Auto mode now supports including default rules alongside custom ones, and the opt-in prompt offers a \"Don't ask again\" option. The `claude plugin tag` command facilitates plugin release tagging with version validation. The `--continue` and `--resume` flags now find sessions that added the current directory via `/add-dir`. The `/color` command now syncs the session accent color to claude.ai/code when Remote Control is connected. This release also addresses several bug fixes, including issues with MCP authentication, OAuth token refresh, credential saving, and various UI glitches. Additionally, fixes are included for agent-type hooks, `/fork` command behavior, keyboard input freezing, and plugin dependency resolution. Upgrading is recommended to take advantage of the new features and bug fixes. No specific prerequisites are required."
+      "tldr": "This release introduces several key improvements, including vim visual mode support and custom themes. Vim visual mode (`v` and `V`) now offers selection, operators, and visual feedback, enhancing code editing workflows. Custom themes can be created and switched via `/theme` or by editing JSON files in `~/.claude/themes/`, with plugin support for theme distribution. The `/cost` and `/stats` commands have been merged into `/usage`, though the original commands remain as shortcuts. A new `DISABLE_UPDATES` environment variable provides a stricter way to block all update paths, including manual updates. WSL on Windows can now inherit Windows-side managed settings via the `wslInheritsWindowsSettings` policy key. Auto mode now supports including default rules alongside custom ones using `\"$defaults\"`. The `/color` command now syncs the session accent color to claude.ai/code when Remote Control is connected. Several bug fixes address issues with MCP authentication, OAuth token refresh, credential saving, and agent-type hooks. Additionally, a fix addresses `/fork` writing the full parent conversation to disk. This release is recommended for all users, especially those using vim mode, custom themes, or MCP servers. No specific prerequisites are required for upgrading."
     },
     "features": [
       {
@@ -3233,6 +3230,18 @@
         "name": "/vim",
         "replaced_by": "/config → Editor mode",
         "deprecated_since": "2.1.92",
+        "source_url": ""
+      },
+      {
+        "name": "/cost",
+        "replaced_by": "/usage",
+        "deprecated_since": "2.1.118",
+        "source_url": ""
+      },
+      {
+        "name": "/stats",
+        "replaced_by": "/usage",
+        "deprecated_since": "2.1.118",
         "source_url": ""
       },
       {

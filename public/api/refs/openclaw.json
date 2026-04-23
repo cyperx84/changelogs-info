@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.21",
-  "generated_at": "2026-04-23T06:42:58.475Z",
+  "generated_at": "2026-04-23T07:38:18.208Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -27,10 +27,10 @@
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "auth-commands-owner-enforcement",
-      "control-ui-csp-avatar-restrictions",
-      "gateway-mcp-loopback-owner-visibility",
-      "openshell-sandbox-write-restrictions"
+      "auth-commands",
+      "control-ui-csp",
+      "gateway-mcp-loopback",
+      "exec-allowlist"
     ]
   },
   "payload": {
@@ -55,7 +55,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces the Skill Workshop plugin for capturing and applying reusable workflow corrections, enhancing completion bias and safety. The Plugin SDK now supports decoupled channel presentation rendering, enabling richer interactive surfaces owned by plugins. QQBot features a self-contained engine architecture with QR-code onboarding and native approval handling via `/bot-approve`. OpenAI image generation defaults to `gpt-image-2` with 2K/4K size hints. Onboarding pickers are replaced with searchable autocompletes. Tool-progress updates stream into live preview edits for Discord, Slack, and Telegram. Owner enforcement for commands now requires owner identity, and Control UI avatar CSP is tightened. Gateway/MCP loopback owner visibility is derived from authenticated bearers, and OpenShell sandbox writes are restricted to the mounted root. The default GitHub Copilot Opus model is updated to `claude-opus-4.7`. Ollama model list is populated from `ollama.com/api/tags`. Telegram and Discord plugin startup times are significantly reduced. It is highly recommended to upgrade to this version to benefit from the new features, security enhancements, and performance improvements. Pay close attention to the breaking changes related to command authorization and avatar rendering."
+      "tldr": "This release introduces the Skill Workshop plugin for capturing and applying workflow corrections as skills, enhancing completion bias and safety. The Plugin SDK now supports decoupled channel presentation rendering, allowing plugins to own richer interactive surfaces. QQBot features a self-contained engine architecture with QR-code onboarding and native approval handling. OpenAI image generation defaults to `gpt-image-2` with 2K/4K size hints. Onboarding pickers are replaced with searchable autocompletes. Tool-progress updates stream into live preview edits for Discord, Slack, and Telegram. Several fixes address security vulnerabilities, including stricter validation of outbound webhook URLs for Synology Chat and LINE, and preventing tokenizer-layer role-boundary spoofing. Owner identity is now strictly enforced for owner-only commands. The Control UI's CSP has been tightened, restricting avatar image sources. POSIX parameter expansion forms are now rejected in unquoted heredocs during shell approval analysis. GitHub Copilot's default Opus model is updated to `claude-opus-4.7`. It is recommended to upgrade to this version to benefit from the new features and security enhancements. Ensure that owner-enforced commands are properly configured and that avatar image sources in the Control UI are updated to comply with the new CSP."
     },
     "features": [
       {
@@ -3105,6 +3105,50 @@
           "Sandbox"
         ],
         "migration": "Ensure that sandbox writes remain within the mounted root to prevent redirection outside the workspace.",
+        "source_url": ""
+      },
+      {
+        "id": "auth-commands",
+        "version": "2026.4.21",
+        "title": "Owner identity required for owner-enforced commands",
+        "description": "Owner identity (an owner-candidate match or internal `operator.admin`) is now required for owner-enforced commands instead of treating wildcard channel `allowFrom` or empty owner-candidate lists as sufficient. Non-owner senders can no longer reach owner-only commands through a permissive fallback when `enforceOwnerForCommands=true` and `commands.ownerAllowFrom` is unset.",
+        "affected": [
+          "Commands with owner enforcement enabled"
+        ],
+        "migration": "Ensure that owner-enforced commands are only accessible to authorized users by properly configuring owner candidates or internal admin roles.",
+        "source_url": ""
+      },
+      {
+        "id": "control-ui-csp",
+        "version": "2026.4.21",
+        "title": "Tightened Control UI CSP",
+        "description": "The `img-src` CSP directive in the Control UI has been tightened to `'self' data:` only. Remote `http(s)` and protocol-relative URLs for avatars are now dropped, causing the UI to fall back to the built-in logo/badge instead of issuing arbitrary remote image fetches. Same-origin avatar routes (relative paths) and `data:image/...` avatars still render.",
+        "affected": [
+          "Control UI avatar display"
+        ],
+        "migration": "Use same-origin avatar routes (relative paths) or `data:image/...` avatars to ensure avatars are displayed correctly in the Control UI.",
+        "source_url": ""
+      },
+      {
+        "id": "gateway-mcp-loopback",
+        "version": "2026.4.21",
+        "title": "Owner-only tool visibility derived from authenticated owner vs non-owner loopback bearers",
+        "description": "Owner-only tool visibility is now derived from distinct authenticated owner vs non-owner loopback bearers instead of the caller-controlled owner header. Non-owner MCP child processes cannot recover owner access by spoofing request metadata.",
+        "affected": [
+          "MCP child processes"
+        ],
+        "migration": "Ensure that MCP child processes are properly authenticated to access owner-only tools.",
+        "source_url": ""
+      },
+      {
+        "id": "exec-allowlist",
+        "version": "2026.4.21",
+        "title": "POSIX parameter expansion forms rejected in unquoted heredocs during shell approval analysis",
+        "description": "POSIX parameter expansion forms such as `$VAR`, `$?`, `$$`, `$1`, and `$@` are now rejected inside unquoted heredocs during shell approval analysis, so these heredocs no longer pass allowlist review as plain text.",
+        "affected": [
+          "Shell approval analysis"
+        ],
+        "migration": "Ensure that heredocs do not contain POSIX parameter expansion forms or are properly quoted.",
         "source_url": ""
       }
     ],
