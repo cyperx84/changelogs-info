@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "gemini-cli",
   "version": "0.39.0",
-  "generated_at": "2026-04-23T06:42:40.857Z",
+  "generated_at": "2026-04-23T05:03:45.242Z",
   "extracted_from_sources": [
     "https://github.com/google-gemini/gemini-cli/releases/tag/v0.33.0",
     "https://github.com/google-gemini/gemini-cli/releases"
@@ -17,22 +17,29 @@
     "from_version": "0.39.0",
     "to_version": "0.39.0",
     "new_features": [
-      "memory-usage-integration-test-harness",
+      "memory-inbox-command",
       "cpu-performance-integration-test-harness",
+      "refine-shell-tool-description-display-logic",
+      "generalize-evals-infra",
       "use-agent-stream-hook",
       "high-volume-shell-test",
       "debug-rainbow-setting",
       "strategic-re-evaluation-guidance",
       "large-memory-regression-test",
-      "skill-patching-support-with-memory-inbox-integration",
+      "skill-patching-support",
+      "extract-quotacontext",
       "scroll-momentum-enhancements",
       "tool-controlled-display-protocol",
+      "auth-block-in-mcp-servers-config",
       "silent-fallback-for-plan-mode-model-routing",
       "decoupled-contextmanager-and-sidecar-architecture",
+      "plan-mode-prompt-update",
       "asian-language-performance-test",
       "mouse-clicking-for-askuser-multi-line-answers"
     ],
-    "new_commands": [],
+    "new_commands": [
+      "/memory"
+    ],
     "new_flags": [],
     "new_env_vars": [
       "GEMINI_PLANS_DIR"
@@ -63,7 +70,7 @@
       "runtime": "node",
       "written_in": "typescript",
       "release_cadence": "Stable on Tuesdays. Preview: Tuesdays UTC 23:59. Nightly: daily UTC 00:00.",
-      "tldr": "The gemini-cli v0.39.0 release focuses on improving stability, performance, and developer experience. A key update is the requirement for user confirmation when activating skills in Plan Mode, enhancing control and security. New features include memory and CPU performance integration test harnesses for more robust testing, and the implementation of the useAgentStream hook for improved agent interaction. Several fixes address critical issues such as robust sandbox cleanup, Windows symlink bypass, dynamic session ID injection, and memory leaks in oauth flows and subagents. The release also refines shell tool descriptions, tool output formatting in compact mode, and introduces a /memory inbox command for reviewing extracted skills. Strategic re-evaluation guidance has been added to the system prompt, and skill patching support is now available with /memory inbox integration. Other enhancements include scroll momentum improvements, tool-controlled display protocol implementation, silent fallback for Plan Mode model routing, and a decoupled ContextManager and Sidecar architecture. Additionally, the release centralizes sandbox paths, adds a high-volume shell test, and introduces a debug rainbow setting. This upgrade is recommended for all users to benefit from the stability improvements and new features. No specific prerequisites are required for this upgrade."
+      "tldr": "This release of gemini-cli introduces several key improvements and new features. The highlight is the addition of the `/memory inbox` command, enabling users to review extracted skills directly within the CLI. This simplifies skill management and enhances the user experience. A significant refactoring of subagent tools consolidates them into a unified `invoke_subagent` tool, improving consistency and maintainability. Plan Mode now requires user confirmation for `activate_skill`, adding a layer of security and control. Several fixes address memory leaks, including those in subagents and OAuth flows, ensuring more stable and efficient operation. The release also includes performance enhancements, such as optimized Windows sandbox initialization and a new high-volume shell test. Sandbox security is strengthened with centralized path resolution and read-only enforcement for git worktrees. The tool output formatting for compact mode has been refined for better readability. Additionally, the release introduces a decoupled ContextManager and Sidecar architecture. This upgrade is recommended for all users to benefit from the improved stability, security, and new features. No specific migration steps are required."
     },
     "features": [
       {
@@ -1457,24 +1464,6 @@
         "description": "Enables mouse clicking for cursor positioning in AskUser multi-line answers.",
         "key_details": [],
         "source_url": "https://github.com/google-gemini/gemini-cli/pull/24630"
-      },
-      {
-        "id": "memory-usage-integration-test-harness",
-        "name": "Memory Usage Integration Test Harness",
-        "status": "stable",
-        "since": "0.39.0",
-        "description": "Adds a memory usage integration test harness.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24876"
-      },
-      {
-        "id": "skill-patching-support-with-memory-inbox-integration",
-        "name": "Skill Patching Support with /memory inbox integration",
-        "status": "stable",
-        "since": "0.39.0",
-        "description": "Adds skill patching support with /memory inbox integration.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25148"
       }
     ],
     "commands": [
