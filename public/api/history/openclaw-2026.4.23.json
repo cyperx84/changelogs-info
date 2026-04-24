@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.23",
-  "generated_at": "2026-04-24T17:23:16.693Z",
+  "generated_at": "2026-04-24T15:30:49.969Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,13 +14,24 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.4.23",
-    "to_version": "2026.4.23",
+    "from_version": "2026.4.22",
+    "to_version": "2026.4.22",
     "new_features": [
-      "image-generation-quality-output-format-hints",
-      "forked-context-for-native-sessions-spawn-runs",
-      "per-call-timeoutms-support-for-generation-tools",
-      "configurable-memorysearch-local-contextsize"
+      "xai-image-text-speech-support",
+      "voice-call-streaming-transcription-for-deepgram-elevenlabs-mistral",
+      "local-embedded-tui-mode",
+      "configurable-native-reply-quoting",
+      "whatsapp-group-direct-system-prompt-config",
+      "mailbox-style-sessions-list-filters",
+      "operator-personal-identity",
+      "payload-free-stability-recording",
+      "local-trajectory-capture",
+      "tencent-cloud-provider-plugin",
+      "claude-opus-4-7-mantle-support",
+      "gpt-5-prompt-overlay",
+      "tokenjuice-plugin",
+      "openclaw-tools-mcp-bridge",
+      "cli-debug-timing-helper"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -28,17 +39,8 @@
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "gateway-config-apply-config-patch-security",
-      "webhook-secretref-resolution-security",
-      "acpx-codex-auth-path-migration",
-      "android-cleartext-gateway-connections-security",
-      "mobile-pairing-security",
-      "plugin-setup-api-security",
-      "chat-exec-approval-enablement-security",
-      "discord-channel-policy-security",
-      "android-ask_openclaw-intent-security",
-      "mcp-tools-security",
-      "teams-bot-framework-token-replay-security"
+      "codex-cli-auth-import-removal",
+      "legacy-codex-app-server-guardian-shortcut-removal"
     ]
   },
   "payload": {
@@ -63,7 +65,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces image generation and reference-image editing through Codex OAuth and OpenRouter, enabling `openai/gpt-image-2` and OpenRouter image models to work without requiring an `OPENAI_API_KEY`. Agents can now request provider-supported quality and output format hints for image generation, and optionally extend provider request timeouts for image, video, music, and TTS generation tools. A new forked context option for native `sessions_spawn` allows agents to inherit the requester transcript when needed, while `memorySearch.local.contextSize` can be configured to tune local embedding contexts. Several security enhancements have been implemented, including restricting agent-driven gateway configuration edits, immediate webhook secret revocation, and preventing Teams Bot Framework token replay. Codex authentication now uses the standard `CODEX_HOME` path, and Android cleartext gateway connections are restricted to loopback-only unless TLS is enabled. The dreaming cron is decoupled from heartbeat, and `openclaw doctor --fix` migrates stale main-session dreaming jobs. Upgrade is recommended for all users, especially those using image generation, subagents, or relying on webhooks and secrets. No specific prerequisites are required, but review agent behavior and configuration update logic due to the gateway configuration edit restrictions."
+      "tldr": "This release introduces significant enhancements, notably xAI support for image generation, text-to-speech, and speech-to-text, enabling richer multimodal interactions. It also adds Voice Call streaming transcription for Deepgram, ElevenLabs, and Mistral, expanding transcription capabilities. A new local embedded TUI mode allows terminal chats without a Gateway, enforcing plugin approval gates for security. The OpenAI integration now automatically uses native web search when available, simplifying setup. The `/models add` command allows registering models from chat without restarting the gateway. WhatsApp gains configurable native reply quoting and improved system prompt handling for groups and direct messages. Mailbox-style session list filters enhance session management. Payload-free stability recording and local trajectory capture improve debugging. The Tencent Cloud provider plugin is now bundled. The Codex CLI auth import path has been removed, requiring browser login or device pairing. The legacy `OPENCLAW_CODEX_APP_SERVER_GUARDIAN` shortcut has been removed, requiring plugin config for Guardian mode. Several fixes address issues with agent failover, Anthropic Vertex, plugin installation, OpenAI image generation, control UI chat, model authentication, media understanding, and more. It is recommended to upgrade to this release for the new features, improved stability, and security enhancements. Ensure to migrate from the Codex CLI auth import and legacy Guardian shortcut."
     },
     "features": [
       {
@@ -1958,42 +1960,6 @@
           "Provides clearer add guidance and copy-friendly command examples."
         ],
         "source_url": "https://github.com/openclaw/openclaw/pull/70211"
-      },
-      {
-        "id": "image-generation-quality-output-format-hints",
-        "name": "Image generation quality and output format hints",
-        "status": "stable",
-        "since": "2026.4.23",
-        "description": "Agents can now request provider-supported quality and output format hints for image generation, and pass OpenAI-specific background, moderation, compression, and user hints through the `image_generate` tool.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "forked-context-for-native-sessions-spawn-runs",
-        "name": "Forked context for native sessions_spawn runs",
-        "status": "stable",
-        "since": "2026.4.23",
-        "description": "Adds optional forked context for native `sessions_spawn` runs so agents can let a child inherit the requester transcript when needed, while keeping clean isolated sessions as the default; includes prompt guidance, context-engine hook metadata, docs, and QA coverage.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "per-call-timeoutms-support-for-generation-tools",
-        "name": "Per-call timeoutMs support for generation tools",
-        "status": "stable",
-        "since": "2026.4.23",
-        "description": "Adds optional per-call `timeoutMs` support for image, video, music, and TTS generation tools so agents can extend provider request timeouts only when a specific generation needs it.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "configurable-memorysearch-local-contextsize",
-        "name": "Configurable memorySearch.local.contextSize",
-        "status": "stable",
-        "since": "2026.4.23",
-        "description": "Adds configurable `memorySearch.local.contextSize` with a 4096 default so local embedding contexts can be tuned for constrained hosts without patching the memory host.",
-        "key_details": [],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -3530,138 +3496,6 @@
           "Codex users"
         ],
         "migration": "Use plugin config `appServer.mode: \"guardian\"` or `OPENCLAW_CODEX_APP_SERVER_MODE=guardian` instead of `OPENCLAW_CODEX_APP_SERVER_GUARDIAN`.",
-        "source_url": ""
-      },
-      {
-        "id": "gateway-config-apply-config-patch-security",
-        "version": "2026.4.23",
-        "title": "Restrict Agent-Driven Gateway Configuration Edits",
-        "description": "Agent-driven `gateway config.apply`/`config.patch` runtime edits are now restricted to a narrow set of agent-tunable prompt, model, and mention-gating paths (including Telegram topic-level `requireMention`). This prevents privilege escalation by limiting the ability of agents to modify sensitive configuration keys.",
-        "affected": [
-          "Agents",
-          "Gateway"
-        ],
-        "migration": "Ensure that agents only attempt to modify the allowlisted configuration paths. Review agent behavior and adjust configuration update logic as needed.",
-        "source_url": ""
-      },
-      {
-        "id": "webhook-secretref-resolution-security",
-        "version": "2026.4.23",
-        "title": "Immediate Webhook Secret Revocation",
-        "description": "Webhook route secrets backed by `SecretRef` are now re-resolved on each request. This ensures that `openclaw secrets reload` immediately revokes the previous secret, instead of waiting for a gateway restart.",
-        "affected": [
-          "Webhooks",
-          "Security"
-        ],
-        "migration": "No specific migration steps are required. This change enhances security by ensuring immediate secret revocation.",
-        "source_url": ""
-      },
-      {
-        "id": "acpx-codex-auth-path-migration",
-        "version": "2026.4.23",
-        "title": "Codex Auth Path Migration",
-        "description": "Codex ACP, Codex app-server, and Codex CLI runs no longer materialize `auth.json` bridge files. Codex-owned runtimes now use their normal `CODEX_HOME`/`~/.codex` auth path directly.",
-        "affected": [
-          "Codex",
-          "ACPX"
-        ],
-        "migration": "Remove any reliance on the `auth.json` bridge file for Codex authentication. Ensure that Codex runtimes are configured to use the `CODEX_HOME` or `~/.codex` auth path.",
-        "source_url": ""
-      },
-      {
-        "id": "android-cleartext-gateway-connections-security",
-        "version": "2026.4.23",
-        "title": "Android Cleartext Gateway Connection Restriction",
-        "description": "Loopback-only cleartext gateway connections on Android manual and scanned routes are now required. Private-LAN and link-local `ws://` endpoints will now fail closed unless TLS is enabled.",
-        "affected": [
-          "Android",
-          "Security"
-        ],
-        "migration": "Enable TLS for private-LAN and link-local gateway connections on Android, or use loopback-only connections.",
-        "source_url": ""
-      },
-      {
-        "id": "mobile-pairing-security",
-        "version": "2026.4.23",
-        "title": "Mobile Pairing Security Enhancement",
-        "description": "Cleartext mobile pairing now requires private-IP or loopback hosts. `.local` or dotless hostnames are no longer treated as safe cleartext endpoints.",
-        "affected": [
-          "Pairing",
-          "Security"
-        ],
-        "migration": "Use private-IP or loopback hosts for cleartext mobile pairing. Avoid using `.local` or dotless hostnames.",
-        "source_url": ""
-      },
-      {
-        "id": "plugin-setup-api-security",
-        "version": "2026.4.23",
-        "title": "Plugin Setup API Security Restriction",
-        "description": "Setup-api lookup no longer falls back to the launch directory. Workspace-local `extensions/<plugin>/setup-api.*` files cannot be executed during provider setup resolution.",
-        "affected": [
-          "Plugins",
-          "Security"
-        ],
-        "migration": "Ensure that plugin setup APIs are resolved correctly without relying on the launch directory fallback.",
-        "source_url": ""
-      },
-      {
-        "id": "chat-exec-approval-enablement-security",
-        "version": "2026.4.23",
-        "title": "Explicit Chat Exec-Approval Enablement",
-        "description": "Explicit chat exec-approval enablement is now required instead of auto-enabling approval clients just because approvers resolve from config or owner allowlists.",
-        "affected": [
-          "Approvals",
-          "Security"
-        ],
-        "migration": "Explicitly enable chat exec-approval for the desired clients.",
-        "source_url": ""
-      },
-      {
-        "id": "discord-channel-policy-security",
-        "version": "2026.4.23",
-        "title": "Discord Channel Policy Security Enhancement",
-        "description": "Native slash-command channel policy no longer bypasses configured owner or member restrictions, while preserving channel-policy fallback when no stricter access rule exists.",
-        "affected": [
-          "Discord",
-          "Security"
-        ],
-        "migration": "Review Discord channel policies to ensure they align with intended access restrictions.",
-        "source_url": ""
-      },
-      {
-        "id": "android-ask_openclaw-intent-security",
-        "version": "2026.4.23",
-        "title": "Android ASK_OPENCLAW Intent Security Enhancement",
-        "description": "`ASK_OPENCLAW` intents no longer auto-send injected prompts. External app actions only prefill the draft instead of dispatching it immediately.",
-        "affected": [
-          "Android",
-          "Security"
-        ],
-        "migration": "External apps using `ASK_OPENCLAW` intents will now only prefill the draft instead of sending it immediately. Users will need to manually send the prompt.",
-        "source_url": ""
-      },
-      {
-        "id": "mcp-tools-security",
-        "version": "2026.4.23",
-        "title": "MCP Tools Security Restriction",
-        "description": "The ACPX OpenClaw tools bridge no longer lists or invokes owner-only tools such as `cron`, closing a privilege-escalation path for non-owner MCP callers.",
-        "affected": [
-          "MCP",
-          "Tools"
-        ],
-        "migration": "Non-owner MCP callers will no longer be able to list or invoke owner-only tools.",
-        "source_url": ""
-      },
-      {
-        "id": "teams-bot-framework-token-replay-security",
-        "version": "2026.4.23",
-        "title": "Teams Bot Framework Token Replay Prevention",
-        "description": "Shared Bot Framework audience tokens must now name the configured Teams app via verified `appid` or `azp`, blocking cross-bot token replay on the global audience.",
-        "affected": [
-          "Teams",
-          "Security"
-        ],
-        "migration": "Ensure that shared Bot Framework audience tokens include the verified `appid` or `azp` of the configured Teams app.",
         "source_url": ""
       }
     ],
