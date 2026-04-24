@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.23",
-  "generated_at": "2026-04-24T17:23:16.693Z",
+  "generated_at": "2026-04-24T18:17:56.397Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -16,30 +16,13 @@
   "delta": {
     "from_version": "2026.4.23",
     "to_version": "2026.4.23",
-    "new_features": [
-      "image-generation-quality-output-format-hints",
-      "forked-context-for-native-sessions-spawn-runs",
-      "per-call-timeoutms-support-for-generation-tools",
-      "configurable-memorysearch-local-contextsize"
-    ],
+    "new_features": [],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "gateway-config-apply-config-patch-security",
-      "webhook-secretref-resolution-security",
-      "acpx-codex-auth-path-migration",
-      "android-cleartext-gateway-connections-security",
-      "mobile-pairing-security",
-      "plugin-setup-api-security",
-      "chat-exec-approval-enablement-security",
-      "discord-channel-policy-security",
-      "android-ask_openclaw-intent-security",
-      "mcp-tools-security",
-      "teams-bot-framework-token-replay-security"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -63,7 +46,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces image generation and reference-image editing through Codex OAuth and OpenRouter, enabling `openai/gpt-image-2` and OpenRouter image models to work without requiring an `OPENAI_API_KEY`. Agents can now request provider-supported quality and output format hints for image generation, and optionally extend provider request timeouts for image, video, music, and TTS generation tools. A new forked context option for native `sessions_spawn` allows agents to inherit the requester transcript when needed, while `memorySearch.local.contextSize` can be configured to tune local embedding contexts. Several security enhancements have been implemented, including restricting agent-driven gateway configuration edits, immediate webhook secret revocation, and preventing Teams Bot Framework token replay. Codex authentication now uses the standard `CODEX_HOME` path, and Android cleartext gateway connections are restricted to loopback-only unless TLS is enabled. The dreaming cron is decoupled from heartbeat, and `openclaw doctor --fix` migrates stale main-session dreaming jobs. Upgrade is recommended for all users, especially those using image generation, subagents, or relying on webhooks and secrets. No specific prerequisites are required, but review agent behavior and configuration update logic due to the gateway configuration edit restrictions."
+      "tldr": "This release introduces several enhancements and fixes across various components. OpenAI and OpenRouter providers now support image generation and reference-image editing, enabling `openai/gpt-image-2` to function without an `OPENAI_API_KEY` and OpenRouter image models to work with `OPENROUTER_API_KEY`. Agents can now request provider-supported quality and output format hints for image generation. Subagents gain optional forked context for native `sessions_spawn` runs, allowing child agents to inherit the requester transcript. Per-call `timeoutMs` support is added for image, video, music, and TTS generation tools, enabling agents to extend provider request timeouts when needed. A configurable `memorySearch.local.contextSize` is introduced for local embeddings. Several fixes address issues with Codex harness, WhatsApp onboarding, block streaming, Slack groups, agent replay, Telegram media replies, and more. Security enhancements include stricter checks for mobile pairing, plugin setup, approvals, Discord channel policy, Android intents, and secrets handling. The managed dreaming cron is decoupled from heartbeat, ensuring dreaming runs even when heartbeat is disabled. Agent-driven `gateway config.apply`/`config.patch` runtime edits are now restricted to a narrow set of allowlisted paths for enhanced security. Webhook route secrets are re-resolved on each request for immediate revocation. It is recommended to upgrade to this version to benefit from the latest features, fixes, and security improvements. Run `openclaw doctor --fix` to migrate stale main-session dreaming jobs."
     },
     "features": [
       {

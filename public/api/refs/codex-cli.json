@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.124.0",
-  "generated_at": "2026-04-24T17:22:43.853Z",
+  "version": "0.125.0",
+  "generated_at": "2026-04-24T18:17:39.168Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,15 +14,15 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.124.0",
-    "to_version": "0.124.0",
+    "from_version": "0.125.0",
+    "to_version": "0.125.0",
     "new_features": [
-      "tui-quick-reasoning-controls",
-      "app-server-multi-environment-management",
-      "amazon-bedrock-support-openai-compatible-providers",
-      "remote-plugin-marketplaces-listing-and-reading",
-      "stable-hooks-with-mcp-tool-observation",
-      "default-fast-service-tier-for-chatgpt-plans"
+      "app-server-integrations-unix-sockets-pagination-sticky-envs-remote-threads",
+      "app-server-plugin-management-remote-install-marketplace-upgrade",
+      "permission-profiles-round-trip-across-tui-sessions-user-turns-mcp-sandbox-shell-escalation-app-server-apis",
+      "model-providers-own-model-discovery-aws-bedrock-account-state-exposed",
+      "codex-exec-json-reports-reasoning-token-usage",
+      "rollout-tracing-records-tool-code-mode-session-multi-agent-relationships"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -46,14 +46,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.124.0",
+      "latest_stable": "0.125.0",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-04-23",
+      "latest_release_date": "2026-04-24",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release introduces several key enhancements, including TUI quick reasoning controls using `Alt+,` and `Alt+.` to adjust reasoning levels, and automatic reasoning reset on model upgrades. App-server sessions now support multi-environment management, enabling environment and working directory selection per turn for improved multi-workspace and remote targeting. First-class Amazon Bedrock support is added for OpenAI-compatible providers, featuring AWS SigV4 signing and credential-based authentication. Remote plugin marketplaces can be directly listed and read with enhanced reliability and larger result pages. Hooks are now stable, configurable in `config.toml` and managed in `requirements.toml`, and can observe MCP tools, `apply_patch`, and long-running Bash sessions. Furthermore, eligible ChatGPT plans now default to the Fast service tier unless opted out. Bug fixes address Cloudflare cookie preservation, remote app-server reliability, permission-mode drift, `wait_agent` timeouts, local stdio MCP launches, and startup failures on managed config edge cases. It is highly recommended to upgrade to benefit from these improvements and fixes. No specific migration steps are required."
+      "tldr": "This release introduces significant enhancements to app-server integrations, now supporting Unix socket transport, pagination-friendly resume/fork, sticky environments, and remote thread config/store plumbing, improving flexibility and control. App-server plugin management gains the ability to install remote plugins and upgrade configured marketplaces. Permission profiles are now consistently propagated across TUI sessions, user turns, MCP sandbox state, shell escalation, and app-server APIs, ensuring uniform permission enforcement. Model providers now manage model discovery, exposing AWS/Bedrock account state to app clients. The `codex exec --json` command now reports reasoning-token usage, aiding in resource consumption analysis. Rollout tracing has been expanded to record tool, code-mode, session, and multi-agent relationships, with a debug reducer command for inspection. A bug was fixed where interrupting `/review` and exiting the TUI would leave the interface wedged. The exec-server now correctly waits for stream closure and no longer drops buffered output. Windows sandbox startup handles multiple CLI versions and installed app directories better, and avoids visible PowerShell windows. Config/schema handling now rejects conflicting MultiAgentV2 thread limits, resolves relative agent-role config paths, hides unsupported MCP bearer-token fields, and rejects invalid `js_repl` image MIME types. This release is recommended for all users to take advantage of the new features and bug fixes. No specific migration steps are required."
     },
     "features": [
       {
@@ -1341,6 +1341,85 @@
         "since": "0.124.0",
         "description": "Remote plugin marketplaces can now be listed and read directly, with more reliable detail lookups and larger result pages.",
         "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "app-server-integrations-unix-sockets-pagination-sticky-envs-remote-threads",
+        "name": "Enhanced App-Server Integrations",
+        "status": "stable",
+        "since": "0.125.0",
+        "description": "App-server integrations now support Unix socket transport, pagination-friendly resume/fork, sticky environments, and remote thread config/store plumbing.",
+        "key_details": [
+          "Unix socket transport for app-server communication.",
+          "Pagination-friendly resume/fork for improved thread management.",
+          "Sticky environments for consistent app-server behavior.",
+          "Remote thread config/store plumbing for enhanced thread control."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "app-server-plugin-management-remote-install-marketplace-upgrade",
+        "name": "App-Server Plugin Management Improvements",
+        "status": "stable",
+        "since": "0.125.0",
+        "description": "App-server plugin management can now install remote plugins and upgrade configured marketplaces.",
+        "key_details": [
+          "Ability to install remote plugins via app-server.",
+          "Upgrade configured marketplaces through app-server plugin management."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "permission-profiles-round-trip-across-tui-sessions-user-turns-mcp-sandbox-shell-escalation-app-server-apis",
+        "name": "Permission Profile Propagation",
+        "status": "stable",
+        "since": "0.125.0",
+        "description": "Permission profiles now round-trip across TUI sessions, user turns, MCP sandbox state, shell escalation, and app-server APIs, ensuring consistent permission enforcement across different contexts.",
+        "key_details": [
+          "Permission profiles are consistently maintained across TUI sessions.",
+          "Permission profiles are carried on user turns.",
+          "Permission profiles are included in MCP sandbox state.",
+          "Permission profiles are carried during shell escalation.",
+          "Permission profiles are accessible via app-server APIs."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "model-providers-own-model-discovery-aws-bedrock-account-state-exposed",
+        "name": "Model Provider Model Discovery",
+        "status": "stable",
+        "since": "0.125.0",
+        "description": "Model providers now own model discovery, with AWS/Bedrock account state exposed to app clients, allowing for more flexible and provider-specific model management.",
+        "key_details": [
+          "Model providers are responsible for model discovery.",
+          "AWS/Bedrock account state is exposed to app clients."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "codex-exec-json-reports-reasoning-token-usage",
+        "name": "Reasoning Token Usage Reporting",
+        "status": "stable",
+        "since": "0.125.0",
+        "description": "`codex exec --json` now reports reasoning-token usage for programmatic consumers, providing insights into the resource consumption of code execution.",
+        "key_details": [
+          "`codex exec --json` output includes reasoning-token usage information."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "rollout-tracing-records-tool-code-mode-session-multi-agent-relationships",
+        "name": "Rollout Tracing Enhancements",
+        "status": "stable",
+        "since": "0.125.0",
+        "description": "Rollout tracing now records tool, code-mode, session, and multi-agent relationships, with a debug reducer command for inspection, enabling more comprehensive analysis of system behavior.",
+        "key_details": [
+          "Rollout tracing captures tool usage.",
+          "Rollout tracing captures code-mode usage.",
+          "Rollout tracing captures session relationships.",
+          "Rollout tracing captures multi-agent relationships.",
+          "Debug reducer command available for trace inspection."
+        ],
         "source_url": ""
       }
     ],
