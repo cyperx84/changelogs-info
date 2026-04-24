@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.23",
-  "generated_at": "2026-04-24T22:17:43.243Z",
+  "generated_at": "2026-04-24T23:16:49.003Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -16,7 +16,12 @@
   "delta": {
     "from_version": "2026.4.23",
     "to_version": "2026.4.23",
-    "new_features": [],
+    "new_features": [
+      "image-generation-quality-output-format-hints",
+      "forked-context-for-native-sessions-spawn-runs",
+      "per-call-timeoutms-support-for-generation-tools",
+      "configurable-memorysearch-local-contextsize"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -46,7 +51,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces several enhancements and fixes across various components. OpenAI and OpenRouter providers now support image generation and reference-image editing, with OpenAI's Codex OAuth eliminating the need for an API key. Agents can now request provider-supported quality and output format hints for image generation, and can optionally fork context for native `sessions_spawn` runs, allowing child agents to inherit the requester transcript. Per-call `timeoutMs` support has been added for image, video, music, and TTS generation tools, enabling agents to extend provider request timeouts when needed. A configurable `memorySearch.local.contextSize` allows tuning local embedding contexts for constrained hosts. Several fixes address issues with Codex harness, WhatsApp onboarding, block streaming, Slack groups, agent replay, Telegram media replies, and more. Security enhancements include stricter checks for mobile pairing, plugin setup, approvals, Discord channel policy, and webhook secrets. Dreaming cron jobs are now decoupled from heartbeat, and agent resumes are scoped to the requested agent store. It is recommended to upgrade to this version to benefit from the latest features, fixes, and security improvements. No specific migration steps are required."
+      "tldr": "This release introduces significant enhancements to image generation and memory management. Agents can now request specific quality and output formats for images, and pass OpenAI-specific hints, improving control over generated content. A new forked context option for `sessions_spawn` allows agents to inherit requester transcripts in child sessions, while maintaining isolation by default. Per-call timeouts for generation tools enable agents to extend request timeouts when needed. The `memorySearch.local.contextSize` is now configurable, allowing tuning of local embedding contexts for resource-constrained environments. Several fixes address issues with Codex harness, WhatsApp onboarding, block streaming, Slack groups, agent replay, Telegram media replies, and more, improving stability and reliability. The dreaming cron is now decoupled from heartbeat, ensuring it runs even when heartbeat is disabled. Security enhancements include stricter validation of webhook secrets, Teams app IDs, and Android intent handling. It is recommended to upgrade to this version to benefit from the new features, bug fixes, and security improvements. Run `openclaw doctor --fix` to migrate stale dreaming jobs."
     },
     "features": [
       {
