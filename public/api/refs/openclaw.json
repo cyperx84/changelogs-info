@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.23",
-  "generated_at": "2026-04-24T20:18:11.971Z",
+  "generated_at": "2026-04-24T21:19:47.883Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -22,7 +22,9 @@
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "gateway-security-config-apply"
+    ]
   },
   "payload": {
     "meta": {
@@ -46,7 +48,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces enhanced image generation capabilities and addresses several important fixes and security enhancements. Agents can now request provider-supported quality and output format hints for image generation, with OpenAI-specific options also supported. A significant fix addresses block streaming, preventing duplicate replies by suppressing final assembled text after partial block-delivery aborts. The managed dreaming cron is now decoupled from heartbeat, ensuring dreaming runs even when heartbeat is disabled. Several security enhancements are included, such as requiring shared Bot Framework audience tokens to name the configured Teams app and loopback-only cleartext gateway connections on Android. Additionally, webhook route secrets are now re-resolved on each request, and agent-driven gateway config edits are restricted to a narrow set of allowlisted paths. The release also fixes issues with Codex harness, WhatsApp onboarding, Slack groups, Telegram media replies, and memory/CLI resolution. It is recommended to upgrade to benefit from these security fixes and feature enhancements. Run `openclaw doctor --fix` to migrate stale main-session dreaming jobs in persisted cron configs to the new shape."
+      "tldr": "This release introduces enhanced security measures and improved functionality across various components. Agent-driven gateway configuration edits are now restricted to a narrow set of allowlisted paths, preventing unauthorized modifications. Agents can now request provider-supported quality and output format hints for image generation, and can utilize optional forked context for native `sessions_spawn` runs. Per-call `timeoutMs` support has been added for image, video, music, and TTS generation tools, allowing agents to extend provider request timeouts when needed. A configurable `memorySearch.local.contextSize` has been introduced for tuning local embedding contexts. Several fixes address issues with Codex harness, WhatsApp onboarding, block streaming, Slack groups, agent replay, Telegram media replies, and more. Notable fixes include preserving image attachments for text-only primary models in Gateway/WebChat, and ensuring that async exec-event completion replies are routed through the persisted session delivery context. Additionally, webhook route secrets are now re-resolved on each request, and the managed dreaming cron is decoupled from heartbeat. It is recommended to upgrade to this version to benefit from the security enhancements and bug fixes. Review agent configurations and adjust logic to comply with the new restrictions on gateway configuration edits."
     },
     "features": [
       {
@@ -3645,6 +3647,18 @@
           "Security"
         ],
         "migration": "Ensure that shared Bot Framework audience tokens include the verified `appid` or `azp` of the configured Teams app.",
+        "source_url": ""
+      },
+      {
+        "id": "gateway-security-config-apply",
+        "version": "2026.4.23",
+        "title": "Restrict Agent-Driven Gateway Configuration Edits",
+        "description": "Agent-driven `gateway config.apply`/`config.patch` runtime edits are now restricted to a narrow set of agent-tunable prompt, model, and mention-gating paths. This change prevents agents from modifying sensitive configuration keys, enhancing system security.",
+        "affected": [
+          "Agents",
+          "Gateway"
+        ],
+        "migration": "Review agent configurations that modify gateway settings and ensure they only target the allowlisted paths. Adjust agent logic to comply with the new restrictions.",
         "source_url": ""
       }
     ],
