@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.118",
-  "generated_at": "2026-04-23T23:19:22.351Z",
+  "version": "2.1.119",
+  "generated_at": "2026-04-24T00:38:41.344Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,33 +14,21 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.118",
-    "to_version": "2.1.118",
-    "new_features": [
-      "custom-themes",
-      "mcp-tool-invocation-from-hooks",
-      "wsl-windows-settings-inheritance",
-      "auto-mode-defaults-inclusion",
-      "auto-mode-opt-in-prompt",
-      "plugin-tag-command",
-      "vim-visual-mode"
-    ],
+    "from_version": "2.1.119",
+    "to_version": "2.1.119",
+    "new_features": [],
     "new_commands": [],
     "new_flags": [
-      "--continue",
-      "--resume"
+      "--from-pr",
+      "--print",
+      "--agent <name>"
     ],
     "new_env_vars": [
-      "DISABLE_UPDATES"
+      "CLAUDE_CODE_HIDE_CWD"
     ],
-    "deprecated_commands": [
-      "/cost",
-      "/stats"
-    ],
+    "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "cost-stats-commands-merged"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -57,12 +45,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.118",
+      "latest_stable": "2.1.119",
       "latest_release_date": "2026-04-23",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Version 2.1.118 introduces several enhancements, including the merging of `/cost` and `/stats` into the unified `/usage` command, though the former commands remain as shortcuts. Custom themes can now be created and switched via `/theme`, with themes also shippable via plugins. Hooks gain the ability to directly invoke MCP tools, streamlining automation workflows. A new `DISABLE_UPDATES` environment variable provides a stricter control over updates, blocking all update paths. WSL on Windows can now inherit Windows-side managed settings, simplifying configuration. Auto mode now supports including default rules alongside custom ones, and the opt-in prompt offers a \"Don't ask again\" option. The `claude plugin tag` command facilitates plugin release tagging with version validation. The `--continue` and `--resume` flags now find sessions that added the current directory via `/add-dir`. The `/color` command now syncs the session accent color to claude.ai/code when Remote Control is connected. This release also addresses several bug fixes, including issues with MCP authentication, OAuth token refresh, credential saving, and various UI glitches. Additionally, fixes are included for agent-type hooks, `/fork` command behavior, keyboard input freezing, and plugin dependency resolution. Upgrading is recommended to take advantage of the new features and bug fixes. No specific prerequisites are required."
+      "tldr": "The latest release of claude-code introduces persistent configuration settings and enhanced PR URL handling. Configuration settings such as theme, editor mode, and verbosity are now saved to `~/.claude/settings.json` and respect precedence rules. The `--from-pr` flag now supports GitLab merge requests, Bitbucket pull requests, and GitHub Enterprise PR URLs, expanding integration capabilities. A new environment variable, `CLAUDE_CODE_HIDE_CWD`, allows hiding the working directory in the startup logo. The `--print` mode now respects agent frontmatter for tools, and `--agent` honors the agent's permission mode. PowerShell tool commands can now be auto-approved in permission mode. Hook inputs now include tool execution duration, and subagent MCP server reconfiguration connects servers in parallel. Plugins with version constraints now auto-update to the highest satisfying git tag. Several fixes address issues like pasting CRLF content, scrolling in fullscreen mode, MCP HTTP connection errors, and various UI glitches. Tool search is now disabled by default on Vertex AI, and several MCP server and plugin-related issues have been resolved. This release includes several bug fixes and improvements, making it a recommended upgrade for all users to ensure stability and access to the latest features."
     },
     "features": [
       {
@@ -1574,6 +1562,24 @@
           "description": "Improves cross-user prompt caching in print mode.",
           "since": "2.1.98",
           "source_url": ""
+        },
+        {
+          "flag": "--from-pr",
+          "description": "Now accepts GitLab merge-request, Bitbucket pull-request, and GitHub Enterprise PR URLs",
+          "since": "2.1.119",
+          "source_url": ""
+        },
+        {
+          "flag": "--print",
+          "description": "Mode now honors the agent's `tools:` and `disallowedTools:` frontmatter, matching interactive-mode behavior",
+          "since": "2.1.119",
+          "source_url": ""
+        },
+        {
+          "flag": "--agent <name>",
+          "description": "Now honors the agent definition's `permissionMode` for built-in agents",
+          "since": "2.1.119",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -1601,8 +1607,9 @@
         }
       ],
       "new_since_previous": [
-        "--continue",
-        "--resume"
+        "--from-pr",
+        "--print",
+        "--agent <name>"
       ]
     },
     "env_vars": [
@@ -1841,6 +1848,13 @@
         "purpose": "Completely block all update paths including manual `claude update` — stricter than `DISABLE_AUTOUPDATER`",
         "status": "stable",
         "since": "2.1.118",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_HIDE_CWD",
+        "purpose": "To hide the working directory in the startup logo",
+        "status": "stable",
+        "since": "2.1.119",
         "source_url": ""
       }
     ],
