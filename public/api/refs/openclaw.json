@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.22",
-  "generated_at": "2026-04-23T23:20:00.249Z",
+  "generated_at": "2026-04-24T01:38:32.885Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -17,20 +17,15 @@
     "from_version": "2026.4.22",
     "to_version": "2026.4.22",
     "new_features": [
-      "xai-image-generation-text-to-speech-speech-to-text-support",
-      "voice-call-streaming-transcription-for-deepgram-elevenlabs-mistral",
+      "thai-translation-support",
       "local-embedded-tui-mode",
-      "models-add-command",
-      "tencent-cloud-provider-plugin",
       "payload-free-stability-recording",
       "local-trajectory-capture",
+      "tencent-cloud-provider-plugin",
       "openclaw-tools-mcp-bridge",
-      "cli-debug-timing-helper",
-      "tokenjuice-plugin"
+      "cli-debug-timing-helper"
     ],
-    "new_commands": [
-      "/export-trajectory"
-    ],
+    "new_commands": [],
     "new_flags": [],
     "new_env_vars": [
       "OPENCLAW_CHILD_OOM_SCORE_ADJ"
@@ -38,7 +33,8 @@
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "codex-app-server-guardian-mode"
+      "codex-cli-auth-import-removal",
+      "legacy-codex-app-server-guardian-shortcut-removed"
     ]
   },
   "payload": {
@@ -63,7 +59,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces xAI support for image generation, text-to-speech, and speech-to-text, enabling richer multimodal interactions. It also adds Voice Call streaming transcription for Deepgram, ElevenLabs, and Mistral, expanding transcription capabilities. A new local embedded TUI mode allows running terminal chats without a Gateway while enforcing plugin approval gates. The `/models add` command simplifies model registration from chat, and the Tencent Cloud provider plugin offers TokenHub onboarding and tiered Hy3 pricing. Payload-free stability recording is enabled by default, and local trajectory capture with `/export-trajectory` aids debugging. \n\nKey new features include configurable native reply quoting for WhatsApp, mailbox-style session list filters, and a browser-local personal identity for the operator. Important fixes address agent failover, Anthropic Vertex model discovery, and plugin installation. The GPT-5 prompt overlay is now in the shared provider runtime, and OpenAI's native web search is used automatically for direct OpenAI Responses models. \n\nSeveral fixes improve stability and reliability, including handling undici transport failures, restoring ADC-backed model discovery for Anthropic Vertex, and preventing duplicate cron sends in WhatsApp. The release also addresses issues with media understanding, agent BTW questions, and memory search. A breaking change removes the legacy `OPENCLAW_CODEX_APP_SERVER_GUARDIAN` shortcut, requiring the use of plugin config or environment variable for Guardian mode. \n\nMigration steps may be required for users relying on the removed `OPENCLAW_CODEX_APP_SERVER_GUARDIAN` environment variable. It is recommended to upgrade to this release for improved stability, new features, and enhanced provider support. The new `OPENCLAW_CHILD_OOM_SCORE_ADJ` environment variable allows controlling the oom_score_adj of gateway-managed child processes on Linux."
+      "tldr": "This release introduces significant enhancements to provider support, particularly for xAI with image generation, text-to-speech, and speech-to-text capabilities, and Claude Opus 4.7 through Amazon Bedrock Mantle. A local embedded TUI mode allows terminal chats without a Gateway, while enforcing plugin approval gates. The Codex CLI auth import path has been removed, requiring browser login or device pairing instead. Key new features include payload-free stability recording for easier bug reporting, local trajectory capture for reproducible debugging, and a Tencent Cloud provider plugin.  Important fixes address agent failover, Anthropic Vertex model discovery, and plugin installation, ensuring smoother operation and preventing crashes. The GPT-5 prompt overlay is now shared across providers, and the `claude-cli` command defaults to warm stdio sessions.  The legacy `OPENCLAW_CODEX_APP_SERVER_GUARDIAN` shortcut has been removed, requiring updated configuration.  This release also includes numerous bug fixes and improvements to channel integrations, memory management, and plugin handling.  It is highly recommended to upgrade to benefit from the new features, improved stability, and security enhancements. Ensure to migrate from the Codex CLI auth import and update any Codex app-server configurations."
     },
     "features": [
       {
