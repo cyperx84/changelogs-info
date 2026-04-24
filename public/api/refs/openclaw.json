@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.23",
-  "generated_at": "2026-04-24T21:19:47.883Z",
+  "generated_at": "2026-04-24T22:17:43.243Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -22,9 +22,7 @@
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "gateway-security-config-apply"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -48,7 +46,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces enhanced security measures and improved functionality across various components. Agent-driven gateway configuration edits are now restricted to a narrow set of allowlisted paths, preventing unauthorized modifications. Agents can now request provider-supported quality and output format hints for image generation, and can utilize optional forked context for native `sessions_spawn` runs. Per-call `timeoutMs` support has been added for image, video, music, and TTS generation tools, allowing agents to extend provider request timeouts when needed. A configurable `memorySearch.local.contextSize` has been introduced for tuning local embedding contexts. Several fixes address issues with Codex harness, WhatsApp onboarding, block streaming, Slack groups, agent replay, Telegram media replies, and more. Notable fixes include preserving image attachments for text-only primary models in Gateway/WebChat, and ensuring that async exec-event completion replies are routed through the persisted session delivery context. Additionally, webhook route secrets are now re-resolved on each request, and the managed dreaming cron is decoupled from heartbeat. It is recommended to upgrade to this version to benefit from the security enhancements and bug fixes. Review agent configurations and adjust logic to comply with the new restrictions on gateway configuration edits."
+      "tldr": "This release introduces several enhancements and fixes across various components. OpenAI and OpenRouter providers now support image generation and reference-image editing, with OpenAI's Codex OAuth eliminating the need for an API key. Agents can now request provider-supported quality and output format hints for image generation, and can optionally fork context for native `sessions_spawn` runs, allowing child agents to inherit the requester transcript. Per-call `timeoutMs` support has been added for image, video, music, and TTS generation tools, enabling agents to extend provider request timeouts when needed. A configurable `memorySearch.local.contextSize` allows tuning local embedding contexts for constrained hosts. Several fixes address issues with Codex harness, WhatsApp onboarding, block streaming, Slack groups, agent replay, Telegram media replies, and more. Security enhancements include stricter checks for mobile pairing, plugin setup, approvals, Discord channel policy, and webhook secrets. Dreaming cron jobs are now decoupled from heartbeat, and agent resumes are scoped to the requested agent store. It is recommended to upgrade to this version to benefit from the latest features, fixes, and security improvements. No specific migration steps are required."
     },
     "features": [
       {
