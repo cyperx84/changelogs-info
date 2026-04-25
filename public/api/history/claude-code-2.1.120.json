@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.120",
-  "generated_at": "2026-04-25T01:36:14.125Z",
+  "generated_at": "2026-04-25T00:35:00.613Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -17,8 +17,12 @@
     "from_version": "2.1.120",
     "to_version": "2.1.120",
     "new_features": [],
-    "new_commands": [],
-    "new_flags": [],
+    "new_commands": [
+      "/ultrareview"
+    ],
+    "new_flags": [
+      "--json"
+    ],
     "new_env_vars": [
       "AI_AGENT"
     ],
@@ -46,7 +50,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release enhances Claude Code's usability and integration with external tools. Windows users no longer require Git for Windows, as PowerShell is now used as the shell tool when Git Bash is absent. A new `claude ultrareview [target]` subcommand allows non-interactive `/ultrareview` execution from CI or scripts, printing findings to stdout (or JSON) and exiting with a status code. Skills can now reference the current effort level using the `${CLAUDE_EFFORT}` environment variable. The `AI_AGENT` environment variable is set for subprocesses, enabling `gh` to attribute traffic to Claude Code. Spinner tips recommending desktop app installation or skill/agent creation are now hidden when they already exist. A hint is displayed to use PgUp/PgDn for scrolling in terminals sending arrow keys instead of scroll events. Session start is faster when many unauthenticated claude.ai connectors are configured. The auto mode denial message now links to configuration docs. `claude plugin validate` now accepts `$schema`, `version`, and `description` at the top level of `marketplace.json` and `$schema` in `plugin.json`. Auto-compact in auto mode now displays `auto` instead of a token count. Several bugs have been fixed, including issues with Esc key during stdio MCP tool calls, keyboard input in interactive overlays after resuming, terminal scrollback duplication, telemetry suppression, false-positive permission prompts, long selection menu clipping, Write tool output collapsing, slash command picker jumping, and plugin marketplace loading failures. VSCode's `/usage` command now opens the native Account & Usage dialog, and voice dictation respects the `language` setting. A `find` command issue in the Bash tool causing host-wide crashes has been resolved. Upgrade is recommended to benefit from these improvements and fixes."
+      "tldr": "This release introduces the `claude ultrareview [target]` subcommand, enabling non-interactive execution of `/ultrareview` from CI or scripts, with findings printed to stdout and a `--json` flag for raw output. Windows users will now use PowerShell as the shell tool when Git for Windows (Git Bash) is absent. Skills can now reference the current effort level using the `${CLAUDE_EFFORT}` environment variable. The `AI_AGENT` environment variable is now set for subprocesses, allowing `gh` to attribute traffic to Claude Code. Spinner tips recommending desktop app installation or skill/agent creation are now hidden when you already have them. A scroll hint is displayed when the terminal sends arrow keys instead of scroll events. Session start is faster when many unauthenticated claude.ai connectors are configured. The auto mode denial message now links to configuration docs. Validation for `marketplace.json` and `plugin.json` now accepts `$schema`, `version`, and `description` at the top level. Auto-compact in auto mode now displays `auto` instead of a misleading token count. Several bugs have been fixed, including issues with Esc key during stdio MCP tool calls, keyboard input in interactive overlays after resuming, terminal scrollback duplication, telemetry suppression, false-positive permission prompts, long selection menu clipping, Write tool output collapsing, slash command picker jumping, and `/plugin` marketplace loading failures. VSCode users will now have `/usage` open the native Account & Usage dialog and voice dictation respects the `language` setting. A `find` command issue in the Bash tool causing host-wide crashes has been resolved. Upgrade is recommended to benefit from these improvements and fixes. No specific prerequisites are required."
     },
     "features": [
       {
@@ -1608,7 +1612,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--json"
+      ]
     },
     "env_vars": [
       {
