@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.120",
-  "generated_at": "2026-04-25T01:36:14.125Z",
+  "version": "2.1.119",
+  "generated_at": "2026-04-25T03:06:17.534Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,13 +14,17 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.120",
-    "to_version": "2.1.120",
+    "from_version": "2.1.119",
+    "to_version": "2.1.119",
     "new_features": [],
     "new_commands": [],
-    "new_flags": [],
+    "new_flags": [
+      "--from-pr",
+      "--print",
+      "--agent <name>"
+    ],
     "new_env_vars": [
-      "AI_AGENT"
+      "CLAUDE_CODE_HIDE_CWD"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -41,12 +45,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.120",
-      "latest_release_date": "2026-04-25",
+      "latest_stable": "2.1.119",
+      "latest_release_date": "2026-04-23",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release enhances Claude Code's usability and integration with external tools. Windows users no longer require Git for Windows, as PowerShell is now used as the shell tool when Git Bash is absent. A new `claude ultrareview [target]` subcommand allows non-interactive `/ultrareview` execution from CI or scripts, printing findings to stdout (or JSON) and exiting with a status code. Skills can now reference the current effort level using the `${CLAUDE_EFFORT}` environment variable. The `AI_AGENT` environment variable is set for subprocesses, enabling `gh` to attribute traffic to Claude Code. Spinner tips recommending desktop app installation or skill/agent creation are now hidden when they already exist. A hint is displayed to use PgUp/PgDn for scrolling in terminals sending arrow keys instead of scroll events. Session start is faster when many unauthenticated claude.ai connectors are configured. The auto mode denial message now links to configuration docs. `claude plugin validate` now accepts `$schema`, `version`, and `description` at the top level of `marketplace.json` and `$schema` in `plugin.json`. Auto-compact in auto mode now displays `auto` instead of a token count. Several bugs have been fixed, including issues with Esc key during stdio MCP tool calls, keyboard input in interactive overlays after resuming, terminal scrollback duplication, telemetry suppression, false-positive permission prompts, long selection menu clipping, Write tool output collapsing, slash command picker jumping, and plugin marketplace loading failures. VSCode's `/usage` command now opens the native Account & Usage dialog, and voice dictation respects the `language` setting. A `find` command issue in the Bash tool causing host-wide crashes has been resolved. Upgrade is recommended to benefit from these improvements and fixes."
+      "tldr": "The `/config` settings now persist to `~/.claude/settings.json` and participate in project/local/policy override precedence, providing a more consistent and manageable configuration experience. The `--from-pr` flag now supports GitLab merge requests, Bitbucket pull requests, and GitHub Enterprise PR URLs, expanding integration capabilities. A new `CLAUDE_CODE_HIDE_CWD` environment variable allows hiding the working directory in the startup logo for cleaner presentations. The `--print` mode now respects the agent's `tools:` and `disallowedTools:` frontmatter, aligning its behavior with interactive mode. The `--agent <name>` flag now honors the agent definition's `permissionMode` for built-in agents, ensuring consistent permission handling. PowerShell tool commands can now be auto-approved in permission mode, mirroring Bash behavior. Hook inputs `PostToolUse` and `PostToolUseFailure` now include `duration_ms` for tool execution time. Several fixes address issues like pasting CRLF content, multi-line paste losing newlines, Glob and Grep tools disappearing, scrolling in fullscreen mode, MCP HTTP connection failures, Rewind overlay display, auto mode overriding plan mode, async `PostToolUse` hooks, spinner staying on, tool search on Vertex AI, `@`-file Tab completion, stray `p` character on startup, `${ENV_VAR}` placeholders in headers, MCP OAuth client secret, `/skills` Enter key behavior, `/agents` detail view mislabeling, plugin MCP servers on Windows, `/export` showing default model, verbose output setting persistence, `/usage` progress bars overlapping, plugin MCP servers failing, list items containing a sentence-final number wrapping, `/plan` and `/plan open` behavior, skills invoked before auto-compaction, `/reload-plugins` and `/doctor` reporting load errors, Agent tool with `isolation: \"worktree\"` reusing stale worktrees, disabled MCP servers appearing as \"failed\" in `/status`, `TaskList` returning tasks in arbitrary filesystem order, spurious \"GitHub API rate limit exceeded\" hints, SDK/bridge `read_file` not correctly enforcing size cap, PR not linked to session, `/doctor` warning about MCP server entries overridden, and false-positive \"Windows requires 'cmd /c' wrapper\" MCP config warning. Additionally, a VSCode voice dictation issue on macOS has been resolved. This release includes numerous bug fixes and enhancements, making it a recommended upgrade for all users. No specific migration steps are required."
     },
     "features": [
       {
@@ -1608,7 +1612,11 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--from-pr",
+        "--print",
+        "--agent <name>"
+      ]
     },
     "env_vars": [
       {
