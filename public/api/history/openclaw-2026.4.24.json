@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.24",
-  "generated_at": "2026-04-25T22:12:41.507Z",
+  "generated_at": "2026-04-25T18:17:08.440Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -17,35 +17,18 @@
     "from_version": "2026.4.24",
     "to_version": "2026.4.24",
     "new_features": [
-      "google-meet-plugin",
+      "google-meet-participant-plugin",
+      "deepseek-v4-flash-and-v4-pro",
       "realtime-voice-loops",
-      "gemini-live-realtime-voice-provider",
-      "gradium-text-to-speech-provider",
-      "document-extract-plugin",
-      "bonjour-plugin",
-      "browser-automation-skill"
+      "browser-automation-improvements",
+      "lighter-plugin-and-model-infrastructure"
     ],
-    "new_commands": [
-      "openclaw matrix verify self",
-      "voicecall setup",
-      "voicecall smoke",
-      "openclaw browser click-coords",
-      "openclaw browser doctor",
-      "googlemeet doctor"
-    ],
-    "new_flags": [
-      "--all-conference-records"
-    ],
-    "new_env_vars": [
-      "OPENCLAW_OTEL_PRELOADED"
-    ],
-    "deprecated_commands": [
-      "/models add"
-    ],
+    "new_commands": [],
+    "new_flags": [],
+    "new_env_vars": [],
+    "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "plugin-sdk-tool-result-transforms"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -69,7 +52,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "OpenClaw 2026.4.24 introduces a Google Meet plugin, enabling agents to join meetings, manage attendance, and access artifacts, along with recovery tools for existing Meet tabs. Realtime voice loops now allow Talk, Voice Call, and Google Meet to consult the full OpenClaw agent for deeper, tool-backed answers. DeepSeek V4 Flash is the new onboarding default, with improved thinking/replay behavior. Browser automation gains coordinate clicks, longer action budgets, and per-profile headless overrides. The Plugin SDK removes the Pi-only `api.registerEmbeddedExtensionFactory(...)` compatibility path, requiring `api.registerAgentToolResultMiddleware(...)` for tool-result rewrites. The `/models add` command is deprecated in favor of manual model configuration. Key fixes include preventing heartbeat prompts in non-heartbeat runs, hardening tool-result pruning, and addressing Feishu card delivery issues. This release also includes numerous dependency updates, security enhancements, and bug fixes across various channels and providers. It is recommended to upgrade to benefit from the new features, improved stability, and security enhancements. Ensure plugins are updated to use the new tool-result middleware API. No specific prerequisites are required for this upgrade."
+      "tldr": "OpenClaw 2026.4.24 introduces a Google Meet participant plugin with features like personal Google auth and artifact exports, enhancing collaboration workflows. DeepSeek V4 Flash and V4 Pro are now bundled, with V4 Flash as the default, and DeepSeek's tool-call behavior is improved. Talk, Voice Call, and Google Meet can now leverage realtime voice loops backed by the full OpenClaw agent for more informed responses. Browser automation gains coordinate clicks, longer action budgets, headless overrides, and better tab management. Plugin and model infrastructure is streamlined with static catalogs and lazy dependencies, improving startup performance. Packaged installs now preserve package-root runtime dependencies, fixing potential Windows npm update failures. Heartbeat scheduler delays are clamped to prevent crashes, and Telegram polling restarts are stabilized. Browser automation handles route races more gracefully, and aria snapshots are more reliable. Other fixes address duplicate Telegram pollers, browser detection on Linux, session tab leaks, oversized thread forks, Codex system prompts, MCP child process accumulation, Codex image generation, control UI usage metrics, GitHub Copilot reasoning, agent reply handling, Feishu TTS transcoding, Telegram webhook acknowledgements, MCP runtime management, gateway restart continuation, tool-result pruning, and daemon service environment setup.  Upgrading is recommended to benefit from these enhancements and fixes. No specific prerequisites are mentioned."
     },
     "features": [
       {
@@ -2068,68 +2051,6 @@
           "External runtime-dependency repair for packaged installs"
         ],
         "source_url": ""
-      },
-      {
-        "id": "google-meet-plugin",
-        "name": "Google Meet Plugin",
-        "status": "stable",
-        "since": "2026.4.24",
-        "description": "Bundled participant plugin for Google Meet with personal Google auth, Chrome/Twilio realtime sessions, paired-node Chrome support, artifact/attendance exports, and recovery tooling for already-open Meet tabs.",
-        "key_details": [
-          "Personal Google auth",
-          "Explicit meeting URL joins",
-          "Chrome and Twilio realtime transports",
-          "Paired-node `chrome-node` support",
-          "Full-agent consults inside live voice sessions",
-          "Artifact and attendance workflows for conference records, recordings, transcripts, smart notes, and participant sessions",
-          "OAuth and browser-state doctor/recovery flows"
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "gemini-live-realtime-voice-provider",
-        "name": "Gemini Live Realtime Voice Provider",
-        "status": "stable",
-        "since": "2026.4.24",
-        "description": "A Gemini Live realtime voice provider for backend Voice Call and Google Meet audio bridges, with bidirectional audio and function-call support.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "gradium-text-to-speech-provider",
-        "name": "Gradium Text-to-Speech Provider",
-        "status": "stable",
-        "since": "2026.4.24",
-        "description": "A bundled text-to-speech provider with voice-note and telephony output support.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "document-extract-plugin",
-        "name": "Document Extract Plugin",
-        "status": "stable",
-        "since": "2026.4.24",
-        "description": "Local PDF extraction is moved into a bundled `document-extract` plugin.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "bonjour-plugin",
-        "name": "Bonjour Plugin",
-        "status": "stable",
-        "since": "2026.4.24",
-        "description": "LAN Gateway discovery advertising is moved into a default-enabled bundled plugin.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "browser-automation-skill",
-        "name": "Browser Automation Skill",
-        "status": "stable",
-        "since": "2026.4.24",
-        "description": "A `browser-automation` skill is bundled with the multi-step snapshot, stable-tab, stale-ref, and manual-blocker loop for agent-controlled pages.",
-        "key_details": [],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -2396,54 +2317,6 @@
         "since": "2026.4.22",
         "status": "stable",
         "source_url": ""
-      },
-      {
-        "name": "openclaw matrix verify self",
-        "syntax": "openclaw matrix verify self",
-        "description": "Allows operators to establish cross-signing identity trust from the CLI.",
-        "since": "2026.4.24",
-        "status": "stable",
-        "source_url": ""
-      },
-      {
-        "name": "voicecall setup",
-        "syntax": "voicecall setup",
-        "description": "Checks Twilio/provider readiness before placing a live test call.",
-        "since": "2026.4.24",
-        "status": "stable",
-        "source_url": ""
-      },
-      {
-        "name": "voicecall smoke",
-        "syntax": "voicecall smoke",
-        "description": "Dry-run command to check Twilio/provider readiness before placing a live test call.",
-        "since": "2026.4.24",
-        "status": "stable",
-        "source_url": ""
-      },
-      {
-        "name": "openclaw browser click-coords",
-        "syntax": "openclaw browser click-coords",
-        "description": "CLI use for viewport coordinate clicks.",
-        "since": "2026.4.24",
-        "status": "stable",
-        "source_url": ""
-      },
-      {
-        "name": "openclaw browser doctor",
-        "syntax": "openclaw browser doctor",
-        "description": "Exposes browser doctor diagnostics to agents and extends `openclaw doctor` browser readiness notes for managed Chromium launch prerequisites.",
-        "since": "2026.4.24",
-        "status": "stable",
-        "source_url": ""
-      },
-      {
-        "name": "googlemeet doctor",
-        "syntax": "googlemeet doctor --oauth",
-        "description": "OAuth and browser-state doctor/recovery flows for Google Meet.",
-        "since": "2026.4.24",
-        "status": "stable",
-        "source_url": ""
       }
     ],
     "flags": {
@@ -2522,12 +2395,6 @@
           "flag": "--allow-failures",
           "description": "Allow failures in QA suites for artifact-only runs.",
           "since": "2026.4.20",
-          "source_url": ""
-        },
-        {
-          "flag": "--all-conference-records",
-          "description": "History scans for Google Meet artifact and attendance workflows.",
-          "since": "2026.4.24",
           "source_url": ""
         }
       ],
@@ -2645,9 +2512,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--all-conference-records"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
@@ -2676,13 +2541,6 @@
         "purpose": "Controls the `oom_score_adj` value for gateway-managed child processes on Linux. Setting it to `0` disables the adjustment.",
         "status": "stable",
         "since": "2026.4.22",
-        "source_url": ""
-      },
-      {
-        "name": "OPENCLAW_OTEL_PRELOADED",
-        "purpose": "Allows the plugin to reuse an already-registered OpenTelemetry SDK while keeping OpenClaw diagnostic listeners wired.",
-        "status": "stable",
-        "since": "2026.4.24",
         "source_url": ""
       }
     ],
@@ -3874,28 +3732,9 @@
         ],
         "migration": "Review agent configurations that modify gateway settings and ensure they only target the allowlisted paths. Adjust agent logic to comply with the new restrictions.",
         "source_url": ""
-      },
-      {
-        "id": "plugin-sdk-tool-result-transforms",
-        "version": "2026.4.24",
-        "title": "Plugin SDK/tool-result transforms",
-        "description": "The Pi-only `api.registerEmbeddedExtensionFactory(...)` compatibility path is removed. Bundled tool-result rewrites must use `api.registerAgentToolResultMiddleware(...)` with `contracts.agentToolResultMiddleware` declaring the targeted harnesses.",
-        "affected": [
-          "Plugins",
-          "Tool Result Transforms"
-        ],
-        "migration": "Use `api.registerAgentToolResultMiddleware(...)` with `contracts.agentToolResultMiddleware` declaring the targeted harnesses.",
-        "source_url": ""
       }
     ],
-    "deprecations": [
-      {
-        "name": "/models add",
-        "replaced_by": "manual model configuration",
-        "deprecated_since": "2026.4.24",
-        "source_url": ""
-      }
-    ],
+    "deprecations": [],
     "install": {
       "methods": [
         {
