@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.4.23",
-  "generated_at": "2026-04-25T17:16:30.553Z",
+  "version": "2026.4.24",
+  "generated_at": "2026-04-25T18:17:08.440Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,9 +14,15 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.4.23",
-    "to_version": "2026.4.23",
-    "new_features": [],
+    "from_version": "2026.4.24",
+    "to_version": "2026.4.24",
+    "new_features": [
+      "google-meet-participant-plugin",
+      "deepseek-v4-flash-and-v4-pro",
+      "realtime-voice-loops",
+      "browser-automation-improvements",
+      "lighter-plugin-and-model-infrastructure"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -40,13 +46,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.4.23",
-      "latest_release_date": "2026-04-24",
+      "latest_stable": "2026.4.24",
+      "latest_release_date": "2026-04-25",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release focuses on enhancing image generation capabilities and agent control. Agents can now request specific quality and output formats for image generation, and pass OpenAI-specific hints. Subagents gain the ability to inherit the requester transcript in `sessions_spawn` runs with forked context. Per-call `timeoutMs` support is added for generation tools, allowing agents to extend provider request timeouts when needed. The `memorySearch.local.contextSize` is now configurable, enabling tuning of local embedding contexts for constrained hosts. Several fixes address issues with Codex harness, WhatsApp onboarding, block streaming, Slack groups, Telegram media replies, and more. Security enhancements include stricter checks for pairing, plugins, approvals, Discord, Android, secrets, and QQBot. Memory dreaming is decoupled from heartbeat, and gateway secrets can be reloaded without a full restart. This is a recommended upgrade to take advantage of the new features and security improvements. No specific prerequisites are required."
+      "tldr": "OpenClaw 2026.4.24 introduces a Google Meet participant plugin with features like personal Google auth and artifact exports, enhancing collaboration workflows. DeepSeek V4 Flash and V4 Pro are now bundled, with V4 Flash as the default, and DeepSeek's tool-call behavior is improved. Talk, Voice Call, and Google Meet can now leverage realtime voice loops backed by the full OpenClaw agent for more informed responses. Browser automation gains coordinate clicks, longer action budgets, headless overrides, and better tab management. Plugin and model infrastructure is streamlined with static catalogs and lazy dependencies, improving startup performance. Packaged installs now preserve package-root runtime dependencies, fixing potential Windows npm update failures. Heartbeat scheduler delays are clamped to prevent crashes, and Telegram polling restarts are stabilized. Browser automation handles route races more gracefully, and aria snapshots are more reliable. Other fixes address duplicate Telegram pollers, browser detection on Linux, session tab leaks, oversized thread forks, Codex system prompts, MCP child process accumulation, Codex image generation, control UI usage metrics, GitHub Copilot reasoning, agent reply handling, Feishu TTS transcoding, Telegram webhook acknowledgements, MCP runtime management, gateway restart continuation, tool-result pruning, and daemon service environment setup.  Upgrading is recommended to benefit from these enhancements and fixes. No specific prerequisites are mentioned."
     },
     "features": [
       {
@@ -1976,6 +1982,74 @@
         "since": "2026.4.23",
         "description": "Adds configurable `memorySearch.local.contextSize` with a 4096 default so local embedding contexts can be tuned for constrained hosts without patching the memory host.",
         "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "google-meet-participant-plugin",
+        "name": "Google Meet Participant Plugin",
+        "status": "stable",
+        "since": "2026.4.24",
+        "description": "Bundled participant plugin for Google Meet, including personal Google auth, Chrome/Twilio realtime sessions, paired-node Chrome support, artifact/attendance exports, and recovery tooling for already-open Meet tabs.",
+        "key_details": [
+          "Personal Google auth",
+          "Chrome/Twilio realtime sessions",
+          "Paired-node Chrome support",
+          "Artifact/attendance exports",
+          "Recovery tooling for already-open Meet tabs"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "deepseek-v4-flash-and-v4-pro",
+        "name": "DeepSeek V4 Flash and V4 Pro",
+        "status": "stable",
+        "since": "2026.4.24",
+        "description": "DeepSeek V4 Flash and V4 Pro are now included in the bundled catalog. V4 Flash is the onboarding default. DeepSeek thinking/replay behavior is fixed for follow-up tool-call turns.",
+        "key_details": [
+          "DeepSeek V4 Flash and V4 Pro added to bundled catalog",
+          "V4 Flash is the onboarding default",
+          "DeepSeek thinking/replay behavior fixed for follow-up tool-call turns"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "realtime-voice-loops",
+        "name": "Realtime Voice Loops",
+        "status": "stable",
+        "since": "2026.4.24",
+        "description": "Talk, Voice Call, and Google Meet can now use realtime voice loops that consult the full OpenClaw agent for deeper tool-backed answers.",
+        "key_details": [
+          "Talk, Voice Call, and Google Meet support realtime voice loops",
+          "Voice loops consult the full OpenClaw agent for tool-backed answers"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "browser-automation-improvements",
+        "name": "Browser Automation Improvements",
+        "status": "stable",
+        "since": "2026.4.24",
+        "description": "Browser automation gets coordinate clicks, longer default action budgets, per-profile headless overrides, and steadier tab reuse/recovery.",
+        "key_details": [
+          "Coordinate clicks",
+          "Longer default action budgets",
+          "Per-profile headless overrides",
+          "Steadier tab reuse/recovery"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "lighter-plugin-and-model-infrastructure",
+        "name": "Lighter Plugin and Model Infrastructure",
+        "status": "stable",
+        "since": "2026.4.24",
+        "description": "Plugin and model infrastructure is lighter at startup: static model catalogs, manifest-backed model rows, lazy provider dependencies, and external runtime-dependency repair for packaged installs.",
+        "key_details": [
+          "Static model catalogs",
+          "Manifest-backed model rows",
+          "Lazy provider dependencies",
+          "External runtime-dependency repair for packaged installs"
+        ],
         "source_url": ""
       }
     ],
