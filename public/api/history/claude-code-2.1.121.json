@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.121",
-  "generated_at": "2026-04-28T01:38:19.296Z",
+  "generated_at": "2026-04-28T00:41:13.963Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,23 +14,17 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.121",
-    "to_version": "2.1.121",
-    "new_features": [
-      "always-load-mcp-option",
-      "claude-plugin-prune-command",
-      "skills-search-box",
-      "posttooluse-hook-output-replacement",
-      "scrollable-overflowing-dialogs",
-      "deduplicated-claude-ai-connectors",
-      "vertex-ai-mtls-adc-support"
-    ],
+    "from_version": "2.1.119",
+    "to_version": "2.1.119",
+    "new_features": [],
     "new_commands": [],
     "new_flags": [
-      "--dangerously-skip-permissions"
+      "--from-pr",
+      "--print",
+      "--agent <name>"
     ],
     "new_env_vars": [
-      "CLAUDE_CODE_FORK_SUBAGENT"
+      "CLAUDE_CODE_HIDE_CWD"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -56,7 +50,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces several enhancements, including the `claude plugin prune` command for managing plugin dependencies and a type-to-filter search box in `/skills` for easier skill discovery. The `alwaysLoad` option in MCP server config allows tools to skip tool-search deferral, ensuring they are always available. PostToolUse hooks can now replace tool output for all tools, not just MCP tools, providing greater flexibility. A key improvement addresses fullscreen mode, preventing the prompt from jumping to the bottom after scrolling up. Dialogs that overflow the terminal are now scrollable, improving usability. The `--dangerously-skip-permissions` flag now bypasses prompts for writes to `.claude/skills/`, `.claude/agents/`, and `.claude/commands/`. The `/terminal-setup` command now enables clipboard access in iTerm2 for `/copy` functionality. Several bug fixes address memory leaks, startup crashes, and issues with MCP connectors and settings. Additionally, Vertex AI now supports mTLS ADC. It is recommended to upgrade to this version to benefit from the bug fixes and new features. No specific migration steps are required."
+      "tldr": "This release introduces persistent configuration settings and expands support for code review URLs. Configuration settings such as theme, editor mode, and verbosity now persist to `~/.claude/settings.json` and respect project/local/policy override precedence, ensuring a consistent experience across sessions. The `prUrlTemplate` setting allows customization of the footer PR badge to point to custom code-review URLs beyond GitHub. The `--from-pr` flag now supports GitLab merge requests, Bitbucket pull requests, and GitHub Enterprise PR URLs, broadening integration with various code hosting platforms. The `--print` mode now respects agent frontmatter for tools, and `--agent` honors `permissionMode`. A new `CLAUDE_CODE_HIDE_CWD` environment variable hides the working directory in the startup logo. Hook inputs `PostToolUse` and `PostToolUseFailure` now include `duration_ms`. Plugins pinned by version constraints now auto-update. Several fixes address issues like pasting CRLF content, glob/grep tool disappearance, MCP HTTP connection failures, and various UI glitches. Tool search is disabled by default on Vertex AI. This release is recommended for all users to benefit from improved configuration management, expanded code review integration, and bug fixes. No specific prerequisites are required for upgrading."
     },
     "features": [
       {
@@ -992,69 +986,6 @@
         "description": "Added `claude plugin tag` to create release git tags for plugins with version validation.",
         "key_details": [],
         "source_url": ""
-      },
-      {
-        "id": "always-load-mcp-option",
-        "name": "`alwaysLoad` option in MCP server config",
-        "status": "stable",
-        "since": "2.1.121",
-        "description": "Adds an `alwaysLoad` option to MCP server config. When set to `true`, all tools from that server skip tool-search deferral and are always available.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "claude-plugin-prune-command",
-        "name": "`claude plugin prune` command",
-        "status": "stable",
-        "since": "2.1.121",
-        "description": "Introduces the `claude plugin prune` command to remove orphaned auto-installed plugin dependencies. Also, `plugin uninstall --prune` now cascades.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "skills-search-box",
-        "name": "Type-to-filter search box in `/skills`",
-        "status": "stable",
-        "since": "2.1.121",
-        "description": "Adds a type-to-filter search box to `/skills` to facilitate finding skills in long lists without scrolling.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "posttooluse-hook-output-replacement",
-        "name": "PostToolUse hook output replacement",
-        "status": "stable",
-        "since": "2.1.121",
-        "description": "PostToolUse hooks can now replace tool output for all tools via `hookSpecificOutput.updatedToolOutput`, extending functionality beyond MCP-only tools.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "scrollable-overflowing-dialogs",
-        "name": "Scrollable overflowing dialogs",
-        "status": "stable",
-        "since": "2.1.121",
-        "description": "Dialogs that overflow the terminal are now scrollable with arrow keys, PgUp/PgDn, home/end, and mouse wheel in both fullscreen and non-fullscreen modes.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "deduplicated-claude-ai-connectors",
-        "name": "Deduplicated Claude.ai connectors",
-        "status": "stable",
-        "since": "2.1.121",
-        "description": "Claude.ai connectors with the same upstream URL are now deduplicated instead of appearing as duplicates.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "vertex-ai-mtls-adc-support",
-        "name": "Vertex AI mTLS ADC support",
-        "status": "stable",
-        "since": "2.1.121",
-        "description": "Vertex AI now supports X.509 certificate-based Workload Identity Federation (mTLS ADC).",
-        "key_details": [],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -1655,12 +1586,6 @@
           "description": "Output raw JSON from `claude ultrareview`.",
           "since": "2.1.120",
           "source_url": ""
-        },
-        {
-          "flag": "--dangerously-skip-permissions",
-          "description": "No longer prompts for writes to `.claude/skills/`, `.claude/agents/`, and `.claude/commands/`.",
-          "since": "2.1.121",
-          "source_url": ""
         }
       ],
       "deprecated": [
@@ -1688,7 +1613,9 @@
         }
       ],
       "new_since_previous": [
-        "--dangerously-skip-permissions"
+        "--from-pr",
+        "--print",
+        "--agent <name>"
       ]
     },
     "env_vars": [

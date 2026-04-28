@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.4.26",
-  "generated_at": "2026-04-28T01:39:38.783Z",
+  "version": "2026.4.25",
+  "generated_at": "2026-04-27T13:36:43.952Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,32 +14,38 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.4.26",
-    "to_version": "2026.4.26",
+    "from_version": "2026.4.24",
+    "to_version": "2026.4.24",
     "new_features": [
-      "cerebras-bundled-plugin",
-      "matrix-e2ee-setup-command",
-      "claude-importer",
-      "hermes-importer",
-      "agents-compaction-maxactivetranscriptbytes"
+      "google-meet-plugin",
+      "realtime-voice-loops",
+      "gemini-live-realtime-voice-provider",
+      "gradium-text-to-speech-provider",
+      "document-extract-plugin",
+      "bonjour-plugin",
+      "browser-automation-skill"
     ],
     "new_commands": [
-      "openclaw migrate",
-      "openclaw matrix encryption setup",
-      "openclaw nodes remove"
+      "openclaw matrix verify self",
+      "voicecall setup",
+      "voicecall smoke",
+      "openclaw browser click-coords",
+      "openclaw browser doctor",
+      "googlemeet doctor"
     ],
     "new_flags": [
-      "--failure-alert-include-skipped",
-      "--github-copilot-token"
+      "--all-conference-records"
     ],
     "new_env_vars": [
-      "OPENCLAW_PLUGIN_STAGE_DIR",
-      "OPENCLAW_WRAPPER",
-      "OPENCLAW_NO_AUTO_UPDATE"
+      "OPENCLAW_OTEL_PRELOADED"
     ],
-    "deprecated_commands": [],
+    "deprecated_commands": [
+      "/models add"
+    ],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "plugin-sdk-tool-result-transforms"
+    ]
   },
   "payload": {
     "meta": {
@@ -57,13 +63,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.4.26",
-      "latest_release_date": "2026-04-28",
+      "latest_stable": "2026.4.25",
+      "latest_release_date": "2026-04-27",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces Cerebras as a bundled plugin, providing users with direct access to Cerebras models and infrastructure. It also includes Claude and Hermes importers to facilitate migration from other platforms. A new `agents.defaults.compaction.maxActiveTranscriptBytes` setting allows for preflight compaction when transcript files grow too large, improving performance. The `openclaw matrix encryption setup` command simplifies Matrix E2EE setup. Key fixes include preventing gateway crashes due to plugin issues, improving local model handling, and resolving various UI and channel-specific bugs. The release also deprecates direct plugin config load/write helpers in favor of passed runtime snapshots plus transactional mutation helpers with explicit restart follow-up policy, scanner guardrails, runtime warnings, and revision-based cache invalidation. The `OPENCLAW_PLUGIN_STAGE_DIR` environment variable allows layered runtime-dependency roots for plugins. The `openclaw nodes remove` command helps clean up stale node pairings. The `OPENCLAW_WRAPPER` environment variable specifies a validated service install path. The `OPENCLAW_NO_AUTO_UPDATE` environment variable is a gateway startup kill-switch for configured background package auto-updates. Upgrade is recommended for all users, especially those using Matrix E2EE, local models, or relying on plugin stability. No specific prerequisites are required, but users should review the deprecated plugin config changes."
+      "tldr": "OpenClaw 2026.4.24 introduces a Google Meet plugin, enabling agents to join meetings, manage attendance, and access artifacts, along with recovery tools for existing Meet tabs. Realtime voice loops now allow Talk, Voice Call, and Google Meet to consult the full OpenClaw agent for deeper, tool-backed answers. DeepSeek V4 Flash is the new onboarding default, with improved thinking/replay behavior. Browser automation gains coordinate clicks, longer action budgets, and per-profile headless overrides. The Plugin SDK removes the Pi-only `api.registerEmbeddedExtensionFactory(...)` compatibility path, requiring `api.registerAgentToolResultMiddleware(...)` for tool-result rewrites. The `/models add` command is deprecated in favor of manual model configuration. Key fixes include preventing heartbeat prompts in non-heartbeat runs, hardening tool-result pruning, and addressing Feishu card delivery issues. This release also includes numerous dependency updates, security enhancements, and bug fixes across various channels and providers. It is recommended to upgrade to benefit from the new features, improved stability, and security enhancements. Ensure plugins are updated to use the new tool-result middleware API. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
@@ -2124,51 +2130,6 @@
         "description": "A `browser-automation` skill is bundled with the multi-step snapshot, stable-tab, stale-ref, and manual-blocker loop for agent-controlled pages.",
         "key_details": [],
         "source_url": ""
-      },
-      {
-        "id": "cerebras-bundled-plugin",
-        "name": "Cerebras Bundled Plugin",
-        "status": "stable",
-        "since": "2026.4.26",
-        "description": "Adds Cerebras as a bundled plugin with onboarding, static model catalog, docs, and manifest-owned endpoint metadata.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "matrix-e2ee-setup-command",
-        "name": "Matrix E2EE Setup Command",
-        "status": "stable",
-        "since": "2026.4.26",
-        "description": "Adds `openclaw matrix encryption setup` to enable Matrix encryption, bootstrap recovery, and print verification status from one setup flow.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "claude-importer",
-        "name": "Claude Importer",
-        "status": "stable",
-        "since": "2026.4.26",
-        "description": "Adds a bundled Claude importer that previews and applies Claude Code and Claude Desktop instructions, MCP servers, skills, command prompts, and safe archive/manual-review state.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "hermes-importer",
-        "name": "Hermes Importer",
-        "status": "stable",
-        "since": "2026.4.26",
-        "description": "Adds `openclaw migrate` with plan, dry-run, JSON, pre-migration backup, onboarding detection, archive-only report copies, and a bundled Hermes importer for configuration, memory/plugin hints, model providers, MCP servers, skills, and supported credentials.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "agents-compaction-maxactivetranscriptbytes",
-        "name": "Agents Compaction MaxActiveTranscriptBytes",
-        "status": "stable",
-        "since": "2026.4.26",
-        "description": "Adds an opt-in `agents.defaults.compaction.maxActiveTranscriptBytes` preflight trigger that runs normal local compaction when the active JSONL grows too large, requiring transcript rotation so successful compaction moves future turns onto a smaller successor file instead of raw byte-splitting history.",
-        "key_details": [],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -2483,30 +2444,6 @@
         "since": "2026.4.24",
         "status": "stable",
         "source_url": ""
-      },
-      {
-        "name": "openclaw migrate",
-        "syntax": "openclaw migrate",
-        "description": "Migrates configuration, memory/plugin hints, model providers, MCP servers, skills, and supported credentials from other platforms.",
-        "since": "2026.4.26",
-        "status": "stable",
-        "source_url": ""
-      },
-      {
-        "name": "openclaw matrix encryption setup",
-        "syntax": "openclaw matrix encryption setup",
-        "description": "Enables Matrix encryption, bootstraps recovery, and prints verification status from one setup flow.",
-        "since": "2026.4.26",
-        "status": "stable",
-        "source_url": ""
-      },
-      {
-        "name": "openclaw nodes remove",
-        "syntax": "openclaw nodes remove --node <id|name|ip>",
-        "description": "Removes stale gateway-owned node pairing records.",
-        "since": "2026.4.26",
-        "status": "stable",
-        "source_url": ""
       }
     ],
     "flags": {
@@ -2591,18 +2528,6 @@
           "flag": "--all-conference-records",
           "description": "History scans for Google Meet artifact and attendance workflows.",
           "since": "2026.4.24",
-          "source_url": ""
-        },
-        {
-          "flag": "--failure-alert-include-skipped",
-          "description": "Includes persistently skipped jobs in cron failure alerts.",
-          "since": "2026.4.26",
-          "source_url": ""
-        },
-        {
-          "flag": "--github-copilot-token",
-          "description": "Specifies the GitHub Copilot token for non-interactive setup.",
-          "since": "2026.4.26",
           "source_url": ""
         }
       ],
@@ -2721,8 +2646,7 @@
         }
       ],
       "new_since_previous": [
-        "--failure-alert-include-skipped",
-        "--github-copilot-token"
+        "--all-conference-records"
       ]
     },
     "env_vars": [
@@ -2759,27 +2683,6 @@
         "purpose": "Allows the plugin to reuse an already-registered OpenTelemetry SDK while keeping OpenClaw diagnostic listeners wired.",
         "status": "stable",
         "since": "2026.4.24",
-        "source_url": ""
-      },
-      {
-        "name": "OPENCLAW_PLUGIN_STAGE_DIR",
-        "purpose": "Allows layered runtime-dependency roots for plugins.",
-        "status": "stable",
-        "since": "2026.4.26",
-        "source_url": ""
-      },
-      {
-        "name": "OPENCLAW_WRAPPER",
-        "purpose": "Specifies a validated service install path that persists executable LaunchAgent/systemd wrappers across forced reinstalls, updates, and doctor repairs.",
-        "status": "stable",
-        "since": "2026.4.26",
-        "source_url": ""
-      },
-      {
-        "name": "OPENCLAW_NO_AUTO_UPDATE",
-        "purpose": "A gateway startup kill-switch for configured background package auto-updates.",
-        "status": "stable",
-        "since": "2026.4.26",
         "source_url": ""
       }
     ],
