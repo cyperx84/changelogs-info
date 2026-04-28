@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.26",
-  "generated_at": "2026-04-28T03:11:38.800Z",
+  "generated_at": "2026-04-28T01:39:38.783Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -17,12 +17,21 @@
     "from_version": "2026.4.26",
     "to_version": "2026.4.26",
     "new_features": [
-      "generic-browser-realtime-transport-contract",
       "cerebras-bundled-plugin",
-      "claude-importer"
+      "matrix-e2ee-setup-command",
+      "claude-importer",
+      "hermes-importer",
+      "agents-compaction-maxactivetranscriptbytes"
     ],
-    "new_commands": [],
-    "new_flags": [],
+    "new_commands": [
+      "openclaw migrate",
+      "openclaw matrix encryption setup",
+      "openclaw nodes remove"
+    ],
+    "new_flags": [
+      "--failure-alert-include-skipped",
+      "--github-copilot-token"
+    ],
     "new_env_vars": [
       "OPENCLAW_PLUGIN_STAGE_DIR",
       "OPENCLAW_WRAPPER",
@@ -54,7 +63,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces a generic browser realtime transport contract, enabling Google Live browser Talk sessions and a Gateway relay for backend-only realtime voice plugins. Cerebras is now a bundled plugin, simplifying onboarding and providing a static model catalog. A Claude importer has been added to streamline migration from Claude Code and Desktop. The release also includes an opt-in `agents.defaults.compaction.maxActiveTranscriptBytes` setting to trigger local compaction when the active JSONL grows too large, improving performance. The `openclaw matrix encryption setup` command simplifies Matrix encryption setup and verification. The `openclaw migrate` command facilitates migration from Claude and Hermes, including configuration, memory/plugin hints, and model providers. Plugin config load/write helpers are deprecated in favor of runtime snapshots and transactional mutation helpers. The `OPENCLAW_PLUGIN_STAGE_DIR` environment variable allows layered runtime-dependency roots. Several fixes address issues with gateway startup, agent sessions, control UI, and plugin installs. This release also includes numerous fixes and improvements for Ollama, Google Meet, Discord, Matrix, and other channels and providers. It is recommended to upgrade to this release to take advantage of the new features and fixes. Ensure that you review the deprecated plugin config load/write helpers and migrate to the new runtime snapshots and transactional mutation helpers."
+      "tldr": "This release introduces Cerebras as a bundled plugin, providing users with direct access to Cerebras models and infrastructure. It also includes Claude and Hermes importers to facilitate migration from other platforms. A new `agents.defaults.compaction.maxActiveTranscriptBytes` setting allows for preflight compaction when transcript files grow too large, improving performance. The `openclaw matrix encryption setup` command simplifies Matrix E2EE setup. Key fixes include preventing gateway crashes due to plugin issues, improving local model handling, and resolving various UI and channel-specific bugs. The release also deprecates direct plugin config load/write helpers in favor of passed runtime snapshots plus transactional mutation helpers with explicit restart follow-up policy, scanner guardrails, runtime warnings, and revision-based cache invalidation. The `OPENCLAW_PLUGIN_STAGE_DIR` environment variable allows layered runtime-dependency roots for plugins. The `openclaw nodes remove` command helps clean up stale node pairings. The `OPENCLAW_WRAPPER` environment variable specifies a validated service install path. The `OPENCLAW_NO_AUTO_UPDATE` environment variable is a gateway startup kill-switch for configured background package auto-updates. Upgrade is recommended for all users, especially those using Matrix E2EE, local models, or relying on plugin stability. No specific prerequisites are required, but users should review the deprecated plugin config changes."
     },
     "features": [
       {
@@ -2160,15 +2169,6 @@
         "description": "Adds an opt-in `agents.defaults.compaction.maxActiveTranscriptBytes` preflight trigger that runs normal local compaction when the active JSONL grows too large, requiring transcript rotation so successful compaction moves future turns onto a smaller successor file instead of raw byte-splitting history.",
         "key_details": [],
         "source_url": ""
-      },
-      {
-        "id": "generic-browser-realtime-transport-contract",
-        "name": "Generic Browser Realtime Transport Contract",
-        "status": "stable",
-        "since": "2026.4.26",
-        "description": "Adds a generic browser realtime transport contract, Google Live browser Talk sessions with constrained ephemeral tokens, and a Gateway relay for backend-only realtime voice plugins.",
-        "key_details": [],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -2720,7 +2720,10 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--failure-alert-include-skipped",
+        "--github-copilot-token"
+      ]
     },
     "env_vars": [
       {
