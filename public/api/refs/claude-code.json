@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.121",
-  "generated_at": "2026-04-28T21:26:17.258Z",
+  "version": "2.1.122",
+  "generated_at": "2026-04-28T22:22:28.416Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,15 +14,13 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.121",
-    "to_version": "2.1.121",
+    "from_version": "2.1.122",
+    "to_version": "2.1.122",
     "new_features": [],
     "new_commands": [],
-    "new_flags": [
-      "--dangerously-skip-permissions"
-    ],
+    "new_flags": [],
     "new_env_vars": [
-      "CLAUDE_CODE_FORK_SUBAGENT"
+      "ANTHROPIC_BEDROCK_SERVICE_TIER"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -43,12 +41,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.121",
+      "latest_stable": "2.1.122",
       "latest_release_date": "2026-04-28",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces the `alwaysLoad` option for MCP server configurations, ensuring that all tools from a specified server are always available, bypassing tool-search deferral. The `claude plugin prune` command has been added to remove orphaned auto-installed plugin dependencies, with `plugin uninstall --prune` now cascading. A type-to-filter search box has been added to the `/skills` command to improve skill discovery in long lists. PostToolUse hooks can now replace tool output for all tools via `hookSpecificOutput.updatedToolOutput`, expanding beyond MCP-only functionality. Fullscreen mode now prevents the prompt from jumping to the bottom after scrolling up, and dialogs that overflow the terminal are now scrollable. Clicking on wrapped URLs in fullscreen mode now opens the full URL. The `--dangerously-skip-permissions` flag no longer prompts for writes to `.claude/skills/`, `.claude/agents/`, and `.claude/commands/`. The `/terminal-setup` command now enables iTerm2's clipboard access setting for `/copy` functionality. Transient errors during MCP server startup now trigger auto-retries. The terminal tab session title is now generated based on the configured `language` setting. Claude.ai connectors with the same upstream URL are now deduplicated. Several memory leaks have been fixed, including those related to image processing, `/usage`, and long-running tools. Bash tool usability has been improved when the starting directory is deleted or moved. The `--resume` flag has been fixed to handle corrupted transcript lines. This is a recommended upgrade to address memory leaks and improve tool availability and usability."
+      "tldr": "This release introduces the `ANTHROPIC_BEDROCK_SERVICE_TIER` environment variable, allowing users to specify the Bedrock service tier (`default`, `flex`, or `priority`) via the `X-Amzn-Bedrock-Service-Tier` header. This enables more granular control over Bedrock resource allocation. The `/resume` command now supports pasting PR URLs (GitHub, GitHub Enterprise, GitLab, and Bitbucket) to find the session that created the PR, streamlining workflow resumption. The `/mcp` command now displays claude.ai connectors hidden by manually-added servers with the same URL, prompting users to remove duplicates for clarity. OpenTelemetry now emits numeric attributes on `api_request`/`api_error` log events as numbers and includes a `claude_code.at_mention` log event for `@`-mention resolution. A bug causing `/branch` to produce forks that fail due to tool_use ID issues from rewound timelines has been fixed. The `/model` command now correctly displays the Effort option for Bedrock application inference profile ARNs, ensuring they receive `output_config.effort`. Vertex AI and Bedrock no longer return `invalid_request_error` for session-title generation and structured-output queries. A fix addresses Vertex AI `count_tokens` endpoint 400 errors behind proxy gateways. `spinnerTipsOverride.excludeDefault` now correctly suppresses time-based spinner tips. ToolSearch now finds MCP tools connected after session start in nonblocking mode. `!exit` / `!quit` in bash mode now function as shell commands instead of terminating the CLI. Images sent to newer models are now correctly resized to a maximum of 2000px per side. Remote control session idle status redrawing has been optimized to prevent flooding `tmux -CC` control pipes. Assistant messages no longer appear blank due to stale view preferences. A malformed hooks entry in `settings.json` no longer invalidates the entire file. Voice mode now displays an error when keybindings are bound to Caps Lock. Upgrading is recommended to benefit from these fixes and improvements. No specific prerequisites are required."
     },
     "features": [
       {
@@ -1679,9 +1677,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--dangerously-skip-permissions"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
@@ -1933,6 +1929,13 @@
         "purpose": "Set for subprocesses so `gh` can attribute traffic to Claude Code.",
         "status": "stable",
         "since": "2.1.120",
+        "source_url": ""
+      },
+      {
+        "name": "ANTHROPIC_BEDROCK_SERVICE_TIER",
+        "purpose": "Selects a Bedrock service tier (`default`, `flex`, or `priority`) to be sent as the `X-Amzn-Bedrock-Service-Tier` header.",
+        "status": "stable",
+        "since": "2.1.122",
         "source_url": ""
       }
     ],

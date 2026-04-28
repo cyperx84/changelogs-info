@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.26",
-  "generated_at": "2026-04-28T21:27:48.301Z",
+  "generated_at": "2026-04-28T22:23:07.447Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -18,20 +18,13 @@
     "to_version": "2026.4.26",
     "new_features": [
       "generic-browser-realtime-transport-contract",
-      "typed-cron-changed-hook",
       "cerebras-bundled-plugin",
-      "asymmetric-embedding-endpoints",
-      "model-specific-retrieval-query-prefixes",
-      "claude-importer"
+      "claude-importer",
+      "hermes-importer"
     ],
-    "new_commands": [
-      "openclaw matrix encryption setup",
-      "openclaw migrate",
-      "openclaw nodes remove"
-    ],
+    "new_commands": [],
     "new_flags": [
       "--failure-alert-include-skipped",
-      "--node <id|name|ip>",
       "--github-copilot-token",
       "--wrapper"
     ],
@@ -66,7 +59,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces a generic browser realtime transport contract, enabling Google Live browser Talk sessions and a Gateway relay for backend-only realtime voice plugins. The CLI now routes model listings through an explicit source plan for stable authority order. A new typed `cron_changed` hook allows observing gateway-owned cron lifecycle updates. Cerebras is added as a bundled plugin, and asymmetric embedding endpoints are supported with new config options. Model-specific retrieval query prefixes are added for memory search. A Claude importer is bundled for migrating from Claude Code and Desktop. The `openclaw matrix encryption setup` command simplifies enabling Matrix encryption. The `agents.defaults.compaction.maxActiveTranscriptBytes` setting triggers local compaction when the active JSONL grows too large. Fixes include preventing rotated bearer tokens from being echoed, resolving configured bare model aliases, and keeping Google Live browser sessions on the WebSocket transport. The `OPENCLAW_PLUGIN_STAGE_DIR` env var allows layered runtime-dependency roots. It is recommended to upgrade to benefit from these new features and fixes. No specific prerequisites are required."
+      "tldr": "This release introduces a generic browser realtime transport contract, enabling Google Live browser Talk sessions and a Gateway relay for backend-only realtime voice plugins. It also bundles Cerebras as a plugin, simplifying onboarding and providing a static model catalog. Claude and Hermes importers are now included, facilitating migration from those platforms. A key update is the ability to use asymmetric embedding endpoints for memory searches, improving flexibility. The `agents.defaults.compaction.maxActiveTranscriptBytes` setting allows for preflight compaction to manage large JSONL files. The `openclaw matrix encryption setup` command streamlines Matrix encryption setup. This release also includes numerous fixes, including preventing gateway crashes due to broken pipes, improving plugin installation security, and addressing issues with local model providers like Ollama and LM Studio. A new `OPENCLAW_PLUGIN_STAGE_DIR` environment variable allows for layered runtime dependencies. The `openclaw cron edit --failure-alert-include-skipped` flag allows skipped cron jobs to trigger alerts. It is recommended to update to this version to benefit from the fixes and new features. Ensure to review the deprecated plugin config load/write helpers and migrate to the new runtime snapshots and transactional mutation helpers."
     },
     "features": [
       {
@@ -2805,7 +2798,6 @@
       ],
       "new_since_previous": [
         "--failure-alert-include-skipped",
-        "--node <id|name|ip>",
         "--github-copilot-token",
         "--wrapper"
       ]
