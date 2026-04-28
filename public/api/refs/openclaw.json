@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.26",
-  "generated_at": "2026-04-28T03:11:38.800Z",
+  "generated_at": "2026-04-28T05:12:05.079Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -19,10 +19,25 @@
     "new_features": [
       "generic-browser-realtime-transport-contract",
       "cerebras-bundled-plugin",
-      "claude-importer"
+      "asymmetric-embedding-endpoints",
+      "model-specific-retrieval-query-prefixes",
+      "raw-config-pending-changes-diff-panel",
+      "claude-importer",
+      "hermes-importer",
+      "preflight-compaction-trigger"
     ],
-    "new_commands": [],
-    "new_flags": [],
+    "new_commands": [
+      "openclaw matrix encryption setup",
+      "openclaw migrate",
+      "openclaw nodes remove",
+      "openclaw cron edit --failure-alert-include-skipped"
+    ],
+    "new_flags": [
+      "--node",
+      "--failure-alert-include-skipped",
+      "--github-copilot-token",
+      "--wrapper"
+    ],
     "new_env_vars": [
       "OPENCLAW_PLUGIN_STAGE_DIR",
       "OPENCLAW_WRAPPER",
@@ -54,7 +69,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces a generic browser realtime transport contract, enabling Google Live browser Talk sessions and a Gateway relay for backend-only realtime voice plugins. Cerebras is now a bundled plugin, simplifying onboarding and providing a static model catalog. A Claude importer has been added to streamline migration from Claude Code and Desktop. The release also includes an opt-in `agents.defaults.compaction.maxActiveTranscriptBytes` setting to trigger local compaction when the active JSONL grows too large, improving performance. The `openclaw matrix encryption setup` command simplifies Matrix encryption setup and verification. The `openclaw migrate` command facilitates migration from Claude and Hermes, including configuration, memory/plugin hints, and model providers. Plugin config load/write helpers are deprecated in favor of runtime snapshots and transactional mutation helpers. The `OPENCLAW_PLUGIN_STAGE_DIR` environment variable allows layered runtime-dependency roots. Several fixes address issues with gateway startup, agent sessions, control UI, and plugin installs. This release also includes numerous fixes and improvements for Ollama, Google Meet, Discord, Matrix, and other channels and providers. It is recommended to upgrade to this release to take advantage of the new features and fixes. Ensure that you review the deprecated plugin config load/write helpers and migrate to the new runtime snapshots and transactional mutation helpers."
+      "tldr": "This release introduces a Claude importer for migrating data from Claude Code and Desktop, and a Hermes importer accessible via `openclaw migrate` for migrating from other platforms. A new `agents.defaults.compaction.maxActiveTranscriptBytes` setting triggers local compaction when JSONL files grow too large, improving performance. The `openclaw matrix encryption setup` command simplifies Matrix encryption setup. Asymmetric embedding endpoint configuration is now supported via `memorySearch.inputType`, `queryInputType`, and `documentInputType`. The release also adds Cerebras as a bundled plugin. Key fixes include preventing gateway crashes from broken pipes, improving plugin install security, and resolving issues with local model providers. The `OPENCLAW_PLUGIN_STAGE_DIR` environment variable allows layered runtime dependency roots. The `openclaw nodes remove --node <id|name|ip>` command removes stale node pairing records. The `OPENCLAW_NO_AUTO_UPDATE` environment variable disables automatic updates. This release also deprecates direct plugin config load/write helpers. Upgrade is recommended for all users to benefit from the new features and fixes. Ensure all plugins are compatible with the new plugin config system."
     },
     "features": [
       {
@@ -2169,6 +2184,42 @@
         "description": "Adds a generic browser realtime transport contract, Google Live browser Talk sessions with constrained ephemeral tokens, and a Gateway relay for backend-only realtime voice plugins.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "asymmetric-embedding-endpoints",
+        "name": "Asymmetric Embedding Endpoints",
+        "status": "stable",
+        "since": "2026.4.26",
+        "description": "Adds optional `memorySearch.inputType`, `queryInputType`, and `documentInputType` config for asymmetric embedding endpoints, including direct query embeddings and provider batch indexing.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "model-specific-retrieval-query-prefixes",
+        "name": "Model-Specific Retrieval Query Prefixes",
+        "status": "stable",
+        "since": "2026.4.26",
+        "description": "Adds model-specific retrieval query prefixes for `nomic-embed-text`, `qwen3-embedding`, and `mxbai-embed-large` memory-search queries while leaving document batches unchanged.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "raw-config-pending-changes-diff-panel",
+        "name": "Raw Config Pending-Changes Diff Panel",
+        "status": "stable",
+        "since": "2026.4.26",
+        "description": "Adds a raw config pending-changes diff panel that parses JSON5, redacts sensitive values until reveal, and avoids fake raw-edit callbacks when opening the panel.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "preflight-compaction-trigger",
+        "name": "Preflight Compaction Trigger",
+        "status": "stable",
+        "since": "2026.4.26",
+        "description": "Adds an opt-in `agents.defaults.compaction.maxActiveTranscriptBytes` preflight trigger that runs normal local compaction when the active JSONL grows too large, requiring transcript rotation so successful compaction moves future turns onto a smaller successor file instead of raw byte-splitting history.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -2507,6 +2558,14 @@
         "since": "2026.4.26",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "openclaw cron edit --failure-alert-include-skipped",
+        "syntax": "openclaw cron edit --failure-alert-include-skipped",
+        "description": "Adds `failureAlert.includeSkipped` so persistently skipped jobs can alert without counting skips as execution errors or affecting retry backoff.",
+        "since": "2026.4.26",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -2602,6 +2661,18 @@
         {
           "flag": "--github-copilot-token",
           "description": "Specifies the GitHub Copilot token for non-interactive setup.",
+          "since": "2026.4.26",
+          "source_url": ""
+        },
+        {
+          "flag": "--node",
+          "description": "Specifies the node to remove in `openclaw nodes remove`.",
+          "since": "2026.4.26",
+          "source_url": ""
+        },
+        {
+          "flag": "--wrapper",
+          "description": "Adds a validated `--wrapper`/`OPENCLAW_WRAPPER` service install path that persists executable LaunchAgent/systemd wrappers across forced reinstalls, updates, and doctor repairs instead of falling back to raw node/bun `ProgramArguments`.",
           "since": "2026.4.26",
           "source_url": ""
         }
@@ -2720,7 +2791,12 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--node",
+        "--failure-alert-include-skipped",
+        "--github-copilot-token",
+        "--wrapper"
+      ]
     },
     "env_vars": [
       {
