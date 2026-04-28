@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.26",
-  "generated_at": "2026-04-28T10:44:08.408Z",
+  "generated_at": "2026-04-28T21:27:48.301Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -18,16 +18,21 @@
     "to_version": "2026.4.26",
     "new_features": [
       "generic-browser-realtime-transport-contract",
+      "typed-cron-changed-hook",
       "cerebras-bundled-plugin",
       "asymmetric-embedding-endpoints",
       "model-specific-retrieval-query-prefixes",
-      "raw-config-pending-changes-diff-panel",
       "claude-importer"
     ],
-    "new_commands": [],
+    "new_commands": [
+      "openclaw matrix encryption setup",
+      "openclaw migrate",
+      "openclaw nodes remove"
+    ],
     "new_flags": [
-      "--github-copilot-token",
       "--failure-alert-include-skipped",
+      "--node <id|name|ip>",
+      "--github-copilot-token",
       "--wrapper"
     ],
     "new_env_vars": [
@@ -37,9 +42,7 @@
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "plugin-config-load-write-helpers-deprecation"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -63,7 +66,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces a generic browser realtime transport contract, enabling Google Live browser Talk sessions and backend-only realtime voice plugins. The CLI now routes provider-filtered model listings through an explicit source plan for stable authority order. Cerebras is added as a bundled plugin, and asymmetric embedding endpoints are supported with new config options. Model-specific retrieval query prefixes are added for memory searches. Direct plugin config load/write helpers are deprecated, requiring migration to runtime snapshots and transactional mutation helpers. The `openclaw migrate` command now includes a Claude importer, and the `agents.defaults.compaction.maxActiveTranscriptBytes` setting allows preflight compaction. A raw config pending-changes diff panel is added to the Control UI. The `openclaw matrix encryption setup` command simplifies Matrix encryption setup. The `OPENCLAW_PLUGIN_STAGE_DIR` env var allows layered runtime-dependency roots. Fixes include addressing gateway token echoing, agent session spawning, and plugin install issues. It is recommended to upgrade to benefit from these new features and fixes. Be aware of the plugin config load/write helpers deprecation and migrate accordingly."
+      "tldr": "This release introduces a generic browser realtime transport contract, enabling Google Live browser Talk sessions and a Gateway relay for backend-only realtime voice plugins. The CLI now routes model listings through an explicit source plan for stable authority order. A new typed `cron_changed` hook allows observing gateway-owned cron lifecycle updates. Cerebras is added as a bundled plugin, and asymmetric embedding endpoints are supported with new config options. Model-specific retrieval query prefixes are added for memory search. A Claude importer is bundled for migrating from Claude Code and Desktop. The `openclaw matrix encryption setup` command simplifies enabling Matrix encryption. The `agents.defaults.compaction.maxActiveTranscriptBytes` setting triggers local compaction when the active JSONL grows too large. Fixes include preventing rotated bearer tokens from being echoed, resolving configured bare model aliases, and keeping Google Live browser sessions on the WebSocket transport. The `OPENCLAW_PLUGIN_STAGE_DIR` env var allows layered runtime-dependency roots. It is recommended to upgrade to benefit from these new features and fixes. No specific prerequisites are required."
     },
     "features": [
       {
@@ -2214,6 +2217,15 @@
         "description": "Adds an opt-in `agents.defaults.compaction.maxActiveTranscriptBytes` preflight trigger that runs normal local compaction when the active JSONL grows too large, requiring transcript rotation so successful compaction moves future turns onto a smaller successor file instead of raw byte-splitting history.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "typed-cron-changed-hook",
+        "name": "Typed `cron_changed` Hook",
+        "status": "stable",
+        "since": "2026.4.26",
+        "description": "Adds a typed `cron_changed` hook for observing gateway-owned cron lifecycle updates without depending on internal cron events.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -2669,6 +2681,12 @@
           "description": "Adds a validated `--wrapper`/`OPENCLAW_WRAPPER` service install path that persists executable LaunchAgent/systemd wrappers across forced reinstalls, updates, and doctor repairs instead of falling back to raw node/bun `ProgramArguments`.",
           "since": "2026.4.26",
           "source_url": ""
+        },
+        {
+          "flag": "--node <id|name|ip>",
+          "description": "Specifies the node to remove.",
+          "since": "2026.4.26",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -2786,8 +2804,9 @@
         }
       ],
       "new_since_previous": [
-        "--github-copilot-token",
         "--failure-alert-include-skipped",
+        "--node <id|name|ip>",
+        "--github-copilot-token",
         "--wrapper"
       ]
     },
