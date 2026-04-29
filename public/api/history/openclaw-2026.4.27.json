@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.27",
-  "generated_at": "2026-04-29T23:22:24.203Z",
+  "generated_at": "2026-04-29T22:22:28.320Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,23 +14,24 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.4.27",
-    "to_version": "2026.4.27",
+    "from_version": "2026.4.26",
+    "to_version": "2026.4.26",
     "new_features": [
-      "operator-managed-outbound-proxy-routing",
-      "codex-computer-use-setup",
-      "tencent-yuanbao-external-channel-plugin",
-      "qqbot-full-group-chat-support",
-      "deepinfra-provider",
-      "versioned-structured-approval-metadata-matrix"
+      "generic-browser-realtime-transport-contract",
+      "cerebras-bundled-plugin",
+      "claude-importer",
+      "hermes-importer"
     ],
     "new_commands": [],
     "new_flags": [
-      "--thread-id"
+      "--failure-alert-include-skipped",
+      "--github-copilot-token",
+      "--wrapper"
     ],
     "new_env_vars": [
-      "OPENCLAW_PROXY_URL",
-      "DEEPINFRA_API_KEY"
+      "OPENCLAW_PLUGIN_STAGE_DIR",
+      "OPENCLAW_WRAPPER",
+      "OPENCLAW_NO_AUTO_UPDATE"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -58,7 +59,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces operator-managed outbound proxy routing, enhancing security and control over network traffic with strict validation and loopback bypass. It also adds Computer Use setup for Codex-mode agents, streamlining desktop-control setup. The Tencent Yuanbao external channel plugin is now officially supported, expanding channel options. QQBot gains full group chat support with improved streaming and file handling. A new DeepInfra provider offers OpenAI-compatible model discovery, image generation, TTS, and more, onboarded via the `DEEPINFRA_API_KEY` environment variable. Live Matrix approval scenarios are enhanced with exec metadata and thread targeting. The `sandbox.docker.gpus` option enables GPU passthrough for Docker sandboxes. The `--thread-id` flag is added to `openclaw cron add` and `openclaw cron edit` for Telegram forum topic delivery. Several fixes address issues with session management, approval handling, channel routing, and provider integrations. This release also includes significant plugin SDK updates and dependency refreshes. It is recommended to upgrade to benefit from the new features, security enhancements, and bug fixes. Ensure to review the breaking changes and migration steps if applicable."
+      "tldr": "This release introduces a generic browser realtime transport contract, enabling Google Live browser Talk sessions and a Gateway relay for backend-only realtime voice plugins. It also bundles Cerebras as a plugin, simplifying onboarding and providing a static model catalog. Claude and Hermes importers are now included, facilitating migration from those platforms. A key update is the ability to use asymmetric embedding endpoints for memory searches, improving flexibility. The `agents.defaults.compaction.maxActiveTranscriptBytes` setting allows for preflight compaction to manage large JSONL files. The `openclaw matrix encryption setup` command streamlines Matrix encryption setup. This release also includes numerous fixes, including preventing gateway crashes due to broken pipes, improving plugin installation security, and addressing issues with local model providers like Ollama and LM Studio. A new `OPENCLAW_PLUGIN_STAGE_DIR` environment variable allows for layered runtime dependencies. The `openclaw cron edit --failure-alert-include-skipped` flag allows skipped cron jobs to trigger alerts. It is recommended to update to this version to benefit from the fixes and new features. Ensure to review the deprecated plugin config load/write helpers and migrate to the new runtime snapshots and transactional mutation helpers."
     },
     "features": [
       {
@@ -2218,70 +2219,6 @@
         "description": "Adds a typed `cron_changed` hook for observing gateway-owned cron lifecycle updates without depending on internal cron events.",
         "key_details": [],
         "source_url": ""
-      },
-      {
-        "id": "operator-managed-outbound-proxy-routing",
-        "name": "Operator-managed outbound proxy routing",
-        "status": "stable",
-        "since": "2026.4.27",
-        "description": "Adds opt-in operator-managed outbound proxy routing with strict http:// forward-proxy validation, loopback-only Gateway bypass, and cleanup of proxy env/dispatcher state on exit.",
-        "key_details": [
-          "proxy.enabled",
-          "proxy.proxyUrl",
-          "OPENCLAW_PROXY_URL"
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "codex-computer-use-setup",
-        "name": "Codex Computer Use setup",
-        "status": "stable",
-        "since": "2026.4.27",
-        "description": "Adds Computer Use setup for Codex-mode agents, including /codex computer-use status/install, marketplace discovery, optional auto-install, and fail-closed MCP server checks before Codex-mode turns start.",
-        "key_details": [
-          "/codex computer-use status/install"
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "tencent-yuanbao-external-channel-plugin",
-        "name": "Tencent Yuanbao external channel plugin",
-        "status": "stable",
-        "since": "2026.4.27",
-        "description": "Registers the Tencent Yuanbao external channel plugin in the official channel catalog, contract suites, and community plugin docs, with a new docs/channels/yuanbao.md quick-start guide for WebSocket bot DMs and group chats.",
-        "key_details": [
-          "openclaw-plugin-yuanbao"
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "qqbot-full-group-chat-support",
-        "name": "QQBot full group chat support",
-        "status": "stable",
-        "since": "2026.4.27",
-        "description": "Adds full group chat support (history tracking, @-mention gating, activation modes, per-group config, FIFO message queue with deliver debounce), C2C stream_messages streaming with a StreamingController lifecycle manager, unified sendMedia with chunked upload for large files, and refactor the engine into pipeline stages, focused outbound submodules, builtin slash-command modules, and explicit DI ports via createEngineAdapters().",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "deepinfra-provider",
-        "name": "DeepInfra provider",
-        "status": "stable",
-        "since": "2026.4.27",
-        "description": "Adds a bundled DeepInfra provider with DEEPINFRA_API_KEY onboarding, dynamic OpenAI-compatible model discovery, image generation/editing, image/audio media understanding, TTS, text-to-video, memory embeddings, static catalog metadata, and provider-owned base URL policy.",
-        "key_details": [
-          "DEEPINFRA_API_KEY"
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "versioned-structured-approval-metadata-matrix",
-        "name": "Versioned structured approval metadata to Matrix",
-        "status": "stable",
-        "since": "2026.4.27",
-        "description": "Attaches versioned structured approval metadata to pending approval messages so capable Matrix clients can render richer approval UI while body text and reaction fallback keep working.",
-        "key_details": [],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -2743,12 +2680,6 @@
           "description": "Specifies the node to remove.",
           "since": "2026.4.26",
           "source_url": ""
-        },
-        {
-          "flag": "--thread-id",
-          "description": "Preserves Telegram forum topic delivery targets across scheduled announcements.",
-          "since": "2026.4.27",
-          "source_url": ""
         }
       ],
       "deprecated": [
@@ -2866,7 +2797,9 @@
         }
       ],
       "new_since_previous": [
-        "--thread-id"
+        "--failure-alert-include-skipped",
+        "--github-copilot-token",
+        "--wrapper"
       ]
     },
     "env_vars": [
@@ -2924,20 +2857,6 @@
         "purpose": "A gateway startup kill-switch for configured background package auto-updates.",
         "status": "stable",
         "since": "2026.4.26",
-        "source_url": ""
-      },
-      {
-        "name": "OPENCLAW_PROXY_URL",
-        "purpose": "Configures the outbound proxy URL for operator-managed outbound proxy routing.",
-        "status": "stable",
-        "since": "2026.4.27",
-        "source_url": ""
-      },
-      {
-        "name": "DEEPINFRA_API_KEY",
-        "purpose": "API key for the DeepInfra provider.",
-        "status": "stable",
-        "since": "2026.4.27",
         "source_url": ""
       }
     ],
