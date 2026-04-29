@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.122",
-  "generated_at": "2026-04-29T03:09:08.714Z",
+  "version": "2.1.123",
+  "generated_at": "2026-04-29T05:08:34.194Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,14 +14,12 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.122",
-    "to_version": "2.1.122",
+    "from_version": "2.1.123",
+    "to_version": "2.1.123",
     "new_features": [],
     "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [
-      "ANTHROPIC_BEDROCK_SERVICE_TIER"
-    ],
+    "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -41,12 +39,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.122",
-      "latest_release_date": "2026-04-28",
+      "latest_stable": "2.1.123",
+      "latest_release_date": "2026-04-29",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces the `ANTHROPIC_BEDROCK_SERVICE_TIER` environment variable, allowing users to specify the Bedrock service tier (`default`, `flex`, or `priority`) via the `X-Amzn-Bedrock-Service-Tier` header. This enables more granular control over Bedrock service usage and potentially optimizes costs or performance. The `/resume` command now supports pasting PR URLs (GitHub, GitHub Enterprise, GitLab, and Bitbucket) to directly find the session that created the PR, streamlining workflow resumption. The `/mcp` command now displays claude.ai connectors hidden by manually-added servers with the same URL, providing a hint to remove duplicates and avoid confusion. OpenTelemetry numeric attributes on `api_request`/`api_error` log events are now emitted as numbers instead of strings, and a `claude_code.at_mention` log event has been added for `@`-mention resolution, improving telemetry data accuracy and detail. A bug was fixed where `/branch` produced forks that failed due to tool_use ID issues from rewound timelines. The `/model` command now correctly displays the Effort option for Bedrock application inference profile ARNs, ensuring those ARNs receive `output_config.effort`. Issues with Vertex AI and Bedrock returning `invalid_request_error` for structured-output queries and Vertex AI `count_tokens` endpoint returning 400 errors behind proxy gateways have been resolved. A fix addresses `spinnerTipsOverride.excludeDefault` not suppressing time-based spinner tips, and ToolSearch now correctly finds MCP tools connected after session start in nonblocking mode. The `!exit` / `!quit` commands in bash mode now function as shell commands instead of terminating the CLI. Images sent to newer models are now correctly resized to a maximum of 2000px per side. Remote control session idle status redrawing has been optimized to prevent flooding `tmux -CC` control pipes. Assistant messages no longer appear blank in some sessions due to a stale view preference, and malformed hooks entries in `settings.json` no longer invalidate the entire file. Voice mode now displays an error when keybindings are bound to Caps Lock. Upgrade is recommended to benefit from these fixes and improvements."
+      "tldr": "This release fixes a critical OAuth authentication issue. Specifically, OAuth authentication was failing and entering a 401 retry loop when the environment variable `CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS=1` was set. This could prevent users from successfully authenticating and using the tool. Upgrading is highly recommended for users who rely on OAuth authentication and have set the `CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS=1` environment variable."
     },
     "features": [
       {
