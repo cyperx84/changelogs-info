@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.26",
-  "generated_at": "2026-04-29T11:33:51.093Z",
+  "generated_at": "2026-04-29T12:37:18.738Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -19,25 +19,19 @@
     "new_features": [
       "generic-browser-realtime-transport-contract",
       "cerebras-bundled-plugin",
-      "asymmetric-embedding-endpoints",
-      "model-specific-retrieval-query-prefixes",
-      "claude-importer"
+      "claude-importer",
+      "hermes-importer"
     ],
-    "new_commands": [
-      "openclaw matrix encryption setup",
-      "openclaw migrate",
-      "openclaw nodes remove"
-    ],
+    "new_commands": [],
     "new_flags": [
       "--failure-alert-include-skipped",
-      "--node <id|name|ip>",
       "--github-copilot-token",
       "--wrapper"
     ],
     "new_env_vars": [
       "OPENCLAW_PLUGIN_STAGE_DIR",
-      "OPENCLAW_NO_AUTO_UPDATE",
-      "OPENCLAW_WRAPPER"
+      "OPENCLAW_WRAPPER",
+      "OPENCLAW_NO_AUTO_UPDATE"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -65,7 +59,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces a generic browser realtime transport contract, enabling Google Live browser Talk sessions and a Gateway relay for backend-only realtime voice plugins. A new Cerebras bundled plugin simplifies integration with Cerebras models, while asymmetric embedding endpoints offer more flexible memory search configurations. The release also includes a Claude importer to facilitate migration from Claude Code and Desktop. Key fixes address issues with gateway device tokens, agent session spawning, and control UI talk sessions. The `agents.defaults.compaction.maxActiveTranscriptBytes` setting allows for preflight compaction to manage large JSONL files, and the `openclaw matrix encryption setup` command streamlines Matrix encryption setup. A breaking change involves deprecating direct plugin config load/write helpers in favor of runtime snapshots and transactional mutation helpers. The `OPENCLAW_PLUGIN_STAGE_DIR` environment variable allows for layered runtime dependency roots. It is recommended to update to this version to benefit from the new features and fixes. Before upgrading, be aware of the plugin config deprecation and update your plugin configurations accordingly."
+      "tldr": "This release introduces a generic browser realtime transport contract, enabling Google Live browser Talk sessions and a Gateway relay for backend-only realtime voice plugins. It also bundles Cerebras as a plugin, simplifying onboarding and providing a static model catalog. Claude and Hermes importers are now included, facilitating migration from those platforms. A key update is the ability to use asymmetric embedding endpoints for memory searches, improving flexibility. The `agents.defaults.compaction.maxActiveTranscriptBytes` setting allows for preflight compaction to manage large JSONL files. The `openclaw matrix encryption setup` command streamlines Matrix encryption setup. This release also includes numerous fixes, including preventing gateway crashes due to broken pipes, improving plugin installation security, and addressing issues with local model providers like Ollama and LM Studio. A new `OPENCLAW_PLUGIN_STAGE_DIR` environment variable allows for layered runtime dependencies. The `openclaw cron edit --failure-alert-include-skipped` flag allows skipped cron jobs to trigger alerts. It is recommended to update to this version to benefit from the fixes and new features. Ensure to review the deprecated plugin config load/write helpers and migrate to the new runtime snapshots and transactional mutation helpers."
     },
     "features": [
       {
@@ -2804,7 +2798,6 @@
       ],
       "new_since_previous": [
         "--failure-alert-include-skipped",
-        "--node <id|name|ip>",
         "--github-copilot-token",
         "--wrapper"
       ]
