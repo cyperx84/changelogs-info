@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.29",
-  "generated_at": "2026-04-30T22:22:19.697Z",
+  "generated_at": "2026-04-30T21:23:54.842Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,28 +14,24 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.4.29",
-    "to_version": "2026.4.29",
+    "from_version": "2026.4.27",
+    "to_version": "2026.4.27",
     "new_features": [
-      "inferred-follow-up-commitments",
-      "people-wiki-metadata",
-      "per-conversation-active-memory-filters",
-      "nvidia-provider",
-      "sqlite-backed-plugin-state-store",
-      "startup-diagnostics-timeline",
-      "opengrep-scanning"
+      "operator-managed-outbound-proxy-routing",
+      "tencent-yuanbao-external-channel-plugin",
+      "deepinfra-provider"
     ],
     "new_commands": [],
-    "new_flags": [],
+    "new_flags": [
+      "--thread-id"
+    ],
     "new_env_vars": [
-      "OPENCLAW_SKIP_ONBOARDING",
-      "OPENCLAW_GATEWAY_WATCH_TMUX"
+      "OPENCLAW_PROXY_URL",
+      "DEEPINFRA_API_KEY"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "restrictive-tool-profiles"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -59,7 +55,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces active-run steering, visible-reply enforcement, subagent routing metadata, and follow-up commitments for messaging and automation. Memory gains a people-aware wiki with provenance views and per-conversation Active Memory filters. A breaking change requires explicit `alsoAllow` entries for tools under restrictive profiles. The NVIDIA provider is added, and a SQLite-backed plugin state store is now available. Key fixes include security enhancements, QQBot improvements, and resolution of PDF extraction and media handling issues. To migrate from previous versions, ensure explicit `alsoAllow` entries are added to restrictive profiles for required tools. Consider upgrading to leverage the new features and fixes, especially if you rely on restrictive tool profiles or NVIDIA models. Docker installs can now skip onboarding with `OPENCLAW_SKIP_ONBOARDING`, and `OPENCLAW_GATEWAY_WATCH_TMUX` controls tmux usage for gateway watching. This upgrade is recommended for all users to benefit from the security enhancements and bug fixes."
+      "tldr": "This release introduces Codex Computer Use setup with status/install commands and marketplace discovery, along with DeepInfra as a new bundled provider offering model discovery, media generation, TTS, and embeddings. Tencent Yuanbao and QQBot support expands channel coverage with Yuanbao docs and QQBot group chat features. Plugin startup and model catalogs now use manifest-first metadata, streamlining Gateway boot. A new operator-managed outbound proxy routing feature is available via `proxy.enabled` and `proxy.proxyUrl` or the `OPENCLAW_PROXY_URL` environment variable. The `sandbox.docker.gpus` option enables GPU passthrough for Docker sandbox containers.  The `openclaw cron add` and `openclaw cron edit` commands now support the `--thread-id` flag for Telegram forum topic delivery. Reliability fixes address Telegram startup, Slack stalls, and Windows restart issues.  Legacy `CLAWDBOT_*` and `MOLTBOT_*` environment variables now trigger a warning, recommending migration to `OPENCLAW_*` names.  This release includes several fixes for channel routing, session management, and agent approvals.  It is recommended to upgrade to benefit from the new features and fixes. No specific prerequisites are required."
     },
     "features": [
       {
@@ -2310,102 +2306,6 @@
         "description": "Plugin startup and model catalogs move toward manifest-first metadata, reducing Gateway boot work and making provider rows/aliases/suppressions easier to audit.",
         "key_details": [],
         "source_url": ""
-      },
-      {
-        "id": "inferred-follow-up-commitments",
-        "name": "Inferred Follow-Up Commitments",
-        "status": "experimental",
-        "since": "2026.4.29",
-        "description": "Adds opt-in inferred follow-up commitments with hidden batched extraction, per-agent/per-channel scoping, heartbeat delivery, CLI management, a simple `commitments.enabled`/`commitments.maxPerDay` config, and heartbeat-interval due-time clamping.",
-        "key_details": [
-          "Configurable via `commitments.enabled` and `commitments.maxPerDay`.",
-          "CLI management for commitments.",
-          "Heartbeat delivery of commitments."
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "people-wiki-metadata",
-        "name": "People Wiki Metadata",
-        "status": "stable",
-        "since": "2026.4.29",
-        "description": "Adds agent-facing people wiki metadata, canonical aliases, person cards, relationship graphs, privacy/provenance reports, evidence-kind drilldown, and search modes for person lookup, question routing, source evidence, and raw claims.",
-        "key_details": [
-          "Agent-facing people wiki metadata.",
-          "Canonical aliases for people.",
-          "Person cards and relationship graphs.",
-          "Privacy/provenance reports.",
-          "Evidence-kind drilldown.",
-          "Search modes for person lookup, question routing, source evidence, and raw claims."
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "per-conversation-active-memory-filters",
-        "name": "Per-Conversation Active Memory Filters",
-        "status": "stable",
-        "since": "2026.4.29",
-        "description": "Adds optional per-conversation `allowedChatIds` and `deniedChatIds` filters so operators can enable recall only for selected direct, group, or channel conversations while keeping broad sessions skipped.",
-        "key_details": [
-          "Configurable via `allowedChatIds` and `deniedChatIds`.",
-          "Allows enabling recall only for selected conversations."
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "nvidia-provider",
-        "name": "NVIDIA Provider",
-        "status": "stable",
-        "since": "2026.4.29",
-        "description": "Adds the NVIDIA provider with API-key onboarding, setup docs, static catalog metadata, and literal model-ref picker support so NVIDIA hosted models can be selected with their provider prefix intact.",
-        "key_details": [
-          "API-key onboarding.",
-          "Setup documentation.",
-          "Static catalog metadata.",
-          "Literal model-ref picker support."
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "sqlite-backed-plugin-state-store",
-        "name": "SQLite-Backed Plugin State Store",
-        "status": "stable",
-        "since": "2026.4.29",
-        "description": "Added SQLite-backed plugin state store (`api.runtime.state.openKeyedStore`) for restart-safe keyed registries with TTL, eviction, and automatic plugin isolation.",
-        "key_details": [
-          "Uses `api.runtime.state.openKeyedStore`.",
-          "Provides restart-safe keyed registries.",
-          "Supports TTL and eviction.",
-          "Offers automatic plugin isolation."
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "startup-diagnostics-timeline",
-        "name": "Startup Diagnostics Timeline",
-        "status": "experimental",
-        "since": "2026.4.29",
-        "description": "Emits an opt-in startup diagnostics timeline that records gateway lifecycle and plugin-load phases behind a config flag, so slow-start diagnosis no longer requires bespoke instrumentation.",
-        "key_details": [
-          "Opt-in via a config flag.",
-          "Records gateway lifecycle and plugin-load phases."
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "opengrep-scanning",
-        "name": "OpenGrep Scanning",
-        "status": "stable",
-        "since": "2026.4.29",
-        "description": "Adds a precise OpenGrep rulepack, source-rule compiler, provenance metadata check, and PR/full scan workflows that validate first-party code and rulepack-only changes while uploading SARIF to GitHub Code Scanning.",
-        "key_details": [
-          "Precise OpenGrep rulepack.",
-          "Source-rule compiler.",
-          "Provenance metadata check.",
-          "PR/full scan workflows.",
-          "SARIF upload to GitHub Code Scanning."
-        ],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -3011,7 +2911,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--thread-id"
+      ]
     },
     "env_vars": [
       {
@@ -3082,20 +2984,6 @@
         "purpose": "API key for the DeepInfra provider.",
         "status": "stable",
         "since": "2026.4.27",
-        "source_url": ""
-      },
-      {
-        "name": "OPENCLAW_SKIP_ONBOARDING",
-        "purpose": "Skips the interactive onboarding step during automated Docker installs while still applying gateway defaults.",
-        "status": "stable",
-        "since": "2026.4.29",
-        "source_url": ""
-      },
-      {
-        "name": "OPENCLAW_GATEWAY_WATCH_TMUX",
-        "purpose": "Controls whether `pnpm gateway:watch` runs through a named tmux session (default) or in foreground mode.",
-        "status": "stable",
-        "since": "2026.4.29",
         "source_url": ""
       }
     ],
@@ -4332,17 +4220,6 @@
           "Sessions"
         ],
         "migration": "Remove `session.maintenance.rotateBytes` from your configuration. Use `openclaw doctor --fix` to remove the ignored key.",
-        "source_url": ""
-      },
-      {
-        "id": "restrictive-tool-profiles",
-        "version": "2026.4.29",
-        "title": "Restrictive Tool Profiles No Longer Implicitly Widen",
-        "description": "Configured tool sections (`tools.exec`, `tools.fs`) no longer implicitly widen restrictive profiles (`messaging`, `minimal`). Users who need those tools under a restricted profile must add explicit `alsoAllow` entries; a startup warning identifies affected configs.",
-        "affected": [
-          "Users with restrictive tool profiles that rely on implicit widening."
-        ],
-        "migration": "Add explicit `alsoAllow` entries to the restrictive profile for the required tools.",
         "source_url": ""
       }
     ],
