@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.29",
-  "generated_at": "2026-04-30T22:22:19.697Z",
+  "generated_at": "2026-04-30T23:22:17.917Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -19,14 +19,15 @@
     "new_features": [
       "inferred-follow-up-commitments",
       "people-wiki-metadata",
-      "per-conversation-active-memory-filters",
       "nvidia-provider",
       "sqlite-backed-plugin-state-store",
-      "startup-diagnostics-timeline",
-      "opengrep-scanning"
+      "opengrep-scanning",
+      "startup-diagnostics-timeline"
     ],
     "new_commands": [],
-    "new_flags": [],
+    "new_flags": [
+      "--message"
+    ],
     "new_env_vars": [
       "OPENCLAW_SKIP_ONBOARDING",
       "OPENCLAW_GATEWAY_WATCH_TMUX"
@@ -59,7 +60,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces active-run steering, visible-reply enforcement, subagent routing metadata, and follow-up commitments for messaging and automation. Memory gains a people-aware wiki with provenance views and per-conversation Active Memory filters. A breaking change requires explicit `alsoAllow` entries for tools under restrictive profiles. The NVIDIA provider is added, and a SQLite-backed plugin state store is now available. Key fixes include security enhancements, QQBot improvements, and resolution of PDF extraction and media handling issues. To migrate from previous versions, ensure explicit `alsoAllow` entries are added to restrictive profiles for required tools. Consider upgrading to leverage the new features and fixes, especially if you rely on restrictive tool profiles or NVIDIA models. Docker installs can now skip onboarding with `OPENCLAW_SKIP_ONBOARDING`, and `OPENCLAW_GATEWAY_WATCH_TMUX` controls tmux usage for gateway watching. This upgrade is recommended for all users to benefit from the security enhancements and bug fixes."
+      "tldr": "This release introduces active-run steering, visible-reply enforcement, spawned subagent routing metadata, and opt-in follow-up commitments for messaging and automation. Memory gains a people-aware wiki with provenance views and per-conversation Active Memory filters. The NVIDIA provider is now available, along with manifest-backed model/auth paths and safer Codex/OpenAI-compatible replay behavior. Gateway reliability is improved with slow-host startup fixes, reusable model catalogs, and runtime-dependency repair. A breaking change requires explicit `alsoAllow` entries for tools under restrictive profiles. New features include inferred follow-up commitments managed via CLI and a people wiki with metadata and search modes. Key fixes address Slack Block Kit limits, Telegram resilience, Discord rate-limit handling, and WhatsApp delivery. Security enhancements include OpenGrep scanning and web-fetch IPv6 ULA opt-in. To migrate, add explicit `alsoAllow` entries to restrictive profiles. Upgrade is recommended for enhanced reliability, security, and new automation capabilities. No specific prerequisites are mentioned."
     },
     "features": [
       {
@@ -2881,6 +2882,12 @@
           "description": "Preserves Telegram forum topic delivery targets across scheduled announcements.",
           "since": "2026.4.27",
           "source_url": ""
+        },
+        {
+          "flag": "--message",
+          "description": "Warn when `openclaw cron add --message` omits a nonblank `--agent`, including blank agent values and session-key jobs, so scheduled agent-turn jobs make default-agent fallback explicit while system events stay quiet.",
+          "since": "2026.4.29",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -3011,7 +3018,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--message"
+      ]
     },
     "env_vars": [
       {
