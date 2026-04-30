@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.27",
-  "generated_at": "2026-04-30T18:34:04.204Z",
+  "generated_at": "2026-04-30T19:34:24.195Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -19,8 +19,7 @@
     "new_features": [
       "operator-managed-outbound-proxy-routing",
       "tencent-yuanbao-external-channel-plugin",
-      "deepinfra-provider",
-      "versioned-structured-approval-metadata-matrix"
+      "deepinfra-provider"
     ],
     "new_commands": [],
     "new_flags": [
@@ -31,13 +30,8 @@
       "DEEPINFRA_API_KEY"
     ],
     "deprecated_commands": [],
-    "deprecated_flags": [
-      "session.maintenance.rotateBytes"
-    ],
-    "breaking_changes": [
-      "implicit-startup-sidecar-loading",
-      "oversized-sessions-json-rotation-backups"
-    ]
+    "deprecated_flags": [],
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -61,7 +55,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces the DeepInfra provider, offering OpenAI-compatible model discovery, media generation/editing, TTS, embeddings, and provider-owned onboarding policy, accessible via the `DEEPINFRA_API_KEY`. Tencent Yuanbao channel support expands with Yuanbao docs/catalog entries and QQBot group chat, streaming, and media upload capabilities. Plugin startup now relies on manifest-first metadata, reducing Gateway boot work and simplifying provider auditing; plugins should migrate to explicit `activation.onStartup`. Operator-managed outbound proxy routing is now available via `proxy.enabled` and `proxy.proxyUrl` or `OPENCLAW_PROXY_URL`, enhancing security.  A new `sandbox.docker.gpus` option enables GPU passthrough for Docker sandboxed agents. Matrix clients benefit from versioned structured approval metadata for richer UI.  Automatic oversized `sessions.json` rotation backups have been removed, and the `session.maintenance.rotateBytes` setting is deprecated; use `openclaw doctor --fix` to remove the key.  Numerous fixes address Telegram startup/sends, Slack socket/media stalls, gateway startup prewarm, session/history defaults, update sync, and Windows restart handoffs.  Cron jobs can now target Telegram forum topics using the `--thread-id` flag.  This is a recommended upgrade, especially for users of DeepInfra, Tencent Yuanbao, Matrix, or those requiring outbound proxy support.  Ensure plugins are updated to use explicit startup declarations."
+      "tldr": "This release introduces Codex Computer Use setup with status/install commands and marketplace discovery, along with DeepInfra as a new bundled provider offering model discovery, media generation, TTS, and embeddings. Tencent Yuanbao and QQBot support expands channel coverage with Yuanbao docs and QQBot group chat features. Plugin startup and model catalogs now use manifest-first metadata, streamlining Gateway boot. A new operator-managed outbound proxy routing feature is available via `proxy.enabled` and `proxy.proxyUrl` or the `OPENCLAW_PROXY_URL` environment variable. The `sandbox.docker.gpus` option enables GPU passthrough for Docker sandbox containers.  The `openclaw cron add` and `openclaw cron edit` commands now support the `--thread-id` flag for Telegram forum topic delivery. Reliability fixes address Telegram startup, Slack stalls, and Windows restart issues.  Legacy `CLAWDBOT_*` and `MOLTBOT_*` environment variables now trigger a warning, recommending migration to `OPENCLAW_*` names.  This release includes several fixes for channel routing, session management, and agent approvals.  It is recommended to upgrade to benefit from the new features and fixes. No specific prerequisites are required."
     },
     "features": [
       {

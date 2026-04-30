@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.128.0",
-  "generated_at": "2026-04-30T19:34:01.468Z",
+  "generated_at": "2026-04-30T17:34:10.598Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -19,15 +19,13 @@
     "new_features": [
       "persisted-goal-workflows",
       "codex-update-configurable-tui-keymaps-plan-mode-nudges-action-required-terminal-titles-active-turn-statusline-and-title-edits",
-      "expanded-permission-profiles-with-built-in-defaults-sandbox-cli-profile-selection-cwd-controls-and-active-profile-metadata-for-clients",
-      "improved-plugin-workflows-with-marketplace-installation-remote-bundle-caching-remote-uninstall-plugin-bundled-hooks-hook-enablement-state-and-external-agent-config-import",
-      "external-agent-session-import-including-background-imports-and-imported-session-title-handling",
-      "multiagentv2-configuration-improvements-with-thread-caps-wait-time-controls-root-subagent-hints-and-v2-specific-depth-handling"
+      "expanded-permission-profiles",
+      "improved-plugin-workflows",
+      "external-agent-session-import",
+      "multiagentv2-configuration-improvements"
     ],
     "new_commands": [
-      "/statusline",
-      "/title",
-      "codex update"
+      "/statusline"
     ],
     "new_flags": [],
     "new_env_vars": [],
@@ -59,7 +57,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release introduces persisted goal workflows, enabling users to create, pause, resume, and clear goals with app-server APIs, model tools, runtime continuation, and TUI controls. The `codex update` command is added, along with configurable TUI keymaps, plan-mode nudges, action-required terminal titles, and active-turn `/statusline` and `/title` edits for enhanced customization. Permission profiles are expanded with built-in defaults, sandbox CLI profile selection, cwd controls, and active-profile metadata for clients, providing more granular control over sandbox environments. Plugin workflows are improved with marketplace installation, remote bundle caching, remote uninstall, plugin-bundled hooks, hook enablement state, and external-agent config import, streamlining plugin management. External agent session import is now supported, including background imports and imported-session title handling, facilitating collaboration. MultiAgentV2 configuration is made more explicit with thread caps, wait-time controls, root/subagent hints, and v2-specific depth handling. Several resume and interruption issues are fixed, improving session reliability. TUI reliability is enhanced with fixes around terminal resize reflow, markdown list spacing, slash-command popup layout, keyboard cleanup, shell-mode escape, and working status updates. Managed network behavior is hardened, and Windows sandbox and PTY edge cases are addressed. Bedrock model support is improved, and MCP/plugin edge cases are resolved. The `--full-auto` flag is deprecated in favor of explicit permission profiles. Upgrading is recommended to take advantage of the new features and bug fixes. No specific prerequisites are required."
+      "tldr": "Version 0.128.0 introduces persisted `/goal` workflows, enabling users to create, pause, resume, and clear goals with app-server APIs, model tools, runtime continuation, and TUI controls. This allows for more complex and long-running tasks to be managed within the codex-cli environment. The `codex update` command has been added, along with configurable TUI keymaps, plan-mode nudges, action-required terminal titles, and active-turn `/statusline` and `/title` edits, enhancing the user experience. Permission profiles have been expanded with built-in defaults, sandbox CLI profile selection, cwd controls, and active-profile metadata for clients, providing more granular control over permissions. Plugin workflows have been improved with marketplace installation via `/plugins`, remote bundle caching, remote uninstall, plugin-bundled hooks, hook enablement state, and external-agent config import, streamlining plugin management. External agent session import is now supported, including background imports and imported-session title handling, facilitating collaboration. MultiAgentV2 configuration has been made more explicit with thread caps, wait-time controls, root/subagent hints, and v2-specific depth handling. Several bug fixes address resume and interruption issues, TUI reliability, managed network behavior, Windows sandbox and PTY edge cases, and Bedrock model support. The `--full-auto` flag has been deprecated in favor of explicit permission profiles and trust flows.  It is recommended to upgrade to this version to take advantage of the new features and bug fixes. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
@@ -1481,42 +1479,6 @@
         "description": "Makes MultiAgentV2 configuration more explicit with thread caps, wait-time controls, root/subagent hints, and v2-specific depth handling.",
         "key_details": [],
         "source_url": ""
-      },
-      {
-        "id": "expanded-permission-profiles-with-built-in-defaults-sandbox-cli-profile-selection-cwd-controls-and-active-profile-metadata-for-clients",
-        "name": "Expanded Permission Profiles",
-        "status": "stable",
-        "since": "0.128.0",
-        "description": "Expanded permission profiles with built-in defaults, sandbox CLI profile selection, cwd controls, and active-profile metadata for clients.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "improved-plugin-workflows-with-marketplace-installation-remote-bundle-caching-remote-uninstall-plugin-bundled-hooks-hook-enablement-state-and-external-agent-config-import",
-        "name": "Improved Plugin Workflows",
-        "status": "stable",
-        "since": "0.128.0",
-        "description": "Improved plugin workflows with marketplace installation, remote bundle caching, remote uninstall, plugin-bundled hooks, hook enablement state, and external-agent config import.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "external-agent-session-import-including-background-imports-and-imported-session-title-handling",
-        "name": "External Agent Session Import",
-        "status": "stable",
-        "since": "0.128.0",
-        "description": "Added external agent session import, including background imports and imported-session title handling.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "multiagentv2-configuration-improvements-with-thread-caps-wait-time-controls-root-subagent-hints-and-v2-specific-depth-handling",
-        "name": "MultiAgentV2 Configuration Improvements",
-        "status": "stable",
-        "since": "0.128.0",
-        "description": "Made MultiAgentV2 configuration more explicit with thread caps, wait-time controls, root/subagent hints, and v2-specific depth handling.",
-        "key_details": [],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -1678,14 +1640,6 @@
         "description": "Allows editing the statusline during active turns.",
         "since": "0.128.0",
         "status": "experimental",
-        "source_url": ""
-      },
-      {
-        "name": "codex update",
-        "syntax": "codex update",
-        "description": "Updates the codex-cli to the latest version.",
-        "since": "0.128.0",
-        "status": "stable",
         "source_url": ""
       }
     ],
@@ -2131,13 +2085,6 @@
           "flag": "use_legacy_landlock",
           "replaced_by": null,
           "deprecated_since": "0.122.0",
-          "removed_in": null,
-          "source_url": ""
-        },
-        {
-          "flag": "--full-auto",
-          "replaced_by": "explicit permission profiles and trust flows",
-          "deprecated_since": "0.128.0",
           "removed_in": null,
           "source_url": ""
         },
