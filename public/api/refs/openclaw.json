@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.27",
-  "generated_at": "2026-04-29T23:22:24.203Z",
+  "generated_at": "2026-04-30T00:42:40.725Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -17,14 +17,19 @@
     "from_version": "2026.4.27",
     "to_version": "2026.4.27",
     "new_features": [
-      "operator-managed-outbound-proxy-routing",
       "codex-computer-use-setup",
+      "deepinfra-bundled-provider",
+      "tencent-yuanbao-qqbot-channel-coverage",
+      "manifest-first-metadata",
+      "operator-managed-outbound-proxy-routing",
       "tencent-yuanbao-external-channel-plugin",
       "qqbot-full-group-chat-support",
       "deepinfra-provider",
       "versioned-structured-approval-metadata-matrix"
     ],
-    "new_commands": [],
+    "new_commands": [
+      "/codex computer-use"
+    ],
     "new_flags": [
       "--thread-id"
     ],
@@ -58,7 +63,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces operator-managed outbound proxy routing, enhancing security and control over network traffic with strict validation and loopback bypass. It also adds Computer Use setup for Codex-mode agents, streamlining desktop-control setup. The Tencent Yuanbao external channel plugin is now officially supported, expanding channel options. QQBot gains full group chat support with improved streaming and file handling. A new DeepInfra provider offers OpenAI-compatible model discovery, image generation, TTS, and more, onboarded via the `DEEPINFRA_API_KEY` environment variable. Live Matrix approval scenarios are enhanced with exec metadata and thread targeting. The `sandbox.docker.gpus` option enables GPU passthrough for Docker sandboxes. The `--thread-id` flag is added to `openclaw cron add` and `openclaw cron edit` for Telegram forum topic delivery. Several fixes address issues with session management, approval handling, channel routing, and provider integrations. This release also includes significant plugin SDK updates and dependency refreshes. It is recommended to upgrade to benefit from the new features, security enhancements, and bug fixes. Ensure to review the breaking changes and migration steps if applicable."
+      "tldr": "This release introduces Codex Computer Use setup with status/install commands and DeepInfra as a bundled provider, expanding channel coverage with Tencent Yuanbao and QQBot. Plugin startup and model catalogs now use manifest-first metadata, improving Gateway boot performance and auditability. A new operator-managed outbound proxy routing feature is available with `proxy.enabled` and `OPENCLAW_PROXY_URL`. QQBot gains full group chat support, including history tracking and media upload. The DeepInfra provider offers model discovery, media generation/editing, TTS, and embeddings, requiring a `DEEPINFRA_API_KEY`. Matrix clients can now render richer approval UI with versioned structured approval metadata. Fixes address Telegram and Slack issues, gateway startup, session defaults, and update sync. The `sandbox.docker.gpus` option enables GPU workloads in Docker sandboxes. The `--thread-id` flag is added to `openclaw cron add` and `openclaw cron edit` for Telegram forum topic delivery. This release is recommended for all users, especially those using Codex, DeepInfra, QQBot, or Matrix. No specific prerequisites are required for upgrading."
     },
     "features": [
       {
@@ -2282,6 +2287,33 @@
         "description": "Attaches versioned structured approval metadata to pending approval messages so capable Matrix clients can render richer approval UI while body text and reaction fallback keep working.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "deepinfra-bundled-provider",
+        "name": "DeepInfra bundled provider",
+        "status": "stable",
+        "since": "2026.4.27",
+        "description": "DeepInfra joins the bundled provider set with model discovery, media generation/editing, TTS, embeddings, and provider-owned onboarding policy.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "tencent-yuanbao-qqbot-channel-coverage",
+        "name": "Tencent Yuanbao and QQBot channel coverage",
+        "status": "stable",
+        "since": "2026.4.27",
+        "description": "Tencent Yuanbao and QQBot support expand channel coverage with Yuanbao docs/catalog entries and QQBot group chat, streaming, media upload, and pipeline refactors.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "manifest-first-metadata",
+        "name": "Manifest-first metadata",
+        "status": "stable",
+        "since": "2026.4.27",
+        "description": "Plugin startup and model catalogs move toward manifest-first metadata, reducing Gateway boot work and making provider rows/aliases/suppressions easier to audit.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -2626,6 +2658,14 @@
         "syntax": "openclaw cron edit --failure-alert-include-skipped",
         "description": "Adds `failureAlert.includeSkipped` so persistently skipped jobs can alert without counting skips as execution errors or affecting retry backoff.",
         "since": "2026.4.26",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "/codex computer-use",
+        "syntax": "/codex computer-use status/install",
+        "description": "Computer Use setup for Codex-mode agents, including `/codex computer-use status/install`, marketplace discovery, optional auto-install, and fail-closed MCP server checks before Codex-mode turns start.",
+        "since": "2026.4.27",
         "status": "stable",
         "source_url": ""
       }
