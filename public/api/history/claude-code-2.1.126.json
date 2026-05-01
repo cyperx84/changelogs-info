@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.126",
-  "generated_at": "2026-05-01T05:19:13.316Z",
+  "generated_at": "2026-05-01T03:09:26.720Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -16,7 +16,10 @@
   "delta": {
     "from_version": "2.1.126",
     "to_version": "2.1.126",
-    "new_features": [],
+    "new_features": [
+      "claude-project-purge-command",
+      "invocation-trigger-attribute-in-skill-activated-event"
+    ],
     "new_commands": [
       "/project purge"
     ],
@@ -52,7 +55,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces the `claude project purge` command to delete all Claude Code state for a project, including transcripts, tasks, file history, and config entries, with options for dry runs, automatic confirmation, interactive mode, and deleting all projects. The `/model` picker now lists models from your gateway's `/v1/models` endpoint when `ANTHROPIC_BASE_URL` is set. A new `--dangerously-skip-permissions` flag bypasses prompts for writes to common project directories, but retains prompts for catastrophic removals. `claude auth login` now accepts OAuth codes pasted into the terminal for environments where the browser callback fails. The `claude_code.skill_activated` event now includes an `invocation_trigger` attribute for slash commands. Auto mode's spinner turns red when permission checks stall. Host-managed deployments no longer auto-disable analytics on Bedrock/Vertex/Foundry. Windows PowerShell detection is improved, and PowerShell is now the primary shell when enabled. A per-file malware assessment reminder in the Read tool was removed. A security issue where `allowManagedDomainsOnly` and `allowManagedReadPathsOnly` were ignored is fixed. Image pasting now downscales oversized images. Several OAuth login and API retry issues are resolved, along with fixes for hangs, scrolling, connector suppression, text rendering, and command behavior. Deferred tools are now available to skills with `context: fork`, and plan-mode tools are available in interactive sessions launched with `--channels`. The `/plugin` Uninstall command now reports the correct status. File-modified reminders are bounded, and `/remote-control` retries now show their results. Clipboard writes on Windows are secured, and PowerShell tool parsing is improved. An Agent SDK hang is fixed. Upgrade is recommended to benefit from security fixes and improved stability."
+      "tldr": "This release introduces the `claude project purge` command, enabling developers to delete all Claude Code state for a project, including transcripts, tasks, file history, and config entries. This command supports flags like `--dry-run`, `-y/--yes`, `-i/--interactive`, and `--all` for flexible usage. The `/model` picker now supports models from custom gateways, enhancing integration with Anthropic-compatible services. A new `--dangerously-skip-permissions` flag bypasses prompts for writes to common project directories, streamlining workflows but requiring caution. The `claude_code.skill_activated` OpenTelemetry event now includes an `invocation_trigger` attribute, providing more context on how skills are activated. On Windows, the PowerShell tool is now the default shell when enabled, and PowerShell installations via various methods are now detected. Several fixes address issues like image pasting failures, OAuth login timeouts, stream idle timeouts, and garbled text rendering on Windows. Security is improved by fixing an issue where `allowManagedDomainsOnly` and `allowManagedReadPathsOnly` were ignored in certain managed-settings configurations. It is recommended to upgrade to this version to benefit from the new features, security enhancements, and bug fixes. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
