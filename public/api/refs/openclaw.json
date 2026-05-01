@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.29",
-  "generated_at": "2026-05-01T00:45:34.999Z",
+  "generated_at": "2026-05-01T13:34:31.683Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -22,15 +22,13 @@
       "nvidia-provider",
       "sqlite-backed-plugin-state-store",
       "startup-diagnostics-timeline",
-      "opengrep-scanning",
-      "sdk-facing-artifact-rpcs"
+      "opengrep-scanning"
     ],
-    "new_commands": [
-      "/bot-me"
-    ],
+    "new_commands": [],
     "new_flags": [],
     "new_env_vars": [
-      "OPENCLAW_SKIP_ONBOARDING"
+      "OPENCLAW_SKIP_ONBOARDING",
+      "OPENCLAW_GATEWAY_WATCH_TMUX"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -60,7 +58,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces active-run steering, visible-reply enforcement, spawned subagent routing metadata, and opt-in follow-up commitments for heartbeat-delivered reminders. Memory gains a people-aware wiki with provenance views and per-conversation Active Memory filters. However, configured tool sections (`tools.exec`, `tools.fs`) no longer implicitly widen restrictive profiles; users needing those tools under restricted profiles must add explicit `alsoAllow` entries. The NVIDIA provider is now available with API-key onboarding and static catalog metadata. Inferred follow-up commitments can be enabled with `commitments.enabled` and configured with `commitments.maxPerDay`. A new SQLite-backed plugin state store (`api.runtime.state.openKeyedStore`) provides restart-safe keyed registries. Several fixes address Slack Block Kit limits, Telegram proxy/webhook/polling/send resilience, Discord startup/rate-limit handling, WhatsApp delivery/liveness, and Microsoft Teams/Matrix/Feishu edge cases. Security enhancements include OpenGrep scanning and web-fetch IPv6 ULA opt-in. This release also adds the `OPENCLAW_SKIP_ONBOARDING` environment variable to skip the interactive onboarding step during automated Docker installs. It is highly recommended to upgrade to this version to benefit from the security enhancements, bug fixes, and new features. Before upgrading, ensure that you review the breaking changes related to restrictive tool profiles and adjust your configuration accordingly."
+      "tldr": "This release introduces active-run steering, visible-reply enforcement, spawned subagent routing metadata, and opt-in follow-up commitments for messaging and automation. Memory gains a people-aware wiki with provenance views and per-conversation Active Memory filters. The NVIDIA provider is now available, and manifest-backed model/auth paths are faster. A breaking change requires explicit `alsoAllow` entries for tools under restrictive profiles. New features include inferred follow-up commitments, a people wiki, and OpenGrep scanning for enhanced security. Key fixes address Slack Block Kit limits, Telegram resilience, Discord startup, WhatsApp delivery, and Microsoft Teams/Matrix/Feishu edge cases. The `OPENCLAW_SKIP_ONBOARDING` environment variable is added for automated Docker installs. Upgrade is recommended for improved messaging, memory, provider coverage, and security. Users relying on implicit tool profile widening must add explicit `alsoAllow` entries."
     },
     "features": [
       {
