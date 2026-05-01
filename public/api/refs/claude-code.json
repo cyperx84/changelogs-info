@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.123",
-  "generated_at": "2026-05-01T01:38:39.973Z",
+  "version": "2.1.126",
+  "generated_at": "2026-05-01T03:09:26.720Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,11 +14,22 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.123",
-    "to_version": "2.1.123",
-    "new_features": [],
-    "new_commands": [],
-    "new_flags": [],
+    "from_version": "2.1.126",
+    "to_version": "2.1.126",
+    "new_features": [
+      "claude-project-purge-command",
+      "invocation-trigger-attribute-in-skill-activated-event"
+    ],
+    "new_commands": [
+      "/project purge"
+    ],
+    "new_flags": [
+      "--dangerously-skip-permissions",
+      "--dry-run",
+      "-y/--yes",
+      "-i/--interactive",
+      "--all"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -39,12 +50,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.123",
-      "latest_release_date": "2026-04-29",
+      "latest_stable": "2.1.126",
+      "latest_release_date": "2026-05-01",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release fixes a critical OAuth authentication issue. Specifically, OAuth authentication was failing and entering a 401 retry loop when the environment variable `CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS=1` was set. This prevented users with this configuration from successfully authenticating. This release addresses this issue, ensuring that OAuth authentication functions correctly even when experimental betas are disabled. Users who have set `CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS=1` are strongly encouraged to upgrade to this version to restore proper authentication functionality."
+      "tldr": "This release introduces the `claude project purge` command, enabling developers to delete all Claude Code state for a project, including transcripts, tasks, file history, and config entries. This command supports flags like `--dry-run`, `-y/--yes`, `-i/--interactive`, and `--all` for flexible usage. The `/model` picker now supports models from custom gateways, enhancing integration with Anthropic-compatible services. A new `--dangerously-skip-permissions` flag bypasses prompts for writes to common project directories, streamlining workflows but requiring caution. The `claude_code.skill_activated` OpenTelemetry event now includes an `invocation_trigger` attribute, providing more context on how skills are activated. On Windows, the PowerShell tool is now the default shell when enabled, and PowerShell installations via various methods are now detected. Several fixes address issues like image pasting failures, OAuth login timeouts, stream idle timeouts, and garbled text rendering on Windows. Security is improved by fixing an issue where `allowManagedDomainsOnly` and `allowManagedReadPathsOnly` were ignored in certain managed-settings configurations. It is recommended to upgrade to this version to benefit from the new features, security enhancements, and bug fixes. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
@@ -1043,6 +1054,28 @@
         "description": "Vertex AI now supports X.509 certificate-based Workload Identity Federation (mTLS ADC).",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "claude-project-purge-command",
+        "name": "Claude Project Purge Command",
+        "status": "stable",
+        "since": "2.1.126",
+        "description": "Adds `claude project purge [path]` to delete all Claude Code state for a project (transcripts, tasks, file history, config entry).",
+        "key_details": [
+          "Supports `--dry-run`, `-y/--yes`, `-i/--interactive`, and `--all` flags."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "invocation-trigger-attribute-in-skill-activated-event",
+        "name": "Invocation Trigger Attribute in Skill Activated Event",
+        "status": "stable",
+        "since": "2.1.126",
+        "description": "`claude_code.skill_activated` OpenTelemetry event now fires for user-typed slash commands and carries a new `invocation_trigger` attribute.",
+        "key_details": [
+          "Possible values for `invocation_trigger` are `\"user-slash\"`, `\"claude-proactive\"`, or `\"nested-skill\"`."
+        ],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1426,6 +1459,14 @@
         "since": "2.1.118",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "/project purge",
+        "syntax": "claude project purge [path]",
+        "description": "Deletes all Claude Code state for a project (transcripts, tasks, file history, config entry).",
+        "since": "2.1.126",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -1649,6 +1690,30 @@
           "description": "No longer prompts for writes to `.claude/skills/`, `.claude/agents/`, and `.claude/commands/`.",
           "since": "2.1.121",
           "source_url": ""
+        },
+        {
+          "flag": "--dry-run",
+          "description": "Dry run for `claude project purge` command.",
+          "since": "2.1.126",
+          "source_url": ""
+        },
+        {
+          "flag": "-y/--yes",
+          "description": "Automatically confirm deletion for `claude project purge` command.",
+          "since": "2.1.126",
+          "source_url": ""
+        },
+        {
+          "flag": "-i/--interactive",
+          "description": "Interactive mode for `claude project purge` command.",
+          "since": "2.1.126",
+          "source_url": ""
+        },
+        {
+          "flag": "--all",
+          "description": "Apply `claude project purge` to all projects.",
+          "since": "2.1.126",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -1675,7 +1740,13 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--dangerously-skip-permissions",
+        "--dry-run",
+        "-y/--yes",
+        "-i/--interactive",
+        "--all"
+      ]
     },
     "env_vars": [
       {
