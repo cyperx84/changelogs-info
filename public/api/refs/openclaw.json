@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.4.29",
-  "generated_at": "2026-05-02T07:37:01.858Z",
+  "generated_at": "2026-05-02T20:15:15.363Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -21,8 +21,8 @@
       "people-wiki-metadata",
       "nvidia-provider",
       "sqlite-backed-plugin-state-store",
-      "startup-diagnostics-timeline",
-      "opengrep-scanning"
+      "opengrep-scanning",
+      "gateway-diagnostics-timeline"
     ],
     "new_commands": [],
     "new_flags": [
@@ -60,7 +60,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "OpenClaw 2026.4.29 introduces active-run steering and visible-reply enforcement for messaging and automation, enhancing control and clarity in agent interactions. Memory expands into a people-aware wiki with provenance views and per-conversation filters, improving context and recall. The NVIDIA provider is now supported, and the SQLite-backed plugin state store provides restart-safe registries. A breaking change requires explicit `alsoAllow` entries for tools under restricted profiles. New features include inferred follow-up commitments, people wiki metadata, and OpenGrep scanning for enhanced security. Key fixes address issues in voice calls, security vulnerabilities, and channel-specific problems in QQBot, CLI agents, PDF extraction, and more. The release also includes numerous improvements to plugin management, dependency handling, and the control UI. Upgrade is recommended for all users to benefit from the security enhancements, bug fixes, and new features. Be sure to review the breaking changes and adjust your configuration accordingly. The `OPENCLAW_SKIP_ONBOARDING` environment variable can be used to skip interactive onboarding during automated Docker installs. Consider enabling the startup diagnostics timeline for slow-start diagnosis."
+      "tldr": "This release introduces active-run steering, visible-reply enforcement, spawned subagent routing metadata, and opt-in follow-up commitments for heartbeat-delivered reminders, enhancing messaging and automation capabilities. Memory expands into a people-aware wiki with provenance views and per-conversation Active Memory filters. A breaking change restricts tool profiles, requiring explicit `alsoAllow` entries for tools under restricted profiles. The NVIDIA provider is added, and SQLite-backed plugin state store is introduced for restart-safe registries.  Inferred follow-up commitments are now available, configurable via `commitments.enabled` and `commitments.maxPerDay`.  A global `messages.visibleReplies` config is added to require visible output for any source chat.  The release also includes OpenGrep scanning for enhanced security and an opt-in startup diagnostics timeline for diagnosing slow starts.  Numerous fixes address issues across channels like Slack, Telegram, Discord, and WhatsApp, focusing on resilience and edge cases.  It's recommended to upgrade to leverage these improvements, paying close attention to the tool profile changes and adding explicit `alsoAllow` entries where necessary."
     },
     "features": [
       {
@@ -2415,6 +2415,19 @@
         "since": "2026.4.29",
         "description": "Add SDK-facing artifact list/get/download RPCs and App SDK helpers with transcript provenance and download-source guardrails.",
         "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "gateway-diagnostics-timeline",
+        "name": "Gateway Diagnostics Timeline",
+        "status": "experimental",
+        "since": "2026.4.29",
+        "description": "Emits an opt-in startup diagnostics timeline that records gateway lifecycle and plugin-load phases behind a config flag, so slow-start diagnosis no longer requires bespoke instrumentation.",
+        "key_details": [
+          "Opt-in startup diagnostics timeline.",
+          "Records gateway lifecycle and plugin-load phases.",
+          "Configurable via a config flag."
+        ],
         "source_url": ""
       }
     ],
