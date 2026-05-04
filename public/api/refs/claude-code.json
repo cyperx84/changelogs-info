@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.126",
-  "generated_at": "2026-05-04T22:23:12.673Z",
+  "version": "2.1.128",
+  "generated_at": "2026-05-04T23:21:14.996Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,23 +14,21 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.126",
-    "to_version": "2.1.126",
+    "from_version": "2.1.128",
+    "to_version": "2.1.128",
     "new_features": [],
-    "new_commands": [
-      "/project purge"
-    ],
+    "new_commands": [],
     "new_flags": [
-      "--dangerously-skip-permissions",
-      "--dry-run",
-      "-y/--yes",
-      "-i/--interactive",
-      "--all"
+      "--plugin-dir",
+      "--channels"
     ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "mcp-workspace-reserved-name",
+      "enterworktree-branch-creation"
+    ]
   },
   "payload": {
     "meta": {
@@ -47,12 +45,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.126",
-      "latest_release_date": "2026-05-01",
+      "latest_stable": "2.1.128",
+      "latest_release_date": "2026-05-04",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces the `claude project purge` command to delete all Claude Code state for a project, including transcripts, tasks, file history, and config entries, with options for dry runs, automatic confirmation, interactive mode, and deleting all projects. The `/model` picker now lists models from your gateway's `/v1/models` endpoint when `ANTHROPIC_BASE_URL` is set. A new `--dangerously-skip-permissions` flag bypasses prompts for writes to common project directories, but retains prompts for catastrophic removals. `claude auth login` now accepts OAuth codes pasted into the terminal for environments where the browser callback fails. The `claude_code.skill_activated` event now includes an `invocation_trigger` attribute for slash commands. Auto mode's spinner turns red when permission checks stall. Host-managed deployments no longer auto-disable analytics on Bedrock/Vertex/Foundry. Windows PowerShell detection is improved, and PowerShell is now the primary shell when enabled. A per-file malware assessment reminder in the Read tool was removed. A security issue where `allowManagedDomainsOnly` and `allowManagedReadPathsOnly` were ignored is fixed. Image pasting now downscales oversized images. Several OAuth login and API retry issues are resolved, along with fixes for hangs, scrolling, connector suppression, text rendering, and command behavior. Deferred tools are now available to skills with `context: fork`, and plan-mode tools are available in interactive sessions launched with `--channels`. The `/plugin` Uninstall command now reports the correct status. File-modified reminders are bounded, and `/remote-control` retries now show their results. Clipboard writes on Windows are secured, and PowerShell tool parsing is improved. An Agent SDK hang is fixed. Upgrade is recommended to benefit from security fixes and improved stability."
+      "tldr": "This release introduces several key improvements and fixes. The `/color` command now randomly selects a session color when used without arguments, enhancing personalization. MCP now displays tool counts for connected servers and flags servers with zero tools, improving server management. The `--plugin-dir` flag now supports `.zip` archives, simplifying plugin installation. Console authentication now supports the `--channels` flag, requiring `channelsEnabled: true` for managed settings. Subprocesses no longer inherit `OTEL_*` environment variables, preventing interference with OTEL-instrumented apps. `workspace` is now a reserved MCP server name, requiring renaming of existing servers. `EnterWorktree` now creates branches from local HEAD, potentially altering branch creation behavior. Auto mode error messages now include helpful hints for unclassified actions. Several UI and functional bugs have been resolved, including focus mode dimming, desktop notification issues, remote control upsell messages, drag-and-drop image uploads, large input handling, URL clickability, plugin panel errors, MCP tool result image handling, clipboard whitespace, tab navigation, markdown link rendering, prompt length blocking, parallel shell tool calls, banner display, fast mode skill matching, Bedrock default model resolution, vim mode cursor movement, terminal progress indicator flickering, rename command failures, stale status lines, corrupted MCP arguments, sub-agent progress summaries, plugin update detection, and sub-agent summary firing. Upgrade is recommended to benefit from these improvements and fixes. Be aware of the breaking change regarding the `workspace` MCP server name and the `EnterWorktree` branch creation behavior."
     },
     "features": [
       {
@@ -1738,11 +1736,8 @@
         }
       ],
       "new_since_previous": [
-        "--dangerously-skip-permissions",
-        "--dry-run",
-        "-y/--yes",
-        "-i/--interactive",
-        "--all"
+        "--plugin-dir",
+        "--channels"
       ]
     },
     "env_vars": [
@@ -2198,6 +2193,28 @@
           "Users who rely on the `/cost` or `/stats` commands."
         ],
         "migration": "Use the `/usage` command instead. The old commands will continue to work as shortcuts.",
+        "source_url": ""
+      },
+      {
+        "id": "mcp-workspace-reserved-name",
+        "version": "2.1.128",
+        "title": "MCP: `workspace` is now a reserved server name",
+        "description": "`workspace` is now a reserved server name in MCP. Existing servers with that name will be skipped with a warning.",
+        "affected": [
+          "MCP servers named 'workspace'"
+        ],
+        "migration": "Rename any existing MCP servers named 'workspace'.",
+        "source_url": ""
+      },
+      {
+        "id": "enterworktree-branch-creation",
+        "version": "2.1.128",
+        "title": "`EnterWorktree` now creates the new branch from local HEAD",
+        "description": "`EnterWorktree` now creates the new branch from local HEAD as documented, instead of `origin/<default-branch>`. Unpushed commits are no longer dropped.",
+        "affected": [
+          "Users relying on the previous behavior of `EnterWorktree` creating branches from `origin/<default-branch>`."
+        ],
+        "migration": "Ensure local commits are pushed before using `EnterWorktree` or adjust workflows to account for branch creation from local HEAD.",
         "source_url": ""
       }
     ],
