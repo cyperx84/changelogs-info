@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.5.3-1",
-  "generated_at": "2026-05-04T09:49:23.152Z",
+  "version": "2026.5.3",
+  "generated_at": "2026-05-04T07:06:33.971Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,15 +14,29 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.5.3-1",
-    "to_version": "2026.5.3-1",
-    "new_features": [],
+    "from_version": "2026.4.29",
+    "to_version": "2026.4.29",
+    "new_features": [
+      "inferred-follow-up-commitments",
+      "people-wiki-metadata",
+      "nvidia-provider",
+      "sqlite-backed-plugin-state-store",
+      "opengrep-scanning",
+      "gateway-diagnostics-timeline"
+    ],
     "new_commands": [],
-    "new_flags": [],
-    "new_env_vars": [],
+    "new_flags": [
+      "--message"
+    ],
+    "new_env_vars": [
+      "OPENCLAW_SKIP_ONBOARDING",
+      "OPENCLAW_GATEWAY_WATCH_TMUX"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "restrictive-tool-profiles"
+    ]
   },
   "payload": {
     "meta": {
@@ -40,13 +54,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.5.3-1",
+      "latest_stable": "2026.5.3",
       "latest_release_date": "2026-05-04",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release addresses a critical security issue in the plugin installation scanner. The scanner was incorrectly blocking official bundled plugin packages due to the presence of `process.env` access and normal API calls within the compiled bundle, even when these elements were located in distant parts of the code. This hotfix resolves this false positive, ensuring that legitimate bundled plugins are not blocked during installation. This update is highly recommended to ensure proper plugin functionality and maintain the security posture of your openclaw instance."
+      "tldr": "This release introduces active-run steering, visible-reply enforcement, spawned subagent routing metadata, and opt-in follow-up commitments for heartbeat-delivered reminders, enhancing messaging and automation capabilities. Memory expands into a people-aware wiki with provenance views and per-conversation Active Memory filters. A breaking change restricts tool profiles, requiring explicit `alsoAllow` entries for tools under restricted profiles. The NVIDIA provider is added, and SQLite-backed plugin state store is introduced for restart-safe registries.  Inferred follow-up commitments are now available, configurable via `commitments.enabled` and `commitments.maxPerDay`.  A global `messages.visibleReplies` config is added to require visible output for any source chat.  The release also includes OpenGrep scanning for enhanced security and an opt-in startup diagnostics timeline for diagnosing slow starts.  Numerous fixes address issues across channels like Slack, Telegram, Discord, and WhatsApp, focusing on resilience and edge cases.  It's recommended to upgrade to leverage these improvements, paying close attention to the tool profile changes and adding explicit `alsoAllow` entries where necessary."
     },
     "features": [
       {
@@ -3034,7 +3048,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--message"
+      ]
     },
     "env_vars": [
       {
