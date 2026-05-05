@@ -15,6 +15,22 @@
   },
   "releases": [
     {
+      "version": "v1.14.35",
+      "name": "v1.14.35",
+      "body": "## Core\n### Bugfixes\n- Preserve diff patch boundaries so session diffs keep rendering correctly when file contents include `diff --git` text.\n",
+      "date": "2026-05-05T01:01:50Z",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.14.35",
+      "prerelease": false
+    },
+    {
+      "version": "v1.14.34",
+      "name": "v1.14.34",
+      "body": "## Core\n\n### Improvements\n\n- Add PTY connection tickets so authenticated terminal websockets work more reliably across clients.\n- Add v2 session failure events so clients can detect and show failed runs.\n- Improve shell command handling for Bash, PowerShell, and cmd sessions.\n\n### Bugfixes\n\n- Return structured error bodies from the effect HTTP server instead of empty failures.\n- Reload server auth environment variables correctly for each new HTTP listener.\n- Stop worktree creation from hanging while bootstrap commands run.\n- Fix Azure Anthropic model resolution when using the Anthropic SDK.\n- Fix the web UI proxy so public manifest assets load and proxied responses do not break on `transfer-encoding`. (@OpeOginni)\n- Allow Codex Spark models when signing in with Codex OAuth. (@Utkub24)\n- Fix embedded UI serving from the standalone server build.\n- Fix PTY websocket connections from Desktop when using the HttpApi server.\n- Respect custom basic auth usernames in opencode clients.\n- Prompt browsers for basic auth on protected server logins. (@OpeOginni)\n- Show real server error messages in the CLI and SDK instead of bare `{}`.\n- Prevent large diffs from using unbounded memory.\n- Fix v2 session API responses to encode optional fields correctly.\n- Fix pagination `Link` headers to use the real request host.\n\n## TUI\n\n### Improvements\n\n- Add `debug info` to print environment and diagnostic details.\n\n### Bugfixes\n\n- Add a `--username` option for basic-auth server connections. (@OpeOginni)\n- Pass server auth through internal ACP connections.\n- Show provider login errors from stderr instead of swallowing them.\n\n## Desktop\n\n### Bugfixes\n\n- Prevent terminal reconnect loops after recovery failures.\n- Preserve auth-token credentials when reopening the app.\n\n**Thank you to 4 community contributors:**\n- @PanAchy:\n  - chore(opencode): exclude .map files from CLI binary build (#25500)\n- @OpeOginni:\n  - fix(httpapi): add basic auth challenge for browser login\n  - fix(auth): add username option for basic auth in RunCommand (#25600)\n  - fix(opencode): strip transfer-encoding in UI proxy and allow public manifest assets (#25698)\n- @Utkub24:\n  - fix: allow Codex Spark with Codex OAuth (#25640)\n- @cgilly2fast:\n  - chore(docs): rename firmware provider to frogbot (#25453)\n",
+      "date": "2026-05-04T23:26:05Z",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.14.34",
+      "prerelease": false
+    },
+    {
       "version": "v1.14.33",
       "name": "v1.14.33",
       "body": "## Core\r\n- Fix issue with custom agents in plugins not loading\r\n\r\n**Thank you to 3 community contributors:**\r\n- @jerome-benoit:\r\n  - fix(nix): remove stale packages/shared filter (#24930)\r\n- @OpeOginni:\r\n  - docs: CLI docs for current commands and flags (#25399)\r\n- @HyeokjaeLee:\r\n  - fix(instance): restore InstanceBootstrap init parameter for non-Effec… (#25449)\r\n",
@@ -237,23 +253,7 @@
       "date": "2026-04-09T07:12:43Z",
       "url": "https://github.com/anomalyco/opencode/releases/tag/v1.4.1",
       "prerelease": false
-    },
-    {
-      "version": "v1.4.0",
-      "name": "v1.4.0",
-      "body": "## Breaking Changes in SDK\r\n\r\nDue to some performance issues we had to make a few breaking changes in our data model.\r\n\r\n### Diff metadata\r\nThe diffs contained in the metadata for the edit and patch tool will no longer contain a `to` and `from` field with full file contents. they will only contain a `patch` field with the unified diff\r\n\r\nAdditionally all snapshot diffs contained in user message and session diff will follow this format\r\n\r\n### `UserMessage.variant`\r\n\r\nBefore the user message had a `variant` field - it is now nested under `model` so `userMessage.model.variant`\r\n\r\n## Core\r\n- Added OTLP observability export support.\r\n- Fixed failed web fetches leaving stale timeouts behind.\r\n- Improved `opencode login` transport error messages.\r\n- Retried Alibaba provider rate-limit errors instead of failing immediately.\r\n- Kept model variants scoped to the selected model.\r\n- Added full HTTP proxy support.\r\n- Fixed OpenRouter provider issues.\r\n- Aligned GitHub Copilot Anthropic reasoning levels and removed incorrect Qwen variants.\r\n- Reduced TypeScript LSP memory use by using the native project config. (@derekbar90)\r\n\r\n## TUI\r\n- Added a keybinding option for \"Switch model variant\". (@ariane-emory)\r\n- Added PDF drag and drop for attachments. (@gitpush-gitpaid)\r\n- Added `opencode run --dangerously-skip-permissions` to auto-approve non-denied permission prompts.\r\n\r\n## Desktop\r\n- Improved subagent sessions with clearer titles, navigation, and progress states.\r\n- Moved auto-accept permissions into Settings.\r\n- Showed full file names on attachment chips.\r\n\r\n**Thank you to 4 community contributors:**\r\n- @derekbar90:\r\n  - fix(lsp): MEMORY LEAK: ensure typescript server uses native project config (#19953)\r\n- @mchenco:\r\n  - docs: update Cloudflare provider setup to reflect /connect prompt flow (#20589)\r\n- @gitpush-gitpaid:\r\n  - feat(opencode): Add PDF attachment Drag and Drop (#16926)\r\n- @ariane-emory:\r\n  - fix(tui): use sentence case for theme mode command palette items (#21192)\r\n  - feat(tui): allow variant_list keybind for the \"Switch model variant\" command (#21185)\r\n",
-      "date": "2026-04-08T00:32:55Z",
-      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.4.0",
-      "prerelease": false
-    },
-    {
-      "version": "v1.3.17",
-      "name": "v1.3.17",
-      "body": "## Core\n- Cloudflare Workers AI and AI Gateway now prompt for missing account details and show clear setup errors when required Cloudflare variables are missing (@mchenco)\n\n## TUI\n- Restored the default kitty keyboard handling on Windows terminals to avoid input issues from the workaround rollback\n\n**Thank you to 1 community contributor:**\n- @mchenco:\n  - fix: show clear error when Cloudflare provider env vars are missing (#20399)\n",
-      "date": "2026-04-06T07:39:42Z",
-      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.3.17",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-05-04T06:56:06.102Z"
+  "lastUpdated": "2026-05-05T06:41:08.781Z"
 }
