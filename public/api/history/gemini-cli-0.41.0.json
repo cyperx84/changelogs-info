@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "gemini-cli",
   "version": "0.41.0",
-  "generated_at": "2026-05-05T22:22:29.140Z",
+  "generated_at": "2026-05-05T21:25:03.974Z",
   "extracted_from_sources": [
     "https://github.com/google-gemini/gemini-cli/releases/tag/v0.33.0",
     "https://github.com/google-gemini/gemini-cli/releases"
@@ -17,16 +17,14 @@
     "from_version": "0.41.0",
     "to_version": "0.41.0",
     "new_features": [
-      "secure-env-loading-and-workspace-trust-in-headless-mode",
-      "enhanced-shell-command-validation-and-core-tools-allowlist",
-      "support-for-gemma-4-models",
       "real-time-voice-mode",
       "persist-auto-memory-scratchpad-for-skill-extraction",
-      "manual-session-uuid-via-command-line-arg",
-      "boolean-and-number-casting-for-env-vars-in-settings-json"
+      "support-gemma-4-models"
     ],
     "new_commands": [],
-    "new_flags": [],
+    "new_flags": [
+      "--session-uuid"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -54,7 +52,7 @@
       "runtime": "node",
       "written_in": "typescript",
       "release_cadence": "Stable on Tuesdays. Preview: Tuesdays UTC 23:59. Nightly: daily UTC 00:00.",
-      "tldr": "Version 0.41.0 of the gemini-cli introduces several key enhancements, including secure .env loading and workspace trust enforcement in headless mode, bolstering security for automated workflows. The CLI now supports Gemma 4 models (experimental), enabling access to cutting-edge AI capabilities. Real-time voice mode has been implemented, allowing for voice-driven interaction with the CLI. Shell command validation has been enhanced, and a core tools allowlist added for improved security. The auto-memory scratchpad for skill extraction is now persisted, improving efficiency. A manual session UUID can now be provided via a command-line argument for greater control. Boolean and number casting for environment variables in settings.json is now supported, increasing configuration flexibility. The upgrade command now provides a manual update option when automatic updates fail. This release also includes several bug fixes, such as addressing a hard-crash on loop detection and correcting background color checks in user message components. It is recommended to upgrade to this version to take advantage of the new features and security enhancements. No specific migration steps are required."
+      "tldr": "Version 0.41.0 introduces real-time voice mode, enabling interactive voice conversations with both cloud and local backends. This release also enhances security in headless mode by securing .env loading and enforcing workspace trust. A key improvement is the persistence of the auto-memory scratchpad for skill extraction, allowing agents to better retain and utilize skill-related information. Support for Gemma 4 models has been added (experimental). Shell command validation is enhanced with a core tools allowlist. The ContextManager and AgentChatHistory are now wired up, improving context handling. MCP ping is now optional in the list command. A new `--session-uuid` flag allows manual session UUID specification. A hard crash on loop detection has been fixed. The update command now provides manual update instructions when automatic updates fail. This release includes fixes for Windows regression in backspace handling and better error messages for network issues. It is recommended to upgrade to benefit from the security enhancements and new features. No specific migration steps are required."
     },
     "features": [
       {
@@ -1619,51 +1617,6 @@
         "description": "Adds support for the Gemma 4 family of models, enabling users to leverage these models within the gemini-cli environment.",
         "key_details": [],
         "source_url": "https://github.com/google-gemini/gemini-cli/pull/25604"
-      },
-      {
-        "id": "secure-env-loading-and-workspace-trust-in-headless-mode",
-        "name": "Secure .env loading and enforce workspace trust in headless mode",
-        "status": "stable",
-        "since": "0.41.0",
-        "description": "The CLI now securely loads .env files and enforces workspace trust when running in headless mode, enhancing security and preventing unauthorized access to sensitive information.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25814"
-      },
-      {
-        "id": "enhanced-shell-command-validation-and-core-tools-allowlist",
-        "name": "Enhanced shell command validation and core tools allowlist",
-        "status": "stable",
-        "since": "0.41.0",
-        "description": "Improved validation for shell commands and the addition of a core tools allowlist provide better control and security over executed commands.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25720"
-      },
-      {
-        "id": "support-for-gemma-4-models",
-        "name": "Support for Gemma 4 models",
-        "status": "experimental",
-        "since": "0.41.0",
-        "description": "The CLI now supports Gemma 4 models, enabling users to leverage the latest advancements in AI for enhanced performance and capabilities.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25604"
-      },
-      {
-        "id": "manual-session-uuid-via-command-line-arg",
-        "name": "Manual session UUID via command line arg",
-        "status": "stable",
-        "since": "0.41.0",
-        "description": "Users can now provide a manual session UUID via a command-line argument, offering greater control over session management.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26060"
-      },
-      {
-        "id": "boolean-and-number-casting-for-env-vars-in-settings-json",
-        "name": "Boolean and number casting for env vars in settings.json",
-        "status": "stable",
-        "since": "0.41.0",
-        "description": "The CLI now supports boolean and number casting for environment variables defined in the settings.json file, providing more flexibility in configuration.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26118"
       }
     ],
     "commands": [
@@ -1880,7 +1833,9 @@
           "source_url": "https://github.com/google-gemini/gemini-cli/pull/21171"
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--session-uuid"
+      ]
     },
     "env_vars": [
       {
