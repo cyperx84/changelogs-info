@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
-  "version": "1.14.35",
-  "generated_at": "2026-05-05T06:50:14.346Z",
+  "version": "1.14.37",
+  "generated_at": "2026-05-05T07:41:21.899Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -14,9 +14,11 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "1.14.35",
-    "to_version": "1.14.35",
-    "new_features": [],
+    "from_version": "1.14.37",
+    "to_version": "1.14.37",
+    "new_features": [
+      "session-warping"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -40,13 +42,13 @@
       "changelog_url": "https://github.com/anomalyco/opencode/releases",
       "repo_url": "https://github.com/anomalyco/opencode",
       "license": "mit",
-      "latest_stable": "1.14.35",
+      "latest_stable": "1.14.37",
       "latest_release_date": "2026-05-05",
       "status": "active",
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "This release focuses on core stability, specifically addressing an issue where diff patch boundaries were not being preserved. This fix ensures that session diffs continue to render correctly, even when file contents include `diff --git` text. Without this fix, session diffs could become unreadable or misleading when encountering this specific text pattern in files. Upgrading is recommended to maintain accurate and reliable session diff rendering, especially if your projects frequently involve diffs or patches with the `diff --git` marker within file contents. There are no new features, commands, flags, deprecations, or breaking changes in this release."
+      "tldr": "This release introduces session warping, allowing users to move sessions between workspaces or back to the local project, enhancing organization and workflow flexibility. Task cancellation now includes the cancellation of child subtask sessions, ensuring comprehensive cleanup. V2 session rendering has been improved with cleaner tool states, better compaction summaries, and more accurate timing, providing a clearer and more informative session experience. A bug has been fixed to run the desktop migration on startup, ensuring existing installations transition correctly after the desktop packaging move. The Windows titlebar has been stabilized when changing zoom levels, improving the desktop application's visual consistency. Upgrading is recommended to take advantage of these improvements and bug fixes. No specific migration steps are required."
     },
     "features": [
       {
@@ -751,6 +753,15 @@
         "status": "stable",
         "since": "1.14.30",
         "description": "Sessions now filter to the current path by default, with a setting to show the whole project.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "session-warping",
+        "name": "Session Warping",
+        "status": "stable",
+        "since": "1.14.37",
+        "description": "Warp a session into another workspace or back to the local project.",
         "key_details": [],
         "source_url": ""
       }
