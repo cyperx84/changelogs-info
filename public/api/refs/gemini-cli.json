@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "gemini-cli",
-  "version": "0.40.1",
-  "generated_at": "2026-05-05T20:27:07.449Z",
+  "version": "0.41.0",
+  "generated_at": "2026-05-05T21:25:03.974Z",
   "extracted_from_sources": [
     "https://github.com/google-gemini/gemini-cli/releases/tag/v0.33.0",
     "https://github.com/google-gemini/gemini-cli/releases"
@@ -14,11 +14,17 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "0.40.1",
-    "to_version": "0.40.1",
-    "new_features": [],
+    "from_version": "0.41.0",
+    "to_version": "0.41.0",
+    "new_features": [
+      "real-time-voice-mode",
+      "persist-auto-memory-scratchpad-for-skill-extraction",
+      "support-gemma-4-models"
+    ],
     "new_commands": [],
-    "new_flags": [],
+    "new_flags": [
+      "--session-uuid"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -39,14 +45,14 @@
       "changelog_url": "https://github.com/google-gemini/gemini-cli/releases",
       "repo_url": "https://github.com/google-gemini/gemini-cli",
       "license": "apache-2.0",
-      "latest_stable": "0.40.1",
+      "latest_stable": "0.41.0",
       "latest_prerelease": "0.34.0-preview",
-      "latest_release_date": "2026-04-30",
+      "latest_release_date": "2026-05-05",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
       "release_cadence": "Stable on Tuesdays. Preview: Tuesdays UTC 23:59. Nightly: daily UTC 00:00.",
-      "tldr": "This release, version 0.40.1, is a patch release addressing an issue in version 0.40.0. It includes a cherry-picked commit (2194da2) from the development branch to address a specific problem. Given its nature as a patch, upgrading is recommended to ensure stability and address the identified issue. There are no new features, commands, flags, or breaking changes introduced in this release. No specific migration steps are required. This update focuses solely on resolving an existing problem in the previous version. Therefore, upgrading is highly recommended to maintain a stable and reliable environment."
+      "tldr": "Version 0.41.0 introduces real-time voice mode, enabling interactive voice conversations with both cloud and local backends. This release also enhances security in headless mode by securing .env loading and enforcing workspace trust. A key improvement is the persistence of the auto-memory scratchpad for skill extraction, allowing agents to better retain and utilize skill-related information. Support for Gemma 4 models has been added (experimental). Shell command validation is enhanced with a core tools allowlist. The ContextManager and AgentChatHistory are now wired up, improving context handling. MCP ping is now optional in the list command. A new `--session-uuid` flag allows manual session UUID specification. A hard crash on loop detection has been fixed. The update command now provides manual update instructions when automatic updates fail. This release includes fixes for Windows regression in backspace handling and better error messages for network issues. It is recommended to upgrade to benefit from the security enhancements and new features. No specific migration steps are required."
     },
     "features": [
       {
@@ -1584,6 +1590,33 @@
         "description": "Replaces MemoryManagerAgent with prompt-driven memory editing across four tiers.",
         "key_details": [],
         "source_url": "https://github.com/google-gemini/gemini-cli/pull/25716"
+      },
+      {
+        "id": "real-time-voice-mode",
+        "name": "Real-time Voice Mode",
+        "status": "experimental",
+        "since": "0.41.0",
+        "description": "Implements real-time voice mode with cloud and local backends.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24174"
+      },
+      {
+        "id": "persist-auto-memory-scratchpad-for-skill-extraction",
+        "name": "Persist Auto-Memory Scratchpad for Skill Extraction",
+        "status": "stable",
+        "since": "0.41.0",
+        "description": "Persists the auto-memory scratchpad specifically for skill extraction, improving the agent's ability to learn and retain information about skills.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25873"
+      },
+      {
+        "id": "support-gemma-4-models",
+        "name": "Support for Gemma 4 Models",
+        "status": "experimental",
+        "since": "0.41.0",
+        "description": "Adds support for the Gemma 4 family of models, enabling users to leverage these models within the gemini-cli environment.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25604"
       }
     ],
     "commands": [
@@ -1776,6 +1809,12 @@
           "description": "Enables traces specifically.",
           "since": "0.40.0",
           "source_url": "https://github.com/google-gemini/gemini-cli/pull/25343"
+        },
+        {
+          "flag": "--session-uuid",
+          "description": "Provides a manual session UUID via command line argument, allowing for more control over session management.",
+          "since": "0.41.0",
+          "source_url": "https://github.com/google-gemini/gemini-cli/pull/26060"
         }
       ],
       "deprecated": [
@@ -1794,7 +1833,9 @@
           "source_url": "https://github.com/google-gemini/gemini-cli/pull/21171"
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--session-uuid"
+      ]
     },
     "env_vars": [
       {
