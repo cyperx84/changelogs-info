@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.5.5",
-  "generated_at": "2026-05-06T09:51:08.444Z",
+  "version": "2026.5.4",
+  "generated_at": "2026-05-05T08:48:21.064Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,17 +14,15 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.5.5",
-    "to_version": "2026.5.5",
+    "from_version": "2026.5.3-1",
+    "to_version": "2026.5.3-1",
     "new_features": [],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "agents-config-legacy-main-agent-dir-helper-removal"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -42,13 +40,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.5.5",
-      "latest_release_date": "2026-05-06",
+      "latest_stable": "2026.5.4",
+      "latest_release_date": "2026-05-05",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release fixes several issues across various components, including Feishu, LINE, Telegram/Codex, xAI providers, Matrix approvals, Discord, Control UI, exec approvals, Slack, iOS pairing, plugins, TUI, doctor commands, agents, gateway, video generation, and WhatsApp. A significant breaking change involves the removal of the ambiguous legacy `main` agent directory helper from runtime paths, requiring updates to code that relies on it to use `agents.list`/agent-scope helpers. Feishu now correctly hydrates missing native topic starter thread IDs, and LINE rejects invalid DM policies. Telegram/Codex keeps message-tool-only progress drafts visible. xAI provider issues with reasoning effort controls have been resolved. Matrix approval delivery is now retried to prevent transient send failures. Discord's heartbeat ACK timeouts are measured more accurately, and plain text control commands are properly authorized. The Control UI features improved session details and performance. Exec approvals now fall back to a guarded copy on Windows. iOS pairing allows setup-code and manual connections for private LAN gateways. Plugin update processes have been improved to handle corrupt records and ensure proper syncing. The TUI now skips the generic CLI respawn wrapper and exits cleanly on terminal loss. Doctor commands have been enhanced to repair heartbeat-poisoned sessions and report supervisor restart handoffs. Agents now treat attachment-style message tool actions as completed chat sends. Gateway status avoids marking fast repeated health samples as event-loop degraded prematurely. Video generation now accepts provider-specific aspect-ratio and resolution hints. WhatsApp responsiveness has been improved by stopping only verified stale local TUI clients. CLI commands now pause non-TTY stdin after completion. The gateway model catalog now caches empty read-only results. Docker gateway is hardened by dropping `NET_RAW` and `NET_ADMIN` capabilities. It is recommended to update to this version to benefit from these fixes and improvements, paying close attention to the agent directory helper migration."
+      "tldr": "This release addresses a security issue in the plugin installation scanner. The scanner was incorrectly blocking official bundled plugin packages due to the presence of `process.env` access and normal API sends within the compiled bundle, even when these elements were located in distant parts of the code. This fix ensures that legitimate bundled plugins are no longer blocked during installation, resolving a potential disruption to plugin functionality. There are no new features, commands, flags, deprecations, breaking changes, or environment variables in this release. This is a recommended update to ensure proper plugin installation behavior and maintain system security. No specific migration steps or prerequisites are required for this update."
     },
     "features": [
       {
@@ -4368,18 +4366,6 @@
           "Users with restrictive tool profiles that rely on implicit widening."
         ],
         "migration": "Add explicit `alsoAllow` entries to the restrictive profile for the required tools.",
-        "source_url": ""
-      },
-      {
-        "id": "agents-config-legacy-main-agent-dir-helper-removal",
-        "version": "2026.5.5",
-        "title": "Removal of ambiguous legacy `main` agent directory helper from runtime paths",
-        "description": "The ambiguous legacy `main` agent directory helper has been removed from runtime paths. Model, auth, gateway, bundled plugin, and test helpers now resolve default/session agent directories through `agents.list`/agent-scope helpers, while the plugin SDK keeps a deprecated compatibility export.",
-        "affected": [
-          "Agent configuration",
-          "Plugin SDK"
-        ],
-        "migration": "Update any code relying on the legacy `main` agent directory helper to use `agents.list`/agent-scope helpers for resolving agent directories.",
         "source_url": ""
       }
     ],
