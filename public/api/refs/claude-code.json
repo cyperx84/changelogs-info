@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.128",
-  "generated_at": "2026-05-06T01:37:52.397Z",
+  "version": "2.1.129",
+  "generated_at": "2026-05-06T03:09:43.047Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,21 +14,21 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.128",
-    "to_version": "2.1.128",
+    "from_version": "2.1.129",
+    "to_version": "2.1.129",
     "new_features": [],
     "new_commands": [],
     "new_flags": [
-      "--plugin-dir",
-      "--channels"
+      "--plugin-url <url>"
     ],
-    "new_env_vars": [],
+    "new_env_vars": [
+      "CLAUDE_CODE_FORCE_SYNC_OUTPUT",
+      "CLAUDE_CODE_PACKAGE_MANAGER_AUTO_UPDATE",
+      "CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "mcp-workspace-reserved-name",
-      "enterworktree-branch-creation"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -45,12 +45,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.128",
-      "latest_release_date": "2026-05-04",
+      "latest_stable": "2.1.129",
+      "latest_release_date": "2026-05-06",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces several key improvements and fixes. The `/color` command now picks a random session color without arguments. The `--plugin-dir` flag now supports `.zip` archives, and `--channels` works with console authentication if `channelsEnabled: true` is set. The `/model` picker has been updated to collapse duplicate Opus entries and display the current Opus model as \"Opus\". Subprocesses no longer inherit `OTEL_*` environment variables, preventing interference with OTEL-instrumented apps. MCP now reserves the name `workspace` for servers, requiring renaming of existing servers with that name. `EnterWorktree` now creates branches from local HEAD, preserving unpushed commits. Auto mode errors now include hints for resolution. Several UI and functional bugs have been fixed, including focus mode dimming, stray desktop notifications, remote control upsell messages, drag-and-drop image uploads, large input piping, long URLs, plugin component panels, MCP tool results with images, fenced code block copy-pasting, tab navigation in `/config`, markdown link labels, prompt length blocking, parallel shell tool calls, banner display on unsupported models, `/fast` command matching, Bedrock default model resolution, vim mode cursor movement, terminal progress indicator flickering, `/rename` command failures, stale status lines, stale plugin entries, MCP stdio server argument corruption, sub-agent progress summaries, `/plugin update` detection, and sub-agent summary firing. It is recommended to upgrade to this version to benefit from the bug fixes and improvements. Ensure to rename any MCP servers named 'workspace' before upgrading."
+      "tldr": "This release introduces several enhancements and fixes. A new `--plugin-url` flag allows fetching plugins from URLs, streamlining plugin management. The `CLAUDE_CODE_FORCE_SYNC_OUTPUT` environment variable addresses terminal synchronization issues, particularly in Emacs. For Homebrew and WinGet users, `CLAUDE_CODE_PACKAGE_MANAGER_AUTO_UPDATE` automates background upgrades with restart prompts. Plugin manifests now require `themes` and `monitors` to be declared under `experimental`. Gateway model discovery for the `/model` picker is now opt-in via `CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY=1`, reverting to the pre-2.1.126 behavior. The Ctrl+R history picker now defaults to searching all prompts across all projects, with Ctrl+S to narrow the search. Third-party deployments no longer display first-party Anthropic spinner tips. The `skillOverrides` setting now functions as expected, allowing control over skill visibility. The `claude_code.pull_request.count` OTel metric now accurately counts PRs/MRs created via MCP tools. Policy refusal error messages now include the API Request ID for easier debugging. Several bug fixes address issues with error message display, `/clear` command behavior, session title chips, agent panel visibility, external editor handoff, `/context` command output, `/agents` Library navigation, `/branch` success messages, emoji rendering, server-managed settings policy application, OAuth refresh races, prompt cache TTL, cache-miss warnings, Bash allow rules, `deniedMcpServers` patterns, WebSocket warnings, and VSCode context clearing. Upgrading is recommended to benefit from these improvements and fixes, with no specific prerequisites."
     },
     "features": [
       {
@@ -1709,6 +1709,12 @@
           "description": "Apply `claude project purge` to all projects.",
           "since": "2.1.126",
           "source_url": ""
+        },
+        {
+          "flag": "--plugin-url <url>",
+          "description": "Fetches a plugin `.zip` archive from a URL for the current session.",
+          "since": "2.1.129",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -1736,8 +1742,7 @@
         }
       ],
       "new_since_previous": [
-        "--plugin-dir",
-        "--channels"
+        "--plugin-url <url>"
       ]
     },
     "env_vars": [
@@ -1997,6 +2002,27 @@
         "purpose": "Selects a Bedrock service tier (`default`, `flex`, or `priority`) to be sent as the `X-Amzn-Bedrock-Service-Tier` header.",
         "status": "stable",
         "since": "2.1.122",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_FORCE_SYNC_OUTPUT",
+        "purpose": "Forces synchronized output on terminals that auto-detection misses (e.g. Emacs `eat`).",
+        "status": "stable",
+        "since": "2.1.129",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_PACKAGE_MANAGER_AUTO_UPDATE",
+        "purpose": "When set on Homebrew or WinGet installations, Claude Code runs the upgrade command in the background and prompts to restart.",
+        "status": "stable",
+        "since": "2.1.129",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY",
+        "purpose": "Opt-in flag to enable gateway `/v1/models` discovery for the `/model` picker. This was automatic in versions 2.1.126–2.1.128.",
+        "status": "stable",
+        "since": "2.1.129",
         "source_url": ""
       }
     ],
