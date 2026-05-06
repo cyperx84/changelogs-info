@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.131",
-  "generated_at": "2026-05-06T21:27:00.064Z",
+  "version": "2.1.132",
+  "generated_at": "2026-05-06T22:19:09.478Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,12 +14,15 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.131",
-    "to_version": "2.1.131",
+    "from_version": "2.1.132",
+    "to_version": "2.1.132",
     "new_features": [],
     "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [],
+    "new_env_vars": [
+      "CLAUDE_CODE_SESSION_ID",
+      "CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -39,12 +42,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.131",
+      "latest_stable": "2.1.132",
       "latest_release_date": "2026-05-06",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release addresses critical issues affecting the VS Code extension and Mantle endpoint authentication. The VS Code extension activation failure on Windows, caused by a hardcoded build path in the bundled SDK due to a `createRequire` polyfill bug, has been resolved, ensuring the extension functions correctly on Windows systems. Additionally, a fix has been implemented for Mantle endpoint authentication failures resulting from a missing `x-api-key` header, restoring proper authentication for Mantle endpoints. These fixes are crucial for developers relying on the VS Code extension on Windows and those utilizing Mantle endpoints for their workflows. Upgrading to this version is highly recommended to avoid these issues and maintain a stable development environment. No specific migration steps are required."
+      "tldr": "This release introduces the `CLAUDE_CODE_SESSION_ID` environment variable to Bash tool subprocesses, aligning with hook `session_id` values, and `CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN` to disable the fullscreen renderer. A \"Pasting…\" footer hint now appears during Ctrl+V image pastes. External SIGINT signals now trigger graceful shutdowns, restoring terminal modes and suggesting `--resume`. A bug causing `--resume` to fail with `no low surrogate in string` due to emoji truncation has been fixed, with pre-corrupted sessions sanitized on load. The `--permission-mode` flag is now correctly applied when resuming plan-mode sessions, and plan mode is re-applied after `ExitPlanMode`. Fullscreen mode no longer shows a blank screen after sleep/wake or Ctrl+Z/`fg`. Cursor positioning issues with Indic conjuncts and ZWJ emojis have been resolved. Vim operators no longer corrupt text with decomposed accented characters. Pasting text starting with `/` no longer silently fails. Stray escape sequences are now prevented when pasting with interleaved focus events or mouse-tracking reports. Mouse wheel scrolling speed has been corrected in Cursor, VS Code, and JetBrains IDE terminals. `/usage` Ctrl+S now correctly copies stats on Linux/X11. `/terminal-setup` no longer shows a contradictory error in Windows Terminal. `/effort` picker now reflects the `CLAUDE_CODE_EFFORT_LEVEL` env var override. The `/status` command now shows the correct default model. Slash command autocomplete popup now scales with terminal height. Statusline `context_window` token counts now reflect current context usage. Alt+T (thinking toggle) now works on macOS terminals without \"Option as Meta\" enabled. Dead keyboard input on Windows after re-opening background sessions has been fixed. Unbounded memory growth with stdio MCP servers writing non-protocol data has been resolved. MCP servers that fail `tools/list` now retry and show an error message. Unauthorized claude.ai MCP connectors now show as \"needs auth\", and headless `-p` mode retries transient 4xx connection failures. Visual consistency in slash command dialogs and `/login`, `/upgrade`, `/extra-usage` dialog spacing has been improved. The `/tui fullscreen` startup banner has been updated to describe additional renderer benefits. Bedrock and Vertex 400 errors when `ENABLE_PROMPT_CACHING_1H` is set have been fixed. This is a recommended upgrade to address several bug fixes and improve overall stability."
     },
     "features": [
       {
@@ -2015,6 +2018,20 @@
         "purpose": "Opt-in flag to enable gateway `/v1/models` discovery for the `/model` picker. This was automatic in versions 2.1.126–2.1.128.",
         "status": "stable",
         "since": "2.1.129",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_SESSION_ID",
+        "purpose": "Passes the `session_id` to the Bash tool subprocess environment, matching the `session_id` passed to hooks.",
+        "status": "stable",
+        "since": "2.1.132",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN",
+        "purpose": "Opts out of the fullscreen alternate-screen renderer and keeps the conversation in the terminal's native scrollback when set to `1`.",
+        "status": "stable",
+        "since": "2.1.132",
         "source_url": ""
       }
     ],
