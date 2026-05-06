@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.5.5",
-  "generated_at": "2026-05-06T10:43:54.304Z",
+  "generated_at": "2026-05-06T11:37:04.135Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -23,7 +23,7 @@
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "agents-config-legacy-main-agent-dir-helper-removal"
+      "agents-config-legacy-main-agent-dir-removal"
     ]
   },
   "payload": {
@@ -48,7 +48,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release focuses on stability and refinement, addressing several key issues across various components. A significant breaking change involves the removal of the legacy `main` agent directory helper, requiring updates to code relying on it to use `agents.list` or agent-scope helpers. Feishu now correctly hydrates missing topic starter thread IDs, ensuring first turns and follow-ups stay in the same topic session. LINE configurations now reject invalid `dmPolicy` settings, preventing silent blocking of inbound messages. Telegram/Codex message-tool-only progress drafts are now consistently visible, and xAI provider issues with reasoning effort controls have been resolved. Matrix approval delivery is now retried to prevent transient send failures from stranding prompts. Discord gateway heartbeat ACK timeouts are measured more accurately, preventing false reconnect loops. Control UI sees improvements in session details, performance, and session creation lifecycle. Exec approvals now fall back to a guarded copy on Windows to preserve symlink and permission safeguards. Plugin update processes are more robust, ensuring official plugins remain synced during host updates. Several fixes address TUI session handling, agent context engine behavior, gateway shutdown procedures, and generated media handling. The `openclaw status` command now accurately reflects the selected agent runtime. It is recommended to update to this version to benefit from these stability improvements and bug fixes, especially if you are using Feishu, LINE, Telegram/Codex, xAI, Matrix, Discord, or the Control UI. Be sure to migrate away from the legacy `main` agent directory helper."
+      "tldr": "This release focuses on stability and bug fixes across various components of OpenClaw. A significant change is the removal of the legacy `main` agent directory helper, requiring updates to code that relies on it to use `agents.list` or agent-scope helpers. Feishu now correctly hydrates missing native topic starter thread IDs, ensuring first turns and follow-ups stay in the same topic session. LINE configurations now reject `dmPolicy: \"open\"` without wildcard `allowFrom` to prevent silently blocked inbound processing. Telegram/Codex message-tool-only progress drafts are now visible, and native Codex tool progress is rendered correctly. xAI provider issues with reasoning effort controls have been resolved, and approval delivery retries have been implemented for Matrix to prevent transient send failures. Discord gateway heartbeat ACK timeouts are now measured accurately, preventing false reconnect loops. Control UI improvements include responsive chat and channel tabs, compact compaction count disclosures, and accurate session creation lifecycle hooks. Exec approvals now fall back to a guarded copy on Windows to preserve symlink and permission safeguards. Plugin updates are now more reliable, with source-only TypeScript package warnings providing actionable guidance. Several fixes address session management, including preventing stale heartbeat history in TUI and repairing heartbeat-poisoned default main session store entries. Gateway shutdown processes have been improved, and CLI updates are more robust. It is recommended to update to this version to benefit from these stability improvements and bug fixes. No specific prerequisites are required for this update."
     },
     "features": [
       {
@@ -4380,6 +4380,18 @@
           "Plugin SDK"
         ],
         "migration": "Update any code relying on the legacy `main` agent directory helper to use `agents.list`/agent-scope helpers for resolving agent directories.",
+        "source_url": ""
+      },
+      {
+        "id": "agents-config-legacy-main-agent-dir-removal",
+        "version": "2026.5.5",
+        "title": "Removal of legacy `main` agent directory helper",
+        "description": "The ambiguous legacy `main` agent directory helper has been removed from runtime paths. Model, auth, gateway, bundled plugin, and test helpers now resolve default/session agent directories through `agents.list`/agent-scope helpers. The plugin SDK retains a deprecated compatibility export.",
+        "affected": [
+          "Agent configuration",
+          "Plugin SDK"
+        ],
+        "migration": "Update any code relying on the legacy `main` agent directory helper to use `agents.list` or agent-scope helpers for resolving agent directories.",
         "source_url": ""
       }
     ],
