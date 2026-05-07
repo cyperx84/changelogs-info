@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.128.0",
-  "generated_at": "2026-05-07T16:37:32.732Z",
+  "version": "0.129.0",
+  "generated_at": "2026-05-07T17:36:09.202Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,24 +14,32 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.128.0",
-    "to_version": "0.128.0",
+    "from_version": "0.129.0",
+    "to_version": "0.129.0",
     "new_features": [
-      "persisted-goal-workflows",
-      "codex-update-configurable-tui-keymaps-plan-mode-nudges-action-required-terminal-titles-active-turn-statusline-and-title-edits",
-      "expanded-permission-profiles-with-built-in-defaults-sandbox-cli-profile-selection-cwd-controls-and-active-profile-metadata-for-clients",
-      "improved-plugin-workflows-with-marketplace-installation-remote-bundle-caching-remote-uninstall-plugin-bundled-hooks-hook-enablement-state-and-external-agent-config-import",
-      "external-agent-session-import-including-background-imports-and-imported-session-title-handling",
-      "multiagentv2-configuration-improvements-with-thread-caps-wait-time-controls-root-subagent-hints-and-v2-specific-depth-handling"
+      "modal-vim-editing-in-composer",
+      "tui-workflows-resume-fork-picker",
+      "status-line-theme-aware-colors",
+      "plugin-management-workspace-sharing",
+      "hooks-browsing-toggling",
+      "experimental-goals-discoverable"
     ],
-    "new_commands": [],
+    "new_commands": [
+      "/hooks",
+      "/ide",
+      "/diff",
+      "/keymap debug"
+    ],
     "new_flags": [],
     "new_env_vars": [],
-    "deprecated_commands": [],
-    "deprecated_flags": [
-      "--full-auto"
+    "deprecated_commands": [
+      "/approvals",
+      "/autoreview"
     ],
-    "breaking_changes": []
+    "deprecated_flags": [],
+    "breaking_changes": [
+      "legacy-notify-deprecation"
+    ]
   },
   "payload": {
     "meta": {
@@ -48,14 +56,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.128.0",
+      "latest_stable": "0.129.0",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-04-30",
+      "latest_release_date": "2026-05-07",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release introduces persisted `/goal` workflows, enabling users to create, pause, resume, and clear goals with app-server APIs, model tools, runtime continuation, and TUI controls. The `codex update` command is added, along with configurable TUI keymaps, plan-mode nudges, action-required terminal titles, and active-turn `/statusline` and `/title` edits, enhancing the user experience. Permission profiles are expanded with built-in defaults, sandbox CLI profile selection, cwd controls, and active-profile metadata for clients, providing more granular control over permissions. Plugin workflows are improved with marketplace installation via `/plugins`, remote bundle caching, remote uninstall, plugin-bundled hooks, hook enablement state, and external-agent config import, streamlining plugin management. External agent session import is added, including background imports and imported-session title handling, facilitating collaboration. MultiAgentV2 configuration is made more explicit with thread caps, wait-time controls, root/subagent hints, and v2-specific depth handling. Several bug fixes address resume and interruption issues, TUI reliability, managed network behavior, Windows sandbox and PTY edge cases, Bedrock model support, and MCP/plugin edge cases. The `--full-auto` flag is deprecated in favor of explicit permission profiles and trust flows. This release includes documentation updates and various chore improvements. Upgrade is recommended to benefit from the new features, bug fixes, and improved stability. No specific prerequisites are required."
+      "tldr": "This release introduces modal Vim editing in the TUI composer, enabling familiar Vim keybindings and workflows within the Codex environment. TUI workflows are streamlined with a redesigned resume/fork picker, raw scrollback mode, `/ide` context injection, and workspace-aware `/diff`, improving session management and code comparison. The status line now supports theme-aware colors and optional PR/branch summaries, while `/keymap debug` aids in inspecting terminal key events, enhancing TUI customization and debugging. Plugin management gains workspace sharing, access controls, source filtering, local share path tracking, marketplace removal/upgrades, remote bundle sync, and admin-disabled status handling, providing greater control over plugin distribution and usage. Hooks can be browsed and toggled from `/hooks`, run before/after compaction, and add `PreToolUse` context, while Codex Apps auth and MCP elicitations surface through TUI/Guardian flows, improving hook management and application integration. Experimental goals are now discoverable, remain paused on resume unless re-enabled, and display clearer validation and multi-day duration output, enhancing goal-oriented workflows. The `/approvals` and `/autoreview` commands have been deprecated in favor of `/approve`. This is a recommended upgrade for all users, with no specific prerequisites."
     },
     "features": [
       {
@@ -1513,6 +1521,60 @@
         "description": "Made MultiAgentV2 configuration more explicit with thread caps, wait-time controls, root/subagent hints, and v2-specific depth handling.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "modal-vim-editing-in-composer",
+        "name": "Modal Vim editing in composer",
+        "status": "stable",
+        "since": "0.129.0",
+        "description": "The TUI now supports modal Vim editing in the composer, including `/vim`, default-mode config, and Vim-specific keymap contexts.",
+        "key_details": [],
+        "source_url": "#18595"
+      },
+      {
+        "id": "tui-workflows-resume-fork-picker",
+        "name": "TUI workflows resume/fork picker",
+        "status": "stable",
+        "since": "0.129.0",
+        "description": "TUI workflows are easier to resume and copy from with a redesigned resume/fork picker, raw scrollback mode, `/ide` context injection, and workspace-aware `/diff`.",
+        "key_details": [],
+        "source_url": "#20065, #20819, #20294, #21001"
+      },
+      {
+        "id": "status-line-theme-aware-colors",
+        "name": "Status line theme-aware colors",
+        "status": "stable",
+        "since": "0.129.0",
+        "description": "The status line can show theme-aware colors plus optional PR and branch-change summaries, and `/keymap debug` helps inspect terminal key events.",
+        "key_details": [],
+        "source_url": "#19631, #20892, #20794"
+      },
+      {
+        "id": "plugin-management-workspace-sharing",
+        "name": "Plugin management workspace sharing",
+        "status": "stable",
+        "since": "0.129.0",
+        "description": "Plugin management now supports workspace sharing, share access controls, source filtering, local share path tracking, marketplace removal/upgrades, remote bundle sync, and admin-disabled status handling.",
+        "key_details": [],
+        "source_url": "#20278, #21124, #21419, #20560, #19843, #20478, #20268, #20298"
+      },
+      {
+        "id": "hooks-browsing-toggling",
+        "name": "Hooks browsing and toggling",
+        "status": "stable",
+        "since": "0.129.0",
+        "description": "Hooks can be browsed and toggled from `/hooks`, can run before/after compaction, and can add `PreToolUse` context; Codex Apps auth and eligible MCP elicitations now surface through TUI/Guardian flows.",
+        "key_details": [],
+        "source_url": "#19882, #19905, #20692, #19193, #19431"
+      },
+      {
+        "id": "experimental-goals-discoverable",
+        "name": "Experimental goals discoverable",
+        "status": "experimental",
+        "since": "0.129.0",
+        "description": "Experimental goals are now discoverable, stay paused across resume unless the user opts back in, and show clearer validation and multi-day duration output.",
+        "key_details": [],
+        "source_url": "#20083, #20790, #20746, #20558"
       }
     ],
     "commands": [
@@ -1683,6 +1745,38 @@
         "since": "0.128.0",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "/hooks",
+        "syntax": "/hooks",
+        "description": "Browse and toggle lifecycle hooks.",
+        "since": "0.129.0",
+        "status": "stable",
+        "source_url": "#19882"
+      },
+      {
+        "name": "/ide",
+        "syntax": "/ide",
+        "description": "Inject context support to the TUI.",
+        "since": "0.129.0",
+        "status": "stable",
+        "source_url": "#20294"
+      },
+      {
+        "name": "/diff",
+        "syntax": "/diff",
+        "description": "Route through workspace commands.",
+        "since": "0.129.0",
+        "status": "stable",
+        "source_url": "#21001"
+      },
+      {
+        "name": "/keymap debug",
+        "syntax": "/keymap debug",
+        "description": "Inspect terminal key events.",
+        "since": "0.129.0",
+        "status": "stable",
+        "source_url": "#19631"
       }
     ],
     "flags": {
@@ -3239,9 +3333,31 @@
         "affected": [],
         "migration": "Use alternative methods for accessing and processing files.",
         "source_url": ""
+      },
+      {
+        "id": "legacy-notify-deprecation",
+        "version": "0.129.0",
+        "title": "Legacy notify deprecation reverted",
+        "description": "The deprecation of legacy notify has been reverted.",
+        "affected": [],
+        "migration": "No migration needed.",
+        "source_url": "#21152"
       }
     ],
-    "deprecations": [],
+    "deprecations": [
+      {
+        "name": "/approvals",
+        "replaced_by": "/approve",
+        "deprecated_since": "0.129.0",
+        "source_url": "#21034"
+      },
+      {
+        "name": "/autoreview",
+        "replaced_by": "/approve",
+        "deprecated_since": "0.129.0",
+        "source_url": "#21034"
+      }
+    ],
     "install": {
       "methods": [
         {
