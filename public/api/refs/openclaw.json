@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.5.6",
-  "generated_at": "2026-05-07T20:30:20.458Z",
+  "version": "2026.5.7",
+  "generated_at": "2026-05-07T21:24:11.392Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,11 +14,13 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.5.6",
-    "to_version": "2026.5.6",
+    "from_version": "2026.5.7",
+    "to_version": "2026.5.7",
     "new_features": [],
     "new_commands": [],
-    "new_flags": [],
+    "new_flags": [
+      "--all"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -40,13 +42,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.5.6",
-      "latest_release_date": "2026-05-06",
+      "latest_stable": "2026.5.7",
+      "latest_release_date": "2026-05-07",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release primarily addresses critical fixes related to OpenAI Codex routing and plugin runtime fetch behavior. A `doctor --fix` repair in 2026.5.5 incorrectly rewrote valid `openai-codex/*` ChatGPT/Codex OAuth routes to `openai/*`, potentially breaking OAuth-only GPT-5.5 setups. This release reverts that change; users who were affected should run `openclaw models set openai-codex/gpt-5.5 && openclaw config validate` to restore the correct routing. Additionally, the release resolves an issue where third-party symbol metadata in request header dictionaries could cause plugin requests to fail, particularly in SDK and guarded/proxy fetch paths. This fix ensures that native `fetch` or `Headers` do not reject valid plugin requests due to this metadata. A debug proxy issue has also been resolved by normalizing captured fetch header dictionaries before replaying requests, preventing symbol metadata from caller-owned header objects from causing debug-proxy fetches to fail. Finally, a fix ensures that guarded dispatcher cleanup occurs after web fetch request timeouts, preventing Gateway tool lanes from remaining active and ensuring tool errors are returned for timed-out fetches. Users who experienced issues with OpenAI Codex routing or plugin request failures should upgrade immediately. No specific prerequisites are required for this upgrade."
+      "tldr": "This release focuses on stability and bug fixes across various components of OpenClaw. The `openclaw channels list` command now defaults to channel-only output, with a new `--all` flag to include bundled and catalog channels, and channel details have been moved to `openclaw models auth list`, `openclaw status`, and `openclaw models list`. Transient ClawHub CLI dependency install failures during release/plugin publishing are now retried, and plugin publishing is more robust with version verification. OpenAI now supports `openai/chat-latest` as a direct API-key model override. Cron CLI output now includes computed status in JSON format. Native commands now honor owner enforcement, and Active Memory requires admin scope for global memory toggles. Cached skills snapshots are cleared during `/new` and `sessions.reset`. Tavily tool credentials are now resolved from the active runtime config snapshot. Managed plugin install operations now use the same absolute POSIX npm lifecycle shell. Cached context views are invalidated when source history shrinks or assembly fails. Discord message routing has been fixed to correctly parse provider-prefixed targets. Compaction summary reserve tokens are clamped to each model's output limit. The `/btw` missing-question usage placeholder is now visible after outbound channel sanitization. Persisted cron jobs with invalid model overrides are repaired during `openclaw doctor --fix`. Telegram now honors `accessGroup:*` sender allowlists for various actions. Agent delivery now reports `deliverySucceeded=false` when no adapter result is returned. Cron isolated runs now fail implicit announce delivery before model execution when `delivery.channel=last` has no previous route. Gateway sessions now persist a new transcript file when daily rollover changes the session id. Doctor/Codex OAuth now preserves working `openai-codex/*` PI routes during `doctor --fix`. The Telegram polling watchdog is now tied to `getUpdates` liveness. Session-mode subagent registry rows now honor `agents.defaults.subagents.archiveAfterMinutes`. External plugin channel setup now forwards `setChannelRuntime`. Telegram now treats successful same-chat `message` tool outbound sends as delivered. Stale CLI run-context tasks are now reconciled. Discord voice-channel permissions are audited in `channels capabilities` and `channels status --probe`. Discord voice capture is less choppy with an extended silence grace period. WhatsApp now routes proactive phone-number sends through Baileys LID forward mappings. Codex approval modes no longer install the pre-guardian native `PermissionRequest` hook by default. Model providers now normalize APNG sniffed PNG uploads and preserve Gemini 3 tool-call thought-signature replay. It is recommended to upgrade to this version to benefit from these fixes and improvements."
     },
     "features": [
       {
@@ -2904,6 +2906,12 @@
           "description": "Warn when `openclaw cron add --message` omits a nonblank `--agent`, including blank agent values and session-key jobs, so scheduled agent-turn jobs make default-agent fallback explicit while system events stay quiet.",
           "since": "2026.4.29",
           "source_url": ""
+        },
+        {
+          "flag": "--all",
+          "description": "Include bundled and catalog channels in `openclaw channels list` output.",
+          "since": "2026.5.7",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -3034,7 +3042,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--all"
+      ]
     },
     "env_vars": [
       {
