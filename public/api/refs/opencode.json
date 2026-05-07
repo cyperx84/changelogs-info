@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
-  "version": "1.14.39",
-  "generated_at": "2026-05-06T23:20:18.835Z",
+  "version": "1.14.40",
+  "generated_at": "2026-05-07T00:41:48.823Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -14,9 +14,11 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "1.14.39",
-    "to_version": "1.14.39",
-    "new_features": [],
+    "from_version": "1.14.40",
+    "to_version": "1.14.40",
+    "new_features": [
+      "well-known-opencode-configs"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -40,13 +42,13 @@
       "changelog_url": "https://github.com/anomalyco/opencode/releases",
       "repo_url": "https://github.com/anomalyco/opencode",
       "license": "mit",
-      "latest_stable": "1.14.39",
-      "latest_release_date": "2026-05-05",
+      "latest_stable": "1.14.40",
+      "latest_release_date": "2026-05-07",
       "status": "active",
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "This release addresses a bug in the desktop application where proxy environment variables like `HTTP_PROXY` were not being respected, ensuring that network requests from the desktop app now correctly utilize the configured proxy settings. This fix is crucial for users operating within environments that require proxy servers for internet access, as it restores proper network functionality. Additionally, the desktop app now returns `null` instead of failing when it cannot read a stored value, preventing unexpected application crashes and improving overall stability. This change ensures a smoother user experience by gracefully handling cases where stored data is inaccessible. Upgrading is recommended to benefit from these stability and network configuration improvements, especially if you rely on proxy settings within the desktop application."
+      "tldr": "This release introduces support for `.well-known/opencode` configs, allowing you to point to a separate remote config file, which can simplify configuration management. A bug was fixed to preserve assistant text when replaying signed reasoning blocks. The release also addresses several bugfixes, including returning consistent not-found errors for missing sessions, applying CORS headers before auth, fixing network options triggering runtime re-entry errors, and ensuring only connected workspaces are shown in warp flows. The `/new` command now uses the current workspace, including local-project warps. Mistral Medium 3.5 variants have been restored for correct model selection. In the TUI, the selected model is now retained during model data refreshes, and the `/agent create` command now uses the correct `/agents` path. Desktop improvements include allowing trusted app windows to write to the clipboard without permission failures and preventing sync bootstrap queries from failing during app startup. It is recommended to upgrade to this version to benefit from the bug fixes and new configuration option. There are no breaking changes or specific migration steps required."
     },
     "features": [
       {
@@ -760,6 +762,15 @@
         "status": "stable",
         "since": "1.14.37",
         "description": "Warp a session into another workspace or back to the local project.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "well-known-opencode-configs",
+        "name": ".well-known/opencode configs",
+        "status": "stable",
+        "since": "1.14.40",
+        "description": "Support `.well-known/opencode` configs that point to a separate remote config file.",
         "key_details": [],
         "source_url": ""
       }
