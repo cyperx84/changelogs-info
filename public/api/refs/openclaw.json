@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.5.6",
-  "generated_at": "2026-05-07T03:10:29.946Z",
+  "generated_at": "2026-05-07T05:13:28.740Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -46,7 +46,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release primarily addresses a critical issue in the OpenAI Codex integration introduced in 2026.5.5. The previous release incorrectly rewrote valid `openai-codex/*` ChatGPT/Codex OAuth routes to `openai/*`, potentially disrupting OAuth-only GPT-5.5 setups and inadvertently migrating users to the OpenAI API-key route. To rectify this, the `doctor --fix` behavior has been reverted, and users who experienced this issue should run `openclaw models set openai-codex/gpt-5.5 && openclaw config validate` to restore the default agent to the Codex OAuth PI route. Additionally, a fix has been implemented to prevent third-party symbol metadata from plain request header dictionaries from causing rejections in SDK and guarded/proxy fetch paths, ensuring valid plugin requests are processed correctly. The debug proxy has been updated to normalize captured fetch header dictionaries, preventing symbol metadata from caller-owned header objects from causing debug-proxy fetches to fail. Finally, a fix addresses an issue where timed-out web fetches could leave Gateway tool lanes active; the guarded dispatcher cleanup is now bound after request timeouts, ensuring tool errors are returned instead. Users who upgraded to 2026.5.5 should upgrade immediately to resolve the Codex OAuth routing issue. No specific prerequisites are required for this upgrade."
+      "tldr": "This release primarily addresses critical fixes related to OpenAI Codex routing and plugin runtime fetch behavior. A `doctor --fix` repair in 2026.5.5 incorrectly rewrote valid `openai-codex/*` ChatGPT/Codex OAuth routes to `openai/*`, potentially breaking OAuth-only GPT-5.5 setups. This release reverts that change; users who were affected should run `openclaw models set openai-codex/gpt-5.5 && openclaw config validate` to restore the correct routing. Additionally, the release resolves an issue where third-party symbol metadata in request header dictionaries could cause plugin requests to fail, particularly in SDK and guarded/proxy fetch paths. This fix ensures that native `fetch` or `Headers` do not reject valid plugin requests due to this metadata. A debug proxy issue has also been resolved by normalizing captured fetch header dictionaries before replaying requests, preventing symbol metadata from caller-owned header objects from causing debug-proxy fetches to fail. Finally, a fix ensures that guarded dispatcher cleanup occurs after web fetch request timeouts, preventing Gateway tool lanes from remaining active and ensuring tool errors are returned for timed-out fetches. Users who experienced issues with OpenAI Codex routing or plugin request failures should upgrade immediately. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
