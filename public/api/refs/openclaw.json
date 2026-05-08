@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.5.7",
-  "generated_at": "2026-05-08T10:35:18.937Z",
+  "generated_at": "2026-05-08T11:33:20.748Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -18,9 +18,7 @@
     "to_version": "2026.5.7",
     "new_features": [],
     "new_commands": [],
-    "new_flags": [
-      "--all"
-    ],
+    "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -48,7 +46,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release focuses on fixes and improvements across various areas of OpenClaw. The `openclaw channels list` command has been modified to be channel-only, with a new `--all` flag to include bundled and catalog channels, and model auth/usage details moved to other commands. Transient ClawHub CLI dependency install failures during release/plugin publishing are now retried, and every expected ClawHub package version is verified after publish. OpenAI now supports `openai/chat-latest` as a direct API-key model override. Cron CLI output now includes computed status in JSON format. Native commands now honor owner enforcement, and Active Memory requires admin scope for global memory toggles. Cached skills snapshots are cleared during `/new` and `sessions.reset`. Inline skill tool dispatch is now gated through before-tool-call authorization hooks. Tavily tool credentials are now resolved from the active runtime config snapshot. Managed plugin install operations now use the same absolute POSIX npm lifecycle shell. Cached context views are invalidated when source history shrinks or assembly fails. Discord message routing has been fixed to correctly parse provider-prefixed targets. Compaction summary reserve tokens are now clamped to each model's output limit. The `/btw` missing-question usage placeholder is now displayed with brackets. Persisted cron jobs with invalid model overrides are repaired during `openclaw doctor --fix`. Telegram now honors `accessGroup:*` sender allowlists for various actions. Agent delivery now reports `deliverySucceeded=false` when outbound delivery returns no adapter result. Cron isolated runs now fail implicit announce delivery before model execution when `delivery.channel=last` has no previous route. Gateway sessions now persist a new generated transcript file when daily gateway-agent session rollover changes the session id. Codex OAuth routes are preserved during `doctor --fix`. The Telegram polling watchdog is now tied to `getUpdates` liveness. Session-mode subagent registry rows now honor `agents.defaults.subagents.archiveAfterMinutes`. Non-bundled external plugin setup entries now forward `setChannelRuntime`. Telegram now treats successful same-chat `message` tool outbound sends as delivered. Stale CLI run-context tasks are now reconciled. Discord voice-channel permissions are now audited in `channels capabilities` and `channels status --probe`. Discord voice capture is now less choppy with an extended silence grace period and a tighter spoken-output prompt. WhatsApp now routes proactive phone-number sends through Baileys LID forward mappings. Codex approval modes have been updated to stop installing the pre-guardian native `PermissionRequest` hook by default. Model providers now normalize APNG sniffed PNG uploads, preserve Gemini 3 tool-call thought-signature replay, accept legacy `__env__:VAR` custom-provider keys, and repair snake_case tool-call transcript sanitization. Provider ids containing dots are now parsed correctly in `/models` callback buttons. Upgrading is recommended to benefit from these fixes and improvements."
+      "tldr": "This release focuses on fixes and improvements across various components. The Cron CLI now includes computed status in JSON output for external tooling. The Channels CLI is now channel-only with an `--all` flag, and model auth/usage details have been moved. Native commands now honor owner enforcement, and Active Memory requires admin scope for global memory toggles. Cached skills snapshots are cleared during `/new` and `sessions.reset`. Tavily tool credentials are now resolved from the active runtime config snapshot. The release also addresses issues with plugin installation, agent context engine caching, Discord message routing, agent compaction, BTW command usage, cron job repair, Telegram sender allowlists, agent delivery reporting, cron isolated runs, gateway session transcript persistence, Codex OAuth repair, Telegram polling watchdog, agent subagent registry TTL, plugin channel setup, Telegram message tool outbound sends, gateway task reconciliation, Discord voice channel permissions, WhatsApp phone number sends, Codex approvals, and model provider normalization. A new `voice.captureSilenceGraceMs` config option has been added to control the silence grace period for Discord voice capture. It is recommended to upgrade to this version to benefit from these fixes and improvements."
     },
     "features": [
       {
@@ -3042,9 +3040,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--all"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
