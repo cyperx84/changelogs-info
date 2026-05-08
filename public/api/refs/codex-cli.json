@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.129.0",
-  "generated_at": "2026-05-08T22:22:47.349Z",
+  "version": "0.130.0",
+  "generated_at": "2026-05-08T23:22:13.754Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,17 +14,18 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.129.0",
-    "to_version": "0.129.0",
+    "from_version": "0.130.0",
+    "to_version": "0.130.0",
     "new_features": [
-      "modal-vim-editing-in-composer",
-      "tui-workflows-resume-fork-picker",
-      "status-line-theme-aware-colors",
-      "plugin-management-workspace-sharing",
-      "hooks-browsing-toggling",
-      "experimental-goals-discoverable"
+      "plugin-details-bundled-hooks-sharing-metadata-discoverability",
+      "codex-remote-control-command",
+      "app-server-thread-pagination-apis",
+      "aws-login-credentials-for-bedrock-auth",
+      "view-image-environment-resolution"
     ],
-    "new_commands": [],
+    "new_commands": [
+      "codex remote-control"
+    ],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
@@ -46,14 +47,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.129.0",
+      "latest_stable": "0.130.0",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-05-07",
+      "latest_release_date": "2026-05-08",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release introduces modal Vim editing in the TUI composer, enabling familiar Vim keybindings and workflows within Codex. TUI workflows are streamlined with a redesigned resume/fork picker, raw scrollback mode, `/ide` context injection, and workspace-aware `/diff`, improving session management and code comparison. The status line now supports theme-aware colors and optional PR/branch summaries, while `/keymap debug` aids in inspecting terminal key events. Plugin management gains workspace sharing, access controls, source filtering, and remote bundle sync, enhancing collaboration and plugin distribution. Hooks can now be browsed and toggled via `/hooks`, run before/after compaction, and add `PreToolUse` context, while Codex Apps auth and MCP elicitations surface in TUI/Guardian flows. Experimental goals are now discoverable and persist their paused state across resumes. Bug fixes address `/copy` issues in tmux, key behavior, Windows typing latency, large paste corruption, TUI startup, Linux sandbox reliability, Windows sandbox policy, and custom CA login. It is highly recommended to upgrade to benefit from these improvements and fixes. No specific migration steps are required."
+      "tldr": "Version 0.130.0 introduces the `codex remote-control` command, simplifying the process of starting a headless, remotely controllable app-server, enhancing remote workflow capabilities. Plugin details now display bundled hooks, and plugin sharing exposes link metadata and discoverability controls, improving plugin management and collaboration. App-server clients can now page large threads with unloaded, summary, or full turn item views, optimizing performance for large conversations. Bedrock authentication now supports AWS console-login credentials from `aws login` profiles, streamlining authentication. The `view_image` command can now resolve files through the selected environment for multi-environment sessions, improving image handling in complex setups. Live app-server threads now dynamically update with config changes without requiring a restart. Turn diffs are now more accurate across apply-patch operations, even with partial failures. Thread summaries, renames, resume, and fork paths are improved through `ThreadStore`. Remote compaction now emits `response.processed` for v2 streams and avoids sending `service_tier` on API-key compact requests. Windows sandbox setup now grants sandbox users access to the desktop runtime binary cache. The stale \"research preview\" wording has been removed from the `codex exec` startup banner. This update is recommended for all users to take advantage of the new features and bug fixes. No specific migration steps are required."
     },
     "features": [
       {
@@ -1565,6 +1566,51 @@
         "description": "Experimental goals are now discoverable, stay paused across resume unless the user opts back in, and show clearer validation and multi-day duration output.",
         "key_details": [],
         "source_url": "#20083, #20790, #20746, #20558"
+      },
+      {
+        "id": "plugin-details-bundled-hooks-sharing-metadata-discoverability",
+        "name": "Plugin Details and Sharing Enhancements",
+        "status": "stable",
+        "since": "0.130.0",
+        "description": "Plugin details now display bundled hooks, and plugin sharing exposes link metadata along with discoverability controls.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "codex-remote-control-command",
+        "name": "codex remote-control Command",
+        "status": "stable",
+        "since": "0.130.0",
+        "description": "Added `codex remote-control` as a simpler entrypoint for starting a headless, remotely controllable app-server.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "app-server-thread-pagination-apis",
+        "name": "App-server Thread Pagination APIs",
+        "status": "stable",
+        "since": "0.130.0",
+        "description": "App-server clients can now page large threads with unloaded, summary, or full turn item views.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "aws-login-credentials-for-bedrock-auth",
+        "name": "AWS Login Credentials for Bedrock Auth",
+        "status": "stable",
+        "since": "0.130.0",
+        "description": "Bedrock authentication can now utilize AWS console-login credentials from `aws login` profiles.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "view-image-environment-resolution",
+        "name": "view_image Environment Resolution",
+        "status": "stable",
+        "since": "0.130.0",
+        "description": "`view_image` can now resolve files through the selected environment for multi-environment sessions.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1767,6 +1813,14 @@
         "since": "0.129.0",
         "status": "stable",
         "source_url": "#19631"
+      },
+      {
+        "name": "codex remote-control",
+        "syntax": "codex remote-control",
+        "description": "Starts a headless, remotely controllable app-server.",
+        "since": "0.130.0",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
