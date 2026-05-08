@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.133",
-  "generated_at": "2026-05-08T01:38:44.138Z",
+  "generated_at": "2026-05-08T03:07:53.019Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -16,17 +16,11 @@
   "delta": {
     "from_version": "2.1.133",
     "to_version": "2.1.133",
-    "new_features": [
-      "worktree-base-ref-setting",
-      "sandbox-bwrap-path-and-sandbox-socat-path-managed-settings",
-      "parent-settings-behavior-admin-tier-key"
-    ],
+    "new_features": [],
     "new_commands": [],
-    "new_flags": [
-      "--remote-control"
-    ],
+    "new_flags": [],
     "new_env_vars": [
-      "$CLAUDE_EFFORT"
+      "CLAUDE_EFFORT"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -54,7 +48,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Version 2.1.133 introduces a breaking change to the `EnterWorktree` command and related worktree creation, reverting its base ref to `origin/<default>` instead of local `HEAD`. To maintain the previous behavior of branching from local `HEAD`, set `worktree.baseRef: \"head\"`. This release also adds the `worktree.baseRef` setting to control the branching behavior of worktrees created via `--worktree`, `EnterWorktree`, and agent-isolation. New features include `sandbox.bwrapPath` and `sandbox.socatPath` managed settings for specifying custom bubblewrap and socat binary locations on Linux/WSL, and the `parentSettingsBehavior` admin-tier key to control how parent-tier managed settings are merged. Hooks now receive the active effort level via the `effort.level` JSON input field and the `$CLAUDE_EFFORT` environment variable, which is also accessible to Bash tool commands. Focus mode behavior has been improved. Several fixes address issues such as parallel sessions dead-ending at 401, incorrect permission prompts, unhandled rejections due to compromised file locks, spurious error notifications during conversation compaction, and HTTP(S)_PROXY/NO_PROXY/mTLS not being respected for the full MCP OAuth flow. Additionally, fixes resolve issues with Read/Write/Edit permissions on mapped network drives, remote control interruptions, effort level changes affecting other sessions, and subagents not discovering skills. The `claude --help` command now lists the `--remote-control` flag. VSCode extension build failures due to missing Claude binaries have also been resolved. Upgrading is recommended to benefit from the bug fixes and new configuration options. Be sure to review the breaking change related to `EnterWorktree` and adjust your `worktree.baseRef` setting if necessary."
+      "tldr": "This release introduces a change in how `EnterWorktree` creates new worktrees, reverting to branching from `origin/<default>` instead of local `HEAD`. This can be overridden by setting `worktree.baseRef: \"head\"` to maintain the previous behavior. The release also adds `sandbox.bwrapPath` and `sandbox.socatPath` managed settings for specifying custom bubblewrap and socat binary locations on Linux/WSL. Admins can now control how SDK `managedSettings` are merged using the `parentSettingsBehavior` admin-tier key. Hooks now receive the active effort level via the `effort.level` JSON input field and the `$CLAUDE_EFFORT` environment variable, which is also accessible to Bash tool commands. Several fixes address issues such as parallel sessions dead-ending at 401, incorrect permission prompts for drive roots, unhandled rejections due to compromised history files, spurious error notifications during conversation compaction, and HTTP(S)_PROXY/NO_PROXY/mTLS not being respected for the full MCP OAuth flow. Additionally, fixes resolve issues with Read/Write/Edit permissions on mapped network drives, remote control stop/interrupt not fully canceling CLI sessions, `/effort` affecting other concurrent sessions, and subagents not discovering skills. `claude --help` now lists `--remote-control` alongside `--remote-control-session-name-prefix`. VSCode users will find a fix for `claudeCode.claudeProcessWrapper` failing on unsupported platforms. It is recommended to upgrade to this version to benefit from the bug fixes and new configuration options. Be aware of the change in `EnterWorktree` behavior and adjust your configuration accordingly if needed."
     },
     "features": [
       {
@@ -1796,9 +1790,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--remote-control"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
