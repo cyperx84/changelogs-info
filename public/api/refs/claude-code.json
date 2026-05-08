@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.132",
-  "generated_at": "2026-05-07T23:20:58.135Z",
+  "version": "2.1.133",
+  "generated_at": "2026-05-08T00:41:53.016Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,20 +14,22 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.132",
-    "to_version": "2.1.132",
-    "new_features": [],
-    "new_commands": [],
-    "new_flags": [
-      "--permission-mode"
+    "from_version": "2.1.133",
+    "to_version": "2.1.133",
+    "new_features": [
+      "sandbox-bwrap-path-setting",
+      "parent-settings-behavior-admin-tier-key"
     ],
+    "new_commands": [],
+    "new_flags": [],
     "new_env_vars": [
-      "CLAUDE_CODE_SESSION_ID",
-      "CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN"
+      "CLAUDE_EFFORT"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "enterworktree-base-ref-change"
+    ]
   },
   "payload": {
     "meta": {
@@ -44,12 +46,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.132",
-      "latest_release_date": "2026-05-06",
+      "latest_stable": "2.1.133",
+      "latest_release_date": "2026-05-07",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release focuses on improving stability, fixing bugs, and enhancing the user experience. A new `CLAUDE_CODE_SESSION_ID` environment variable is available in the Bash tool subprocess environment, mirroring the `session_id` passed to hooks, and `CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN=1` allows opting out of the fullscreen renderer. A \"Pasting…\" footer hint now appears during Ctrl+V image pastes. Several fixes address critical issues: external SIGINT signals now trigger graceful shutdowns, terminal modes are restored, and the `--resume` hint is printed. A crash during terminal closure or SSH disconnect has been resolved, and `--resume` no longer fails due to emoji corruption. The `--permission-mode` flag is now correctly applied when resuming plan-mode sessions. Visual glitches in fullscreen mode after sleep/wake cycles and Ctrl+Z/`fg` have been fixed. Input issues with Indic conjuncts, ZWJ emojis, and decomposed accented characters have been resolved, along with pasting issues involving leading slashes and stray escape sequences. Mouse wheel scrolling is now more consistent across different IDEs and terminals. The `/usage` command's Ctrl+S function now works correctly on Linux/X11, and `/terminal-setup` provides accurate information in Windows Terminal. The `/effort` picker now reflects the `CLAUDE_CODE_EFFORT_LEVEL` environment variable. The statusline `context_window` token counts now reflect current context usage. Alt+T now functions correctly on macOS terminals without \"Option as Meta\" enabled. Memory leaks caused by stdio MCP servers writing non-protocol data have been fixed, and MCP server connection failures are now handled more gracefully. Unauthorized claude.ai MCP connectors are now correctly identified. Visual consistency in slash command dialogs has been improved, and the `/tui fullscreen` startup banner has been updated. Bedrock and Vertex 400 errors when `ENABLE_PROMPT_CACHING_1H` is set are now resolved. This is a recommended update to improve stability and usability."
+      "tldr": "This release introduces a change to how `EnterWorktree` creates new worktrees. By default, new worktrees now branch from `origin/<default>` instead of the local `HEAD`. This means unpushed commits will no longer be included in new worktrees unless you configure `worktree.baseRef: \"head\"`. This change reverts the behavior introduced in 2.1.128. The release also adds `sandbox.bwrapPath` and `sandbox.socatPath` managed settings for specifying custom bubblewrap and socat binary locations, and `parentSettingsBehavior` admin-tier key to control how parent tier `managedSettings` are merged. Hooks now receive the active effort level via the `effort.level` JSON input field and the `$CLAUDE_EFFORT` environment variable, which Bash tool commands can also read. Focus mode behavior has been improved, and memory usage has been optimized by releasing warm-spare background workers under memory pressure. Several bugs have been fixed, including issues with parallel sessions dead-ending at 401, incorrect matching of `Edit`/`Write` allow rules, unhandled rejections due to compromised history or session-log file locks, spurious error notifications during conversation compaction, and `HTTP(S)_PROXY` / `NO_PROXY` / mTLS not being respected for the full MCP OAuth flow. Additionally, issues with Read/Write/Edit being denied on mapped network drives, Remote Control stop/interrupt not fully canceling CLI sessions, `/effort` unexpectedly changing the effort level of other sessions, and subagents not discovering skills have been resolved. `claude --help` now lists `--remote-control` alongside `--remote-control-session-name-prefix`. VSCode users will find a fix for `claudeCode.claudeProcessWrapper` failing with \"Unsupported platform\". Upgrading is recommended to benefit from the bug fixes and new features. Be aware of the change in `EnterWorktree` behavior and adjust your configuration if needed."
     },
     "features": [
       {
@@ -1079,6 +1081,24 @@
         "description": "Added a \"Pasting…\" footer hint while a Ctrl+V image paste is being read from the clipboard.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "sandbox-bwrap-path-setting",
+        "name": "sandbox.bwrapPath and sandbox.socatPath settings",
+        "status": "stable",
+        "since": "2.1.133",
+        "description": "Adds `sandbox.bwrapPath` and `sandbox.socatPath` managed settings (Linux/WSL) to specify custom bubblewrap and socat binary locations.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "parent-settings-behavior-admin-tier-key",
+        "name": "parentSettingsBehavior admin-tier key",
+        "status": "stable",
+        "since": "2.1.133",
+        "description": "Adds `parentSettingsBehavior` admin-tier key (`'first-wins' | 'merge'`) to let admins opt SDK `managedSettings` (parent tier) into the policy merge.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1749,9 +1769,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--permission-mode"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
@@ -2046,6 +2064,13 @@
         "status": "stable",
         "since": "2.1.132",
         "source_url": ""
+      },
+      {
+        "name": "CLAUDE_EFFORT",
+        "purpose": "Receives the active effort level in hooks and can be read by Bash tool commands.",
+        "status": "stable",
+        "since": "2.1.133",
+        "source_url": ""
       }
     ],
     "models": [
@@ -2263,6 +2288,19 @@
           "Users relying on the previous behavior of `EnterWorktree` creating branches from `origin/<default-branch>`."
         ],
         "migration": "Ensure local commits are pushed before using `EnterWorktree` or adjust workflows to account for branch creation from local HEAD.",
+        "source_url": ""
+      },
+      {
+        "id": "enterworktree-base-ref-change",
+        "version": "2.1.133",
+        "title": "EnterWorktree base ref change",
+        "description": "The default base ref for `EnterWorktree` has changed from local `HEAD` to `origin/<default>`. This means that new worktrees will no longer include unpushed commits by default.",
+        "affected": [
+          "EnterWorktree command",
+          "`--worktree` flag",
+          "agent-isolation worktrees"
+        ],
+        "migration": "Set `worktree.baseRef: \"head\"` to keep unpushed commits in new worktrees.",
         "source_url": ""
       }
     ],
