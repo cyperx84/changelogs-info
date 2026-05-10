@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
-  "version": "1.14.45",
-  "generated_at": "2026-05-10T01:37:46.886Z",
+  "version": "1.14.46",
+  "generated_at": "2026-05-10T03:09:44.281Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -14,9 +14,11 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "1.14.45",
-    "to_version": "1.14.45",
-    "new_features": [],
+    "from_version": "1.14.46",
+    "to_version": "1.14.46",
+    "new_features": [
+      "customize-opencode-skill"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -40,13 +42,13 @@
       "changelog_url": "https://github.com/anomalyco/opencode/releases",
       "repo_url": "https://github.com/anomalyco/opencode",
       "license": "mit",
-      "latest_stable": "1.14.45",
+      "latest_stable": "1.14.46",
       "latest_release_date": "2026-05-10",
       "status": "active",
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "This release focuses on bug fixes and improvements across the core, TUI, Desktop, SDK, and Extensions components. Provider configurations and API responses now correctly accept models marked as `active`, ensuring consistent behavior. Read tool permission rules now accurately match worktree-relative paths, resolving issues with read allowlists and denylists. Workspace-routed HTTP API endpoints no longer reject valid `directory` and `workspace` query parameters, streamlining API interactions. TUI startup errors now report all failed bootstrap requests, aiding in debugging. Opening a session in the TUI no longer crashes when the messages request fails, improving stability. Desktop users will find that older migrated sessions with missing diff file details and patches now load correctly, preventing data loss. The SDK's `throwOnError: true` now throws a proper `Error` object with server messages and response body, enhancing error handling. TUI plugins using the deprecated `api.command` API continue to function during migration to `api.keymap`, providing a smoother transition. Provider plugins are now prevented from mutating shared provider model state, ensuring application stability. This release is recommended for all users to benefit from the bug fixes and stability improvements."
+      "tldr": "This release introduces a built-in `customize-opencode` skill to enhance the stability of opencode configurations, reducing the likelihood of startup failures due to config edits. This skill helps ensure that modifications to the opencode configuration are less prone to causing issues during the application's startup process. Several bug fixes address issues related to the HTTP API and data handling. Specifically, numeric HTTP API query parameters in the generated OpenAPI spec and SDK for session and file endpoints are now correctly handled, and boolean HTTP API query handling is improved to maintain alignment between SDK types and runtime validation. The system now tolerates legacy stored numeric values in sessions, diffs, and retry events, preventing failures when loading old data. Additionally, a fix addresses old sessions with negative token counts that previously caused message loads and Desktop startup to fail. MCP tool discovery is improved by handling cases where a server publishes broken `outputSchema` references. Workspace HTTP API query drift is corrected to ensure workspace-routed endpoints expose the correct query parameters in OpenAPI and the SDK. A Plan Mode security bypass, where subagents could ignore parent-agent deny rules, has been resolved. It is recommended to upgrade to this version to benefit from the improved configuration stability and critical bug fixes, especially if you rely on HTTP API queries or have existing sessions with potentially problematic data."
     },
     "features": [
       {
@@ -796,6 +798,15 @@
         "status": "stable",
         "since": "1.14.42",
         "description": "Added an interactive split-footer mode for `opencode run`. This allows for a more interactive experience when running commands.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "customize-opencode-skill",
+        "name": "customize-opencode skill",
+        "status": "stable",
+        "since": "1.14.46",
+        "description": "Added a built-in `customize-opencode` skill so opencode config edits are less likely to break startup.",
         "key_details": [],
         "source_url": ""
       }
