@@ -15,6 +15,46 @@
   },
   "releases": [
     {
+      "version": "v1.14.46",
+      "name": "v1.14.46",
+      "body": "## Core\n\n### Improvements\n\n- Added a built-in `customize-opencode` skill so opencode config edits are less likely to break startup.\n\n### Bugfixes\n\n- Fixed numeric HTTP API query parameters in the generated OpenAPI spec and SDK for session and file endpoints.\n- Fixed boolean HTTP API query handling so SDK types and runtime validation stay aligned.\n- Tolerated legacy stored numeric values in sessions, diffs, and retry events instead of failing to load old data.\n- Fixed old sessions with negative token counts causing message loads and Desktop startup to fail.\n- Fixed MCP tool discovery when a server publishes broken `outputSchema` references.\n- Fixed workspace HTTP API query drift so workspace-routed endpoints expose the right query parameters in OpenAPI and the SDK.\n- Fixed a Plan Mode security bypass where subagents could ignore parent-agent deny rules.\n",
+      "date": "2026-05-10T02:34:38Z",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.14.46",
+      "prerelease": false
+    },
+    {
+      "version": "v1.14.45",
+      "name": "v1.14.45",
+      "body": "## Core\n### Bugfixes\n- Provider configs and API responses now accept models marked as `active`.\n- Read tool permission rules now match worktree-relative paths, so read allowlists and denylists apply correctly.\n- Workspace-routed HTTP API endpoints no longer reject valid `directory` and `workspace` query params.\n\n## TUI\n### Bugfixes\n- Startup errors now report every failed bootstrap request instead of only the first one.\n- Opening a session no longer crashes when the messages request fails.\n\n## Desktop\n### Bugfixes\n- Older migrated sessions with missing diff file details load again.\n- Older migrated sessions with missing diff patches load again. (@OpeOginni)\n\n## SDK\n### Bugfixes\n- `throwOnError: true` now throws a real `Error` with the server message and preserves the response body in `cause`.\n\n## Extensions\n### Improvements\n- TUI plugins using the deprecated `api.command` API keep working while you migrate to `api.keymap`.\n\n### Bugfixes\n- Provider plugins can no longer mutate shared provider model state for the rest of the app.\n\n**Thank you to 1 community contributor:**\n- @OpeOginni:\n  - fix(sessions): allow optional patch field in diff for migrated sessions (#26574)\n",
+      "date": "2026-05-10T00:07:26Z",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.14.45",
+      "prerelease": false
+    },
+    {
+      "version": "v1.14.44",
+      "name": "v1.14.44",
+      "body": "## Core\n### Bugfixes\n- Fixed upgrades failing for existing workspaces when adding the `time_used` field.\n",
+      "date": "2026-05-09T19:33:29Z",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.14.44",
+      "prerelease": false
+    },
+    {
+      "version": "v1.14.43",
+      "name": "v1.14.43",
+      "body": "## Core\n### Bugfixes\n- Keep provider and config API responses working when auth loaders add non-JSON options to providers.\n- Include tool image attachments in ACP updates and session replays. (@SteffenDE)\n\n**Thank you to 1 community contributor:**\n- @SteffenDE:\n  - fix(acp): include tool image attachments in updates (#25128)\n",
+      "date": "2026-05-09T18:06:18Z",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.14.43",
+      "prerelease": false
+    },
+    {
+      "version": "v1.14.42",
+      "name": "v1.14.42",
+      "body": "## Core\n\n### Improvements\n\n- Added HTTP API response compression for large non-streaming responses.\n- Added the Scout agent for repo research, docs lookup, and dependency-source inspection.\n- Added workspace sync so adapter-backed workspaces can be discovered and registered automatically.\n- Added an interactive split-footer mode for `opencode run`.\n- Simplified TUI keybinding config into a flat keybind format.\n- Made duplicate worktree names fall back to the parent directory for clearer labels.\n\n### Bugfixes\n\n- Fixed HTTP API auth responses to match the previous wire format for empty authorize results and share errors.\n- Returned structured validation errors from the HTTP API.\n- Rejected invalid permission and question IDs in the HTTP API.\n- Included auth challenges on typed HTTP API `401` responses.\n- Fixed the HTTP API OpenAPI document route.\n- Fixed detached sessions so they are claimed by the source project again.\n- Forwarded `SIGINT`, `SIGTERM`, and `SIGHUP` correctly when running through the npm shim. (@chubes4)\n- Allowed skills without descriptions to load correctly.\n- Required auth on effect HTTP API root routes. (@RajvardhanPatil07)\n- Kept tool ordering stable so tool lists stop reshuffling between runs.\n- Made retry dialogs more specific to the provider and failure reason.\n- Fixed Gemini reasoning controls so supported effort levels and small-mode defaults match the model.\n- Fixed Anthropic Opus 4.5 reasoning effort options.\n- Limited OpenAI deep research models to the reasoning level they actually support.\n- Fixed GPT-5 reasoning variants so the exposed effort options match each model family.\n\n## TUI\n\n### Improvements\n\n- Show retrying sessions as active in the project sidebar. (@edemaine)\n\n### Bugfixes\n\n- Fixed the sidebar message shown for language server state. (@Polo123456789)\n- Sorted the session picker by full last-updated time instead of day buckets. (@Sleepful)\n- Kept longer cleared prompts in draft history so they can be restored.\n\n## Desktop\n\n### Improvements\n\n- Switched desktop updates to silent per-user install flow.\n\n**Thank you to 5 community contributors:**\n- @edemaine:\n  - feat(desktop): working indicator on project sidebar (#26223)\n- @RajvardhanPatil07:\n  - fix(server): require auth for effect root routes (#26361)\n- @chubes4:\n  - fix(cli): forward signals from npm shim (#26259)\n- @Sleepful:\n  - fix(tui): sort session picker by full updated timestamp (#24725)\n- @Polo123456789:\n  - fix(sidebar): fix logic and missleading message #26469 (#26470)\n",
+      "date": "2026-05-09T16:54:45Z",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.14.42",
+      "prerelease": false
+    },
+    {
       "version": "v1.14.41",
       "name": "v1.14.41",
       "body": "## Core\n\n### Bugfixes\n\n- Restored formatter output handling so formatting still works when formatters write to stdout or stderr. (@ferdinandyb)\n\n### Improvements\n\n- Warping a session to another workspace can now carry over your uncommitted file changes.\n\n## TUI\n\n### Bugfixes\n\n- Restored custom provider setup in `/connect`.\n\n## Desktop\n\n### Bugfixes\n\n- Added a macOS Settings menu entry. (@jessedi0n)\n\n### Improvements\n\n- Moved the desktop app's local server into a separate utility process for more reliable startup and shutdown.\n\n## Extensions\n\n### Improvements\n\n- ACP clients now restore the last model, mode, and effort when loading sessions, and can close sessions cleanly.\n\n**Thank you to 4 community contributors:**\n- @carmithersh:\n  - docs: add opencode-jfrog-plugin to ecosystem list for JFrog integration (#26019)\n- @jessedi0n:\n  - fix(desktop): add macOS settings menu entry (#26081)\n- @ferdinandyb:\n  - fix(format): restore stdout/stderr ignore for formatter processes (#26037)\n- @YGoetschel:\n  - fix: guard undefined contents in diff renderer to fix share viewer SSR crash (#21763)\n",
@@ -213,47 +253,7 @@
       "date": "2026-04-18T00:29:42Z",
       "url": "https://github.com/anomalyco/opencode/releases/tag/v1.4.11",
       "prerelease": false
-    },
-    {
-      "version": "v1.4.10",
-      "name": "v1.4.10",
-      "body": "## Core\n\n- Restored workspace history on connect so existing sessions catch up before live sync resumes\n- Passed OTEL exporter settings into managed workspaces so telemetry works there too\n- Normalized provider metadata defaults so models still load when catalog data is incomplete\n- Passed `EXA_API_KEY` to the `websearch` tool to reduce rate limits (@rasdani)\n\n## TUI\n\n- Added a restore flow for sessions whose workspace is unavailable, with clearer workspace status indicators\n- Fixed agent cycling when no agent is selected and improved prompt key handling\n\n**Thank you to 1 community contributor:**\n- @rasdani:\n  - fix(opencode): pass `EXA_API_KEY` to `websearch` tool to avoid rate limits (#16362)\n",
-      "date": "2026-04-17T20:13:50Z",
-      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.4.10",
-      "prerelease": false
-    },
-    {
-      "version": "v1.4.9",
-      "name": "v1.4.9",
-      "body": "## Core\n- Added LLM Gateway as a provider, including config support and model usage reporting. (@smakosh)\n- Limited GitHub Copilot Opus 4.7 models to medium reasoning effort to avoid unsupported variants. (@OpeOginni)\n- Improved remote workspace reconnection with exponential backoff and clearer failure handling.\n\n## TUI\n- Fixed `--session-id` so it opens the requested session after app startup.\n- Fixed light mode detection in Ghostty.\n\n## Desktop\n- Fixed the beta desktop app so the file tree still appears when enabled in settings.\n\n**Thank you to 3 community contributors:**\n- @OpeOginni:\n  - fix(opencode): rescrict github copilot opus 4.7 variants to \"medium\" (#23097)\n- @jenperson:\n  - docs: adding Mistral to docs as a provider (it is already a provider, just docs update) #23070 (#23072)\n- @smakosh:\n  - feat: add LLM Gateway provider (#7847)\n",
-      "date": "2026-04-17T16:20:14Z",
-      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.4.9",
-      "prerelease": false
-    },
-    {
-      "version": "v1.4.8",
-      "name": "v1.4.8",
-      "body": "## Core\n\n- Fixed a crash when experimental mode was enabled.\n- Let plugin tools return metadata in execute results. (@jquense)\n- Show real filenames instead of `/dev/null` in revert diffs.\n- Improved workspace session handling when a workspace no longer exists.\n- Fixed Windows `ctrl+z` terminal suspend and input undo behavior.\n- Enabled Azure prompt caching with a default per-session cache key.\n\n## TUI\n\n- Preserve prompt input when views unmount and remount.\n- Keep session list dialogs ordered more consistently within each day.\n\n## Desktop\n\n- Fixed desktop workspace loading so ready state persists correctly.\n- Fixed desktop session syncing when loading project data from query cache.\n- Added beta desktop settings to hide title bar tools like navigation, search, terminal, status, and file tree.\n- Improved desktop session change loading in the review panel.\n\n**Thank you to 1 community contributor:**\n- @jquense:\n  - fix: preserve plugin tool metadata in execute result (#22827)\n",
-      "date": "2026-04-17T13:37:31Z",
-      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.4.8",
-      "prerelease": false
-    },
-    {
-      "version": "v1.4.7",
-      "name": "v1.4.7",
-      "body": "## Core\r\n- GitHub Copilot `gpt-5-mini` now uses low reasoning effort for better request compatibility. (@thakrarsagar)\r\n- Fixed Github Copilot overbilling issue\r\n- Workspaces now receive your auth context, so provider sign-in carries across workspace sessions.\r\n- Cloudflare AI Gateway now drops `max_tokens` for OpenAI reasoning models so GPT-5 and o-series requests stop failing. (@kobicovaldev)\r\n- Azure models now default `store=true`, fixing requests that require stored responses.\r\n- Claude Opus 4.7 now supports `xhigh` adaptive reasoning. (@GrahamCampbell)\r\n- Claude Opus 4.7 now shows summarized thinking by default.\r\n- TUI plugins now load against the correct project when multiple directories are open.\r\n- The bash tool uses less memory on large command output.\r\n- Experimental workspaces now wait for sync to finish before returning writes, reducing stale reads and missed updates.\r\n- Session restore can now replay a session into another workspace in batches.\r\n- Sessions now retry provider 5xx errors even when the provider SDK does not mark them retryable.\r\n\r\n## TUI\r\n- Pasting files or large text no longer inserts content twice.\r\n- `--agent` on the command line is no longer overwritten by the session's saved agent. (@CarloWood)\r\n- Empty LSP, MCP, formatter, and session status responses no longer break TUI sync state.\r\n\r\n## Desktop\r\n- Desktop builds now show a Beta or Dev badge in the title bar when applicable.\r\n\r\n**Thank you to 8 community contributors:**\r\n- @ariane-emory:\r\n  - fix(core): Remove dead code and documentation related to the obsolete list tool.  (#22672)\r\n- @CarloWood:\r\n  - fix(tui): Don't overwrite the agent that was specified on the command line (#20554)\r\n- @jerome-benoit:\r\n  - fix(nix): add shared package to bun install filters (#22665)\r\n- @GrahamCampbell:\r\n  - feat: Add support for claude opus 4.7 xhigh adaptive reasoning effort (#22833)\r\n- @B67687:\r\n  - fix: align stale bot message with actual 60-day threshold (#22842)\r\n- @trbutler4:\r\n  - fix: add missing glob dependency  (#22851)\r\n- @kobicovaldev:\r\n  - fix(opencode): drop max_tokens for OpenAI reasoning models on Cloudflare AI Gateway (#22864)\r\n- @thakrarsagar:\r\n  - fix(opencode): use low reasoning effort for GitHub Copilot gpt-5 models (#22824)\r\n",
-      "date": "2026-04-16T21:55:19Z",
-      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.4.7",
-      "prerelease": false
-    },
-    {
-      "version": "v1.4.6",
-      "name": "v1.4.6",
-      "body": "## Core\n\n- Fixed snapshot staging for very long file lists and improved staging performance.\n- Fixed OTEL header parsing when a header value contains `=`.\n\n## Desktop\n\n- Fixed prompt submission state updates to avoid failed or inconsistent sends.\n- Improved session title input spacing while editing.\n\n**Thank you to 1 community contributor:**\n- @github-actions[bot]:\n  - Update VOUCHED list\n",
-      "date": "2026-04-15T07:26:50Z",
-      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.4.6",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-05-09T06:39:15.290Z"
+  "lastUpdated": "2026-05-10T06:50:10.643Z"
 }
