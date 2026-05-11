@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.139",
-  "generated_at": "2026-05-11T20:37:23.374Z",
+  "generated_at": "2026-05-11T19:35:17.844Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -17,7 +17,8 @@
     "from_version": "2.1.139",
     "to_version": "2.1.139",
     "new_features": [
-      "agent-view-research-preview"
+      "agent-view",
+      "transcript-view-navigation"
     ],
     "new_commands": [
       "/goal",
@@ -51,7 +52,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces the Agent View (Research Preview), providing a unified list of all Claude Code sessions, accessible via `claude agents`. The new `/goal` command allows setting completion conditions for continuous Claude operation across turns, displaying live progress metrics. Mouse wheel scroll speed can now be adjusted with the `/scroll-speed` command. The `claude plugin details <name>` command shows plugin component inventory and projected token cost, while transcript view navigation is enhanced with keyboard shortcuts. Hooks now support an `args: string[]` field for direct command spawning without a shell, and a `continueOnBlock` option for `PostToolUse` hooks. MCP stdio servers receive `CLAUDE_PROJECT_DIR` in their environment, and plugin configs can reference `${CLAUDE_PROJECT_DIR}`. Several fixes address issues like credential deadlocks, auto-approval of sandboxed commands with shell expansions, hook terminal access corruption, unbounded memory growth in HTTP/SSE MCP servers, and settings hot-reload for symlinked files. Additionally, the release fixes various UI and interaction bugs, including transcript view shortcuts, Bash history, image pasting, hyperlink readability, and scroll behavior in different terminals. Remote Control, `/schedule`, claude.ai MCP connectors, and notification preferences are now disabled when `ANTHROPIC_API_KEY` / `apiKeyHelper` / `ANTHROPIC_AUTH_TOKEN` is set, even if a Claude.ai login also exists. Upgrade is recommended to benefit from these improvements and fixes. VSCode users can now use Cmd/Ctrl+Shift+T to reopen the most recently closed session tab."
+      "tldr": "Version 2.1.139 introduces the Agent View, providing a unified list of all Claude Code sessions, streamlining session management. The new `/goal` command allows setting completion conditions for continuous operation across turns, displaying live progress metrics. A `/scroll-speed` command offers real-time mouse wheel scroll speed adjustments. The `claude plugin details` command now shows plugin component inventory and projected token cost, while transcript navigation gains keyboard shortcuts. Hooks now support direct command spawning without a shell via `args: string[]`, and `PostToolUse` hooks can continue turns with `continueOnBlock`. MCP servers now receive `CLAUDE_PROJECT_DIR` in their environment, and plugin configs can reference it. The `/mcp` reconnect command now picks up `.mcp.json` edits without restart. API requests from subagents now carry `x-claude-code-agent-id` and `x-claude-code-parent-agent-id` headers. Remote Control, `/schedule`, claude.ai MCP connectors, and notification preferences are now disabled when API keys are set. This release fixes several bugs, including credential deadlocks, `autoAllowBashIfSandboxed` failures, hook terminal corruption, unbounded memory growth in HTTP/SSE MCP servers, and settings hot-reload issues. Additionally, it addresses various UI and functional glitches, such as hyperlink readability, model picker behavior, and scroll behavior in different terminals. VSCode users can now reopen recently closed session tabs with Cmd/Ctrl+Shift+T. Upgrading is recommended to benefit from these enhancements and bug fixes. Ensure API keys are unset to use Claude.ai features."
     },
     "features": [
       {
@@ -1135,15 +1136,6 @@
         "description": "Keyboard shortcuts for transcript view navigation.",
         "key_details": [],
         "source_url": ""
-      },
-      {
-        "id": "agent-view-research-preview",
-        "name": "Agent View (Research Preview)",
-        "status": "experimental",
-        "since": "2.1.139",
-        "description": "A single list of every Claude Code session — running, blocked on you, or done.",
-        "key_details": [],
-        "source_url": "https://code.claude.com/docs/en/agent-view"
       }
     ],
     "commands": [
