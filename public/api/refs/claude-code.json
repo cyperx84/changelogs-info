@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.138",
-  "generated_at": "2026-05-11T18:40:58.795Z",
+  "version": "2.1.139",
+  "generated_at": "2026-05-11T19:35:17.844Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,12 +14,20 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.138",
-    "to_version": "2.1.138",
-    "new_features": [],
-    "new_commands": [],
+    "from_version": "2.1.139",
+    "to_version": "2.1.139",
+    "new_features": [
+      "agent-view",
+      "transcript-view-navigation"
+    ],
+    "new_commands": [
+      "/goal",
+      "/scroll-speed"
+    ],
     "new_flags": [],
-    "new_env_vars": [],
+    "new_env_vars": [
+      "CLAUDE_PROJECT_DIR"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -39,12 +47,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.138",
-      "latest_release_date": "2026-05-09",
+      "latest_stable": "2.1.139",
+      "latest_release_date": "2026-05-11",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release of claude-code (2.1.138) primarily includes internal fixes, focusing on stability and performance improvements. While there are no externally visible changes or new features introduced in this version, these internal enhancements contribute to a more robust and reliable development experience. Upgrading to this version is recommended to benefit from these underlying improvements and ensure continued compatibility with the claude-code ecosystem. No specific migration steps or prerequisites are required for this update. The focus remains on refining existing functionalities and optimizing the overall performance of the tool."
+      "tldr": "Version 2.1.139 introduces the Agent View, providing a unified list of all Claude Code sessions, streamlining session management. The new `/goal` command allows setting completion conditions for continuous operation across turns, displaying live progress metrics. A `/scroll-speed` command offers real-time mouse wheel scroll speed adjustments. The `claude plugin details` command now shows plugin component inventory and projected token cost, while transcript navigation gains keyboard shortcuts. Hooks now support direct command spawning without a shell via `args: string[]`, and `PostToolUse` hooks can continue turns with `continueOnBlock`. MCP servers now receive `CLAUDE_PROJECT_DIR` in their environment, and plugin configs can reference it. The `/mcp` reconnect command now picks up `.mcp.json` edits without restart. API requests from subagents now carry `x-claude-code-agent-id` and `x-claude-code-parent-agent-id` headers. Remote Control, `/schedule`, claude.ai MCP connectors, and notification preferences are now disabled when API keys are set. This release fixes several bugs, including credential deadlocks, `autoAllowBashIfSandboxed` failures, hook terminal corruption, unbounded memory growth in HTTP/SSE MCP servers, and settings hot-reload issues. Additionally, it addresses various UI and functional glitches, such as hyperlink readability, model picker behavior, and scroll behavior in different terminals. VSCode users can now reopen recently closed session tabs with Cmd/Ctrl+Shift+T. Upgrading is recommended to benefit from these enhancements and bug fixes. Ensure API keys are unset to use Claude.ai features."
     },
     "features": [
       {
@@ -1110,6 +1118,24 @@
         "description": "Adds `sandbox.bwrapPath` and `sandbox.socatPath` managed settings (Linux/WSL) to specify custom bubblewrap and socat binary locations.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "agent-view",
+        "name": "Agent View",
+        "status": "experimental",
+        "since": "2.1.139",
+        "description": "A single list of every Claude Code session — running, blocked on you, or done.",
+        "key_details": [],
+        "source_url": "https://code.claude.com/docs/en/agent-view"
+      },
+      {
+        "id": "transcript-view-navigation",
+        "name": "Transcript View Navigation",
+        "status": "stable",
+        "since": "2.1.139",
+        "description": "Keyboard shortcuts for transcript view navigation.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1499,6 +1525,22 @@
         "syntax": "claude project purge [path]",
         "description": "Deletes all Claude Code state for a project (transcripts, tasks, file history, config entry).",
         "since": "2.1.126",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "/goal",
+        "syntax": "/goal",
+        "description": "Set a completion condition and Claude keeps working across turns until it's met. Works in interactive, `-p`, and Remote Control. Shows live elapsed/turns/tokens as an overlay panel",
+        "since": "2.1.139",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "/scroll-speed",
+        "syntax": "/scroll-speed",
+        "description": "Tune mouse wheel scroll speed with a live preview",
+        "since": "2.1.139",
         "status": "stable",
         "source_url": ""
       }
@@ -2101,6 +2143,13 @@
         "purpose": "Re-enable the session quality survey for enterprises capturing responses through OpenTelemetry",
         "status": "stable",
         "since": "2.1.136",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_PROJECT_DIR",
+        "purpose": "MCP stdio servers now receive `CLAUDE_PROJECT_DIR` in their environment, matching hooks. Plugin configs can reference `${CLAUDE_PROJECT_DIR}` in commands",
+        "status": "stable",
+        "since": "2.1.139",
         "source_url": ""
       }
     ],
