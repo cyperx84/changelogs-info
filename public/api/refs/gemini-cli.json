@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "gemini-cli",
-  "version": "0.41.2",
-  "generated_at": "2026-05-12T22:29:05.988Z",
+  "version": "0.42.0",
+  "generated_at": "2026-05-12T23:26:02.146Z",
   "extracted_from_sources": [
     "https://github.com/google-gemini/gemini-cli/releases/tag/v0.33.0",
     "https://github.com/google-gemini/gemini-cli/releases"
@@ -14,12 +14,26 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "0.41.2",
-    "to_version": "0.41.2",
-    "new_features": [],
-    "new_commands": [],
-    "new_flags": [],
-    "new_env_vars": [],
+    "from_version": "0.42.0",
+    "to_version": "0.42.0",
+    "new_features": [
+      "auto-memory-inbox-flow",
+      "v8-heap-snapshot-utility",
+      "privacy-and-compliance-ux-warning-for-gemini-live-backend",
+      "queuing-messages-during-compression"
+    ],
+    "new_commands": [
+      "/exit",
+      "/commands",
+      "/bug-memory"
+    ],
+    "new_flags": [
+      "--delete",
+      "--ignore-env"
+    ],
+    "new_env_vars": [
+      "NODE_OPTIONS"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -39,14 +53,14 @@
       "changelog_url": "https://github.com/google-gemini/gemini-cli/releases",
       "repo_url": "https://github.com/google-gemini/gemini-cli",
       "license": "apache-2.0",
-      "latest_stable": "0.41.2",
+      "latest_stable": "0.42.0",
       "latest_prerelease": "0.34.0-preview",
-      "latest_release_date": "2026-05-06",
+      "latest_release_date": "2026-05-12",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
       "release_cadence": "Stable on Tuesdays. Preview: Tuesdays UTC 23:59. Nightly: daily UTC 00:00.",
-      "tldr": "This release, version 0.41.2, is a patch release addressing an issue identified in version 0.41.1. It includes a cherry-picked commit (02995ba) from the development branch to resolve a specific problem. Given its nature as a patch, upgrading is recommended to ensure stability and address the identified issue. There are no new features, breaking changes, or deprecations introduced in this release. The primary focus is on resolving an existing problem to maintain the tool's reliability. No specific migration steps are required, and the upgrade process should be seamless. It is advisable to upgrade at your earliest convenience to benefit from the fix."
+      "tldr": "This release introduces several new features and important fixes. The /exit command now supports a `--delete` flag for session deletion. A new Auto Memory inbox flow has been added, along with a V8 heap snapshot utility for memory diagnostics, and a privacy warning for the Gemini Live backend in voice mode. The /commands command now has a `list` subcommand. The /bug command now supports memory snapshots via the /bug-memory command. The voice mode has been enhanced with microphone support, placeholder updates, and wave animations.  Gemma 4 models are now enabled by default. Key fixes include preventing automatic updates from switching to less stable channels, handling DECKPAM keypad Enter sequences, reducing the default API timeout to 60s with retries, and preventing informational logs from polluting JSON output. The `--prompt` flag has been undeprecated. A new `--ignore-env` flag has been added to ignore local environment variables. This release also includes numerous documentation updates and minor UI improvements. It is recommended to upgrade to this version to take advantage of the new features and fixes. No specific migration steps are required."
     },
     "features": [
       {
@@ -1656,6 +1670,42 @@
         "description": "The CLI now supports boolean and number casting for environment variables defined in the settings.json file, providing more flexibility in configuration.",
         "key_details": [],
         "source_url": "https://github.com/google-gemini/gemini-cli/pull/26118"
+      },
+      {
+        "id": "auto-memory-inbox-flow",
+        "name": "Auto Memory Inbox Flow",
+        "status": "experimental",
+        "since": "0.42.0",
+        "description": "Adds an Auto Memory inbox flow with a canonical-patch contract.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26338"
+      },
+      {
+        "id": "v8-heap-snapshot-utility",
+        "name": "V8 Heap Snapshot Utility",
+        "status": "experimental",
+        "since": "0.42.0",
+        "description": "Adds a minimal V8 heap snapshot utility for memory diagnostics.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26440"
+      },
+      {
+        "id": "privacy-and-compliance-ux-warning-for-gemini-live-backend",
+        "name": "Privacy and Compliance UX Warning for Gemini Live Backend",
+        "status": "experimental",
+        "since": "0.42.0",
+        "description": "Adds a privacy and compliance UX warning for the Gemini Live backend in voice mode.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26454"
+      },
+      {
+        "id": "queuing-messages-during-compression",
+        "name": "Queuing Messages During Compression",
+        "status": "experimental",
+        "since": "0.42.0",
+        "description": "Allows queuing messages during compression.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26506"
       }
     ],
     "commands": [
@@ -1778,6 +1828,30 @@
         "since": "0.40.0",
         "status": "stable",
         "source_url": "https://github.com/google-gemini/gemini-cli/pull/17865"
+      },
+      {
+        "name": "/exit",
+        "syntax": "/exit --delete",
+        "description": "Adds a --delete flag to the /exit command for session deletion.",
+        "since": "0.42.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/19332"
+      },
+      {
+        "name": "/commands",
+        "syntax": "/commands list",
+        "description": "Adds a 'list' subcommand to '/commands'.",
+        "since": "0.42.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22324"
+      },
+      {
+        "name": "/bug-memory",
+        "syntax": "/bug-memory",
+        "description": "Adds /bug-memory command and auto-capture heap snapshot in /bug.",
+        "since": "0.42.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25639"
       }
     ],
     "flags": {
@@ -1854,6 +1928,18 @@
           "description": "Provides a manual session UUID via command line argument, allowing for more control over session management.",
           "since": "0.41.0",
           "source_url": "https://github.com/google-gemini/gemini-cli/pull/26060"
+        },
+        {
+          "flag": "--delete",
+          "description": "Flag for /exit command to delete the current session.",
+          "since": "0.42.0",
+          "source_url": "https://github.com/google-gemini/gemini-cli/pull/19332"
+        },
+        {
+          "flag": "--ignore-env",
+          "description": "Flag to ignore local environment variables.",
+          "since": "0.42.0",
+          "source_url": "https://github.com/google-gemini/gemini-cli/pull/26445"
         }
       ],
       "deprecated": [
@@ -1872,7 +1958,10 @@
           "source_url": "https://github.com/google-gemini/gemini-cli/pull/21171"
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--delete",
+        "--ignore-env"
+      ]
     },
     "env_vars": [
       {
@@ -1909,6 +1998,13 @@
         "status": "stable",
         "since": "0.39.0",
         "source_url": "https://github.com/google-gemini/gemini-cli/pull/25296"
+      },
+      {
+        "name": "NODE_OPTIONS",
+        "purpose": "Pass node arguments during relaunch to support SEA.",
+        "status": "stable",
+        "since": "0.42.0",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26130"
       }
     ],
     "models": [
