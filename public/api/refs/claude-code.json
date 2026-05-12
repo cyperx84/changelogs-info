@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.139",
-  "generated_at": "2026-05-12T20:35:13.144Z",
+  "version": "2.1.140",
+  "generated_at": "2026-05-12T21:30:56.261Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,17 +14,12 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.139",
-    "to_version": "2.1.139",
+    "from_version": "2.1.140",
+    "to_version": "2.1.140",
     "new_features": [],
-    "new_commands": [
-      "/goal",
-      "/scroll-speed"
-    ],
+    "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [
-      "CLAUDE_PROJECT_DIR"
-    ],
+    "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -44,12 +39,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.139",
-      "latest_release_date": "2026-05-11",
+      "latest_stable": "2.1.140",
+      "latest_release_date": "2026-05-12",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces the agent view, providing a unified list of all Claude Code sessions, accessible via `claude agents`. The new `/goal` command allows setting completion conditions for Claude, enabling continuous work across turns in interactive, `-p`, and Remote Control modes, with a live overlay panel displaying progress. The `/scroll-speed` command offers real-time adjustment of mouse wheel scrolling speed. Plugin details now include component inventory and projected token cost, viewable with `claude plugin details <name>`. Transcript view navigation is enhanced with keyboard shortcuts, accessible via `?`. Hook configurations gain a `continueOnBlock` option for `PostToolUse`, enabling feedback loops to Claude. MCP servers now receive `CLAUDE_PROJECT_DIR` in their environment, and plugin configs can reference `${CLAUDE_PROJECT_DIR}`. Remote Control, `/schedule`, claude.ai MCP connectors, and notification preferences are now disabled when `ANTHROPIC_API_KEY` is set. Several fixes address issues like deadlocks with expired credentials, auto-approval of shell expansions, hook terminal access corruption, unbounded memory growth in HTTP/SSE MCP servers, and settings hot-reload for symlinked files. Additionally, mouse wheel scrolling is improved in Cursor and VS Code, and a VSCode shortcut (Cmd/Ctrl+Shift+T) reopens the most recently closed session tab. Upgrading is recommended to benefit from these new features and fixes. Ensure to unset `ANTHROPIC_API_KEY` to use Remote Control, `/schedule`, claude.ai MCP connectors, and notification preferences if needed."
+      "tldr": "This release improves agent tool subagent type matching, allowing case- and separator-insensitive values, enhancing flexibility in agent configurations. The agent color palette has also been updated. A critical fix addresses a hang in the `/goal` command when `disableAllHooks` or `allowManagedHooksOnly` are set, now displaying a clear message instead of an unresolved indicator. A settings hot-reload regression caused by symlinked settings files has been resolved, preventing misattributed change events and spurious `ConfigChange` hooks. The `claude --bg` command no longer fails with \"connection dropped mid-request\" when the background service is about to idle-exit. Background service startup failures on machines with enterprise endpoint security are now mitigated by allowing more startup time. Remote managed settings now retry once with a force-refreshed token on 401 errors. A fix ensures that the managed `extraKnownMarketplaces` auto-update policy is persisted to `known_marketplaces.json`. Redundant wakeups scheduled by `/loop` for background tasks that already notify on completion have been eliminated. A recurring event-loop stall on Windows, triggered by missing executables and synchronous `where.exe` re-spawns, has been resolved. Validation failures for `Read` tool calls with whitespace-padded or `+`-prefixed `offset` values are now fixed. The native terminal cursor now remains at the input caret when the terminal loses focus. Plugins now provide warnings when a default component folder is silently ignored due to a matching key in `plugin.json`, displayed in `/doctor`, `claude plugin list`, and `/plugin`. This release is recommended for all users to address critical bug fixes and improve overall stability."
     },
     "features": [
       {
