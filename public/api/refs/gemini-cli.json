@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "gemini-cli",
   "version": "0.42.0",
-  "generated_at": "2026-05-13T03:10:43.426Z",
+  "generated_at": "2026-05-13T05:20:30.091Z",
   "extracted_from_sources": [
     "https://github.com/google-gemini/gemini-cli/releases/tag/v0.33.0",
     "https://github.com/google-gemini/gemini-cli/releases"
@@ -18,21 +18,22 @@
     "to_version": "0.42.0",
     "new_features": [
       "voice-mode-updates",
-      "commands-list-subcommand",
-      "extensions-delete-alias",
-      "gemma-4-models-enabled-by-default",
-      "minimal-v8-heap-snapshot-utility-for-memory-diagnostics",
       "auto-memory-inbox-flow-with-canonical-patch-contract",
-      "ignorelocalenv-setting-and-ignore-env-flag",
       "actions-spend-metric-script",
       "bug-memory-command-and-auto-capture-heap-snapshot-in-bug",
-      "queuing-messages-during-compression"
+      "queuing-messages-during-compression",
+      "minimal-v8-heap-snapshot-utility-for-memory-diagnostics"
     ],
-    "new_commands": [],
+    "new_commands": [
+      "/bug-memory"
+    ],
     "new_flags": [
+      "--delete",
       "--ignore-env"
     ],
-    "new_env_vars": [],
+    "new_env_vars": [
+      "NODE_OPTIONS"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -59,7 +60,7 @@
       "runtime": "node",
       "written_in": "typescript",
       "release_cadence": "Stable on Tuesdays. Preview: Tuesdays UTC 23:59. Nightly: daily UTC 00:00.",
-      "tldr": "This release of gemini-cli (0.42.0) introduces several new features and important fixes. Voice mode has been enhanced with a microphone, updated placeholder, wave animation, and a privacy warning for the Gemini Live backend. The `/commands` command now includes a `list` subcommand to display available commands. The `/extensions uninstall` command can now also be invoked using the alias `delete`. Gemma 4 models are now enabled by default via the Gemini API. A minimal V8 heap snapshot utility has been added for memory diagnostics, and an Auto Memory inbox flow with a canonical-patch contract has been implemented. A new `--ignore-env` flag and `ignoreLocalEnv` setting have been added to ignore local environment variables. The release also includes an actions spend metric script and a `/bug-memory` command that automatically captures a heap snapshot when using `/bug`. Messages can now be queued during compression. The ability to @ mention the gemini robot has been added. This release also fixes issues related to automatic updates, node arguments, terminal handling, oauth fields, extension-backed MCP clients, API timeouts, model selection, stream events, github actions, API key validation, shell tool prevention, grep tool case sensitivity, proxy urls, platform-specific undo/redo, extension warnings, stdin size limits, shell tool header wrapping, google cloud project override, tool output cleanup, agent execution blocking, GEMINI.md paths, sandbox state, voice transcription, box edges, version checking, daemon relaunch, git add prompts, system message injection, oauth flow, session-scoped state, subagent approval modes, agent mode disconnect, GEMINI.md loading, inquiry constraints, branch indicator updates, non-text parts in hook requests, early stdout, skills consent dialog, LaTeX-style output, child_process fallback, temporary directory leaks, agents refresh logging, multimodal types, markdown formatting, skill inbox dialog, stale items, home directory warning, tool approval race condition, settings dialog border clipping, and stream premature close errors. It is recommended to upgrade to this version to take advantage of the new features and fixes. No specific migration steps are required."
+      "tldr": "This release introduces several new features and important fixes. The Gemini robot can now be @ mentioned in chats. Voice mode has been updated with a microphone, placeholder, wave animation, and a privacy warning for the Gemini Live backend. The /bug-memory command has been added to capture heap snapshots in /bug reports, aiding in debugging. Auto Memory inbox flow with canonical-patch contract has been added. The /exit command now supports a --delete flag for session deletion. The /commands command now has a 'list' subcommand. The extensions command now has 'delete' as an alias for uninstall. Gemma 4 models are enabled by default. A minimal V8 heap snapshot utility is included for memory diagnostics. This release also fixes an issue where automatic updates could switch to less stable channels, and addresses various UI and core logic bugs. The --prompt flag has been undeprecated. The release also includes the ability to queue messages during compression. It is recommended to upgrade to this version to take advantage of the new features and fixes. There are no breaking changes or specific migration steps required."
     },
     "features": [
       {
@@ -2065,6 +2066,7 @@
         }
       ],
       "new_since_previous": [
+        "--delete",
         "--ignore-env"
       ]
     },
