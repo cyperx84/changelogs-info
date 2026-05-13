@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "gemini-cli",
   "version": "0.42.0",
-  "generated_at": "2026-05-13T01:40:09.924Z",
+  "generated_at": "2026-05-13T03:10:43.426Z",
   "extracted_from_sources": [
     "https://github.com/google-gemini/gemini-cli/releases/tag/v0.33.0",
     "https://github.com/google-gemini/gemini-cli/releases"
@@ -18,20 +18,18 @@
     "to_version": "0.42.0",
     "new_features": [
       "voice-mode-updates",
-      "delete-flag-to-exit-command",
-      "mention-gemini-robot",
+      "commands-list-subcommand",
+      "extensions-delete-alias",
       "gemma-4-models-enabled-by-default",
+      "minimal-v8-heap-snapshot-utility-for-memory-diagnostics",
       "auto-memory-inbox-flow-with-canonical-patch-contract",
       "ignorelocalenv-setting-and-ignore-env-flag",
       "actions-spend-metric-script",
+      "bug-memory-command-and-auto-capture-heap-snapshot-in-bug",
       "queuing-messages-during-compression"
     ],
-    "new_commands": [
-      "/commands list",
-      "/bug-memory"
-    ],
+    "new_commands": [],
     "new_flags": [
-      "--delete",
       "--ignore-env"
     ],
     "new_env_vars": [],
@@ -61,7 +59,7 @@
       "runtime": "node",
       "written_in": "typescript",
       "release_cadence": "Stable on Tuesdays. Preview: Tuesdays UTC 23:59. Nightly: daily UTC 00:00.",
-      "tldr": "This release of gemini-cli (v0.42.0) introduces several enhancements and fixes. A key addition is the `--delete` flag for the `/exit` command, enabling users to delete their session upon exiting. The CLI now supports mentioning the Gemini robot with `@`, and Gemma 4 models are enabled by default via the Gemini API. Voice mode receives updates with a microphone indicator, placeholder, wave animation, and a privacy warning for the Gemini Live backend. A new `/commands list` subcommand is added to list available commands, and the `/bug-memory` command captures heap snapshots for debugging. The CLI also introduces an Auto Memory inbox flow with a canonical-patch contract. The `--ignore-env` flag and `ignoreLocalEnv` setting are added to ignore local environment variables. This release also includes fixes for automatic updates, node arguments, terminal handling, oauth fields, extension-backed MCP clients, antigravity environment leakage, A2A pushMessage, API timeouts, model selection, InvalidStream events, github actions, API key validation, GrepTool case sensitivity, proxy urls, platform-specific undo/redo, extension warnings, readStdin size limits, shell tool header wrapping, GOOGLE_CLOUD_PROJECT override, skill discovery, tool names and args, posting invalid responses, informational logs, tool output cleanup, AgentExecutionBlocked reporting, /extensions uninstall alias, GEMINI.md paths, bot workflow, sandbox state, file creation eval, voice transcription, box edges, .env override for GOOGLE_CLOUD_PROJECT, version checking, daemon relaunch, git add prompts, Escape key clearing input, --prompt flag, System: Please continue injection, Ghostty/raw-mode False Cancellation, session-scoped state, generalist profile, subagent approval modes, agent mode disconnect, JSDoc, GEMINI.md loading, Inquiry constraints, branch indicator updates, non-text parts in fromHookLLMRequest, early stdout, skills consent dialog, LaTeX-style output, child_process fallback, temporary directory leaks, /agents refresh logging, Dockerfile, multimodal types, AskUser tool formatting, actions spend metric script, SkillInboxDialog fitting, stale items, home directory warning check, tool approval race condition, settings dialog border clipping, message queuing during compression, and ERR_STREAM_PREMATURE_CLOSE errors. It is recommended to upgrade to benefit from these improvements and fixes."
+      "tldr": "This release of gemini-cli (0.42.0) introduces several new features and important fixes. Voice mode has been enhanced with a microphone, updated placeholder, wave animation, and a privacy warning for the Gemini Live backend. The `/commands` command now includes a `list` subcommand to display available commands. The `/extensions uninstall` command can now also be invoked using the alias `delete`. Gemma 4 models are now enabled by default via the Gemini API. A minimal V8 heap snapshot utility has been added for memory diagnostics, and an Auto Memory inbox flow with a canonical-patch contract has been implemented. A new `--ignore-env` flag and `ignoreLocalEnv` setting have been added to ignore local environment variables. The release also includes an actions spend metric script and a `/bug-memory` command that automatically captures a heap snapshot when using `/bug`. Messages can now be queued during compression. The ability to @ mention the gemini robot has been added. This release also fixes issues related to automatic updates, node arguments, terminal handling, oauth fields, extension-backed MCP clients, API timeouts, model selection, stream events, github actions, API key validation, shell tool prevention, grep tool case sensitivity, proxy urls, platform-specific undo/redo, extension warnings, stdin size limits, shell tool header wrapping, google cloud project override, tool output cleanup, agent execution blocking, GEMINI.md paths, sandbox state, voice transcription, box edges, version checking, daemon relaunch, git add prompts, system message injection, oauth flow, session-scoped state, subagent approval modes, agent mode disconnect, GEMINI.md loading, inquiry constraints, branch indicator updates, non-text parts in hook requests, early stdout, skills consent dialog, LaTeX-style output, child_process fallback, temporary directory leaks, agents refresh logging, multimodal types, markdown formatting, skill inbox dialog, stale items, home directory warning, tool approval race condition, settings dialog border clipping, and stream premature close errors. It is recommended to upgrade to this version to take advantage of the new features and fixes. No specific migration steps are required."
     },
     "features": [
       {
@@ -1788,6 +1786,24 @@
         "description": "Enabled Gemma 4 models by default via Gemini API.",
         "key_details": [],
         "source_url": "https://github.com/google-gemini/gemini-cli/pull/26307"
+      },
+      {
+        "id": "commands-list-subcommand",
+        "name": "List Subcommand for /commands",
+        "status": "stable",
+        "since": "0.42.0",
+        "description": "Added 'list' subcommand to '/commands' to list available commands.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22324"
+      },
+      {
+        "id": "extensions-delete-alias",
+        "name": "Delete Alias for /extensions uninstall",
+        "status": "stable",
+        "since": "0.42.0",
+        "description": "Added 'delete' as an alias for /extensions uninstall.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25660"
       }
     ],
     "commands": [
@@ -2049,7 +2065,6 @@
         }
       ],
       "new_since_previous": [
-        "--delete",
         "--ignore-env"
       ]
     },
