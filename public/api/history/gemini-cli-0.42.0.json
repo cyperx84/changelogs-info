@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "gemini-cli",
   "version": "0.42.0",
-  "generated_at": "2026-05-13T00:45:47.849Z",
+  "generated_at": "2026-05-12T23:26:02.146Z",
   "extracted_from_sources": [
     "https://github.com/google-gemini/gemini-cli/releases/tag/v0.33.0",
     "https://github.com/google-gemini/gemini-cli/releases"
@@ -17,21 +17,23 @@
     "from_version": "0.42.0",
     "to_version": "0.42.0",
     "new_features": [
-      "auto-memory-inbox-flow-with-canonical-patch-contract",
-      "ignorelocalenv-setting-and-ignore-env-flag",
-      "actions-spend-metric-script",
-      "bug-memory-command-and-auto-capture-heap-snapshot-in-bug",
-      "queuing-messages-during-compression",
-      "minimal-v8-heap-snapshot-utility-for-memory-diagnostics"
+      "auto-memory-inbox-flow",
+      "v8-heap-snapshot-utility",
+      "privacy-and-compliance-ux-warning-for-gemini-live-backend",
+      "queuing-messages-during-compression"
     ],
     "new_commands": [
-      "/commands list"
+      "/exit",
+      "/commands",
+      "/bug-memory"
     ],
     "new_flags": [
       "--delete",
       "--ignore-env"
     ],
-    "new_env_vars": [],
+    "new_env_vars": [
+      "NODE_OPTIONS"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -58,7 +60,7 @@
       "runtime": "node",
       "written_in": "typescript",
       "release_cadence": "Stable on Tuesdays. Preview: Tuesdays UTC 23:59. Nightly: daily UTC 00:00.",
-      "tldr": "This release of gemini-cli (0.42.0) introduces several enhancements and fixes, focusing on voice mode, extension management, and memory handling. Voice mode now features a microphone icon, updated placeholder text, wave animation, cursor-position insertion for transcriptions, and a privacy warning for the Gemini Live backend. Extension management is simplified with 'delete' as an alias for `/extensions uninstall`. A new Auto Memory inbox flow with canonical-patch contract has been added, improving memory management. The release also includes a `/bug-memory` command to capture heap snapshots, aiding in debugging. The `--ignore-env` flag and `ignoreLocalEnv` setting allow users to ignore local environment variables. Gemma 4 models are now enabled by default via the Gemini API. The `/exit` command gains a `--delete` flag for session deletion. This release also fixes issues related to automatic updates, node arguments, terminal handling, API timeouts, and more. It is recommended to upgrade to benefit from these improvements and fixes. No specific migration steps are required."
+      "tldr": "This release introduces several new features and important fixes. The /exit command now supports a `--delete` flag for session deletion. A new Auto Memory inbox flow has been added, along with a V8 heap snapshot utility for memory diagnostics, and a privacy warning for the Gemini Live backend in voice mode. The /commands command now has a `list` subcommand. The /bug command now supports memory snapshots via the /bug-memory command. The voice mode has been enhanced with microphone support, placeholder updates, and wave animations.  Gemma 4 models are now enabled by default. Key fixes include preventing automatic updates from switching to less stable channels, handling DECKPAM keypad Enter sequences, reducing the default API timeout to 60s with retries, and preventing informational logs from polluting JSON output. The `--prompt` flag has been undeprecated. A new `--ignore-env` flag has been added to ignore local environment variables. This release also includes numerous documentation updates and minor UI improvements. It is recommended to upgrade to this version to take advantage of the new features and fixes. No specific migration steps are required."
     },
     "features": [
       {
@@ -1704,51 +1706,6 @@
         "description": "Allows queuing messages during compression.",
         "key_details": [],
         "source_url": "https://github.com/google-gemini/gemini-cli/pull/26506"
-      },
-      {
-        "id": "auto-memory-inbox-flow-with-canonical-patch-contract",
-        "name": "Auto Memory inbox flow with canonical-patch contract",
-        "status": "stable",
-        "since": "0.42.0",
-        "description": "Adds an Auto Memory inbox flow with canonical-patch contract.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26338"
-      },
-      {
-        "id": "ignorelocalenv-setting-and-ignore-env-flag",
-        "name": "ignoreLocalEnv setting and --ignore-env flag",
-        "status": "stable",
-        "since": "0.42.0",
-        "description": "Adds an `ignoreLocalEnv` setting and `--ignore-env` flag to ignore local environment variables.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26445"
-      },
-      {
-        "id": "actions-spend-metric-script",
-        "name": "Actions spend metric script",
-        "status": "stable",
-        "since": "0.42.0",
-        "description": "Adds a script to track actions spend metrics.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26463"
-      },
-      {
-        "id": "bug-memory-command-and-auto-capture-heap-snapshot-in-bug",
-        "name": "/bug-memory command and auto-capture heap snapshot in /bug",
-        "status": "stable",
-        "since": "0.42.0",
-        "description": "Adds a `/bug-memory` command and auto-captures a heap snapshot in the `/bug` command.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25639"
-      },
-      {
-        "id": "minimal-v8-heap-snapshot-utility-for-memory-diagnostics",
-        "name": "Minimal V8 heap snapshot utility for memory diagnostics",
-        "status": "stable",
-        "since": "0.42.0",
-        "description": "Adds a minimal V8 heap snapshot utility for memory diagnostics.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26440"
       }
     ],
     "commands": [
@@ -1895,14 +1852,6 @@
         "since": "0.42.0",
         "status": "stable",
         "source_url": "https://github.com/google-gemini/gemini-cli/pull/25639"
-      },
-      {
-        "name": "/commands list",
-        "syntax": "/commands list",
-        "description": "Adds 'list' subcommand to '/commands'",
-        "since": "0.42.0",
-        "status": "stable",
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22324"
       }
     ],
     "flags": {
