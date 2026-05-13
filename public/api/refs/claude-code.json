@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.140",
-  "generated_at": "2026-05-13T22:28:48.803Z",
+  "version": "2.1.141",
+  "generated_at": "2026-05-13T23:26:53.626Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,12 +14,17 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.140",
-    "to_version": "2.1.140",
+    "from_version": "2.1.141",
+    "to_version": "2.1.141",
     "new_features": [],
     "new_commands": [],
-    "new_flags": [],
-    "new_env_vars": [],
+    "new_flags": [
+      "--cwd"
+    ],
+    "new_env_vars": [
+      "CLAUDE_CODE_PLUGIN_PREFER_HTTPS",
+      "ANTHROPIC_WORKSPACE_ID"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -39,12 +44,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.140",
-      "latest_release_date": "2026-05-12",
+      "latest_stable": "2.1.141",
+      "latest_release_date": "2026-05-13",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release improves agent tool `subagent_type` matching, allowing case- and separator-insensitive values, enhancing flexibility in agent configurations. The agent color palette has also been updated. A critical fix addresses a `/goal` command hang when `disableAllHooks` or `allowManagedHooksOnly` is set, now displaying a clear message instead of an indefinite indicator. Settings hot-reload has been corrected to prevent misattributed change events and spurious `ConfigChange` hooks caused by symlinked settings files. The `claude --bg` command no longer fails with \"connection dropped mid-request\" when the background service is about to idle-exit. Background service startup failures on machines with enterprise endpoint security have been resolved by allowing more time. Remote managed settings now retry on 401 errors with a force-refreshed token. A managed `extraKnownMarketplaces` auto-update policy persistence issue has been fixed. Redundant wakeups scheduled by `/loop` have been eliminated. A recurring event-loop stall on Windows, triggered by missing executables, has been resolved. Validation failures for `Read` tool calls with whitespace-padded or `+`-prefixed `offset` values have been fixed. The native terminal cursor now remains at the input caret when the terminal loses focus. Plugins now provide warnings when default component folders are silently ignored due to `plugin.json` settings, displayed in `/doctor`, `claude plugin list`, and `/plugin`. This release includes several important bug fixes and enhancements, making it a recommended upgrade for all users."
+      "tldr": "This release introduces several improvements and fixes across various areas of claude-code. A new `terminalSequence` field in hook JSON output allows hooks to emit desktop notifications and window titles without a controlling terminal. The `CLAUDE_CODE_PLUGIN_PREFER_HTTPS` environment variable enables cloning GitHub plugin sources over HTTPS instead of SSH, useful in environments lacking a GitHub SSH key. Additionally, the `ANTHROPIC_WORKSPACE_ID` environment variable supports workload identity federation, scoping minted tokens to specific workspaces. The `claude agents` command now accepts a `--cwd` flag to scope the session list to a directory. The `/feedback` command can now include recent sessions for issues spanning multiple sessions. The rewind menu now offers a \"Summarize up to here\" option to compress earlier context. Background agents now preserve the current permission mode, and agents that finish work but leave a background shell running now move to Completed status. Spinner feedback has been improved to indicate when Claude is still working during long thinking periods. Plugin menu navigation has also been enhanced. Several bugs have been addressed, including fixes for model selection in background side-queries, daemon status on Windows, agent list display, auto-naming of background jobs, and prompt restoration. It is recommended to upgrade to this version to benefit from these improvements and fixes. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
@@ -1803,6 +1808,12 @@
           "description": "Lists `--remote-control` alongside `--remote-control-session-name-prefix` in `claude --help`.",
           "since": "2.1.133",
           "source_url": ""
+        },
+        {
+          "flag": "--cwd",
+          "description": "Scope the session list to a directory.",
+          "since": "2.1.141",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -1829,7 +1840,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--cwd"
+      ]
     },
     "env_vars": [
       {
@@ -2151,6 +2164,20 @@
         "purpose": "MCP stdio servers now receive `CLAUDE_PROJECT_DIR` in their environment, matching hooks. Plugin configs can reference `${CLAUDE_PROJECT_DIR}` in commands",
         "status": "stable",
         "since": "2.1.139",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_PLUGIN_PREFER_HTTPS",
+        "purpose": "Clone GitHub plugin sources over HTTPS instead of SSH, for environments without a GitHub SSH key.",
+        "status": "stable",
+        "since": "2.1.141",
+        "source_url": ""
+      },
+      {
+        "name": "ANTHROPIC_WORKSPACE_ID",
+        "purpose": "Workload identity federation — scopes the minted token to a specific workspace when the federation rule covers more than one.",
+        "status": "stable",
+        "since": "2.1.141",
         "source_url": ""
       }
     ],
