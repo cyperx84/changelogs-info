@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "3.83.0",
-  "generated_at": "2026-05-14T22:27:03.897Z",
+  "version": "3.0.3",
+  "generated_at": "2026-05-14T23:22:37.451Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,11 +19,18 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "3.83.0",
-    "to_version": "3.83.0",
-    "new_features": [],
+    "from_version": "3.0.3",
+    "to_version": "3.0.3",
+    "new_features": [
+      "session-status-in-cli-history-view",
+      "openai-compatible-provider-restore",
+      "aws-bedrock-bearer-token-auth",
+      "refined-shared-system-prompt"
+    ],
     "new_commands": [],
-    "new_flags": [],
+    "new_flags": [
+      "--worktree"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -45,12 +52,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "3.83.0",
-      "latest_release_date": "2026-05-13",
+      "latest_stable": "3.0.3",
+      "latest_release_date": "2026-05-14",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "This release focuses on improvements and fixes to existing functionality. The @-mention file picker now displays a clear \"Searching...\" state and has improved search performance, enhancing the user experience when referencing files. The `write_to_file` tool can now create or overwrite files even with empty content, providing more flexibility in file manipulation. Validation failures for MCP servers requiring an object have been resolved, ensuring smoother integration with such servers. OpenRouter prompt cache control is now enabled for Qwen models, potentially improving performance and reducing costs. Dependencies like Axios and SAP Connectivity have been updated for enhanced security and stability. The VS Code extension now uses the VS Code-specific `README.marketplace.md` for packaging and publishing, streamlining the extension distribution process. Telemetry has been added to @-mention search to diagnose local, remote, and multi-root workspace search behavior, aiding in identifying and resolving performance issues. This release is recommended for all users to benefit from the bug fixes and performance improvements. No specific prerequisites are required for upgrading."
+      "tldr": "Cline v3.0.3 introduces the `--worktree` flag, which automatically creates a fresh git worktree under `~/.cline/worktrees/` for each task, enabling isolated experimentation and resumption of tasks with different approaches. This is particularly useful when combined with `--taskId` and `--continue`. The CLI history view now displays session status and refreshes in place while the standalone history TUI is open, providing real-time feedback on task progress. The release also restores the OpenAI compatible provider in the auth flow, preserving stored model metadata during configuration or migration. AWS Bedrock now supports bearer token authentication and correctly maps AWS profiles when configuring the Bedrock gateway. A fix addresses dropped macOS screenshots in the TUI by resolving paths with Unicode variants like U+202F. The `--thinking none` flag is now honored for Ollama models with reasoning enabled by default. The shared system prompt has been refined to provide clearer guidance on tool output formatting, unsupported file reads, long-running shell commands, and final verification. Detached hub event errors are now handled gracefully, preventing session crashes. Users are encouraged to upgrade to benefit from these improvements and fixes. No specific migration steps are required."
     },
     "features": [
       {
@@ -356,6 +363,42 @@
         "status": "stable",
         "since": "3.0.2",
         "description": "Adds support for new Gemini models.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "session-status-in-cli-history-view",
+        "name": "Session Status in CLI History View",
+        "status": "stable",
+        "since": "3.0.3",
+        "description": "Shows session status in the CLI history view and refreshes status rows in place while the standalone history TUI is open.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "openai-compatible-provider-restore",
+        "name": "OpenAI Compatible Provider Restore",
+        "status": "stable",
+        "since": "3.0.3",
+        "description": "Restores the OpenAI compatible provider in the auth flow and preserves stored model metadata when configuring or migrating OpenAI-compatible providers.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "aws-bedrock-bearer-token-auth",
+        "name": "AWS Bedrock Bearer Token Auth",
+        "status": "stable",
+        "since": "3.0.3",
+        "description": "Accepts bearer token auth for AWS Bedrock and maps AWS profiles correctly when configuring the Bedrock gateway.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "refined-shared-system-prompt",
+        "name": "Refined Shared System Prompt",
+        "status": "stable",
+        "since": "3.0.3",
+        "description": "Refines the shared system prompt with clearer guidance on tool output formatting, unsupported file reads, long-running shell commands, and final verification before completing a task.",
         "key_details": [],
         "source_url": ""
       }

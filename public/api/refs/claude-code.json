@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.141",
-  "generated_at": "2026-05-14T22:26:25.354Z",
+  "version": "2.1.142",
+  "generated_at": "2026-05-14T23:21:28.409Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,14 +14,25 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.141",
-    "to_version": "2.1.141",
-    "new_features": [],
+    "from_version": "2.1.142",
+    "to_version": "2.1.142",
+    "new_features": [
+      "plugins-with-root-level-skill-md",
+      "plugin-lsp-server-details"
+    ],
     "new_commands": [],
-    "new_flags": [],
+    "new_flags": [
+      "--add-dir",
+      "--settings",
+      "--mcp-config",
+      "--plugin-dir",
+      "--permission-mode",
+      "--model",
+      "--effort",
+      "--dangerously-skip-permissions"
+    ],
     "new_env_vars": [
-      "CLAUDE_CODE_PLUGIN_PREFER_HTTPS",
-      "ANTHROPIC_WORKSPACE_ID"
+      "CLAUDE_CODE_OPUS_4_6_FAST_MODE_OVERRIDE"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -42,12 +53,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.141",
-      "latest_release_date": "2026-05-13",
+      "latest_stable": "2.1.142",
+      "latest_release_date": "2026-05-14",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces several improvements and fixes across various areas of claude-code. A new `terminalSequence` field in hook JSON output allows hooks to emit desktop notifications and window titles without a controlling terminal. The `CLAUDE_CODE_PLUGIN_PREFER_HTTPS` environment variable enables cloning GitHub plugin sources over HTTPS instead of SSH, useful in environments lacking a GitHub SSH key. Additionally, the `ANTHROPIC_WORKSPACE_ID` environment variable facilitates workload identity federation by scoping minted tokens to specific workspaces. The `/feedback` command now supports including recent sessions for issues spanning multiple interactions, and the rewind menu offers a \"Summarize up to here\" option to compress earlier context. Several fixes address issues with background agents, plugin menu navigation, and error handling on Windows. Specifically, agents that finish work but leave a background shell running now move to the Completed state. A bug where `/model` silently changed the autocompact threshold in other sessions has been resolved. Furthermore, issues with permission prompts, hook transcript paths, and markdown table rendering have been fixed. It is recommended to upgrade to this version to benefit from these enhancements and bug fixes, ensuring a more stable and efficient development experience. No specific prerequisites are required for this upgrade."
+      "tldr": "This release introduces several improvements and fixes, focusing on background sessions, plugin handling, and overall stability. Fast mode now defaults to Opus 4.7 for improved performance, but you can revert to Opus 4.6 by setting `CLAUDE_CODE_OPUS_4_6_FAST_MODE_OVERRIDE=1`. Plugins with a root-level `SKILL.md` are now recognized as skills, simplifying plugin structure. The `/plugin` details pane now displays LSP servers provided by plugins, aiding in plugin selection and configuration. Several fixes address critical issues with background sessions, including reconnection failures after macOS sleep/wake, crash loops after binary upgrades, and deadlocks on Windows with network drives. The `claude agents` command gains new flags like `--add-dir`, `--settings`, and `--dangerously-skip-permissions` for configuring dispatched background sessions. Additionally, a fix ensures that clicking links in attached `claude agents` sessions works correctly. Other fixes include addressing issues with session titles, redundant `/model` requests, and plugin cache cleanup. This release also improves error messages for hook configurations and reactive compaction. Upgrading is recommended to benefit from the stability improvements and new plugin features. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
@@ -1140,6 +1151,24 @@
         "description": "A single list of every Claude Code session — running, blocked on you, or done.",
         "key_details": [],
         "source_url": "https://code.claude.com/docs/en/agent-view"
+      },
+      {
+        "id": "plugins-with-root-level-skill-md",
+        "name": "Plugins with root-level SKILL.md",
+        "status": "stable",
+        "since": "2.1.142",
+        "description": "Plugins with a root-level `SKILL.md` and no `skills/` subdirectory are now surfaced as a skill.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "plugin-lsp-server-details",
+        "name": "Plugin LSP Server Details",
+        "status": "stable",
+        "since": "2.1.142",
+        "description": "The `/plugin` details pane and `claude plugin details` now show LSP servers a plugin provides.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1812,6 +1841,18 @@
           "description": "Scope the session list to a directory.",
           "since": "2.1.141",
           "source_url": ""
+        },
+        {
+          "flag": "--add-dir",
+          "description": "To configure dispatched background sessions",
+          "since": "2.1.142",
+          "source_url": ""
+        },
+        {
+          "flag": "--settings",
+          "description": "To configure dispatched background sessions",
+          "since": "2.1.142",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -1838,7 +1879,16 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--add-dir",
+        "--settings",
+        "--mcp-config",
+        "--plugin-dir",
+        "--permission-mode",
+        "--model",
+        "--effort",
+        "--dangerously-skip-permissions"
+      ]
     },
     "env_vars": [
       {
@@ -2174,6 +2224,13 @@
         "purpose": "Workload identity federation — scopes the minted token to a specific workspace when the federation rule covers more than one.",
         "status": "stable",
         "since": "2.1.141",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_OPUS_4_6_FAST_MODE_OVERRIDE",
+        "purpose": "Pin fast mode to Opus 4.6",
+        "status": "stable",
+        "since": "2.1.142",
         "source_url": ""
       }
     ],
