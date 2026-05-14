@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.5.12",
-  "generated_at": "2026-05-14T20:35:08.258Z",
+  "generated_at": "2026-05-14T18:41:28.017Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,43 +14,11 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.5.12",
-    "to_version": "2026.5.12",
-    "new_features": [
-      "persisted-auto-scroll-mode-selector",
-      "acp-fallbacks",
-      "cron-get",
-      "per-sender-tool-policies",
-      "acp-session-lineage-metadata",
-      "imessage-channel-status-filtering",
-      "plugin-inspector-advisory-artifact",
-      "fly-machines-container-detection",
-      "fal-image-edit-requests",
-      "plain-html-recovery-panel",
-      "per-agent-tools-message-crosscontext-overrides",
-      "per-agent-tools-message-actions-allow-overrides",
-      "provider-level-local-service-startup",
-      "context-map",
-      "slack-unfurl-config",
-      "slack-replybroadcast-support",
-      "telegram-live-pr-evidence-automation",
-      "telegram-desktop-scenario-builder",
-      "discord-realtime-voice-diagnostics",
-      "talk-realtime-instructions",
-      "discord-voice-allowedchannels",
-      "private-skill-archive-upload-install-path",
-      "bundled-plugin-session-actions",
-      "media-understanding-extractstructuredwithmodel",
-      "tools-exec-commandhighlighting"
-    ],
-    "new_commands": [
-      "openclaw cron get",
-      "/context map",
-      "openclaw channels status"
-    ],
-    "new_flags": [
-      "--openai-api-key"
-    ],
+    "from_version": "2026.5.7",
+    "to_version": "2026.5.7",
+    "new_features": [],
+    "new_commands": [],
+    "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -78,7 +46,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release focuses on leaner installs, improved Telegram resilience, smoother Codex/OpenAI paths, hardened plugin installs/updates, and broad security/provenance hardening. WhatsApp, Slack, Amazon Bedrock, Anthropic Vertex, and related provider/plugin dependencies are now externalized from the core runtime. Telegram benefits from isolated polling, durable local spooling, safer group-media handling, and preserved HTML/Markdown formatting. Codex/OpenAI paths are improved with auth-profile-backed media tools, MCP server projection, and better fallback behavior. New features include a persisted auto-scroll mode selector in Control UI/WebChat and `acp.fallbacks` for ACP turn retries. The `openclaw cron get <id>` command allows inspecting stored cron jobs by ID, and per-sender tool policies enable restricting dangerous tools by requester identity. Telegram live PR evidence automation and a desktop scenario builder have been added for QA. Key fixes address Telegram polling stalls, HTML formatting, and group media handling, as well as sandbox security, model config/auth, and media fetch. The `openclaw models auth login --provider openai` command now starts the ChatGPT/Codex account login by default. This release includes numerous dependency updates and build improvements. Upgrade is recommended for all users to benefit from the security enhancements and bug fixes. No specific migration steps are required."
+      "tldr": "This release focuses on stability and bug fixes across various components of OpenClaw. Plugin publishing now retries transient ClawHub CLI dependency install failures and verifies package versions for faster recovery. OpenAI now supports `openai/chat-latest` as a direct API-key model override. The Cron CLI now includes computed `status` in JSON output for external tooling. The Channels CLI has been reworked to be channel-only, with model auth/usage details moved to other commands. Several fixes address issues with native commands, active memory, gateway sessions, auto-reply, Tavily, plugin installs, agents/context engine, Discord messages, agents/compaction, commands/BTW, cron/doctor, Telegram, agent delivery, cron/isolated runs, gateway/sessions, doctor/Codex OAuth, Telegram polling, agents/subagents, plugins/channel setup, Telegram message handling, gateway/tasks, Discord/voice, WhatsApp, Codex/approvals, and model providers. Discord voice capture is less choppy with an extended silence grace period. WhatsApp now routes proactive phone-number sends through Baileys LID forward mappings. Codex approval modes have been refined to improve security and usability. Model providers now normalize APNG uploads and handle legacy custom-provider keys. Telegram model lists now render as inline keyboard buttons. This release is recommended for all users to address critical bug fixes and improve overall stability."
     },
     "features": [
       {
@@ -2447,231 +2415,6 @@
           "Configurable via a config flag."
         ],
         "source_url": ""
-      },
-      {
-        "id": "persisted-auto-scroll-mode-selector",
-        "name": "Persisted Auto-Scroll Mode Selector",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Adds a persisted auto-scroll mode selector to Control UI/WebChat, allowing users to keep the current near-bottom behavior, always follow streaming output, or turn automatic streaming scroll off and use the New messages button manually.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "acp-fallbacks",
-        "name": "ACP Fallbacks",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Adds `acp.fallbacks` so ACP turns can try configured backup runtime backends when the primary backend is unavailable before any output is emitted.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "cron-get",
-        "name": "Cron Get",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Adds direct `cron.get`, `openclaw cron get <id>`, and agent-tool `get` support for inspecting one stored cron job by id.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "per-sender-tool-policies",
-        "name": "Per-Sender Tool Policies",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Adds per-sender tool policies with canonical channel-scoped sender keys, so operators can restrict dangerous tools by requester identity across global, agent, group, core, bundled, and plugin tool surfaces.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "acp-session-lineage-metadata",
-        "name": "ACP Session Lineage Metadata",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Exposes Gateway session lineage metadata through ACP session listings and session info snapshots so clients can render subagent graphs without private Gateway side channels.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "imessage-channel-status-filtering",
-        "name": "iMessage Channel Status Filtering",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Adds `openclaw channels status --channel <name>` filtering and documents the BlueBubbles-to-imsg cutover path so operators can probe iMessage without starting both channel monitors.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "plugin-inspector-advisory-artifact",
-        "name": "Plugin Inspector Advisory Artifact",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Adds a non-blocking `plugin-inspector-advisory` artifact to Plugin Prerelease so release runs capture bundled plugin compatibility triage without changing the blocking gate.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "fly-machines-container-detection",
-        "name": "Fly Machines Container Detection",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Detects Fly Machines as container environments from their runtime env vars, so gateway bind and Bonjour defaults match remote container launches.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "fal-image-edit-requests",
-        "name": "Fal Image Edit Requests",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Routes GPT Image 2 and Nano Banana 2 reference-image edit requests to `/edit` with `image_urls` array, enforces NB2 edit geometry using `aspect_ratio` and `resolution` params, lifts Fal edit mode input-image caps to 10 for GPT Image 2 and 14 for Nano Banana 2, and allows aspect-ratio hints in edit mode.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "plain-html-recovery-panel",
-        "name": "Plain HTML Recovery Panel",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Shows a plain HTML recovery panel when the app module never registers, giving blank dashboard pages a retry path and browser-extension troubleshooting link.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "per-agent-tools-message-crosscontext-overrides",
-        "name": "Per-Agent tools.message.crossContext Overrides",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Allows per-agent `tools.message.crossContext` overrides so sandboxed/public agents can restrict message sends to the current conversation without changing the global bot policy.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "per-agent-tools-message-actions-allow-overrides",
-        "name": "Per-Agent tools.message.actions.allow Overrides",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Allows per-agent `tools.message.actions.allow` overrides so sandboxed/public agents can expose and enforce send-only message tools.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "provider-level-local-service-startup",
-        "name": "Provider-Level Local Service Startup",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Adds provider-level `localService` startup for on-demand local model servers before OpenAI-compatible requests, including one-shot model probes.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "context-map",
-        "name": "Context Map",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Adds `/context map` to send a treemap image of the current session context contributors.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "slack-unfurl-config",
-        "name": "Slack Unfurl Config",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Adds `unfurlLinks` and `unfurlMedia` config for bot `chat.postMessage` replies, including per-account overrides, so Slack link and media previews can be suppressed without workspace-wide settings.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "slack-replybroadcast-support",
-        "name": "Slack replyBroadcast Support",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Adds explicit `replyBroadcast` support for text and Block Kit thread replies so agents can opt into Slack's parent-channel `reply_broadcast` behavior.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "telegram-live-pr-evidence-automation",
-        "name": "Telegram Live PR Evidence Automation",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Adds Telegram live PR evidence automation with Convex-leased credentials, Crabbox transcript capture, motion GIF previews, and inline PR comments.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "telegram-desktop-scenario-builder",
-        "name": "Telegram Desktop Scenario Builder",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Adds a Telegram desktop scenario builder that leases Crabbox, installs native Telegram Desktop, configures an OpenClaw Telegram gateway with leased bot credentials, and records VNC screenshot/video artifacts.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "discord-realtime-voice-diagnostics",
-        "name": "Discord Realtime Voice Diagnostics",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Adds realtime voice diagnostics for speaker turns, playback resets, barge-in detection, and audio cutoff analysis.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "talk-realtime-instructions",
-        "name": "Talk Realtime Instructions",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Adds `talk.realtime.instructions` so operators can append realtime voice style instructions while preserving OpenClaw's built-in agent-consult guidance.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "discord-voice-allowedchannels",
-        "name": "Discord voice.allowedChannels",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Adds `voice.allowedChannels` to restrict voice joins and bot voice-state moves to configured channels while preserving open voice behavior when unset.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "private-skill-archive-upload-install-path",
-        "name": "Private Skill Archive Upload Install Path",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Adds an opt-in private skill archive upload install path gated by `skills.install.allowUploadedArchives`, so trusted Gateway clients can stage and install zip-backed skills only when operators explicitly enable the code-install surface.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "bundled-plugin-session-actions",
-        "name": "Bundled-Plugin Session Actions",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Adds bundled-plugin session actions, `sendSessionAttachment`, and Cron-backed `scheduleSessionTurn`/tag cleanup under the grouped session namespace.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "media-understanding-extractstructuredwithmodel",
-        "name": "Media Understanding extractStructuredWithModel",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Adds `extractStructuredWithModel(...)` plus the optional provider-side `extractStructured(...)` seam so trusted plugins can run bounded image-first structured extraction with optional supplemental text context through provider-owned runtimes such as Codex.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "tools-exec-commandhighlighting",
-        "name": "tools.exec.commandHighlighting",
-        "status": "stable",
-        "since": "2026.5.12",
-        "description": "Adds `tools.exec.commandHighlighting` so parser-derived command highlighting in approval prompts can be enabled globally or per agent.",
-        "key_details": [],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -3034,30 +2777,6 @@
         "since": "2026.4.29",
         "status": "stable",
         "source_url": ""
-      },
-      {
-        "name": "openclaw cron get",
-        "syntax": "openclaw cron get <id>",
-        "description": "Inspect one stored cron job by id.",
-        "since": "2026.5.12",
-        "status": "stable",
-        "source_url": ""
-      },
-      {
-        "name": "/context map",
-        "syntax": "/context map",
-        "description": "Send a treemap image of the current session context contributors.",
-        "since": "2026.5.12",
-        "status": "stable",
-        "source_url": ""
-      },
-      {
-        "name": "openclaw channels status",
-        "syntax": "openclaw channels status --channel <name>",
-        "description": "Filter channel status by channel name.",
-        "since": "2026.5.12",
-        "status": "stable",
-        "source_url": ""
       }
     ],
     "flags": {
@@ -3191,12 +2910,6 @@
           "description": "Include bundled and catalog channels in `openclaw channels list` output.",
           "since": "2026.5.7",
           "source_url": ""
-        },
-        {
-          "flag": "--openai-api-key",
-          "description": "Forwards provider-specific auth flags through the onboarding wizard so they reach provider auth methods via `ctx.opts`, letting `--openai-api-key \"$OPENAI_API_KEY\"` skip the redundant \"use existing env var?\" prompt in non-interactive harnesses.",
-          "since": "2026.5.12",
-          "source_url": ""
         }
       ],
       "deprecated": [
@@ -3327,9 +3040,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--openai-api-key"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
