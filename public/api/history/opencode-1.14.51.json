@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
   "version": "1.14.51",
-  "generated_at": "2026-05-15T01:40:44.243Z",
+  "generated_at": "2026-05-15T00:45:19.023Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -17,7 +17,8 @@
     "from_version": "1.14.51",
     "to_version": "1.14.51",
     "new_features": [
-      "background-subagents"
+      "background-subagents",
+      "mcp-connection-status-for-client-registration-and-authentication"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -25,8 +26,7 @@
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "litellm-compatibility-update",
-      "internal-defect-details-removal"
+      "internal-named-defect-details-removal-from-http-api"
     ]
   },
   "payload": {
@@ -51,7 +51,7 @@
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "This release introduces experimental background subagents, allowing tasks to continue running while you work, improving workflow efficiency. The MCP connection status feature now includes direct re-authentication flows within the desktop application. A breaking change updates LiteLLM compatibility, requiring version `v1.85.0-rc.2+` for GPT-5 and tool-call behavior; upgrade LiteLLM to this version. Additionally, internal named defect details are no longer exposed from the HTTP API, requiring clients to use supported API endpoints. Worktree creation requests now correctly handle POST bodies, and sessions no longer get stuck with interrupted assistant messages after cancellation. Repeated auto-compaction issues have been resolved, and truncated shell output streams now close cleanly. Azure `gpt-5.5` requests through the completions API are now fixed, and automatic image resizing for oversized image attachments has been restored. In the TUI, text selection is now preserved when clicking question prompt options. The Windows app detection has been fixed, and DigitalOcean OAuth now requests only the necessary GenAI scopes. It is recommended to upgrade to this version to benefit from these improvements and fixes, especially if you are using LiteLLM or relying on the HTTP API for defect details. No specific prerequisites are required beyond the LiteLLM upgrade if applicable."
+      "tldr": "This release introduces experimental background subagents, allowing tasks to continue running even when you switch focus, improving workflow efficiency. The desktop app now displays MCP connection status, including client registration and authentication, with direct re-authentication flows, streamlining the connection process. LiteLLM compatibility is updated, requiring `v1.85.0-rc.2+` for current GPT-5 and tool-call behavior, ensuring proper integration. Azure `gpt-5.5` requests through the completions API are now fixed, resolving previous issues. Automatic image resizing for oversized image attachments has been restored, ensuring proper display. Text selection is now preserved when clicking question prompt options in the TUI. Windows app detection is fixed by correctly reading `where` output. DigitalOcean OAuth is now scoped to only request the GenAI scopes it needs, enhancing security. Internal named defect details are no longer exposed from the HTTP API, which is a breaking change for any consumers relying on those details. It is recommended to upgrade to this version to benefit from the improvements and bug fixes. Ensure LiteLLM is updated to `v1.85.0-rc.2+` if you are using it."
     },
     "features": [
       {
@@ -1177,26 +1177,6 @@
           "HTTP API users"
         ],
         "migration": "Consumers of the HTTP API should no longer rely on internal named defect details.",
-        "source_url": ""
-      },
-      {
-        "id": "litellm-compatibility-update",
-        "version": "1.14.51",
-        "title": "LiteLLM Compatibility Update",
-        "description": "LiteLLM compatibility now requires version `v1.85.0-rc.2+` for current GPT-5 and tool-call behavior.",
-        "affected": [],
-        "migration": "Upgrade LiteLLM to version v1.85.0-rc.2+.",
-        "source_url": ""
-      },
-      {
-        "id": "internal-defect-details-removal",
-        "version": "1.14.51",
-        "title": "Internal Defect Details Removal",
-        "description": "Internal named defect details are no longer exposed from the HTTP API.",
-        "affected": [
-          "HTTP API"
-        ],
-        "migration": "Clients relying on internal defect details from the HTTP API will need to be updated to use supported API endpoints.",
         "source_url": ""
       }
     ],
