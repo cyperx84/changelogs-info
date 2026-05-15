@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.142",
-  "generated_at": "2026-05-15T22:22:37.246Z",
+  "version": "2.1.143",
+  "generated_at": "2026-05-15T23:22:10.725Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,9 +14,11 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.142",
-    "to_version": "2.1.142",
-    "new_features": [],
+    "from_version": "2.1.143",
+    "to_version": "2.1.143",
+    "new_features": [
+      "worktree-bg-isolation-none-setting"
+    ],
     "new_commands": [],
     "new_flags": [
       "--add-dir",
@@ -29,7 +31,9 @@
       "--dangerously-skip-permissions"
     ],
     "new_env_vars": [
-      "CLAUDE_CODE_OPUS_4_6_FAST_MODE_OVERRIDE"
+      "CLAUDE_CODE_POWERSHELL_RESPECT_EXECUTION_POLICY",
+      "CLAUDE_CODE_STOP_HOOK_BLOCK_CAP",
+      "CLAUDE_CODE_USE_POWERSHELL_TOOL"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -50,12 +54,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.142",
-      "latest_release_date": "2026-05-14",
+      "latest_stable": "2.1.143",
+      "latest_release_date": "2026-05-15",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces new flags for the `claude agents` command, allowing more granular configuration of dispatched background sessions with options for directory, settings, MCP config, plugin directory, permission mode, model, effort, and skipping permissions. Fast mode now defaults to Opus 4.7, but can be pinned to Opus 4.6 using the `CLAUDE_CODE_OPUS_4_6_FAST_MODE_OVERRIDE=1` environment variable. Plugins with a root-level `SKILL.md` file are now correctly surfaced as skills, and the `/plugin` details pane displays LSP servers provided by a plugin. A warning is now displayed when `/web-setup` replaces an existing GitHub App connection. Several fixes address issues with MCP tool timeouts, background session handling of git worktrees and macOS sleep/wake cycles, daemon cleanup after binary upgrades, Claude-in-Chrome extension conflicts, link handling in attached sessions, editor selection for `claude agents`, deadlocks on Windows, background color bleed in terminals, persistence of `--dangerously-skip-permissions`, session title derivation from URLs, redundant `/model` breadcrumbs, plugin path validation, plugin cache cleanup, plugin browse pane display, and plugin advisory messages. Reactive compaction is improved by seeding from the original request's overflow size, and hook configuration errors are clarified. The stale `/model claude-sonnet-4-20250514` suggestion has been removed from Usage Policy refusal messages. Upgrading is recommended to benefit from these improvements and fixes. No specific prerequisites are required."
+      "tldr": "This release introduces plugin dependency enforcement, preventing disabling plugins that other enabled plugins depend on, and force-enabling transitive dependencies. The `/plugin` marketplace browse pane now displays projected context cost estimates. A new `worktree.bgIsolation: \"none\"` setting allows background sessions to directly edit the working copy without `EnterWorktree`. The PowerShell tool now passes `-ExecutionPolicy Bypass`, which can be opted out of with `CLAUDE_CODE_POWERSHELL_RESPECT_EXECUTION_POLICY=1`. Background sessions now preserve model and effort level after waking from idle, and Shift+Tab in attached agent sessions includes auto mode. Several fixes address issues like corrupt `.credentials.json` hanging the CLI, right-click paste in `claude agents` on Windows Terminal and WSL, and stop hooks blocking repeatedly. The `/goal` evaluator no longer fires while background shells or delegated subagents are running, and `NO_COLOR`/`FORCE_COLOR` in settings.json `env` no longer strips Claude Code's UI colors. `claude agents` now accepts `--add-dir`, `--settings`, `--mcp-config`, and `--plugin-dir`, and `--permission-mode`, `--model`, `--effort`, and `--dangerously-skip-permissions` to set defaults for sessions. Worktree cleanup no longer falls back to `rm -rf` when `git worktree remove` fails. `/bg` now preserves various settings and flags, and background sessions launched from `claude agents` now honor `permissions.defaultMode`. It is recommended to upgrade to this version to benefit from the improved plugin management, enhanced background session behavior, and critical bug fixes. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
@@ -1166,6 +1170,15 @@
         "description": "The `/plugin` details pane and `claude plugin details` now show LSP servers a plugin provides.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "worktree-bg-isolation-none-setting",
+        "name": "`worktree.bgIsolation: \"none\"` setting",
+        "status": "stable",
+        "since": "2.1.143",
+        "description": "Adds `worktree.bgIsolation: \"none\"` setting to allow background sessions to edit the working copy directly without `EnterWorktree`.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -2228,6 +2241,20 @@
         "purpose": "Pin fast mode to Opus 4.6",
         "status": "stable",
         "since": "2.1.142",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_POWERSHELL_RESPECT_EXECUTION_POLICY",
+        "purpose": "Opt out of PowerShell tool passing `-ExecutionPolicy Bypass`.",
+        "status": "stable",
+        "since": "2.1.143",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_STOP_HOOK_BLOCK_CAP",
+        "purpose": "Override the number of consecutive blocks after which a stop hook ends with a warning.",
+        "status": "stable",
+        "since": "2.1.143",
         "source_url": ""
       }
     ],
