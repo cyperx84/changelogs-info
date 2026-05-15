@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.5.12",
-  "generated_at": "2026-05-14T23:22:30.970Z",
+  "generated_at": "2026-05-15T00:45:44.067Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -17,11 +17,17 @@
     "from_version": "2026.5.12",
     "to_version": "2026.5.12",
     "new_features": [
+      "cron-get",
       "per-sender-tool-policies",
       "acp-session-lineage-metadata",
+      "imessage-channel-status-filtering",
+      "plugin-inspector-advisory-artifact",
+      "fly-machines-container-detection",
+      "fal-image-edit-requests",
       "plain-html-recovery-panel",
       "provider-level-local-service-startup",
       "context-map",
+      "slack-unfurl-config",
       "slack-replybroadcast-support",
       "telegram-live-pr-evidence-automation",
       "telegram-desktop-scenario-builder",
@@ -34,7 +40,9 @@
       "tools-exec-commandhighlighting"
     ],
     "new_commands": [],
-    "new_flags": [],
+    "new_flags": [
+      "--method api-key"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -62,7 +70,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release focuses on improving security, stability, and developer experience. Amazon Bedrock, Slack, OpenShell sandbox, and Anthropic Vertex are now externalized as plugins, reducing core install dependencies. The Control UI gains a persisted auto-scroll mode selector for better chat control. ACP introduces `acp.fallbacks` for improved backend resilience. Per-sender tool policies allow operators to restrict tool access based on requester identity. Gateway session lineage metadata is exposed through ACP for subagent graph rendering. A plain HTML recovery panel aids troubleshooting blank dashboards. Provider-level local service startup enables on-demand local model servers. The `/context map` command visualizes session context. Slack gains `replyBroadcast` support and configurable link/media previews. New QA automation and voice diagnostics tools enhance testing and debugging. The Plugin SDK sees deprecated subpaths and runtime metadata exposure. This release includes numerous bug fixes, including Telegram polling stalls, sandbox security, model config/auth, media fetch, CLI onboarding, Slack media downloads, plugin discovery, auth, CLI tables, process execution, gateway diagnostics, Codex harness, browser CLI, plugin SDK, control UI/i18n, Codex startup, agents, replies, macOS/companion, update, sessions/status, sessions/gateway, telegram, codex app-server, iMessage, agents/sessions, gateway, github copilot, gateway, plugins/feishu/whatsapp/line, plugins/install, config, installer, anthropic, installer, agents, harden trusted-proxy source validation [AI], agents, acpx, session transcripts, channels/imessage, telegram, fix: scan plugin runtime entries during install [AI], fix(plugins): scan installed dependency runtime code [AI], inherit tool restrictions for delegated sessions [AI], telegram, browser: enforce navigation checks for act interactions [AI], validate node exec event provenance [AI], gateway, codex app-server, plugin LLM completions, gateway/openai http, telegram, limit hook CLI tool authority [AI], require admin scope for node device token management [AI], restrict chat sender allowlist matching [AI], update, sessions, codex runtime, codex migration, codex harness, whatsapp/install, require auth for sandbox browser CDP relay [AI], fix: detect carried exec command forms [AI], reject truncated exec approval commands [AI], enforce inline shell wrapper payload matching [AI], fix(node-pairing): replace changed pending requests [AI], rate limit google chat webhook requests [AI], docker, onboarding, fix(feishu): normalize webhook rate-limit client keys [AI], fix(auth): prevent bootstrap pairing scope changes [AI], validate control ui loopback retry endpoints [AI], harden exported markdown link rendering [AI], fix(gateway): honor minimal discovery mode for wide-area DNS-SD [AI], slack: enforce reaction notification policy [AI], enforce gateway command scopes by caller context [AI], telegram/groups, codex (app-server), enforce slack plugin approval button authorization [AI], recognize powershell -ec inline commands [AI], fix(qqbot): authorize approval button callbacks [AI], telegram, scrub streamable mcp redirect headers [AI], fix(memory-wiki): require admin scope for ingest [AI], memory-wiki: require write scope for obsidian search [AI], whatsapp/install, whatsapp, build, control ui/sessions, auto-reply, agents/exec, provider streams, agents, whatsapp, cli/commitments, update, telegram, plugins/runtime, agents/cron, codex app-server. Upgrade is recommended for all users to benefit from these improvements and fixes."
+      "tldr": "This release focuses on improving plugin infrastructure, enhancing security, and refining existing features. The core install size is reduced by externalizing Amazon Bedrock and several plugins, ensuring dependencies are only installed when needed. A persisted auto-scroll mode selector is added to the Control UI, providing users with more control over streaming output. ACP now includes fallbacks for unavailable backends, improving reliability. Security is enhanced by restricting tool access based on sender identity and by hardening sandbox environments. The `openclaw models auth login` command now defaults to ChatGPT/Codex account login, simplifying the authentication process. New features include the ability to inspect cron jobs by ID, improved iMessage channel status filtering, and enhanced media understanding capabilities for plugins. Several fixes address issues with Telegram, Codex, and other channels, ensuring more reliable message delivery and context preservation. This release also includes various build and dependency updates, improving overall stability and performance. It is recommended to upgrade to this version to take advantage of the security enhancements and bug fixes. No specific migration steps are required."
     },
     "features": [
       {
@@ -3181,6 +3189,12 @@
           "description": "Forwards provider-specific auth flags through the onboarding wizard so they reach provider auth methods via `ctx.opts`, letting `--openai-api-key \"$OPENAI_API_KEY\"` skip the redundant \"use existing env var?\" prompt in non-interactive harnesses.",
           "since": "2026.5.12",
           "source_url": ""
+        },
+        {
+          "flag": "--method api-key",
+          "description": "Explicit OpenAI API-key setup path for `openclaw models auth login --provider openai`.",
+          "since": "2026.5.12",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -3311,7 +3325,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--method api-key"
+      ]
     },
     "env_vars": [
       {

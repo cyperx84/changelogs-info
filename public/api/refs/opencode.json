@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
-  "version": "1.14.50",
-  "generated_at": "2026-05-14T23:21:53.384Z",
+  "version": "1.14.51",
+  "generated_at": "2026-05-15T00:45:19.023Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -14,15 +14,20 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "1.14.50",
-    "to_version": "1.14.50",
-    "new_features": [],
+    "from_version": "1.14.51",
+    "to_version": "1.14.51",
+    "new_features": [
+      "background-subagents",
+      "mcp-connection-status-for-client-registration-and-authentication"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "internal-named-defect-details-removal-from-http-api"
+    ]
   },
   "payload": {
     "meta": {
@@ -40,13 +45,13 @@
       "changelog_url": "https://github.com/anomalyco/opencode/releases",
       "repo_url": "https://github.com/anomalyco/opencode",
       "license": "mit",
-      "latest_stable": "1.14.50",
-      "latest_release_date": "2026-05-14",
+      "latest_stable": "1.14.51",
+      "latest_release_date": "2026-05-15",
       "status": "active",
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "This release focuses on bug fixes and minor improvements across the core and TUI components. A critical fix ensures HTTP event streams remain open after the initial connect event, allowing subscribers to continuously receive instance updates, which is crucial for real-time monitoring and synchronization. Additionally, the release addresses issues with session management by returning proper busy errors when a session is already processing prompt or shell work, preventing conflicts and improving user experience. The handling of invalid `small_model` config values has been improved to gracefully fall back instead of causing failures in small-model selection. Error messages for missing models have been enhanced with suggestions across both the CLI and typed callers, aiding users in quickly resolving configuration issues. In the TUI, markdown rendering for session output has been restored by default, improving readability and information presentation. The SDK now supports `instance.directory` and `instance.workspace` query capabilities in the v2 model and provider calls, providing more detailed instance information. These changes collectively enhance stability, usability, and information accessibility within opencode. Upgrading is recommended to benefit from these improvements and bug fixes, with no specific prerequisites."
+      "tldr": "This release introduces experimental background subagents, allowing tasks to continue running even when you switch focus, improving workflow efficiency. The desktop app now displays MCP connection status, including client registration and authentication, with direct re-authentication flows, streamlining the connection process. LiteLLM compatibility is updated, requiring `v1.85.0-rc.2+` for current GPT-5 and tool-call behavior, ensuring proper integration. Azure `gpt-5.5` requests through the completions API are now fixed, resolving previous issues. Automatic image resizing for oversized image attachments has been restored, ensuring proper display. Text selection is now preserved when clicking question prompt options in the TUI. Windows app detection is fixed by correctly reading `where` output. DigitalOcean OAuth is now scoped to only request the GenAI scopes it needs, enhancing security. Internal named defect details are no longer exposed from the HTTP API, which is a breaking change for any consumers relying on those details. It is recommended to upgrade to this version to benefit from the improvements and bug fixes. Ensure LiteLLM is updated to `v1.85.0-rc.2+` if you are using it."
     },
     "features": [
       {
@@ -852,6 +857,24 @@
         "description": "Add Ctrl/Cmd+number shortcuts to switch projects in the desktop app.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "background-subagents",
+        "name": "Background Subagents",
+        "status": "experimental",
+        "since": "1.14.51",
+        "description": "Tasks can keep running while you continue working.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "mcp-connection-status-for-client-registration-and-authentication",
+        "name": "MCP Connection Status for Client Registration and Authentication",
+        "status": "stable",
+        "since": "1.14.51",
+        "description": "Added MCP connection status for client registration and authentication, with direct re-auth flows in the app.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1143,6 +1166,17 @@
           "UserMessage"
         ],
         "migration": "Update code to access the variant field via `userMessage.model.variant` instead of `userMessage.variant`.",
+        "source_url": ""
+      },
+      {
+        "id": "internal-named-defect-details-removal-from-http-api",
+        "version": "1.14.51",
+        "title": "Stopped exposing internal named defect details from the HTTP API",
+        "description": "Internal named defect details are no longer exposed from the HTTP API.",
+        "affected": [
+          "HTTP API users"
+        ],
+        "migration": "Consumers of the HTTP API should no longer rely on internal named defect details.",
         "source_url": ""
       }
     ],
