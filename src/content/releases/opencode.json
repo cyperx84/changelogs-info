@@ -15,6 +15,22 @@
   },
   "releases": [
     {
+      "version": "v1.15.0",
+      "name": "v1.15.0",
+      "body": "## Core\n### Improvements\n- Added an Effect-based core event system for more complete event delivery across sessions and integrations.\n\n### Bugfixes\n- Ignored invalid exports in custom tool modules instead of failing tool loading.\n- Ignored project instruction lookup errors so sessions keep loading when project instruction discovery fails.\n- Fixed versioned event projector lookups so event replay uses the right handlers.\n\n## Desktop\n### Improvements\n- Auto-hide the menu bar on Linux and Windows. (@shi-gg)\n\n### Bugfixes\n- Fixed archived sessions being reprocessed when their archive state did not change.\n\n## SDK\n### Bugfixes\n- Restored missing event types in the JavaScript SDK, including session and message events.\n\n**Thank you to 1 community contributor:**\n- @shi-gg:\n  - feat(desktop): auto-hide menu bar on Linux and Windows (#27618)\n",
+      "date": "2026-05-15T04:03:57Z",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.15.0",
+      "prerelease": false
+    },
+    {
+      "version": "v1.14.51",
+      "name": "v1.14.51",
+      "body": "## Core\n\n### Improvements\n\n- Added experimental background subagents so tasks can keep running while you continue working.\n- Added the required billing origin header for NVIDIA endpoints. (@nv-kasikritc)\n\n### Bugfixes\n\n- Fixed worktree creation requests that omitted the POST body.\n- Fixed sessions getting stuck with interrupted assistant messages after cancellation.\n- Fixed repeated auto-compaction in sessions after compaction reordered messages.\n- Updated LiteLLM compatibility to require `v1.85.0-rc.2+` for current GPT-5 and tool-call behavior. (@Sameerlite)\n- Fixed truncated shell output streams closing cleanly.\n- Stopped exposing internal named defect details from the HTTP API.\n- Fixed Azure `gpt-5.5` requests through the completions API. (@frederiknsgo)\n- Restored automatic image resizing for oversized image attachments.\n\n## TUI\n\n### Bugfixes\n\n- Preserved text selection when clicking question prompt options. (@nikhil-patel-whatnot)\n\n## Desktop\n\n### Improvements\n\n- Added MCP connection status for client registration and authentication, with direct re-auth flows in the app. (@OpeOginni)\n\n### Bugfixes\n\n- Fixed Windows app detection by reading `where` output correctly.\n\n## Extensions\n\n### Bugfixes\n\n- Fixed DigitalOcean OAuth to request only the GenAI scopes it needs. (@Spherrrical)\n\n**Thank you to 7 community contributors:**\n- @nikhil-patel-whatnot:\n  - fix(tui): preserve text selection on question prompt options (#24988)\n- @frederiknsgo:\n  - fix: bug encountered when using azure gpt-5.5 w/ completions api (#26222)\n- @OpeOginni:\n  - feat(desktop): add mcp client registration status and authentication handling (#27525)\n- @Sameerlite:\n  - fix(provider): remove LiteLLM workarounds ported upstream, requires LiteLLM v1.85.0-rc.2+ (#26819)\n- @bo-tato:\n  - docs(app): stale reference to removed multi-edit tool (#27579)\n- @Spherrrical:\n  - fix(plugin): scope digitalocean oauth to genai (#27599)\n- @nv-kasikritc:\n  - feat(provider): add NVIDIA endpoints origin header (#27394)\n",
+      "date": "2026-05-15T00:39:56Z",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.14.51",
+      "prerelease": false
+    },
+    {
       "version": "v1.14.50",
       "name": "v1.14.50",
       "body": "## Core\n### Bugfixes\n- Kept HTTP event streams open after the initial connect event so subscribers continue receiving instance updates.\n- Returned proper busy errors when a session is already running prompt or shell work.\n- Let invalid `small_model` config values fall back cleanly instead of breaking small-model selection.\n- Improved missing-model errors with suggestions across CLI and typed callers.\n\n## TUI\n### Improvements\n- Restored markdown rendering for session output by default.\n\n## SDK\n### Improvements\n- Added `instance.directory` and `instance.workspace` query support to the v2 model and provider calls.\n",
@@ -237,23 +253,7 @@
       "date": "2026-04-23T15:56:51Z",
       "url": "https://github.com/anomalyco/opencode/releases/tag/v1.14.22",
       "prerelease": false
-    },
-    {
-      "version": "v1.14.21",
-      "name": "v1.14.21",
-      "body": "## Core\n- Support pull diagnostics from LSP servers that use them, including C# and Kotlin.\n- Fix project detection and caching for bare Git repos and worktrees. (@StevenTCramer)\n- Improve session compaction so long threads keep more useful context when older history is summarized.\n- Preserve UTF-8 BOMs when files are edited, patched, or rewritten through tools.\n- Use Roslyn Language Server for C# support instead of `csharp-ls`. (@jmbryan4)\n- Add the high reasoning variant for supported Mistral Small models. (@rubdos)\n- Hide unsupported variants for Kimi models that do not expose them.\n\n## TUI\n- Fail fast when opening an invalid or missing session instead of starting the TUI in a broken state.\n- Skip upgrade checks when auto-update is disabled. (@rahuliyer95)\n\n## Desktop\n- Keep project avatar previews consistent between the sidebar and edit dialog.\n- Improve project icon overrides so uploaded icons and color fallbacks behave correctly in the edit dialog.\n- Improve Linux desktop metadata for app listings and categorization. (@NN708)\n\n**Thank you to 6 community contributors:**\n- @rahuliyer95:\n  - fix(tui): don't check for version upgrades if it's disabled by the user (#20089)\n- @github-actions[bot]:\n  - Update VOUCHED list\n- @rubdos:\n  - feat: add Mistral Small reasoning variant support (issue #19479) (#23735)\n- @jmbryan4:\n  - feat: replace csharp-ls with roslyn-language-server (#14463)\n- @NN708:\n  - fix(desktop): update desktop file and MetaInfo file (#14933)\n- @StevenTCramer:\n  - fix(project): use git common dir for bare repo project cache (#19054)\n",
-      "date": "2026-04-23T05:45:23Z",
-      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.14.21",
-      "prerelease": false
-    },
-    {
-      "version": "v1.14.20",
-      "name": "v1.14.20",
-      "body": "## Core\n- Fixed a system theme regression in the TUI.\n- Added `GET /config` to the experimental HTTP API.\n- Fixed local dynamic imports on Windows when running under Node, improving plugin and tool loading.\n\n## TUI\n- Fixed permission replies using remote workspaces so they are sent to the correct workspace.\n\n## Desktop\n- Stopped prompt controls from replaying their fade-in animation on every render.\n- Added a setting to hide the session progress bar while the agent is working.\n- Fixed the Select Server dialog layout so the server list and actions size correctly. (@OpeOginni)\n- Fixed synced project updates so desktop project state changes apply reliably.\n- Fixed sidebar project avatars to fall back to `icon.url` when no override is set. (@ysm-dev)\n\n## SDK\n- Fixed the `WorkspaceAdaptor.create` type to include the `env` parameter. (@jamesmurdza)\n\n**Thank you to 4 community contributors:**\n- @heimoshuiyu:\n  - fix(ui): use parentID matching instead of positional scan for assistant messages (#23093)\n- @ysm-dev:\n  - fix(app): fall back to icon.url in sidebar avatar (#18747)\n- @jamesmurdza:\n  - fix(plugin): add env parameter to WorkspaceAdaptor.create type (#23235)\n- @OpeOginni:\n  - fix(desktop): adjust layout properties in DialogSelectServer component (#23589)\n",
-      "date": "2026-04-21T19:07:38Z",
-      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.14.20",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-05-14T06:55:16.142Z"
+  "lastUpdated": "2026-05-15T07:00:30.989Z"
 }
