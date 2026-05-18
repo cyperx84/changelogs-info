@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.131.0",
-  "generated_at": "2026-05-18T19:35:04.622Z",
+  "generated_at": "2026-05-18T18:39:58.691Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -24,7 +24,9 @@
       "python-sdk-openai-codex",
       "codex-doctor-diagnostics"
     ],
-    "new_commands": [],
+    "new_commands": [
+      "codex doctor"
+    ],
     "new_flags": [
       "--dangerously-bypass-hook-trust"
     ],
@@ -32,8 +34,7 @@
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "turncontext-cwd-and-resolve_path-deprecation",
-      "legacy-profiles-rejection"
+      "turncontext-cwd-and-resolve_path-deprecation"
     ]
   },
   "payload": {
@@ -58,7 +59,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release introduces richer TUI session controls, providing data-driven service-tier commands, blended token usage, permissions/approval mode, effective workspace roots, and responsive Markdown tables for improved session management. The `@` mentions now offer a unified picker for files, directories, plugins, and skills, streamlining the mention process. Plugin workflows are enhanced with marketplace CLI commands, version-aware sharing, share checkout, clearer shared-workspace buckets, and default-enabled plugin hooks, simplifying plugin management and collaboration. Remote workflows now support daemon-managed `codex remote-control`, runtime enable/disable APIs, status reads, and registry-backed/configured remote environments, improving remote workflow management. The Python SDK has transitioned to `openai-codex` with pinned runtime-generated types, concurrent turn routing, approval modes, and integration coverage. A new `codex doctor` command provides support-ready diagnostics across runtime, auth, terminal, network, config, and local state. Several TUI interaction and rendering issues have been resolved, and Windows sandbox behavior has been hardened. Managed read restrictions are preserved during permission escalation, and app-server/local state startup is made safer. The `TurnContext cwd` and `resolve_path` are now deprecated, and legacy profiles are rejected when using profile-v2. It is highly recommended to upgrade to benefit from the enhanced features, improved stability, and security enhancements. Ensure you migrate to profile-v2 configuration and use alternative methods for accessing the current working directory and resolving paths."
+      "tldr": "This release introduces richer TUI session controls, offering data-driven service-tier commands, blended token usage, permissions/approval mode, effective workspace roots, and responsive Markdown tables for improved session management. The `@` mentions now provide a unified picker for files, directories, plugins, and skills, enhancing the mention workflow. Plugin workflows are enhanced with marketplace CLI commands, version-aware sharing, share checkout, clearer shared-workspace buckets, and default-enabled plugin hooks. Remote workflows now support daemon-managed `codex remote-control`, runtime enable/disable APIs, status reads, and registry-backed/configured remote environments. The Python SDK has been migrated to `openai-codex` with pinned runtime-generated types, concurrent turn routing, approval modes, and integration coverage. A new `codex doctor` command provides support-ready diagnostics across runtime, auth, terminal, network, config, and local state. The `cwd` and `resolve_path` fields in `TurnContext` are deprecated, requiring migration to the selected environment cwd for filesystem helpers. Plugin hooks are now enabled by default. Multi_agent_v2 wait_agent timeouts are now configurable. Several TUI interaction and rendering issues have been fixed, and Windows sandbox behavior has been hardened. It is recommended to upgrade to this version for the new features, bug fixes, and improved stability. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
@@ -3468,17 +3469,6 @@
         "description": "The `cwd` and `resolve_path` fields in `TurnContext` are deprecated.",
         "affected": [],
         "migration": "Use the selected environment cwd for filesystem helpers.",
-        "source_url": ""
-      },
-      {
-        "id": "legacy-profiles-rejection",
-        "version": "0.131.0",
-        "title": "Legacy [profiles] Rejection",
-        "description": "Legacy [profiles] are rejected when using profile-v2.",
-        "affected": [
-          "Configuration"
-        ],
-        "migration": "Migrate to profile-v2 configuration.",
         "source_url": ""
       }
     ],

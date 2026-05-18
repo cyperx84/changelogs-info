@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.5.12",
-  "generated_at": "2026-05-15T03:11:29.595Z",
+  "version": "2026.5.18",
+  "generated_at": "2026-05-18T19:35:33.911Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,28 +14,21 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.5.12",
-    "to_version": "2026.5.12",
+    "from_version": "2026.5.18",
+    "to_version": "2026.5.18",
     "new_features": [
-      "per-sender-tool-policies",
-      "acp-session-lineage-metadata",
-      "plain-html-recovery-panel",
-      "provider-level-local-service-startup",
-      "context-map",
-      "slack-replybroadcast-support",
-      "telegram-live-pr-evidence-automation",
-      "telegram-desktop-scenario-builder",
-      "discord-realtime-voice-diagnostics",
-      "talk-realtime-instructions",
-      "discord-voice-allowedchannels",
-      "private-skill-archive-upload-install-path",
-      "bundled-plugin-session-actions",
-      "media-understanding-extractstructuredwithmodel",
-      "tools-exec-commandhighlighting"
+      "meme-maker-skill",
+      "node-inspector-debugging-fused-diagram-generation-throwaway-spike-workflow-skills",
+      "typed-simple-tool-plugins",
+      "python-debugging-skill",
+      "https-managed-forward-proxy-endpoints",
+      "realtime-gateway-relay-voice-sessions-with-streaming-mic-input"
     ],
     "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [],
+    "new_env_vars": [
+      "OPENCLAW_IMAGE_APT_PACKAGES"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -56,13 +49,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.5.12",
-      "latest_release_date": "2026-05-14",
+      "latest_stable": "2026.5.18",
+      "latest_release_date": "2026-05-18",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release focuses on improving security, stability, and developer experience. Amazon Bedrock, Slack, OpenShell sandbox, and Anthropic Vertex are now externalized as plugins, reducing core install dependencies. The Control UI gains a persisted auto-scroll mode selector for better chat control. ACP introduces `acp.fallbacks` for improved backend resilience. Per-sender tool policies allow operators to restrict tool access based on requester identity. Gateway session lineage metadata is exposed through ACP for subagent graph rendering. A plain HTML recovery panel aids troubleshooting blank dashboards. Provider-level local service startup enables on-demand local model servers. The `/context map` command visualizes session context. Slack gains `replyBroadcast` support and configurable link/media previews. New QA automation and voice diagnostics tools enhance testing and debugging. The Plugin SDK sees deprecated subpaths and runtime metadata exposure. This release includes numerous bug fixes, including Telegram polling stalls, sandbox security, model config/auth, media fetch, CLI onboarding, Slack media downloads, plugin discovery, auth, CLI tables, process execution, gateway diagnostics, Codex harness, browser CLI, plugin SDK, control UI/i18n, Codex startup, agents, replies, macOS/companion, update, sessions/status, sessions/gateway, telegram, codex app-server, iMessage, agents/sessions, gateway, github copilot, gateway, plugins/feishu/whatsapp/line, plugins/install, config, installer, anthropic, installer, agents, harden trusted-proxy source validation [AI], agents, acpx, session transcripts, channels/imessage, telegram, fix: scan plugin runtime entries during install [AI], fix(plugins): scan installed dependency runtime code [AI], inherit tool restrictions for delegated sessions [AI], telegram, browser: enforce navigation checks for act interactions [AI], validate node exec event provenance [AI], gateway, codex app-server, plugin LLM completions, gateway/openai http, telegram, limit hook CLI tool authority [AI], require admin scope for node device token management [AI], restrict chat sender allowlist matching [AI], update, sessions, codex runtime, codex migration, codex harness, whatsapp/install, require auth for sandbox browser CDP relay [AI], fix: detect carried exec command forms [AI], reject truncated exec approval commands [AI], enforce inline shell wrapper payload matching [AI], fix(node-pairing): replace changed pending requests [AI], rate limit google chat webhook requests [AI], docker, onboarding, fix(feishu): normalize webhook rate-limit client keys [AI], fix(auth): prevent bootstrap pairing scope changes [AI], validate control ui loopback retry endpoints [AI], harden exported markdown link rendering [AI], fix(gateway): honor minimal discovery mode for wide-area DNS-SD [AI], slack: enforce reaction notification policy [AI], enforce gateway command scopes by caller context [AI], telegram/groups, codex (app-server), enforce slack plugin approval button authorization [AI], recognize powershell -ec inline commands [AI], fix(qqbot): authorize approval button callbacks [AI], telegram, scrub streamable mcp redirect headers [AI], fix(memory-wiki): require admin scope for ingest [AI], memory-wiki: require write scope for obsidian search [AI], whatsapp/install, whatsapp, build, control ui/sessions, auto-reply, agents/exec, provider streams, agents, whatsapp, cli/commitments, update, telegram, plugins/runtime, agents/cron, codex app-server. Upgrade is recommended for all users to benefit from these improvements and fixes."
+      "tldr": "This release introduces several new features and improvements, focusing on agent capabilities, plugin development, and QA processes. A key highlight is the addition of a meme-maker skill, allowing users to create memes with curated templates and provenance links. Developers can now create typed simple tool plugins using `defineToolPlugin` and associated commands, streamlining plugin development. The release also includes a Python debugging skill for pdb and debugpy, enhancing debugging capabilities. QA processes are enhanced with new runtime parity scenarios and tool fixture coverage reporting, ensuring code quality and stability. Several fixes address issues in Discord voice sessions, media handling, Telegram delivery, and Gateway startup, improving overall reliability. The `OPENCLAW_IMAGE_APT_PACKAGES` environment variable is introduced for specifying extra apt packages during image builds. Legacy `interactive`/Slack directive producer APIs are now deprecated. Mac app settings pages have been redesigned for consistency and improved usability. It is recommended to upgrade to this version to benefit from the new features, bug fixes, and performance improvements. Ensure to update dependencies and review any deprecated APIs for potential migration."
     },
     "features": [
       {
@@ -2656,6 +2649,60 @@
         "description": "Adds `tools.exec.commandHighlighting` so parser-derived command highlighting in approval prompts can be enabled globally or per agent.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "meme-maker-skill",
+        "name": "Meme Maker Skill",
+        "status": "stable",
+        "since": "2026.5.18",
+        "description": "Adds a meme-maker skill for curated template search, local SVG/PNG rendering, Imgflip hosted rendering, and Know Your Meme provenance links.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "node-inspector-debugging-fused-diagram-generation-throwaway-spike-workflow-skills",
+        "name": "Node Inspector Debugging, Fused Diagram Generation, and Throwaway Spike Workflow Skills",
+        "status": "stable",
+        "since": "2026.5.18",
+        "description": "Adds node inspector debugging, fused diagram generation, and throwaway spike workflow skills.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "typed-simple-tool-plugins",
+        "name": "Typed Simple Tool Plugins",
+        "status": "stable",
+        "since": "2026.5.18",
+        "description": "Adds `defineToolPlugin` plus `openclaw plugins build`, `validate`, and `init` for typed simple tool plugins with generated manifest metadata, optional tool declarations, and context factories.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "python-debugging-skill",
+        "name": "Python Debugging Skill",
+        "status": "stable",
+        "since": "2026.5.18",
+        "description": "Adds a Python debugging skill for pdb, breakpoint(), post-mortem inspection, and debugpy remote attach.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "https-managed-forward-proxy-endpoints",
+        "name": "HTTPS Managed Forward-Proxy Endpoints",
+        "status": "stable",
+        "since": "2026.5.18",
+        "description": "Supports HTTPS managed forward-proxy endpoints and scoped `proxy.tls.caFile` CA trust for proxy endpoint TLS.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "realtime-gateway-relay-voice-sessions-with-streaming-mic-input",
+        "name": "Realtime Gateway Relay Voice Sessions with Streaming Mic Input",
+        "status": "stable",
+        "since": "2026.5.18",
+        "description": "Switches Talk Mode to realtime Gateway relay voice sessions with streaming mic input, realtime audio playback, tool-result bridging, and on-screen transcripts.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -3402,6 +3449,13 @@
         "purpose": "Controls whether `pnpm gateway:watch` runs through a named tmux session (default) or in foreground mode.",
         "status": "stable",
         "since": "2026.4.29",
+        "source_url": ""
+      },
+      {
+        "name": "OPENCLAW_IMAGE_APT_PACKAGES",
+        "purpose": "Runtime-neutral image build arg for extra apt packages.",
+        "status": "stable",
+        "since": "2026.5.18",
         "source_url": ""
       }
     ],
