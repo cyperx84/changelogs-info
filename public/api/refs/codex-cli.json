@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.130.0",
-  "generated_at": "2026-05-18T17:00:58.487Z",
+  "version": "0.131.0",
+  "generated_at": "2026-05-18T18:39:58.691Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,21 +14,28 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.130.0",
-    "to_version": "0.130.0",
+    "from_version": "0.131.0",
+    "to_version": "0.131.0",
     "new_features": [
-      "plugin-details-bundled-hooks-sharing-metadata-discoverability",
-      "codex-remote-control-command",
-      "app-server-thread-pagination-apis",
-      "aws-login-credentials-for-bedrock-auth",
-      "view-image-environment-resolution"
+      "richer-tui-session-controls",
+      "unified-mentions-picker",
+      "plugin-workflows-enhancements",
+      "remote-workflows-enhancements",
+      "python-sdk-openai-codex",
+      "codex-doctor-diagnostics"
     ],
-    "new_commands": [],
-    "new_flags": [],
+    "new_commands": [
+      "codex doctor"
+    ],
+    "new_flags": [
+      "--dangerously-bypass-hook-trust"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "turncontext-cwd-and-resolve_path-deprecation"
+    ]
   },
   "payload": {
     "meta": {
@@ -45,14 +52,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.130.0",
+      "latest_stable": "0.131.0",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-05-08",
+      "latest_release_date": "2026-05-18",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release introduces several new features and bug fixes. Plugin details now display bundled hooks, and plugin sharing exposes link metadata and discoverability controls. A new `codex remote-control` command simplifies starting a headless, remotely controllable app-server. App-server clients can now page large threads with unloaded, summary, or full turn item views. Bedrock authentication now supports AWS console-login credentials from `aws login` profiles. The `view_image` command can now resolve files through the selected environment for multi-environment sessions. Live app-server threads now pick up config changes without requiring a restart. Turn diffs stay accurate across apply-patch operations, even with partial failures. Thread summaries, renames, resume, and fork paths work better through `ThreadStore`. Remote compaction now emits `response.processed` for v2 streams and avoids sending `service_tier` on API-key compact requests. Windows sandbox setup now grants sandbox users access to the desktop runtime binary cache. Stale \"research preview\" wording has been removed from the `codex exec` startup banner. This release also includes documentation updates, chore improvements, and dependency hygiene enhancements. Upgrading is recommended to take advantage of the new features and bug fixes. No specific migration steps are required."
+      "tldr": "This release introduces richer TUI session controls, offering data-driven service-tier commands, blended token usage, permissions/approval mode, effective workspace roots, and responsive Markdown tables for improved session management. The `@` mentions now provide a unified picker for files, directories, plugins, and skills, enhancing the mention workflow. Plugin workflows are enhanced with marketplace CLI commands, version-aware sharing, share checkout, clearer shared-workspace buckets, and default-enabled plugin hooks. Remote workflows now support daemon-managed `codex remote-control`, runtime enable/disable APIs, status reads, and registry-backed/configured remote environments. The Python SDK has been migrated to `openai-codex` with pinned runtime-generated types, concurrent turn routing, approval modes, and integration coverage. A new `codex doctor` command provides support-ready diagnostics across runtime, auth, terminal, network, config, and local state. The `cwd` and `resolve_path` fields in `TurnContext` are deprecated, requiring migration to the selected environment cwd for filesystem helpers. Plugin hooks are now enabled by default. Multi_agent_v2 wait_agent timeouts are now configurable. Several TUI interaction and rendering issues have been fixed, and Windows sandbox behavior has been hardened. It is recommended to upgrade to this version for the new features, bug fixes, and improved stability. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
@@ -1609,6 +1616,60 @@
         "description": "`view_image` can now resolve files through the selected environment for multi-environment sessions.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "richer-tui-session-controls",
+        "name": "Richer TUI Session Controls",
+        "status": "stable",
+        "since": "0.131.0",
+        "description": "The TUI now offers richer session controls and display, including data-driven service-tier commands, blended token usage, permissions/approval mode, effective workspace roots, and responsive Markdown tables.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "unified-mentions-picker",
+        "name": "Unified Mentions Picker",
+        "status": "stable",
+        "since": "0.131.0",
+        "description": "`@` mentions now search files, directories, plugins, and skills in one picker, backed by app-server plugin metadata.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "plugin-workflows-enhancements",
+        "name": "Plugin Workflows Enhancements",
+        "status": "stable",
+        "since": "0.131.0",
+        "description": "Plugin workflows gained marketplace CLI commands, version-aware sharing, share checkout, clearer shared-workspace buckets, and default-enabled plugin hooks.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "remote-workflows-enhancements",
+        "name": "Remote Workflows Enhancements",
+        "status": "stable",
+        "since": "0.131.0",
+        "description": "Remote workflows now support daemon-managed `codex remote-control`, runtime enable/disable APIs, status reads, and registry-backed/configured remote environments.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "python-sdk-openai-codex",
+        "name": "Python SDK openai-codex",
+        "status": "stable",
+        "since": "0.131.0",
+        "description": "The Python SDK moved to `openai-codex` / `openai_codex`, with pinned runtime-generated types, concurrent turn routing, approval modes, and integration coverage.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "codex-doctor-diagnostics",
+        "name": "codex doctor Diagnostics",
+        "status": "stable",
+        "since": "0.131.0",
+        "description": "Added `codex doctor` for support-ready diagnostics across runtime, auth, terminal, network, config, and local state.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1819,6 +1880,14 @@
         "since": "0.130.0",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "codex doctor",
+        "syntax": "codex doctor",
+        "description": "Provides support-ready diagnostics across runtime, auth, terminal, network, config, and local state.",
+        "since": "0.131.0",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -1905,6 +1974,12 @@
           "flag": "--ignore-rules",
           "description": "Ignores rules during `codex exec` runs.",
           "since": "0.122.0",
+          "source_url": ""
+        },
+        {
+          "flag": "--dangerously-bypass-hook-trust",
+          "description": "CLI flag to bypass hook trust.",
+          "since": "0.131.0",
           "source_url": ""
         }
       ],
@@ -3303,7 +3378,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--dangerously-bypass-hook-trust"
+      ]
     },
     "env_vars": [
       {
@@ -3384,6 +3461,15 @@
         "affected": [],
         "migration": "No migration needed.",
         "source_url": "#21152"
+      },
+      {
+        "id": "turncontext-cwd-and-resolve_path-deprecation",
+        "version": "0.131.0",
+        "title": "TurnContext cwd and resolve_path Deprecation",
+        "description": "The `cwd` and `resolve_path` fields in `TurnContext` are deprecated.",
+        "affected": [],
+        "migration": "Use the selected environment cwd for filesystem helpers.",
+        "source_url": ""
       }
     ],
     "deprecations": [
