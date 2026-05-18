@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
-  "version": "1.15.4",
-  "generated_at": "2026-05-18T20:34:57.109Z",
+  "version": "1.15.5",
+  "generated_at": "2026-05-18T21:29:53.176Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -14,11 +14,17 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "1.15.4",
-    "to_version": "1.15.4",
-    "new_features": [],
+    "from_version": "1.15.5",
+    "to_version": "1.15.5",
+    "new_features": [
+      "native-openai-runtime-path-preview",
+      "desktop-notifications-from-renderer"
+    ],
     "new_commands": [],
-    "new_flags": [],
+    "new_flags": [
+      "--replay",
+      "--replay-limit"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -40,13 +46,13 @@
       "changelog_url": "https://github.com/anomalyco/opencode/releases",
       "repo_url": "https://github.com/anomalyco/opencode",
       "license": "mit",
-      "latest_stable": "1.15.4",
-      "latest_release_date": "2026-05-17",
+      "latest_stable": "1.15.5",
+      "latest_release_date": "2026-05-18",
       "status": "active",
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "This release focuses on core bug fixes and minor TUI improvements. Project-scoped bus events are now correctly routed, ensuring file watcher and update notifications reach the appropriate instance, resolving issues where updates were not being received. Custom LSP servers now reliably send refresh events after initialization, improving the responsiveness of language support. Background subagent task instructions are now hidden by default, decluttering the interface unless experimental background mode is explicitly enabled. In the TUI, Markdown H1 headings have been made more visually distinct, enhancing readability. These changes improve the stability and usability of opencode, particularly for users working with multiple projects or custom language servers. The bug fixes are recommended for all users to ensure a smoother experience. No specific migration steps are required."
+      "tldr": "Opencode 1.15.5 introduces a preview of the native OpenAI runtime path behind an experimental flag, enabling developers to test and integrate with OpenAI's native runtime environment. This release also adds `--replay` and `--replay-limit` flags to show recent history when resuming interactive runs, improving the user experience for long-running sessions. A bug has been fixed where plugin tools using `ask` were not completing correctly, ensuring that tool calls now function as expected. Missed `/event` updates caused by a subscription race have been reduced, leading to more reliable event handling. The v2 session list is now sorted by most recently updated, making it easier to find the latest sessions. The prompt layout is refreshed after pasting content in the TUI, maintaining a consistent display. File references are now scoped to the current workspace in the TUI, preventing cross-workspace contamination. Pasted prompt content is preserved when copying in the TUI, ensuring data integrity. Very long tool output lines are collapsed in the TUI to keep the layout readable, improving usability. A higher-contrast paste summary badge color is used in some themes in the TUI, enhancing visual clarity. Desktop notifications from the renderer are now allowed, providing more timely updates. Free-limit and usage-exceeded dialogs are now shown in the Desktop application, improving user awareness of resource usage. Large session timelines are sped up in the Desktop application, enhancing performance. Question dock overflow and message layout clipping have been fixed in the Desktop application, improving the user interface. The prompt placeholder is now hidden when the input only contains whitespace, cleaning up the display. The PWA status bar color is synced with the active theme, providing a more consistent visual experience. The newest available desktop update is now installed instead of reusing a stale download, ensuring users have the latest version. This is a recommended update to improve stability, performance, and user experience."
     },
     "features": [
       {
@@ -897,6 +903,24 @@
         "description": "Added pinned sessions with quick-switch slots in the session picker in the TUI.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "native-openai-runtime-path-preview",
+        "name": "Native OpenAI Runtime Path Preview",
+        "status": "experimental",
+        "since": "1.15.5",
+        "description": "Preview the native OpenAI runtime path behind an experimental flag.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "desktop-notifications-from-renderer",
+        "name": "Desktop Notifications from Renderer",
+        "status": "stable",
+        "since": "1.15.5",
+        "description": "Allow desktop notifications from the renderer.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -998,10 +1022,25 @@
           "description": "Redacts PII and confidential transcript data during export.",
           "since": "1.4.4",
           "source_url": ""
+        },
+        {
+          "flag": "--replay",
+          "description": "Show recent history when resuming interactive runs.",
+          "since": "1.15.5",
+          "source_url": ""
+        },
+        {
+          "flag": "--replay-limit",
+          "description": "Show recent history when resuming interactive runs.",
+          "since": "1.15.5",
+          "source_url": ""
         }
       ],
       "deprecated": [],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--replay",
+        "--replay-limit"
+      ]
     },
     "env_vars": [
       {
