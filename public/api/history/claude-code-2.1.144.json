@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.144",
-  "generated_at": "2026-05-19T03:10:46.628Z",
+  "generated_at": "2026-05-19T01:43:04.954Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -17,12 +17,14 @@
     "from_version": "2.1.144",
     "to_version": "2.1.144",
     "new_features": [
-      "background-session-resume"
+      "background-session-resume",
+      "background-subagent-completion-notifications",
+      "plugin-marketplace-last-updated"
     ],
-    "new_commands": [
-      "/usage-credits"
+    "new_commands": [],
+    "new_flags": [
+      "--name"
     ],
-    "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [
       "/extra-usage"
@@ -50,7 +52,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces background session resume via the `/resume` command, allowing users to easily access and manage background sessions started with `claude --bg` or through the agent view. Background subagent completion notifications now include elapsed duration, providing better insight into task completion times. The plugin marketplace now displays the last updated date for plugins, aiding in plugin selection. The `/extra-usage` command has been renamed to `/usage-credits` for clarity, though the old command still works. This release also addresses several critical bug fixes, including startup hangs due to unreachable API endpoints, garbled terminal output after window resize events, and progressive terminal display corruption. It also fixes crashes in macOS background sessions, unrecoverable conversations with mismatched image file types, and spurious tool errors during search. Model selection is now correctly applied and persisted across sessions, and issues with Bedrock and Vertex users selecting \"Opus (1M context)\" have been resolved. Remote session login failures and MCP server pagination issues are also fixed. This is a recommended upgrade to improve stability and usability, with no specific prerequisites."
+      "tldr": "Version 2.1.144 introduces the ability to resume background sessions using the `/resume` command, allowing users to easily switch between interactive and background tasks. The `/model` command now only affects the current session, with a new option to set a default model for future sessions. The `/extra-usage` command has been renamed to `/usage-credits`, though the old name still functions. Background subagent completion notifications now include elapsed duration. Plugin marketplace now displays the last updated date for plugins. Several fixes address startup hangs due to API reachability issues, terminal output corruption, and crashes related to file access permissions on macOS. Other fixes include addressing issues with `/branch`, model selection, remote session login, MCP server pagination, image handling, file descriptor exhaustion, session titles, skill tool permissions, plugin caching, MCP server listing, background side-queries, scrolling in background sessions on Windows, Ctrl+C handling in exec sessions, agent view shell-command rows, keyboard input in `claude agents` on Windows, pane switching in Agent View on Windows Terminal, directory preservation with `/bg` and `←`-detach, Edit/Write refusal after detaching, `claude respawn` status display, `/resume` picker behavior, `claude logs` hanging, background Bash task status, background session startup crash marking, markdown link rendering in `claude agents`, custom `spinnerVerbs` application, and rejection messages for `claude agents` / `--bg`. Additionally, plugin marketplace add/update now respects `CLAUDE_CODE_PLUGIN_PREFER_HTTPS`, and `/doctor` now shows an exec-form example when a command hook is missing the `command` field. This release includes several important bug fixes and usability improvements, making it a recommended upgrade for all users."
     },
     "features": [
       {
@@ -1622,14 +1624,6 @@
         "since": "2.1.139",
         "status": "stable",
         "source_url": ""
-      },
-      {
-        "name": "/usage-credits",
-        "syntax": "/usage-credits",
-        "description": "Replaces `/extra-usage` to display usage credits.",
-        "since": "2.1.144",
-        "status": "stable",
-        "source_url": ""
       }
     ],
     "flags": {
@@ -1933,7 +1927,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--name"
+      ]
     },
     "env_vars": [
       {
@@ -3943,12 +3939,6 @@
         "name": "/stats",
         "replaced_by": "/usage",
         "deprecated_since": "2.1.118",
-        "source_url": ""
-      },
-      {
-        "name": "/extra-usage",
-        "replaced_by": "/usage-credits",
-        "deprecated_since": "2.1.144",
         "source_url": ""
       },
       {
