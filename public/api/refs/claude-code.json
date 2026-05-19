@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.144",
-  "generated_at": "2026-05-19T05:24:10.576Z",
+  "generated_at": "2026-05-19T07:17:10.969Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -20,7 +20,9 @@
       "resume-background-sessions"
     ],
     "new_commands": [],
-    "new_flags": [],
+    "new_flags": [
+      "--name"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [
       "/extra-usage"
@@ -48,7 +50,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces `/resume` support for background sessions, allowing you to easily switch back to sessions started with `claude --bg` or through the agent view, which are now clearly marked with `bg`. The `/plugin` command now displays the last updated date for plugins in the browse and discover panes, helping you stay informed about plugin freshness. The `/extra-usage` command has been renamed to `/usage-credits` for clarity, though the old name still functions. The `/model` command now only changes the model for the current session, with a `d` option to set a default for new sessions. Startup hangs due to unreachable `api.anthropic.com` are now resolved with a 15s timeout. Terminal output glitches and progressive corruption issues have been addressed, improving the user experience in long sessions and VS Code. Background sessions on macOS no longer crash due to Full Disk Access restrictions. File reading errors due to mismatched image extensions are now handled gracefully. Spurious tool errors during search are reduced, and `/branch` failures in worktrees and background sessions are fixed. Model selection issues via IDE and `applyFlagSettings` are resolved, and resumed sessions now retain their original model. Bedrock and Vertex users can now select \"Opus (1M context)\" from the `/model` picker. Remote-session login failures and MCP server pagination issues are fixed. Plugin marketplace add/update now respects `CLAUDE_CODE_PLUGIN_PREFER_HTTPS`. It is recommended to upgrade to this version to benefit from these improvements and fixes. No specific prerequisites are required."
+      "tldr": "This release introduces `/resume` support for background sessions, allowing users to easily access and manage sessions started via `claude --bg` or agent view, which are now displayed alongside interactive sessions with a `bg` marker. The `/model` command now changes the model for the current session only, with the option to set a default for new sessions using `d` in the model picker. The `/extra-usage` command has been renamed to `/usage-credits`, though the old name still works. A significant fix addresses startup hangs of up to 75 seconds when `api.anthropic.com` is unreachable by timing out side-channel API calls after 15s. Terminal output issues, including garbled displays and progressive corruption, have been resolved, and rendering glitches in VS Code have been reduced. Background sessions on macOS no longer crash when the project is under a Full Disk Access-protected folder. Several bug fixes improve tool error handling during search, address issues with `/branch` and model selection, and resolve problems with remote-session login and MCP server tool listing. Additionally, plugin marketplace add/update now respects `CLAUDE_CODE_PLUGIN_PREFER_HTTPS`. This upgrade is recommended to take advantage of the new background session management and critical bug fixes."
     },
     "features": [
       {
@@ -1940,7 +1942,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--name"
+      ]
     },
     "env_vars": [
       {
@@ -3950,6 +3954,12 @@
         "name": "/stats",
         "replaced_by": "/usage",
         "deprecated_since": "2.1.118",
+        "source_url": ""
+      },
+      {
+        "name": "/extra-usage",
+        "replaced_by": "/usage-credits",
+        "deprecated_since": "2.1.144",
         "source_url": ""
       },
       {
