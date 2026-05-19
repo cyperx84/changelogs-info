@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.144",
-  "generated_at": "2026-05-19T20:37:15.873Z",
+  "version": "2.1.145",
+  "generated_at": "2026-05-19T21:33:21.684Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,17 +14,18 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.144",
-    "to_version": "2.1.144",
-    "new_features": [],
+    "from_version": "2.1.145",
+    "to_version": "2.1.145",
+    "new_features": [
+      "claude-agents-json-output",
+      "plugin-discovery-pre-install-details",
+      "agent-terminal-tab-title-awaiting-input-count",
+      "slash-command-mention-suggestion-mouse-support"
+    ],
     "new_commands": [],
-    "new_flags": [
-      "--name"
-    ],
+    "new_flags": [],
     "new_env_vars": [],
-    "deprecated_commands": [
-      "/extra-usage"
-    ],
+    "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
   },
@@ -43,12 +44,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.144",
+      "latest_stable": "2.1.145",
       "latest_release_date": "2026-05-19",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces `/resume` support for background sessions, allowing users to view and manage sessions started with `claude --bg` or through the agent view alongside interactive sessions. Background subagent completion notifications now include elapsed duration, providing better insight into task completion times. The `/model` command now changes the model for the current session only, with the option to set a default for new sessions using the `d` key in the model picker. The `/extra-usage` command has been renamed to `/usage-credits`, though the old name still functions. Startup hangs due to unreachable `api.anthropic.com` are now mitigated with a 15s timeout for side-channel API calls. Terminal output issues, such as garbled displays after window resizing or progressive corruption in long sessions, have been addressed with self-healing mechanisms and reduced spinner animation color count. A macOS background session crash related to Full Disk Access-protected folders has been resolved. The release also fixes issues with file reading, tool errors during search, `/branch` command failures, model selection persistence, and remote-session login problems. MCP server pagination and image handling have been improved, and file descriptor exhaustion during builds is now prevented. Plugin marketplace add/update now respects `CLAUDE_CODE_PLUGIN_PREFER_HTTPS`. It is recommended to upgrade to this version to benefit from these fixes and improvements. No specific prerequisites are required."
+      "tldr": "Version 2.1.145 introduces the `claude agents --json` command, enabling users to list live Claude sessions as JSON for scripting purposes, facilitating integrations with tools like tmux-resurrect and status bars. The `/plugin` command's Discover and Browse screens now display detailed information about plugins, including commands, agents, skills, hooks, and MCP/LSP servers, before installation. The `claude agents` terminal tab title now indicates the number of agents awaiting input, improving at-a-glance awareness. Slash command and @-mention suggestion lists now support mouse hover and click in fullscreen mode. OTEL spans for `claude_code.tool` now include `agent_id` and `parent_agent_id` attributes, and trace parenting is fixed for background subagent spans. The status line JSON input now includes GitHub repo and PR information when detected. A permission-prompt bypass related to bare variable assignments in Bash commands has been fixed. MCP prompt slash commands now display clearer error messages when required arguments are omitted. Several UI glitches have been resolved, including spinner freezing, voice push-to-talk issues, and task list rendering order. A bug causing Agent Teams teammates with non-ASCII names to fail API calls has been fixed. The `/review` command now uses an updated GraphQL query. The `claude plugin validate` command now correctly flags invalid `skills:` entries. An infinite loop issue with skills using `context: fork` has been addressed. The Read tool now returns a truncated first page with a \"PARTIAL view\" notice when a whole-file read exceeds the token limit. Upgrading is recommended to benefit from these improvements and fixes. No specific prerequisites are required."
     },
     "features": [
       {
@@ -1240,6 +1241,42 @@
         "description": "Adds `/resume` support for background sessions, making sessions started via `claude --bg` or agent view appear alongside interactive ones, marked with `bg`.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "claude-agents-json-output",
+        "name": "Claude Agents JSON Output",
+        "status": "stable",
+        "since": "2.1.145",
+        "description": "Adds `claude agents --json` to list live Claude sessions as JSON for scripting.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "plugin-discovery-pre-install-details",
+        "name": "Plugin Discovery Pre-Install Details",
+        "status": "stable",
+        "since": "2.1.145",
+        "description": "`Discover` and `Browse` screens for `/plugin` now show a plugin's commands, agents, skills, hooks, and MCP/LSP servers before installation.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "agent-terminal-tab-title-awaiting-input-count",
+        "name": "Agent Terminal Tab Title Awaiting Input Count",
+        "status": "stable",
+        "since": "2.1.145",
+        "description": "`claude agents` terminal tab title now shows the awaiting-input count.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "slash-command-mention-suggestion-mouse-support",
+        "name": "Slash Command and Mention Suggestion Mouse Support",
+        "status": "stable",
+        "since": "2.1.145",
+        "description": "Slash command and @-mention suggestion list now supports mouse hover and click in fullscreen mode.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1966,9 +2003,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--name"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
