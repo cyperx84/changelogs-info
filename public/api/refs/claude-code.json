@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.144",
-  "generated_at": "2026-05-19T18:40:19.159Z",
+  "generated_at": "2026-05-19T19:35:28.153Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -48,7 +48,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces `/resume` support for background sessions, allowing users to view and manage sessions started with `claude --bg` or through the agent view alongside interactive sessions. Background subagent completion notifications now include elapsed duration, providing better insight into task completion times. The `/model` command now changes the model for the current session only, with the option to set a default for new sessions using the `d` key in the model picker. The `/extra-usage` command has been renamed to `/usage-credits`, though the old name still functions. Startup hangs due to unreachable `api.anthropic.com` are now mitigated with a 15s timeout for side-channel API calls. Terminal output issues, such as garbled displays after window resizing or progressive corruption in long sessions, have been addressed with self-healing mechanisms and reduced spinner animation color count. A macOS background session crash related to Full Disk Access-protected folders has been resolved. The release also fixes issues with file reading, tool errors during search, `/branch` command failures, model selection persistence, and remote-session login problems. MCP server pagination and image handling have been improved, and file descriptor exhaustion during builds is now prevented. Plugin marketplace add/update now respects `CLAUDE_CODE_PLUGIN_PREFER_HTTPS`. It is recommended to upgrade to this version to benefit from these fixes and improvements. No specific prerequisites are required."
+      "tldr": "Background sessions, started via `claude --bg` or agent view, now appear alongside interactive ones in the `/resume` list, marked with `bg`, providing a unified view of all active sessions. The `/model` command now changes the model for the current session only; use `d` in the model picker to set a default for new sessions. The elapsed duration is now shown in background subagent completion notifications, offering better insight into task completion times. The `/plugin` browse and discover panes now display the last updated date for each plugin, aiding in plugin selection and maintenance. The command `/extra-usage` has been renamed to `/usage-credits` across the CLI, though the old name still works. Startup hangs due to unreachable `api.anthropic.com` are now mitigated with a 15s timeout for side-channel API calls. Terminal output corruption issues, including garbled output after window resizing and progressive display corruption in long sessions, have been resolved. macOS background sessions no longer crash due to Full Disk Access restrictions. The system now gracefully handles files with mismatched image extensions, falling back to text interpretation. Spurious tool errors during search are reduced by correctly interpreting `head`/`tail` file views and handling \"no matches\" results from grep commands. Model selection is now consistently applied via the IDE model picker or `applyFlagSettings` after startup, and resumed sessions retain their original model choice. Several MCP-related issues have been addressed, including handling paginated `tools/list` responses and unsupported MIME types. Plugin marketplace add/update now respects `CLAUDE_CODE_PLUGIN_PREFER_HTTPS`. It is recommended to upgrade to this version to benefit from these improvements and fixes. No specific prerequisites are required."
     },
     "features": [
       {
@@ -3978,6 +3978,12 @@
         "name": "/stats",
         "replaced_by": "/usage",
         "deprecated_since": "2.1.118",
+        "source_url": ""
+      },
+      {
+        "name": "/extra-usage",
+        "replaced_by": "/usage-credits",
+        "deprecated_since": "2.1.144",
         "source_url": ""
       },
       {
