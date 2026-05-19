@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.144",
-  "generated_at": "2026-05-19T13:10:12.695Z",
+  "generated_at": "2026-05-19T15:07:48.300Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -16,10 +16,11 @@
   "delta": {
     "from_version": "2.1.144",
     "to_version": "2.1.144",
-    "new_features": [
-      "resume-background-sessions-support"
+    "new_features": [],
+    "new_commands": [
+      "/resume",
+      "/usage-credits"
     ],
-    "new_commands": [],
     "new_flags": [
       "--name"
     ],
@@ -50,7 +51,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces `/resume` support for background sessions, allowing users to easily access and manage sessions started with `claude --bg` or through the agent view, which are now displayed alongside interactive sessions and marked with `bg`. The `/plugin` command now displays the last updated date for plugins in the browse and discover panes. The `/extra-usage` command has been renamed to `/usage-credits`, though the old name still functions. A significant fix addresses startup delays of up to 75 seconds when `api.anthropic.com` is unreachable, reducing the timeout to 15 seconds. Terminal output issues, including garbled displays after window resizing and progressive corruption in long sessions, have been resolved. Background sessions on macOS no longer crash when projects are in Full Disk Access-protected folders. Model selection via the IDE model picker now applies correctly after startup, and resumed sessions retain their original model choice. Bedrock and Vertex users can now select \"Opus (1M context)\" from the `/model` picker. MCP servers with paginated `tools/list` responses now correctly return all tools. This release also fixes several issues related to background sessions, agent view, and plugin management. It is recommended to upgrade to benefit from these fixes and improvements. No specific prerequisites are required for this upgrade."
+      "tldr": "This release introduces `/resume` support for background sessions, allowing users to easily switch between interactive and background tasks started via `claude --bg` or agent view. These sessions are now displayed alongside interactive ones and marked with `bg`. The `/plugin` browse and discover panes now display the last updated time for each plugin. The `/model` command now only changes the model for the current session, with a `d` option to set a default for new sessions. The `/extra-usage` command has been renamed to `/usage-credits`, though the old name still functions. A startup hang issue related to unreachable `api.anthropic.com` has been resolved by implementing a 15s timeout for side-channel API calls. Terminal output glitches and progressive display corruption have been fixed, improving the user experience in long sessions and VS Code. Background sessions on macOS no longer crash due to Full Disk Access restrictions. Several bug fixes address issues with file handling, command execution, model selection, remote sessions, MCP servers, skill tools, and plugin management. Scrolling in attached background sessions on Windows is now functional, and Ctrl+C now interrupts `! <cmd>` exec sessions. This release also includes improvements to agent view, background session management, and error reporting. It is recommended to upgrade to this version to benefit from the improved stability, performance, and user experience. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
@@ -1654,6 +1655,14 @@
         "name": "/usage-credits",
         "syntax": "/usage-credits",
         "description": "Replaces `/extra-usage` to display usage credits.",
+        "since": "2.1.144",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "/resume",
+        "syntax": "/resume",
+        "description": "Support for resuming background sessions. Sessions started via `claude --bg` or agent view now appear alongside interactive ones, marked with `bg`",
         "since": "2.1.144",
         "status": "stable",
         "source_url": ""
@@ -3972,6 +3981,12 @@
         "name": "/stats",
         "replaced_by": "/usage",
         "deprecated_since": "2.1.118",
+        "source_url": ""
+      },
+      {
+        "name": "/extra-usage",
+        "replaced_by": "/usage-credits",
+        "deprecated_since": "2.1.144",
         "source_url": ""
       },
       {
