@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.144",
-  "generated_at": "2026-05-19T15:07:48.300Z",
+  "generated_at": "2026-05-19T17:05:23.660Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -17,10 +17,7 @@
     "from_version": "2.1.144",
     "to_version": "2.1.144",
     "new_features": [],
-    "new_commands": [
-      "/resume",
-      "/usage-credits"
-    ],
+    "new_commands": [],
     "new_flags": [
       "--name"
     ],
@@ -51,7 +48,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces `/resume` support for background sessions, allowing users to easily switch between interactive and background tasks started via `claude --bg` or agent view. These sessions are now displayed alongside interactive ones and marked with `bg`. The `/plugin` browse and discover panes now display the last updated time for each plugin. The `/model` command now only changes the model for the current session, with a `d` option to set a default for new sessions. The `/extra-usage` command has been renamed to `/usage-credits`, though the old name still functions. A startup hang issue related to unreachable `api.anthropic.com` has been resolved by implementing a 15s timeout for side-channel API calls. Terminal output glitches and progressive display corruption have been fixed, improving the user experience in long sessions and VS Code. Background sessions on macOS no longer crash due to Full Disk Access restrictions. Several bug fixes address issues with file handling, command execution, model selection, remote sessions, MCP servers, skill tools, and plugin management. Scrolling in attached background sessions on Windows is now functional, and Ctrl+C now interrupts `! <cmd>` exec sessions. This release also includes improvements to agent view, background session management, and error reporting. It is recommended to upgrade to this version to benefit from the improved stability, performance, and user experience. No specific prerequisites are required for this upgrade."
+      "tldr": "This release introduces `/resume` support for background sessions, allowing users to view and manage sessions started with `claude --bg` or through the agent view alongside interactive sessions. Background subagent completion notifications now include elapsed duration, providing better insight into task completion times. The `/model` command now changes the model for the current session only, with the option to set a default for new sessions using the `d` key in the model picker. The `/extra-usage` command has been renamed to `/usage-credits`, though the old name still functions. Startup hangs due to unreachable `api.anthropic.com` are now mitigated with a 15s timeout for side-channel API calls. Terminal output issues, such as garbled displays after window resizing or progressive corruption in long sessions, have been addressed with self-healing mechanisms and reduced spinner animation color count. A macOS background session crash related to Full Disk Access-protected folders has been resolved. The release also fixes issues with file reading, tool errors during search, `/branch` command failures, model selection persistence, and remote-session login problems. MCP server pagination and image handling have been improved, and file descriptor exhaustion during builds is now prevented. Plugin marketplace add/update now respects `CLAUDE_CODE_PLUGIN_PREFER_HTTPS`. It is recommended to upgrade to this version to benefit from these fixes and improvements. No specific prerequisites are required."
     },
     "features": [
       {
@@ -3981,6 +3978,12 @@
         "name": "/stats",
         "replaced_by": "/usage",
         "deprecated_since": "2.1.118",
+        "source_url": ""
+      },
+      {
+        "name": "/extra-usage",
+        "replaced_by": "/usage-credits",
+        "deprecated_since": "2.1.144",
         "source_url": ""
       },
       {
