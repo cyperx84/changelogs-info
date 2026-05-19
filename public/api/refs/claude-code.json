@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.144",
-  "generated_at": "2026-05-19T09:13:28.551Z",
+  "generated_at": "2026-05-19T11:06:46.526Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -17,12 +17,10 @@
     "from_version": "2.1.144",
     "to_version": "2.1.144",
     "new_features": [
-      "resume-background-sessions"
+      "resume-background-sessions-command"
     ],
     "new_commands": [],
-    "new_flags": [
-      "--name"
-    ],
+    "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [
       "/extra-usage"
@@ -50,7 +48,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces `/resume` support for background sessions, allowing users to easily access and manage sessions started via `claude --bg` or agent view, which are now displayed alongside interactive sessions with a `bg` marker. The `/model` command now changes the model for the current session only, with the option to set a default for new sessions using `d` in the model picker. The `/extra-usage` command has been renamed to `/usage-credits`, though the old name still works. A significant fix addresses startup hangs of up to 75 seconds when `api.anthropic.com` is unreachable by timing out side-channel API calls after 15s. Terminal output issues, including garbled displays and progressive corruption, have been resolved, and rendering glitches in VS Code have been reduced. Background sessions on macOS no longer crash when the project is under a Full Disk Access-protected folder. Several bug fixes improve tool error handling during search, address issues with `/branch` and model selection, and resolve problems with remote-session login and MCP server tool listing. Additionally, plugin marketplace add/update now respects `CLAUDE_CODE_PLUGIN_PREFER_HTTPS`. This upgrade is recommended to take advantage of the new background session management and critical bug fixes."
+      "tldr": "This release introduces `/resume` support, allowing users to view and manage background sessions started via `claude --bg` or agent view alongside interactive sessions, enhancing workflow management. The `/plugin` command now displays the last updated time for plugins in the browse and discover panes, improving plugin discovery. The `/model` command now changes the model for the current session only, with a `d` option to set a default for new sessions. The `/extra-usage` command has been renamed to `/usage-credits`, though the old name still functions. Several fixes address startup hangs due to unreachable API endpoints, garbled terminal output after window resize events, and progressive terminal display corruption. macOS background sessions no longer crash when the project is under a Full Disk Access-protected folder, and file reading errors due to mismatched image extensions are now handled gracefully. Spurious tool errors during search are reduced, and issues with `/branch`, Escape key behavior in AskUserQuestion notes, model selection application, resumed session model persistence, Bedrock/Vertex Opus selection, remote-session login, MCP server pagination, MCP image MIME type handling, file descriptor exhaustion, session title generation, Skill tool permissions, plugin caching, MCP server listing, background side-queries, scrolling in attached background sessions on Windows, Ctrl+C handling in `! <cmd>` exec sessions, agent view shell-command row behavior, `claude agents` keyboard input on Windows, ghost characters in Agent View on Windows Terminal, `/bg` and `←`-detach directory preservation, Edit/Write refusal after detaching, `claude respawn` status display, `/resume` picker session display, `claude agents` and `claude logs` hanging, background Bash task status, completed/stopped background session wake failures, markdown link rendering in `claude agents` attached sessions, custom `spinnerVerbs` application, `claude agents` / `--bg` rejection messages, `claude --bg --name` confirmation, background session worktree isolation guard, plugin marketplace add/update HTTPS preference, `/plugin` return behavior, `/doctor` exec-form example display, skill-listing truncation notification, pre-response stream stall recovery, and SDK/headless MCP startup speed are resolved. It is recommended to upgrade to benefit from these improvements and fixes. No specific prerequisites are mentioned."
     },
     "features": [
       {
@@ -1224,6 +1222,15 @@
         "description": "Adds `/resume` support for background sessions started via `claude --bg` or agent view. These sessions now appear alongside interactive ones, marked with `bg`.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "resume-background-sessions-command",
+        "name": "/resume support for background sessions",
+        "status": "stable",
+        "since": "2.1.144",
+        "description": "Background sessions started via `claude --bg` or agent view now appear alongside interactive ones, marked with `bg`.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1942,9 +1949,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--name"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
@@ -3954,6 +3959,12 @@
         "name": "/stats",
         "replaced_by": "/usage",
         "deprecated_since": "2.1.118",
+        "source_url": ""
+      },
+      {
+        "name": "/extra-usage",
+        "replaced_by": "/usage-credits",
+        "deprecated_since": "2.1.144",
         "source_url": ""
       },
       {
