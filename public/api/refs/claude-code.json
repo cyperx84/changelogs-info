@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.144",
-  "generated_at": "2026-05-19T11:06:46.526Z",
+  "generated_at": "2026-05-19T13:10:12.695Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -17,10 +17,12 @@
     "from_version": "2.1.144",
     "to_version": "2.1.144",
     "new_features": [
-      "resume-background-sessions-command"
+      "resume-background-sessions-support"
     ],
     "new_commands": [],
-    "new_flags": [],
+    "new_flags": [
+      "--name"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [
       "/extra-usage"
@@ -48,7 +50,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces `/resume` support, allowing users to view and manage background sessions started via `claude --bg` or agent view alongside interactive sessions, enhancing workflow management. The `/plugin` command now displays the last updated time for plugins in the browse and discover panes, improving plugin discovery. The `/model` command now changes the model for the current session only, with a `d` option to set a default for new sessions. The `/extra-usage` command has been renamed to `/usage-credits`, though the old name still functions. Several fixes address startup hangs due to unreachable API endpoints, garbled terminal output after window resize events, and progressive terminal display corruption. macOS background sessions no longer crash when the project is under a Full Disk Access-protected folder, and file reading errors due to mismatched image extensions are now handled gracefully. Spurious tool errors during search are reduced, and issues with `/branch`, Escape key behavior in AskUserQuestion notes, model selection application, resumed session model persistence, Bedrock/Vertex Opus selection, remote-session login, MCP server pagination, MCP image MIME type handling, file descriptor exhaustion, session title generation, Skill tool permissions, plugin caching, MCP server listing, background side-queries, scrolling in attached background sessions on Windows, Ctrl+C handling in `! <cmd>` exec sessions, agent view shell-command row behavior, `claude agents` keyboard input on Windows, ghost characters in Agent View on Windows Terminal, `/bg` and `←`-detach directory preservation, Edit/Write refusal after detaching, `claude respawn` status display, `/resume` picker session display, `claude agents` and `claude logs` hanging, background Bash task status, completed/stopped background session wake failures, markdown link rendering in `claude agents` attached sessions, custom `spinnerVerbs` application, `claude agents` / `--bg` rejection messages, `claude --bg --name` confirmation, background session worktree isolation guard, plugin marketplace add/update HTTPS preference, `/plugin` return behavior, `/doctor` exec-form example display, skill-listing truncation notification, pre-response stream stall recovery, and SDK/headless MCP startup speed are resolved. It is recommended to upgrade to benefit from these improvements and fixes. No specific prerequisites are mentioned."
+      "tldr": "This release introduces `/resume` support for background sessions, allowing users to easily access and manage sessions started with `claude --bg` or through the agent view, which are now displayed alongside interactive sessions and marked with `bg`. The `/plugin` command now displays the last updated date for plugins in the browse and discover panes. The `/extra-usage` command has been renamed to `/usage-credits`, though the old name still functions. A significant fix addresses startup delays of up to 75 seconds when `api.anthropic.com` is unreachable, reducing the timeout to 15 seconds. Terminal output issues, including garbled displays after window resizing and progressive corruption in long sessions, have been resolved. Background sessions on macOS no longer crash when projects are in Full Disk Access-protected folders. Model selection via the IDE model picker now applies correctly after startup, and resumed sessions retain their original model choice. Bedrock and Vertex users can now select \"Opus (1M context)\" from the `/model` picker. MCP servers with paginated `tools/list` responses now correctly return all tools. This release also fixes several issues related to background sessions, agent view, and plugin management. It is recommended to upgrade to benefit from these fixes and improvements. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
@@ -1231,6 +1233,15 @@
         "description": "Background sessions started via `claude --bg` or agent view now appear alongside interactive ones, marked with `bg`.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "resume-background-sessions-support",
+        "name": "/resume support for background sessions",
+        "status": "stable",
+        "since": "2.1.144",
+        "description": "Adds `/resume` support for background sessions, making sessions started via `claude --bg` or agent view appear alongside interactive ones, marked with `bg`.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1949,7 +1960,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--name"
+      ]
     },
     "env_vars": [
       {
@@ -3959,6 +3972,12 @@
         "name": "/stats",
         "replaced_by": "/usage",
         "deprecated_since": "2.1.118",
+        "source_url": ""
+      },
+      {
+        "name": "/extra-usage",
+        "replaced_by": "/usage-credits",
+        "deprecated_since": "2.1.144",
         "source_url": ""
       },
       {
