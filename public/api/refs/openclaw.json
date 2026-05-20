@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.5.19",
-  "generated_at": "2026-05-20T21:37:02.880Z",
+  "generated_at": "2026-05-20T22:33:39.487Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -18,16 +18,16 @@
     "to_version": "2026.5.19",
     "new_features": [
       "meme-maker-skill",
-      "node-inspector-debugging-fused-diagram-generation-throwaway-spike-workflow-skills",
+      "node-inspector-debugging-fused-diagram-generation-and-throwaway-spike-workflow-skills",
       "typed-simple-tool-plugins",
-      "python-debugging-skill"
+      "python-debugging-skill",
+      "https-managed-forward-proxy-endpoints",
+      "realtime-gateway-relay-voice-sessions-with-streaming-mic-input"
     ],
     "new_commands": [],
     "new_flags": [
       "--global",
-      "--timeout-ms",
-      "--runtime-parity-tier",
-      "--tools"
+      "--timeout-ms"
     ],
     "new_env_vars": [
       "OPENCLAW_IMAGE_APT_PACKAGES",
@@ -59,7 +59,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces several new features and improvements, focusing on skills, browser automation, and QA-Lab enhancements. A new meme-maker skill allows for curated template search and local/hosted rendering. Node inspector debugging and Python debugging skills have been added for enhanced development workflows. The `openclaw skills` CLI now supports targeting shared managed skills with the `--global` flag. Browser automation gains the ability to surface modal dialogs and extend evaluation timeouts with `openclaw browser evaluate --timeout-ms`. QA-Lab receives significant updates, including runtime parity scenarios, tool fixture coverage reporting via `openclaw qa coverage --tools`, and a live-frontier Codex-vs-Pi runtime token-efficiency artifact lane. Key fixes address memory search performance, Telegram forum topic handling, and plugin update stability. The release also introduces `OPENCLAW_IMAGE_APT_PACKAGES` and `OPENCLAW_IMAGE_PIP_PACKAGES` environment variables for Docker/Podman image builds. Legacy `interactive`/Slack directive producer APIs are deprecated. It is recommended to upgrade to this release to benefit from the new features, bug fixes, and performance improvements. Ensure Node.js is at least version 22.19 before upgrading."
+      "tldr": "This release introduces several new features and improvements, focusing on skills, browser automation, and developer tooling. A new meme-maker skill allows users to create memes with curated templates and provenance links. Node inspector debugging, fused diagram generation, and throwaway spike workflow skills have been added to enhance development workflows. Typed simple tool plugins are now supported with generated manifest metadata and context factories, streamlining plugin development. The Obsidian skill now targets the official `obsidian` CLI. The Android Talk Mode now uses realtime Gateway relay voice sessions with streaming mic input. New environment variables `OPENCLAW_IMAGE_APT_PACKAGES` and `OPENCLAW_IMAGE_PIP_PACKAGES` allow for customization of Docker/Podman image builds. Several fixes address issues with memory search, Telegram message handling, plugin updates, and provider integrations. The release also includes improvements to the Mac app settings UI and various bug fixes across different channels and providers. It is recommended to update to this version to take advantage of the new features and bug fixes. Ensure Node.js is at least version 22.19 before upgrading."
     },
     "features": [
       {
@@ -2716,6 +2716,15 @@
         "description": "Renames the repo-local Codex closeout review skill and helper to `autoreview` while preserving the Codex-first fallback behavior.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "node-inspector-debugging-fused-diagram-generation-and-throwaway-spike-workflow-skills",
+        "name": "Node Inspector Debugging, Fused Diagram Generation, and Throwaway Spike Workflow Skills",
+        "status": "stable",
+        "since": "2026.5.19",
+        "description": "Adds node inspector debugging, fused diagram generation, and throwaway spike workflow skills.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -3451,9 +3460,7 @@
       ],
       "new_since_previous": [
         "--global",
-        "--timeout-ms",
-        "--runtime-parity-tier",
-        "--tools"
+        "--timeout-ms"
       ]
     },
     "env_vars": [
