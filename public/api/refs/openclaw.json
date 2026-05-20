@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.5.18",
-  "generated_at": "2026-05-20T19:46:46.594Z",
+  "version": "2026.5.19",
+  "generated_at": "2026-05-20T20:46:36.035Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,20 +14,23 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.5.18",
-    "to_version": "2026.5.18",
+    "from_version": "2026.5.19",
+    "to_version": "2026.5.19",
     "new_features": [
       "meme-maker-skill",
       "node-inspector-debugging-fused-diagram-generation-throwaway-spike-workflow-skills",
       "typed-simple-tool-plugins",
       "python-debugging-skill",
-      "https-managed-forward-proxy-endpoints",
-      "realtime-gateway-relay-voice-sessions-with-streaming-mic-input"
+      "https-managed-forward-proxy-endpoints"
     ],
     "new_commands": [],
-    "new_flags": [],
+    "new_flags": [
+      "--global",
+      "--timeout-ms"
+    ],
     "new_env_vars": [
-      "OPENCLAW_IMAGE_APT_PACKAGES"
+      "OPENCLAW_IMAGE_APT_PACKAGES",
+      "OPENCLAW_IMAGE_PIP_PACKAGES"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -49,13 +52,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.5.18",
-      "latest_release_date": "2026-05-18",
+      "latest_stable": "2026.5.19",
+      "latest_release_date": "2026-05-20",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "OpenClaw 2026.5.18 introduces Android Talk Mode using realtime Gateway relay voice sessions, enabling streaming mic input, audio playback, tool-result bridging, and on-screen transcripts. A meme-maker skill is added for template search and rendering, alongside node inspector debugging and throwaway spike workflow skills. Typed simple tool plugins are now supported with generated manifests, and a Python debugging skill is available. HTTPS managed forward-proxy endpoints are introduced, and the `video_generate` tool's audio parameters are now conditional. Telegram and Discord reliability has been improved with fixes for media delivery, `/stop` handling, and progress updates. Codex/OpenAI runtime has been enhanced with better context projection and OAuth fallback. Agents and subagents have improved follow-up handling and session locks. The release also includes numerous fixes for media handling, Telegram, Gateway, Agents, Plugins, Codex, and QA-Lab, addressing issues like image probing, update checks, code mode, OAuth, and tool coverage. `OPENCLAW_IMAGE_APT_PACKAGES` is introduced for Docker/Podman image builds. It is recommended to upgrade to this stable release for improved reliability, new features, and critical fixes. No specific migration steps are required."
+      "tldr": "This release introduces several enhancements, including the new meme-maker skill for creating memes from curated templates, and node inspector debugging skills for enhanced development workflows. The `openclaw skills install` and `openclaw skills update` commands now support the `--global` flag for targeting shared managed skills. The `openclaw browser evaluate` command gains a `--timeout-ms` flag to extend timeout budgets for long-running page functions. Docker/Podman builds now support `OPENCLAW_IMAGE_APT_PACKAGES` and `OPENCLAW_IMAGE_PIP_PACKAGES` for installing apt and Python packages, respectively. Talk Mode on Android now features realtime Gateway relay voice sessions with streaming mic input. A key fix addresses memory search issues, preventing large chunk tables from pinning the Node.js main thread. Other fixes include preventing Telegram forum topics from blocking sibling traffic and ensuring proper handling of image inputs for Claude models. Legacy `interactive`/Slack directive producer APIs are now deprecated. It's recommended to upgrade to benefit from these improvements and fixes. Ensure Node.js is at least version 22.19 before upgrading."
     },
     "features": [
       {
@@ -3297,6 +3300,18 @@
           "description": "Runtime-neutral image build arg for extra apt packages.",
           "since": "2026.5.18",
           "source_url": ""
+        },
+        {
+          "flag": "--global",
+          "description": "Allows `openclaw skills install` and `openclaw skills update` to target shared managed skills.",
+          "since": "2026.5.19",
+          "source_url": ""
+        },
+        {
+          "flag": "--timeout-ms",
+          "description": "Adds `openclaw browser evaluate --timeout-ms` so long-running page functions can extend both the evaluate action and request timeout budgets.",
+          "since": "2026.5.19",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -3427,7 +3442,10 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--global",
+        "--timeout-ms"
+      ]
     },
     "env_vars": [
       {
@@ -3519,6 +3537,13 @@
         "purpose": "Runtime-neutral image build arg for extra apt packages.",
         "status": "stable",
         "since": "2026.5.18",
+        "source_url": ""
+      },
+      {
+        "name": "OPENCLAW_IMAGE_PIP_PACKAGES",
+        "purpose": "Opt-in Python package installation in local image builds.",
+        "status": "stable",
+        "since": "2026.5.19",
         "source_url": ""
       }
     ],
