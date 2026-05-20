@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.5.18",
-  "generated_at": "2026-05-20T13:58:49.076Z",
+  "generated_at": "2026-05-20T15:14:28.018Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -21,21 +21,13 @@
       "node-inspector-debugging-fused-diagram-generation-throwaway-spike-workflow-skills",
       "typed-simple-tool-plugins",
       "python-debugging-skill",
-      "https-managed-forward-proxy-endpoints",
-      "realtime-gateway-relay-voice-sessions-with-streaming-mic-input"
+      "https-managed-forward-proxy-endpoints"
     ],
-    "new_commands": [
-      "openclaw plugins build",
-      "openclaw plugins validate",
-      "openclaw plugins init",
-      "openclaw qa suite --runtime-parity-tier",
-      "openclaw qa coverage --tools",
-      "browser dialog --dialog-id"
-    ],
-    "new_flags": [],
-    "new_env_vars": [
+    "new_commands": [],
+    "new_flags": [
       "OPENCLAW_IMAGE_APT_PACKAGES"
     ],
+    "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -62,7 +54,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "OpenClaw 2026.5.18 focuses on stability and refinement across various components. Android Talk Mode now leverages realtime Gateway relay voice sessions, enhancing voice interaction capabilities. A meme-maker skill has been added, allowing users to create memes with curated templates and provenance links. Typed simple tool plugins are now supported, streamlining plugin development with manifest metadata and context factories. Telegram and Discord reliability has been improved with isolated lanes, better media delivery, and refined command handling. Codex/OpenAI runtime sees enhancements in context projection, tool progress, and OAuth fallback. Agents and subagents benefit from more predictable follow-ups and payload delivery. The Mac app features redesigned Settings pages for a cleaner and more consistent user experience. Several fixes address issues in media handling, Telegram delivery, Codex app-server behavior, and QA-Lab reporting. This release also introduces HTTPS managed forward-proxy endpoints and a Python debugging skill. It is recommended to upgrade to this stable release to benefit from the consolidated improvements and fixes. No specific migration steps are required."
+      "tldr": "OpenClaw 2026.5.18 introduces several enhancements, including a new meme-maker skill for generating memes from curated templates. The Android Talk Mode now uses realtime Gateway relay voice sessions with streaming mic input, improving audio playback and transcript quality. A new `defineToolPlugin` function simplifies the creation of typed simple tool plugins, and a Python debugging skill is available for pdb, breakpoint(), post-mortem inspection, and debugpy remote attach.  HTTPS managed forward-proxy endpoints are now supported, allowing for scoped `proxy.tls.caFile` CA trust for proxy endpoint TLS. The QQBot channel plugin has shortened C2C typing indicators, and the memory-qmd feature now keeps lexical search on raw hyphenated queries.  The release also includes numerous fixes, such as delivering generated media completions back into Telegram forum topics, preventing image metadata probing from invoking external decoder delegates, and deferring update-check startup until after readiness. The `OPENCLAW_IMAGE_APT_PACKAGES` environment variable is introduced as a runtime-neutral image build arg for extra apt packages.  QQBot C2C typing indicators are shortened to a 10-second window.  It is recommended to upgrade to this stable release to benefit from the consolidated improvements and fixes. No specific migration steps are required."
     },
     "features": [
       {
@@ -3298,6 +3290,12 @@
           "description": "Explicit OpenAI API-key setup path for `openclaw models auth login --provider openai`.",
           "since": "2026.5.12",
           "source_url": ""
+        },
+        {
+          "flag": "OPENCLAW_IMAGE_APT_PACKAGES",
+          "description": "Runtime-neutral image build arg for extra apt packages.",
+          "since": "2026.5.18",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -3428,7 +3426,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "OPENCLAW_IMAGE_APT_PACKAGES"
+      ]
     },
     "env_vars": [
       {
