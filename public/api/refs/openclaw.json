@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.5.18",
-  "generated_at": "2026-05-20T15:14:28.018Z",
+  "generated_at": "2026-05-20T17:08:17.054Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -21,13 +21,14 @@
       "node-inspector-debugging-fused-diagram-generation-throwaway-spike-workflow-skills",
       "typed-simple-tool-plugins",
       "python-debugging-skill",
-      "https-managed-forward-proxy-endpoints"
+      "https-managed-forward-proxy-endpoints",
+      "realtime-gateway-relay-voice-sessions-with-streaming-mic-input"
     ],
     "new_commands": [],
-    "new_flags": [
+    "new_flags": [],
+    "new_env_vars": [
       "OPENCLAW_IMAGE_APT_PACKAGES"
     ],
-    "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -54,7 +55,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "OpenClaw 2026.5.18 introduces several enhancements, including a new meme-maker skill for generating memes from curated templates. The Android Talk Mode now uses realtime Gateway relay voice sessions with streaming mic input, improving audio playback and transcript quality. A new `defineToolPlugin` function simplifies the creation of typed simple tool plugins, and a Python debugging skill is available for pdb, breakpoint(), post-mortem inspection, and debugpy remote attach.  HTTPS managed forward-proxy endpoints are now supported, allowing for scoped `proxy.tls.caFile` CA trust for proxy endpoint TLS. The QQBot channel plugin has shortened C2C typing indicators, and the memory-qmd feature now keeps lexical search on raw hyphenated queries.  The release also includes numerous fixes, such as delivering generated media completions back into Telegram forum topics, preventing image metadata probing from invoking external decoder delegates, and deferring update-check startup until after readiness. The `OPENCLAW_IMAGE_APT_PACKAGES` environment variable is introduced as a runtime-neutral image build arg for extra apt packages.  QQBot C2C typing indicators are shortened to a 10-second window.  It is recommended to upgrade to this stable release to benefit from the consolidated improvements and fixes. No specific migration steps are required."
+      "tldr": "OpenClaw 2026.5.18 introduces Android Talk Mode using realtime Gateway relay voice sessions, enabling streaming mic input, audio playback, tool-result bridging, and on-screen transcripts. A meme-maker skill is added for template search and rendering, alongside node inspector debugging and throwaway spike workflow skills. Typed simple tool plugins are now supported with generated manifests, and a Python debugging skill is available. HTTPS managed forward-proxy endpoints are introduced, and the `video_generate` tool's audio parameters are now conditional. Telegram and Discord reliability has been improved with fixes for media delivery, `/stop` handling, and progress updates. Codex/OpenAI runtime has been enhanced with better context projection and OAuth fallback. Agents and subagents have improved follow-up handling and session locks. The release also includes numerous fixes for media handling, Telegram, Gateway, Agents, Plugins, Codex, and QA-Lab, addressing issues like image probing, update checks, code mode, OAuth, and tool coverage. `OPENCLAW_IMAGE_APT_PACKAGES` is introduced for Docker/Podman image builds. It is recommended to upgrade to this stable release for improved reliability, new features, and critical fixes. No specific migration steps are required."
     },
     "features": [
       {
@@ -3426,9 +3427,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "OPENCLAW_IMAGE_APT_PACKAGES"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
