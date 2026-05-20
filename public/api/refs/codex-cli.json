@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.131.0",
-  "generated_at": "2026-05-20T01:44:29.239Z",
+  "version": "0.132.0",
+  "generated_at": "2026-05-20T03:10:54.992Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,27 +14,24 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.131.0",
-    "to_version": "0.131.0",
+    "from_version": "0.132.0",
+    "to_version": "0.132.0",
     "new_features": [
-      "richer-tui-session-controls",
-      "unified-mentions-picker",
-      "plugin-workflows-enhancements",
-      "remote-workflows-enhancements",
-      "python-sdk-openai-codex",
-      "codex-doctor-diagnostics"
+      "python-sdk-first-class-authentication",
+      "python-turn-apis-easier-to-use",
+      "exec-resume-output-schema",
+      "faster-tui-startup",
+      "auth-backed-remote-executor-registration",
+      "app-server-preserve-image-fidelity"
     ],
     "new_commands": [],
     "new_flags": [
-      "--dangerously-bypass-hook-trust"
+      "--output-schema"
     ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "turncontext-cwd-and-resolve_path-deprecation",
-      "legacy-profiles-rejection"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -51,14 +48,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.131.0",
+      "latest_stable": "0.132.0",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-05-18",
+      "latest_release_date": "2026-05-20",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release introduces richer TUI session controls, providing data-driven service-tier commands, blended token usage, permissions/approval mode, effective workspace roots, and responsive Markdown tables for improved session management. The `@` mentions now offer a unified picker for files, directories, plugins, and skills, streamlining the mention process. Plugin workflows are enhanced with marketplace CLI commands, version-aware sharing, share checkout, clearer shared-workspace buckets, and default-enabled plugin hooks, simplifying plugin management and collaboration. Remote workflows now support daemon-managed `codex remote-control`, runtime enable/disable APIs, status reads, and registry-backed/configured remote environments, improving remote workflow management. The Python SDK has transitioned to `openai-codex` with pinned runtime-generated types, concurrent turn routing, approval modes, and integration coverage. A new `codex doctor` command provides support-ready diagnostics across runtime, auth, terminal, network, config, and local state. Several TUI interaction and rendering issues have been resolved, and Windows sandbox behavior has been hardened. Managed read restrictions are preserved during permission escalation, and app-server/local state startup is made safer. The `TurnContext cwd` and `resolve_path` are now deprecated, and legacy profiles are rejected when using profile-v2. It is highly recommended to upgrade to benefit from the enhanced features, improved stability, and security enhancements. Ensure you migrate to profile-v2 configuration and use alternative methods for accessing the current working directory and resolving paths."
+      "tldr": "This release introduces first-class authentication to the Python SDK, including API key login, ChatGPT browser and device-code flows, account inspection, and logout APIs, simplifying integration and enhancing security. The Python SDK's turn APIs are also improved, allowing plain string inputs for text-only workflows and providing a richer `TurnResult` with collected items, timing, and usage data. The `codex exec resume` command now supports the `--output-schema` flag, enabling resumed automations to maintain session context while enforcing structured JSON output. TUI startup is faster due to batched terminal capability probes, and remote executor registration now uses standard Codex auth. App-server turns can now preserve requested image fidelity, including original-resolution local images. Goal continuations now stop on usage limits or repeated blockers, preventing excessive token consumption. The session picker is more reliable with clearer resume hints, and multi-session TUI flows are more robust with in-progress MCP calls correctly replayed. Remote sessions maintain websocket connections and display repo-relative diff paths. Windows installs are more robust with correct npm-managed install detection and no VC++ runtime DLL dependencies. TUI polish includes immediate shutdown feedback, hidden ChatGPT usage link for non-OpenAI providers, and persistent Fast tier settings. Memory summaries are now versioned and rebuilt when stale, improving long-term memory context. Upgrade is recommended for Python SDK users and those relying on `codex exec resume` with structured output."
     },
     "features": [
       {
@@ -1669,6 +1666,60 @@
         "description": "Added `codex doctor` for support-ready diagnostics across runtime, auth, terminal, network, config, and local state.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "python-sdk-first-class-authentication",
+        "name": "Python SDK First-Class Authentication",
+        "status": "stable",
+        "since": "0.132.0",
+        "description": "The Python SDK now supports first-class authentication, including API key login, ChatGPT browser and device-code flows, account inspection, and logout APIs.",
+        "key_details": [],
+        "source_url": "https://github.com/openai/codex/pull/23093"
+      },
+      {
+        "id": "python-turn-apis-easier-to-use",
+        "name": "Easier-to-Use Python Turn APIs",
+        "status": "stable",
+        "since": "0.132.0",
+        "description": "Python turn APIs are easier to use for text-only workflows: you can pass a plain string as input, and handle-based runs now return a richer `TurnResult` with collected items, timing, and usage data.",
+        "key_details": [],
+        "source_url": "https://github.com/openai/codex/pull/23151"
+      },
+      {
+        "id": "exec-resume-output-schema",
+        "name": "`codex exec resume` with `--output-schema`",
+        "status": "stable",
+        "since": "0.132.0",
+        "description": "`codex exec resume` now accepts `--output-schema`, so resumed automations can keep session context while still enforcing structured JSON output.",
+        "key_details": [],
+        "source_url": "https://github.com/openai/codex/pull/23123"
+      },
+      {
+        "id": "faster-tui-startup",
+        "name": "Faster TUI Startup",
+        "status": "stable",
+        "since": "0.132.0",
+        "description": "TUI startup is faster because terminal capability probes are now batched instead of waiting on several serial checks before the first interactive frame.",
+        "key_details": [],
+        "source_url": "https://github.com/openai/codex/pull/23175"
+      },
+      {
+        "id": "auth-backed-remote-executor-registration",
+        "name": "Auth-Backed Remote Executor Registration",
+        "status": "stable",
+        "since": "0.132.0",
+        "description": "Remote executor registration can now use standard Codex auth instead of a separate registry credential flow.",
+        "key_details": [],
+        "source_url": "https://github.com/openai/codex/pull/22769"
+      },
+      {
+        "id": "app-server-preserve-image-fidelity",
+        "name": "App-Server Image Fidelity Preservation",
+        "status": "stable",
+        "since": "0.132.0",
+        "description": "App-server turns can preserve requested image fidelity, including original-resolution local images, across user inputs and image-producing tools.",
+        "key_details": [],
+        "source_url": "https://github.com/openai/codex/pull/20693"
       }
     ],
     "commands": [
@@ -1980,6 +2031,12 @@
           "description": "CLI flag to bypass hook trust.",
           "since": "0.131.0",
           "source_url": ""
+        },
+        {
+          "flag": "--output-schema",
+          "description": "Allows resumed automations to keep session context while still enforcing structured JSON output when used with `codex exec resume`.",
+          "since": "0.132.0",
+          "source_url": "https://github.com/openai/codex/pull/23123"
         }
       ],
       "deprecated": [
@@ -3378,7 +3435,7 @@
         }
       ],
       "new_since_previous": [
-        "--dangerously-bypass-hook-trust"
+        "--output-schema"
       ]
     },
     "env_vars": [
