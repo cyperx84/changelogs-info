@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.5.19",
-  "generated_at": "2026-05-20T21:37:02.880Z",
+  "generated_at": "2026-05-20T20:46:36.035Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -20,14 +20,13 @@
       "meme-maker-skill",
       "node-inspector-debugging-fused-diagram-generation-throwaway-spike-workflow-skills",
       "typed-simple-tool-plugins",
-      "python-debugging-skill"
+      "python-debugging-skill",
+      "https-managed-forward-proxy-endpoints"
     ],
     "new_commands": [],
     "new_flags": [
       "--global",
-      "--timeout-ms",
-      "--runtime-parity-tier",
-      "--tools"
+      "--timeout-ms"
     ],
     "new_env_vars": [
       "OPENCLAW_IMAGE_APT_PACKAGES",
@@ -59,7 +58,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release introduces several new features and improvements, focusing on skills, browser automation, and QA-Lab enhancements. A new meme-maker skill allows for curated template search and local/hosted rendering. Node inspector debugging and Python debugging skills have been added for enhanced development workflows. The `openclaw skills` CLI now supports targeting shared managed skills with the `--global` flag. Browser automation gains the ability to surface modal dialogs and extend evaluation timeouts with `openclaw browser evaluate --timeout-ms`. QA-Lab receives significant updates, including runtime parity scenarios, tool fixture coverage reporting via `openclaw qa coverage --tools`, and a live-frontier Codex-vs-Pi runtime token-efficiency artifact lane. Key fixes address memory search performance, Telegram forum topic handling, and plugin update stability. The release also introduces `OPENCLAW_IMAGE_APT_PACKAGES` and `OPENCLAW_IMAGE_PIP_PACKAGES` environment variables for Docker/Podman image builds. Legacy `interactive`/Slack directive producer APIs are deprecated. It is recommended to upgrade to this release to benefit from the new features, bug fixes, and performance improvements. Ensure Node.js is at least version 22.19 before upgrading."
+      "tldr": "This release introduces several enhancements, including the new meme-maker skill for creating memes from curated templates, and node inspector debugging skills for enhanced development workflows. The `openclaw skills install` and `openclaw skills update` commands now support the `--global` flag for targeting shared managed skills. The `openclaw browser evaluate` command gains a `--timeout-ms` flag to extend timeout budgets for long-running page functions. Docker/Podman builds now support `OPENCLAW_IMAGE_APT_PACKAGES` and `OPENCLAW_IMAGE_PIP_PACKAGES` for installing apt and Python packages, respectively. Talk Mode on Android now features realtime Gateway relay voice sessions with streaming mic input. A key fix addresses memory search issues, preventing large chunk tables from pinning the Node.js main thread. Other fixes include preventing Telegram forum topics from blocking sibling traffic and ensuring proper handling of image inputs for Claude models. Legacy `interactive`/Slack directive producer APIs are now deprecated. It's recommended to upgrade to benefit from these improvements and fixes. Ensure Node.js is at least version 22.19 before upgrading."
     },
     "features": [
       {
@@ -3313,12 +3312,6 @@
           "description": "Adds `openclaw browser evaluate --timeout-ms` so long-running page functions can extend both the evaluate action and request timeout budgets.",
           "since": "2026.5.19",
           "source_url": ""
-        },
-        {
-          "flag": "--runtime-parity-tier",
-          "description": "Adds `openclaw qa suite --runtime-parity-tier` and wires the standard Codex-vs-Pi tier into release checks separately from optional/live-only/soak lanes.",
-          "since": "2026.5.19",
-          "source_url": ""
         }
       ],
       "deprecated": [
@@ -3451,9 +3444,7 @@
       ],
       "new_since_previous": [
         "--global",
-        "--timeout-ms",
-        "--runtime-parity-tier",
-        "--tools"
+        "--timeout-ms"
       ]
     },
     "env_vars": [
