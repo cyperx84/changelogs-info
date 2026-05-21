@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.5.19",
-  "generated_at": "2026-05-21T07:22:17.772Z",
+  "generated_at": "2026-05-21T09:12:29.215Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -21,22 +21,17 @@
       "node-inspector-debugging-fused-diagram-generation-and-throwaway-spike-workflow-skills",
       "typed-simple-tool-plugins",
       "python-debugging-skill",
-      "https-managed-forward-proxy-endpoints",
-      "realtime-gateway-relay-voice-sessions-with-streaming-mic-input",
-      "telegram-allowlisted-native-dm-draft-previews"
+      "codex-plugins-list-enable-disable"
     ],
     "new_commands": [
+      "openclaw skills install",
+      "openclaw skills update",
       "openclaw browser evaluate",
       "openclaw plugins build",
       "openclaw plugins validate",
       "openclaw plugins init",
-      "/codex plugins list",
-      "/codex plugins enable",
-      "/codex plugins disable",
       "openclaw qa suite",
-      "openclaw qa coverage",
-      "openclaw sessions list",
-      "openclaw infer image describe"
+      "openclaw qa coverage"
     ],
     "new_flags": [
       "--global",
@@ -74,7 +69,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release focuses on improving agent behavior, adding new skills, and enhancing developer tooling. Agent fixes now default to clean refactors and explicit deprecation paths. A new meme-maker skill allows for curated template search and local rendering, while node inspector and Python debugging skills aid in development workflows. The `openclaw browser evaluate` command now supports timeouts, and typed simple tool plugins can be built and validated using new CLI commands. The release also introduces `OPENCLAW_IMAGE_APT_PACKAGES` and `OPENCLAW_IMAGE_PIP_PACKAGES` environment variables for Docker/Podman image builds. Important fixes address memory search performance, Telegram forum topic handling, and Codex app-server tool auth. Legacy `interactive`/Slack directive producer APIs are now deprecated. Upgrade is recommended to take advantage of the new skills and tooling improvements, and to benefit from the various bug fixes. Ensure Node.js is at least version 22.19 before upgrading."
+      "tldr": "This release introduces several new features and improvements, with a focus on skills, browser automation, and QA-Lab enhancements. A new meme-maker skill allows for curated template search and local rendering, while node inspector debugging skills aid in development workflows. The `openclaw browser evaluate` command now supports a `--timeout-ms` flag for extending the timeout of long-running page functions. New `openclaw plugins` commands facilitate the creation of typed simple tool plugins. Several fixes address memory leaks, telegram routing issues, and provider compatibility. The `OPENCLAW_IMAGE_APT_PACKAGES` and `OPENCLAW_IMAGE_PIP_PACKAGES` environment variables are introduced for Docker/Podman image builds. The release also includes significant QA-Lab improvements, including runtime parity scenarios and coverage reporting for Codex-native workspace tools. Key fixes address memory leaks, telegram routing issues, and provider compatibility. It is recommended to update to this version to benefit from the new features and fixes. Ensure Node.js is at least version 22.19 before upgrading."
     },
     "features": [
       {
@@ -3253,6 +3248,22 @@
         "name": "openclaw infer image describe",
         "syntax": "openclaw infer image describe --file",
         "description": "Accept HTTP(S) URLs in `openclaw infer image describe --file`, fetching remote images through the guarded media path instead of treating URLs as local files.",
+        "since": "2026.5.19",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "openclaw skills install",
+        "syntax": "openclaw skills install",
+        "description": "Allows `openclaw skills install` to target shared managed skills with `--global`.",
+        "since": "2026.5.19",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "openclaw skills update",
+        "syntax": "openclaw skills update",
+        "description": "Allows `openclaw skills update` to target shared managed skills with `--global`.",
         "since": "2026.5.19",
         "status": "stable",
         "source_url": ""
