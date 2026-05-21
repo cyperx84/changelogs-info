@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.145",
-  "generated_at": "2026-05-21T01:43:17.326Z",
+  "version": "2.1.146",
+  "generated_at": "2026-05-21T03:11:26.987Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,13 +14,15 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.145",
-    "to_version": "2.1.145",
+    "from_version": "2.1.146",
+    "to_version": "2.1.146",
     "new_features": [],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
-    "deprecated_commands": [],
+    "deprecated_commands": [
+      "/simplify"
+    ],
     "deprecated_flags": [],
     "breaking_changes": []
   },
@@ -39,12 +41,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.145",
-      "latest_release_date": "2026-05-19",
+      "latest_stable": "2.1.146",
+      "latest_release_date": "2026-05-21",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces several enhancements and fixes, focusing on improved agent management and plugin discovery. The `claude agents --json` command allows listing live Claude sessions as JSON for scripting, enabling integrations with tools like tmux-resurrect and status bars. The status line now includes GitHub repo and PR information, providing more context at a glance. Plugin discovery screens now display detailed information about a plugin's capabilities before installation, including commands, agents, skills, hooks, and MCP/LSP servers. The `claude agents` terminal tab title now shows the awaiting-input count, making it easier to identify agents needing attention. Slash command and @-mention suggestion lists now support mouse hover and click in fullscreen mode. Stop and SubagentStop hook input now includes `background_tasks` and `session_crons` fields. Several fixes address permission prompt bypasses, MCP prompt errors, UI freezing, cross-project resume issues, voice push-to-talk, task list rendering, stale banners, PR badge updates, Agent Teams with non-ASCII names, deprecated GraphQL queries, plugin validation, and infinite loops with context forking. The Read tool now returns a truncated first page with a \"PARTIAL view\" notice when a whole-file read exceeds the token limit. Upgrading is recommended to benefit from these improvements and fixes. No specific prerequisites are required."
+      "tldr": "The `/simplify` command has been renamed to `/code-review`, now accepting an optional effort level such as `/code-review high` to control the depth of the review. Auto mode now correctly respects `AskUserQuestion` calls when explicitly used by the user or a skill, ensuring expected prompts are not suppressed. A critical fix addresses a failure in the Windows PowerShell tool when `pwsh` is installed via winget or the Microsoft Store, resolving a regression introduced in v2.1.124. MCP pagination issues with `resources/list`, `resources/templates/list`, and `prompts/list` have been resolved, ensuring all items are now correctly retrieved. Full-screen strobing in attached background sessions on Windows Terminal during Claude streaming has been eliminated. The auto-updater status line now accurately displays the current version even after update failures. On Windows, removing background-job worktrees no longer incorrectly follows NTFS junctions into the main repository. The `/background` command now correctly accepts sessions initiated with skills or custom slash commands. Backgrounded sessions no longer re-prompt for tool permissions previously granted with \"don't ask again\". The `/theme` color editor and \"New custom theme\" dialogs now respond to the Esc key. An uncaught exception at the end of streaming sessions when running via the Agent SDK has been fixed. Managed-settings policies `forceLoginOrgUUID` and `forceLoginMethod` are now enforced against third-party-provider and API-key sessions. GNOME Terminal right-click and middle-click paste now correctly insert text. The `CLAUDE_CODE_SUBAGENT_MODEL` environment variable is now correctly forwarded to child processes in multi-agent sessions. Auto-updater reliability has been improved with native version checks and downloads now retrying transient network failures. Diff rendering performance for large file edits has been improved. Upgrading is recommended to benefit from these fixes and improvements, especially if you use PowerShell on Windows, MCP pagination, background sessions, or custom themes."
     },
     "features": [
       {
@@ -4080,6 +4082,12 @@
         "name": "/extra-usage",
         "replaced_by": "/usage-credits",
         "deprecated_since": "2.1.144",
+        "source_url": ""
+      },
+      {
+        "name": "/simplify",
+        "replaced_by": "/code-review",
+        "deprecated_since": "2.1.146",
         "source_url": ""
       }
     ],
