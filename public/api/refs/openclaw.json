@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.5.19",
-  "generated_at": "2026-05-21T05:29:10.125Z",
+  "generated_at": "2026-05-21T07:22:17.772Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -18,16 +18,31 @@
     "to_version": "2026.5.19",
     "new_features": [
       "meme-maker-skill",
-      "node-inspector-debugging-fused-diagram-generation-throwaway-spike-workflow-skills",
+      "node-inspector-debugging-fused-diagram-generation-and-throwaway-spike-workflow-skills",
       "typed-simple-tool-plugins",
       "python-debugging-skill",
       "https-managed-forward-proxy-endpoints",
+      "realtime-gateway-relay-voice-sessions-with-streaming-mic-input",
       "telegram-allowlisted-native-dm-draft-previews"
     ],
-    "new_commands": [],
+    "new_commands": [
+      "openclaw browser evaluate",
+      "openclaw plugins build",
+      "openclaw plugins validate",
+      "openclaw plugins init",
+      "/codex plugins list",
+      "/codex plugins enable",
+      "/codex plugins disable",
+      "openclaw qa suite",
+      "openclaw qa coverage",
+      "openclaw sessions list",
+      "openclaw infer image describe"
+    ],
     "new_flags": [
       "--global",
-      "--timeout-ms"
+      "--timeout-ms",
+      "--runtime-parity-tier",
+      "--tools"
     ],
     "new_env_vars": [
       "OPENCLAW_IMAGE_APT_PACKAGES",
@@ -59,7 +74,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release focuses on improving agent behavior, adding new skills, and enhancing the developer experience. Agent fixes now default to clean bounded refactors and explicit deprecation paths. The new meme-maker skill allows for curated template search and local rendering, while node inspector debugging and Python debugging skills provide powerful new development tools. The `openclaw skills install` and `update` commands now support the `--global` flag for shared managed skills. The `openclaw browser evaluate` command gains a `--timeout-ms` flag to extend the timeout for long-running page functions. Docker/Podman now support `OPENCLAW_IMAGE_APT_PACKAGES` and `OPENCLAW_IMAGE_PIP_PACKAGES` for installing apt and Python packages during image builds. Several fixes address memory leaks, telegram routing issues, and provider compatibility. The Obsidian skill now targets the official `obsidian` CLI. Legacy `interactive`/Slack directive producer APIs are deprecated. It is recommended to upgrade to this version to benefit from the bug fixes, new features, and improved agent behavior. Ensure Node.js is at least version 22.19 before upgrading."
+      "tldr": "This release focuses on improving agent behavior, adding new skills, and enhancing developer tooling. Agent fixes now default to clean refactors and explicit deprecation paths. A new meme-maker skill allows for curated template search and local rendering, while node inspector and Python debugging skills aid in development workflows. The `openclaw browser evaluate` command now supports timeouts, and typed simple tool plugins can be built and validated using new CLI commands. The release also introduces `OPENCLAW_IMAGE_APT_PACKAGES` and `OPENCLAW_IMAGE_PIP_PACKAGES` environment variables for Docker/Podman image builds. Important fixes address memory search performance, Telegram forum topic handling, and Codex app-server tool auth. Legacy `interactive`/Slack directive producer APIs are now deprecated. Upgrade is recommended to take advantage of the new skills and tooling improvements, and to benefit from the various bug fixes. Ensure Node.js is at least version 22.19 before upgrading."
     },
     "features": [
       {
@@ -3177,6 +3192,70 @@
         "since": "2026.5.18",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "openclaw browser evaluate",
+        "syntax": "openclaw browser evaluate --timeout-ms",
+        "description": "Adds `openclaw browser evaluate --timeout-ms` so long-running page functions can extend both the evaluate action and request timeout budgets.",
+        "since": "2026.5.19",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "/codex plugins list",
+        "syntax": "/codex plugins list",
+        "description": "Adds `/codex plugins list`, `enable`, and `disable` for managing configured native Codex plugins from chat without editing config by hand.",
+        "since": "2026.5.19",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "/codex plugins enable",
+        "syntax": "/codex plugins enable",
+        "description": "Adds `/codex plugins list`, `enable`, and `disable` for managing configured native Codex plugins from chat without editing config by hand.",
+        "since": "2026.5.19",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "/codex plugins disable",
+        "syntax": "/codex plugins disable",
+        "description": "Adds `/codex plugins list`, `enable`, and `disable` for managing configured native Codex plugins from chat without editing config by hand.",
+        "since": "2026.5.19",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "openclaw qa suite",
+        "syntax": "openclaw qa suite --runtime-parity-tier",
+        "description": "Adds `openclaw qa suite --runtime-parity-tier` and wire the standard Codex-vs-Pi tier into release checks separately from optional/live-only/soak lanes.",
+        "since": "2026.5.19",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "openclaw qa coverage",
+        "syntax": "openclaw qa coverage --tools",
+        "description": "Expose runtime tool fixture coverage through `openclaw qa coverage --tools`, with optional suite-summary evaluation for parity gate artifacts.",
+        "since": "2026.5.19",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "openclaw sessions list",
+        "syntax": "openclaw sessions list",
+        "description": "Accept `openclaw sessions list` as an alias for `openclaw sessions`, matching other list-style commands.",
+        "since": "2026.5.19",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "openclaw infer image describe",
+        "syntax": "openclaw infer image describe --file",
+        "description": "Accept HTTP(S) URLs in `openclaw infer image describe --file`, fetching remote images through the guarded media path instead of treating URLs as local files.",
+        "since": "2026.5.19",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -3478,7 +3557,9 @@
       ],
       "new_since_previous": [
         "--global",
-        "--timeout-ms"
+        "--timeout-ms",
+        "--runtime-parity-tier",
+        "--tools"
       ]
     },
     "env_vars": [
