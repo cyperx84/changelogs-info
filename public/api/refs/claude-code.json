@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.146",
-  "generated_at": "2026-05-21T09:11:45.725Z",
+  "generated_at": "2026-05-21T11:07:06.042Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -46,7 +46,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "The `/simplify` command has been renamed to `/code-review`, now accepting an optional effort level such as `/code-review high` to control the depth of the review. Auto mode now correctly handles `AskUserQuestion` calls when explicitly used by the user or a skill, restoring expected behavior. A critical fix addresses a Windows PowerShell tool failure caused by an invalid command line when `pwsh` is installed via winget or the Microsoft Store, resolving a regression introduced in v2.1.124. Additionally, MCP pagination issues with `resources/list`, `resources/templates/list`, and `prompts/list` have been resolved, ensuring all items are now correctly listed. Full-screen strobing in attached background sessions on Windows Terminal during Claude streaming has been eliminated. The auto-updater status line now accurately displays the current version even when updates fail. On Windows, removing background-job worktrees no longer incorrectly follows NTFS junctions into the main repository. The `/background` command now correctly accepts sessions initiated with skills or custom slash commands. Backgrounded sessions no longer re-prompt for tool permissions previously granted with \"don't ask again\". The `/theme` color editor and \"New custom theme\" dialogs now respond to the Esc key. An uncaught exception at the end of streaming sessions when running via the Agent SDK has been fixed. Managed-settings policies `forceLoginOrgUUID` and `forceLoginMethod` are now correctly enforced against third-party-provider and API-key sessions. GNOME Terminal right-click and middle-click paste functionality has been restored. The `CLAUDE_CODE_SUBAGENT_MODEL` environment variable is now correctly forwarded to child processes in multi-agent sessions. Auto-updater reliability has been improved with retries for transient network failures during native version checks and downloads. Diff rendering performance for large file edits has also been improved. This update is recommended to ensure stability and access to the latest features and fixes."
+      "tldr": "The `/simplify` command has been renamed to `/code-review`, now accepting an optional effort level such as `/code-review high` to control the depth of the review. Auto mode now correctly respects `AskUserQuestion` when explicitly used by the user or a skill, ensuring expected prompts are not suppressed. A critical fix addresses a Windows PowerShell tool failure caused by an invalid command line when `pwsh` is installed via winget or the Microsoft Store, resolving a regression introduced in v2.1.124. MCP `resources/list`, `resources/templates/list`, and `prompts/list` now correctly paginate beyond the first page, resolving an issue where items were dropped. Full-screen strobing in attached background sessions on Windows Terminal during Claude streaming has been eliminated. The auto-updater status line now accurately displays the current version even after an update failure. On Windows, removing a background-job worktree no longer inadvertently follows NTFS junctions into the main repository. The `/background` command now correctly accepts sessions initiated with skills or custom slash commands. Backgrounded sessions no longer re-prompt for tool permissions previously granted with \"don't ask again\". The `/theme` color editor and \"New custom theme\" dialogs now respond to the Esc key. An uncaught exception at the end of streaming sessions when running via the Agent SDK has been resolved. Managed-settings policies `forceLoginOrgUUID` and `forceLoginMethod` are now consistently enforced against third-party-provider and API-key sessions. GNOME Terminal right-click and middle-click paste now correctly insert text. The `CLAUDE_CODE_SUBAGENT_MODEL` environment variable is now properly forwarded to child processes in multi-agent sessions. Auto-updater reliability has been improved with native version checks and downloads now retrying transient network failures. Diff rendering performance for large file edits has been enhanced. This release includes several important bug fixes and improvements, making it a recommended upgrade for all users."
     },
     "features": [
       {
@@ -4082,6 +4082,12 @@
         "name": "/extra-usage",
         "replaced_by": "/usage-credits",
         "deprecated_since": "2.1.144",
+        "source_url": ""
+      },
+      {
+        "name": "/simplify",
+        "replaced_by": "/code-review",
+        "deprecated_since": "2.1.146",
         "source_url": ""
       },
       {
