@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.147",
-  "generated_at": "2026-05-21T22:31:22.550Z",
+  "generated_at": "2026-05-21T21:33:42.338Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -29,7 +29,7 @@
     ],
     "deprecated_flags": [],
     "breaking_changes": [
-      "simplify-command-behavior-change"
+      "simplify-command-rename"
     ]
   },
   "payload": {
@@ -52,7 +52,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces the experimental Workflow tool for deterministic multi-agent orchestration, enabled via the `CLAUDE_CODE_WORKFLOWS=1` environment variable, allowing developers to create complex, coordinated agent workflows. The `/simplify` command has been renamed to `/code-review`, now focusing on correctness bug reporting with effort level selection (e.g., `/code-review high`) and optional GitHub PR comment posting via `--comment`, while its previous cleanup-and-fix functionality has been removed. Background sessions pinned with `Ctrl+T` in `claude agents` now persist through idle periods and Claude Code updates, being shed only under extreme memory pressure after non-pinned sessions. Security has been enhanced with hardened REPL and Workflow tool sandboxes to prevent prototype-pollution and thenable-based escapes. The auto-updater now features improved error reporting and retry mechanisms. Several fixes address issues such as enterprise login enforcement, display errors in command outputs, silent failures of unknown slash commands in headless mode, and various UI glitches in menus like `/plugin` and `/permissions`. Additionally, fixes address PowerShell tool output issues, hook condition matching, and background session behavior. The `/effort` command now correctly initializes at the current effort level. It is recommended to upgrade to benefit from the security enhancements, bug fixes, and the new Workflow tool. Be aware of the `/simplify` to `/code-review` rename and the removal of the cleanup-and-fix behavior."
+      "tldr": "This release introduces the experimental Workflow tool for deterministic multi-agent orchestration, enabled via the `CLAUDE_CODE_WORKFLOWS=1` environment variable. Pinned background sessions now persist when idle and restart in place after updates. The `/simplify` command has been renamed to `/code-review`, which now focuses on correctness bugs at a specified effort level (e.g., `/code-review high`) and can post findings as GitHub PR comments with the `--comment` flag; the original cleanup-and-fix behavior has been removed. REPL and Workflow tool sandboxes are hardened against prototype-pollution and thenable-based escapes. The auto-updater now retries transient network failures and provides more detailed error reporting. Several fixes address issues including enterprise login enforcement, rendering of `&` in command output, silent failures of unknown slash commands in headless mode, and various UI glitches in menus like `/plugin` and `/permissions`. Additionally, issues with PowerShell tool output, hook conditions, and plugin agent frontmatter parsing have been resolved. It is recommended to upgrade to benefit from the enhanced security, stability, and usability improvements. No specific prerequisites are required for this update."
     },
     "features": [
       {
@@ -2642,15 +2642,6 @@
         "affected": [],
         "migration": "Use `/code-review` instead of `/simplify`. The cleanup-and-fix functionality is no longer available.",
         "source_url": ""
-      },
-      {
-        "id": "simplify-command-behavior-change",
-        "version": "2.1.147",
-        "title": "`/simplify` command renamed to `/code-review` and cleanup-and-fix behavior removed",
-        "description": "The `/simplify` command has been renamed to `/code-review`. The old behavior of cleanup-and-fix has been removed. The new command reports correctness bugs at a chosen effort level.",
-        "affected": [],
-        "migration": "Use `/code-review` instead of `/simplify`. If you relied on the cleanup-and-fix behavior, you will need to find an alternative workflow.",
-        "source_url": ""
       }
     ],
     "deprecations": [
@@ -4194,12 +4185,6 @@
         "name": "/simplify",
         "replaced_by": "/code-review",
         "deprecated_since": "2.1.146",
-        "source_url": ""
-      },
-      {
-        "name": "/simplify",
-        "replaced_by": "/code-review",
-        "deprecated_since": "2.1.147",
         "source_url": ""
       },
       {
