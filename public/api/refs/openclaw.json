@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.5.20",
-  "generated_at": "2026-05-21T22:31:55.323Z",
+  "generated_at": "2026-05-21T23:25:49.928Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -18,7 +18,7 @@
     "to_version": "2026.5.20",
     "new_features": [
       "cli-policy",
-      "providers-xai-device-code-oauth-login"
+      "providers-openrouter"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -51,7 +51,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release removes the old `cat SKILL.md && printf ... && <skill-wrapper>` allowlist compatibility path for exec approvals, requiring skill files to be loaded with the read tool and only the real skill executable to be auto-allowed. A new CLI/policy feature adds the bundled Policy plugin for policy-backed channel conformance checks, doctor lint findings, and opt-in workspace repair. Providers/xAI now support device-code OAuth login for remote and headless setups. The `agents.list[].experimental.localModelLean` setting allows enabling lean local-model mode for individual agents. OpenRouter requests now honor provider-level `params.provider` routing policy. Several fixes address issues with task maintenance, system prompt reporting, MiniMax music duration, sandbox tool policies, CLI node logs, manual approvals, browser image sanitization, model configuration, plaintext secrets, session model pinning, web chat typing indicators, Mac app packaging, cron output, Mattermost channel types, system.run arguments, CLI command descriptors, cron job pagination, agent message tools, agent heartbeats, OpenAI tool schemas, code mode tool constraints, image generation timeouts, dynamic tool diagnostics, CLI message IDs, cron job stores, gateway agent summaries, channel replies, plugin hooks, Discord presentation buttons, Twitch client managers, cron session work, cron embedded-run metadata, cron tool warnings, plugin discovery, Docker image keep lists, CLI channel logs, control UI session status, CLI option values, Matrix queue overrides, CLI ACP client failures, Ollama model capabilities, Windows installer, CLI update restarts, gateway status, memory search timeouts, node approval scopes, gateway event sends, agent trajectory diagnostics, agent subagent completions, subagent target allowlists, Anthropic model refs, agent timeouts, Codex reasoning replay, agent subagent wake probes, CLI config snapshots, media filenames, WhatsApp group diagnostics, WhatsApp outbound deliveries, CLI TUI autocomplete, gateway mobile setup codes, iOS release archives, agent compaction, control UI usage, Codex auth order, agent tool errors, and agent fallback billing guidance. It is recommended to upgrade to this version to benefit from the fixes and new features. Ensure skill files are loaded with the read tool after upgrading."
+      "tldr": "This release removes the old exec approvals allowlist compatibility path, requiring skill files to be loaded with the read tool. Discord voice sessions can now follow configured users into voice channels, and include profile context by default, configurable via `voice.realtime.bootstrapContextFiles`. The bundled Codex harness is updated to `@openai/codex` `0.132.0`. A new CLI Policy plugin is added for policy-backed channel conformance checks. Lean local-model mode can now be enabled per agent using `agents.list[].experimental.localModelLean`. xAI authorization now supports device-code OAuth login for remote setups. OpenRouter requests now honor provider-level `params.provider` routing policy. Several fixes address issues with task maintenance, system prompt reporting, MiniMax music duration, sandbox tool policies, Baileys version, build warnings, node command logs, manual approvals, Mac app copyright, fs-safe updates, secret file handling, browser image sanitization, doctor command, session model pinning, webchat typing indicators, cron job handling, gateway agent summaries, channel replies, plugin hooks, discord presentation buttons, twitch tests, cron session handling, cron denial metadata, cron tool warnings, plugin discovery, docker image keep lists, channel logs, control UI status, CLI option parsing, matrix config, acp client failures, Ollama capabilities, Codex app-server sandboxing, Windows installer, CLI update, gateway status, memory search, node approval scopes, gateway event sends, agent trajectory, agent subagents, Anthropic model refs, agent timeouts, Codex responses reasoning, agent subagent probes, CLI config snapshots, media decoding, WhatsApp group diagnostics, WhatsApp outbound deliveries, CLI TUI autocomplete, gateway mobile setup, iOS release archive, agent compaction, control UI usage, Codex auth order, agent tool errors, and agent fallback billing guidance. It is recommended to upgrade to benefit from these fixes and improvements. No specific prerequisites are mentioned."
     },
     "features": [
       {
@@ -2778,6 +2778,15 @@
         "status": "stable",
         "since": "2026.5.20",
         "description": "Adds device-code OAuth login so remote and headless setups can authorize xAI without a localhost browser callback.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "providers-openrouter",
+        "name": "Providers/OpenRouter",
+        "status": "stable",
+        "since": "2026.5.20",
+        "description": "Honors provider-level `params.provider` routing policy for OpenRouter requests, with model and agent params overriding the defaults.",
         "key_details": [],
         "source_url": ""
       }
