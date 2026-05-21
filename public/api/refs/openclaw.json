@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.5.19",
-  "generated_at": "2026-05-21T20:38:33.182Z",
+  "version": "2026.5.20",
+  "generated_at": "2026-05-21T21:34:21.973Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,29 +14,20 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.5.19",
-    "to_version": "2026.5.19",
+    "from_version": "2026.5.20",
+    "to_version": "2026.5.20",
     "new_features": [
-      "meme-maker-skill",
-      "node-inspector-debugging-fused-diagram-generation-and-throwaway-spike-workflow-skills",
-      "define-tool-plugin",
-      "python-debugging-skill",
-      "https-managed-forward-proxy-endpoints",
-      "realtime-gateway-relay-voice-sessions-with-streaming-mic-input",
-      "telegram-allowlisted-native-dm-draft-previews"
+      "cli-policy",
+      "providers-xai-device-code-oauth-login"
     ],
     "new_commands": [],
-    "new_flags": [
-      "--global",
-      "--timeout-ms"
-    ],
-    "new_env_vars": [
-      "OPENCLAW_IMAGE_APT_PACKAGES",
-      "OPENCLAW_IMAGE_PIP_PACKAGES"
-    ],
+    "new_flags": [],
+    "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "exec-approvals-allowlist-removal"
+    ]
   },
   "payload": {
     "meta": {
@@ -54,13 +45,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.5.19",
-      "latest_release_date": "2026-05-20",
+      "latest_stable": "2026.5.20",
+      "latest_release_date": "2026-05-21",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release focuses on improving agent behavior, adding new skills, and enhancing the developer experience. Agents now default to clean refactors and explicit deprecation paths, and tool parameter schemas are normalized. New skills include a meme maker, node inspector debugging tools, and a Python debugging skill. The `defineToolPlugin` feature simplifies the creation of typed simple tool plugins. The Android Talk Mode now uses realtime Gateway relay voice sessions with streaming mic input.  `OPENCLAW_IMAGE_APT_PACKAGES` and `OPENCLAW_IMAGE_PIP_PACKAGES` environment variables are introduced for customizing Docker/Podman image builds. The `openclaw skills install` and `openclaw skills update` commands now support the `--global` flag for targeting shared managed skills. The `openclaw browser evaluate` command gains a `--timeout-ms` flag. Legacy `interactive`/Slack directive producer APIs are deprecated. Several fixes address memory leaks, Telegram routing issues, and Codex app-server problems.  It is recommended to upgrade to this version to take advantage of the new features and fixes. Ensure Node.js is at least version 22.19 before upgrading."
+      "tldr": "This release removes the old allowlist compatibility path for exec approvals, requiring skill files to be loaded with the read tool and only the real skill executable to be auto-allowed. This change enforces stricter security and requires updating skill loading workflows. A new CLI/policy plugin is bundled for policy-backed channel conformance checks, doctor lint findings, and opt-in workspace repair, enhancing channel security and workspace integrity. Device-code OAuth login is added for xAI providers, enabling remote and headless setups to authorize xAI without a localhost browser callback. The `agents.list[].experimental.localModelLean` setting allows enabling lean local-model mode for individual agents instead of globally. Several fixes address issues with task maintenance, system prompt reporting, MiniMax music duration, sandbox tool policies, CLI node commands, manual approvals, browser image sanitization, model configuration, plaintext secrets, session model pinning, web chat typing indicators, Mac app packaging, cron job handling, gateway agent summaries, channel replies, plugin hooks, Discord presentation buttons, Twitch client managers, cron scheduling, embedded-run denial metadata, tool warnings, plugin discovery, Docker image pruning, channel logs, control UI status, CLI option parsing, Matrix queue overrides, ACP client failures, Ollama model capabilities, Windows installer, CLI update behavior, gateway status reporting, memory search timeouts, node approval scopes, node event sends, trajectory diagnostics, subagent completions, Anthropic model refs, model timeouts, Responses reasoning replay, embedded-run wake probes, config snapshot reads, media filenames, WhatsApp group diagnostics, outbound deliveries, TUI autocomplete, mobile setup codes, iOS archive compilation, plugin compaction, control UI usage, Codex auth order, tool error suppression, and billing fallback. Upgrade is recommended to benefit from security enhancements, new features, and bug fixes. Ensure skill loading workflows are updated to comply with the new exec approvals policy."
     },
     "features": [
       {
@@ -2771,6 +2762,24 @@
         "description": "Telegram now supports allowlisted native DM draft previews for transient tool progress while keeping final answers on the normal persistent delivery path.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "cli-policy",
+        "name": "CLI/policy",
+        "status": "stable",
+        "since": "2026.5.20",
+        "description": "Adds the bundled Policy plugin for policy-backed channel conformance checks, doctor lint findings, and opt-in workspace repair.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "providers-xai-device-code-oauth-login",
+        "name": "Providers/xAI: device-code OAuth login",
+        "status": "stable",
+        "since": "2026.5.20",
+        "description": "Adds device-code OAuth login so remote and headless setups can authorize xAI without a localhost browser callback.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -3584,10 +3593,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--global",
-        "--timeout-ms"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
@@ -4957,6 +4963,18 @@
           "Plugin SDK"
         ],
         "migration": "Update any code relying on the legacy `main` agent directory helper to use `agents.list` or agent-scope helpers for resolving agent directories.",
+        "source_url": ""
+      },
+      {
+        "id": "exec-approvals-allowlist-removal",
+        "version": "2026.5.20",
+        "title": "Exec approvals: Allowlist compatibility path removed",
+        "description": "The old `cat SKILL.md && printf ... && <skill-wrapper>` allowlist compatibility path has been removed. Skill files must now be loaded with the read tool, and only the real skill executable is auto-allowed.",
+        "affected": [
+          "Skills",
+          "Exec Approvals"
+        ],
+        "migration": "Ensure skill files are loaded with the read tool and that only the real skill executable is auto-allowed.",
         "source_url": ""
       }
     ],

@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.146",
-  "generated_at": "2026-05-21T20:37:54.952Z",
+  "version": "2.1.147",
+  "generated_at": "2026-05-21T21:33:42.338Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,17 +14,23 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.146",
-    "to_version": "2.1.146",
-    "new_features": [],
+    "from_version": "2.1.147",
+    "to_version": "2.1.147",
+    "new_features": [
+      "workflow-tool"
+    ],
     "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [],
+    "new_env_vars": [
+      "CLAUDE_CODE_WORKFLOWS"
+    ],
     "deprecated_commands": [
       "/simplify"
     ],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "simplify-command-rename"
+    ]
   },
   "payload": {
     "meta": {
@@ -41,12 +47,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.146",
+      "latest_stable": "2.1.147",
       "latest_release_date": "2026-05-21",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "The `/simplify` command has been renamed to `/code-review`, now accepting an optional effort level such as `/code-review high` to control the depth of the review. Auto mode now correctly respects `AskUserQuestion` when explicitly used by the user or a skill, ensuring expected prompts are not suppressed. A critical fix addresses a Windows PowerShell tool failure caused by an invalid command line when `pwsh` is installed via winget or the Microsoft Store, resolving a regression introduced in v2.1.124. MCP `resources/list`, `resources/templates/list`, and `prompts/list` now correctly paginate beyond the first page, resolving an issue where items were dropped. Full-screen strobing in attached background sessions on Windows Terminal during Claude streaming has been eliminated. The auto-updater status line now accurately displays the current version even after an update failure. On Windows, removing a background-job worktree no longer inadvertently follows NTFS junctions into the main repository. The `/background` command now correctly accepts sessions initiated with skills or custom slash commands. Backgrounded sessions no longer re-prompt for tool permissions previously granted with \"don't ask again\". The `/theme` color editor and \"New custom theme\" dialogs now respond to the Esc key. An uncaught exception at the end of streaming sessions when running via the Agent SDK has been resolved. Managed-settings policies `forceLoginOrgUUID` and `forceLoginMethod` are now consistently enforced against third-party-provider and API-key sessions. GNOME Terminal right-click and middle-click paste now correctly insert text. The `CLAUDE_CODE_SUBAGENT_MODEL` environment variable is now properly forwarded to child processes in multi-agent sessions. Auto-updater reliability has been improved with native version checks and downloads now retrying transient network failures. Diff rendering performance for large file edits has been enhanced. This release includes several important bug fixes and improvements, making it a recommended upgrade for all users."
+      "tldr": "This release introduces the experimental Workflow tool for deterministic multi-agent orchestration, enabled via the `CLAUDE_CODE_WORKFLOWS=1` environment variable. Pinned background sessions now persist when idle and restart in place after updates. The `/simplify` command has been renamed to `/code-review`, which now focuses on correctness bugs at a specified effort level (e.g., `/code-review high`) and can post findings as GitHub PR comments with the `--comment` flag; the original cleanup-and-fix behavior has been removed. REPL and Workflow tool sandboxes are hardened against prototype-pollution and thenable-based escapes. The auto-updater now retries transient network failures and provides more detailed error reporting. Several fixes address issues including enterprise login enforcement, rendering of `&` in command output, silent failures of unknown slash commands in headless mode, and various UI glitches in menus like `/plugin` and `/permissions`. Additionally, issues with PowerShell tool output, hook conditions, and plugin agent frontmatter parsing have been resolved. It is recommended to upgrade to benefit from the enhanced security, stability, and usability improvements. No specific prerequisites are required for this update."
     },
     "features": [
       {
@@ -1274,6 +1280,15 @@
         "description": "Slash command and @-mention suggestion list now supports mouse hover and click in fullscreen mode.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "workflow-tool",
+        "name": "Workflow Tool",
+        "status": "experimental",
+        "since": "2.1.147",
+        "description": "Deterministic multi-agent orchestration tool.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -2358,6 +2373,13 @@
         "status": "stable",
         "since": "2.1.143",
         "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_WORKFLOWS",
+        "purpose": "Enables the Workflow tool.",
+        "status": "stable",
+        "since": "2.1.147",
+        "source_url": ""
       }
     ],
     "models": [
@@ -2610,6 +2632,15 @@
           "Users who rely on `rm -rf` behavior for worktree cleanup"
         ],
         "migration": "Ensure that `git worktree remove` is functioning correctly in your environment. If you need to preserve gitignored or in-progress files, ensure they are properly handled before removing the worktree.",
+        "source_url": ""
+      },
+      {
+        "id": "simplify-command-rename",
+        "version": "2.1.147",
+        "title": "/simplify command renamed to /code-review and cleanup-and-fix behavior removed",
+        "description": "The `/simplify` command has been renamed to `/code-review`. The old cleanup-and-fix behavior has been removed.",
+        "affected": [],
+        "migration": "Use `/code-review` instead of `/simplify`. The cleanup-and-fix functionality is no longer available.",
         "source_url": ""
       }
     ],
@@ -4154,6 +4185,12 @@
         "name": "/simplify",
         "replaced_by": "/code-review",
         "deprecated_since": "2.1.146",
+        "source_url": ""
+      },
+      {
+        "name": "/simplify",
+        "replaced_by": "/code-review",
+        "deprecated_since": "2.1.147",
         "source_url": ""
       }
     ],
