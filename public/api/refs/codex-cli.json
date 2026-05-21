@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.132.0",
-  "generated_at": "2026-05-21T15:09:37.810Z",
+  "version": "0.133.0",
+  "generated_at": "2026-05-21T16:56:29.270Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,19 +14,18 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.132.0",
-    "to_version": "0.132.0",
+    "from_version": "0.133.0",
+    "to_version": "0.133.0",
     "new_features": [
-      "python-sdk-first-class-authentication",
-      "python-turn-apis-easier-to-use",
-      "exec-resume-output-schema",
-      "faster-tui-startup",
-      "auth-backed-remote-executor-registration",
-      "app-server-preserve-image-fidelity"
+      "dedicated-goals-storage",
+      "improved-remote-control-cli-ux",
+      "permission-profiles-enhancements",
+      "plugin-discovery-improvements",
+      "extension-lifecycle-events"
     ],
     "new_commands": [],
     "new_flags": [
-      "--output-schema"
+      "--version"
     ],
     "new_env_vars": [],
     "deprecated_commands": [],
@@ -48,14 +47,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.132.0",
+      "latest_stable": "0.133.0",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-05-20",
+      "latest_release_date": "2026-05-21",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "Codex CLI v0.132.0 introduces several enhancements, including first-class authentication for the Python SDK, simplifying login and account management. The Python SDK's turn APIs are now easier to use, accepting plain strings as input and returning richer `TurnResult` objects with timing and usage data. The `codex exec resume` command now supports the `--output-schema` flag, allowing resumed automations to maintain session context while enforcing structured JSON output. TUI startup is faster due to batched terminal capability probes. Remote executor registration now uses standard Codex authentication, simplifying the process. App-server turns can now preserve requested image fidelity, including original-resolution local images. Goal continuations now stop when usage limits or blockers are hit, preventing excessive token consumption. The session picker now displays `name (thread-id)` for renamed threads and supports pasting text in the search box. Multi-session TUI flows are more reliable, with in-progress MCP calls staying active during replay and elicitation replies routed correctly. Remote sessions maintain websocket connections and display repo-relative diff paths. Windows installs are more robust, with `codex doctor` correctly detecting npm-managed installs and MSVC binaries no longer requiring separate VC++ runtime DLLs. TUI polish includes immediate shutdown feedback, hiding the ChatGPT usage link for non-OpenAI providers, and preventing cleared Fast tiers from reappearing. Memory summaries are now versioned and rebuilt when stale, improving context management. Upgrade is recommended for enhanced performance, reliability, and developer experience."
+      "tldr": "This release introduces dedicated storage for goals, enabling them by default and tracking progress across turns. The `codex remote-control` command now operates in the foreground, providing readiness status and daemon-style start/stop commands. Permission profiles have been enhanced with list APIs, inheritance, managed `requirements.toml` support, runtime refresh, and improved Windows sandbox integration. Plugin discovery is improved with marketplace-aware listing, version information, visible marketplace roots, and remote collection support. Extensions can now observe more lifecycle events, including subagent start/stop, tool execution, turn metadata, and async approval/turn processing. A new `--version` flag exposes the codex-app-server version. Bug fixes include addressing TUI startup issues, preserving modified Enter keys in plan mode, removing stale terminal poll events, preserving raw code-mode exec output, and improving AGENTS instruction loading. This release also includes a canonical Codex package archive pipeline and improvements to release and CI reliability. It is recommended to upgrade to take advantage of these new features and bug fixes. No specific migration steps are required."
     },
     "features": [
       {
@@ -1720,6 +1719,51 @@
         "description": "App-server turns can preserve requested image fidelity, including original-resolution local images, across user inputs and image-producing tools.",
         "key_details": [],
         "source_url": "https://github.com/openai/codex/pull/20693"
+      },
+      {
+        "id": "dedicated-goals-storage",
+        "name": "Dedicated Goals Storage",
+        "status": "stable",
+        "since": "0.133.0",
+        "description": "Goals are now enabled by default, backed by dedicated storage, and track progress across active turns.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "improved-remote-control-cli-ux",
+        "name": "Improved Remote Control CLI UX",
+        "status": "stable",
+        "since": "0.133.0",
+        "description": "`codex remote-control` now runs like a foreground command, waits for readiness, reports machine status, and keeps explicit daemon-style `start`/`stop` commands.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "permission-profiles-enhancements",
+        "name": "Permission Profiles Enhancements",
+        "status": "stable",
+        "since": "0.133.0",
+        "description": "Permission profiles gained list APIs, inheritance, managed `requirements.toml` support, runtime refresh behavior, and stronger Windows sandbox integration.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "plugin-discovery-improvements",
+        "name": "Plugin Discovery Improvements",
+        "status": "stable",
+        "since": "0.133.0",
+        "description": "Plugin discovery is easier to inspect, with marketplace-aware list output, installed versions, visible marketplace roots, and remote collection support.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "extension-lifecycle-events",
+        "name": "Extension Lifecycle Events",
+        "status": "stable",
+        "since": "0.133.0",
+        "description": "Extensions can observe more lifecycle events, including subagent start/stop, tool execution, turn metadata, and async approval/turn processing.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -2037,6 +2081,12 @@
           "description": "Allows resumed automations to keep session context while still enforcing structured JSON output when used with `codex exec resume`.",
           "since": "0.132.0",
           "source_url": "https://github.com/openai/codex/pull/23123"
+        },
+        {
+          "flag": "--version",
+          "description": "Exposes codex-app-server version.",
+          "since": "0.133.0",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -3435,7 +3485,7 @@
         }
       ],
       "new_since_previous": [
-        "--output-schema"
+        "--version"
       ]
     },
     "env_vars": [
