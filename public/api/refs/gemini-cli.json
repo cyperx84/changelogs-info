@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "gemini-cli",
-  "version": "0.42.0",
-  "generated_at": "2026-05-22T00:48:04.766Z",
+  "version": "0.43.0",
+  "generated_at": "2026-05-22T01:43:27.394Z",
   "extracted_from_sources": [
     "https://github.com/google-gemini/gemini-cli/releases/tag/v0.33.0",
     "https://github.com/google-gemini/gemini-cli/releases"
@@ -14,31 +14,19 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "0.42.0",
-    "to_version": "0.42.0",
+    "from_version": "0.43.0",
+    "to_version": "0.43.0",
     "new_features": [
-      "voice-mode-updates",
-      "commands-list-subcommand",
-      "extensions-delete-alias",
-      "gemma-4-models-enabled-by-default",
-      "auto-memory-inbox-flow-with-canonical-patch-contract",
-      "ignorelocalenv-setting-and-ignore-env-flag",
-      "actions-spend-metric-script",
-      "bug-memory-command-and-auto-capture-heap-snapshot-in-bug",
-      "queuing-messages-during-compression",
-      "minimal-v8-heap-snapshot-utility-for-memory-diagnostics"
+      "shell-command-safety-evals",
+      "export-session-to-file-and-import-via-flag",
+      "machine-hostname-to-cli-interface",
+      "local-subagent-protocol",
+      "remote-subagent-protocol",
+      "adaptive-token-calculator"
     ],
-    "new_commands": [
-      "/bug-memory",
-      "/commands list"
-    ],
-    "new_flags": [
-      "--ignore-env",
-      "--delete"
-    ],
-    "new_env_vars": [
-      "NODE_OPTIONS"
-    ],
+    "new_commands": [],
+    "new_flags": [],
+    "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -58,14 +46,14 @@
       "changelog_url": "https://github.com/google-gemini/gemini-cli/releases",
       "repo_url": "https://github.com/google-gemini/gemini-cli",
       "license": "apache-2.0",
-      "latest_stable": "0.42.0",
+      "latest_stable": "0.43.0",
       "latest_prerelease": "0.34.0-preview",
-      "latest_release_date": "2026-05-12",
+      "latest_release_date": "2026-05-22",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
       "release_cadence": "Stable on Tuesdays. Preview: Tuesdays UTC 23:59. Nightly: daily UTC 00:00.",
-      "tldr": "Version 0.42.0 of the gemini-cli introduces several enhancements and fixes. A key update is the ability to delete sessions using the `--delete` flag with the `/exit` command, providing more control over session management. Voice mode receives significant updates, including a microphone indicator, wave animation, and a privacy warning for the Gemini Live backend, enhancing user experience and transparency. The `/commands` command now includes a `list` subcommand to display available commands, improving discoverability. Gemma 4 models are enabled by default, leveraging the Gemini API for enhanced performance. The release also introduces an auto memory inbox flow with a canonical patch contract, streamlining memory management. A new `--ignore-env` flag and `ignoreLocalEnv` setting are added to ignore local environment variables, offering more control over configuration. The `/bug-memory` command is introduced, automatically capturing heap snapshots to aid in debugging memory-related issues. The release also allows queuing messages during compression, improving efficiency. This version includes fixes for various issues, such as preventing automatic updates from switching to less stable channels, handling DECKPAM keypad Enter sequences, and addressing API timeout issues. It is recommended to upgrade to this version to benefit from the new features, improvements, and bug fixes. No specific migration steps are required."
+      "tldr": "This release introduces several new features and important fixes. The headline change is the addition of an adaptive token calculator for more accurate content size calculations, improving performance and reliability. New features include shell command safety evaluations, session export/import functionality via a flag, and the inclusion of the machine hostname in the CLI interface. Local and Remote Subagent Protocols have been added behind AgentProtocol for enhanced subagent management. Key fixes address issues such as numeric project ID rejection in GOOGLE_CLOUD_PROJECT, chat corruption in the context manager, and silent hangs during OAuth auth on headless Linux. The release also improves MCP list UX in untrusted folders and prevents false command conflicts when launching from the home directory. Additionally, the release clarifies Auto Memory's role in proposing memory updates and skills, excludes extension context from the skill extraction agent, and enables NumericalRouter when using dynamic model configs. There are no breaking changes. It is recommended to upgrade to this version to benefit from the new features and fixes. No specific prerequisites are required for the upgrade."
     },
     "features": [
       {
@@ -1810,6 +1798,60 @@
         "description": "Added 'delete' as an alias for /extensions uninstall.",
         "key_details": [],
         "source_url": "https://github.com/google-gemini/gemini-cli/pull/25660"
+      },
+      {
+        "id": "shell-command-safety-evals",
+        "name": "Shell Command Safety Evals",
+        "status": "experimental",
+        "since": "0.43.0",
+        "description": "Adds shell command safety evaluations.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26528"
+      },
+      {
+        "id": "export-session-to-file-and-import-via-flag",
+        "name": "Export and Import Session",
+        "status": "stable",
+        "since": "0.43.0",
+        "description": "Allows exporting a session to a file and importing it via a flag.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26514"
+      },
+      {
+        "id": "machine-hostname-to-cli-interface",
+        "name": "Machine Hostname in CLI Interface",
+        "status": "stable",
+        "since": "0.43.0",
+        "description": "Adds the machine hostname to the CLI interface.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25637"
+      },
+      {
+        "id": "local-subagent-protocol",
+        "name": "Local Subagent Protocol",
+        "status": "experimental",
+        "since": "0.43.0",
+        "description": "Adds LocalSubagentProtocol behind AgentProtocol.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25302"
+      },
+      {
+        "id": "remote-subagent-protocol",
+        "name": "Remote Subagent Protocol",
+        "status": "experimental",
+        "since": "0.43.0",
+        "description": "Adds RemoteSubagentProtocol behind AgentProtocol.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25303"
+      },
+      {
+        "id": "adaptive-token-calculator",
+        "name": "Adaptive Token Calculator",
+        "status": "stable",
+        "since": "0.43.0",
+        "description": "Introduces an adaptive token calculator to more accurately calculate content sizes.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26888"
       }
     ],
     "commands": [
@@ -2070,10 +2112,7 @@
           "source_url": "https://github.com/google-gemini/gemini-cli/pull/21171"
         }
       ],
-      "new_since_previous": [
-        "--ignore-env",
-        "--delete"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
