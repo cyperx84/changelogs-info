@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.5.22",
-  "generated_at": "2026-05-24T01:43:18.495Z",
+  "generated_at": "2026-05-24T00:48:23.857Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -17,19 +17,18 @@
     "from_version": "2026.5.22",
     "to_version": "2026.5.22",
     "new_features": [
-      "meeting-notes-plugin",
-      "generic-channel-message-poll-sender",
-      "openclaw-landable-bug-sweep",
-      "embedding-providers-capability-contract"
+      "meeting-notes"
     ],
-    "new_commands": [],
-    "new_flags": [],
+    "new_commands": [
+      "openclaw meeting-notes"
+    ],
+    "new_flags": [
+      "--profile-id"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "sender-owner-tool-gating-removed"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -53,7 +52,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release focuses on performance improvements, new features, and important fixes. Gateway performance has been significantly improved through various caching and lazy-loading strategies. A new Meeting Notes plugin has been added, providing auto-start capture, manual transcript imports, and Discord voice integration. The old sender-owner tool gating path has been removed, making configured tools visible for trusted sessions. Sub-agent bootstrap context is now limited to `AGENTS.md` and `TOOLS.md` by default. xAI OAuth auth profiles are reused for Grok web search, and Grok model aliases have been added. The CLI onboarding process has been updated to start classic onboarding when a bare `openclaw` command is run. Several fixes address issues with session management, tool visibility, and provider integrations. It is recommended to upgrade to this version to take advantage of the performance improvements and new features. Ensure that your tool configurations are appropriate for all trusted sessions due to the removal of sender-owner tool gating. No specific prerequisites are required for this upgrade."
+      "tldr": "This release focuses on performance improvements and new features for enhanced user experience. Gateway performance has been significantly improved by reusing process-stable channel catalog reads, immutable plugin metadata snapshots, lazy-loading startup-idle plugin work, and caching plugin SDK public-surface alias maps. A new Meeting Notes plugin has been added, providing auto-start capture config, manual transcript imports, read-only CLI access, and Discord voice as the first live source. The image tool now supports adaptive model-aware image compression with an `agents.defaults.imageQuality` preference. The `openclaw models auth login` command now supports storing a single returned provider auth profile under a requested `--profile-id`. The chat session picker in the Control UI now includes search and Load More pagination. Several fixes address issues with Telegram, WebChat, Gateway, Agents, Browser/proxy, Ollama, OpenAI/images, Sandbox, Checks/Windows, and more. It is highly recommended to upgrade to this version to take advantage of the performance improvements and bug fixes. No specific migration steps are required."
     },
     "features": [
       {
@@ -2805,47 +2804,6 @@
           "Discord voice as the first live source"
         ],
         "source_url": ""
-      },
-      {
-        "id": "meeting-notes-plugin",
-        "name": "Meeting Notes Plugin",
-        "status": "stable",
-        "since": "2026.5.22",
-        "description": "Adds a source-only external meeting-notes plugin and SDK source-provider contract outside the core npm package.",
-        "key_details": [
-          "Auto-start capture config",
-          "Manual transcript imports",
-          "Read-only `openclaw meeting-notes` CLI access",
-          "Discord voice as the first live source"
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "generic-channel-message-poll-sender",
-        "name": "Generic Channel Message Poll Sender",
-        "status": "stable",
-        "since": "2026.5.22",
-        "description": "Adds a generic channel-message poll sender so channel plugins can expose poll delivery without depending on channel-specific SDK facades.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "openclaw-landable-bug-sweep",
-        "name": "Openclaw Landable Bug Sweep",
-        "status": "stable",
-        "since": "2026.5.22",
-        "description": "Adds `openclaw-landable-bug-sweep` for producing five small, reviewed, CI-green OpenClaw bugfix PRs from issue/PR sweeps.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "embedding-providers-capability-contract",
-        "name": "Embedding Providers Capability Contract",
-        "status": "stable",
-        "since": "2026.5.22",
-        "description": "Adds a general `embeddingProviders` capability contract and registration API so embeddings can become a reusable provider surface outside memory-specific adapters.",
-        "key_details": [],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -3673,7 +3631,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--profile-id"
+      ]
     },
     "env_vars": [
       {
@@ -5055,18 +5015,6 @@
           "Exec Approvals"
         ],
         "migration": "Ensure skill files are loaded with the read tool and that only the real skill executable is auto-allowed.",
-        "source_url": ""
-      },
-      {
-        "id": "sender-owner-tool-gating-removed",
-        "version": "2026.5.22",
-        "title": "Sender-Owner Tool Gating Removed",
-        "description": "The old sender-owner tool gating path has been removed. Configured tools will now always be visible for trusted sessions, while command and channel-action auth still carry real sender identity.",
-        "affected": [
-          "Tool visibility",
-          "Session authorization"
-        ],
-        "migration": "Ensure that your tool configurations are appropriate for all trusted sessions, as tools will no longer be automatically hidden based on sender ownership.",
         "source_url": ""
       }
     ],
