@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.5.20",
-  "generated_at": "2026-05-23T23:21:58.960Z",
+  "version": "2026.5.22",
+  "generated_at": "2026-05-24T00:48:23.857Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,17 +14,21 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.5.20",
-    "to_version": "2026.5.20",
-    "new_features": [],
-    "new_commands": [],
-    "new_flags": [],
+    "from_version": "2026.5.22",
+    "to_version": "2026.5.22",
+    "new_features": [
+      "meeting-notes"
+    ],
+    "new_commands": [
+      "openclaw meeting-notes"
+    ],
+    "new_flags": [
+      "--profile-id"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "exec-approvals-allowlist-removal"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -42,13 +46,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.5.20",
-      "latest_release_date": "2026-05-21",
+      "latest_stable": "2026.5.22",
+      "latest_release_date": "2026-05-24",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release removes the old exec approvals allowlist compatibility path, requiring skill files to be loaded with the read tool and only the real skill executable to be auto-allowed. Discord voice sessions can now follow configured users into voice channels, including `IDENTITY.md`, `USER.md`, and `SOUL.md` profile context by default. The bundled Codex harness is updated to `@openai/codex` `0.132.0`, and the app-server model-list docs are refreshed. A new bundled Policy plugin is added for policy-backed channel conformance checks, doctor lint findings, and opt-in workspace repair. Agent configurations now allow enabling lean local-model mode for individual agents via `agents.list[].experimental.localModelLean`. xAI authorization now supports device-code OAuth login for remote and headless setups. OpenRouter requests now honor provider-level `params.provider` routing policy. Fixes include stale-running task maintenance decisions in `openclaw tasks maintenance --json`, system-prompt reports with hook-supplied context, and MiniMax music duration control. Doctor now warns when sandbox tool policy hides configured MCP server tools and when `openclaw.json` stores plaintext secret-bearing config fields. This release includes several bug fixes and improvements across CLI, Codex, providers, channels, agents, and the Control UI. Upgrading is recommended to take advantage of the latest features and fixes. Ensure skill files are loaded with the read tool to comply with the exec approvals change."
+      "tldr": "This release focuses on performance improvements and new features for enhanced user experience. Gateway performance has been significantly improved by reusing process-stable channel catalog reads, immutable plugin metadata snapshots, lazy-loading startup-idle plugin work, and caching plugin SDK public-surface alias maps. A new Meeting Notes plugin has been added, providing auto-start capture config, manual transcript imports, read-only CLI access, and Discord voice as the first live source. The image tool now supports adaptive model-aware image compression with an `agents.defaults.imageQuality` preference. The `openclaw models auth login` command now supports storing a single returned provider auth profile under a requested `--profile-id`. The chat session picker in the Control UI now includes search and Load More pagination. Several fixes address issues with Telegram, WebChat, Gateway, Agents, Browser/proxy, Ollama, OpenAI/images, Sandbox, Checks/Windows, and more. It is highly recommended to upgrade to this version to take advantage of the performance improvements and bug fixes. No specific migration steps are required."
     },
     "features": [
       {
@@ -2786,6 +2790,20 @@
         "description": "Honors provider-level `params.provider` routing policy for OpenRouter requests, with model and agent params overriding the defaults.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "meeting-notes",
+        "name": "Meeting Notes",
+        "status": "experimental",
+        "since": "2026.5.22",
+        "description": "Adds a source-only external meeting-notes plugin and SDK source-provider contract outside the core npm package.",
+        "key_details": [
+          "Auto-start capture config",
+          "Manual transcript imports",
+          "Read-only `openclaw meeting-notes` CLI access",
+          "Discord voice as the first live source"
+        ],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -3300,6 +3318,14 @@
         "since": "2026.5.19",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "openclaw meeting-notes",
+        "syntax": "openclaw meeting-notes",
+        "description": "Provides read-only CLI access to meeting notes.",
+        "since": "2026.5.22",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -3469,6 +3495,12 @@
           "description": "Adds `openclaw qa suite --runtime-parity-tier` and wires the standard Codex-vs-Pi tier into release checks separately from optional/live-only/soak lanes.",
           "since": "2026.5.19",
           "source_url": ""
+        },
+        {
+          "flag": "--profile-id",
+          "description": "Stores a single returned provider auth profile under a requested profile ID.",
+          "since": "2026.5.22",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -3599,7 +3631,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--profile-id"
+      ]
     },
     "env_vars": [
       {
