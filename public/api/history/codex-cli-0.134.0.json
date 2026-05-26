@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.134.0",
-  "generated_at": "2026-05-26T20:43:19.899Z",
+  "generated_at": "2026-05-26T19:40:33.076Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -32,7 +32,8 @@
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "legacy-profile-removal"
+      "profile-migration",
+      "tool-executor-specs-mandatory"
     ]
   },
   "payload": {
@@ -57,7 +58,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release introduces local conversation history search, enabling case-insensitive content matching with result previews. The `--profile` flag is now the primary profile selector across the CLI, TUI, and sandbox flows, replacing legacy profile configurations, which are no longer supported and require migration. MCP setup is improved with per-server environment targeting and OAuth options for streamable HTTP servers. Connector tool schemas are made more reliable by preserving local `$ref`/`$defs` structures and compacting oversized schemas. Read-only MCP tools can now run concurrently when they advertise `readOnlyHint`. Extension and hook contexts are enriched with conversation history for extension tools and subagent identity in hook inputs. Remote reliability is improved by reconnecting stale exec-server websocket clients and retrying remote control and compaction v2 streams. Windows TUI rendering corruption is fixed by restoring virtual terminal mode before drawing. Workspace-specific usage-limit messages are displayed for credit and spend-cap failures. Plugin skills can now reuse shared plugin-level icon assets. Active permission profile metadata is preserved when syncing auto-review runtime settings, and Node-based tools now honor Codex’s managed network proxy environment. It is highly recommended to upgrade to this version to take advantage of the new features and bug fixes, especially the profile configuration changes. Follow the migration guidance provided in the error messages when encountering legacy profile configurations."
+      "tldr": "This release introduces local conversation history search, enabling case-insensitive content matching with result previews, significantly improving information retrieval within past sessions. The `--profile` flag is now the primary profile selector across the CLI, TUI, and sandbox, requiring migration from legacy profile configurations. MCP setup is enhanced with per-server environment targeting and OAuth options for streamable HTTP servers. Connector tool schemas are made more reliable by preserving local `$ref` and `$defs` structures and compacting oversized schemas. Read-only MCP tools can now run concurrently when they advertise `readOnlyHint`. Richer context is provided to extensions and hooks, including conversation history for extension tools and subagent identity in hook inputs. Remote reliability is improved through reconnection of stale exec-server websocket clients and retries for remote control and compaction v2 streams. A Windows TUI rendering corruption issue is fixed by restoring virtual terminal mode before drawing. Workspace-specific usage-limit messages are displayed for credit and spend-cap failures. Plugin skills can now reuse shared plugin-level icon assets. Tool executor specs are now mandatory. It is highly recommended to upgrade to benefit from these improvements and fixes, especially the profile migration. Ensure all tool executors have a spec defined and migrate your profile configurations to be compatible with the `--profile` flag."
     },
     "features": [
       {
@@ -3685,19 +3686,6 @@
           "Tool executors"
         ],
         "migration": "Ensure all tool executors have a spec defined.",
-        "source_url": ""
-      },
-      {
-        "id": "legacy-profile-removal",
-        "version": "0.134.0",
-        "title": "Legacy Profile Configuration Removal",
-        "description": "Legacy profile configurations are no longer supported. The `--profile` flag is now the primary profile selector across CLI, TUI permissions, and sandbox flows.",
-        "affected": [
-          "CLI",
-          "TUI",
-          "Sandbox flows"
-        ],
-        "migration": "Migrate to the new profile configuration using the guidance provided in the error messages.",
         "source_url": ""
       }
     ],
