@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.133.0",
-  "generated_at": "2026-05-26T18:51:14.908Z",
+  "version": "0.134.0",
+  "generated_at": "2026-05-26T19:40:33.076Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,23 +14,27 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.133.0",
-    "to_version": "0.133.0",
+    "from_version": "0.134.0",
+    "to_version": "0.134.0",
     "new_features": [
-      "dedicated-goals-storage",
-      "improved-remote-control-cli-ux",
-      "permission-profiles-enhancements",
-      "plugin-discovery-improvements",
-      "extension-lifecycle-events"
+      "local-conversation-history-search",
+      "primary-profile-selector",
+      "improved-mcp-setup",
+      "reliable-connector-tool-schemas",
+      "concurrent-read-only-mcp-tools",
+      "richer-extension-and-hook-context"
     ],
     "new_commands": [],
     "new_flags": [
-      "--version"
+      "--profile"
     ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "profile-migration",
+      "tool-executor-specs-mandatory"
+    ]
   },
   "payload": {
     "meta": {
@@ -47,14 +51,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.133.0",
+      "latest_stable": "0.134.0",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-05-21",
+      "latest_release_date": "2026-05-26",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release enables goals by default with dedicated storage, tracking progress across turns. The `codex remote-control` command now runs in the foreground, providing status updates and daemon-style `start`/`stop` commands. Permission profiles have been enhanced with list APIs, inheritance, managed `requirements.toml` support, runtime refresh, and improved Windows sandbox integration. Plugin discovery is improved with marketplace-aware list output, installed versions, marketplace roots, and remote collection support. Extensions can now observe more lifecycle events, including subagent start/stop, tool execution, turn metadata, and async approval/turn processing. A bug was fixed where the TUI started in the wrong working directory when reusing a local app-server socket. Plan-mode free-form answers now correctly handle modified Enter keys. AGENTS instruction loading is more reliable, with warnings for invalid UTF-8. App-server startup/shutdown races, empty resume/fork paths, plugin upgrade failures, and realtime v1 websocket compatibility have been fixed. This release also includes a canonical Codex package archive pipeline. It is recommended to upgrade to take advantage of these new features and bug fixes. No specific prerequisites are mentioned."
+      "tldr": "This release introduces local conversation history search, enabling case-insensitive content matching with result previews, significantly improving information retrieval within past sessions. The `--profile` flag is now the primary profile selector across the CLI, TUI, and sandbox, requiring migration from legacy profile configurations. MCP setup is enhanced with per-server environment targeting and OAuth options for streamable HTTP servers. Connector tool schemas are made more reliable by preserving local `$ref` and `$defs` structures and compacting oversized schemas. Read-only MCP tools can now run concurrently when they advertise `readOnlyHint`. Richer context is provided to extensions and hooks, including conversation history for extension tools and subagent identity in hook inputs. Remote reliability is improved through reconnection of stale exec-server websocket clients and retries for remote control and compaction v2 streams. A Windows TUI rendering corruption issue is fixed by restoring virtual terminal mode before drawing. Workspace-specific usage-limit messages are displayed for credit and spend-cap failures. Plugin skills can now reuse shared plugin-level icon assets. Tool executor specs are now mandatory. It is highly recommended to upgrade to benefit from these improvements and fixes, especially the profile migration. Ensure all tool executors have a spec defined and migrate your profile configurations to be compatible with the `--profile` flag."
     },
     "features": [
       {
@@ -1762,6 +1766,60 @@
         "status": "stable",
         "since": "0.133.0",
         "description": "Extensions can observe more lifecycle events, including subagent start/stop, tool execution, turn metadata, and async approval/turn processing.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "local-conversation-history-search",
+        "name": "Local Conversation History Search",
+        "status": "stable",
+        "since": "0.134.0",
+        "description": "Added search across local conversation history, including case-insensitive content matches with result previews.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "primary-profile-selector",
+        "name": "Primary Profile Selector",
+        "status": "stable",
+        "since": "0.134.0",
+        "description": "Made `--profile` the primary profile selector across CLI, TUI permissions, and sandbox flows, with legacy profile configs rejected through migration guidance.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "improved-mcp-setup",
+        "name": "Improved MCP Setup",
+        "status": "stable",
+        "since": "0.134.0",
+        "description": "Improved MCP setup with per-server environment targeting and OAuth options for streamable HTTP servers.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "reliable-connector-tool-schemas",
+        "name": "Reliable Connector Tool Schemas",
+        "status": "stable",
+        "since": "0.134.0",
+        "description": "Made connector tool schemas more reliable by preserving local `$ref`/`$defs` structures and compacting oversized schemas before exposure.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "concurrent-read-only-mcp-tools",
+        "name": "Concurrent Read-Only MCP Tools",
+        "status": "stable",
+        "since": "0.134.0",
+        "description": "Let read-only MCP tools run concurrently when they advertise `readOnlyHint`.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "richer-extension-and-hook-context",
+        "name": "Richer Extension and Hook Context",
+        "status": "stable",
+        "since": "0.134.0",
+        "description": "Added richer extension and hook context, including conversation history for extension tools and subagent identity in hook inputs.",
         "key_details": [],
         "source_url": ""
       }
@@ -3485,7 +3543,7 @@
         }
       ],
       "new_since_previous": [
-        "--version"
+        "--profile"
       ]
     },
     "env_vars": [
@@ -3604,6 +3662,30 @@
         "description": "The app-server no longer returns thread permission profiles.",
         "affected": [],
         "migration": "Update code to use the new permission system.",
+        "source_url": ""
+      },
+      {
+        "id": "profile-migration",
+        "version": "0.134.0",
+        "title": "Profile Configuration Migration",
+        "description": "Legacy profile configurations are now rejected, requiring migration to the new `--profile` flag and associated configuration structure.",
+        "affected": [
+          "CLI",
+          "TUI permissions",
+          "Sandbox flows"
+        ],
+        "migration": "Migrate your profile configurations to be compatible with the `--profile` flag. Refer to the documentation links provided in the error messages for detailed guidance.",
+        "source_url": ""
+      },
+      {
+        "id": "tool-executor-specs-mandatory",
+        "version": "0.134.0",
+        "title": "Tool Executor Specs Mandatory",
+        "description": "Tool executor specs are now mandatory.",
+        "affected": [
+          "Tool executors"
+        ],
+        "migration": "Ensure all tool executors have a spec defined.",
         "source_url": ""
       }
     ],
