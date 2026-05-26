@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.5.22",
-  "generated_at": "2026-05-26T20:43:38.762Z",
+  "generated_at": "2026-05-26T21:34:51.264Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -17,7 +17,7 @@
     "from_version": "2026.5.22",
     "to_version": "2026.5.22",
     "new_features": [
-      "meeting-notes-plugin",
+      "transcript-capture-and-source-provider",
       "generic-channel-message-poll-sender",
       "openclaw-landable-bug-sweep"
     ],
@@ -27,7 +27,7 @@
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "sender-owner-tool-gating-removal"
+      "sender-owner-tool-gating-removed"
     ]
   },
   "payload": {
@@ -52,7 +52,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release focuses on performance improvements, documentation updates, and bug fixes. Gateway performance has been significantly improved through various caching and lazy-loading mechanisms. A new Meeting Notes plugin has been added, providing auto-start capture, transcript imports, and Discord voice integration. The old sender-owner tool gating path has been removed, making configured tools visible for trusted sessions. Documentation has been clarified across various features, including channel configurations, model usage, and troubleshooting steps. Several bug fixes address issues with web chat, gateway session persistence, browser proxy, OpenAI images, and more. The release also includes updates to dependencies and improvements to QA-Lab diagnostics. The `openclaw-landable-bug-sweep` skill was added to help maintainers produce small bugfix PRs. It is recommended to upgrade to this version to benefit from the performance improvements and bug fixes. No specific migration steps are required, except for noting the removal of the sender-owner tool gating path."
+      "tldr": "This release focuses on performance improvements, transcript capture, and bug fixes. Gateway performance is improved by reusing process-stable channel catalog reads, immutable plugin metadata snapshots, lazy-loading startup-idle plugin work, and caching plugin SDK public-surface alias maps. A new transcript capture and source-provider foundation is added, with Discord voice as the first live source. The old sender-owner tool gating path has been removed, so configured tools will now always be visible for trusted sessions. A generic channel-message poll sender is added, and the `openclaw-landable-bug-sweep` skill is introduced for creating bugfix PRs. Sub-agent bootstrap context is limited to `AGENTS.md` and `TOOLS.md`.  Several fixes address issues with web chat, gateway lifecycle errors, browser proxy, OpenAI images, and more.  Model catalogs are pruned, and doctor/update processes are improved.  It is recommended to update to this version for performance and stability improvements. No specific migration steps are required, but be aware of the sender-owner tool gating change."
     },
     "features": [
       {
@@ -2844,6 +2844,20 @@
         "since": "2026.5.22",
         "description": "Adds a general `embeddingProviders` capability contract and registration API so embeddings can become a reusable provider surface outside memory-specific adapters.",
         "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "transcript-capture-and-source-provider",
+        "name": "Transcript capture and source-provider foundation",
+        "status": "stable",
+        "since": "2026.5.22",
+        "description": "Adds the initial transcript capture and source-provider foundation, including auto-start capture config, manual transcript imports, read-only transcript access, and Discord voice as the first live source.",
+        "key_details": [
+          "Auto-start capture config",
+          "Manual transcript imports",
+          "Read-only transcript access",
+          "Discord voice as the first live source"
+        ],
         "source_url": ""
       }
     ],
