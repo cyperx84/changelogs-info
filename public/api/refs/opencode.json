@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
-  "version": "1.15.10",
-  "generated_at": "2026-05-27T03:12:25.618Z",
+  "version": "1.15.11",
+  "generated_at": "2026-05-27T05:32:38.997Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -14,9 +14,11 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "1.15.10",
-    "to_version": "1.15.10",
-    "new_features": [],
+    "from_version": "1.15.11",
+    "to_version": "1.15.11",
+    "new_features": [
+      "dispose-hook-for-plugins"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -40,13 +42,13 @@
       "changelog_url": "https://github.com/anomalyco/opencode/releases",
       "repo_url": "https://github.com/anomalyco/opencode",
       "license": "mit",
-      "latest_stable": "1.15.10",
-      "latest_release_date": "2026-05-23",
+      "latest_stable": "1.15.11",
+      "latest_release_date": "2026-05-27",
       "status": "active",
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "This release primarily addresses a bug in the desktop application. Specifically, the legacy production desktop flows for opening projects and starting sessions have been restored. This resolves an issue where users were unable to properly open projects or initiate sessions from the desktop application using the established production workflows. Users who experienced difficulties opening projects or starting sessions from the desktop application should upgrade to resolve this issue. There are no new features, commands, flags, deprecations, breaking changes, or environment variables introduced in this release. Upgrading is recommended for users affected by the desktop application bug. No specific prerequisites are required for upgrading."
+      "tldr": "This release introduces several improvements and bug fixes across the core, TUI, Desktop, and Extensions components. A key update is that experimental background agents now push updates without polling, offering more real-time feedback. The release also adds a `dispose` hook for plugins, enabling better resource management. The `headerTimeout` config has been added for provider requests, defaulting to 10s for OpenAI setups. You can now configure only `modalities.input` or `modalities.output` in the config. Remote-backed projects now resolve a stable project identity. Dynamically added MCP servers now disconnect cleanly when removed, and DigitalOcean inference now uses your OAuth token directly. Config loading now falls back cleanly when user info is unavailable, and Google tool calling has been fixed after an upstream regression. The TUI prompt now resizes with terminal width and has a prompt size config. The desktop v2 home screen, prompt, status popover, and session controls have been refined. Duplicate server connections are now merged in the server list, and virtualized session timeline interactions have been stabilized. Codex plugin requests now send the expected session ID header. This is a recommended update to improve stability and incorporate the latest features."
     },
     "features": [
       {
@@ -994,6 +996,15 @@
         "status": "stable",
         "since": "1.15.7",
         "description": "Adds desktop log export.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "dispose-hook-for-plugins",
+        "name": "Dispose Hook for Plugins",
+        "status": "stable",
+        "since": "1.15.11",
+        "description": "Added a `dispose` hook for plugins, allowing plugins to clean up resources when they are unloaded.",
         "key_details": [],
         "source_url": ""
       }
