@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.152",
-  "generated_at": "2026-05-27T03:12:07.827Z",
+  "generated_at": "2026-05-27T01:44:57.098Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -17,7 +17,8 @@
     "from_version": "2.1.152",
     "to_version": "2.1.152",
     "new_features": [
-      "message-display-hook"
+      "message-display-hook",
+      "plugin-suggestion-marketplaces-managed-setting"
     ],
     "new_commands": [
       "/reload-skills"
@@ -52,7 +53,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces significant improvements to code review and skill management. The `/code-review --fix` command now automatically applies review findings, and `/simplify` now invokes `/code-review --fix`, streamlining the code improvement process. Skills can now specify `disallowed-tools` in their frontmatter to restrict tool usage, and the `/reload-skills` command and `SessionStart` hook's `reloadSkills: true` option allow for dynamic skill reloading without restarting the session. A new `MessageDisplay` hook enables transformation or hiding of assistant messages. Auto mode no longer requires opt-in consent. The `/usage` command now includes large session files in its breakdown, and memory usage is optimized. Several fixes address terminal styling issues, sandbox warning display, and plugin marketplace errors. Additionally, the session entrypoint can now be included as an OpenTelemetry metric attribute via `OTEL_METRICS_INCLUDE_ENTRYPOINT=true`. It is recommended to upgrade to this version to benefit from the enhanced code review workflow, improved skill management, and various bug fixes. No specific prerequisites are required for this upgrade."
+      "tldr": "Claude Code 2.1.152 introduces automatic application of code review findings with `/code-review --fix`, which surfaces reuse, simplification, and efficiency suggestions directly to your working tree, and is now invoked by `/simplify`. Skills can now specify `disallowed-tools` in frontmatter to restrict tool usage. The `/reload-skills` command allows rescanning skill directories without restarting the session, and `SessionStart` hooks can now trigger skill reloads and set the session title. A new `MessageDisplay` hook enables transformation or hiding of assistant messages.\n\nKey updates include the `pluginSuggestionMarketplaces` managed setting for controlling suggested plugins and the removal of opt-in consent for auto mode. The `/usage` command now includes large session files in its breakdown, using streaming reads for flat memory usage. Thinking summaries are now more readable, and the \"Thinking for Ns\" indicator in fullscreen mode counts up live.\n\nSeveral fixes address terminal styling degradation, sandbox-enabled warning visibility, and issues with tool result display and plugin marketplace entries. Plugin updates now function correctly after registry rebuilds, and remote MCP server connections are fixed when using an egress proxy. Additionally, a background worker crash in `claude agents` has been resolved.\n\nThere are no breaking changes in this release. It is recommended to upgrade to benefit from the new features and fixes. No specific prerequisites are required."
     },
     "features": [
       {
