@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
   "version": "1.15.11",
-  "generated_at": "2026-05-27T07:31:05.207Z",
+  "generated_at": "2026-05-27T05:32:38.997Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -17,11 +17,7 @@
     "from_version": "1.15.11",
     "to_version": "1.15.11",
     "new_features": [
-      "header-timeout-config",
-      "background-agent-updates",
-      "modalities-config",
-      "stable-project-identity",
-      "prompt-resize-with-terminal-width"
+      "dispose-hook-for-plugins"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -52,7 +48,7 @@
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "This release introduces a `headerTimeout` config for provider requests, defaulting to 10s for OpenAI, enhancing request reliability. Experimental background agents now push updates without polling, providing real-time updates. The configuration now supports setting only `modalities.input` or `modalities.output`, offering more flexibility. Remote-backed projects now resolve a stable project identity, improving project management. Dynamically added MCP servers now disconnect cleanly when removed, preventing resource leaks. DigitalOcean inference now uses your OAuth token directly, simplifying authentication. Config loading now falls back cleanly when user info is unavailable, improving resilience. Google tool calling is fixed after an upstream regression. Experimental flags can now override the umbrella experimental flag, providing finer-grained control. Resumed sessions no longer continue orphaned interrupted tools, preventing unexpected behavior. OpenAI reasoning summaries now render as separate blocks, improving readability. Google Vertex support is updated for reasoning signatures. The shell tool now advertises your configured timeout to the model. In the TUI, the prompt resizes with terminal width, and a prompt size config is added. Diff viewer scrolling is accelerated, and external editors now open from the worktree directory when available. Desktop v2 home screen, prompt, status popover, and session controls are refined. V2 titlebar errors are fixed when a session sync cache is deleted. Web deployments no longer run desktop health checks. Duplicate server connections are merged, virtualized session timeline interactions are stabilized, and the white flash when restoring the desktop window is fixed. A `dispose` hook is added for plugins, and Codex plugin requests now send the expected session ID header. Upgrade is recommended for these improvements and fixes."
+      "tldr": "This release introduces several improvements and bug fixes across the core, TUI, Desktop, and Extensions components. A key update is that experimental background agents now push updates without polling, offering more real-time feedback. The release also adds a `dispose` hook for plugins, enabling better resource management. The `headerTimeout` config has been added for provider requests, defaulting to 10s for OpenAI setups. You can now configure only `modalities.input` or `modalities.output` in the config. Remote-backed projects now resolve a stable project identity. Dynamically added MCP servers now disconnect cleanly when removed, and DigitalOcean inference now uses your OAuth token directly. Config loading now falls back cleanly when user info is unavailable, and Google tool calling has been fixed after an upstream regression. The TUI prompt now resizes with terminal width and has a prompt size config. The desktop v2 home screen, prompt, status popover, and session controls have been refined. Duplicate server connections are now merged in the server list, and virtualized session timeline interactions have been stabilized. Codex plugin requests now send the expected session ID header. This is a recommended update to improve stability and incorporate the latest features."
     },
     "features": [
       {
@@ -1010,66 +1006,6 @@
         "since": "1.15.11",
         "description": "Added a `dispose` hook for plugins, allowing plugins to clean up resources when they are unloaded.",
         "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "header-timeout-config",
-        "name": "Header Timeout Config",
-        "status": "stable",
-        "since": "1.15.11",
-        "description": "Added `headerTimeout` config for provider requests.",
-        "key_details": [
-          "Configures the timeout for provider requests.",
-          "Defaults to 10 seconds for default OpenAI setups."
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "background-agent-updates",
-        "name": "Background Agent Updates",
-        "status": "experimental",
-        "since": "1.15.11",
-        "description": "Experimental background agents now push updates without polling.",
-        "key_details": [
-          "Background agents provide real-time updates.",
-          "Polling is no longer required for updates."
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "modalities-config",
-        "name": "Modalities Config",
-        "status": "stable",
-        "since": "1.15.11",
-        "description": "You can now set only `modalities.input` or `modalities.output` in config.",
-        "key_details": [
-          "Allows specifying only input or output modalities in the configuration.",
-          "Provides more flexibility in configuring modalities."
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "stable-project-identity",
-        "name": "Stable Project Identity",
-        "status": "stable",
-        "since": "1.15.11",
-        "description": "Remote-backed projects now resolve a stable project identity.",
-        "key_details": [
-          "Remote-backed projects have a consistent identity.",
-          "Improves project identification and management."
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "prompt-resize-with-terminal-width",
-        "name": "Prompt Resize with Terminal Width",
-        "status": "stable",
-        "since": "1.15.11",
-        "description": "Made the prompt resize with terminal width and added prompt size config.",
-        "key_details": [
-          "The prompt size adjusts dynamically with the terminal width.",
-          "A configuration option is available to control the prompt size."
-        ],
         "source_url": ""
       }
     ],
