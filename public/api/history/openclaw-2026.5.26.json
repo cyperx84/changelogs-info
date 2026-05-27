@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.5.26",
-  "generated_at": "2026-05-27T15:08:33.917Z",
+  "generated_at": "2026-05-27T13:14:52.439Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -16,17 +16,22 @@
   "delta": {
     "from_version": "2026.5.26",
     "to_version": "2026.5.26",
-    "new_features": [],
+    "new_features": [
+      "core-transcript-capture-and-source-provider-support",
+      "named-model-login-profiles",
+      "signal-imessage-whatsapp-reaction-approvals",
+      "ephemeral-activity-tab",
+      "rastermill-image-backend"
+    ],
     "new_commands": [
+      "openclaw matrix encryption setup",
       "qa coverage"
     ],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "sharp-image-backend-replacement"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -50,7 +55,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release focuses on improving gateway performance, transcript reliability, channel support, voice interactions, and overall security. The gateway startup is significantly faster due to optimized caching and reduced filesystem scans. Transcripts are now core, providing a more reliable foundation for various features like meeting summaries and Codex mirrors. Several channels receive enhancements, including Telegram, iMessage, WhatsApp, and Discord, with improved context handling and reaction approvals. Realtime Talk interactions are improved with better inspection and wake-name handling. Security is enhanced through stricter content boundaries and validation of browser snapshots and system events. The Sharp image backend is replaced with Rastermill. A new `qa coverage --match <query>` command is added for focused proof selection. It is highly recommended to upgrade to this release for performance improvements, enhanced security, and improved channel support. No specific migration steps are required, but be aware that the Sharp image backend is no longer used."
+      "tldr": "This release focuses on improving gateway performance, transcript reliability, channel integrations, voice interactions, and overall security. The gateway startup is faster due to optimized plugin and channel scans, and visible replies now separate user-facing sends from slower follow-up tasks. Transcripts are now core, providing a more reliable path for meeting summaries and other features. Several channels, including Telegram, iMessage, WhatsApp, and Discord, have received significant improvements, such as better context handling and reaction approvals. Realtime Talk can now be inspected and steered from the Web UI and Discord, and wake-name handling is more tolerant. Security enhancements include stricter content boundaries and validation of browser snapshot URLs. Named model login profiles have been added for Hermes, OpenCode, and Codex, and the Sharp image backend has been replaced with Rastermill. The `cron.maxConcurrentRuns` now defaults to 8, and a new ephemeral Activity tab has been added to the Control UI. It is highly recommended to upgrade to this release for improved performance, reliability, and security. No specific migration steps are required."
     },
     "features": [
       {
@@ -5143,18 +5148,6 @@
           "Tools"
         ],
         "migration": "No specific migration steps are required. Ensure that your tool configurations are visible for trusted sessions.",
-        "source_url": ""
-      },
-      {
-        "id": "sharp-image-backend-replacement",
-        "version": "2026.5.26",
-        "title": "Sharp image backend replaced with Rastermill",
-        "description": "The Sharp image backend has been replaced with Rastermill for metadata, resizing, EXIF orientation, and PNG alpha-preserving optimization. OpenClaw no longer installs Sharp or the WhatsApp Jimp fallback for image processing.",
-        "affected": [
-          "Image processing",
-          "Install size"
-        ],
-        "migration": "No migration is required. Rastermill is automatically used for image processing.",
         "source_url": ""
       }
     ],
