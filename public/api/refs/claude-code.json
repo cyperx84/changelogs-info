@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.150",
-  "generated_at": "2026-05-27T00:48:58.248Z",
+  "version": "2.1.152",
+  "generated_at": "2026-05-27T01:44:57.098Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,12 +14,21 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.150",
-    "to_version": "2.1.150",
-    "new_features": [],
-    "new_commands": [],
-    "new_flags": [],
-    "new_env_vars": [],
+    "from_version": "2.1.152",
+    "to_version": "2.1.152",
+    "new_features": [
+      "message-display-hook",
+      "plugin-suggestion-marketplaces-managed-setting"
+    ],
+    "new_commands": [
+      "/reload-skills"
+    ],
+    "new_flags": [
+      "--scope user|project|local"
+    ],
+    "new_env_vars": [
+      "OTEL_METRICS_INCLUDE_ENTRYPOINT"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -39,12 +48,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.150",
-      "latest_release_date": "2026-05-23",
+      "latest_stable": "2.1.152",
+      "latest_release_date": "2026-05-27",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release of claude-code (2.1.150) focuses on internal infrastructure improvements. There are no user-facing changes in this release, meaning no new features, commands, flags, or breaking changes to consider. The update primarily involves under-the-hood enhancements to improve the stability and performance of the tool. Since there are no functional changes, upgrading to this version is recommended at your earliest convenience to benefit from the latest infrastructure improvements. No specific prerequisites or migration steps are required for this update."
+      "tldr": "Claude Code 2.1.152 introduces automatic application of code review findings with `/code-review --fix`, which surfaces reuse, simplification, and efficiency suggestions directly to your working tree, and is now invoked by `/simplify`. Skills can now specify `disallowed-tools` in frontmatter to restrict tool usage. The `/reload-skills` command allows rescanning skill directories without restarting the session, and `SessionStart` hooks can now trigger skill reloads and set the session title. A new `MessageDisplay` hook enables transformation or hiding of assistant messages.\n\nKey updates include the `pluginSuggestionMarketplaces` managed setting for controlling suggested plugins and the removal of opt-in consent for auto mode. The `/usage` command now includes large session files in its breakdown, using streaming reads for flat memory usage. Thinking summaries are now more readable, and the \"Thinking for Ns\" indicator in fullscreen mode counts up live.\n\nSeveral fixes address terminal styling degradation, sandbox-enabled warning visibility, and issues with tool result display and plugin marketplace entries. Plugin updates now function correctly after registry rebuilds, and remote MCP server connections are fixed when using an egress proxy. Additionally, a background worker crash in `claude agents` has been resolved.\n\nThere are no breaking changes in this release. It is recommended to upgrade to benefit from the new features and fixes. No specific prerequisites are required."
     },
     "features": [
       {
@@ -1281,6 +1290,24 @@
         "description": "Deterministic multi-agent orchestration tool.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "message-display-hook",
+        "name": "MessageDisplay Hook",
+        "status": "stable",
+        "since": "2.1.152",
+        "description": "Added a `MessageDisplay` hook event that lets hooks transform or hide assistant message text as it is displayed.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "plugin-suggestion-marketplaces-managed-setting",
+        "name": "pluginSuggestionMarketplaces Managed Setting",
+        "status": "stable",
+        "since": "2.1.152",
+        "description": "Added `pluginSuggestionMarketplaces` managed setting: admins can allowlist org marketplaces whose plugins may be suggested via context-aware tips.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1704,6 +1731,14 @@
         "since": "2.1.144",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "/reload-skills",
+        "syntax": "/reload-skills",
+        "description": "Added `/reload-skills` command to re-scan skill directories without restarting the session.",
+        "since": "2.1.152",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -1987,6 +2022,12 @@
           "description": "Post findings as inline GitHub PR comments when using the `/code-review` command.",
           "since": "2.1.147",
           "source_url": ""
+        },
+        {
+          "flag": "--scope user|project|local",
+          "description": "Now accepted by `claude plugin marketplace remove` for symmetry with `marketplace add`, `install`, and `uninstall`.",
+          "since": "2.1.152",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -2013,7 +2054,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--scope user|project|local"
+      ]
     },
     "env_vars": [
       {
@@ -2377,6 +2420,13 @@
         "purpose": "Enables the Workflow tool.",
         "status": "stable",
         "since": "2.1.147",
+        "source_url": ""
+      },
+      {
+        "name": "OTEL_METRICS_INCLUDE_ENTRYPOINT",
+        "purpose": "Opt-in to include the session entrypoint as an OpenTelemetry metric attribute (`app.entrypoint`).",
+        "status": "stable",
+        "since": "2.1.152",
         "source_url": ""
       }
     ],
