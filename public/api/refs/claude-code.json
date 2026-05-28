@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.152",
-  "generated_at": "2026-05-28T00:44:39.315Z",
+  "version": "2.1.153",
+  "generated_at": "2026-05-28T01:37:58.112Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,23 +14,23 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.152",
-    "to_version": "2.1.152",
-    "new_features": [
-      "message-display-hook"
-    ],
-    "new_commands": [
-      "/reload-skills"
-    ],
+    "from_version": "2.1.153",
+    "to_version": "2.1.153",
+    "new_features": [],
+    "new_commands": [],
     "new_flags": [
-      "--scope user|project|local"
+      "--strict-mcp-config",
+      "--bare"
     ],
     "new_env_vars": [
-      "OTEL_METRICS_INCLUDE_ENTRYPOINT"
+      "COLUMNS",
+      "LINES"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "modelpicker-keybinding-rename"
+    ]
   },
   "payload": {
     "meta": {
@@ -47,12 +47,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.152",
-      "latest_release_date": "2026-05-27",
+      "latest_stable": "2.1.153",
+      "latest_release_date": "2026-05-28",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces significant improvements to code review and skill management. The `/code-review --fix` command now automatically applies review findings, and `/simplify` now invokes `/code-review --fix`, streamlining the code improvement process. Skills can now specify `disallowed-tools` in their frontmatter to restrict tool usage, and the `/reload-skills` command and `SessionStart` hook's `reloadSkills: true` option allow for dynamic skill reloading without restarting the session. A new `MessageDisplay` hook enables transformation or hiding of assistant messages. Auto mode no longer requires opt-in consent. The `/usage` command now includes large session files in its breakdown, and memory usage is optimized. Several fixes address terminal styling issues, sandbox warning display, and plugin marketplace errors. Additionally, the session entrypoint can now be included as an OpenTelemetry metric attribute via `OTEL_METRICS_INCLUDE_ENTRYPOINT=true`. It is recommended to upgrade to this version to benefit from the enhanced code review workflow, improved skill management, and various bug fixes. No specific prerequisites are required for this upgrade."
+      "tldr": "This release introduces several key improvements and fixes. The `github`/`git` plugin marketplace sources now support a `skipLfs` option to skip Git LFS downloads, speeding up clone and update operations. A one-time notice now appears if your npm global install can't auto-update, with `/doctor` providing fixes. Status line commands now receive `COLUMNS` and `LINES` environment variables, enabling scripts to adapt output to the terminal width. The `claude agents` command now suggests native slash commands and bundled skills in the dispatch input, and the PR column displays PR counts. Several important fixes address issues like stateful MCP server reconnect loops, incorrect Anthropic OAuth credential usage, and subagent MCP server configuration. Additionally, excessive memory usage when resuming sessions and stale daemon issues have been resolved. The `/bg` command now correctly continues responses in the background, and various UI and keyboard shortcut issues in background sessions have been fixed. The `/model` command now saves your selection as the default for new sessions, and the `modelPicker:setAsDefault` keybinding has been renamed to `modelPicker:thisSessionOnly`.  It is recommended to upgrade to this version to benefit from these improvements and fixes. No specific prerequisites are mentioned."
     },
     "features": [
       {
@@ -2027,6 +2027,12 @@
           "description": "Now accepted by `claude plugin marketplace remove` for symmetry with `marketplace add`, `install`, and `uninstall`.",
           "since": "2.1.152",
           "source_url": ""
+        },
+        {
+          "flag": "--strict-mcp-config",
+          "description": "No longer strips inline `mcpServers` from explicitly-passed agent definitions (`--agents` / SDK `agents`), and blocked subagent MCP servers now surface a visible warning.",
+          "since": "2.1.153",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -2054,7 +2060,8 @@
         }
       ],
       "new_since_previous": [
-        "--scope user|project|local"
+        "--strict-mcp-config",
+        "--bare"
       ]
     },
     "env_vars": [
@@ -2427,6 +2434,20 @@
         "status": "stable",
         "since": "2.1.152",
         "source_url": ""
+      },
+      {
+        "name": "COLUMNS",
+        "purpose": "Status line commands now receive `COLUMNS` and `LINES` environment variables so scripts can size output to the terminal width.",
+        "status": "stable",
+        "since": "2.1.153",
+        "source_url": ""
+      },
+      {
+        "name": "LINES",
+        "purpose": "Status line commands now receive `COLUMNS` and `LINES` environment variables so scripts can size output to the terminal width.",
+        "status": "stable",
+        "since": "2.1.153",
+        "source_url": ""
       }
     ],
     "models": [
@@ -2706,6 +2727,17 @@
         "description": "The `/simplify` command has been renamed to `/code-review`. The old cleanup-and-fix behavior has been removed. The new command reports correctness bugs at a chosen effort level.",
         "affected": [],
         "migration": "Use `/code-review` instead of `/simplify`. The cleanup-and-fix functionality is no longer available.",
+        "source_url": ""
+      },
+      {
+        "id": "modelpicker-keybinding-rename",
+        "version": "2.1.153",
+        "title": "Renamed `modelPicker:setAsDefault` keybinding to `modelPicker:thisSessionOnly`",
+        "description": "The `modelPicker:setAsDefault` keybinding has been renamed to `modelPicker:thisSessionOnly` in keybindings.json. The `d` action was replaced by `s` in the model picker.",
+        "affected": [
+          "Custom keybindings"
+        ],
+        "migration": "Rename `modelPicker:setAsDefault` to `modelPicker:thisSessionOnly` in your keybindings.json file.",
         "source_url": ""
       }
     ],
