@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.5.27",
-  "generated_at": "2026-05-28T17:19:10.951Z",
+  "generated_at": "2026-05-28T13:18:50.959Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -26,13 +26,7 @@
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "unsafe-command-wrappers-rejected",
-      "unsafe-node-runtime-env-overrides-rejected",
-      "no-auth-tailscale-exposure-rejected",
-      "non-admin-device-role-pairing-approvals-rejected",
-      "loose-numeric-cli-and-gateway-options-rejected"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -56,7 +50,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release focuses on enhancing security and reliability across OpenClaw. A key change is the hardening of local/runtime boundaries, with OpenClaw now rejecting unsafe command wrappers, malformed CLI numeric options, unsafe Node runtime env overrides, no-auth Tailscale exposure, and non-admin device-role pairing approvals. This prevents potential security vulnerabilities and unauthorized access. A new OpenAI-compatible embedding provider has been added, along with Pixverse video generation provider support, including API region selection and external plugin publishing. Plugin developers can now access approval action metadata for plugin-driven approval surfaces. Several fixes address issues with Telegram message delivery, Matrix auto-replies, and agent/provider reliability, including OpenAI-compatible cache retention and unsupported tool schema quarantine. Gateway performance is improved through caching and optimized session metadata handling. Package and install processes are tightened with aligned npm package exclusions and inventory. Several security fixes address hostname normalization and OAuth token handling. Finally, various QA and CI processes have been hardened to prevent false positives. It is highly recommended to upgrade to this version to benefit from the security enhancements and reliability improvements. No specific migration steps are required beyond ensuring command wrappers and runtime configurations adhere to the new stricter policies."
+      "tldr": "This release focuses on enhancing security and stability across OpenClaw. It introduces stricter validation to prevent unsafe command wrappers, malformed CLI options, and unauthorized Tailscale exposure, bolstering the security of local and runtime environments. A new OpenAI-compatible embedding provider is available for memory, and Pixverse video generation is now supported as an external plugin with region selection. Telegram message delivery is improved with durable outbound routing, and Matrix integration is more robust with inert mention previews and reliable final mention delivery. Plugin and package release processes are tightened with better npm package alignment and bounded smoke test execution. Gateway performance is optimized through caching and read-only session metadata usage. Several fixes address issues in agent/provider runtime context, Codex/Anthropic OAuth flows, and various QA/E2E/CI test suites. Plugin SDK now marks memory-specific embedding provider registration as deprecated compatibility. Upgrade is recommended to benefit from these security enhancements and stability improvements."
     },
     "features": [
       {
@@ -5242,51 +5236,6 @@
           "Install size"
         ],
         "migration": "No migration is required. Rastermill is automatically used for image processing.",
-        "source_url": ""
-      },
-      {
-        "id": "unsafe-command-wrappers-rejected",
-        "version": "2026.5.27",
-        "title": "Unsafe command wrappers are now rejected",
-        "description": "OpenClaw now rejects unsafe command wrappers to prevent potential security vulnerabilities.",
-        "affected": [],
-        "migration": "Ensure command wrappers are safe and do not introduce security risks.",
-        "source_url": ""
-      },
-      {
-        "id": "unsafe-node-runtime-env-overrides-rejected",
-        "version": "2026.5.27",
-        "title": "Unsafe Node runtime env overrides are now rejected",
-        "description": "OpenClaw now rejects unsafe Node runtime environment variable overrides to prevent potential security vulnerabilities.",
-        "affected": [],
-        "migration": "Ensure Node runtime environment variable overrides are safe and do not introduce security risks.",
-        "source_url": ""
-      },
-      {
-        "id": "no-auth-tailscale-exposure-rejected",
-        "version": "2026.5.27",
-        "title": "No-auth Tailscale exposure is now rejected",
-        "description": "OpenClaw now rejects no-authentication Tailscale exposure to prevent unauthorized access.",
-        "affected": [],
-        "migration": "Ensure Tailscale is properly authenticated to prevent unauthorized access.",
-        "source_url": ""
-      },
-      {
-        "id": "non-admin-device-role-pairing-approvals-rejected",
-        "version": "2026.5.27",
-        "title": "Non-admin device-role pairing approvals are now rejected",
-        "description": "OpenClaw now requires admin approval for node device-role pairing to prevent unauthorized access.",
-        "affected": [],
-        "migration": "Ensure device-role pairing is approved by an administrator.",
-        "source_url": ""
-      },
-      {
-        "id": "loose-numeric-cli-and-gateway-options-rejected",
-        "version": "2026.5.27",
-        "title": "Loose numeric CLI and gateway options are now rejected",
-        "description": "OpenClaw now rejects loose numeric CLI and gateway options to prevent potential security vulnerabilities.",
-        "affected": [],
-        "migration": "Ensure numeric CLI and gateway options are properly formatted and validated.",
         "source_url": ""
       }
     ],
