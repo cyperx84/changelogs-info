@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.5.26",
-  "generated_at": "2026-05-28T07:25:27.492Z",
+  "generated_at": "2026-05-28T09:20:09.606Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -18,7 +18,13 @@
     "to_version": "2026.5.26",
     "new_features": [
       "ephemeral-activity-tab",
-      "rastermill-image-backend"
+      "signal-reaction-approvals",
+      "imessage-thumb-approval-reactions",
+      "whatsapp-thumb-approval-reaction-support",
+      "android-pair-new-gateway-action",
+      "ios-realtime-talk-mode",
+      "android-offline-voice-gateway-recovery",
+      "named-model-login-profiles"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -49,7 +55,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release focuses on improving gateway performance, transcript reliability, channel support, voice interactions, and security. The gateway is faster due to optimized startup and reduced cache churn. Transcripts are now core, providing a more reliable path for meeting summaries, source-provider chunks, and more. Several channels, including Telegram, iMessage, WhatsApp, and Discord, have been enhanced with improved features and fixes. Voice interactions are better with improved wake-name handling and realtime Talk features. Security is enhanced with stricter content boundaries and validation. Named model login profiles have been added for easier authentication. The ephemeral activity tab provides sanitized live tool activity summaries. The Sharp image backend has been replaced with Rastermill for better image processing. It is recommended to upgrade to this release for improved performance, reliability, and security. There are no breaking changes or specific migration steps required. Ensure all plugins and dependencies are compatible before upgrading. The `cron.maxConcurrentRuns` now defaults to 8. The `qa coverage --match <query>` command has been added for focused proof selection. The Android pair-new-gateway action has been added. The default CLI logs now use local timestamps."
+      "tldr": "This release focuses on improving gateway performance, transcript reliability, channel support, voice interactions, content security, provider stability, and overall system observability. The gateway is now faster due to optimized startup and caching mechanisms, while transcripts are more reliable with core capture and source-provider support. Several channels, including Telegram, iMessage, WhatsApp, and Discord, have been enhanced with new features and fixes. Voice interactions are improved with better wake-name handling and realtime context tracking. Content security is enhanced through stricter validation and sanitization measures. Provider stability is increased with named auth profiles and dynamic tool-schema guards. Observability is improved with new telemetry signals and an ephemeral activity tab. Key fixes include addressing prompt injection vulnerabilities, improving TUI prompt handling, and resolving various issues across plugins, Codex, and the gateway. This release also introduces reaction approvals for Signal, iMessage, and WhatsApp, and an Android pair-new-gateway action. It is highly recommended to upgrade to this release for improved performance, reliability, and security. No specific migration steps are required."
     },
     "features": [
       {
@@ -2899,6 +2905,60 @@
         "status": "stable",
         "since": "2026.5.26",
         "description": "Replaces the Sharp image backend with Rastermill for metadata, resizing, EXIF orientation, and PNG alpha-preserving optimization so OpenClaw no longer installs Sharp or the WhatsApp Jimp fallback for image processing.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "signal-reaction-approvals",
+        "name": "Signal Reaction Approvals",
+        "status": "stable",
+        "since": "2026.5.26",
+        "description": "Adds Signal reaction approvals so mobile approval flows work without textual `/approve` commands.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "imessage-thumb-approval-reactions",
+        "name": "iMessage Thumb Approval Reactions",
+        "status": "stable",
+        "since": "2026.5.26",
+        "description": "Adds iMessage thumb approval reactions so mobile approval flows work without textual `/approve` commands.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "whatsapp-thumb-approval-reaction-support",
+        "name": "WhatsApp Thumb Approval Reaction Support",
+        "status": "stable",
+        "since": "2026.5.26",
+        "description": "Adds WhatsApp thumb approval reaction support so mobile approval flows work without textual `/approve` commands.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "android-pair-new-gateway-action",
+        "name": "Android Pair New Gateway Action",
+        "status": "stable",
+        "since": "2026.5.26",
+        "description": "Adds the Android pair-new-gateway action.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "ios-realtime-talk-mode",
+        "name": "iOS Realtime Talk Mode",
+        "status": "stable",
+        "since": "2026.5.26",
+        "description": "Improves mobile Talk mode surfaces, including iOS realtime Talk mode.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "android-offline-voice-gateway-recovery",
+        "name": "Android Offline Voice/Gateway Recovery",
+        "status": "stable",
+        "since": "2026.5.26",
+        "description": "Improves mobile Talk mode surfaces, including Android offline voice/gateway recovery.",
         "key_details": [],
         "source_url": ""
       }
