@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.5.26",
-  "generated_at": "2026-05-28T11:16:05.405Z",
+  "version": "2026.5.27",
+  "generated_at": "2026-05-28T13:18:50.959Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,18 +14,12 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.5.26",
-    "to_version": "2026.5.26",
+    "from_version": "2026.5.27",
+    "to_version": "2026.5.27",
     "new_features": [
-      "core-transcript-capture-and-source-provider-support",
-      "named-model-login-profiles",
-      "signal-reaction-approvals",
-      "imessage-thumb-approval-reactions",
-      "whatsapp-thumb-approval-reaction-support",
-      "android-pair-new-gateway-action",
-      "ios-realtime-talk-mode",
-      "android-offline-voice-gateway-recovery",
-      "ephemeral-activity-tab"
+      "openai-compatible-embedding-provider",
+      "pixverse-video-generation-provider",
+      "plugin-approval-action-metadata"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -50,13 +44,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.5.26",
-      "latest_release_date": "2026-05-27",
+      "latest_stable": "2026.5.27",
+      "latest_release_date": "2026-05-28",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release focuses on improving gateway performance, transcript reliability, channel support, voice interaction, content security, provider stability, and overall observability. The gateway startup is significantly faster due to optimized caching and reduced filesystem scans. Transcripts are now the core for meeting summaries, Codex mirrors, and WebChat replies, ensuring more reliable data handling. Several channels, including Telegram, iMessage, WhatsApp, and Discord, receive enhancements for typing context, attachment handling, and reaction approvals. Realtime Talk is improved with better inspection and wake-name handling. Content boundaries are strengthened with stricter SSRF policies and prompt sanitization. Provider stability is enhanced through named auth profiles and dynamic tool-schema guards. Observability is improved with an Activity tab and OpenTelemetry LLM spans. The Rastermill image backend replaces Sharp for better image processing. It is highly recommended to update to this release for improved performance, reliability, and security. No specific migration steps are required."
+      "tldr": "This release focuses on enhancing security and stability across OpenClaw. It introduces stricter validation to prevent unsafe command wrappers, malformed CLI options, and unauthorized Tailscale exposure, bolstering the security of local and runtime environments. A new OpenAI-compatible embedding provider is available for memory, and Pixverse video generation is now supported as an external plugin with region selection. Telegram message delivery is improved with durable outbound routing, and Matrix integration is more robust with inert mention previews and reliable final mention delivery. Plugin and package release processes are tightened with better npm package alignment and bounded smoke test execution. Gateway performance is optimized through caching and read-only session metadata usage. Several fixes address issues in agent/provider runtime context, Codex/Anthropic OAuth flows, and various QA/E2E/CI test suites. Plugin SDK now marks memory-specific embedding provider registration as deprecated compatibility. Upgrade is recommended to benefit from these security enhancements and stability improvements."
     },
     "features": [
       {
@@ -2960,6 +2954,33 @@
         "status": "stable",
         "since": "2026.5.26",
         "description": "Improves mobile Talk mode surfaces, including Android offline voice/gateway recovery.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "openai-compatible-embedding-provider",
+        "name": "OpenAI-compatible Embedding Provider",
+        "status": "stable",
+        "since": "2026.5.27",
+        "description": "Adds a core OpenAI-compatible embedding provider for local and hosted OpenAI-style endpoints.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "pixverse-video-generation-provider",
+        "name": "Pixverse Video Generation Provider",
+        "status": "stable",
+        "since": "2026.5.27",
+        "description": "Adds Pixverse video generation provider support, API region selection, and external plugin publishing.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "plugin-approval-action-metadata",
+        "name": "Plugin Approval Action Metadata",
+        "status": "stable",
+        "since": "2026.5.27",
+        "description": "Exposes approval action metadata for plugin-driven approval surfaces.",
         "key_details": [],
         "source_url": ""
       }
