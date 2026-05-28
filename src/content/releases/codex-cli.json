@@ -15,6 +15,22 @@
   },
   "releases": [
     {
+      "version": "rust-v0.135.0-alpha.2",
+      "name": "0.135.0-alpha.2",
+      "body": "Release 0.135.0-alpha.2\n\n",
+      "date": "2026-05-27T21:38:24Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.135.0-alpha.2",
+      "prerelease": true
+    },
+    {
+      "version": "rust-v0.135.0-alpha.1",
+      "name": "0.135.0-alpha.1",
+      "body": "Release 0.135.0-alpha.1\n\n",
+      "date": "2026-05-27T18:34:58Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.135.0-alpha.1",
+      "prerelease": true
+    },
+    {
       "version": "rust-v0.134.0",
       "name": "0.134.0",
       "body": "## New Features\n- Added search across local conversation history, including case-insensitive content matches with result previews. (#23519, #23921)\n- Made `--profile` the primary profile selector across CLI, TUI permissions, and sandbox flows, with legacy profile configs rejected through migration guidance. (#23708, #23883, #23890, #24051, #24055, #24059, #24067, #24110)\n- Improved MCP setup with per-server environment targeting and OAuth options for streamable HTTP servers. (#23583, #24120)\n- Made connector tool schemas more reliable by preserving local `$ref`/`$defs` structures and compacting oversized schemas before exposure. (#23357, #23904)\n- Let read-only MCP tools run concurrently when they advertise `readOnlyHint`. (#23750)\n- Added richer extension and hook context, including conversation history for extension tools and subagent identity in hook inputs. (#22882, #23963)\n\n## Bug Fixes\n- Improved remote reliability by reconnecting stale exec-server websocket clients, retrying remote control immediately after auth recovery, and retrying remote compaction v2 streams. (#23867, #23775, #23951)\n- Fixed Windows TUI rendering corruption by restoring virtual terminal mode before drawing. (#24082)\n- Displayed workspace-specific usage-limit messages for credit and spend-cap failures. (#24114)\n- Allowed plugin skills to reuse shared plugin-level icon assets. (#23776)\n- Preserved active permission profile metadata when syncing auto-review runtime settings. (#23956)\n- Ensured Node-based tools honor Codex’s managed network proxy environment. (#23905)\n\n## Documentation\n- Documented the curl and PowerShell installer paths in the README. (#24106)\n- Updated developer docs to prefer `just test` over direct `cargo test` for repo-local test runs. (#23910)\n- Added profile migration documentation links to relevant config errors. (#23879)\n\n## Chores\n- Simplified release packaging around canonical native artifacts, reusable DotSlash fetching, and a new macOS x64 zsh artifact. (#23833, #23836, #24129, #24165)\n- Added release-build support for Codex-produced V8 artifacts. (#23934)\n- Added image re-encoding benchmarks and connector-style JSON schema policy fixtures. (#23935, #24152)\n- Improved tracing and analytics for websocket requests, turn starts, and remote compaction v2. (#23581, #23980, #24146)\n\n## Changelog\n\nFull Changelog: https://github.com/openai/codex/compare/rust-v0.133.0...rust-v0.134.0\n\n- #23581 Trace logical websocket request after untraced warmup @jif-oai\n- #23718 [codex] Steer budget-limited goal extension turns @jif-oai\n- #23861 fix: cargo lock @jif-oai\n- #23728 feat: retain remote compaction truncation parity in v2 @jif-oai\n- #23870 Make tool executor specs mandatory @jif-oai\n- #23882 [codex] Stabilize subagent start hook test @jif-oai\n- #23876 refactor: centralize tool exposure planning @jif-oai\n- #23879 chore: link doc in profile error messages @jif-oai\n- #23883 cli: rename profile v2 flag to --profile @jif-oai\n- #23835 docs: add description to codex-cli/package.json @bolinfest\n- #23583 Route MCP servers through explicit environments @starr-openai\n- #23886 cli: remove legacy profile v1 plumbing @jif-oai\n- #23708 tui: plumb permission profile selection @viyatb-oai\n- #23833 packaging: move rg manifest out of npm bin @bolinfest\n- #23796 Improve `/goal` error messages for ephemeral sessions @etraut-openai\n- #23867 Reconnect disconnected exec-server websocket clients with fresh sessions @starr-openai\n- #23792 TUI: skip goal replace prompt for completed goals @etraut-openai\n- #23519 [codex] Add rollout-backed thread content search @fc-oai\n- #22552 Remove plugin hooks feature flag @abhinav-oai\n- #23836 npm: remove legacy package artifact synthesis @bolinfest\n- #23921 [codex] Make thread search case-insensitive @fc-oai\n- #23775 fix(remote-control): retry after auth recovery @apanasenko-oai\n- #22882 Add subagent identity to hook inputs @abhinav-oai\n- #22915 [3 of 4] tui: route feature and memory toggles through app server @etraut-openai\n- #23776 fix: Allow plugin skills to share plugin-level icon assets @xl-openai\n- #23860 Add Bedrock Mantle GovCloud region @CHARLESPALEN-OAI\n- #23956 Fix auto-review permission profile override @etraut-openai\n- #23357 feat: support local refs and defs in tool input schemas @celia-oai\n- #23963 Expose conversation history to extension tools @sayan-oai\n- #23904 feat: best-effort compact large tool schemas @celia-oai\n- #23750 Allow parallel MCP tool calls when annotated readOnly @anp-oai\n- #23905 [codex] Enable Node env proxy for managed network proxy @rreichel3-oai\n- #23890 mcp: surface profile migration guidance under --profile @jif-oai\n- #24051 config: remove legacy profile v1 resolution @jif-oai\n- #24055 config: remove legacy profile write paths @jif-oai\n- #24057 Avoid config snapshots in live agent subtree traversal @jif-oai\n- #24061 otel: drop legacy profile usage telemetry @jif-oai\n- #24059 fix: reject legacy profile selectors @jif-oai\n- #23934 ci: Use codex produced v8 artifacts for release builds @cconger\n- #24099 fix(app-server): fix optional bool annotations @owenlin0\n- #23910 Prefer `just test` over `cargo test` in docs @anp-oai\n- #23951 retry remote compaction v2 requests @rhan-oai\n- #24081 tui: make `codex-tui.log` opt-in @jif-oai\n- #24102 cli: infer host sandbox backend @bolinfest\n- #24067 app-server: drop legacy profile config surface @jif-oai\n- #23736 Add new enterprise requirement gate @adams-oai\n- #24117 [codex] Use rolling files for Windows sandbox logs @iceweasel-oai\n- #24106 docs: update README.md to mention curl-based installer @bolinfest\n- #24082 fix(tui): restore Windows VT before TUI renders @fcoury-oai\n- #24110 cli: support --profile for codex sandbox @bolinfest\n- #23980 Add trace_id to TurnStartedEvent @mchen-oai\n- #24120 Support OAuth options in codex mcp add @mzeng-openai\n- #23989 Add typed Images client to codex-api @won-openai\n- #24146 [codex-analytics] split compaction v2 analytics implementation @rhan-oai\n- #24129 package: factor DotSlash executable fetching @bolinfest\n- #24151 [codex] Use TurnInput for session task input @pakrym-oai\n- #23935 [codex] Add image re-encoding benchmarks @anp-oai\n- #24152 chore: add JSON schema policy fixture coverage @celia-oai\n- #24157 [codex] Remove external client session reset plumbing @pakrym-oai\n- #24114 Display workspace usage limit error copy from response header @dhruvgupta-oai\n- #24165 release: build macOS x64 zsh artifact @bolinfest\n\n\n",
@@ -237,23 +253,7 @@
       "date": "2026-05-08T05:19:29Z",
       "url": "https://github.com/openai/codex/releases/tag/rust-v0.130.0-alpha.4",
       "prerelease": true
-    },
-    {
-      "version": "rust-v0.130.0-alpha.3",
-      "name": "0.130.0-alpha.3",
-      "body": "Release 0.130.0-alpha.3\n\n",
-      "date": "2026-05-08T03:54:06Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.130.0-alpha.3",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.130.0-alpha.10",
-      "name": "0.130.0-alpha.10",
-      "body": "Release 0.130.0-alpha.10\n\n",
-      "date": "2026-05-08T20:29:34Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.130.0-alpha.10",
-      "prerelease": true
     }
   ],
-  "lastUpdated": "2026-05-27T07:19:15.472Z"
+  "lastUpdated": "2026-05-28T07:12:30.169Z"
 }
