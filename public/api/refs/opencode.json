@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
-  "version": "1.15.11",
-  "generated_at": "2026-05-28T18:56:32.415Z",
+  "version": "1.15.12",
+  "generated_at": "2026-05-28T19:53:19.163Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -14,12 +14,17 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "1.15.11",
-    "to_version": "1.15.11",
-    "new_features": [],
+    "from_version": "1.15.12",
+    "to_version": "1.15.12",
+    "new_features": [
+      "workspace-management-dialog",
+      "tab-layout-setting"
+    ],
     "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [],
+    "new_env_vars": [
+      "OPENCODE_EXPERIMENTAL_WEBSOCKETS"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -40,13 +45,13 @@
       "changelog_url": "https://github.com/anomalyco/opencode/releases",
       "repo_url": "https://github.com/anomalyco/opencode",
       "license": "mit",
-      "latest_stable": "1.15.11",
-      "latest_release_date": "2026-05-27",
+      "latest_stable": "1.15.12",
+      "latest_release_date": "2026-05-28",
       "status": "active",
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "This release introduces several improvements and bug fixes across the core, TUI, Desktop, and Extensions components. A key update is the addition of a `headerTimeout` config for provider requests, defaulting to 10s for OpenAI setups, enhancing request reliability. Experimental background agents now push updates without polling, improving real-time responsiveness. The `modalities` config is more flexible, allowing you to set only `modalities.input` or `modalities.output`. Remote-backed projects now resolve a stable project identity, ensuring consistent project identification. In the TUI, the prompt now resizes with terminal width, and a prompt size config has been added for customization. Several bug fixes address issues such as MCP server disconnections, DigitalOcean inference authentication, config loading fallbacks, Google tool calling, experimental flag overrides, orphaned interrupted tools in resumed sessions, OpenAI reasoning summaries rendering, Google Vertex support, and shell tool timeout advertisement. The desktop version refines the v2 home screen, prompt, status popover, and session controls, and fixes issues like V2 titlebar errors, web deployment health checks, duplicate server connections, virtualized session timeline interactions, and desktop window flashing. A `dispose` hook has been added for plugins, and a Codex plugin request fix ensures the expected session ID header is sent. Upgrading is recommended to benefit from these improvements and fixes, with no specific prerequisites mentioned."
+      "tldr": "Opencode 1.15.12 introduces WebSocket transport for OpenAI responses, potentially improving performance and reliability for supported channels when the `OPENCODE_EXPERIMENTAL_WEBSOCKETS` environment variable is set to `true`. ACP integrations are enhanced to support sending prompts, slash commands, and usage updates through `acp-next`, with improvements to model switching and startup times. Adaptive reasoning controls are now enabled for Anthropic Opus 4.7+ models. A workspace management dialog has been added to the TUI, and a setting to switch tab layouts is available in the desktop application. Several bug fixes address issues with OpenAI WebSocket timeouts and stream retries, `acp-next` permission prompts, session directory persistence, and remote workspace request handling. The TUI now correctly maintains session navigation, displays the thinking spinner, and surfaces subagent retry status, while also fixing editor opening from non-Git project paths. The desktop application has an improved home empty state and fixes for V2 font usage and tab close button visibility. It is recommended to upgrade to benefit from these improvements and fixes. No specific migration steps are required."
     },
     "features": [
       {
@@ -1065,6 +1070,24 @@
           "A configuration option is available to control the prompt size."
         ],
         "source_url": ""
+      },
+      {
+        "id": "workspace-management-dialog",
+        "name": "Workspace Management Dialog",
+        "status": "stable",
+        "since": "1.15.12",
+        "description": "Adds a workspace management dialog to the TUI.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "tab-layout-setting",
+        "name": "Tab Layout Setting",
+        "status": "stable",
+        "since": "1.15.12",
+        "description": "Adds a setting to switch tab layouts in the desktop application.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1234,6 +1257,13 @@
         "purpose": "Support for custom telemetry resource tags.",
         "status": "stable",
         "since": "1.14.17",
+        "source_url": ""
+      },
+      {
+        "name": "OPENCODE_EXPERIMENTAL_WEBSOCKETS",
+        "purpose": "Enables WebSocket transport for OpenAI responses on supported channels.",
+        "status": "experimental",
+        "since": "1.15.12",
         "source_url": ""
       }
     ],

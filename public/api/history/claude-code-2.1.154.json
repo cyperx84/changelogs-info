@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.154",
-  "generated_at": "2026-05-28T19:53:00.760Z",
+  "generated_at": "2026-05-28T18:55:52.477Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -17,16 +17,26 @@
     "from_version": "2.1.154",
     "to_version": "2.1.154",
     "new_features": [
-      "dynamic-workflows"
+      "dynamic-workflows",
+      "plugin-default-enabled-false",
+      "streaming-tool-execution",
+      "chrome-browser-selection"
     ],
-    "new_commands": [],
-    "new_flags": [],
+    "new_commands": [
+      "/workflows"
+    ],
+    "new_flags": [
+      "--bg",
+      "--exec"
+    ],
     "new_env_vars": [
       "CLAUDE_CODE_SESSION_ID",
       "CLAUDECODE"
     ],
     "deprecated_commands": [],
-    "deprecated_flags": [],
+    "deprecated_flags": [
+      "CLAUDE_CODE_OPUS_4_6_FAST_MODE_OVERRIDE"
+    ],
     "breaking_changes": []
   },
   "payload": {
@@ -49,7 +59,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces dynamic workflows, enabling Claude to orchestrate work across numerous agents for complex tasks, accessible via `/workflows`. Fast mode on Opus 4.8 is now significantly cheaper, offering 2.5x speed at 2x the standard rate. The lean system prompt is now the default for most models, and Claude's decision-making prompts are more context-aware. The `/simplify` command now performs a cleanup-only review, and the `/effort` slider labels are clearer. The `claude agents` command now supports background shell commands via `! <command>` or `claude --bg --exec '<command>'`, and `/logout` now signs you out. Streaming tool execution is universally enabled, and MCP server subprocesses receive new environment variables. This release also deprecates `CLAUDE_CODE_OPUS_4_6_FAST_MODE_OVERRIDE`, to be removed on 06/01, recommending `/model claude-opus-4-6[1m]` and `/fast on` instead. Several bug fixes address issues like data exfiltration detection, sandboxing vulnerabilities, terminal rendering, and background session management. It is recommended to upgrade to leverage the new workflow capabilities, cost-effective fast mode, and important security and stability improvements. No specific prerequisites are required for this update."
+      "tldr": "Version 2.1.154 introduces dynamic workflows, allowing Claude to orchestrate tasks across multiple agents in the background, accessible via the `/workflows` command. Opus 4.8 is now supported and defaults to high effort, with fast mode available at a reduced cost. The `/simplify` command now performs a cleanup-only review, and the `/effort` slider labels have been updated for clarity. The `claude agents` command now supports running shell commands in background sessions using `! <command>` or `claude --bg --exec '<command>'`, and `/logout` now signs you out. Plugins can now be configured with `defaultEnabled: false`, requiring explicit enabling. Streaming tool execution is now always enabled. Stdio MCP server subprocesses now receive `CLAUDE_CODE_SESSION_ID` and `CLAUDECODE=1` in their environment. The `CLAUDE_CODE_OPUS_4_6_FAST_MODE_OVERRIDE` environment variable is deprecated and will be removed on 06/01; use `/model claude-opus-4-6[1m]` and then `/fast on` instead. Several fixes address issues with background sessions, worktree isolation, terminal rendering, and managed settings. It is recommended to upgrade to this version to take advantage of the new features and bug fixes. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
@@ -2119,7 +2129,10 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--bg",
+        "--exec"
+      ]
     },
     "env_vars": [
       {
