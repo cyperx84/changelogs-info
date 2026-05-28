@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.153",
-  "generated_at": "2026-05-28T17:18:26.438Z",
+  "version": "2.1.154",
+  "generated_at": "2026-05-28T18:55:52.477Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,22 +14,30 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.153",
-    "to_version": "2.1.153",
-    "new_features": [],
-    "new_commands": [],
+    "from_version": "2.1.154",
+    "to_version": "2.1.154",
+    "new_features": [
+      "dynamic-workflows",
+      "plugin-default-enabled-false",
+      "streaming-tool-execution",
+      "chrome-browser-selection"
+    ],
+    "new_commands": [
+      "/workflows"
+    ],
     "new_flags": [
-      "--strict-mcp-config"
+      "--bg",
+      "--exec"
     ],
     "new_env_vars": [
-      "COLUMNS",
-      "LINES"
+      "CLAUDE_CODE_SESSION_ID",
+      "CLAUDECODE"
     ],
     "deprecated_commands": [],
-    "deprecated_flags": [],
-    "breaking_changes": [
-      "modelpicker-keybinding-rename"
-    ]
+    "deprecated_flags": [
+      "CLAUDE_CODE_OPUS_4_6_FAST_MODE_OVERRIDE"
+    ],
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -46,12 +54,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.153",
+      "latest_stable": "2.1.154",
       "latest_release_date": "2026-05-28",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces several key improvements and fixes. The `model` command now saves your selection as the default for new sessions, streamlining model selection. Autocomplete in `claude agents` dispatch input now suggests native slash commands and bundled skills, and the PR column displays PR counts more clearly. A one-time notice now appears if your npm global install can't auto-update, with `/doctor` listing fixes. Status line commands now receive `COLUMNS` and `LINES` environment variables for terminal-aware output. `--strict-mcp-config` no longer strips inline `mcpServers` from agent definitions. Several critical fixes address issues like stateful MCP server reconnect loops, incorrect API gateway credentials, subagent MCP server configuration, Windows PowerShell installer failures, incorrect `claude update` behavior, excessive memory usage when resuming sessions, stale daemon processes, CLI hangs, malformed file links, unwrapped help output, MCP tool progress notifications, temporary worktrees in the Agent tool, dropped background responses, unresponsive keyboard shortcuts, sensitive file permission prompts, truncated stack traces, unavailable `EnterWorktree`, repainting issues in iTerm2/Terminal.app, IME candidate window placement, background-color bleed, clipboard update failures, zombie session entries, and `/rename` banner updates. Windows update rollbacks now restore the original executable. The `modelPicker:setAsDefault` keybinding has been renamed to `modelPicker:thisSessionOnly`. This is a recommended update to address critical bugs and improve usability."
+      "tldr": "Version 2.1.154 introduces dynamic workflows, allowing Claude to orchestrate tasks across multiple agents in the background, accessible via the `/workflows` command. Opus 4.8 is now supported and defaults to high effort, with fast mode available at a reduced cost. The `/simplify` command now performs a cleanup-only review, and the `/effort` slider labels have been updated for clarity. The `claude agents` command now supports running shell commands in background sessions using `! <command>` or `claude --bg --exec '<command>'`, and `/logout` now signs you out. Plugins can now be configured with `defaultEnabled: false`, requiring explicit enabling. Streaming tool execution is now always enabled. Stdio MCP server subprocesses now receive `CLAUDE_CODE_SESSION_ID` and `CLAUDECODE=1` in their environment. The `CLAUDE_CODE_OPUS_4_6_FAST_MODE_OVERRIDE` environment variable is deprecated and will be removed on 06/01; use `/model claude-opus-4-6[1m]` and then `/fast on` instead. Several fixes address issues with background sessions, worktree isolation, terminal rendering, and managed settings. It is recommended to upgrade to this version to take advantage of the new features and bug fixes. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
@@ -1306,6 +1314,42 @@
         "description": "Added `pluginSuggestionMarketplaces` managed setting: admins can allowlist org marketplaces whose plugins may be suggested via context-aware tips.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "dynamic-workflows",
+        "name": "Dynamic Workflows",
+        "status": "experimental",
+        "since": "2.1.154",
+        "description": "Claude can now create and orchestrate workflows across tens to hundreds of agents in the background, enabling larger, more complex tasks.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "plugin-default-enabled-false",
+        "name": "Plugin Default Enabled False",
+        "status": "stable",
+        "since": "2.1.154",
+        "description": "Plugins can now declare `defaultEnabled: false` in `plugin.json` or a marketplace entry, requiring explicit enabling.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "streaming-tool-execution",
+        "name": "Streaming Tool Execution",
+        "status": "stable",
+        "since": "2.1.154",
+        "description": "Streaming tool execution is now always enabled, even with telemetry disabled or on Bedrock/Vertex/Foundry.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "chrome-browser-selection",
+        "name": "Chrome Browser Selection",
+        "status": "stable",
+        "since": "2.1.154",
+        "description": "Users can now pick which connected Chrome browser to use via `/chrome` → \"Select browser…\", or in-chat when a browser action runs with multiple connected.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1737,6 +1781,14 @@
         "since": "2.1.152",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "/workflows",
+        "syntax": "/workflows",
+        "description": "View your workflow runs.",
+        "since": "2.1.154",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -2032,6 +2084,18 @@
           "description": "No longer strips inline `mcpServers` from explicitly-passed agent definitions (`--agents` / SDK `agents`), and blocked subagent MCP servers now surface a visible warning.",
           "since": "2.1.153",
           "source_url": ""
+        },
+        {
+          "flag": "--bg",
+          "description": "Run a shell command as a background session.",
+          "since": "2.1.154",
+          "source_url": ""
+        },
+        {
+          "flag": "--exec",
+          "description": "Execute a command in a background session.",
+          "since": "2.1.154",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -2056,10 +2120,18 @@
           "deprecated_since": "2.1.108",
           "removed_in": null,
           "source_url": ""
+        },
+        {
+          "flag": "CLAUDE_CODE_OPUS_4_6_FAST_MODE_OVERRIDE",
+          "replaced_by": "/model claude-opus-4-6[1m] and then /fast on",
+          "deprecated_since": "2.1.154",
+          "removed_in": null,
+          "source_url": ""
         }
       ],
       "new_since_previous": [
-        "--strict-mcp-config"
+        "--bg",
+        "--exec"
       ]
     },
     "env_vars": [
@@ -2445,6 +2517,13 @@
         "purpose": "Status line commands now receive `COLUMNS` and `LINES` environment variables so scripts can size output to the terminal width.",
         "status": "stable",
         "since": "2.1.153",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDECODE",
+        "purpose": "Passed to Stdio MCP server subprocesses.",
+        "status": "stable",
+        "since": "2.1.154",
         "source_url": ""
       }
     ],
