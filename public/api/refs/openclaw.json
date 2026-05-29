@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.5.27",
-  "generated_at": "2026-05-29T01:43:47.786Z",
+  "generated_at": "2026-05-29T03:11:52.905Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -27,11 +27,11 @@
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "unsafe-command-wrappers-blocked",
+      "unsafe-command-wrappers-rejected",
       "unsafe-node-runtime-env-overrides-rejected",
-      "loose-numeric-cli-and-gateway-options-rejected",
-      "node-device-role-pairing-requires-admin-approval",
-      "no-auth-tailscale-exposure-rejected"
+      "no-auth-tailscale-exposure-rejected",
+      "non-admin-device-role-pairing-approvals-rejected",
+      "loose-numeric-cli-and-gateway-options-rejected"
     ]
   },
   "payload": {
@@ -56,7 +56,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release focuses on enhancing security and reliability across OpenClaw. A key change is the hardening of local/runtime boundaries, with OpenClaw now rejecting unsafe command wrappers, malformed CLI numeric options, unsafe Node runtime env overrides, no-auth Tailscale exposure, and non-admin device-role pairing approvals. This prevents potential security vulnerabilities and ensures a safer runtime environment. A new OpenAI-compatible embedding provider has been added for local and hosted OpenAI-style endpoints, enhancing memory capabilities. Pixverse video generation provider support has been introduced as an external plugin, offering API region selection. Telegram message delivery is now more reliable, routing `sendMessage` action replies through durable outbound delivery. Matrix and auto-reply delivery are more stable, with mention previews staying inert and final mention replies delivering normally. Provider and agent reliability has been improved across OpenAI-compatible embeddings, cached token usage, Anthropic/Codex/Claude runtime state, and unsupported tool-schema quarantine. Gateway performance is enhanced by caching plugin metadata fingerprints and stable plugin index fingerprints. Plugin SDK now marks memory-specific embedding provider registration as deprecated compatibility. It is highly recommended to upgrade to this version to benefit from the security enhancements and reliability improvements. Ensure that command wrappers are safe, numeric CLI options are properly formatted, and Tailscale is configured with authentication to avoid breaking changes."
+      "tldr": "This release focuses on enhancing security and reliability across OpenClaw. A key change is the hardening of local/runtime boundaries, with OpenClaw now rejecting unsafe command wrappers, malformed CLI numeric options, unsafe Node runtime env overrides, no-auth Tailscale exposure, and non-admin device-role pairing approvals. This prevents potential security vulnerabilities and unauthorized access. A new OpenAI-compatible embedding provider has been added, along with Pixverse video generation provider support, including API region selection and external plugin publishing. Plugin developers can now access approval action metadata for plugin-driven approval surfaces. Several fixes address issues with Telegram message delivery, Matrix auto-replies, and agent/provider reliability, including OpenAI-compatible cache retention and unsupported tool schema quarantine. Gateway performance is improved through caching and optimized session metadata handling. Package and install processes are tightened with aligned npm package exclusions and inventory. Several security fixes address hostname normalization and OAuth token handling. Finally, various QA and CI processes have been hardened to prevent false positives. It is highly recommended to upgrade to this version to benefit from the security enhancements and reliability improvements. No specific migration steps are required beyond ensuring command wrappers and runtime configurations adhere to the new stricter policies."
     },
     "features": [
       {
