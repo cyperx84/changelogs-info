@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.157",
-  "generated_at": "2026-05-29T21:36:52.669Z",
+  "generated_at": "2026-05-29T22:33:43.495Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -16,23 +16,19 @@
   "delta": {
     "from_version": "2.1.157",
     "to_version": "2.1.157",
-    "new_features": [
-      "plugins-in-claude-skills-directories-automatically-loaded",
-      "enterworktree-mid-session-switch",
-      "workflow-keyword-trigger-setting"
-    ],
+    "new_features": [],
     "new_commands": [
       "/plugin init"
     ],
-    "new_flags": [
-      "--agent"
-    ],
+    "new_flags": [],
     "new_env_vars": [
       "OTEL_LOG_TOOL_DETAILS"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "worktrees-unlocked"
+    ]
   },
   "payload": {
     "meta": {
@@ -54,7 +50,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces automatic loading of plugins from the `.claude/skills` directory, eliminating the need for the marketplace and simplifying plugin development. A new `claude plugin init <name>` command scaffolds new plugins in this directory. The `/plugin` command now features autocomplete for subcommands, installed plugins, and marketplace plugins. The `agent` field in `settings.json` is now honored for dispatched sessions in `claude agents`, with `--agent <name>` to override it. `EnterWorktree` can now switch between Claude-managed worktrees mid-session. Telemetry events now include tool parameters when `OTEL_LOG_TOOL_DETAILS=1`. Worktrees are now left unlocked after agent completion, allowing for easier cleanup. Several fixes address issues with image processing, sandbox permissions, agent session management, background worktrees, date accuracy, clipboard integration, session resumption, worktree navigation, model picker hints, markdown rendering, terminal freezing, scrollback duplication, right-click pasting, and WSL support. Performance has been improved for long conversations, and `/terminal-setup` now disables GPU acceleration in integrated terminals. The startup banner about sandboxing and the \"/ide for …\" hint toast have been removed. A setting has been added to disable workflow keyword triggers. This is a recommended upgrade with no prerequisites."
+      "tldr": "This release introduces automatic loading of plugins from the `.claude/skills` directory, eliminating the need for the marketplace and simplifying plugin development. A new `/plugin init <name>` command scaffolds new plugins in this directory. The `EnterWorktree` command now supports switching between Claude-managed worktrees mid-session. Worktrees managed by Claude are now left unlocked after agent completion, requiring users to manually clean them up with `git worktree remove`/`prune`. The `OTEL_LOG_TOOL_DETAILS` environment variable enables detailed logging of tool parameters in telemetry events. Several fixes address issues with image processing, sandbox permissions, agent session management, background worktrees, session resumption, clipboard integration, and terminal UI rendering. The `/terminal-setup` command now disables GPU acceleration in VS Code/Cursor/Windsurf integrated terminals to prevent garbled text. Slash-command autocomplete in `claude agents` now matches substrings. The release also removes the \"bash commands will be sandboxed\" startup banner and the \"/ide for …\" startup hint toast. It is recommended to upgrade to benefit from these improvements and fixes, especially if you use plugins, worktrees, or integrated terminals. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
@@ -2159,9 +2155,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--agent"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
@@ -2844,6 +2838,17 @@
           "Custom keybindings"
         ],
         "migration": "Rename `modelPicker:setAsDefault` to `modelPicker:thisSessionOnly` in your keybindings.json file.",
+        "source_url": ""
+      },
+      {
+        "id": "worktrees-unlocked",
+        "version": "2.1.157",
+        "title": "Worktrees managed by Claude are now left unlocked",
+        "description": "Worktrees managed by Claude are now left unlocked when the agent finishes.",
+        "affected": [
+          "Users who rely on Claude-managed worktrees being locked after agent completion."
+        ],
+        "migration": "Use `git worktree remove`/`prune` to clean them up.",
         "source_url": ""
       }
     ],
