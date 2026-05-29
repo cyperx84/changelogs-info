@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "3.86.0",
-  "generated_at": "2026-05-29T18:55:27.416Z",
+  "version": "3.0.15",
+  "generated_at": "2026-05-29T19:49:55.323Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,9 +19,18 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "3.86.0",
-    "to_version": "3.86.0",
-    "new_features": [],
+    "from_version": "3.0.15",
+    "to_version": "3.0.15",
+    "new_features": [
+      "cline-hub-web-app",
+      "global-agents-rules",
+      "plugin-rule-contribution",
+      "discord-session-binding",
+      "discord-participant-mute-targets",
+      "clickable-oauth-urls-in-tui",
+      "sdk-skill-directory-symlink-discovery",
+      "active-connector-session-steering"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -45,12 +54,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "3.86.0",
-      "latest_release_date": "2026-05-28",
+      "latest_stable": "3.0.15",
+      "latest_release_date": "2026-05-29",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "Cline 3.86.0 introduces support for Claude Opus 4.8, including 1M-context variants, expanding the range of available high-performance models. This allows users to leverage the latest advancements in Claude's capabilities for more complex and context-rich tasks. Additionally, Moonshot Kimi K2.6 model support has been added, providing another option for users seeking diverse model architectures. A fix has been implemented to correctly display prompt-cache support for Qwen 3.7 Max within the Cline provider, ensuring accurate information about caching capabilities. The VS Code extension project has been moved into the `apps/vscode` directory, potentially affecting project structure and build processes for extension developers. Furthermore, a fix addresses startup permissions for the VS Code nightly publish workflow, streamlining the development and release process. Users of the VS Code extension should be aware of the project directory change and adjust their workflows accordingly. This release is recommended for users seeking the latest model support and VS Code extension improvements. No specific prerequisites are mentioned, but users should ensure their Cline environment is compatible with the new models."
+      "tldr": "Cline 3.0.15 introduces Cline Hub, a web app for monitoring clients, sessions, and assistant output, accessible locally, via LAN, or through a tunnel, secured by a room secret. This release also adds support for global AGENTS rules, enabling rules to be applied across all sessions instead of just per-project. Plugins can now contribute static or dynamic rule content when installed in the sandbox, enhancing extensibility. Discord sessions are now bound to individual message authors, preventing shared chat state, and the Discord connector supports participant mute targets using user mentions or IDs. OAuth URLs are now clickable in the TUI for improved usability. The release refreshes the bundled model catalog with Claude Opus 4.8, Moonshot Kimi K2.6, and Qwen3.7 Max (with cache support). Symlinked SDK skill directories are now discoverable, including handling circular symlinks. Active connector sessions are steered across turn keys by session ID, preventing duplicate sessions. The Discord connector now stops after repeated identical errors to prevent channel flooding. A fix addresses Discord connector registration and reply fallback handling. SAP AI Core is updated to use the AI SDK community provider. ACP output is now logged as diagnostics instead of errors. This is a recommended update to leverage new features, improved session handling, and bug fixes."
     },
     "features": [
       {
@@ -491,6 +500,81 @@
         "status": "stable",
         "since": "3.86.0",
         "description": "Adds support for Claude Opus 4.8 provider, including variants with a 1 million token context window where available.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "cline-hub-web-app",
+        "name": "Cline Hub Web App",
+        "status": "stable",
+        "since": "3.0.15",
+        "description": "Introduces Cline Hub, a web application for monitoring connected clients, viewing and driving sessions, streaming assistant output, and restarting the local hub.",
+        "key_details": [
+          "Supports local, LAN, and tunnel usage.",
+          "Access is gated by a room secret."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "global-agents-rules",
+        "name": "Global AGENTS Rules",
+        "status": "stable",
+        "since": "3.0.15",
+        "description": "Supports global AGENTS rules that apply across all sessions, not just per-project.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "plugin-rule-contribution",
+        "name": "Plugin Rule Contribution",
+        "status": "stable",
+        "since": "3.0.15",
+        "description": "Allows plugins to contribute static or dynamic rule content when installed in the sandbox.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "discord-session-binding",
+        "name": "Discord Session Binding",
+        "status": "stable",
+        "since": "3.0.15",
+        "description": "Binds Discord sessions to individual message authors, preventing different Discord users from sharing chat state in a thread.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "discord-participant-mute-targets",
+        "name": "Discord Participant Mute Targets",
+        "status": "stable",
+        "since": "3.0.15",
+        "description": "Supports participant mute targets in Discord, resolving `/mute` and `/unmute` from user mentions or raw user IDs to mute a specific participant in a thread.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "clickable-oauth-urls-in-tui",
+        "name": "Clickable OAuth URLs in TUI",
+        "status": "stable",
+        "since": "3.0.15",
+        "description": "Makes OAuth URLs clickable in the TUI.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "sdk-skill-directory-symlink-discovery",
+        "name": "SDK Skill Directory Symlink Discovery",
+        "status": "stable",
+        "since": "3.0.15",
+        "description": "Discovers SDK skill directories that are symlinked, including handling circular symlinks.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "active-connector-session-steering",
+        "name": "Active Connector Session Steering",
+        "status": "stable",
+        "since": "3.0.15",
+        "description": "Steers active connector sessions across turn keys by matching on session ID, so replies continue the existing session instead of starting a duplicate.",
         "key_details": [],
         "source_url": ""
       }
