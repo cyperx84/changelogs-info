@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.157",
-  "generated_at": "2026-05-29T21:36:52.669Z",
+  "generated_at": "2026-05-29T20:49:59.032Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -17,9 +17,7 @@
     "from_version": "2.1.157",
     "to_version": "2.1.157",
     "new_features": [
-      "plugins-in-claude-skills-directories-automatically-loaded",
-      "enterworktree-mid-session-switch",
-      "workflow-keyword-trigger-setting"
+      "plugins-in-claude-skills-directories-automatically-loaded"
     ],
     "new_commands": [
       "/plugin init"
@@ -54,7 +52,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces automatic loading of plugins from the `.claude/skills` directory, eliminating the need for the marketplace and simplifying plugin development. A new `claude plugin init <name>` command scaffolds new plugins in this directory. The `/plugin` command now features autocomplete for subcommands, installed plugins, and marketplace plugins. The `agent` field in `settings.json` is now honored for dispatched sessions in `claude agents`, with `--agent <name>` to override it. `EnterWorktree` can now switch between Claude-managed worktrees mid-session. Telemetry events now include tool parameters when `OTEL_LOG_TOOL_DETAILS=1`. Worktrees are now left unlocked after agent completion, allowing for easier cleanup. Several fixes address issues with image processing, sandbox permissions, agent session management, background worktrees, date accuracy, clipboard integration, session resumption, worktree navigation, model picker hints, markdown rendering, terminal freezing, scrollback duplication, right-click pasting, and WSL support. Performance has been improved for long conversations, and `/terminal-setup` now disables GPU acceleration in integrated terminals. The startup banner about sandboxing and the \"/ide for …\" hint toast have been removed. A setting has been added to disable workflow keyword triggers. This is a recommended upgrade with no prerequisites."
+      "tldr": "This release introduces automatic loading of plugins from the `.claude/skills` directory, eliminating the need for the marketplace and simplifying plugin development. A new `claude plugin init <name>` command scaffolds new plugins in this directory. The `agent` field in `settings.json` is now honored for dispatched sessions in `claude agents`, with `--agent <name>` to override it. `EnterWorktree` can now switch between Claude-managed worktrees mid-session. The `tool_decision` telemetry events now include `tool_parameters` when `OTEL_LOG_TOOL_DETAILS=1`. Worktrees managed by Claude are now left unlocked after agent completion, allowing for easier cleanup with `git worktree remove`/`prune`. Several fixes address issues with image processing, sandbox permissions, background agent management, session resumption, and terminal UI rendering. Specifically, unprocessable images no longer crash requests, sandbox network permission prompts are fixed in auto and bypass-permissions mode, and background agent worktrees are no longer orphaned. The `/terminal-setup` command now disables GPU acceleration in VS Code/Cursor/Windsurf integrated terminals to prevent garbled text. The \"bash commands will be sandboxed\" startup banner has been removed. This release is recommended for all users to take advantage of the new plugin loading and agent management features, as well as the numerous bug fixes that improve stability and performance."
     },
     "features": [
       {
@@ -1352,24 +1350,6 @@
         "status": "stable",
         "since": "2.1.157",
         "description": "Plugins in `.claude/skills` directories are now automatically loaded, no marketplace required",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "enterworktree-mid-session-switch",
-        "name": "EnterWorktree can now switch between Claude-managed worktrees mid-session",
-        "status": "stable",
-        "since": "2.1.157",
-        "description": "EnterWorktree can now switch between Claude-managed worktrees mid-session",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "workflow-keyword-trigger-setting",
-        "name": "Workflow keyword trigger setting",
-        "status": "stable",
-        "since": "2.1.157",
-        "description": "Added a \"Workflow keyword trigger\" setting in /config to stop the word \"workflow\" in a prompt from triggering a dynamic workflow",
         "key_details": [],
         "source_url": ""
       }
