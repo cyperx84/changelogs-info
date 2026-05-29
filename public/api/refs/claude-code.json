@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.156",
-  "generated_at": "2026-05-29T19:49:25.230Z",
+  "version": "2.1.157",
+  "generated_at": "2026-05-29T20:49:59.032Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,12 +14,20 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.156",
-    "to_version": "2.1.156",
-    "new_features": [],
-    "new_commands": [],
-    "new_flags": [],
-    "new_env_vars": [],
+    "from_version": "2.1.157",
+    "to_version": "2.1.157",
+    "new_features": [
+      "plugins-in-claude-skills-directories-automatically-loaded"
+    ],
+    "new_commands": [
+      "/plugin init"
+    ],
+    "new_flags": [
+      "--agent"
+    ],
+    "new_env_vars": [
+      "OTEL_LOG_TOOL_DETAILS"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -39,12 +47,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.156",
+      "latest_stable": "2.1.157",
       "latest_release_date": "2026-05-29",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release addresses a critical issue encountered when using the Opus 4.8 model, where modifications to thinking blocks led to API errors. Specifically, the fix prevents unexpected alterations to thinking blocks during Opus 4.8 model usage, ensuring smoother and more reliable API interactions. This update is highly recommended for users leveraging the Opus 4.8 model to avoid potential API disruptions and maintain consistent performance. There are no new features, commands, flags, environment variables, or breaking changes introduced in this release. Upgrading is strongly advised for users of Opus 4.8 to ensure stable API interactions and prevent potential errors. No specific prerequisites are required for this update."
+      "tldr": "This release introduces automatic loading of plugins from the `.claude/skills` directory, eliminating the need for the marketplace and simplifying plugin development. A new `claude plugin init <name>` command scaffolds new plugins in this directory. The `agent` field in `settings.json` is now honored for dispatched sessions in `claude agents`, with `--agent <name>` to override it. `EnterWorktree` can now switch between Claude-managed worktrees mid-session. The `tool_decision` telemetry events now include `tool_parameters` when `OTEL_LOG_TOOL_DETAILS=1`. Worktrees managed by Claude are now left unlocked after agent completion, allowing for easier cleanup with `git worktree remove`/`prune`. Several fixes address issues with image processing, sandbox permissions, background agent management, session resumption, and terminal UI rendering. Specifically, unprocessable images no longer crash requests, sandbox network permission prompts are fixed in auto and bypass-permissions mode, and background agent worktrees are no longer orphaned. The `/terminal-setup` command now disables GPU acceleration in VS Code/Cursor/Windsurf integrated terminals to prevent garbled text. The \"bash commands will be sandboxed\" startup banner has been removed. This release is recommended for all users to take advantage of the new plugin loading and agent management features, as well as the numerous bug fixes that improve stability and performance."
     },
     "features": [
       {
@@ -1335,6 +1343,15 @@
         "description": "Users can now pick which connected Chrome browser to use via `/chrome` → \"Select browser…\", or in-chat when a browser action runs with multiple connected.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "plugins-in-claude-skills-directories-automatically-loaded",
+        "name": "Plugins in `.claude/skills` directories are automatically loaded",
+        "status": "stable",
+        "since": "2.1.157",
+        "description": "Plugins in `.claude/skills` directories are now automatically loaded, no marketplace required",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1774,6 +1791,14 @@
         "since": "2.1.154",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "/plugin init",
+        "syntax": "claude plugin init <name>",
+        "description": "Added `claude plugin init <name>` to scaffold a new plugin in `.claude/skills`",
+        "since": "2.1.157",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -2114,7 +2139,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--agent"
+      ]
     },
     "env_vars": [
       {
