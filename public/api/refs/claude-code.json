@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.157",
-  "generated_at": "2026-05-29T23:31:19.886Z",
+  "generated_at": "2026-05-30T00:47:29.398Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -20,15 +20,15 @@
     "new_commands": [
       "/plugin init"
     ],
-    "new_flags": [],
+    "new_flags": [
+      "--agent"
+    ],
     "new_env_vars": [
       "OTEL_LOG_TOOL_DETAILS"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "worktrees-unlocked"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -50,7 +50,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces automatic loading of plugins from the `.claude/skills` directory, eliminating the need for the marketplace and simplifying plugin development. A new `/plugin init <name>` command scaffolds new plugins in this directory. The `EnterWorktree` command now supports switching between Claude-managed worktrees mid-session. Worktrees managed by Claude are now left unlocked after agent completion, requiring users to manually clean them up with `git worktree remove`/`prune`. The `OTEL_LOG_TOOL_DETAILS` environment variable enables detailed logging of tool parameters in telemetry events. Several fixes address issues with image processing, sandbox permissions, agent session management, background worktrees, session resumption, clipboard integration, and terminal UI rendering. The `/terminal-setup` command now disables GPU acceleration in VS Code/Cursor/Windsurf integrated terminals to prevent garbled text. Slash-command autocomplete in `claude agents` now matches substrings. The release also removes the \"bash commands will be sandboxed\" startup banner and the \"/ide for …\" startup hint toast. It is recommended to upgrade to benefit from these improvements and fixes, especially if you use plugins, worktrees, or integrated terminals. No specific prerequisites are required for this upgrade."
+      "tldr": "This release introduces automatic loading of plugins from the `.claude/skills` directory, eliminating the need for the marketplace for local plugin development and usage. A new `/plugin init <name>` command scaffolds new plugins in this directory. The `EnterWorktree` feature now supports switching between Claude-managed worktrees mid-session, improving workflow flexibility. The `claude agents` command now honors the `agent` field in `settings.json` for dispatched sessions, with a `--agent <name>` flag to override it. Tool telemetry now includes tool parameters when `OTEL_LOG_TOOL_DETAILS=1`. Worktrees managed by Claude are now left unlocked after agent completion, allowing for easier cleanup with `git worktree remove`/`prune`. Several fixes address issues with image handling, sandbox permissions, agent session management, background session resumption, and terminal UI rendering. Specifically, image pasting and drag-and-drop are improved in WSL, and `/terminal-setup` disables GPU acceleration in certain IDE terminals to prevent garbled text. The release also removes the sandbox startup banner and the \"/ide for …\" startup hint toast. Upgrading is recommended to benefit from the new plugin loading behavior, improved worktree management, and critical bug fixes. No specific prerequisites are required for this upgrade."
     },
     "features": [
       {
@@ -2155,7 +2155,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--agent"
+      ]
     },
     "env_vars": [
       {
