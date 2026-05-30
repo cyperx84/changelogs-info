@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.157",
-  "generated_at": "2026-05-30T01:40:06.335Z",
+  "version": "2.1.158",
+  "generated_at": "2026-05-30T03:09:47.465Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,21 +14,17 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.157",
-    "to_version": "2.1.157",
+    "from_version": "2.1.158",
+    "to_version": "2.1.158",
     "new_features": [],
-    "new_commands": [
-      "/plugin init"
-    ],
+    "new_commands": [],
     "new_flags": [],
     "new_env_vars": [
-      "OTEL_LOG_TOOL_DETAILS"
+      "CLAUDE_CODE_ENABLE_AUTO_MODE"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "worktrees-unlocked"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -45,12 +41,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.157",
-      "latest_release_date": "2026-05-29",
+      "latest_stable": "2.1.158",
+      "latest_release_date": "2026-05-30",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces automatic loading of plugins from the `.claude/skills` directory, eliminating the need for the marketplace and simplifying plugin development. A new `/plugin init <name>` command scaffolds new plugins in this directory. The `EnterWorktree` command now supports switching between Claude-managed worktrees mid-session. Worktrees managed by Claude are now left unlocked after agent completion, requiring users to manually clean them up with `git worktree remove`/`prune`. The `OTEL_LOG_TOOL_DETAILS` environment variable enables detailed logging of tool parameters in telemetry events. Several fixes address issues with image processing, sandbox permissions, agent session management, background worktrees, session resumption, clipboard integration, and terminal UI rendering. The `/terminal-setup` command now disables GPU acceleration in VS Code/Cursor/Windsurf integrated terminals to prevent garbled text. Slash-command autocomplete in `claude agents` now matches substrings. The release also removes the \"bash commands will be sandboxed\" startup banner and the \"/ide for …\" startup hint toast. It is recommended to upgrade to benefit from these improvements and fixes, especially if you use plugins, worktrees, or integrated terminals. No specific prerequisites are required for this upgrade."
+      "tldr": "Auto mode is now available on Bedrock, Vertex, and Foundry for Opus 4.7 and Opus 4.8, expanding the platforms where users can leverage automated workflows. This allows users on these platforms to benefit from the hands-free coding experience provided by auto mode. To enable this feature, set the environment variable `CLAUDE_CODE_ENABLE_AUTO_MODE=1`. This release introduces no breaking changes or deprecations. Upgrading is recommended for users who want to utilize auto mode on Bedrock, Vertex, and Foundry with Opus 4.7 and Opus 4.8. No specific prerequisites are required beyond setting the environment variable."
     },
     "features": [
       {
@@ -2547,6 +2543,13 @@
         "purpose": "Passed to Stdio MCP server subprocesses.",
         "status": "stable",
         "since": "2.1.154",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_ENABLE_AUTO_MODE",
+        "purpose": "Enables auto mode on Bedrock, Vertex, and Foundry for Opus 4.7 and Opus 4.8.",
+        "status": "experimental",
+        "since": "2.1.158",
         "source_url": ""
       }
     ],
