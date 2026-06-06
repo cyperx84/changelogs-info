@@ -16,6 +16,22 @@
   },
   "releases": [
     {
+      "version": "v2.1.167",
+      "name": "v2.1.167",
+      "body": "## What's changed\n\n- Bug fixes and reliability improvements\n",
+      "date": "2026-06-06T01:33:35Z",
+      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.167",
+      "prerelease": false
+    },
+    {
+      "version": "v2.1.166",
+      "name": "v2.1.166",
+      "body": "## What's changed\n\n- Added `fallbackModel` setting to configure up to three fallback models tried in order when the primary model is overloaded or unavailable; `--fallback-model` now also applies to interactive sessions\n- Added glob pattern support in deny rule tool-name position (`\"*\"` denies all tools); allow rules reject non-MCP globs, and unknown tool names in deny rules warn at startup\n- Hardened cross-session messaging: messages relayed via `SendMessage` from other Claude sessions no longer carry user authority — receivers refuse relayed permission requests, and auto mode blocks them\n- `MAX_THINKING_TOKENS=0`, `--thinking disabled`, and the per-model thinking toggle now disable thinking on models that think by default via the Claude API (3P providers unchanged)\n- Claude Code now retries a turn once on the fallback model when the API rejects an unexpected non-retryable error; auth, rate-limit, request-size, and transport errors still surface immediately\n- `claude update` now announces the target version before downloading instead of going silent\n- `claude agents`: typing a URL into the list now filters to the session whose first prompt contained it\n- Fixed a recurring \"image could not be processed\" error and extra token usage when an unprocessable image was sent in a session\n- Fixed remote sessions becoming permanently stuck when a brief backend disruption occurred during worker registration at startup\n- Fixed flickering in JetBrains IDE terminals (IntelliJ, PyCharm, WebStorm, etc.) on 2026.1+ by enabling synchronized output\n- Fixed Shift+non-ASCII characters (e.g. Shift+ä → Ä) being dropped in terminals using the Kitty keyboard protocol (WezTerm, Ghostty, kitty)\n- Fixed PowerShell command validation occasionally hanging far past its time budget on Windows when a killed process's children held its output pipes\n- Fixed orphaned `claude --bg-pty-host` processes spinning at 100% CPU after the daemon dies while connected on macOS\n- Fixed voice mode requiring `/login` to clear a stale auth check after toggling `/voice`\n- Fixed managed settings with an invalid entry silently disabling enforcement of their remaining valid policies\n- Fixed managed-settings `allowedMcpServers`/`deniedMcpServers` predicates not matching when they use `${VAR}` references\n- Fixed background agent sessions that entered a git worktree crash-looping with \"No conversation found\" when reopened from `claude agents`\n- Fixed duplicated thinking text in the Ctrl+O transcript view while streaming\n- Fixed `/doctor` showing a contradictory failed \"Not inside a remote session\" check when run inside a remote session\n- Fixed the cursor sticking at the end of the first line when typing a multiline prompt in the `claude agents` dispatch and reply inputs\n- Fixed blank lines appearing between background agent rows in the task list on terminals without Unicode support\n",
+      "date": "2026-06-06T00:55:18Z",
+      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.166",
+      "prerelease": false
+    },
+    {
       "version": "v2.1.165",
       "name": "v2.1.165",
       "body": "## What's changed\n\n- Bug fixes and reliability improvements\n",
@@ -238,23 +254,7 @@
       "date": "2026-05-07T23:49:04Z",
       "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.133",
       "prerelease": false
-    },
-    {
-      "version": "v2.1.132",
-      "name": "v2.1.132",
-      "body": "## What's changed\n\n- Added `CLAUDE_CODE_SESSION_ID` environment variable to the Bash tool subprocess environment, matching the `session_id` passed to hooks\n- Added `CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN=1` env var to opt out of the fullscreen alternate-screen renderer and keep the conversation in the terminal's native scrollback\n- Added a \"Pasting…\" footer hint while a Ctrl+V image paste is being read from the clipboard\n- Fixed external SIGINT (e.g. IDE stop button, `kill -INT`) not running graceful shutdown — terminal modes are now restored and the `--resume` hint is printed instead of an abrupt exit\n- Fixed an uncaught exception when the terminal is closed or SSH disconnects mid-session under the native build\n- Fixed `--resume` failing with `no low surrogate in string` when a tool error truncation split an emoji; pre-corrupted sessions are sanitized on load\n- Fixed `--permission-mode` flag being ignored when resuming a plan-mode session with `-p --continue`/`--resume`, and plan mode not being re-applied after `ExitPlanMode` within the same session\n- Fixed fullscreen mode showing a blank screen after laptop sleep/wake or Ctrl+Z/`fg` until the next keystroke or stream output\n- Fixed cursor landing mid-grapheme on Ctrl+E/A/K/U/arrow keys when an Indic conjunct or ZWJ emoji wraps across lines\n- Fixed vim operators corrupting text containing decomposed (NFD) accented characters\n- Fixed pasting text starting with `/` silently swallowing the input or triggering an unknown-command reply\n- Fixed pasting dumping stray escape sequences into the prompt when focus events or mouse-tracking reports interleave with the bracketed paste\n- Fixed mouse wheel scrolling being too fast in Cursor and VS Code 1.92–1.104 due to an upstream xterm.js bug\n- Fixed scroll-wheel handling in JetBrains IDE 2025.2 terminals (spurious arrow keys, wrong-direction events, runaway acceleration)\n- Fixed `/usage` Ctrl+S hanging when copying the stats screenshot to the clipboard on Linux/X11\n- Fixed `/terminal-setup` showing a contradictory error in Windows Terminal — Shift+Enter is natively supported there\n- Fixed `/effort` picker not reflecting the `CLAUDE_CODE_EFFORT_LEVEL` env var override\n- Fixed `/status` showing the wrong default model for some users\n- Fixed slash command autocomplete popup being capped at ~3–5 visible commands instead of scaling with terminal height\n- Fixed statusline `context_window` token counts reflecting cumulative session totals instead of current context usage\n- Fixed Alt+T (thinking toggle) not working on macOS terminals without \"Option as Meta\" enabled (iTerm2, Terminal.app defaults)\n- Fixed dead keyboard input on Windows after re-opening a background session from `claude agents`\n- Fixed unbounded memory growth (10GB+ RSS) when a stdio MCP server writes non-protocol data to stdout\n- Fixed MCP servers that connect but fail `tools/list` silently showing 0 tools — they now retry once and show \"connected · tools fetch failed\" in `/mcp`\n- Fixed unauthorized claude.ai MCP connectors showing as \"failed\" instead of \"needs auth\", and headless `-p` mode retrying non-transient 4xx connection failures\n- Improved visual consistency in slash command dialogs and `/login`, `/upgrade`, `/extra-usage` dialog spacing\n- Updated the `/tui fullscreen` startup banner to describe additional renderer benefits (lower memory usage, mouse support, auto-copy on select)\n- Fixed Bedrock and Vertex 400 errors when `ENABLE_PROMPT_CACHING_1H` is set\n",
-      "date": "2026-05-06T22:08:13Z",
-      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.132",
-      "prerelease": false
-    },
-    {
-      "version": "v2.1.131",
-      "name": "v2.1.131",
-      "body": "## What's changed\n\n- Fixed VS Code extension failing to activate on Windows due to a hardcoded build path in the bundled SDK (`createRequire` polyfill bug)\n- Fixed Mantle endpoint authentication failing with missing `x-api-key` header\n",
-      "date": "2026-05-06T07:47:56Z",
-      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.131",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-06-05T07:22:29.395Z"
+  "lastUpdated": "2026-06-06T06:59:09.148Z"
 }
