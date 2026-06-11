@@ -15,6 +15,30 @@
   },
   "releases": [
     {
+      "version": "v1.17.3",
+      "name": "v1.17.3",
+      "body": "Fixed issue with 1.17.2 desktop crashing",
+      "date": "2026-06-10T18:00:28Z",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.17.3",
+      "prerelease": false
+    },
+    {
+      "version": "v1.17.2",
+      "name": "v1.17.2",
+      "body": "## Core\n### Bugfixes\n- Recover from expired remote config auth by prompting you to log in again instead of failing to load config (@Ayushlm10)\n- Let subagents use their own configured permissions again\n\n## Desktop\n### Bugfixes\n- Restore Linux launcher and icon identity so pinned apps keep opening correctly (@neriousy)\n- Restore the device attachment picker (@rexdotsh)\n\n**Thank you to 3 community contributors:**\n- @Ayushlm10:\n  - fix: recover from expired enterprise auth on remote config load (#31661)\n- @rexdotsh:\n  - fix(app): restore device attachment picker (#31707)\n- @neriousy:\n  - fix(desktop): restore linux launcher identity (#31709)\n",
+      "date": "2026-06-10T16:42:56Z",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.17.2",
+      "prerelease": false
+    },
+    {
+      "version": "v1.17.1",
+      "name": "v1.17.1",
+      "body": "## Core\n\n### Improvements\n\n- References can include usage descriptions for agents, show up in the new docs, and be hidden from `@` autocomplete when needed.\n\n### Bugfixes\n\n- Deprecated `reference` config entries continue to load under the newer `references` config key.\n- MCP prompt and resource requests now respect configured server timeouts.\n- Anthropic fallback responses are handled correctly again.\n- MCP servers that fail during client setup now fail cleanly instead of leaving a broken connection behind.\n\n## Desktop\n\n### Improvements\n\n- The new desktop session flow now has a dedicated `/new-session` route with draft tabs that keep your prompt and project selection together until you start the session.\n\n### Bugfixes\n\n- Restored macOS auto-updates.\n",
+      "date": "2026-06-10T11:38:01Z",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.17.1",
+      "prerelease": false
+    },
+    {
       "version": "v1.17.0",
       "name": "v1.17.0",
       "body": "## Core\n### Improvements\n- Faster file search across large projects with the new `fff`-backed search tools. (@dmtrKovalenko)\n- Added `X-Session-Id` headers for proxy setups that need sticky routing. (@songchaow)\n- Added Cohere North model support.\n- Added `reasoning` as an interleaved field option for vLLM providers. (@delta9000)\n- `mcp add` now works in non-interactive flows.\n- `auth logout` now supports search when choosing an account.\n\n### Bugfixes\n- Improved MCP connection status messages so failures are easier to act on.\n- Added Claude Fable reasoning support.\n- MCP tool calls now receive abort signals, so cancellations stop more reliably.\n- MCP catalogs now paginate correctly instead of truncating larger lists.\n- OpenRouter reasoning variants now generate for all models. (@AnthonyMLau)\n- Added MiniMax M3 thinking toggle support.\n- Java multi-module Maven workspaces now resolve JDTLS from the topmost `pom.xml`. (@areyouok)\n- MCP servers now respect advertised capabilities.\n- Session lists now respect directory filters in workspace setups. (@rexdotsh)\n- Sessions can recover once from provider context-overflow errors instead of failing immediately.\n- Bedrock Mantle config now honors configured API key and region settings.\n\n## TUI\n### Improvements\n- The session move flow now highlights project copies more clearly and keeps the current location selected.\n- Project copies can now be deleted directly from the move dialog.\n\n### Bugfixes\n- New project copies are now bootstrapped before the TUI switches into them.\n- Moving a session now injects a reminder about the new working directory.\n\n## Desktop\n### Improvements\n- Added a help button to the tabs bar.\n- Prompt drafts are preserved while you switch tabs.\n- File attachments now open in the active project.\n- App updates now stay responsive and persist across restarts.\n- Added WSL-backed Desktop support and WSL server management on Windows.\n- Improved the sessions list UI. (@arvsrn)\n- Improved the servers UI. (@arvsrn)\n\n### Bugfixes\n- Updated Electron and fixed related panel layout issues.\n- Fixed several WSL Desktop bugs. (@neriousy)\n- Hidden agents no longer get cycled accidentally.\n- MCP status now refreshes when the active directory changes.\n- The Home screen now keeps a larger recent-session list with scrolling.\n\n## SDK\n### Improvements\n- Large v2 tool outputs are now bounded and expose retained output paths for follow-up inspection.\n\n**Thank you to 11 community contributors:**\n- @rexdotsh:\n  - fix(session): respect directory filter with workspaces (#30804)\n- @arvsrn:\n  - feat(app): improve servers UI (#30961)\n  - feat(app): updates to project avatar (#30964)\n  - feat(app): sessions list improvements (#30941)\n- @dmtrKovalenko:\n  - feat(opencode): fff search tools (#27802)\n- @fancive:\n  - docs: fix MCP header interpolation example to {env:VAR} (#31078)\n- @robertDouglass:\n  - fix(tui): sort connect providers alphabetically (#30891)\n- @neriousy:\n  - fix(desktop): few WSL bugs (#31095)\n- @areyouok:\n  - fix(lsp): resolve JDTLS root to topmost pom.xml in Java Maven multi-module projects (#28761)\n- @remorses:\n  - fix(session): merge per-call tool rules into session permission (#30529)\n- @AnthonyMLau:\n  - fix(opencode): generate reasoning variants for all OpenRouter models. (#30332)\n- @delta9000:\n  - feat: add \"reasoning\" as interleaved field option for vLLM providers (#30477)\n- @songchaow:\n  - feat: add X-Session-Id header for proxy cache routing affinity (#31511)\n",
@@ -229,31 +253,7 @@
       "date": "2026-05-07T14:52:13Z",
       "url": "https://github.com/anomalyco/opencode/releases/tag/v1.14.41",
       "prerelease": false
-    },
-    {
-      "version": "v1.14.40",
-      "name": "v1.14.40",
-      "body": "## Core\n\n### Improvements\n\n- Support `.well-known/opencode` configs that point to a separate remote config file.\n\n### Bugfixes\n\n- Preserve assistant text when replaying signed reasoning blocks. (@edevil)\n- Return consistent not-found errors for missing sessions.\n- Apply CORS headers before auth so browser clients can reach legacy server endpoints.\n- Fix `serve`, `web`, and ACP network options triggering runtime re-entry errors.\n- Only show connected workspaces in warp flows, and carry the new directory into the session after warping.\n- Restore web terminal CSP allowances.\n- Sanitize invalid surrogate characters before provider transforms.\n- Fix Cloudflare AI Gateway provider options for OpenAI-compatible models. (@NathanDrake2406)\n- Use the current workspace with `/new`, including local-project warps.\n- Keep editor selection context stable until it is sent.\n- Retry `server_is_overloaded` API errors automatically.\n- Restore Mistral Medium 3.5 variants so model selection works correctly.\n- Show compaction summaries before retained tail messages.\n\n## TUI\n\n### Bugfixes\n\n- Keep the selected model when model data refreshes.\n- Fix `/agent create` to use the `/agents` path. (@OpeOginni)\n\n## Desktop\n\n### Improvements\n\n- Allow trusted app windows to write to the clipboard without permission failures.\n\n### Bugfixes\n\n- Ignore broken pipe (`EPIPE`) errors in desktop console logging.\n- Stop auto-installing updates when quitting the app.\n- Silence noisy browser API Sentry reports in production.\n- Prevent sync bootstrap queries from failing during app startup.\n\n**Thank you to 6 community contributors:**\n- @OpeOginni:\n  - fix(TUI): update agent create target path from \"/agent\" to \"/agents\" (#14427)\n- @NathanDrake2406:\n  - fix(cf-ai-gateway): route provider options through openaiCompatible key (#24432) (#25573)\n- @imduchuyyy:\n  - docs: update desktop app references from Tauri to Electron (#25965)\n- @kill74:\n  - docs: fix CLI attach section order (#25749)\n- @zharinov:\n  - fix(ui): preserve SVG tags in DOMPurify config for KaTeX math rendering (#25866)\n- @edevil:\n  - fix(provider): preserve assistant message content when reasoning blocks present (#21370)\n",
-      "date": "2026-05-07T00:34:11Z",
-      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.14.40",
-      "prerelease": false
-    },
-    {
-      "version": "v1.14.39",
-      "name": "v1.14.39",
-      "body": "## Desktop\n\n### Bugfixes\n\n- Respect `HTTP_PROXY` and related proxy environment variables in the desktop app.\n- Return `null` instead of failing when the desktop app cannot read a stored value.\n",
-      "date": "2026-05-05T10:57:54Z",
-      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.14.39",
-      "prerelease": false
-    },
-    {
-      "version": "v1.14.38",
-      "name": "v1.14.38",
-      "body": "## Core\n### Bugfixes\n- Embedded UI requests now work with arbitrary `connect-src` origins under the default CSP.\n\n## Desktop\n### Bugfixes\n- Desktop now trusts system CA certificates for HTTPS connections.\n",
-      "date": "2026-05-05T09:48:27Z",
-      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.14.38",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-06-10T07:22:01.591Z"
+  "lastUpdated": "2026-06-11T07:32:29.861Z"
 }
