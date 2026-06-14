@@ -15,6 +15,22 @@
   },
   "releases": [
     {
+      "version": "v1.17.6",
+      "name": "v1.17.6",
+      "body": "## Core\n### Bugfixes\n- Improved MCP server compatibility by declaring OpenCode's supported client capabilities.\n",
+      "date": "2026-06-13T22:39:10Z",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.17.6",
+      "prerelease": false
+    },
+    {
+      "version": "v1.17.5",
+      "name": "v1.17.5",
+      "body": "## Core\n### Improvements\n- Added external browser OAuth for the Snowflake Cortex provider (@santigc6)\n- Improved project copy management and move-session flows in v2\n\n### Bugfixes\n- Recovered expired MCP sessions instead of leaving MCP tools disconnected\n- Cleared closed MCP clients so stale MCP connections do not linger\n- Returned structured MCP tool output in a readable form\n- Fixed duplicate renderable IDs that could break TUI rendering\n- Fixed commands using `$ARGUMENTS` so file contents are not injected twice (@verdverm)\n\n## TUI\n### Bugfixes\n- Added auth headers to `RunCommand` fetch requests (@OpeOginni)\n\n## Desktop\n### Improvements\n- Brought v2 visibility settings to the web app\n- Refreshed the oc-2 color theme (@arvsrn)\n\n### Bugfixes\n- Made the terminal resize gutter easier to grab\n- Faded overflowing titlebar tabs instead of clipping them abruptly\n\n**Thank you to 5 community contributors:**\n- @verdverm:\n  - fix(tui): double file content injection in commands using $ARGUMENTS (#31245)\n- @arvsrn:\n  - feat(app): update oc-2 colors (#31071)\n- @Slickstef11:\n  - docs: update North Mini Code privacy terms (#32096)\n- @santigc6:\n  - feat(opencode): add external browser OAuth for snowflake cortex provider (#31700)\n- @OpeOginni:\n  - fix(opencode): add authorization header to fetch requests in RunCommand (#29877)\n",
+      "date": "2026-06-13T19:59:05Z",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.17.5",
+      "prerelease": false
+    },
+    {
       "version": "v1.17.4",
       "name": "v1.17.4",
       "body": "## Core\n\n### Improvements\n\n- Added `cwd` support for local MCP servers so they can start from a workspace-relative directory. (@Grantmartin2002)\n- Added connector-based authentication flows and support for stored provider credentials.\n- Added v2 API endpoints to create and fetch sessions, list session questions, and resolve the active location.\n- File reads now return raw content with the correct content type for API and SDK clients.\n- MCP server log notifications are now surfaced in opencode logs.\n\n### Bugfixes\n\n- Fixed Gemini tool schemas that used multi-type fields so compatible tools keep working. (@Killusions)\n- Content-filtered model responses now surface as visible errors instead of failing silently. (@kkdawkins)\n- Fixed MCP auth and debug requests dropping configured headers.\n- Snapshot creation now reuses source Git objects to avoid long re-hashing delays on huge repos. (@dmtrKovalenko)\n- Fixed MCP catalog request timeouts not applying when listing prompts, resources, or tools.\n\n**Thank you to 5 community contributors:**\n- @dmtrKovalenko:\n  - fix(snapshot): reuse source git objects to avoid re-hashing huge repos (#31798)\n- @tobwen:\n  - fix(tui): preserve exit epilogue during scoped shutdown (#31805)\n- @kkdawkins:\n  - fix(opencode): surface content-filter finish reason as visible error (#31745)\n- @Killusions:\n  - fix(gemini): prevent gemini incompatibility with some tools (#31877)\n- @Grantmartin2002:\n  - feat(opencode): support cwd on local MCP servers (#30676)\n",
@@ -237,23 +253,7 @@
       "date": "2026-05-09T19:33:29Z",
       "url": "https://github.com/anomalyco/opencode/releases/tag/v1.14.44",
       "prerelease": false
-    },
-    {
-      "version": "v1.14.43",
-      "name": "v1.14.43",
-      "body": "## Core\n### Bugfixes\n- Keep provider and config API responses working when auth loaders add non-JSON options to providers.\n- Include tool image attachments in ACP updates and session replays. (@SteffenDE)\n\n**Thank you to 1 community contributor:**\n- @SteffenDE:\n  - fix(acp): include tool image attachments in updates (#25128)\n",
-      "date": "2026-05-09T18:06:18Z",
-      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.14.43",
-      "prerelease": false
-    },
-    {
-      "version": "v1.14.42",
-      "name": "v1.14.42",
-      "body": "## Core\n\n### Improvements\n\n- Added HTTP API response compression for large non-streaming responses.\n- Added the Scout agent for repo research, docs lookup, and dependency-source inspection.\n- Added workspace sync so adapter-backed workspaces can be discovered and registered automatically.\n- Added an interactive split-footer mode for `opencode run`.\n- Simplified TUI keybinding config into a flat keybind format.\n- Made duplicate worktree names fall back to the parent directory for clearer labels.\n\n### Bugfixes\n\n- Fixed HTTP API auth responses to match the previous wire format for empty authorize results and share errors.\n- Returned structured validation errors from the HTTP API.\n- Rejected invalid permission and question IDs in the HTTP API.\n- Included auth challenges on typed HTTP API `401` responses.\n- Fixed the HTTP API OpenAPI document route.\n- Fixed detached sessions so they are claimed by the source project again.\n- Forwarded `SIGINT`, `SIGTERM`, and `SIGHUP` correctly when running through the npm shim. (@chubes4)\n- Allowed skills without descriptions to load correctly.\n- Required auth on effect HTTP API root routes. (@RajvardhanPatil07)\n- Kept tool ordering stable so tool lists stop reshuffling between runs.\n- Made retry dialogs more specific to the provider and failure reason.\n- Fixed Gemini reasoning controls so supported effort levels and small-mode defaults match the model.\n- Fixed Anthropic Opus 4.5 reasoning effort options.\n- Limited OpenAI deep research models to the reasoning level they actually support.\n- Fixed GPT-5 reasoning variants so the exposed effort options match each model family.\n\n## TUI\n\n### Improvements\n\n- Show retrying sessions as active in the project sidebar. (@edemaine)\n\n### Bugfixes\n\n- Fixed the sidebar message shown for language server state. (@Polo123456789)\n- Sorted the session picker by full last-updated time instead of day buckets. (@Sleepful)\n- Kept longer cleared prompts in draft history so they can be restored.\n\n## Desktop\n\n### Improvements\n\n- Switched desktop updates to silent per-user install flow.\n\n**Thank you to 5 community contributors:**\n- @edemaine:\n  - feat(desktop): working indicator on project sidebar (#26223)\n- @RajvardhanPatil07:\n  - fix(server): require auth for effect root routes (#26361)\n- @chubes4:\n  - fix(cli): forward signals from npm shim (#26259)\n- @Sleepful:\n  - fix(tui): sort session picker by full updated timestamp (#24725)\n- @Polo123456789:\n  - fix(sidebar): fix logic and missleading message #26469 (#26470)\n",
-      "date": "2026-05-09T16:54:45Z",
-      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.14.42",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-06-13T07:13:12.706Z"
+  "lastUpdated": "2026-06-14T07:29:48.213Z"
 }
