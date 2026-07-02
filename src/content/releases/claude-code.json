@@ -16,6 +16,14 @@
   },
   "releases": [
     {
+      "version": "v2.1.198",
+      "name": "v2.1.198",
+      "body": "## What's changed\n\n- Claude in Chrome is now generally available\n- Added background agent notifications in `claude agents` — sessions that need input or finish now fire the `Notification` hook (`agent_needs_input` / `agent_completed`)\n- Added `/dataviz` skill for chart and dashboard design guidance with a runnable color-palette validator\n- Gateway: added Claude Platform on AWS (anthropicAws) as an upstream provider; model-not-found responses now advance the failover chain\n- Background agents launched from `claude agents` now commit, push, and open a draft PR when they finish code work in a worktree, instead of stopping to ask\n- The built-in Explore agent now inherits the main session's model (capped at opus) instead of running on haiku\n- Subagents and context compaction now inherit the session's extended thinking configuration, improving output quality on delegated tasks\n- Fixed brief network drops mid-response aborting the turn — transient errors like ECONNRESET now retry with backoff instead of failing\n- Fixed excessive background classifier requests when sandboxed processes repeatedly accessed the same network host\n- Fixed background tasks in web, desktop, and VS Code task panels getting stuck on \"Running\" after they finish or after resuming a session\n- Fixed agent teams: a teammate that dies on an API error now reports \"failed\" to the lead, and messaging a stuck teammate wakes it to retry immediately\n- Fixed the `/diff` panel not refreshing when you switch branches or commit outside the session\n- Fixed markdown tables overflowing and wrapping their right border when rendered in fullscreen mode\n- Fixed Claude Platform on AWS and Mantle sessions dead-ending with \"Please run /login\" when the STS token expires — `awsAuthRefresh` now runs automatically\n- Fixed \"no route to host\" for local-network hosts in macOS background agent sessions by declaring Local Network entitlements\n- Fixed `/desktop` failing with \"Cannot determine working directory\" after entering and exiting a worktree\n- Fixed background agents repeatedly showing \"Reconnecting…\" every ~52 seconds on macOS while the agents view was open\n- Fixed pressing `←` inside `claude attach <id>` exiting to the shell instead of opening the agent view\n- Fixed `claude --bg` silently creating an unattachable session when combined with `--print`/`-p`; the conflicting flags are now rejected up front\n- Fixed the workflow progress view dropping the earliest agents from the list while the phase counter stayed correct in SDK and desktop-app sessions\n- Fixed `.claude/rules/` conditional rules not loading when the target file is reached via a symlinked path\n- Fixed Cmd+click not opening URLs in fullscreen mode in Warp on macOS\n- Fixed double-click word selection in fullscreen mode to select the entire URL including the scheme\n- Fixed plan mode not auto-allowing read-only tool calls when a session starts in plan mode\n- Fixed `/branch` deriving its default fork name from the compaction summary instead of the first real prompt\n- Improved focus mode: subagents launched in a turn now appear in its activity summary, and completed background notifications fold into a single count\n- Improved syntax highlighting accuracy in code blocks, diffs, and file previews by upgrading to highlight.js 11\n- Keyboard shortcut hints now show opt/cmd instead of alt/super when connected from a Mac over SSH\n- Improved API retry UX: the error reason is now shown after the second attempt, and a status page link replaces the spinner tip when the API is overloaded\n- `/login` now opens the sign-in dialog from the `claude agents` view instead of saying it isn't available\n- Subagents now treat messages from the agent that launched them as normal task direction; an agent's message is still never treated as the user's approval\n- Removed the `/agents` wizard; ask Claude to create or manage subagents, or edit `.claude/agents/` directly\n",
+      "date": "2026-07-01T20:45:36Z",
+      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.198",
+      "prerelease": false
+    },
+    {
       "version": "v2.1.197",
       "name": "v2.1.197",
       "body": "## What's changed\n\n- Introducing Claude Sonnet 5: now the default model in Claude Code, with a native 1M-token context window and promotional pricing of $2/$10 per Mtok through August 31. Update to version 2.1.197 for access. https://www.anthropic.com/news/claude-sonnet-5\n",
@@ -246,15 +254,7 @@
       "date": "2026-06-02T02:10:25Z",
       "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.160",
       "prerelease": false
-    },
-    {
-      "version": "v2.1.159",
-      "name": "v2.1.159",
-      "body": "## What's changed\n\n- Internal infrastructure improvements (no user-facing changes)\n",
-      "date": "2026-05-31T19:42:49Z",
-      "url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.159",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-07-01T07:22:57.158Z"
+  "lastUpdated": "2026-07-02T07:02:11.419Z"
 }
