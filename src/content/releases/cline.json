@@ -15,6 +15,30 @@
   },
   "releases": [
     {
+      "version": "cli-v3.0.37",
+      "name": "CLI v3.0.37",
+      "body": "\n- Weaker models (e.g. DeepSeek) that emit malformed tool calls — wrong argument types or truncated JSON — are now handled gracefully and run instead of erroring out\n- Plan/act mode switches are now visible to the model, so it knows when you change modes mid-session\n- Fixed plan/act mode notices being dropped from prompts sent to the model\n- Fixed a race where switching modes in an empty session could trigger an unexpected restart\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.36...cli-v3.0.37\n",
+      "date": "2026-07-04T02:36:24Z",
+      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.37",
+      "prerelease": false
+    },
+    {
+      "version": "cli-v3.0.36",
+      "name": "CLI v3.0.36",
+      "body": "\n- Fixed plan mode's `switch_to_act_mode` tool not taking effect until the end of the turn: the model would keep running with plan-mode tools (no file editor) and fall back to editing files through shell commands. Switching to act mode now ends the plan-mode run and automatically continues with the approved plan using the full act-mode toolset. A Tab mode toggle racing a completing turn can no longer auto-start plan execution you didn't approve.\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.35...cli-v3.0.36\n",
+      "date": "2026-07-03T20:49:27Z",
+      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.36",
+      "prerelease": false
+    },
+    {
+      "version": "cli-v3.0.35",
+      "name": "CLI v3.0.35",
+      "body": "\n- ClinePass is now enabled for all CLI users\n- Recover missing interactive sessions when reading messages\n- Format structured commands in history export\n- Add the subscription promo code when linking to the dashboard subscription page\n- Add Tencent TokenHub as a provider (from SDK v0.0.55)\n- Fix first-prompt truncation on high-output models (e.g. MiniMax M3) that could immediately auto-compact and cut the initial task down to just the input wrapper (from SDK v0.0.55)\n- Use a curated default when migrating legacy provider settings (from SDK v0.0.55)\n- Advertise run commands as shell strings (from SDK v0.0.55)\n- Refresh the bundled model catalog with the latest provider models (from SDK v0.0.55)\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.34...cli-v3.0.35\n",
+      "date": "2026-07-03T17:35:55Z",
+      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.35",
+      "prerelease": false
+    },
+    {
       "version": "v4.0.6",
       "name": "v4.0.6",
       "body": "\n### Fixed\n\n- Generalize the model capability warning so it applies more broadly.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.0.5...v4.0.6\n",
@@ -229,31 +253,7 @@
       "date": "2026-06-05T00:24:24Z",
       "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.20",
       "prerelease": false
-    },
-    {
-      "version": "cli-v3.0.19",
-      "name": "CLI v3.0.19",
-      "body": "\n- Fixed CLI auto-update to use `npm update` so updates apply reliably, while preserving the installed release channel (e.g. nightly).\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.18...cli-v3.0.19\n",
-      "date": "2026-06-04T21:53:06Z",
-      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.19",
-      "prerelease": false
-    },
-    {
-      "version": "cli-v3.0.18",
-      "name": "CLI v3.0.18",
-      "body": "\n- Fix Slack channel mentions so replies post in the original message's thread.\n- Fix the abort indicator to clear immediately when a task is cancelled.\n- Sync the Fireworks AI model registry and refresh the bundled model catalog with current platform offerings.\n- Bump the bundled SDK to v0.0.43, which forces a running Cline Hub to restart so it picks up the latest SDK code.\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.17...cli-v3.0.18\n",
-      "date": "2026-06-04T20:54:26Z",
-      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.18",
-      "prerelease": false
-    },
-    {
-      "version": "cli-v3.0.17",
-      "name": "CLI v3.0.17",
-      "body": "\n- Fix a regression introduced in 3.0.15 where the interactive CLI could get stuck after stopping and restarting Cline Hub and then pressing Escape to cancel a request. The CLI now detects stale or missing sessions, recovers any pending messages, and starts a fresh session instead of failing with \"session not found\".\n- Fix Ctrl+C and Hub shutdown races that surfaced as \"hook dispatch failed\" and WebSocket connection errors from late hook events racing against Hub shutdown.\n- Fix the Hub daemon being shut down prematurely when a runtime request was aborted, so the daemon now stays alive.\n- Improve the Telegram connector with a new `--allowed-user-id` flag to restrict which Telegram users are authorized to interact with the agent.\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.16...cli-v3.0.17\n",
-      "date": "2026-06-04T04:12:19Z",
-      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.17",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-07-03T08:45:56.964Z"
+  "lastUpdated": "2026-07-04T08:21:02.865Z"
 }
