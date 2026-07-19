@@ -15,6 +15,30 @@
   },
   "releases": [
     {
+      "version": "sdk/sdk/v0.0.65",
+      "name": "SDK v0.0.65",
+      "body": "\n- Claude Code and Codex provider SDKs are now optional peer dependencies loaded on demand, dramatically cutting install size\n- Added Kimi K3 to the bundled ClinePass model fallback\n- Runs now retry once after refreshing expired OAuth credentials\n- Team runs: the spawn tool is no longer exposed to teammate agents\n- Team runs: errored teammate runs now report as failed instead of completed\n- Improved shell-command parsing to fix a Windows shell mismatch\n- New `@cline/ui` agent chat components with Storybook and npm packaging\n- Updated the bundled model catalog\n\n**Full Changelog**: https://github.com/cline/cline/compare/sdk/sdk/v0.0.64...sdk/sdk/v0.0.65\n",
+      "date": "2026-07-19T04:02:15Z",
+      "url": "https://github.com/cline/cline/releases/tag/sdk/sdk/v0.0.65",
+      "prerelease": false
+    },
+    {
+      "version": "cli-v3.0.46",
+      "name": "CLI v3.0.46",
+      "body": "\n- Fixed out-of-credits detection so the CLI reliably recognizes the Cline API's real `insufficient_credits` (402) error and shows the \"add credits\" card instead of a generic error\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.45...cli-v3.0.46\n",
+      "date": "2026-07-19T06:26:43Z",
+      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.46",
+      "prerelease": false
+    },
+    {
+      "version": "cli-v3.0.45",
+      "name": "CLI v3.0.45",
+      "body": "\n- Smaller install: the Claude Code and Codex providers are now optional and loaded on demand, cutting `npm i -g cline` from ~640MB to ~285MB (from SDK v0.0.65)\n- Kimi K3 is now available as a ClinePass model (from SDK v0.0.65)\n- Runs now retry once after refreshing expired OAuth credentials (from SDK v0.0.65)\n- Team runs: the spawn tool is no longer exposed to teammates, and errored teammate runs now report as failed instead of completed (from SDK v0.0.65)\n- Hub status output now includes version numbers\n- Updated the bundled model catalog (from SDK v0.0.65)\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.44...cli-v3.0.45\n",
+      "date": "2026-07-19T04:10:41Z",
+      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.45",
+      "prerelease": false
+    },
+    {
       "version": "sdk/sdk/v0.0.64",
       "name": "SDK v0.0.64",
       "body": "\n- Improved max output token handling across providers (gateway routing, OpenAI vendor, and reasoning models)\n- Frontmatter and user-instruction files that start with a UTF-8 byte order mark (e.g. saved by Windows editors) now parse correctly\n\n**Full Changelog**: https://github.com/cline/cline/compare/sdk/sdk/v0.0.63...sdk/sdk/v0.0.64\n",
@@ -229,31 +253,7 @@
       "date": "2026-06-27T00:56:45Z",
       "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.31",
       "prerelease": false
-    },
-    {
-      "version": "v4.0.0",
-      "name": "v4.0.0",
-      "body": "\n### Added\n\n- Add the SDK-backed VS Code extension runtime. Cline now runs tasks through the shared Cline SDK session layer for agent turns, tools, Plan/Act mode coordination, MCP, checkpoints, telemetry, provider changes, compaction, mistake limits, and task history.\n- Add ClinePass to the VS Code extension, including onboarding, provider selection, signup and subscription handoff, live model lists, entitlement and organization error states, out-of-credit prompts, and clearer ClinePass auth/error handling.\n- Add the Customize marketplace for discovering and managing Skills, MCP servers, and Plugins from the extension, including installed/marketplace tabs, search and filtering, install/uninstall flows, enable/disable controls, and support for plugin-bundled skills.\n- Cline Plugins: Plugins let you extend Cline with custom tools, workflows, skills, and MCP-powered capabilities tailored to your team or project. Install them from the new Customize marketplace to add specialized behavior, connect external services, and package reusable automations—so Cline can do more than code: it can adapt to the way you work.\n- Add queued prompts in chat. Messages submitted while Cline is already working are now queued, shown while the current turn streams, and can be cancelled before they run.\n- Add edit-and-regenerate support for previous user messages, with clearer Reset Chat and Reset Code actions.\n- Add generic SDK provider settings and model-catalog support so more providers can share the same model picker, reasoning controls, dynamic model IDs, provider config persistence, and custom model handling.\n- Add additional SDK-backed provider exposure and model/provider updates, including ClinePass models, refreshed Cline catalog data, Fireworks GLM 5.2, Kimi K2.6 Fast, Kimi K2.7 Code, Qwen 3.7 Plus, MiniMax M3 updates, SAP AI Core wiring, LiteLLM model fetching, Codex OAuth credentials, and OpenAI-compatible model settings.\n- Add MCP support for plugins and shared marketplace install/uninstall plumbing used by the VS Code extension.\n\n### Changed\n\n- Migrate the VS Code extension from the legacy task implementation to the shared Cline SDK and move the extension build/package workflow to Bun.\n- Rework Plan/Act mode handling through SDK coordinators, including closer CLI parity and automatic continuation when switching from Plan to Act.\n- Rework provider and model configuration around `providers.json`, the model catalog, and SDK session config so settings are preserved consistently across provider switches and active sessions can restart when the selected provider changes.\n- Simplify provider settings UI by replacing many provider-specific views with shared generic settings components and consistent reasoning selectors.\n- Simplify terminal execution through the SDK run-commands path, including clearer non-interactive command guidance and safer structured command formatting.\n- Migrate legacy MCP files and formats into the shared settings file and protect MCP settings writes with safer locking/atomic updates.\n- Refresh the MCP hub automatically after marketplace installs so newly installed servers are available without a manual restart.\n- Reorganize MCP/Skills/Plugins entry points under Customize, hide workflows from the Customize menu, wrap Customize tabs on narrow screens, and allow the MCP Marketplace tab to be disabled remotely while installed MCP servers remain accessible.\n- Simplify auto-approval settings. Command auto-approval is now disabled by default for safer new and reset configurations, and the auto-approval UI has been streamlined.\n- Update task history handling for the SDK migration, including legacy task history visibility, metadata preservation on resume, and corrected deletion behavior.\n- Route compacting and mistake-limit behavior through the SDK so the Compact button and mistake tracking affect the active SDK session.\n- Remove the legacy Explain Changes feature as part of the SDK migration cleanup.\n- Temporarily disable subagents in the VS Code extension while the SDK-backed experience is stabilized.\n\n### Fixed\n\n- Fix marketplace edge cases, including refreshing MCP servers after marketplace installs, disabling the MCP Marketplace tab from remote config, hiding workflows from Customize, surfacing plugin-bundled skills, and uninstalling shared marketplace entries.\n- Fix chat submission during active turns by queuing user messages instead of dropping or racing them, showing pending/queued states promptly, rendering direct user messages immediately, and removing delayed send behavior.\n- Fix editing previous user messages so Escape cancels editing locally and reset action labels are clearer.\n- Fix terminal reliability, including standalone Windows output capture, hardened PowerShell command handling, running-state display for in-progress commands, raw structured command preservation, single-quote handling, cwd setup timeouts, failing-command stdout capture, heredoc coalescing, and removal of duplicated command echoes in tool results.\n- Fix SDK tool-result and provider-message budgeting by truncating large tool outputs by default, capping assistant text, limiting bash/file-read/search output ingestion, bounding media budgets, batching outdated-read rewrites to preserve provider prefix caches, and normalizing JSON-like tool inputs by schema.\n- Fix login and feature-flag resolution by using the correct user/account identity on startup and simplifying the login UX.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v3.89.2...v4.0.0\n",
-      "date": "2026-06-26T20:15:07Z",
-      "url": "https://github.com/cline/cline/releases/tag/v4.0.0",
-      "prerelease": false
-    },
-    {
-      "version": "cli-v3.0.30",
-      "name": "CLI v3.0.30",
-      "body": "\n- Added a token count to the status bar, shown alongside cost\n- Added organization-specific error messages\n- Added SAP AI Core provider support\n- Refreshed the model catalog with the latest provider models\n- Preserved OpenRouter reasoning-disable behavior and improved OpenRouter prompt caching\n- Routed LiteLLM model fetches through the SDK and stopped unrelated models from appearing in the LiteLLM model list\n- Updated ClinePass models live, restored ClinePass models in onboarding, and improved ClinePass error messages\n- Threaded proxy/CA-aware networking into the inference path\n- Persisted Bedrock settings to providers.json\n- Normalized JSON-like tool inputs by schema for more reliable tool calls\n- Fixed an \"ERROR: EMPTY CONTENT\" message that could appear when an error occurred\n- Fixed a packaging issue (createRequire) that could break the CLI at runtime\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.29...cli-v3.0.30\n",
-      "date": "2026-06-26T01:10:03Z",
-      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.30",
-      "prerelease": false
-    },
-    {
-      "version": "cli-v3.0.29",
-      "name": "CLI v3.0.29",
-      "body": "\n- Costs are now hidden for Cline free models\n- Fixed Z.ai model metadata resolution for Z.ai models accessed through the Cline provider\n- Reverted the model-name-only display change from v3.0.28; the model picker, selector, and status bar return to their previous display behavior\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.28...cli-v3.0.29\n",
-      "date": "2026-06-20T07:34:42Z",
-      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.29",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-07-18T07:24:44.903Z"
+  "lastUpdated": "2026-07-19T07:55:59.736Z"
 }
