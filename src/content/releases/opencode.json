@@ -15,6 +15,38 @@
   },
   "releases": [
     {
+      "version": "v1.18.4",
+      "name": "v1.18.4",
+      "body": "## Core\n\n### Improvements\n\n- Use adaptive thinking controls for Kimi models on Anthropic-compatible providers, with summarized reasoning output by default. (@chouqin)\n\n### Bugfixes\n\n- Reduce OpenAI provider header timeouts during slow connection setup.\n- Respect provider-defined reasoning options instead of falling back to the wrong reasoning controls.\n- Restore Azure Cognitive Services endpoint support for Azure-hosted models.\n\n## Desktop\n\n### Improvements\n\n- Sync the embedded terminal theme with the app theme.\n- Improve the review panel so open file tabs can stay aligned with the current diff view.\n- Rewrite the v2 prompt input for more reliable command, context, shell, attachment, and history interactions.\n- Improve review panel resizing and sticky controls.\n\n### Bugfixes\n\n- Preserve command drafts in the command menu.\n- Avoid session view failures when message parent links are missing.\n- Prevent sending empty prompt text parts.\n- Restore model variant selection accessibility.\n- Show keybind tooltips on prompt input controls. (@ProdigyRahul)\n- Deduplicate repeated file entries in diff summaries.\n- Prevent recovery window handling from touching destroyed windows.\n\n**Thank you to 3 community contributors:**\n- @jerome-benoit:\n  - fix(nix): relax Bun version check for desktop build (#36767)\n  - fix(nix): restore desktop integration (#37197)\n- @ProdigyRahul:\n  - fix(app): show keybind tooltips on prompt input controls (#37824)\n- @chouqin:\n  - feat(opencode): use adaptive thinking effort for kimi family on anthr… (#37696)\n",
+      "date": "2026-07-20T15:28:21Z",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.18.4",
+      "prerelease": false
+    },
+    {
+      "version": "pr-37967-screenshots-v2",
+      "name": "PR #37967 final screenshots",
+      "body": "Final visual evidence for PR #37967.",
+      "date": "2026-07-20T17:33:45Z",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/pr-37967-screenshots-v2",
+      "prerelease": true
+    },
+    {
+      "version": "pr-37967-screenshots-final",
+      "name": "PR #37967 screenshots (final)",
+      "body": "Final visual evidence for PR #37967.",
+      "date": "2026-07-20T17:34:58Z",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/pr-37967-screenshots-final",
+      "prerelease": true
+    },
+    {
+      "version": "pr-37967-screenshots",
+      "name": "PR #37967 screenshots",
+      "body": "Visual evidence for PR #37967.",
+      "date": "2026-07-20T17:28:09Z",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/pr-37967-screenshots",
+      "prerelease": true
+    },
+    {
       "version": "v1.18.3",
       "name": "v1.18.3",
       "body": "## Core\n### Improvements\n- Added an Up Arrow shortcut to close the subagent picker when the first item is selected.\n\n## Desktop\n### Bugfixes\n- Fixed home page scrolling so sticky headers and the session list behave correctly.\n- Fixed startup readiness so WSL server loading is included before the desktop app reports ready.\n- Removed the inactive help button from the app layout.\n- Fixed custom agent selector visibility when custom agents are available.\n\n### Improvements\n- Home page command palette search can now find and open sessions.\n",
@@ -221,39 +253,7 @@
       "date": "2026-06-05T15:58:51Z",
       "url": "https://github.com/anomalyco/opencode/releases/tag/v1.16.2",
       "prerelease": false
-    },
-    {
-      "version": "v1.16.0",
-      "name": "v1.16.0",
-      "body": "## Core\n\n### Improvements\n\n- Added managed workspace cloning that keeps dirty and untracked files.\n- Added moving sessions between workspaces and directories.\n- Added proper OpenAI model support through AWS Bedrock.\n- Added skill discovery and file-based agent loading.\n- Updated GitHub Copilot usage tracking for token-based billing.\n- Added `run --replay` for interactive session replay.\n- Improved startup time. (@StarpTech)\n\n### Bugfixes\n\n- Added Vue syntax highlighting.\n- Restored full ACP session replay when loading saved sessions. (@imnotlxy)\n- Fixed shell cancellation races.\n- Fixed SAP AI Core OpenAI reasoning variants. (@jerome-benoit)\n- Fixed delegated tasks losing their selected reasoning variant.\n- Fixed OpenAI websocket sessions getting stuck idle.\n- Fixed Windows path normalization in migrated storage.\n- Fixed prompt corruption when pasting near wide characters. (@dauphinYan)\n- Fixed ACP cancel so it aborts the active run. (@smagnuso)\n- Fixed SAP AI Core Anthropic Opus 4.7+ adaptive reasoning. (@jerome-benoit)\n\n## TUI\n\n### Improvements\n\n- Improved the experimental session switcher.\n- Truncated long sidebar file paths.\n\n### Bugfixes\n\n- Show a toast when the variant hotkey is used with no variants. (@ariane-emory)\n- Routed question responses to the right session directory.\n- Stopped the background task spinner from sticking.\n\n## Desktop\n\n### Improvements\n\n- Added color themes. (@arvsrn)\n- Show local server startup failures in the app.\n- Added a thinking level selector for v2 prompts.\n- Added a Servers tab in Settings.\n- Added an update button. (@arvsrn)\n\n### Bugfixes\n\n- Fixed session review refresh and VCS diff caching.\n- Hid update actions when desktop updates are unavailable.\n- Fixed tab title truncation and close button placement.\n- Show project sessions before path sync finishes. (@mhart)\n\n## SDK\n\n- Exposed session location data in v2 responses.\n\n## Extensions\n\n### Bugfixes\n\n- GitHub now refuses to commit without an existing git author identity. (@ulises-jeremias)\n\n**Thank you to 10 community contributors:**\n- @jerome-benoit:\n  - fix(opencode): support sap-ai-core anthropic opus 4.7+ adaptive reasoning (#29991)\n  - fix(opencode): route SAP AI Core reasoning variants through modelParams (#30482)\n- @mhart:\n  - fix(app): show project sessions before path sync resolves (#30167)\n- @smagnuso:\n  - fix(acp): honor session/cancel by aborting the running turn (#30145)\n- @dauphinYan:\n  - fix(tui): prevent prompt corruption when pasting near wide characters (#29710)\n- @arvsrn:\n  - feat(app): v2 desktop UI improvements (#29689)\n  - feat(app): polish home projects list UI (#30436)\n  - feat(app): polish select-v2 component (#30446)\n  - feat(app): new update button  (#30460)\n  - feat(app): color themes (#30824)\n- @StarpTech:\n  - refactor(opencode): improve startup time by 38% (#30453)\n- @ulises-jeremias:\n  - fix(github): enforce existing git author identity (#30507)\n  - fix(opencode): fallback to sh for curl upgrade (#30499)\n- @ariane-emory:\n  - fix(tui): show toast when variant_list keybind used with no variants (#30724)\n- @imnotlxy:\n  - fix(opencode): `ACP.loadSession` should replay all messages (#30761)\n- @colinhacks:\n  - fix: bump @openrouter/ai-sdk-provider to 2.9.0 (#30800)\n",
-      "date": "2026-06-05T03:08:15Z",
-      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.16.0",
-      "prerelease": false
-    },
-    {
-      "version": "v1.15.13",
-      "name": "v1.15.13",
-      "body": "## Core\n\n### Bugfixes\n\n- Gateway Anthropic Opus 4.7+ adaptive reasoning now keeps summarized thinking instead of returning empty thinking blocks.\n\n### Improvements\n\n- Sessions can now store custom metadata through the API and SDK. (@shantur)\n- Config now loads from the opened location upward, so directory-specific settings and provider policies apply more predictably.\n\n## TUI\n\n### Bugfixes\n\n- Wrapped inline tool rows now stay aligned, and failed inline tools can expand their error details in place.\n\n**Thank you to 1 community contributor:**\n- @shantur:\n  - feat(core): add session metadata support (#23068)\n",
-      "date": "2026-05-30T23:40:58Z",
-      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.15.13",
-      "prerelease": false
-    },
-    {
-      "version": "v1.15.12",
-      "name": "v1.15.12",
-      "body": "## Core\r\n### Improvements\r\n- ACP integrations can now send prompts, slash commands, and usage updates through `acp-next`\r\n- Added WebSocket transport for OpenAI responses on supported channels (set OPENCODE_EXPERIMENTAL_WEBSOCKETS=true)\r\n\r\n### Bugfixes\r\n- Enabled adaptive reasoning controls for Anthropic Opus 4.7+ models\r\n- Allowed colons in passwords (@neriousy)\r\n- Sped up warm `acp-next` model and config switches\r\n- Improved first-session `acp-next` startup time\r\n- Kept OpenAI WebSocket response timeouts active\r\n- Retried failed OpenAI WebSocket streams before falling back\r\n- Handled `acp-next` permission prompts correctly\r\n- Used the persisted session directory for existing-session requests\r\n- Forwarded remote workspace request bodies correctly\r\n- Supported custom base URLs for OpenAI WebSocket responses (@Tarquinen)\r\n\r\n## TUI\r\n### Improvements\r\n- Added a workspace management dialog\r\n\r\n### Bugfixes\r\n- Kept session navigation working while prompt modes are open\r\n- Restored the thinking spinner\r\n- Surfaced subagent retry status\r\n- Fixed opening editors from non-Git project paths (@OpeOginni)\r\n\r\n## Desktop\r\n### Improvements\r\n- Added a setting to switch tab layouts\r\n\r\n### Bugfixes\r\n- Improved the home empty state and fixed V2 font usage\r\n- Fixed tab close buttons not showing reliably\r\n\r\n**Thank you to 5 community contributors:**\r\n- @OpeOginni:\r\n  - fix(tui): handle non-git project paths when opening editor (#29180)\r\n- @gotjoshua:\r\n  - docs: fix ts error in math examples (#18244)\r\n- @Tarquinen:\r\n  - fix(openai): support websocket custom base URLs (#29636)\r\n- @24KaratAu:\r\n  - docs: fix grammar in config.mdx (#29683)\r\n- @neriousy:\r\n  - fix(core): allow colons inside passwords (#29576)\r\n",
-      "date": "2026-05-28T19:34:49Z",
-      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.15.12",
-      "prerelease": false
-    },
-    {
-      "version": "v1.15.11",
-      "name": "v1.15.11",
-      "body": "## Core\r\n### Improvements\r\n- Added `headerTimeout` config for provider requests, with a 10s default for default OpenAI setups.\r\n- Experimental background agents now push updates without polling.\r\n- You can now set only `modalities.input` or `modalities.output` in config. (@robposch)\r\n- Remote-backed projects now resolve a stable project identity.\r\n\r\n### Bugfixes\r\n- Dynamically added MCP servers now disconnect cleanly when removed.\r\n- DigitalOcean inference now uses your OAuth token directly instead of creating a MAK. (@Spherrrical)\r\n- Config loading now falls back cleanly when user info is unavailable.\r\n- Fixed Google tool calling after the upstream tool ID regression.\r\n- Experimental flags can now override the umbrella experimental flag.\r\n- Resumed sessions no longer continue orphaned interrupted tools. (@edevil)\r\n- OpenAI reasoning summaries now render as separate blocks.\r\n- Updated Google Vertex support for reasoning signatures.\r\n- The shell tool now advertises your configured timeout to the model.\r\n\r\n## TUI\r\n### Improvements\r\n- Made the prompt resize with terminal width and added prompt size config. (@bjschafer)\r\n\r\n### Bugfixes\r\n- Accelerated diff viewer scrolling.\r\n- External editors now open from the worktree directory when available.\r\n\r\n## Desktop\r\n### Improvements\r\n- Refined the Desktop v2 home screen, prompt, status popover, and session controls.\r\n\r\n### Bugfixes\r\n- Fixed V2 titlebar errors when a session sync cache was deleted. (@Eric-Guo)\r\n- Web deployments no longer run desktop health checks.\r\n- Duplicate server connections are now merged in the server list.\r\n- Stabilized virtualized session timeline interactions.\r\n- Fixed the white flash when restoring the desktop window.\r\n\r\n## Extensions\r\n### Improvements\r\n- Added a `dispose` hook for plugins.\r\n\r\n### Bugfixes\r\n- Fixed Codex plugin requests to send the expected session ID header.\r\n\r\n**Thank you to 7 community contributors:**\r\n- @jerome-benoit:\r\n  - fix(nix): re-inherit patches in desktop, ad-hoc sign .app on darwin (#27869)\r\n- @edevil:\r\n  - fix(session): exclude orphaned interrupted tools from run-loop continuation (#26178)\r\n- @bjschafer:\r\n  - feat(tui): make prompt size responsive and configurable (#28255)\r\n- @robposch:\r\n  - tweak (config): make modalities input/output fields optional so that u can specify one without both being required  (#29268)\r\n- @Eric-Guo:\r\n  - fix(app): handle deleted session sync cache in V2 titlebar (#29328)\r\n- @StarpTech:\r\n  - docs(web): update LSP docs wording (#29435)\r\n  - docs: add tip to lsp section (#29444)\r\n- @Spherrrical:\r\n  - fix(digitalocean): use OAuth token directly for inference instead of creating MAK (#28897)\r\n",
-      "date": "2026-05-27T04:01:13Z",
-      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.15.11",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-07-20T08:36:22.930Z"
+  "lastUpdated": "2026-07-21T08:05:03.921Z"
 }
