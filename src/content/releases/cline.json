@@ -15,11 +15,43 @@
   },
   "releases": [
     {
+      "version": "desktop-v0.0.7",
+      "name": "Desktop v0.0.7",
+      "body": "\n- New system tray icon showing app status and how many agent sessions are currently running.\n- Session history is now paginated in ten-session pages, fetching older history only when you reach the end.\n- You can favorite sessions, and sessions are now ordered by most recent activity with consistent status dot colors across views.\n- Subagent and teammate runs from a session now show up in the app with their status and results.\n- Chat polish: tool-specific icons on tool disclosures, elapsed thinking time and restyled reasoning sections, aligned timestamps, and message actions that no longer shift the layout while scrolling stays anchored to the conversation viewport.\n- Free Cline models are now supported and labeled \"(free)\" in model pickers, with a clear message — including reset time — when you hit the free-tier limit.\n- Fixed the China/international endpoint toggles for Qwen, Moonshot, Z AI, and MiniMax being ignored, which silently routed regional users to the wrong host.\n- Fixed tool calls failing when a model emitted a line number as a string (e.g. `insert_line: \"3\"`), forcing the agent to waste a round trip retrying.\n- Refreshed the bundled provider and model catalog.\n\n**Full Changelog**: https://github.com/cline/cline/compare/desktop-v0.0.6...desktop-v0.0.7\n",
+      "date": "2026-07-29T01:43:59Z",
+      "url": "https://github.com/cline/cline/releases/tag/desktop-v0.0.7",
+      "prerelease": false
+    },
+    {
+      "version": "v4.0.12",
+      "name": "v4.0.12",
+      "body": "\n### Added\n\n- Add support for free Cline models, shown as \"(free)\" in the model picker, with a dedicated error card that includes the reset time when the free limit is reached.\n\n### Fixed\n\n- Keep Claude Code responses that were already streamed when the CLI exits with a max-turns error, instead of discarding a valid response.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.0.11...v4.0.12\n",
+      "date": "2026-07-28T23:01:47Z",
+      "url": "https://github.com/cline/cline/releases/tag/v4.0.12",
+      "prerelease": false
+    },
+    {
+      "version": "sdk/sdk/v0.0.66",
+      "name": "SDK v0.0.66",
+      "body": "\n- Support for free Cline models (`cline-free`): free models are labeled \"(free)\", priced at zero, and hitting the free tier now raises a dedicated limit error that includes the reset time\n- Agentic compaction is now the default context-compaction strategy\n- Fixed agentic compaction silently falling back to basic compaction on OpenAI Compatible providers (the summarizer built its handler without a base URL and hit api.openai.com), and manual compaction budgeting against a 64k fallback instead of the model's real context window\n- Fixed agentic compaction never finding a cut point in tool-heavy transcripts, which produced endless \"auto-compaction skipped\" while context kept growing — assistant messages are now valid cut boundaries\n- Connector sessions now persist and automatically reconnect after a daemon or hub restart\n- Plan/act mode, tool auto-approve, and compaction mode are now persisted in global settings, with cross-process-safe writes so two hosts no longer clobber each other's changes\n- The built-in provider list is now generated from models.dev, broadening out-of-the-box provider coverage\n- The editor tool preserves a file's existing line endings — CRLF files no longer end up with mixed endings and failing exact-match edits\n- SAP AI Core now sets the metering header and uses the fetch adapter\n- Headless scheduled routines default to auto-approve and no longer ask questions no one can answer\n- Telemetry: task lifecycle events, auth event metadata and request IDs, and correct host identity (`host_plugin_version`, platform) on SDK-pipeline events\n- Removed the never-invoked `onRetryAttempt` callback from `ApiHandlerOptions` and provider config\n- `@cline/ui`: host-safe theme contract and Markdown exports\n- Updated the bundled model catalog\n\n**Full Changelog**: https://github.com/cline/cline/compare/sdk/sdk/v0.0.65...sdk/sdk/v0.0.66\n",
+      "date": "2026-07-28T22:35:13Z",
+      "url": "https://github.com/cline/cline/releases/tag/sdk/sdk/v0.0.66",
+      "prerelease": false
+    },
+    {
       "version": "desktop-v0.0.6",
       "name": "Desktop v0.0.6",
       "body": "\n- Queued messages now appear in a collapsible list above the composer with a count — expand it to edit, send-now, or delete individual queued turns.\n- New sidebar update indicator: once an update has been downloaded, an accent-colored icon stays in the sidebar showing the new version with a one-click restart, so the update is still reachable after you dismiss the toast (and restart failures are now surfaced instead of silently doing nothing).\n- No more appearance flash on launch — the app paints in your saved (or system) light/dark theme before the first frame.\n- The header and sidebar now show the full workspace name and git branch, and lay out correctly on narrow windows; a transient git lookup no longer wipes a valid branch name back to \"no git\".\n- Cleaner collapsed-sidebar settings layout: compact width, left-aligned navigation, stacked account details.\n- Clarified the auto-update setting — it's now \"Keep CLI up to date\" and explains that it governs the `cline` terminal command, not the app itself (the app updates separately).\n- Toggle switches now use a solid accent color when on, for clearer contrast.\n\n**Full Changelog**: https://github.com/cline/cline/compare/desktop-v0.0.5...desktop-v0.0.6\n",
       "date": "2026-07-28T02:10:46Z",
       "url": "https://github.com/cline/cline/releases/tag/desktop-v0.0.6",
+      "prerelease": false
+    },
+    {
+      "version": "cli-v3.0.47",
+      "name": "CLI v3.0.47",
+      "body": "\n- Free Cline models are now supported end to end: free models show as \"(free)\", and hitting the free limit renders a dedicated card with the reset time (from SDK v0.0.66)\n- `/settings` general toggles (plan/act mode, tool auto-approve, compaction mode) now persist across restarts\n- Upgraded the TUI stack from opentui 0.1.102 to 0.4.3\n- Fixed a grey panel left behind on screen after closing a dialog (model picker, help, command palette) — a leftover from the opentui upgrade\n- Fixed a React duplicate-key warning when `read_files` listed the same path more than once\n- Aborting a task no longer risks killing the shared hub daemon\n- Connector status delivery failures are no longer fatal to the turn\n- Agentic compaction is now the default context-compaction strategy, with fixes for it silently falling back to basic compaction and for tool-heavy transcripts that could never find a cut point (from SDK v0.0.66)\n- Editor edits preserve a file's existing line endings, fixing failed exact-match edits on CRLF files (from SDK v0.0.66)\n- Broader built-in provider coverage, now generated from models.dev (from SDK v0.0.66)\n- Updated the bundled model catalog (from SDK v0.0.66)\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.46...cli-v3.0.47\n",
+      "date": "2026-07-28T22:44:40Z",
+      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.47",
       "prerelease": false
     },
     {
@@ -221,39 +253,7 @@
       "date": "2026-07-04T02:36:24Z",
       "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.37",
       "prerelease": false
-    },
-    {
-      "version": "cli-v3.0.36",
-      "name": "CLI v3.0.36",
-      "body": "\n- Fixed plan mode's `switch_to_act_mode` tool not taking effect until the end of the turn: the model would keep running with plan-mode tools (no file editor) and fall back to editing files through shell commands. Switching to act mode now ends the plan-mode run and automatically continues with the approved plan using the full act-mode toolset. A Tab mode toggle racing a completing turn can no longer auto-start plan execution you didn't approve.\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.35...cli-v3.0.36\n",
-      "date": "2026-07-03T20:49:27Z",
-      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.36",
-      "prerelease": false
-    },
-    {
-      "version": "cli-v3.0.35",
-      "name": "CLI v3.0.35",
-      "body": "\n- ClinePass is now enabled for all CLI users\n- Recover missing interactive sessions when reading messages\n- Format structured commands in history export\n- Add the subscription promo code when linking to the dashboard subscription page\n- Add Tencent TokenHub as a provider (from SDK v0.0.55)\n- Fix first-prompt truncation on high-output models (e.g. MiniMax M3) that could immediately auto-compact and cut the initial task down to just the input wrapper (from SDK v0.0.55)\n- Use a curated default when migrating legacy provider settings (from SDK v0.0.55)\n- Advertise run commands as shell strings (from SDK v0.0.55)\n- Refresh the bundled model catalog with the latest provider models (from SDK v0.0.55)\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.34...cli-v3.0.35\n",
-      "date": "2026-07-03T17:35:55Z",
-      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.35",
-      "prerelease": false
-    },
-    {
-      "version": "v4.0.6",
-      "name": "v4.0.6",
-      "body": "\n### Fixed\n\n- Generalize the model capability warning so it applies more broadly.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.0.5...v4.0.6\n",
-      "date": "2026-07-02T18:12:42Z",
-      "url": "https://github.com/cline/cline/releases/tag/v4.0.6",
-      "prerelease": false
-    },
-    {
-      "version": "v4.0.5",
-      "name": "v4.0.5",
-      "body": "\n### Added\n\n- Add support for Claude Sonnet 5 across the Anthropic, Bedrock, Vertex, Claude Code, SAP AI Core, OpenRouter, and Vercel AI Gateway providers, including model picker and recommended-model updates.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.0.4...v4.0.5\n",
-      "date": "2026-06-30T20:04:22Z",
-      "url": "https://github.com/cline/cline/releases/tag/v4.0.5",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-07-28T08:11:40.492Z"
+  "lastUpdated": "2026-07-29T08:16:29.101Z"
 }
