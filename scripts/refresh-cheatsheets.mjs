@@ -150,7 +150,7 @@ async function callLLM(tool, currentJson, sources) {
   }
 
   const apiUrl = process.env.LLM_API_URL || 'https://openrouter.ai/api/v1/chat/completions';
-  const model = process.env.LLM_MODEL || 'google/gemini-2.0-flash-001';
+  const model = process.env.LLM_MODEL || 'google/gemini-2.5-flash';
 
   const system = [
     'You update structured software cheatsheets for changelogs.info.',
