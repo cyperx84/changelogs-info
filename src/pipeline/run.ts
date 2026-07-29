@@ -18,7 +18,10 @@ function archivePayload(toolSlug: string, version: string): void {
   const src = join(REFS_DIR, `${toolSlug}.json`);
   if (!existsSync(src)) return;
   mkdirSync(HISTORY_DIR, { recursive: true });
-  const dest = join(HISTORY_DIR, `${toolSlug}-${version}.json`);
+  // Release tags can contain path separators (e.g. monorepo sub-package tags
+  // like "sdk/sdk/v0.0.61"); keep the archive filename within HISTORY_DIR.
+  const safeVersion = version.replace(/[\\/]/g, "-");
+  const dest = join(HISTORY_DIR, `${toolSlug}-${safeVersion}.json`);
   if (!existsSync(dest)) {
     copyFileSync(src, dest);
   }

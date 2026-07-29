@@ -41,7 +41,10 @@ function parseReleases(content: string): GitHubRelease[] {
 }
 
 function findLatestStable(releases: GitHubRelease[]): GitHubRelease | null {
-  return releases.find((r) => !r.prerelease && !r.draft) ?? null;
+  // Monorepos can tag sub-package releases (e.g. "sdk/sdk/v0.0.61") alongside
+  // the main product's releases; a "/" in the tag means it isn't a plain
+  // version for the tracked tool, so skip it rather than misreport it.
+  return releases.find((r) => !r.prerelease && !r.draft && !r.tag_name.includes("/")) ?? null;
 }
 
 function detectScope(body: string): "small" | "medium" | "large" {
