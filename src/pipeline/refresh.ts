@@ -5,7 +5,7 @@
  *
  * Works with ANY provider — just set LLM_API_KEY and optionally:
  *   LLM_API_URL   — base URL (default: https://openrouter.ai/api/v1)
- *   LLM_MODEL     — model ID (default: google/gemini-2.0-flash-001)
+ *   LLM_MODEL     — model ID (default: google/gemini-2.5-flash)
  *
  * Falls back to queue stub if no API key is set.
  */
@@ -18,7 +18,7 @@ import { validateExtraction, hasChanges } from "./validate.js";
 const QUEUE_DIR = join(process.cwd(), "data", "refresh-queue");
 
 const DEFAULT_API_URL = "https://openrouter.ai/api/v1";
-const DEFAULT_MODEL = "google/gemini-2.0-flash-001";
+const DEFAULT_MODEL = "google/gemini-2.5-flash";
 const MAX_RETRIES = 2;
 
 // ──────────────────────────────────────────────────────────────────────────────
