@@ -1,13 +1,16 @@
 import { readdirSync, existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { CLWATCH_TOOLS } from '../src/lib/releases.ts';
 
 const root = process.cwd();
 const releasesDir = join(root, 'src/content/releases');
 const toolsPath = join(root, 'scrapers/tools.json');
 
+// Cheatsheets and configs are only generated (and only routed to a page) for
+// CLWATCH_TOOLS — see src/pages/tools/[id]/cheatsheet.astro's getStaticPaths.
 const checks = [
-  { name: 'cheatsheet', dir: join(root, 'src/content/cheatsheets-json'), ext: '.json' },
-  { name: 'config', dir: join(root, 'src/content/configs'), ext: '.json' },
+  { name: 'cheatsheet', dir: join(root, 'src/content/cheatsheets-json'), ext: '.json', tools: CLWATCH_TOOLS },
+  { name: 'config', dir: join(root, 'src/content/configs'), ext: '.json', tools: CLWATCH_TOOLS },
 ];
 
 const featuredTools = ['openclaw', 'claude-code'];
@@ -31,9 +34,10 @@ for (const id of releaseIds) {
   if (!toolIds.includes(id)) failures.push(`orphan release data (not in tools.json): ${id}.json`);
 }
 
-// Required per-tool content for all tracked tools
-for (const toolId of toolIds) {
-  for (const check of checks) {
+// Required per-tool content, scoped to the tools that actually route a page for it
+for (const check of checks) {
+  for (const toolId of toolIds) {
+    if (!check.tools.includes(toolId)) continue;
     const p = join(check.dir, `${toolId}${check.ext}`);
     if (!existsSync(p)) {
       failures.push(`missing ${check.name}: ${toolId}${check.ext}`);
