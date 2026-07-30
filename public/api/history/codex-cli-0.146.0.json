@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.146.0",
-  "generated_at": "2026-07-30T13:56:07.934Z",
+  "generated_at": "2026-07-29T04:48:20.501Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,22 +14,20 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.146.0",
-    "to_version": "0.146.0",
+    "from_version": "0.135.0",
+    "to_version": "0.135.0",
     "new_features": [
-      "named-sessions-pinned-threads-side-conversations",
-      "agent-plugins-manifests-workspace-publishing-new-marketplaces",
-      "fork-threads-paginated-history-temporary-forks",
-      "app-server-remote-code-mode-websocket",
-      "standalone-web-search-custom-model-providers",
-      "executor-provided-skills-secure-resource-reading"
+      "richer-environment-git-terminal-app-server-and-thread-inventory-diagnostics",
+      "remote-connection-details-and-server-version-in-status",
+      "vim-mode-text-object-editing-improved-word-line-end-behavior-configurable-interrupt-turn-binding",
+      "named-permission-profile-support-in-permissions",
+      "bundled-patched-zsh-helper-discovery-and-usage",
+      "python-sdk-sandbox-presets"
     ],
-    "new_commands": [
-      "/new"
-    ],
+    "new_commands": [],
     "new_flags": [],
     "new_env_vars": [
-      "CARGO_HTTP_CAINFO"
+      "CODEX_NON_INTERACTIVE"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -57,7 +55,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "Codex-cli 0.146.0 introduces significant enhancements to session management, plugin capabilities, and remote development workflows. The headline change allows users to name new sessions with `/new` or `/clear`, pin important threads, and seamlessly switch between side conversations, drastically improving organization and multitasking within the TUI. This means developers can maintain context across multiple tasks without losing their place or needing to restart conversations. \n\nMajor new features include expanded plugin support, now encompassing Agent Plugins manifests, workspace plugin publishing, and new marketplaces for Amazon Bedrock and Claude Code, enabling a broader ecosystem of tools. Thread management is more flexible with the ability to fork threads with paginated history, including temporary forks that don't clutter the main listings, perfect for experimental changes. For remote development, the app-server can now connect to remote Code Mode hosts over WebSocket, and standalone web search is enabled for compatible custom model providers, offering more versatile execution and information retrieval. Furthermore, executor-provided skills can now be discovered and their resources securely read, enhancing skill management and security. \n\nKey bug fixes address proxy configuration across various components like authentication, plugin downloads, and remote execution, ensuring reliable network operations. MCP connections and Apps tools now remain current through authentication or configuration changes, preventing service interruptions. The TUI sees improved responsiveness, nonblocking interrupts, and better keyboard handling, making the interface smoother and more reliable. Windows users will benefit from fixes to navigation keys and more reliable termination of sandboxed processes. \n\nThere are no breaking changes in this release, making it a straightforward upgrade. Developers should consider upgrading promptly to leverage the improved session management, expanded plugin ecosystem, and enhanced remote capabilities. The `CARGO_HTTP_CAINFO` environment variable is now honored for HTTP client configuration in managed proxy environments, providing more control over network settings."
+      "tldr": "This release introduces richer diagnostics in `codex doctor`, providing detailed environment, Git, terminal, app-server, and thread information for support. The `/status` command now displays remote connection details and server version when connected remotely. Vim mode receives significant enhancements, including text-object editing, improved word/line-end behavior, and a configurable keybinding for interrupting turns. The `/permissions` command now supports named permission profiles, displaying configured custom profiles. Packaged Codex builds can now discover and utilize the bundled patched zsh helper on macOS and Linux. The Python SDK gains friendly `Sandbox` presets for thread and turn APIs, simplifying sandbox configuration. Markdown tables and multiline lists render more readably in the TUI. TUI output is more stable on macOS and Zellij, preventing corruption. Slash-command completion now preserves existing draft text. A new environment variable, `CODEX_NON_INTERACTIVE=1`, enables non-interactive installation. Older tmux/iTerm sessions retain normal `Ctrl-C` handling. App mentions exclude inaccessible apps. Resume flows include non-interactive exec sessions and honor cwd overrides. It is recommended to upgrade to this version for improved stability, enhanced features, and better diagnostics."
     },
     "features": [
       {
@@ -1875,80 +1873,6 @@
         "description": "The Python SDK now exposes friendly `Sandbox` presets for thread and turn APIs.",
         "key_details": [],
         "source_url": ""
-      },
-      {
-        "id": "named-sessions-pinned-threads-side-conversations",
-        "name": "Named Sessions, Pinned Threads, and Side Conversations",
-        "status": "stable",
-        "since": "0.146.0",
-        "description": "Users can now name new sessions using `/new` or `/clear`, pin important threads for easy access, and switch between side conversations without closing them, improving session management and multitasking.",
-        "key_details": [
-          "Use `/new` or `/clear` to name sessions.",
-          "Pin important threads.",
-          "Switch between side conversations without closing them."
-        ],
-        "source_url": "https://github.com/openai/codex/compare/rust-v0.145.0...rust-v0.146.0#34605"
-      },
-      {
-        "id": "agent-plugins-manifests-workspace-publishing-new-marketplaces",
-        "name": "Agent Plugins Manifests, Workspace Plugin Publishing, and Additional Plugin Marketplaces",
-        "status": "stable",
-        "since": "0.146.0",
-        "description": "Introduces support for Agent Plugins manifests, enables publishing plugins directly from a workspace, and expands available plugin marketplaces to include Amazon Bedrock and Claude Code.",
-        "key_details": [
-          "Support for Agent Plugins manifests.",
-          "Workspace plugin publishing.",
-          "New plugin marketplaces for Amazon Bedrock and Claude Code."
-        ],
-        "source_url": "https://github.com/openai/codex/compare/rust-v0.145.0...rust-v0.146.0#35105"
-      },
-      {
-        "id": "fork-threads-paginated-history-temporary-forks",
-        "name": "Fork Threads with Paginated History and Temporary Forks",
-        "status": "stable",
-        "since": "0.146.0",
-        "description": "Allows users to fork threads, now with paginated history. This also includes the ability to create temporary forks that do not appear in the main thread listings, useful for experimentation.",
-        "key_details": [
-          "Fork threads with paginated history.",
-          "Create temporary forks that are not listed."
-        ],
-        "source_url": "https://github.com/openai/codex/compare/rust-v0.145.0...rust-v0.146.0#35220"
-      },
-      {
-        "id": "app-server-remote-code-mode-websocket",
-        "name": "App-Server to Remote Code Mode Hosts over WebSocket",
-        "status": "stable",
-        "since": "0.146.0",
-        "description": "The app-server can now connect to remote Code Mode hosts using WebSocket, enhancing flexibility for development environments.",
-        "key_details": [
-          "App-server connects to remote Code Mode hosts.",
-          "Uses WebSocket for connection."
-        ],
-        "source_url": "https://github.com/openai/codex/compare/rust-v0.145.0...rust-v0.146.0#35078"
-      },
-      {
-        "id": "standalone-web-search-custom-model-providers",
-        "name": "Standalone Web Search for Compatible Custom Model Providers",
-        "status": "stable",
-        "since": "0.146.0",
-        "description": "Enables standalone web search functionality for custom model providers that are compatible, expanding search capabilities beyond built-in providers.",
-        "key_details": [
-          "Standalone web search for compatible custom model providers."
-        ],
-        "source_url": "https://github.com/openai/codex/compare/rust-v0.145.0...rust-v0.146.0#34846"
-      },
-      {
-        "id": "executor-provided-skills-secure-resource-reading",
-        "name": "Discover Executor-Provided Skills and Secure Resource Reading",
-        "status": "stable",
-        "since": "0.146.0",
-        "description": "Allows for the discovery of skills provided by executors and securely reading their associated resources, including explicitly selected skills, improving skill management and security.",
-        "key_details": [
-          "Discover skills provided by executors.",
-          "Securely read associated resources for skills.",
-          "Explicitly select skills."
-        ],
-        "source_url": "https://github.com/openai/codex/compare/rust-v0.145.0...rust-v0.146.0#35184"
       }
     ],
     "commands": [
@@ -2167,14 +2091,6 @@
         "since": "0.131.0",
         "status": "stable",
         "source_url": ""
-      },
-      {
-        "name": "/new",
-        "syntax": "/new [session_name]",
-        "description": "Starts a new session and optionally names it.",
-        "since": "0.146.0",
-        "status": "stable",
-        "source_url": "https://github.com/openai/codex/compare/rust-v0.145.0...rust-v0.146.0#34605"
       }
     ],
     "flags": {
@@ -3699,13 +3615,6 @@
         "status": "stable",
         "since": "0.135.0",
         "source_url": ""
-      },
-      {
-        "name": "CARGO_HTTP_CAINFO",
-        "purpose": "Honored in managed proxy environments for HTTP client configuration.",
-        "status": "stable",
-        "since": "0.146.0",
-        "source_url": "https://github.com/openai/codex/compare/rust-v0.145.0...rust-v0.146.0#34478"
       }
     ],
     "models": [
