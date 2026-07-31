@@ -15,6 +15,46 @@
   },
   "releases": [
     {
+      "version": "v4.1.2",
+      "name": "v4.1.2",
+      "body": "\n### Added\n\n- Show which extension variant is active — \"Legacy\" or \"Next\" — next to the version in the settings About page, in both bundles of the combined rollout package.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.1.1...v4.1.2\n",
+      "date": "2026-07-31T05:23:49Z",
+      "url": "https://github.com/cline/cline/releases/tag/v4.1.2",
+      "prerelease": false
+    },
+    {
+      "version": "v4.1.1",
+      "name": "v4.1.1",
+      "body": "\n### Changed\n\n- Remove vestigial MCP server-key machinery from McpHub — native MCP tool calls now route by server name instead of a random in-memory uid, so routing survives restarts and server list changes.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.1.0...v4.1.1\n",
+      "date": "2026-07-31T04:30:38Z",
+      "url": "https://github.com/cline/cline/releases/tag/v4.1.1",
+      "prerelease": false
+    },
+    {
+      "version": "v4.1.0",
+      "name": "v4.1.0",
+      "body": "## What's in 4.1.0\n\n4.1.0 converts the stable extension to a **combined A/B package**: one VSIX containing both the current (legacy) extension and the new SDK-based extension, plus a small loader that activates exactly one per window, controlled by a staged remote rollout.\n\n**For nearly everyone, nothing changes** — the loader activates the same extension you were running in 4.0.12. A small percentage of users (starting at 1%) are gradually opted into the new SDK-based extension, which will become the default for everyone as the rollout completes.\n\n### Details\n\n- The rollout is staged and remotely controlled; assignments apply on window reload, never mid-session.\n- If the new extension fails to activate for any reason, the loader automatically falls back to the current extension in the same window — no user action needed.\n- Settings, credentials, and preferences are shared: nothing is migrated or lost when a machine switches between the two.\n- Tasks created on the new extension aren't visible while on the old one (they return if re-promoted).\n\nLegacy bundle: `legacy-extension` @ 3fdc186f1 (4.0.12 + free-model button wording).\nNext bundle: `main` @ 0746ea72bf6.\nRollout machinery: apps/vscode-rollout (see its README for design + runbook).\n",
+      "date": "2026-07-31T04:00:52Z",
+      "url": "https://github.com/cline/cline/releases/tag/v4.1.0",
+      "prerelease": false
+    },
+    {
+      "version": "sdk/sdk/v0.0.67",
+      "name": "SDK v0.0.67",
+      "body": "\n- Reasoning controls (effort, budget, on/off) are now driven by the models.dev catalog and normalized once before provider encoding, so requests match what each provider actually advertises; Anthropic's mandatory and impossible thinking modes are handled explicitly, and out-of-range budgets are clamped\n- OpenRouter now defaults to `anthropic/claude-sonnet-5`\n- The per-server `timeout` in `cline_mcp_settings.json` is now honored by the SDK's MCP clients for `initialize`, `tools/list`, and `tools/call` instead of hardcoded 1.5s and 5s limits — it defaults to 60 seconds and is clamped to 1–3600 seconds\n- Fixed the China and international endpoint toggles being ignored for Qwen, Moonshot, and Z AI\n- Legacy API keys are now migrated for every secret-backed provider instead of a subset\n- Legacy OpenAI Compatible model-info overrides are now carried into the seeded `models.json` instead of being dropped\n- Removed the \"Enable R1 messages format\" option from the OpenAI Compatible provider\n- Fixed checkpoint restores across session resumes\n- Added session forking and user-run message APIs so a host can edit an earlier prompt: fork the session before a selected user run, trim checkpoint history, and restore the prior messages\n- Fixed auto-compaction state being rejected as stale on every save, which forced a full re-compaction — an extra summarizer call — on every turn past the trigger, and could leave a dead sidecar permanently blocking replacements after a resume\n- Added `ClineCore.readLiveMessages` for reading a resident session's in-memory transcript, so a plan/act rebuild during an in-flight turn no longer starts from an empty history\n- `insert_line` and the `read_files` line bounds now accept numbers emitted as JSON strings instead of failing the whole tool call\n- Plugins can now emit telemetry through `ctx.telemetry`, from both the subprocess sandbox and in-process execution\n- A legacy single-file `.clinerules` no longer aborts the config scan\n- Telemetry events now carry `device_id`\n- A malformed OTEL header entry no longer discards the valid ones\n\n**Full Changelog**: https://github.com/cline/cline/compare/sdk/sdk/v0.0.66...sdk/sdk/v0.0.67\n",
+      "date": "2026-07-31T01:16:35Z",
+      "url": "https://github.com/cline/cline/releases/tag/sdk/sdk/v0.0.67",
+      "prerelease": false
+    },
+    {
+      "version": "cli-v3.0.48",
+      "name": "CLI v3.0.48",
+      "body": "\n- `cline history` now opens inside the existing TUI, with resume and delete actions, instead of rendering a second view in the same process\n- Connector threads (Slack, Discord, Telegram, Linear, Google Chat, WhatsApp) now recover when the session they were bound to is gone — the stale binding is dropped and the turn replays against a new session, instead of failing with \"session not found\" until `threads.json` is edited by hand\n- `cline --help` now reports the real default `--config` and `--data-dir` paths\n- The per-server `timeout` in `cline_mcp_settings.json` is now honored for `initialize`, `tools/list`, and `tools/call`, so slow MCP servers no longer fail against a hardcoded 5s limit (from SDK v0.0.67)\n- Reasoning controls are now routed from the models.dev catalog across providers, with clamped budgets and correct per-provider encoding (from SDK v0.0.67)\n- OpenRouter now defaults to `anthropic/claude-sonnet-5` (from SDK v0.0.67)\n- Fixed the China and international endpoint toggles being ignored for Qwen, Moonshot, and Z AI (from SDK v0.0.67)\n- Legacy API keys are now migrated for every secret-backed provider (from SDK v0.0.67)\n- Legacy OpenAI Compatible model-info overrides now survive into the seeded `models.json` (from SDK v0.0.67)\n- Fixed auto-compaction state being rejected as stale, which added a redundant summarizer call on every turn past the compaction trigger (from SDK v0.0.67)\n- Fixed checkpoint restores across session resumes (from SDK v0.0.67)\n- Tool calls that pass line numbers as strings (`insert_line`, `read_files` bounds) are now accepted instead of erroring (from SDK v0.0.67)\n- A legacy single-file `.clinerules` no longer aborts the config scan (from SDK v0.0.67)\n- Plugins can now emit telemetry through `ctx.telemetry` (from SDK v0.0.67)\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.47...cli-v3.0.48\n",
+      "date": "2026-07-31T01:22:28Z",
+      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.48",
+      "prerelease": false
+    },
+    {
       "version": "desktop-v0.0.7",
       "name": "Desktop v0.0.7",
       "body": "\n- New system tray icon showing app status and how many agent sessions are currently running.\n- Session history is now paginated in ten-session pages, fetching older history only when you reach the end.\n- You can favorite sessions, and sessions are now ordered by most recent activity with consistent status dot colors across views.\n- Subagent and teammate runs from a session now show up in the app with their status and results.\n- Chat polish: tool-specific icons on tool disclosures, elapsed thinking time and restyled reasoning sections, aligned timestamps, and message actions that no longer shift the layout while scrolling stays anchored to the conversation viewport.\n- Free Cline models are now supported and labeled \"(free)\" in model pickers, with a clear message — including reset time — when you hit the free-tier limit.\n- Fixed the China/international endpoint toggles for Qwen, Moonshot, Z AI, and MiniMax being ignored, which silently routed regional users to the wrong host.\n- Fixed tool calls failing when a model emitted a line number as a string (e.g. `insert_line: \"3\"`), forcing the agent to waste a round trip retrying.\n- Refreshed the bundled provider and model catalog.\n\n**Full Changelog**: https://github.com/cline/cline/compare/desktop-v0.0.6...desktop-v0.0.7\n",
@@ -213,47 +253,7 @@
       "date": "2026-07-13T19:32:11Z",
       "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.40",
       "prerelease": false
-    },
-    {
-      "version": "v4.0.8",
-      "name": "v4.0.8",
-      "body": "\n### Added\n\n- Add more models to the GCP Vertex provider, plus a free-form entry option in the model dropdown for specifying custom Vertex models.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.0.7...v4.0.8\n",
-      "date": "2026-07-11T00:38:54Z",
-      "url": "https://github.com/cline/cline/releases/tag/v4.0.8",
-      "prerelease": false
-    },
-    {
-      "version": "v4.0.7",
-      "name": "v4.0.7",
-      "body": "\n### Added\n\n- Add a ClinePass limit-reached error with a one-click option to switch to Cline usage-based billing.\n- Allow selecting Cline free models on the ClinePass provider, organized into Subscribed and Free tabs with model descriptions.\n\n### Changed\n\n- Refine ClinePass onboarding and provider settings copy, and open the \"learn more\" link via the in-app URL handler.\n- Remove the Cline model picker recommendation copy.\n\n### Removed\n\n- Remove all references to GLM 5.1.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.0.6...v4.0.7\n",
-      "date": "2026-07-09T03:22:56Z",
-      "url": "https://github.com/cline/cline/releases/tag/v4.0.7",
-      "prerelease": false
-    },
-    {
-      "version": "cli-v3.0.39",
-      "name": "CLI v3.0.39",
-      "body": "\n- You can now select Cline free models on the ClinePass provider in the model picker\n- Removed the retired ClinePass GLM 5.1 model\n- Fixed OpenAI Codex model metadata under the GPT Subscription provider\n- `str_replace` edits now report accurate diffs\n- Fixed context compaction so canonical session history is preserved\n- The detached hub daemon now emits telemetry, and telemetry identity now includes `user_id`\n- Cline provider requests now send versioned client-identity headers\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.38...cli-v3.0.39\n",
-      "date": "2026-07-09T04:42:44Z",
-      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.39",
-      "prerelease": false
-    },
-    {
-      "version": "cli-v3.0.38",
-      "name": "CLI v3.0.38",
-      "body": "\n- New plan/act accent palette: act mode is now blue (`#79b8ff`) and plan mode amber, replacing the old cyan/yellow — applied across dialogs, the model selector, config, onboarding, markdown, and syntax highlighting, with light-theme variants tuned for contrast\n- Restyled chat input: a minimal frame with full-width horizontal rules and a bold accent prompt glyph instead of the tinted background, plus slimmer user-message bubbles\n- Assistant markdown accents are now tinted by the mode (plan/act) they were produced in\n- Polished the status bar usage display and ClinePass model name\n- Harmonized the success/diff green and dark syntax-highlighting colors with the new brand palette\n- The thinking-level picker now defaults its cursor to Medium instead of Off\n- `read_files` now tolerates malformed input from weaker models: line-range entries (`start_line`/`end_line`) sent as separate array items are coalesced back onto the preceding file path instead of being rejected (from SDK v0.0.58)\n- Models in the live catalog that don't report a context window now default to a 128K input-token limit, so under-specified models get a usable context budget (from SDK v0.0.57)\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.37...cli-v3.0.38\n",
-      "date": "2026-07-07T02:37:58Z",
-      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.38",
-      "prerelease": false
-    },
-    {
-      "version": "cli-v3.0.37",
-      "name": "CLI v3.0.37",
-      "body": "\n- Weaker models (e.g. DeepSeek) that emit malformed tool calls — wrong argument types or truncated JSON — are now handled gracefully and run instead of erroring out\n- Plan/act mode switches are now visible to the model, so it knows when you change modes mid-session\n- Fixed plan/act mode notices being dropped from prompts sent to the model\n- Fixed a race where switching modes in an empty session could trigger an unexpected restart\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.36...cli-v3.0.37\n",
-      "date": "2026-07-04T02:36:24Z",
-      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.37",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-07-30T08:04:45.632Z"
+  "lastUpdated": "2026-07-31T08:30:36.332Z"
 }
