@@ -15,6 +15,38 @@
   },
   "releases": [
     {
+      "version": "v4.1.3",
+      "name": "v4.1.3",
+      "body": "\n### Fixed\n\n- Stop the two bundles of the combined rollout package from invalidating each other's Cline account session. A still-open legacy window that refreshed its token after the machine was promoted to the new extension would consume the shared refresh token, producing spurious \"Unauthorized\" / re-authenticate prompts and unexpected sign-outs. Promoted legacy windows now keep working on their current session and offer a one-time Reload Window prompt instead.\n- Fall back to the default Cline model when migrating a setup that references a model id the new extension doesn't recognize, instead of leaving the provider unconfigured.\n- Restore reliable checkpoints: checkpoints are created consistently, and restoring one now rewinds the whole workspace rather than a subset of files.\n- Keep settings edits that are made before the provider config finishes loading — base URLs, API keys, and the Qwen/Moonshot API line are no longer silently discarded.\n- Stop losing keystrokes in custom base URL fields, and keep the custom URL checkbox state after a failed clear.\n- Use the AskSage custom API URL at inference time instead of ignoring it.\n- Settle a pending tool approval when an edited message replaces the session, so the task no longer hangs waiting on a prompt that is gone.\n- Drop attachments from messages that have been edited.\n- Complete terminal commands when the shell execution ends, so tasks no longer stall on commands that already finished.\n- Include untracked files when generating commit messages.\n- Run Windows Store PowerShell profiles correctly.\n- Surface the upstream provider error when a gateway-forwarded stream fails, instead of a generic failure.\n- Retry empty Ollama responses at the model boundary, and raise the response-start timeout to 5 minutes so cold model loads no longer error out.\n- Show proper display names for Cline free models and recommended models in the model picker.\n- Preserve video input capability for models that support it.\n- Keep the plan/act input border in sync with the actual textarea focus.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.1.2...v4.1.3\n",
+      "date": "2026-08-02T05:41:27Z",
+      "url": "https://github.com/cline/cline/releases/tag/v4.1.3",
+      "prerelease": false
+    },
+    {
+      "version": "sdk/sdk/v0.0.69",
+      "name": "SDK v0.0.69",
+      "body": "\n- Ollama's response-start timeout now defaults to 5 minutes instead of 30 seconds, so large models that cold-load no longer fail before they finish loading — unreachable servers still fail immediately, requests are still cancelable, and an explicit `requestTimeoutMs` is still honored\n- Ollama turns that come back completely empty (no text, reasoning, or tool call) are now retried at the model boundary instead of failing the task with \"Model returned empty response\"; non-empty turns stream through with no added latency, and turns that error or hit the token limit pass through unchanged\n- Checkpoints are created again in VS Code and the CLI — run-boundary detection assumed the run's prompt arrives as run input, but both hosts seed it into the initial messages, so no checkpoints were ever recorded. Detection now also survives process restarts and compaction\n- Checkpoint restore is now a true workspace rewind: files Cline created during a task are captured in the snapshot and restored to their checkpoint-time content, and files created after the checkpoint are removed. `.gitignore`d paths (build output, `node_modules`, `.env`) are left untouched, and a pre-restore recovery snapshot can roll the whole operation back. Checkpoints taken before this change keep the old conservative behavior of never touching untracked files\n- Migrated users whose stored Cline model id isn't in the runtime catalog now fall back to the default Cline model instead of carrying an unknown id into every inference request\n- Tool-use mistake notices are no longer reported as provider API errors, provider errors are no longer double-counted, and provider error details are preserved\n\n**Full Changelog**: https://github.com/cline/cline/compare/sdk/sdk/v0.0.68...sdk/sdk/v0.0.69\n",
+      "date": "2026-08-02T04:26:34Z",
+      "url": "https://github.com/cline/cline/releases/tag/sdk/sdk/v0.0.69",
+      "prerelease": false
+    },
+    {
+      "version": "desktop-v0.0.8",
+      "name": "Desktop v0.0.8",
+      "body": "\n- Edit any earlier message in a conversation — the app forks the session at that point, rewinds the workspace to that run's checkpoint, and re-runs from your edited prompt. Restores are transactional and workspace-atomic, so a failed restore won't leave you half-rewound.\n- Fixed long-running chat turns timing out mid-response.\n- Checkpoints are now created reliably — including after a restart, after compaction, and on the first turn of a resumed session — and restoring one rewinds the whole workspace, not just the conversation.\n- Fixed checkpoint restores failing after you closed and reopened a session.\n- Reasoning controls (effort, thinking budget, on/off) now come from the shared model catalog, so each model gets exactly the reasoning options it actually supports instead of provider-specific guesses.\n- Errors from upstream providers forwarded through the gateway now show the real message (e.g. \"This model's maximum context length is 40960 tokens…\") instead of a raw validation dump or `[object Object]`.\n- Ollama: empty responses are retried automatically, and the response-start timeout is raised to 5 minutes so cold model loads don't error out.\n- OpenRouter now defaults to Anthropic Claude Sonnet 5.\n- Model pickers show proper display names for Cline free models and recommended models.\n- MCP servers now honor their configured per-server timeout.\n- Fixed API keys for several providers being lost when migrating from an older install — all secret-backed providers now migrate correctly.\n- Unknown or removed legacy model IDs now fall back to the default Cline model instead of failing.\n- Fixed agentic compaction not persisting reliably, so long conversations resume in the right state.\n- Fixed a `.clinerules` single file (the older format) aborting the whole rules and config scan.\n- Fixed video input being dropped for models that support it.\n- Fixed the workspace hint being sent for filesystem-root paths.\n- Custom model info for OpenAI-Compatible providers now carries over into the seeded model catalog.\n- Removed the \"Enable R1 messages format\" option from the OpenAI-Compatible provider.\n\n**Full Changelog**: https://github.com/cline/cline/compare/desktop-v0.0.7...desktop-v0.0.8\n",
+      "date": "2026-08-02T05:04:33Z",
+      "url": "https://github.com/cline/cline/releases/tag/desktop-v0.0.8",
+      "prerelease": false
+    },
+    {
+      "version": "cli-v3.0.49",
+      "name": "CLI v3.0.49",
+      "body": "\n- `/undo` works again once the agent has used tools — the checkpoint picker counted tool results as user turns, so restore aborted with \"Could not find user message for run N\"\n- Checkpoints are actually created again; a run-boundary regression meant none were ever recorded in the CLI (from SDK v0.0.69)\n- Checkpoint restore is now a full workspace rewind: files Cline created during the task come back at their checkpoint-time content and files created after the checkpoint are removed, while `.gitignore`d paths (build output, `node_modules`, `.env`) are left alone (from SDK v0.0.69)\n- After a restore, the rewound message is prefilled as plain text instead of the raw `<user_input mode=\"act\">` envelope\n- Ollama's response-start timeout is now 5 minutes instead of 30 seconds, so cold-loading a large local model no longer errors out mid-load (from SDK v0.0.69)\n- Empty Ollama responses are now retried instead of failing the task with \"Model returned empty response\" (from SDK v0.0.69)\n- Migrated users whose stored Cline model id isn't in the catalog now fall back to the default model instead of sending an unknown model id on every request (from SDK v0.0.69)\n- The ClinePass promo dialog can be dismissed with any key (Enter still opens the subscription page), and it is marked as shown when it appears, so force-quitting no longer replays it on every launch\n- Opening a URL no longer crashes the CLI on hosts without an opener binary (headless Linux without `xdg-open`); WSL2 containers now use `xdg-open`, Windows tries the absolute PowerShell path first, and `cline doctor log` converts Linux paths to `\\\\wsl$` UNC paths\n- The hub now restarts through the installed wrapper after a Unix self-update, so npm cannot reuse a deleted cached executable\n- ACP: ClinePass is selectable as a provider, organizations can be selected, session resolution and text rendering on session restart are fixed, and agent errors now describe the actual failure\n- Provider errors forwarded through the Vercel AI Gateway now surface the real upstream message instead of a raw Zod dump or `[object Object]` (from SDK v0.0.68)\n- Cline free models and recommended models now show their real display names in the model picker (from SDK v0.0.68)\n- Sessions rooted at the filesystem root (`/`) no longer fail every command (from SDK v0.0.68)\n- On Windows, PowerShell commands now travel over UTF-8 stdin, so non-ASCII commands survive the active code page and long commands are not capped by the command-line limit (from SDK v0.0.68)\n- The live model catalog no longer drops the video input capability (from SDK v0.0.68)\n- Removed the CLI promo code flow\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.48...cli-v3.0.49\n",
+      "date": "2026-08-02T04:52:05Z",
+      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.49",
+      "prerelease": false
+    },
+    {
       "version": "sdk/sdk/v0.0.68",
       "name": "SDK v0.0.68",
       "body": "\n- Provider errors forwarded through the Vercel AI Gateway now surface the real upstream message (e.g. \"This model's maximum context length is 40960 tokens...\") instead of a raw Zod issue dump, and opaque object errors no longer render as `[object Object]`\n- `fetchClineRecommendedModels` now returns display-ready model names, resolved through the model catalog (including Vercel and OpenRouter id aliases) under a single shared timeout budget, so hosts no longer have to map ids to names themselves\n- Cline free models now resolve their OpenRouter display names in the catalog\n- The live catalog no longer drops the video input capability\n- On Windows, PowerShell commands now travel over UTF-8 stdin instead of the command line, so non-ASCII commands survive the active code page and long commands are not capped by the Windows command-line limit — `getShellInvocation()` replaces the now-deprecated `getShellArgs()`, and a stdin write failure surfaces as a command error instead of hanging\n- Fixed sessions rooted at the filesystem root (`/`) failing to run any command: `basename(\"/\")` produced an empty workspace hint that schema validation rejected, so every command threw\n- Exported the finish-reason and auth-error helpers used to describe agent errors\n\n**Full Changelog**: https://github.com/cline/cline/compare/sdk/sdk/v0.0.67...sdk/sdk/v0.0.68\n",
@@ -221,39 +253,7 @@
       "date": "2026-07-16T23:47:00Z",
       "url": "https://github.com/cline/cline/releases/tag/v4.0.9",
       "prerelease": false
-    },
-    {
-      "version": "sdk/sdk/v0.0.62",
-      "name": "SDK v0.0.62",
-      "body": "\n- Fixed Ollama native API routing so context window and timeout settings work again\n- Telemetry is no longer attached to hub tool contexts\n\n**Full Changelog**: https://github.com/cline/cline/compare/sdk/sdk/v0.0.61...sdk/sdk/v0.0.62\n",
-      "date": "2026-07-16T02:59:14Z",
-      "url": "https://github.com/cline/cline/releases/tag/sdk/sdk/v0.0.62",
-      "prerelease": false
-    },
-    {
-      "version": "cli-v3.0.42",
-      "name": "CLI v3.0.42",
-      "body": "\n- Fixed Ollama native API routing so context window and timeout settings work again\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.41...cli-v3.0.42\n",
-      "date": "2026-07-16T03:10:49Z",
-      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.42",
-      "prerelease": false
-    },
-    {
-      "version": "sdk/sdk/v0.0.61",
-      "name": "SDK v0.0.61",
-      "body": "\n- Context compaction now reports progress status while it runs\n- Workspace git info (branch/remote) is now persisted and refreshed across sessions\n- Fixed benign git states being reported as workspace initialization errors\n- Plan/Act mode guidance added to the system prompt, with nudges when switching modes\n- Editor diff view restored for SDK edit tools\n- Model IDs are now suggested from OpenAI-compatible endpoints\n- VS Code terminal reliability improvements (OSC 633 parsing, exit codes, timeout handling)\n- Provider-specific request headers are now centralized in the LLM layer\n- Telemetry now attaches organization context when identifying with cached credentials\n- Added a shared `@cline/ui` theme package\n\n**Full Changelog**: https://github.com/cline/cline/compare/sdk/sdk/v0.0.60...sdk/sdk/v0.0.61\n",
-      "date": "2026-07-15T17:57:42Z",
-      "url": "https://github.com/cline/cline/releases/tag/sdk/sdk/v0.0.61",
-      "prerelease": false
-    },
-    {
-      "version": "cli-v3.0.41",
-      "name": "CLI v3.0.41",
-      "body": "\n- Compaction now shows progress status in the TUI\n- Model IDs are now suggested from OpenAI-compatible endpoints when configuring a provider\n- Workspace git info (branch/remote) is now persisted and refreshed across sessions\n- Compaction no longer runs during an active turn\n- Fixed a crash when the terminal title was updated during TUI teardown\n- The API key fallback hint is now highlighted for better visibility\n- Benign git states are no longer reported as workspace initialization errors\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.40...cli-v3.0.41\n",
-      "date": "2026-07-15T18:09:57Z",
-      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.41",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-08-01T08:00:30.871Z"
+  "lastUpdated": "2026-08-02T08:02:23.559Z"
 }
