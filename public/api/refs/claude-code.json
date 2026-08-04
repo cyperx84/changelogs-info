@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.220",
-  "generated_at": "2026-08-04T00:07:09.594Z",
+  "version": "2.1.221",
+  "generated_at": "2026-08-04T04:11:53.706Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,9 +14,13 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.220",
-    "to_version": "2.1.220",
-    "new_features": [],
+    "from_version": "2.1.221",
+    "to_version": "2.1.221",
+    "new_features": [
+      "vscode-focus-view",
+      "sandbox-credential-masking",
+      "claude-api-prompt-audit-subcommand"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -39,12 +43,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.220",
-      "latest_release_date": "2026-07-25",
+      "latest_stable": "2.1.221",
+      "latest_release_date": "2026-08-04",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release of claude-code version 2.1.220 focuses entirely on foundational improvements, delivering a more stable and reliable experience for developers. While there are no new features, commands, or breaking changes introduced in this update, the core bug fixes and reliability enhancements are crucial for maintaining a smooth and predictable development workflow. These under-the-hood improvements address various issues that could impact performance, stability, or unexpected behavior, ensuring that existing functionalities operate more robustly. Developers can expect a more consistent and dependable environment when using claude-code for their daily tasks. This update is recommended for all users to benefit from the enhanced stability and reliability, ensuring a more seamless interaction with the tool without any specific migration steps or prerequisites."
+      "tldr": "Claude Code 2.1.221 introduces a new VSCode Focus view, allowing developers to declutter their chat interface by collapsing tool activity into expandable summaries, improving readability and focus during complex operations. This feature, accessible via `Ctrl+Alt+F`, is a significant quality-of-life improvement for users working with extensive tool interactions.\n\nSecurity and privacy are enhanced with sandbox credential masking for Linux and WSL, where sensitive file content can now be masked and substituted on egress, preventing direct exposure. A new `prompt-audit` subcommand for the `claude-api` skill helps developers identify and update prompts designed for older models, ensuring optimal performance with newer Claude versions. Several critical fixes address permission bypasses in Bash and PowerShell, ensuring that commands and paths with special characters now correctly prompt for user approval, closing potential security gaps.\n\nImprovements to auto mode make parallel tool call permission checks more efficient and reliable, reducing prompt-cache costs. Background sessions now automatically commit and push work, and create draft PRs when appropriate, streamlining continuous development workflows. The `/plugin install` command is more robust, refreshing stale marketplace catalogs before reporting missing plugins, and newly installed plugins activate immediately when safe. The `/status` command now provides more detailed session kind information, and the Stats panel offers a comprehensive breakdown of token usage, including cache tokens. Developers using `/ultrareview` will find improved error messages for repos without shared history, offering clearer guidance. Windows startup performance is also enhanced by using native kernel32 calls instead of PowerShell for process creation times, avoiding prompts from endpoint security tools. Overall, this release focuses on enhancing user experience, security, and workflow efficiency, making it a recommended upgrade for all users."
     },
     "features": [
       {
@@ -1360,6 +1364,35 @@
         "status": "stable",
         "since": "2.1.157",
         "description": "Added a \"Workflow keyword trigger\" setting in /config to stop the word \"workflow\" in a prompt from triggering a dynamic workflow",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "vscode-focus-view",
+        "name": "VSCode Focus view",
+        "status": "stable",
+        "since": "2.1.221",
+        "description": "A chat-menu toggle in VSCode that hides tool activity behind an expandable per-turn summary with a live running-tool indicator.",
+        "key_details": [
+          "Toggled with `Ctrl+Alt+F` or the \"Claude Code: Toggle Focus view\" command."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "sandbox-credential-masking",
+        "name": "Sandbox Credential Masking",
+        "status": "stable",
+        "since": "2.1.221",
+        "description": "Adds `mode: \"mask\"` for sandbox credential files on Linux and WSL. Sandboxed commands read a sentinel copy (the whole file, or just spans captured by an `extract` regex) while the sandbox proxy substitutes the real value on egress. On macOS, file masking falls back to `deny`.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "claude-api-prompt-audit-subcommand",
+        "name": "`claude-api` skill `prompt-audit` subcommand",
+        "status": "stable",
+        "since": "2.1.221",
+        "description": "A new subcommand within the `claude-api` skill for auditing prompts and tool descriptions for patterns written for older models.",
         "key_details": [],
         "source_url": ""
       }
