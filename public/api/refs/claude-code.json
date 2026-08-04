@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.221",
-  "generated_at": "2026-08-04T21:13:24.426Z",
+  "version": "2.1.222",
+  "generated_at": "2026-08-04T23:01:24.305Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,17 +14,17 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.221",
-    "to_version": "2.1.221",
-    "new_features": [
-      "vscode-focus-view"
-    ],
+    "from_version": "2.1.222",
+    "to_version": "2.1.222",
+    "new_features": [],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "remote-control-auto-start-config"
+    ]
   },
   "payload": {
     "meta": {
@@ -41,12 +41,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.221",
+      "latest_stable": "2.1.222",
       "latest_release_date": "2026-08-04",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces the new VSCode Focus view, a significant quality-of-life improvement for developers using Claude Code in VSCode. This view allows users to hide verbose tool activity behind a concise, expandable summary, reducing visual clutter and improving focus during development, accessible via `Ctrl+Alt+F` or a command palette action. This is particularly useful for complex multi-tool workflows where detailed logs can be overwhelming.\n\nKey improvements include enhanced sandbox credential masking for Linux and WSL, now supporting a `mode: \"mask\"` to protect sensitive data while allowing sandboxed commands to operate. The `/plugin install` command is more robust, automatically refreshing marketplace catalogs and activating plugins immediately when safe, streamlining plugin management. Background sessions are now more intelligent, committing and pushing work, creating draft PRs when appropriate, and respecting `CLAUDE.md` git instructions, ensuring work is preserved and discoverable. The `/ultrareview` command provides clearer error messages for repos with no shared history, guiding users to create branches upfront.\n\nSeveral critical fixes address stability and usability. A Bash tool permission-check bypass involving `zsh` and `[[ ]]` regex conditionals has been patched, with affected commands now prompting for permission. PowerShell permission checks on Windows now correctly handle paths with quote characters. Crashes related to SDK MCP tools named after built-in object properties like `constructor` have been resolved, and WebSearch no longer fails at `xhigh`/`max` effort when thinking is disabled. The `CLAUDE_CODE_RESUME_INTERRUPTED_TURN=0` environment variable now correctly disables auto-resume for interrupted turns. Additionally, Vim mode's yank register now persists across dialogs and views, and undoing to an empty prompt correctly arms the confirmation. Overall, this release focuses on improving the developer experience through better tooling, enhanced security, and critical bug fixes, making it a recommended upgrade for all users."
+      "tldr": "This release significantly enhances the robustness and security of `claude-code`, primarily by fixing critical isolation issues and improving the reliability of various core functionalities. A major fix addresses worktree-isolated sessions and subagents, preventing them from executing destructive git commands against the main checkout; file edits and Bash are now consistently isolated across all session types. This is a crucial security enhancement for developers working with sensitive repositories or complex worktree setups.\n\nSeveral other important fixes improve the user experience and system stability. The startup connectivity check now correctly handles HTTPS proxies and provides clearer error messages, resolving previous hanging and failure issues. Usage reporting for MCP servers has been refined to accurately reflect tool result consumption, preventing overattribution. Issues with pull request linking, model selection for org-restricted subagents, and stream idle timeouts with custom `ANTHROPIC_BASE_URL` gateways have also been resolved. Furthermore, tool errors for unavailable local tools are now properly displayed, and `SendMessage` gracefully truncates long summaries instead of failing.\n\nImprovements include enhanced auto mode safety, where messages sent between agent sessions are now permission-classified before dispatch, and clearer refusal messages when Claude attempts to invoke a `disable-model-invocation` skill. The `/diff` view and Remote Control workspace diffs now use raw git blob content, ignoring local git configurations for more consistent diffs. A breaking change impacts Remote Control auto-start: it can no longer be enabled via repo-local settings (`.claude/settings.json` or `.claude/settings.local.json`) and must now be configured at the user scope using `/config`. The `ultraplan` feature has also been removed. Developers should review their Remote Control auto-start configurations and update them via `/config` if they relied on repo-local enablement. This release is recommended for all users to benefit from the security, stability, and accuracy improvements."
     },
     "features": [
       {
@@ -2890,6 +2890,18 @@
           "Users who rely on Claude-managed worktrees being locked after agent completion."
         ],
         "migration": "Use `git worktree remove`/`prune` to clean them up.",
+        "source_url": ""
+      },
+      {
+        "id": "remote-control-auto-start-config",
+        "version": "2.1.222",
+        "title": "Remote Control Auto-Start Configuration Change",
+        "description": "Repo-local settings (`.claude/settings.json` or `.claude/settings.local.json`) can no longer enable Remote Control auto-start. They can still disable it. To enable Remote Control auto-start, it must now be configured at the user scope via `/config`.",
+        "affected": [
+          "Remote Control auto-start configuration",
+          "Repo-local settings files (`.claude/settings.json`, `.claude/settings.local.json`)"
+        ],
+        "migration": "If you previously relied on repo-local settings to enable Remote Control auto-start, you must now enable it at the user scope using the `/config` command. For example, run `/config set remote-control.auto-start true`.",
         "source_url": ""
       }
     ],
