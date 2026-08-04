@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.146.0",
-  "generated_at": "2026-08-04T07:37:14.974Z",
+  "generated_at": "2026-08-04T10:36:28.312Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -26,7 +26,9 @@
     ],
     "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [],
+    "new_env_vars": [
+      "CARGO_HTTP_CAINFO"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -53,7 +55,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "Codex-cli 0.146.0 introduces significant enhancements to session management, plugin capabilities, and remote development workflows. Users can now name new sessions with `/new` or `/clear`, pin important threads, and manage multiple side conversations without interruption, greatly improving conversational flow and organization. The plugin ecosystem has been expanded to support Agent Plugins manifests, workspace plugin publishing, and new marketplaces for Amazon Bedrock and Claude Code, offering developers more flexibility and integration options. Additionally, the app-server can now connect to remote Code Mode hosts via WebSocket, enabling more robust remote development. Standalone web search is now available for compatible custom model providers, broadening the utility of various models. The release also improves skill discovery by allowing executors to provide skills and securely read their associated resources, including explicitly selected ones. Bug fixes address critical issues such as honoring configured proxies across all operations (authentication, plugin downloads, MCP, WebSockets), maintaining MCP connections and Apps tools during authentication changes, preserving submitted messages and turn states across interruptions, and improving terminal responsiveness and Windows navigation. Documentation has been updated for HTTP client usage and Windows path canonicalization. Overall, this release focuses on improving user experience, expanding plugin and remote capabilities, and enhancing stability and performance, making an upgrade highly recommended for all users."
+      "tldr": "Codex-cli 0.146.0 introduces significant enhancements to session management, plugin capabilities, and remote development workflows. The headline change allows users to name new sessions with `/new` or `/clear`, pin important threads, and seamlessly switch between side conversations, drastically improving workflow organization and continuity. This means developers can keep multiple lines of thought active without losing context, making complex tasks more manageable. \n\nMajor new features include expanded plugin support with Agent Plugins manifests, workspace plugin publishing, and new marketplaces for Amazon Bedrock and Claude Code, broadening the range of available agent capabilities. Thread management is also improved with paginated history for forks, including temporary forks that don't clutter thread listings, offering greater flexibility for experimentation. Remote Code Mode hosts can now connect to the app-server over WebSocket, enabling more interactive and real-time remote development. Additionally, standalone web search is now available for compatible custom model providers, and executor-provided skills can be discovered and their resources securely read, enhancing security and utility. \n\nImportant fixes address proxy configuration across various components, ensuring consistent behavior for authentication, plugin downloads, MCP authorization, remote execution, WebSockets, redirects, and LM Studio connections. MCP connections and Apps tools now remain current even when authentication or configuration changes, automatically reconnecting closed servers. The TUI has seen significant improvements in responsiveness, rendering, and keyboard handling, including nonblocking interrupts and fixes for Windows navigation keys. Session continuity is also greatly improved, preserving messages, errors, and approval settings across interruptions, replay, imports, and forks. \n\nThere are no explicit breaking changes listed, but developers should be aware of the new `CARGO_HTTP_CAINFO` environment variable for proxy configuration. The release also includes internal optimizations like reduced app-server serialization overhead and improved skill catalog management under tight context budgets. This release is recommended for all users to benefit from the enhanced stability, performance, and new features, particularly those relying on remote workflows, custom model providers, or extensive plugin usage."
     },
     "features": [
       {
