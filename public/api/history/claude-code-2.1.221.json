@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.221",
-  "generated_at": "2026-08-04T07:37:05.833Z",
+  "generated_at": "2026-08-04T04:11:53.706Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -18,7 +18,8 @@
     "to_version": "2.1.221",
     "new_features": [
       "vscode-focus-view",
-      "sandbox-credential-masking-linux-wsl"
+      "sandbox-credential-masking",
+      "claude-api-prompt-audit-subcommand"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -47,7 +48,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release of Claude Code, version 2.1.221, introduces significant improvements to developer workflows, particularly for VSCode users and those working with sandboxed environments. The headline feature is the new VSCode Focus view, which streamlines the chat interface by collapsing tool activity into an expandable summary, reducing visual clutter and improving focus during active development. This can be toggled with `Ctrl+Alt+F` or a VSCode command, making it easier to track agent progress without being overwhelmed by verbose tool outputs.\n\nAnother key enhancement is the introduction of `mode: \"mask\"` for sandbox credential files on Linux and WSL. This new masking capability allows sandboxed commands to access a sanitized copy of sensitive files, with the sandbox proxy substituting real values only on egress, significantly bolstering security for credential handling. The `claude-api` skill also gains a `prompt-audit` subcommand, enabling developers to check prompts and tool descriptions for compatibility with newer models, ensuring optimal performance and preventing issues with outdated patterns.\n\nNumerous fixes address critical issues, including a Bash tool permission-check bypass in zsh, PowerShell permission check failures with quoted paths on Windows, and a crash when SDK MCP tools were named after built-in object properties. WebSearch failures at `xhigh`/`max` effort with thinking disabled and sandboxed large uploads failing with TLS errors have also been resolved. Background sessions now have improved work preservation, committing and pushing changes, and creating draft PRs only when necessary, following `CLAUDE.md` git instructions. The `/plugin install` command is more robust, refreshing marketplace catalogs and retrying before reporting missing plugins, and plugins now activate immediately upon installation when safe, reducing the need for `/reload-plugins`. The `/fork` command now creates a new worktree for the forked session, preventing conflicts with the original checkout. Users are encouraged to upgrade to leverage these security, stability, and workflow improvements."
+      "tldr": "Claude Code 2.1.221 introduces a new VSCode Focus view, allowing developers to declutter their chat interface by collapsing tool activity into expandable summaries, improving readability and focus during complex operations. This feature, accessible via `Ctrl+Alt+F`, is a significant quality-of-life improvement for users working with extensive tool interactions.\n\nSecurity and privacy are enhanced with sandbox credential masking for Linux and WSL, where sensitive file content can now be masked and substituted on egress, preventing direct exposure. A new `prompt-audit` subcommand for the `claude-api` skill helps developers identify and update prompts designed for older models, ensuring optimal performance with newer Claude versions. Several critical fixes address permission bypasses in Bash and PowerShell, ensuring that commands and paths with special characters now correctly prompt for user approval, closing potential security gaps.\n\nImprovements to auto mode make parallel tool call permission checks more efficient and reliable, reducing prompt-cache costs. Background sessions now automatically commit and push work, and create draft PRs when appropriate, streamlining continuous development workflows. The `/plugin install` command is more robust, refreshing stale marketplace catalogs before reporting missing plugins, and newly installed plugins activate immediately when safe. The `/status` command now provides more detailed session kind information, and the Stats panel offers a comprehensive breakdown of token usage, including cache tokens. Developers using `/ultrareview` will find improved error messages for repos without shared history, offering clearer guidance. Windows startup performance is also enhanced by using native kernel32 calls instead of PowerShell for process creation times, avoiding prompts from endpoint security tools. Overall, this release focuses on enhancing user experience, security, and workflow efficiency, making it a recommended upgrade for all users."
     },
     "features": [
       {
@@ -1392,15 +1393,6 @@
         "status": "stable",
         "since": "2.1.221",
         "description": "A new subcommand within the `claude-api` skill for auditing prompts and tool descriptions for patterns written for older models.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "sandbox-credential-masking-linux-wsl",
-        "name": "Sandbox Credential Masking (Linux/WSL)",
-        "status": "stable",
-        "since": "2.1.221",
-        "description": "Adds `mode: \"mask\"` for sandbox credential files on Linux and WSL. Sandboxed commands read a sentinel copy (the whole file, or just spans captured by an `extract` regex) while the sandbox proxy substitutes the real value on egress. On macOS, file masking falls back to `deny`.",
         "key_details": [],
         "source_url": ""
       }
