@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.221",
-  "generated_at": "2026-08-04T10:36:12.347Z",
+  "generated_at": "2026-08-04T13:00:21.798Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -17,7 +17,8 @@
     "from_version": "2.1.221",
     "to_version": "2.1.221",
     "new_features": [
-      "vscode-focus-view"
+      "vscode-focus-view",
+      "sandbox-credential-masking-linux-wsl"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -46,7 +47,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces the new VSCode Focus view, a chat-menu toggle (Ctrl+Alt+F) that condenses tool activity into expandable summaries, improving readability and focus during agent interactions. A significant security enhancement is the addition of `mode: \"mask\"` for sandbox credential files on Linux and WSL, which allows sandboxed commands to read a sentinel copy while the sandbox proxy substitutes real values on egress, enhancing credential protection. The `claude-api` skill gains a `prompt-audit` subcommand to help developers identify and update prompts and tool descriptions optimized for older models. Several critical fixes address permission bypasses in Bash and PowerShell, ensuring proper authorization prompts for hidden commands and paths with special characters. The release also resolves issues with MCP server connections in print mode, silently dropped files when retracting prompts, and crashes related to SDK MCP tools named after built-in object properties. WebSearch failures at `xhigh`/`max` effort with thinking disabled, sandboxed large uploads, and incorrect spend-limit messages have also been fixed. Improvements include more efficient auto-mode permission checks, better error messages for `/ultrareview` when repos lack shared history, and faster Windows startup by avoiding PowerShell for process creation times. Background sessions now have enhanced git integration, committing and pushing work, creating draft PRs when appropriate, and respecting CLAUDE.md instructions. Plugin management is streamlined, with `/plugin install` now refreshing stale catalogs and plugins activating immediately when safe. The `/status` command now shows the session kind (interactive, attached, or unattended), and `/fork` creates a new worktree for the forked session. Claude in Chrome now closes tabs it opens, and fast mode provides better feedback when usage credits run out. Overall, this release focuses on improving user experience, security, and stability, with a strong emphasis on developer workflow enhancements and bug fixes."
+      "tldr": "Claude Code 2.1.221 introduces the new VSCode Focus view, a significant enhancement for managing tool activity in chat. This feature, toggled with `Ctrl+Alt+F`, condenses verbose tool outputs into an expandable summary, providing a cleaner interface and a live indicator for running tools, which is crucial for developers who want to maintain focus during complex operations. Additionally, a new `mode: \"mask\"` for sandbox credential files on Linux and WSL improves security by allowing sandboxed commands to read a masked copy of credentials while the real values are substituted on egress, preventing sensitive data exposure.\n\nSeveral critical fixes address permission bypasses and authentication issues. A Bash tool permission-check bypass in zsh's `[[ ]]` regex conditionals has been patched, and PowerShell permission checks now correctly handle paths with quote characters on Windows, ensuring proper approval prompts. Bedrock authentication with AWS SSO named profiles on Windows is now reliable, resolving issues caused by stray `HOME` environment variables. The release also fixes a crash when preparing API requests for SDK MCP tools named after built-in object properties like `constructor` and resolves WebSearch failures at `xhigh`/`max` effort when thinking is disabled. Large sandboxed uploads no longer fail with TLS errors, and the `CLAUDE_CODE_RESUME_INTERRUPTED_TURN=0` environment variable now correctly disables auto-resume for interrupted turns.\n\nImprovements include re-enabling tool search on Google Vertex AI for Claude 4.5-generation models and newer, and optimizing auto mode's permission checks for parallel tool calls, making them more cache-efficient. The Stats panel now provides a more comprehensive token breakdown, including cache read/write costs. Background sessions have been enhanced to commit and push work, open draft PRs when appropriate, and follow `CLAUDE.md` git instructions, always reporting where the work resides. Plugins installed via `/plugin install` now activate immediately when safe, streamlining the workflow. Developers should upgrade to leverage these new features, security enhancements, and stability improvements, particularly if they use VSCode, sandboxing, or AWS SSO for Bedrock authentication."
     },
     "features": [
       {
