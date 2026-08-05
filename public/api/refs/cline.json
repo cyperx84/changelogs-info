@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "4.1.4",
-  "generated_at": "2026-08-05T20:25:28.416Z",
+  "version": "4.1.5",
+  "generated_at": "2026-08-05T22:11:13.968Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,18 +19,17 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "4.1.4",
-    "to_version": "4.1.4",
-    "new_features": [],
+    "from_version": "4.1.5",
+    "to_version": "4.1.5",
+    "new_features": [
+      "free-model-promotion-explanation"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "remove-model-initiated-plan-to-act-switching",
-      "hard-block-file-editing-shell-commands-in-plan-mode"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -48,12 +47,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "4.1.4",
+      "latest_stable": "4.1.5",
       "latest_release_date": "2026-08-05",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "cline 4.1.4 introduces significant changes to how plan mode operates, primarily by removing model-initiated plan-to-act switching and hard-blocking file-editing shell commands. This means users now have explicit control over when to transition from planning to acting, and the model will no longer automatically make this decision. Furthermore, any shell commands that modify files, use in-place editors, redirect to files, perform mutating git subcommands, or install packages are now strictly forbidden in plan mode, enhancing safety and predictability; read-only commands remain functional.\n\nSeveral critical fixes improve the user experience and reliability. A turn completing with a plan that included a plan-blocked command is no longer incorrectly marked as a failure, resolving an issue where the turn ended in an error state with a 'Retry' footer. Tool paths in the chat view now display relative to the workspace, improving readability. Pending attachments are now correctly reset when starting a new task, preventing images from previous tasks from carrying over. The system now provides clear error messages for unconfigured API keys, and MCP tool and resource lists refresh automatically upon server notifications. Plugin names are now correctly displayed, and a Linux keybinding label in the Plan/Act mode tooltip has been corrected.\n\nRobustness improvements include better context management, where the system will compact and retry once when running out of context, and provide clear explanations for unrecoverable cases. Empty model responses are now retried across all providers, fixing hard failures on OpenRouter, Cline, and OpenAI-compatible endpoints. Issues with Claude 4.6+ and 5.x models being rejected due to 'thinking.type.enabled is not supported' have been resolved. Bedrock prompt caching has been restored, and Bedrock foundation models are now routed through geo inference profiles. OpenAI-compatible endpoints now correctly send `max_completion_tokens` for reasoning models, and image content is substituted for models without image support instead of failing. Finally, MiniMax default models now inherit from models.dev, and the bundled catalog has been refreshed to include Infomaniak and SCX.ai, while error telemetry has been refined to report provider failures once and rate-limit repeated failures.\n\nThis release is recommended for all users to benefit from enhanced control in plan mode, improved stability, and clearer error handling. No specific upgrade prerequisites are mentioned beyond updating the cline client."
+      "tldr": "cline 4.1.5 introduces a significant quality-of-life improvement for users interacting with free models. Now, if a free model promotion ends or a model is retired, you'll receive a clear explanation and a direct option to select an alternative model, preventing frustrating generic error messages. This enhancement streamlines the user experience by providing actionable feedback instead of a simple 'Retry' prompt.\n\nAdditionally, this release brings greater consistency to AI SDK providers. Reasoning settings, including effort levels and enable/disable toggles, are now standardized across all providers, including Ollama. This change eliminates previous inconsistencies caused by per-provider overrides, ensuring a more predictable and uniform experience when configuring AI model behavior.\n\nOverall, this update focuses on improving user clarity and developer consistency within the cline ecosystem. Users should upgrade to benefit from clearer model status messages and a more unified configuration experience across AI SDKs. No breaking changes or complex migration steps are required for this release."
     },
     "features": [
       {
@@ -680,6 +679,15 @@
         "status": "stable",
         "since": "4.1.4",
         "description": "Skills are now displayed alongside workflows in the slash command menu, improving discoverability. Commands with shared names are disambiguated instead of one shadowing the other.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "free-model-promotion-explanation",
+        "name": "Explain when a free model promotion ends",
+        "status": "stable",
+        "since": "4.1.5",
+        "description": "When a free model promotion ends or a free model is retired, cline now provides a dedicated notice explaining the situation and offers a button to pick another model. This replaces the previous generic error message with only a 'Retry' prompt.",
         "key_details": [],
         "source_url": ""
       }
