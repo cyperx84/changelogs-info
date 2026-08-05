@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "cline",
   "version": "4.1.4",
-  "generated_at": "2026-08-05T14:04:42.405Z",
+  "generated_at": "2026-08-05T11:19:58.389Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -21,14 +21,17 @@
   "delta": {
     "from_version": "4.1.4",
     "to_version": "4.1.4",
-    "new_features": [],
+    "new_features": [
+      "chutes-provider-recognition",
+      "skills-alongside-workflows-slash-command-menu"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "remove-model-initiated-plan-to-act-switching",
+      "model-initiated-plan-to-act-switching-removal",
       "hard-block-file-editing-shell-commands-in-plan-mode"
     ]
   },
@@ -53,7 +56,7 @@
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "cline 4.1.4 introduces significant changes to how plan mode operates, primarily by removing model-initiated plan-to-act switching and hard-blocking file-editing shell commands. This means users now have explicit control over when to transition from planning to acting, and the model will no longer automatically make this decision. Furthermore, any shell commands that modify files, use in-place editors, redirect to files, perform mutating git subcommands, or install packages are now strictly forbidden in plan mode, enhancing safety and predictability; read-only commands remain functional.\n\nSeveral critical fixes improve the user experience and reliability. A turn completing with a plan that included a plan-blocked command is no longer incorrectly marked as a failure, resolving an issue where the turn ended in an error state with a 'Retry' footer. Tool paths in the chat view now display relative to the workspace, improving readability. Pending attachments are now correctly reset when starting a new task, preventing images from previous tasks from carrying over. The system now provides clear error messages for unconfigured API keys, and MCP tool and resource lists refresh automatically upon server notifications. Plugin names are now correctly displayed, and a Linux keybinding label in the Plan/Act mode tooltip has been corrected.\n\nRobustness improvements include better context management, where the system will compact and retry once when running out of context, and provide clear explanations for unrecoverable cases. Empty model responses are now retried across all providers, fixing hard failures on OpenRouter, Cline, and OpenAI-compatible endpoints. Issues with Claude 4.6+ and 5.x models being rejected due to 'thinking.type.enabled is not supported' have been resolved. Bedrock prompt caching has been restored, and Bedrock foundation models are now routed through geo inference profiles. OpenAI-compatible endpoints now correctly send `max_completion_tokens` for reasoning models, and image content is substituted for models without image support instead of failing. Finally, MiniMax default models now inherit from models.dev, and the bundled catalog has been refreshed to include Infomaniak and SCX.ai, while error telemetry has been refined to report provider failures once and rate-limit repeated failures.\n\nThis release is recommended for all users to benefit from enhanced control in plan mode, improved stability, and clearer error handling. No specific upgrade prerequisites are mentioned beyond updating the cline client."
+      "tldr": "cline 4.1.4 introduces significant changes to how plan mode operates and enhances provider support and user experience. The most impactful change is the removal of model-initiated plan-to-act switching, meaning users now have full control over when to transition from planning to acting, preventing unexpected model behavior. Complementing this, file-editing shell commands are now hard-blocked in plan mode, disallowing actions like file manipulation, in-place edits, or package installs, ensuring a safer and more predictable planning phase; read-only commands remain unaffected. \n\nNew features include recognizing Chutes as a provider and an improved slash command menu that displays skills alongside workflows, disambiguating commands with shared names to prevent shadowing. Several critical fixes address previous pain points: turns completing with a plan that included a plan-blocked command no longer incorrectly show an error state, and toggling to Act now correctly re-runs the plan. Tool paths in the chat view are now relative to the workspace, and pending attachments are reset for new tasks, preventing carry-over. \n\nError handling is also much clearer, with specific messages for missing API keys instead of generic failures, and MCP tool/resource lists now refresh dynamically upon server notifications. Linux keybinding labels in the Plan/Act tooltip are corrected, and the system can now recover from running out of context by compacting and retrying. Empty model responses are retried across all providers, fixing issues with OpenRouter, Cline, and OpenAI-compatible endpoints, and Claude 4.6+/5.x models are no longer rejected with 'thinking.type.enabled is not supported'. Bedrock prompt caching is restored, and `max_completion_tokens` are sent for reasoning models on OpenAI-compatible endpoints, with image content substituted for models lacking image support. The MiniMax default model now inherits from models.dev, and the bundled catalog is refreshed to include Infomaniak and SCX.ai. Finally, error telemetry is improved by reporting provider failures once and rate-limiting repeated failures. Users should upgrade to benefit from these stability and usability improvements, especially if they rely on plan mode or use Claude/Bedrock models."
     },
     "features": [
       {
@@ -724,18 +727,6 @@
           "File system interactions during planning"
         ],
         "migration": "Users must switch out of plan mode to execute any shell commands that modify files or system state. Attempting to run such commands in plan mode will result in refusal.",
-        "source_url": ""
-      },
-      {
-        "id": "remove-model-initiated-plan-to-act-switching",
-        "version": "4.1.4",
-        "title": "Model-initiated plan-to-act switching removed",
-        "description": "Switching out of plan mode is now driven by the user, not by the model deciding mid-turn. This means the model will no longer automatically transition from planning to acting.",
-        "affected": [
-          "Plan mode behavior",
-          "User interaction with plan-to-act transitions"
-        ],
-        "migration": "Users will now need to explicitly drive the transition from plan mode to act mode. The model will no longer initiate this switch.",
         "source_url": ""
       }
     ],
