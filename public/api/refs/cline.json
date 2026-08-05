@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "4.1.3",
-  "generated_at": "2026-08-05T08:33:37.848Z",
+  "version": "4.1.4",
+  "generated_at": "2026-08-05T11:19:58.389Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,15 +19,21 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "4.1.3",
-    "to_version": "4.1.3",
-    "new_features": [],
+    "from_version": "4.1.4",
+    "to_version": "4.1.4",
+    "new_features": [
+      "chutes-provider-recognition",
+      "skills-alongside-workflows-slash-command-menu"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "model-initiated-plan-to-act-switching-removal",
+      "hard-block-file-editing-shell-commands-in-plan-mode"
+    ]
   },
   "payload": {
     "meta": {
@@ -45,12 +51,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "4.1.3",
-      "latest_release_date": "2026-08-02",
+      "latest_stable": "4.1.4",
+      "latest_release_date": "2026-08-05",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "This 4.1.3 release of Cline focuses heavily on stability and reliability, addressing several critical issues that could lead to unexpected behavior and interruptions in developer workflows. A major fix prevents the combined rollout package from invalidating Cline account sessions, resolving frequent \"Unauthorized\" prompts and unexpected sign-outs by ensuring promoted legacy windows maintain their session and offer a one-time reload. Checkpoints are now consistently created and reliably restore the entire workspace, rather than just a subset of files, ensuring full state recovery. The release also improves the robustness of settings management, preventing silent discards of edits to base URLs, API keys, and Qwen/Moonshot API lines made before provider config loading, and fixes keystroke loss in custom base URL fields. Inference now correctly uses the AskSage custom API URL, and terminal commands complete reliably, preventing tasks from stalling. Untracked files are now included in commit message generation, and Windows Store PowerShell profiles run correctly. Error handling for gateway-forwarded streams has been improved to surface upstream provider errors, and empty Ollama responses are retried with an increased response-start timeout of 5 minutes to accommodate cold model loads. Finally, Cline free models and recommended models now display proper names in the model picker, video input capability is preserved for supported models, and the plan/act input border correctly syncs with textarea focus. This update is recommended for all users to improve stability and prevent data loss or workflow interruptions."
+      "tldr": "cline 4.1.4 introduces significant changes to how plan mode operates and enhances provider support and user experience. The most impactful change is the removal of model-initiated plan-to-act switching, meaning users now have full control over when to transition from planning to acting, preventing unexpected model behavior. Complementing this, file-editing shell commands are now hard-blocked in plan mode, disallowing actions like file manipulation, in-place edits, or package installs, ensuring a safer and more predictable planning phase; read-only commands remain unaffected. \n\nNew features include recognizing Chutes as a provider and an improved slash command menu that displays skills alongside workflows, disambiguating commands with shared names to prevent shadowing. Several critical fixes address previous pain points: turns completing with a plan that included a plan-blocked command no longer incorrectly show an error state, and toggling to Act now correctly re-runs the plan. Tool paths in the chat view are now relative to the workspace, and pending attachments are reset for new tasks, preventing carry-over. \n\nError handling is also much clearer, with specific messages for missing API keys instead of generic failures, and MCP tool/resource lists now refresh dynamically upon server notifications. Linux keybinding labels in the Plan/Act tooltip are corrected, and the system can now recover from running out of context by compacting and retrying. Empty model responses are retried across all providers, fixing issues with OpenRouter, Cline, and OpenAI-compatible endpoints, and Claude 4.6+/5.x models are no longer rejected with 'thinking.type.enabled is not supported'. Bedrock prompt caching is restored, and `max_completion_tokens` are sent for reasoning models on OpenAI-compatible endpoints, with image content substituted for models lacking image support. The MiniMax default model now inherits from models.dev, and the bundled catalog is refreshed to include Infomaniak and SCX.ai. Finally, error telemetry is improved by reporting provider failures once and rate-limiting repeated failures. Users should upgrade to benefit from these stability and usability improvements, especially if they rely on plan mode or use Claude/Bedrock models."
     },
     "features": [
       {
@@ -661,6 +667,24 @@
         "description": "Free Cline models are now supported and labeled '(free)' in model pickers, with a clear message, including reset time, when the free-tier limit is reached.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "chutes-provider-recognition",
+        "name": "Recognize Chutes as a provider",
+        "status": "stable",
+        "since": "4.1.4",
+        "description": "cline now recognizes Chutes as a valid provider.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "skills-alongside-workflows-slash-command-menu",
+        "name": "Show skills alongside workflows in the slash command menu",
+        "status": "stable",
+        "since": "4.1.4",
+        "description": "Skills are now displayed alongside workflows in the slash command menu, improving discoverability. Commands with shared names are disambiguated instead of one shadowing the other.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [],
@@ -679,6 +703,30 @@
           "Related settings UI"
         ],
         "migration": "No migration is required. All task commands will now execute in the background.",
+        "source_url": ""
+      },
+      {
+        "id": "model-initiated-plan-to-act-switching-removal",
+        "version": "4.1.4",
+        "title": "Removal of Model-Initiated Plan-to-Act Switching",
+        "description": "The model will no longer automatically switch from plan mode to act mode. Switching out of plan mode is now exclusively user-driven.",
+        "affected": [
+          "Plan/Act mode behavior",
+          "Model autonomy in decision-making"
+        ],
+        "migration": "Users must now explicitly trigger the switch from plan mode to act mode. The model will no longer make this decision mid-turn.",
+        "source_url": ""
+      },
+      {
+        "id": "hard-block-file-editing-shell-commands-in-plan-mode",
+        "version": "4.1.4",
+        "title": "Hard-blocking File-Editing Shell Commands in Plan Mode",
+        "description": "File-editing shell commands are now hard-blocked in plan mode. This includes file manipulation, in-place editors, redirection to files, mutating git subcommands, and package installs. Read-only investigation commands are still permitted.",
+        "affected": [
+          "Shell command execution in plan mode",
+          "File system interactions during planning"
+        ],
+        "migration": "Users must switch out of plan mode to execute any shell commands that modify files or system state. Attempting to run such commands in plan mode will result in refusal.",
         "source_url": ""
       }
     ],
