@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "gemini-cli",
   "version": "0.54.0",
-  "generated_at": "2026-08-06T06:28:02.801Z",
+  "generated_at": "2026-08-06T03:17:03.512Z",
   "extracted_from_sources": [
     "https://github.com/google-gemini/gemini-cli/releases/tag/v0.33.0",
     "https://github.com/google-gemini/gemini-cli/releases"
@@ -16,13 +16,19 @@
   "delta": {
     "from_version": "0.54.0",
     "to_version": "0.54.0",
-    "new_features": [],
+    "new_features": [
+      "caretaker-triage-post-comment-before-auto-closing-issues",
+      "firestore-concurrency-dual-locking-and-test-ingestion-utilities",
+      "antigravity-agent-runner-and-prompt-templates"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "explicit-tag-length-and-validation-in-file-keychain"
+    ]
   },
   "payload": {
     "meta": {
@@ -46,7 +52,7 @@
       "runtime": "node",
       "written_in": "typescript",
       "release_cadence": "Stable on Tuesdays. Preview: Tuesdays UTC 23:59. Nightly: daily UTC 00:00.",
-      "tldr": "This `gemini-cli` release, version 0.54.0, focuses on stability, security, and internal tooling improvements, particularly for the PR generation and issue management systems. A key enhancement is the caretaker triage feature, which now posts a comment before auto-closing issues, providing better communication and context for developers. This helps prevent issues from being closed without prior notification or explanation, improving the overall issue management workflow. \n\nSecurity has been bolstered with the enforcement of HTTPS for `GoogleCredentialsAuthProvider`, preventing cleartext leakage of sensitive credentials. Additionally, explicit tag length and validation are now enforced in the file keychain, further securing stored data. For internal tooling, the PR generator database now includes Firestore concurrency dual-locking and test ingestion utilities, which will lead to more robust and reliable PR generation. The PR generator agent also benefits from the implementation of the Antigravity agent runner and prompt templates, which should improve the quality and relevance of generated pull requests. \n\nSeveral fixes address core functionalities, such as rotating the session ID on model fallback to prevent stateful API errors and filtering out thought parts from `getHistoryTurns` when context management is disabled. Another fix normalizes CRLF line endings to LF in `getProposedContent` within the `a2a-server`, ensuring consistent content handling. Finally, a fix ensures that merged function-response turns are skipped when finding the active loop, which can improve the accuracy of loop detection. Developers should upgrade to this version to benefit from these stability, security, and internal tooling enhancements, especially if they rely on the PR generation or issue management features."
+      "tldr": "Version 0.54.0 of gemini-cli introduces significant security enhancements and new features for automated processes. A critical security fix now enforces HTTPS for `GoogleCredentialsAuthProvider`, preventing cleartext leakage and securing remote agent communications. This is a crucial update for anyone using remote agents with Google credentials. Another important security change enforces explicit tag length and validation in the file keychain, which might require users to update or recreate existing keychain entries if they don't meet the new validation rules. \n\nNew features include an update to the caretaker triage system, which will now post a comment before auto-closing issues, providing better transparency and context. For developers working with the PR generator, there are new Firestore concurrency dual-locking mechanisms and test ingestion utilities, improving data integrity and testing. Additionally, the PR generator agent now utilizes an Antigravity agent runner and prompt templates, which should lead to more effective pull request generation. \n\nSeveral fixes address core functionality, such as rotating session IDs on model fallback to prevent stateful API errors and filtering out thought parts from `getHistoryTurns` when context management is disabled. The `a2a-server` now normalizes CRLF line endings to LF in `getProposedContent`, and a fix ensures merged function-response turns are skipped when finding the active loop. Users should prioritize this upgrade, especially for the security fixes, and review their file keychain entries for compliance with the new validation rules."
     },
     "features": [
       {
