@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.223",
-  "generated_at": "2026-08-06T15:11:24.734Z",
+  "generated_at": "2026-08-06T23:55:59.595Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -49,7 +49,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Claude Code 2.1.223 introduces significant security and stability fixes, alongside improvements to managed settings and context handling. A major security patch addresses a Bash permission bypass where crafted commands could hide from approval checks, and another fixes workflow scripts using dynamic `import()` to escape the sandbox. These fixes are critical for maintaining the integrity and security of your agent environments.\n\nManaged settings now support wildcard entries like `\"owner/*\"` for `strictKnownMarketplaces` and `blockedMarketplaces`, simplifying the management of GitHub organization repositories. Server-delivered managed settings now merge with local `managed-settings.json` and MDM profiles, providing more flexible configuration. The `/review` command is now an alias for `/code-review`, which has enhanced functionality to reuse the last-typed effort level and supports deep cloud reviews with `/code-review ultra`.\n\nContext window management has been refined: `CLAUDE_CODE_DISABLE_1M_CONTEXT` now applies auto-compaction to all 1M context models, and a new environment variable `CLAUDE_CODE_DISABLE_UNKNOWN_MODEL_WINDOW_ENFORCEMENT=1` allows disabling context enforcement for unrecognized models. Several fixes address session resume issues, including those after `/cd` or with malformed diagnostics, and correct model discovery for provider-prefixed Claude models. It is highly recommended to upgrade to this version promptly to benefit from the critical security patches and improved stability."
+      "tldr": "This release of claude-code (2.1.223) focuses heavily on security fixes and improvements to context management and marketplace settings. A significant change is the enhancement of `strictKnownMarketplaces` and `blockedMarketplaces` managed settings, which now support `\"owner/*\"` wildcard entries, allowing organizations to easily manage access to all marketplace repositories under a GitHub organization. This provides more granular control and simplifies configuration for enterprise users. \n\nSeveral critical security vulnerabilities have been patched, including a Bash permission bypass, issues with permission prompts being obscured by invisible characters, and workflow scripts circumventing sandboxing via dynamic `import()`. A permission gap where `bypassPermissions` ignored org policies has also been closed. These fixes are crucial for maintaining the integrity and security of agent operations, especially in shared or sensitive environments. \n\nContext management has been refined with `CLAUDE_CODE_DISABLE_1M_CONTEXT` now applying auto-compaction to all Claude models with a 1M window, ensuring sessions stay within 200K. Additionally, auto-compact now enforces context window limits for unrecognized model IDs, preventing unexpected context growth; the `CLAUDE_CODE_DISABLE_UNKNOWN_MODEL_WINDOW_ENFORCEMENT=1` environment variable can revert this behavior if needed. The `/review` command is now an alias for `/code-review`, which has improved behavior for reusing the last-typed effort level. \n\nNumerous bug fixes address issues like gateway model discovery failures for provider-prefixed Claude models (e.g., `vertex_ai/claude-*`), incorrect `modelOverrides` key handling, and managed settings merging behavior. Resuming sessions after `/cd` or with malformed history, and issues with forked background agents getting stuck, have also been resolved. It is recommended to upgrade promptly to benefit from the security patches and improved stability, especially if operating in environments where these vulnerabilities could be exploited or if experiencing issues with context management or session resumption."
     },
     "features": [
       {
@@ -4506,6 +4506,12 @@
         "name": "/simplify",
         "replaced_by": "/code-review",
         "deprecated_since": "2.1.147",
+        "source_url": ""
+      },
+      {
+        "name": "/review",
+        "replaced_by": "/code-review",
+        "deprecated_since": "2.1.223",
         "source_url": ""
       },
       {
