@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.222",
-  "generated_at": "2026-08-05T23:58:16.949Z",
+  "version": "2.1.223",
+  "generated_at": "2026-08-06T03:16:52.674Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,17 +14,19 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.222",
-    "to_version": "2.1.222",
+    "from_version": "2.1.223",
+    "to_version": "2.1.223",
     "new_features": [],
-    "new_commands": [],
+    "new_commands": [
+      "/teleport"
+    ],
     "new_flags": [],
-    "new_env_vars": [],
+    "new_env_vars": [
+      "CLAUDE_CODE_DISABLE_UNKNOWN_MODEL_WINDOW_ENFORCEMENT"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "remote-control-auto-start-repo-local-settings"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -41,12 +43,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.222",
-      "latest_release_date": "2026-08-04",
+      "latest_stable": "2.1.223",
+      "latest_release_date": "2026-08-06",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release, 2.1.222, focuses heavily on stability, security, and accuracy improvements across various core functionalities. A significant security fix prevents worktree-isolated sessions and their subagents from executing destructive git commands against the main checkout, ensuring isolation now applies comprehensively to file edits and Bash in all session types. This enhances the integrity of your main repository when working with isolated environments.\n\nSeveral critical bug fixes address long-standing issues. The startup connectivity check now correctly handles HTTPS proxies and provides clear timeouts, resolving previous hanging and failure scenarios. Usage reporting for MCP servers has been made more accurate, attributing usage only to requests that consumed tool results, rather than every turn after a call. Furthermore, issues with sessions not linking to newly created pull requests and `SendMessage` failing on long summaries (now truncated) have been resolved, improving workflow and reliability. Claude.ai connectors now provide a `/login` hint for invalid session tokens instead of falsely marking them as needing authorization.\n\nAn important breaking change is that Remote Control auto-start can no longer be enabled via repo-local settings; it must now be configured at the user scope using `/config`. This change enhances security and centralizes control over this feature. Auto mode safety has been improved by evaluating messages sent via `SendMessage` through the permission classifier before dispatch, and Claude's refusal to invoke `disable-model-invocation` skills is now more helpful, prompting the user to run the skill instead. The `/diff` view, Remote Control workspace diff, and file-edit diffs now use raw git blob content, ignoring workspace-configured diff drivers for more consistent results. The 'ultraplan' feature has been removed. Users should upgrade to benefit from these stability, security, and accuracy enhancements, especially if using worktree-isolated sessions or relying on accurate MCP usage reporting."
+      "tldr": "Claude-Code 2.1.223 introduces significant security and stability fixes, alongside improvements to managed settings and context handling. A major security patch addresses a Bash permission bypass and prevents crafted commands from hiding parts of themselves from permission checks, ensuring greater integrity in command execution. Additionally, workflow scripts can no longer use dynamic `import()` to run code outside the workflow sandbox, and a permission gap where `bypassPermissions` ignored org policies has been closed, enhancing overall security.\n\nKey updates include expanded managed settings, allowing \"owner/*\" wildcards in `strictKnownMarketplaces` and `blockedMarketplaces` for easier management of GitHub org repos. The `CLAUDE_CODE_DISABLE_1M_CONTEXT` environment variable now applies auto-compaction to all Claude models with a native 1M window, not just a fixed list, and a new warning appears if auto-compaction isn't holding the session to 200K. Auto-compact also now enforces context window limits for unrecognized model IDs, with an opt-out via `CLAUDE_CODE_DISABLE_UNKNOWN_MODEL_WINDOW_ENFORCEMENT=1`.\n\nSeveral critical bugs have been resolved, such as issues with resuming sessions after `/cd`, incorrect model discovery for provider-prefixed Claude models (e.g., `vertex_ai/claude-*`), and `modelOverrides` keys being treated as canonical model IDs. Managed settings now merge correctly with local `managed-settings.json` or MDM profiles, and sandboxed commands no longer fail on Linux when `sandbox.filesystem.denyWrite` covers the working directory. The `/review` command is now an alias for `/code-review`, which reviews the current diff or a PR, and `/code-review` now reuses the last-typed effort level. A new `/teleport` hint helps users continue cloud sessions locally. Users should upgrade to benefit from these security enhancements, improved stability, and more robust context management."
     },
     "features": [
       {
@@ -1849,6 +1851,14 @@
         "since": "2.1.157",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "/teleport",
+        "syntax": "/teleport <session id>",
+        "description": "Hint in cloud sessions showing how to continue locally with `claude --teleport <session id>`.",
+        "since": "2.1.223",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -2588,6 +2598,13 @@
         "purpose": "Enables auto mode on Bedrock, Vertex, and Foundry for Opus 4.7 and Opus 4.8.",
         "status": "experimental",
         "since": "2.1.158",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_DISABLE_UNKNOWN_MODEL_WINDOW_ENFORCEMENT",
+        "purpose": "Set to `1` to restore the previous behavior of auto-compact, which allowed sessions on unrecognized model IDs to grow past the assumed context window.",
+        "status": "stable",
+        "since": "2.1.223",
         "source_url": ""
       }
     ],

@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "gemini-cli",
-  "version": "0.53.1",
-  "generated_at": "2026-08-05T23:58:23.830Z",
+  "version": "0.54.0",
+  "generated_at": "2026-08-06T03:17:03.512Z",
   "extracted_from_sources": [
     "https://github.com/google-gemini/gemini-cli/releases/tag/v0.33.0",
     "https://github.com/google-gemini/gemini-cli/releases"
@@ -14,15 +14,21 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "0.53.1",
-    "to_version": "0.53.1",
-    "new_features": [],
+    "from_version": "0.54.0",
+    "to_version": "0.54.0",
+    "new_features": [
+      "caretaker-triage-post-comment-before-auto-closing-issues",
+      "firestore-concurrency-dual-locking-and-test-ingestion-utilities",
+      "antigravity-agent-runner-and-prompt-templates"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "explicit-tag-length-and-validation-in-file-keychain"
+    ]
   },
   "payload": {
     "meta": {
@@ -39,14 +45,14 @@
       "changelog_url": "https://github.com/google-gemini/gemini-cli/releases",
       "repo_url": "https://github.com/google-gemini/gemini-cli",
       "license": "apache-2.0",
-      "latest_stable": "0.53.1",
+      "latest_stable": "0.54.0",
       "latest_prerelease": "0.34.0-preview",
-      "latest_release_date": "2026-07-31",
+      "latest_release_date": "2026-08-06",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
       "release_cadence": "Stable on Tuesdays. Preview: Tuesdays UTC 23:59. Nightly: daily UTC 00:00.",
-      "tldr": "This `gemini-cli` release, version 0.53.1, is a patch release primarily focused on stability. The sole change is a cherry-picked fix (f47d6c6) to address a conflict that arose during the release/v0.53.0-pr-28566 branch merge. While the specific details of the conflict and its resolution are not provided in the changelog, this indicates a behind-the-scenes effort to ensure the integrity and stability of the codebase. Users should consider upgrading to this version to benefit from this stability fix, especially if they encountered any issues related to the previous 0.53.0 release candidate. There are no new features, commands, flags, or breaking changes introduced in this patch."
+      "tldr": "Version 0.54.0 of gemini-cli introduces significant security enhancements and new features for automated processes. A critical security fix now enforces HTTPS for `GoogleCredentialsAuthProvider`, preventing cleartext leakage and securing remote agent communications. This is a crucial update for anyone using remote agents with Google credentials. Another important security change enforces explicit tag length and validation in the file keychain, which might require users to update or recreate existing keychain entries if they don't meet the new validation rules. \n\nNew features include an update to the caretaker triage system, which will now post a comment before auto-closing issues, providing better transparency and context. For developers working with the PR generator, there are new Firestore concurrency dual-locking mechanisms and test ingestion utilities, improving data integrity and testing. Additionally, the PR generator agent now utilizes an Antigravity agent runner and prompt templates, which should lead to more effective pull request generation. \n\nSeveral fixes address core functionality, such as rotating session IDs on model fallback to prevent stateful API errors and filtering out thought parts from `getHistoryTurns` when context management is disabled. The `a2a-server` now normalizes CRLF line endings to LF in `getProposedContent`, and a fix ensures merged function-response turns are skipped when finding the active loop. Users should prioritize this upgrade, especially for the security fixes, and review their file keychain entries for compliance with the new validation rules."
     },
     "features": [
       {
@@ -1908,6 +1914,33 @@
         "description": "Implements an LLM triage orchestrator and container build for caretaker-triage.",
         "key_details": [],
         "source_url": "https://github.com/google-gemini/gemini-cli/pull/28345"
+      },
+      {
+        "id": "caretaker-triage-post-comment-before-auto-closing-issues",
+        "name": "Caretaker Triage: Post Comment Before Auto-Closing Issues",
+        "status": "stable",
+        "since": "0.54.0",
+        "description": "The caretaker triage system will now post a comment on issues before automatically closing them, providing more context and notification.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28411"
+      },
+      {
+        "id": "firestore-concurrency-dual-locking-and-test-ingestion-utilities",
+        "name": "Firestore Concurrency Dual-Locking and Test Ingestion Utilities for PR Generator DB",
+        "status": "stable",
+        "since": "0.54.0",
+        "description": "Implemented Firestore concurrency dual-locking and test ingestion utilities for the PR generator database, enhancing data integrity and testing capabilities.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28432"
+      },
+      {
+        "id": "antigravity-agent-runner-and-prompt-templates",
+        "name": "Antigravity Agent Runner and Prompt Templates for PR Generator Agent",
+        "status": "stable",
+        "since": "0.54.0",
+        "description": "Implemented the Antigravity agent runner and prompt templates for the PR generator agent, improving its ability to generate pull requests.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28434"
       }
     ],
     "commands": [
@@ -2301,6 +2334,17 @@
         ],
         "migration": "Update your policy configurations to include the `toolName` field.",
         "source_url": "https://github.com/google-gemini/gemini-cli/pull/23330"
+      },
+      {
+        "id": "explicit-tag-length-and-validation-in-file-keychain",
+        "version": "0.54.0",
+        "title": "Enforced Explicit Tag Length and Validation in File Keychain",
+        "description": "The file keychain now enforces explicit tag length and validation. This change might affect existing keychain entries if they do not conform to the new validation rules, potentially requiring recreation or modification of affected entries.",
+        "affected": [
+          "File Keychain entries"
+        ],
+        "migration": "Review existing file keychain entries and ensure they adhere to explicit tag length and validation requirements. Non-compliant entries may need to be recreated or updated.",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28523"
       }
     ],
     "deprecations": [],
