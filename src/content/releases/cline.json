@@ -15,6 +15,70 @@
   },
   "releases": [
     {
+      "version": "v4.1.6",
+      "name": "v4.1.6",
+      "body": "\n### Added\n\n- Offer `meta/muse-spark-1.2-contributor` on the Cline provider, alongside a refreshed model catalog.\n\n### Fixed\n\n- Attribute error telemetry to the model actually in use for a run, so failures are no longer reported against the wrong model.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.1.5...v4.1.6\n",
+      "date": "2026-08-06T08:09:41Z",
+      "url": "https://github.com/cline/cline/releases/tag/v4.1.6",
+      "prerelease": false
+    },
+    {
+      "version": "sdk/sdk/v0.0.71",
+      "name": "SDK v0.0.71",
+      "body": "\n- Reasoning settings now resolve portably across AI SDK providers — effort levels and enable/disable flags map to the AI SDK's native reasoning setting (including Ollama), replacing the per-provider thinking overrides, and an explicit request to disable reasoning now takes priority\n- `sdk.error` telemetry from agent runs is attributed to the model actually in use, and undefined values are stripped from the event properties\n- Refreshed the model catalog from models.dev, and surfaced `meta/muse-spark-1.2-contributor` for the Cline provider\n\n**Full Changelog**: https://github.com/cline/cline/compare/sdk/sdk/v0.0.70...sdk/sdk/v0.0.71\n",
+      "date": "2026-08-06T07:29:51Z",
+      "url": "https://github.com/cline/cline/releases/tag/sdk/sdk/v0.0.71",
+      "prerelease": false
+    },
+    {
+      "version": "cli-v3.0.51",
+      "name": "CLI v3.0.51",
+      "body": "\n- Reasoning effort now applies consistently across providers instead of going through per-provider thinking overrides, including Ollama, and asking for reasoning to be off is respected everywhere (from SDK v0.0.71)\n- `meta/muse-spark-1.2-contributor` is now selectable on the Cline provider, alongside a refreshed model catalog (from SDK v0.0.71)\n- Error telemetry now reports the model that was actually in use for the run (from SDK v0.0.71)\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.50...cli-v3.0.51\n",
+      "date": "2026-08-06T07:46:56Z",
+      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.51",
+      "prerelease": false
+    },
+    {
+      "version": "v4.1.5",
+      "name": "v4.1.5",
+      "body": "\n### Added\n\n- Explain when a free model promotion ends. Requests to a retired free model now show a dedicated notice with a button to pick another model, instead of a generic error with nothing but a Retry prompt.\n\n### Changed\n\n- Map reasoning settings onto a shared path across AI SDK providers, so effort levels and enable/disable toggles behave consistently (including on Ollama) instead of relying on per-provider overrides.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.1.4...v4.1.5\n",
+      "date": "2026-08-05T21:54:07Z",
+      "url": "https://github.com/cline/cline/releases/tag/v4.1.5",
+      "prerelease": false
+    },
+    {
+      "version": "v4.1.4",
+      "name": "v4.1.4",
+      "body": "\n### Added\n\n- Recognize Chutes as a provider.\n- Show skills alongside workflows in the slash command menu, and disambiguate commands that share a name instead of letting one shadow the other.\n\n### Changed\n\n- Remove model-initiated plan-to-act switching. Switching out of plan mode is now driven by you, not by the model deciding mid-turn.\n- Hard-block file-editing shell commands in plan mode instead of relying on prompting alone. Read-only investigation still works, but file manipulation, in-place editors, redirection to files, mutating git subcommands, and package installs are refused.\n\n### Fixed\n\n- Stop treating a turn that completes with a plan as a failed turn when a plan-blocked command was its only tool call. The turn no longer ends in the error state with a Retry footer, and toggling to Act correctly re-runs the presented plan instead of appearing to do nothing.\n- Show tool paths relative to the workspace in the chat view instead of absolute paths.\n- Reset pending attachments when starting a new task, so images from the previous task no longer carry over.\n- Surface a clear error when the selected provider has no API key configured, instead of a generic failure.\n- Refresh MCP tool and resource lists when a server sends a `list_changed` notification, instead of only showing a toast.\n- Show installed plugins under their real package names instead of all appearing as \"index\".\n- Correct the Linux keybinding label in the Plan/Act mode tooltip.\n- Recover from running out of context instead of failing with a raw provider error — the run compacts and retries once, and the cases that genuinely cannot be recovered explain why.\n- Retry empty model responses on every provider rather than only Ollama, fixing hard \"Model returned empty response\" failures on OpenRouter, Cline, and OpenAI-compatible endpoints.\n- Stop Claude 4.6+ and 5.x models being rejected with \"thinking.type.enabled is not supported\" when they resolve from the offline catalog or from a hand-typed model id.\n- Restore Bedrock prompt caching, which reported zero cache reads and writes because the provider sent a cache format Bedrock discards, and route Bedrock foundation models through geo inference profiles.\n- Send `max_completion_tokens` for reasoning models on OpenAI-compatible endpoints, and substitute image content for models without image support instead of failing the request.\n- Inherit the MiniMax default model from models.dev, and refresh the bundled catalog, which adds Infomaniak and SCX.ai.\n- Report the same provider failure once instead of twice in error telemetry, and rate-limit repeated failures from unattended retry loops.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.1.3...v4.1.4\n",
+      "date": "2026-08-05T10:29:32Z",
+      "url": "https://github.com/cline/cline/releases/tag/v4.1.4",
+      "prerelease": false
+    },
+    {
+      "version": "sdk/sdk/v0.0.70",
+      "name": "SDK v0.0.70",
+      "body": "\n- Plan mode now hard-blocks file-editing shell commands instead of relying on prompting alone — `run_commands` stays available for read-only investigation, but file-manipulation commands, in-place editors (`sed -i`, `perl -i`), redirection to files, mutating git subcommands, package installs, and nested command strings (`sh -c`, `eval`, `sudo`, `xargs`) are rejected with a tool error, on Windows and PowerShell too\n- Context-window overflow errors are now detected and recovered from instead of surfacing as raw unclassified provider errors: the runtime force-compacts with a deterministic strategy that needs no extra LLM call and retries the run once, and terminal cases (nothing left to compact, a retry that still overflows) fail with an actionable message\n- Sessions now record how they began — a new `mode` on `StartSessionInput` (`user`, `automation`, `subagent`, `team`) alongside `source` — and root-session persistence is lazy: starting a runtime allocates the session id in memory without writing a database row, so closing it before any user turn no longer leaves an empty history entry\n- Turns that come back completely empty are now retried on every provider, not just Ollama — hosted backends (OpenRouter, Cline, OpenAI-compatible endpoints) previously failed the task outright with \"Model returned empty response\". Tool-call-only turns are never retried, and turns that error or hit the token limit pass through unchanged\n- Adaptive-era Claude models (4.6+ and 5.x) are no longer sent the manual thinking wire shape and rejected with \"thinking.type.enabled is not supported\" — the baked model catalog now carries reasoning metadata, and unlisted or user-typed adaptive ids are inferred correctly when that metadata is missing\n- Bedrock prompt caching works again: the provider now emits Converse `cachePoint` markers instead of Anthropic `cache_control`, which the Bedrock converter silently dropped, so cache reads and writes are no longer always 0 and no stray `cache_control` field leaks into the request body\n- Bedrock foundation models are now routed through geo inference profiles\n- Reasoning models on OpenAI-compatible endpoints now receive `max_completion_tokens` instead of the rejected `max_tokens`\n- Requests to models without image support now substitute image content instead of failing\n- MiniMax now inherits its default model from models.dev\n- Upgraded the model layer to AI SDK 7, switched Ollama to the native AI SDK provider (with wire-contract fixes for empty `think` settings, mid-stream errors, and attachment-only turns), and emitted the canonical AI SDK 7 file parts for images so image-bearing requests no longer log deprecation warnings\n- `sdk.error` telemetry is no longer emitted twice for the same provider failure, and repeated failures from unattended retry loops are rate-limited\n\n**Full Changelog**: https://github.com/cline/cline/compare/sdk/sdk/v0.0.69...sdk/sdk/v0.0.70\n",
+      "date": "2026-08-05T09:16:05Z",
+      "url": "https://github.com/cline/cline/releases/tag/sdk/sdk/v0.0.70",
+      "prerelease": false
+    },
+    {
+      "version": "desktop-v0.0.9",
+      "name": "Desktop v0.0.9",
+      "body": "\n- Cline Code now ships as a single universal macOS download that runs natively on both Apple Silicon and Intel — no more picking the right architecture. Existing per-architecture installs migrate to it automatically on their next update.\n- Session history can now be filtered by where a session came from — Desktop, CLI, extension, or scheduled — from a new filter control in the sidebar.\n- The composer now shows a token usage ring for the active model's context window, with cumulative cost, and it changes color as you approach the limit.\n- Skills now appear in the slash command menu alongside workflows, and commands that share a name are disambiguated instead of shadowing each other.\n- Installed plugins now show their real package names instead of all appearing as \"index\".\n- The agent header can be dragged to move the window again, including on read-only titles.\n- Chat message actions (copy, fork, edit, restore) no longer collide with the descenders of the message's last line.\n- Application errors are now reported in diagnostics, and the packaged app's telemetry configuration is baked into the sidecar at build time — previously the packaged build shipped with it empty, so no diagnostics were ever sent.\n- Plan mode now hard-blocks file-editing shell commands rather than relying on prompting alone; read-only investigation still works.\n- Running out of context is now recovered from automatically — the run compacts and retries once instead of failing with a raw provider error.\n- Empty model responses are now retried on every provider, not just Ollama, fixing hard \"Model returned empty response\" failures on OpenRouter, Cline, and OpenAI-compatible endpoints.\n- Claude 4.6+ and 5.x models are no longer rejected with \"thinking.type.enabled is not supported\".\n- Bedrock prompt caching works again — cache reads and writes were always 0 — and Bedrock foundation models now route through geo inference profiles.\n- Reasoning models on OpenAI-compatible endpoints now get the correct token parameter, and models without image support substitute image content instead of failing.\n- Refreshed the bundled provider and model catalog, adding Infomaniak and SCX.ai.\n- Upgraded the model layer to AI SDK 7 and switched Ollama to the native provider.\n\n**Full Changelog**: https://github.com/cline/cline/compare/desktop-v0.0.8...desktop-v0.0.9\n",
+      "date": "2026-08-05T09:47:19Z",
+      "url": "https://github.com/cline/cline/releases/tag/desktop-v0.0.9",
+      "prerelease": false
+    },
+    {
+      "version": "cli-v3.0.50",
+      "name": "CLI v3.0.50",
+      "body": "\n- Added user-selectable color themes to the interactive TUI. Pick one with `/theme`, the command palette, or the Theme row in `/settings` — the picker previews each theme live. Built-in themes are Auto (terminal-adaptive, the default), Cline Dark, Cline Light, Tokyo Night, Gruvbox Dark, Nord, Dracula, Catppuccin Mocha, One Dark, Solarized Dark, and Solarized Light. Named themes paint the background, foreground, accents, syntax highlighting, and diff colors, and `CLINE_THEME` overrides the persisted choice at startup\n- The git branch shown below the prompt now updates when you switch branches from another terminal or your editor, instead of showing whatever was checked out when the TUI started\n- Telegram slash commands such as `/clear` now reach the connector command host — the Telegram library was intercepting them and they were silently dropped\n- Racing connector launches no longer collide: an instance is claimed before it opens socket mode, the hub supervises connector processes, and `doctor`/`connect` skip connectors that are already starting. Connector tools are also enabled by default, and the Slack greeting is no longer replayed on reconnect\n- Auto-approval settings are now honored over ACP\n- Plan mode now hard-blocks file-editing shell commands instead of relying on prompting alone — `run_commands` stays available for read-only investigation, but file-manipulation commands, in-place editors (`sed -i`, `perl -i`), redirection to files, mutating git subcommands, package installs, and nested command strings (`sh -c`, `eval`, `sudo`) are rejected, on Windows and PowerShell too (from SDK v0.0.70)\n- A turn that ends with a completed plan is no longer rendered as a failed turn when a plan-blocked command was its only tool call\n- Running out of context is now recovered from instead of failing with a raw provider error: the run force-compacts and retries once, and the cases that genuinely cannot be recovered report why (from SDK v0.0.70)\n- Empty model responses are now retried on every provider, not just Ollama — OpenRouter, Cline, and OpenAI-compatible endpoints previously failed the task outright with \"Model returned empty response\" (from SDK v0.0.70)\n- Claude 4.6+ and 5.x models are no longer rejected with \"thinking.type.enabled is not supported\" when they resolve from the offline catalog or from a hand-typed model id (from SDK v0.0.70)\n- Bedrock prompt caching works again — the provider was sending a cache format Bedrock silently discards, so cache reads and writes were always 0 — and Bedrock foundation models are now routed through geo inference profiles (from SDK v0.0.70)\n- Reasoning models on OpenAI-compatible endpoints now receive `max_completion_tokens` instead of the rejected `max_tokens`, and requests to models without image support substitute the image content instead of failing (from SDK v0.0.70)\n- MiniMax now inherits its default model from models.dev, and the model catalog picked up two new providers, Infomaniak and SCX.ai (from SDK v0.0.70)\n- Upgraded the model layer to AI SDK 7 and switched Ollama to the native AI SDK provider (from SDK v0.0.70)\n- Error telemetry no longer reports the same provider failure twice, and repeated failures from unattended retry loops are rate-limited (from SDK v0.0.70)\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.49...cli-v3.0.50\n",
+      "date": "2026-08-05T09:26:15Z",
+      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.50",
+      "prerelease": false
+    },
+    {
       "version": "v4.1.3",
       "name": "v4.1.3",
       "body": "\n### Fixed\n\n- Stop the two bundles of the combined rollout package from invalidating each other's Cline account session. A still-open legacy window that refreshed its token after the machine was promoted to the new extension would consume the shared refresh token, producing spurious \"Unauthorized\" / re-authenticate prompts and unexpected sign-outs. Promoted legacy windows now keep working on their current session and offer a one-time Reload Window prompt instead.\n- Fall back to the default Cline model when migrating a setup that references a model id the new extension doesn't recognize, instead of leaving the provider unconfigured.\n- Restore reliable checkpoints: checkpoints are created consistently, and restoring one now rewinds the whole workspace rather than a subset of files.\n- Keep settings edits that are made before the provider config finishes loading — base URLs, API keys, and the Qwen/Moonshot API line are no longer silently discarded.\n- Stop losing keystrokes in custom base URL fields, and keep the custom URL checkbox state after a failed clear.\n- Use the AskSage custom API URL at inference time instead of ignoring it.\n- Settle a pending tool approval when an edited message replaces the session, so the task no longer hangs waiting on a prompt that is gone.\n- Drop attachments from messages that have been edited.\n- Complete terminal commands when the shell execution ends, so tasks no longer stall on commands that already finished.\n- Include untracked files when generating commit messages.\n- Run Windows Store PowerShell profiles correctly.\n- Surface the upstream provider error when a gateway-forwarded stream fails, instead of a generic failure.\n- Retry empty Ollama responses at the model boundary, and raise the response-start timeout to 5 minutes so cold model loads no longer error out.\n- Show proper display names for Cline free models and recommended models in the model picker.\n- Preserve video input capability for models that support it.\n- Keep the plan/act input border in sync with the actual textarea focus.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.1.2...v4.1.3\n",
@@ -189,71 +253,7 @@
       "date": "2026-07-20T07:58:33Z",
       "url": "https://github.com/cline/cline/releases/tag/v4.0.10",
       "prerelease": false
-    },
-    {
-      "version": "sdk/sdk/v0.0.65",
-      "name": "SDK v0.0.65",
-      "body": "\n- Claude Code and Codex provider SDKs are now optional peer dependencies loaded on demand, dramatically cutting install size\n- Added Kimi K3 to the bundled ClinePass model fallback\n- Runs now retry once after refreshing expired OAuth credentials\n- Team runs: the spawn tool is no longer exposed to teammate agents\n- Team runs: errored teammate runs now report as failed instead of completed\n- Improved shell-command parsing to fix a Windows shell mismatch\n- New `@cline/ui` agent chat components with Storybook and npm packaging\n- Updated the bundled model catalog\n\n**Full Changelog**: https://github.com/cline/cline/compare/sdk/sdk/v0.0.64...sdk/sdk/v0.0.65\n",
-      "date": "2026-07-19T04:02:15Z",
-      "url": "https://github.com/cline/cline/releases/tag/sdk/sdk/v0.0.65",
-      "prerelease": false
-    },
-    {
-      "version": "cli-v3.0.46",
-      "name": "CLI v3.0.46",
-      "body": "\n- Fixed out-of-credits detection so the CLI reliably recognizes the Cline API's real `insufficient_credits` (402) error and shows the \"add credits\" card instead of a generic error\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.45...cli-v3.0.46\n",
-      "date": "2026-07-19T06:26:43Z",
-      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.46",
-      "prerelease": false
-    },
-    {
-      "version": "cli-v3.0.45",
-      "name": "CLI v3.0.45",
-      "body": "\n- Smaller install: the Claude Code and Codex providers are now optional and loaded on demand, cutting `npm i -g cline` from ~640MB to ~285MB (from SDK v0.0.65)\n- Kimi K3 is now available as a ClinePass model (from SDK v0.0.65)\n- Runs now retry once after refreshing expired OAuth credentials (from SDK v0.0.65)\n- Team runs: the spawn tool is no longer exposed to teammates, and errored teammate runs now report as failed instead of completed (from SDK v0.0.65)\n- Hub status output now includes version numbers\n- Updated the bundled model catalog (from SDK v0.0.65)\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.44...cli-v3.0.45\n",
-      "date": "2026-07-19T04:10:41Z",
-      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.45",
-      "prerelease": false
-    },
-    {
-      "version": "sdk/sdk/v0.0.64",
-      "name": "SDK v0.0.64",
-      "body": "\n- Improved max output token handling across providers (gateway routing, OpenAI vendor, and reasoning models)\n- Frontmatter and user-instruction files that start with a UTF-8 byte order mark (e.g. saved by Windows editors) now parse correctly\n\n**Full Changelog**: https://github.com/cline/cline/compare/sdk/sdk/v0.0.63...sdk/sdk/v0.0.64\n",
-      "date": "2026-07-17T01:37:23Z",
-      "url": "https://github.com/cline/cline/releases/tag/sdk/sdk/v0.0.64",
-      "prerelease": false
-    },
-    {
-      "version": "sdk/sdk/v0.0.63",
-      "name": "SDK v0.0.63",
-      "body": "\n- The session runtime now emits `task.mistake_limit_reached` telemetry when the consecutive-mistake limit is hit, so every host (CLI, VS Code extension, hub daemon) captures it — including auto-stops when no host prompt is configured\n\n**Full Changelog**: https://github.com/cline/cline/compare/sdk/sdk/v0.0.62...sdk/sdk/v0.0.63\n",
-      "date": "2026-07-17T00:27:01Z",
-      "url": "https://github.com/cline/cline/releases/tag/sdk/sdk/v0.0.63",
-      "prerelease": false
-    },
-    {
-      "version": "cli-v3.0.44",
-      "name": "CLI v3.0.44",
-      "body": "\n- Improved max output token handling across providers (gateway routing, OpenAI vendor, and reasoning models) (from SDK v0.0.64)\n- Frontmatter and configuration files that start with a UTF-8 byte order mark (e.g. saved by Windows editors) now parse correctly (from SDK v0.0.64)\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.43...cli-v3.0.44\n",
-      "date": "2026-07-17T01:44:04Z",
-      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.44",
-      "prerelease": false
-    },
-    {
-      "version": "cli-v3.0.43",
-      "name": "CLI v3.0.43",
-      "body": "\n- The CLI now automatically trusts your operating system's certificate store, so it works behind corporate proxies and TLS-inspecting firewalls without manually setting `NODE_EXTRA_CA_CERTS` (fixes \"unable to get local issuer certificate\" errors, including Windows intermediate CA stores)\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.42...cli-v3.0.43\n",
-      "date": "2026-07-17T01:08:21Z",
-      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.43",
-      "prerelease": false
-    },
-    {
-      "version": "v4.0.9",
-      "name": "v4.0.9",
-      "body": "### Added\n\n- Add GPT-5.6 ChatGPT subscription models.\n\n### Changed\n\n- Soften and shorten the message shown when Cline hits the consecutive mistake limit.\n\n### Fixed\n\n- Handle cumulative usage snapshots from OpenAI-compatible providers so token counts are no longer over-reported.\n- Load skills from files saved as UTF-8 with a byte-order mark (BOM).\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.0.8...v4.0.9\n\n---\n\n_Manually created due to a GitHub API outage — the automated workflow published v4.0.9 to the VS Code Marketplace and Open VSX Registry successfully, but the GitHub API degradation caused its release-creation step to fail afterward._",
-      "date": "2026-07-16T23:47:00Z",
-      "url": "https://github.com/cline/cline/releases/tag/v4.0.9",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-08-05T08:13:32.535Z"
+  "lastUpdated": "2026-08-06T08:12:41.612Z"
 }
