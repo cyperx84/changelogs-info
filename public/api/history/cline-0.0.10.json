@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "cline",
   "version": "0.0.10",
-  "generated_at": "2026-08-07T10:00:38.429Z",
+  "generated_at": "2026-08-07T08:13:35.075Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -22,16 +22,11 @@
     "from_version": "0.0.10",
     "to_version": "0.0.10",
     "new_features": [
-      "oauth-authentication-for-remote-mcp-servers",
-      "improved-mcp-error-reporting",
-      "failed-turn-error-reporting",
+      "remote-mcp-oauth-authentication",
       "connect-model-welcome-notice",
       "get-api-key-links",
       "onboarding-welcome-explanation",
-      "improved-stop-button-visibility-and-shortcuts",
-      "consistent-reasoning-controls-across-sdk-providers",
-      "vertex-ai-credential-refresh-fix",
-      "refreshed-bundled-provider-and-model-catalog"
+      "new-keyboard-shortcuts"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -61,7 +56,7 @@
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "This release of Cline, version 0.0.10, significantly enhances the user experience by improving authentication, error reporting, and onboarding. The headline change is the introduction of OAuth authentication for remote MCP servers, accessible via Settings → MCP, which now supports pre-registered OAuth clients and invalidates tokens when client configurations change, providing more robust and flexible server management. This is crucial for enterprise users and those managing multiple MCP instances. \n\nMajor new features include improved MCP error reporting, which now shows errors directly on individual servers instead of page-level, and a new system for failed turn error reporting that displays detailed errors in the transcript with pointers to model settings, preventing silent failures. The welcome screen now features a 'Connect a model' notice that guides new users to onboarding or model settings, reacting live to credential changes and recognizing existing connections like Bedrock/Vertex. \n\nImportant fixes address issues like chat messages rendering twice and the composer getting stuck, leading to a smoother chat experience. Usability is also boosted with a consistently visible and clickable stop button, and new keyboard shortcuts: Esc to stop a turn, Cmd/Ctrl+N for a new session, and Cmd/Ctrl+, for settings. Reasoning controls now work consistently across AI SDK providers, including Ollama, ensuring effort levels and thinking on/off settings are honored. For Vertex AI users, credential refreshes now correctly handle ADC authentication behind proxies. The bundled provider and model catalog has also been refreshed. \n\nThere are no breaking changes or specific migration steps required for this update. Developers should upgrade to benefit from the enhanced stability, improved error visibility, and streamlined onboarding and authentication processes. The changes significantly improve the reliability and user-friendliness of Cline, especially for those integrating with multiple models and MCP servers."
+      "tldr": "This release of Cline, version 0.0.10, significantly enhances the reliability and user experience, particularly around authentication, error handling, and initial setup. The headline change is the improved OAuth authentication for remote MCP servers, allowing users to authorize servers, monitor their status, and retry failed attempts directly from Settings. This also introduces support for pre-registered OAuth clients and ensures token invalidation upon client configuration changes, making MCP integration more robust and secure.\n\nKey new features include a 'Connect a model' notice on the welcome screen, guiding new users to set up credentials with one-click access to onboarding or model settings. This notice dynamically updates as credentials are added and intelligently recognizes existing connections like Bedrock/Vertex. Additionally, 'Get an API key' links for popular providers have been integrated into onboarding and settings, alongside a direct link to the Cline dashboard from the API key form, streamlining the setup process. The onboarding welcome step now also provides a clear explanation of what Cline is, improving the first-time user experience.\n\nCrucial fixes address several long-standing issues: MCP errors are now displayed on individual servers rather than as page-level errors, and servers with invalid configurations are surfaced with their specific errors instead of silently disappearing. Failed turns no longer fail silently; instead, errors are shown in the transcript with underlying causes and pointers to model settings. Rendering issues where the first message or queued messages appeared twice have been resolved, as has the composer getting stuck on 'Agent is working…' after a turn completes. Usability is further boosted with a visible and clickable stop button, 'Esc' to stop the current turn, and new keyboard shortcuts: Cmd/Ctrl+N for a new session and Cmd/Ctrl+, for settings. Reasoning controls now consistently resolve across AI SDK providers, including Ollama, ensuring effort levels and thinking on/off are honored. For Vertex AI, credential refreshes now use the configured fetch, fixing ADC authentication behind proxies and custom networking. Finally, the bundled provider and model catalog has been refreshed.\n\nThis release is highly recommended for all users to improve stability, security, and user experience. There are no breaking changes, and the new features significantly enhance the initial setup and ongoing management of models and MCP servers. Users should upgrade to benefit from the improved error handling, authentication, and overall polish."
     },
     "features": [
       {
@@ -777,91 +772,6 @@
           "Cmd/Ctrl+N for new session",
           "Cmd/Ctrl+, for settings",
           "Esc stops current turn"
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "oauth-authentication-for-remote-mcp-servers",
-        "name": "OAuth Authentication for Remote MCP Servers",
-        "status": "stable",
-        "since": "0.0.10",
-        "description": "Remote MCP servers can now authenticate using OAuth from Settings → MCP. This includes authorizing a server, viewing its authentication status, and canceling or retrying pending authorizations. Support for servers requiring pre-registered OAuth clients (client ID/secret) is also added, and stored tokens are invalidated upon client configuration changes.",
-        "key_details": [
-          "Authenticate via Settings → MCP",
-          "Supports pre-registered OAuth clients",
-          "Token invalidation on client config change"
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "improved-mcp-error-reporting",
-        "name": "Improved MCP Error Reporting",
-        "status": "stable",
-        "since": "0.0.10",
-        "description": "MCP errors are now displayed on the individual server entry rather than as a page-level error. Servers with invalid configurations are now surfaced with their specific error message instead of silently disappearing from the list.",
-        "key_details": [
-          "Errors shown per server",
-          "Invalid configurations are no longer hidden"
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "failed-turn-error-reporting",
-        "name": "Failed Turn Error Reporting",
-        "status": "stable",
-        "since": "0.0.10",
-        "description": "Failed turns, such as sending a message without model credentials or any queued turn that fails, now display an error directly in the transcript. These errors are enriched with the underlying cause and provide a pointer to Settings → Models for resolution.",
-        "key_details": [
-          "Errors in transcript for failed turns",
-          "Includes underlying cause and link to Settings → Models"
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "improved-stop-button-visibility-and-shortcuts",
-        "name": "Improved Stop Button Visibility and Shortcuts",
-        "status": "stable",
-        "since": "0.0.10",
-        "description": "The stop button is now consistently visible and clickable. Additionally, new keyboard shortcuts have been introduced: Esc to stop the current turn, Cmd/Ctrl+N for a new session, and Cmd/Ctrl+, for settings.",
-        "key_details": [
-          "Stop button always visible and clickable",
-          "Esc stops current turn",
-          "Cmd/Ctrl+N for new session",
-          "Cmd/Ctrl+, for settings"
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "consistent-reasoning-controls-across-sdk-providers",
-        "name": "Consistent Reasoning Controls Across AI SDK Providers",
-        "status": "stable",
-        "since": "0.0.10",
-        "description": "Reasoning controls, including effort levels and thinking on/off settings, now resolve consistently across various AI SDK providers, including Ollama. This ensures these settings are honored wherever the provider supports them.",
-        "key_details": [
-          "Effort levels and thinking on/off honored consistently",
-          "Applies to Ollama and other AI SDK providers"
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "vertex-ai-credential-refresh-fix",
-        "name": "Vertex AI Credential Refresh Fix",
-        "status": "stable",
-        "since": "0.0.10",
-        "description": "Vertex AI credential refreshes now correctly use the configured fetch mechanism, resolving issues with ADC authentication behind proxies and custom networking setups.",
-        "key_details": [
-          "Fixes ADC authentication behind proxies/custom networking for Vertex AI"
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "refreshed-bundled-provider-and-model-catalog",
-        "name": "Refreshed Bundled Provider and Model Catalog",
-        "status": "stable",
-        "since": "0.0.10",
-        "description": "The bundled provider and model catalog has been refreshed to include the latest offerings.",
-        "key_details": [
-          "Updated list of available providers and models"
         ],
         "source_url": ""
       }
