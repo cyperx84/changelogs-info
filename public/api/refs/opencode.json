@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
-  "version": "1.18.14",
-  "generated_at": "2026-08-07T06:08:40.532Z",
+  "version": "1.18.15",
+  "generated_at": "2026-08-07T08:13:19.528Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -14,9 +14,12 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "1.18.14",
-    "to_version": "1.18.14",
-    "new_features": [],
+    "from_version": "1.18.15",
+    "to_version": "1.18.15",
+    "new_features": [
+      "export-full-session-transcripts-as-json",
+      "tui-cursor-style-configuration"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -40,13 +43,13 @@
       "changelog_url": "https://github.com/anomalyco/opencode/releases",
       "repo_url": "https://github.com/anomalyco/opencode",
       "license": "mit",
-      "latest_stable": "1.18.14",
-      "latest_release_date": "2026-08-05",
+      "latest_stable": "1.18.15",
+      "latest_release_date": "2026-08-07",
       "status": "active",
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "This OpenCode 1.18.14 patch release focuses on core improvements and bug fixes, primarily enhancing stability and debugging for remote and headless environments. A significant improvement simplifies xAI login to a single device-code flow, making it more robust for headless and remote setups. Several bug fixes address provider and network reliability: structured mid-stream provider errors are now preserved for retries, and more transient provider/network errors are retried instead of immediately failing, leading to more resilient operations. For remote workspaces, a critical fix prevents the host's local directory path from being sent, ensuring prompts correctly resolve from the remote project root, which is a behavioral change for remote development. Additionally, 5xx response bodies from proxied workspace requests are now logged in host logs, greatly aiding in debugging proxy failures. ACP usage totals now correctly count cache writes, and queued ACP session updates are waited for before ending a turn, improving session consistency. This release primarily offers stability and debugging enhancements, with no new features, commands, or breaking changes. Upgrading is recommended for improved reliability, especially for users working in remote or headless environments."
+      "tldr": "OpenCode 1.18.15 focuses heavily on stability and user experience improvements, particularly around chronological data handling and desktop app localization. The most significant new feature is the ability to export full session transcripts as JSON directly from the desktop UI, providing users with more control over their session data. Additionally, the TUI now supports cursor style configuration, allowing for greater personalization.\n\nCore bugfixes address critical issues with message ordering, ensuring chronological accuracy even with imported or legacy message IDs, and correcting revert/fork actions to use real message chronology. Truncation cleanup is more reliable, and repeated compaction now preserves earlier tool-call history. Blob-based attachments also load correctly in the web UI, resolving a long-standing issue. On the desktop, session timelines and stored messages now consistently respect chronological order, and session lists sort more reliably by persisted activity time. The desktop app also received a significant update to its locale coverage, with broader support, native language names in the picker, and filled-in missing translations.\n\nFor TUI users, a fix was implemented to support copying over SSH when the `set-clipboard on` tmux configuration is active. There are no breaking changes in this release. Developers are encouraged to upgrade to benefit from these stability and usability enhancements, especially if they rely on accurate chronological data or extensive localization."
     },
     "features": [
       {
@@ -1119,6 +1122,24 @@
         "description": "opencode can now automatically discover and list available Modal models, simplifying the process of integrating and using them within your workflows.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "export-full-session-transcripts-as-json",
+        "name": "Export full session transcripts as JSON from the UI",
+        "status": "stable",
+        "since": "1.18.15",
+        "description": "Users can now export complete session transcripts in JSON format directly from the desktop application's user interface.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "tui-cursor-style-configuration",
+        "name": "TUI cursor style configuration",
+        "status": "stable",
+        "since": "1.18.15",
+        "description": "Added configuration options for cursor style within the Terminal User Interface (TUI).",
+        "key_details": [],
+        "source_url": "https://github.com/opencode/opencode/pull/32295"
       }
     ],
     "commands": [

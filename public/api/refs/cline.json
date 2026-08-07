@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "4.1.6",
-  "generated_at": "2026-08-07T06:08:46.825Z",
+  "version": "0.0.10",
+  "generated_at": "2026-08-07T08:13:35.075Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,9 +19,15 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "4.1.6",
-    "to_version": "4.1.6",
-    "new_features": [],
+    "from_version": "0.0.10",
+    "to_version": "0.0.10",
+    "new_features": [
+      "remote-mcp-oauth-authentication",
+      "connect-model-welcome-notice",
+      "get-api-key-links",
+      "onboarding-welcome-explanation",
+      "new-keyboard-shortcuts"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -45,12 +51,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "4.1.6",
-      "latest_release_date": "2026-08-06",
+      "latest_stable": "0.0.10",
+      "latest_release_date": "2026-08-07",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "Cline 4.1.6 introduces the `meta/muse-spark-1.2-contributor` model on the Cline provider, expanding the available models for users. This new model is part of a refreshed model catalog, providing more options for various tasks. A significant fix in this release addresses an issue where telemetry for attribute errors was incorrectly reported against the wrong model. Now, error telemetry is accurately attributed to the model actually in use for a run, improving the reliability of error reporting and debugging. This ensures that developers get precise feedback on model performance and failures. This update is recommended for all users to benefit from the expanded model choices and improved error attribution."
+      "tldr": "This release of Cline, version 0.0.10, significantly enhances the reliability and user experience, particularly around authentication, error handling, and initial setup. The headline change is the improved OAuth authentication for remote MCP servers, allowing users to authorize servers, monitor their status, and retry failed attempts directly from Settings. This also introduces support for pre-registered OAuth clients and ensures token invalidation upon client configuration changes, making MCP integration more robust and secure.\n\nKey new features include a 'Connect a model' notice on the welcome screen, guiding new users to set up credentials with one-click access to onboarding or model settings. This notice dynamically updates as credentials are added and intelligently recognizes existing connections like Bedrock/Vertex. Additionally, 'Get an API key' links for popular providers have been integrated into onboarding and settings, alongside a direct link to the Cline dashboard from the API key form, streamlining the setup process. The onboarding welcome step now also provides a clear explanation of what Cline is, improving the first-time user experience.\n\nCrucial fixes address several long-standing issues: MCP errors are now displayed on individual servers rather than as page-level errors, and servers with invalid configurations are surfaced with their specific errors instead of silently disappearing. Failed turns no longer fail silently; instead, errors are shown in the transcript with underlying causes and pointers to model settings. Rendering issues where the first message or queued messages appeared twice have been resolved, as has the composer getting stuck on 'Agent is working…' after a turn completes. Usability is further boosted with a visible and clickable stop button, 'Esc' to stop the current turn, and new keyboard shortcuts: Cmd/Ctrl+N for a new session and Cmd/Ctrl+, for settings. Reasoning controls now consistently resolve across AI SDK providers, including Ollama, ensuring effort levels and thinking on/off are honored. For Vertex AI, credential refreshes now use the configured fetch, fixing ADC authentication behind proxies and custom networking. Finally, the bundled provider and model catalog has been refreshed.\n\nThis release is highly recommended for all users to improve stability, security, and user experience. There are no breaking changes, and the new features significantly enhance the initial setup and ongoing management of models and MCP servers. Users should upgrade to benefit from the improved error handling, authentication, and overall polish."
     },
     "features": [
       {
@@ -705,6 +711,68 @@
         "since": "4.1.6",
         "description": "The model catalog has been refreshed, likely including new models and updated information for existing ones, alongside the addition of `meta/muse-spark-1.2-contributor`.",
         "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "remote-mcp-oauth-authentication",
+        "name": "Remote MCP Servers OAuth Authentication",
+        "status": "stable",
+        "since": "0.0.10",
+        "description": "Remote MCP servers can now authenticate with OAuth from Settings → MCP. Users can authorize a server, see its auth status, and cancel or retry a pending authorization. Support for servers requiring pre-registered OAuth clients (client ID/secret) instead of dynamic registration has been added, and stored tokens are invalidated when a server's client configuration changes.",
+        "key_details": [
+          "Authenticate with OAuth from Settings → MCP",
+          "View auth status, cancel, or retry authorization",
+          "Supports pre-registered OAuth clients (client ID/secret)",
+          "Invalidates stored tokens on client configuration changes"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "connect-model-welcome-notice",
+        "name": "Connect a model notice on welcome screen",
+        "status": "stable",
+        "since": "0.0.10",
+        "description": "A new 'Connect a model' notice appears on the welcome screen when no provider has credentials. It offers one-click access to onboarding or model settings, reacts live to credential additions, and correctly recognizes Bedrock/Vertex and keyless local endpoints as already connected.",
+        "key_details": [
+          "Notice on welcome screen when no provider credentials",
+          "One-click to onboarding or model settings",
+          "Reacts live to credential changes",
+          "Recognizes Bedrock/Vertex and keyless local endpoints"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "get-api-key-links",
+        "name": "Get an API key links for popular providers",
+        "status": "stable",
+        "since": "0.0.10",
+        "description": "Added 'Get an API key' links for popular providers in onboarding and Settings → Models. Also includes a link to the Cline dashboard from the Cline API key form.",
+        "key_details": [
+          "Links for popular providers in onboarding and Settings → Models",
+          "Link to Cline dashboard from Cline API key form"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "onboarding-welcome-explanation",
+        "name": "Onboarding welcome step explains Cline",
+        "status": "stable",
+        "since": "0.0.10",
+        "description": "The onboarding welcome step now provides an explanation of what Cline is.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "new-keyboard-shortcuts",
+        "name": "New Keyboard Shortcuts",
+        "status": "stable",
+        "since": "0.0.10",
+        "description": "New keyboard shortcuts have been added: Cmd/Ctrl+N for a new session and Cmd/Ctrl+, for settings. The stop button is now visible and clickable, and Esc stops the current turn.",
+        "key_details": [
+          "Cmd/Ctrl+N for new session",
+          "Cmd/Ctrl+, for settings",
+          "Esc stops current turn"
+        ],
         "source_url": ""
       }
     ],
