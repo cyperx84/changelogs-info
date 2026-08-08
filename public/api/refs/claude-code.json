@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.224",
-  "generated_at": "2026-08-07T23:31:27.562Z",
+  "version": "2.1.225",
+  "generated_at": "2026-08-08T01:23:48.603Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,21 +14,15 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.224",
-    "to_version": "2.1.224",
+    "from_version": "2.1.225",
+    "to_version": "2.1.225",
     "new_features": [
-      "self-hosted-environments",
-      "archive-plugin-source",
-      "cancel-confirm-paste-removal",
-      "cross-session-inbound-dialog-expiry-settings",
-      "sandbox-credential-masking-options",
-      "cross-session-send-message"
+      "gateway-spend-limit-support",
+      "workspace-trust-prompt-claude-agents"
     ],
     "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [
-      "ANTHROPIC_BEDROCK_REGION_PREFIX"
-    ],
+    "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -48,12 +42,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.224",
-      "latest_release_date": "2026-08-07",
+      "latest_stable": "2.1.225",
+      "latest_release_date": "2026-08-08",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release of Claude Code, version 2.1.224, introduces significant new capabilities for enterprise users and developers, focusing on self-hosting, plugin management, and inter-session communication. The headline feature is 'Self-Hosted Environments,' allowing Team and Enterprise plan users to run Claude Code sessions on their own machines or containers using `claude self-hosted-runner`, providing greater control and data residency. This is a major step towards integrating Claude Code more deeply into existing infrastructure. \n\nAnother key addition is the 'Archive Plugin Source,' which simplifies plugin installation by enabling direct installation from HTTPS-hosted zip files with optional SHA-256 pinning, bypassing the need for Git or npm. For enhanced security and control, new 'Sandbox Credential Masking Options' offer granular masking for structured environment values, JWTs, and AWS SigV4, requiring `network.tlsTerminate` and configurable via user, managed, or `--settings` settings. \n\nInter-session communication is now possible with 'Cross-Session SendMessage' on macOS and Linux, allowing Claude Code sessions to message each other across machines, discoverable via `ListAgents`. A new `ANTHROPIC_BEDROCK_REGION_PREFIX` environment variable provides more control over Bedrock region preferences. \n\nNumerous fixes address critical issues, including long project paths causing session directory collisions, silent failures in `SendMessage` deliveries, sandbox bypasses on Linux/macOS for trailing slashes in `denyRead` entries, and silent corruption of plugin install records. Remote Control has seen significant improvements, with better compaction progress visibility, `/clear` propagation, and persistent failure indicators. The 200-subagent-per-session spawn cap has been removed, allowing for more extensive long-running sessions. Overall, this release enhances enterprise deployment options, security, and user experience, making an upgrade highly recommended for users leveraging self-hosting or advanced plugin management."
+      "tldr": "Claude Code 2.1.225 introduces gateway spend-limit support, enhancing usage warnings by detailing the cap, reset time, and operator messages, which requires the gateway to also be on version 2.1.225. This provides clearer communication around usage limits for developers. A new workspace trust prompt has been added to `claude agents` for untrusted directories, mirroring the behavior of the main `claude` command, improving security consistency across the tool. Several critical fixes address stability and usability issues: a transient 401 error when replacing `CLAUDE_CODE_OAUTH_TOKEN` in headless sessions, intermittent 401 errors for MCP OAuth servers on macOS due to keychain timeouts, and auto mode incorrectly counting safety-filter refusals towards its consecutive-block limit. Remote Control functionality sees significant improvements, with photos from the Claude app now directly shown to Claude, bypassing a separate tool call, and the `SendMessage` feature now allowing initiation of conversations with remote sessions by name, rather than just replies. The release also resolves issues with cross-session messages in headless sessions, conversation history breaking on Remote Control resume after compaction, and `claude self-hosted-runner` failing silently when `--base-dir` is unusable. Developers should upgrade to benefit from these stability enhancements and improved Remote Control capabilities."
     },
     "features": [
       {
@@ -1461,6 +1455,26 @@
         "status": "stable",
         "since": "2.1.224",
         "description": "Claude Code sessions can now message each other across machines, with `ListAgents` to discover them (macOS and Linux).",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "gateway-spend-limit-support",
+        "name": "Gateway Spend-Limit Support",
+        "status": "stable",
+        "since": "2.1.225",
+        "description": "Claude Code's usage warning now includes gateway spend-limit support. The limit-reached message now specifies the cap, its reset time, and the operator's message.",
+        "key_details": [
+          "Requires the gateway on 2.1.225."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "workspace-trust-prompt-claude-agents",
+        "name": "Workspace Trust Prompt for `claude agents`",
+        "status": "stable",
+        "since": "2.1.225",
+        "description": "Added a workspace trust prompt to `claude agents` for untrusted directories, aligning its behavior with the `claude` command.",
         "key_details": [],
         "source_url": ""
       }
