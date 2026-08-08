@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.147.0",
-  "generated_at": "2026-08-08T23:26:23.300Z",
+  "generated_at": "2026-08-07T02:38:14.694Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,25 +14,14 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.147.0",
-    "to_version": "0.147.0",
-    "new_features": [
-      "portable-agent-plugins-and-search",
-      "persistent-ordered-conversations",
-      "automatically-reviewed-approvals",
-      "cursor-managed-skills-import-and-sync",
-      "mcp-2026-07-28-protocol-support",
-      "cached-web-search-and-remote-compaction-bedrock"
-    ],
+    "from_version": "0.146.1",
+    "to_version": "0.146.1",
+    "new_features": [],
     "new_commands": [],
-    "new_flags": [
-      "--approve-for-me"
-    ],
+    "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
-    "deprecated_flags": [
-      "--full-auto"
-    ],
+    "deprecated_flags": [],
     "breaking_changes": []
   },
   "payload": {
@@ -57,7 +46,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release of codex-cli, version 0.147.0, introduces significant enhancements across plugin management, conversation organization, and workflow automation. The headline feature allows users to install portable Agent Plugins and search across various catalogs (local, personal, workspace, remote), greatly improving plugin discoverability and flexibility. This means developers can more easily find and integrate tools relevant to their projects, regardless of where they are hosted.\n\nKey new features include the ability to organize conversations into persistent, manually ordered sections, and to browse long transcripts incrementally, which streamlines conversation management and review. A new `--approve-for-me` CLI flag enables automatically reviewed approvals, automating certain confirmation steps. Interoperability is boosted with the ability to import Cursor-managed skills and synchronize Claude and Cursor conversations without creating duplicates. The release also adds support for the opt-in MCP 2026-07-28 protocol, bringing paginated discovery, multi-round requests, and non-blocking server startup, which enhances the capabilities and responsiveness of MCP. For Amazon Bedrock users, cached web search and remote conversation compaction are now enabled, improving performance and efficiency.\n\nSeveral critical bug fixes are included: secrets and bearer tokens are now redacted from displayed commands and conversation history, preventing sensitive data exposure. Issues with lost or stalled terminal input have been resolved, and rendering/cursor positioning for various character sets (Japanese, emoji) and hyperlinks has been corrected. Windows background processes are now properly interrupted, and filesystem paths are handled consistently. Security has been tightened by requiring explicit trust for unfamiliar local projects, enforcing managed authentication restrictions, and hardening plugin isolation to deny network access on policy update failures.\n\nIn terms of maintenance, the MCP SDK has been upgraded to 3.0.0, Ratatui to 0.30.2, and V8 to 150.4.0. The deprecated `codex exec --full-auto` flag has been removed, with `--sandbox workspace-write` as its replacement. Linux bundle archives are no longer redundantly published. This release is recommended for all users to benefit from the new features, improved stability, and enhanced security. Users should update their `codex exec` commands to use `--sandbox workspace-write` if they were previously using `--full-auto`."
+      "tldr": "This `codex-cli` release, version 0.146.1, focuses on a critical bug fix related to automatic review defaults. For cyber-capable models, the system now applies safer automatic-review defaults, enhancing security and reliability when working with these advanced models. Crucially, any permission changes resulting from these new defaults are now explicitly explained within the terminal interface, providing greater transparency and helping users understand the implications of these adjustments. This update is a backport from a previous version, indicating its importance for stability. Developers should upgrade to this version to benefit from these improved security defaults and clearer communication regarding permissions, especially if utilizing cyber-capable models. There are no new features, commands, flags, or breaking changes introduced in this patch release, making it a straightforward and recommended upgrade for all users."
     },
     "features": [
       {
@@ -1949,84 +1938,6 @@
           "Explicitly select skills."
         ],
         "source_url": "https://github.com/openai/codex/compare/rust-v0.145.0...rust-v0.146.0#35184"
-      },
-      {
-        "id": "portable-agent-plugins-and-search",
-        "name": "Portable Agent Plugins and Search",
-        "status": "stable",
-        "since": "0.147.0",
-        "description": "Users can now install portable Agent Plugins and search across local, personal, workspace, and remote plugin catalogs. This enhances plugin discoverability and management.",
-        "key_details": [
-          "Install portable Agent Plugins",
-          "Search across local plugin catalogs",
-          "Search across personal plugin catalogs",
-          "Search across workspace plugin catalogs",
-          "Search across remote plugin catalogs"
-        ],
-        "source_url": "https://github.com/openai/codex/compare/rust-v0.146.0...rust-v0.147.0#36544"
-      },
-      {
-        "id": "persistent-ordered-conversations",
-        "name": "Persistent, Manually Ordered Conversation Sections",
-        "status": "stable",
-        "since": "0.147.0",
-        "description": "Conversations can now be organized into persistent, manually ordered sections, and long transcripts can be browsed incrementally. This improves conversation management and navigation.",
-        "key_details": [
-          "Organize conversations into persistent sections",
-          "Manually order conversation sections",
-          "Browse long transcripts incrementally"
-        ],
-        "source_url": "https://github.com/openai/codex/compare/rust-v0.146.0...rust-v0.147.0#35722"
-      },
-      {
-        "id": "automatically-reviewed-approvals",
-        "name": "Automatically Reviewed Approvals",
-        "status": "stable",
-        "since": "0.147.0",
-        "description": "A new CLI flag, `--approve-for-me`, enables automatically reviewed approvals, streamlining workflows that require user confirmation.",
-        "key_details": [
-          "Enable automatically reviewed approvals"
-        ],
-        "source_url": "https://github.com/openai/codex/compare/rust-v0.146.0...rust-v0.147.0#36373"
-      },
-      {
-        "id": "cursor-managed-skills-import-and-sync",
-        "name": "Import Cursor-managed Skills and Synchronize Conversations",
-        "status": "stable",
-        "since": "0.147.0",
-        "description": "Users can now import Cursor-managed skills and synchronize changes to imported Claude and Cursor conversations without creating duplicates, improving interoperability.",
-        "key_details": [
-          "Import Cursor-managed skills",
-          "Synchronize changes to imported Claude conversations",
-          "Synchronize changes to imported Cursor conversations",
-          "Avoid creating duplicate conversations"
-        ],
-        "source_url": "https://github.com/openai/codex/compare/rust-v0.146.0...rust-v0.147.0#36361"
-      },
-      {
-        "id": "mcp-2026-07-28-protocol-support",
-        "name": "Opt-in MCP 2026-07-28 Protocol Support",
-        "status": "stable",
-        "since": "0.147.0",
-        "description": "Support for the opt-in MCP 2026-07-28 protocol has been added, including paginated discovery, multi-round requests, and non-blocking server startup, enhancing MCP capabilities.",
-        "key_details": [
-          "Paginated discovery",
-          "Multi-round requests",
-          "Non-blocking server startup"
-        ],
-        "source_url": "https://github.com/openai/codex/compare/rust-v0.146.0...rust-v0.147.0#35724"
-      },
-      {
-        "id": "cached-web-search-and-remote-compaction-bedrock",
-        "name": "Cached Web Search and Remote Conversation Compaction for Amazon Bedrock",
-        "status": "stable",
-        "since": "0.147.0",
-        "description": "Cached web search and remote conversation compaction are now enabled for Amazon Bedrock, improving performance and efficiency for Bedrock users.",
-        "key_details": [
-          "Cached web search for Amazon Bedrock",
-          "Remote conversation compaction for Amazon Bedrock"
-        ],
-        "source_url": "https://github.com/openai/codex/compare/rust-v0.146.0...rust-v0.147.0#36938"
       }
     ],
     "commands": [
@@ -2358,12 +2269,6 @@
           "description": "Exposes codex-app-server version.",
           "since": "0.133.0",
           "source_url": ""
-        },
-        {
-          "flag": "--approve-for-me",
-          "description": "Enables automatically reviewed approvals for CLI operations.",
-          "since": "0.147.0",
-          "source_url": "https://github.com/openai/codex/compare/rust-v0.146.0...rust-v0.147.0#36373"
         }
       ],
       "deprecated": [
@@ -3759,18 +3664,9 @@
           "deprecated_since": "0.128.0",
           "removed_in": null,
           "source_url": ""
-        },
-        {
-          "flag": "--full-auto",
-          "replaced_by": "--sandbox workspace-write",
-          "deprecated_since": "0.147.0",
-          "removed_in": null,
-          "source_url": "https://github.com/openai/codex/compare/rust-v0.146.0...rust-v0.147.0#36054"
         }
       ],
-      "new_since_previous": [
-        "--approve-for-me"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
