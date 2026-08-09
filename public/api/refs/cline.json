@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "0.0.10",
-  "generated_at": "2026-08-09T01:35:59.610Z",
+  "version": "3.0.52",
+  "generated_at": "2026-08-09T03:40:18.081Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,18 +19,12 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "0.0.10",
-    "to_version": "0.0.10",
-    "new_features": [
-      "oauth-authentication-for-remote-mcp-servers",
-      "improved-mcp-error-reporting",
-      "failed-turn-error-reporting",
-      "connect-model-welcome-notice",
-      "get-api-key-links",
-      "onboarding-welcome-explanation",
-      "new-keyboard-shortcuts"
+    "from_version": "3.0.52",
+    "to_version": "3.0.52",
+    "new_features": [],
+    "new_commands": [
+      "cline mcp uninstall"
     ],
-    "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
@@ -53,12 +47,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "0.0.10",
-      "latest_release_date": "2026-08-07",
+      "latest_stable": "3.0.52",
+      "latest_release_date": "2026-08-09",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "This Cline release, version 0.0.10, significantly enhances the user experience with improved authentication, error reporting, and onboarding. The headline change is the introduction of OAuth authentication for remote MCP servers, allowing users to securely connect and manage their servers directly from Settings → MCP, with support for both dynamic and pre-registered OAuth clients. This streamlines server management and ensures token invalidation upon configuration changes. \n\nMajor new features include more granular MCP error reporting, which now displays errors on individual servers instead of generic page-level messages, and a new 'Connect a model' notice on the welcome screen that guides users to onboarding or model settings when credentials are missing. Failed turns in chat no longer fail silently; instead, they show an error in the transcript with the underlying cause and a link to relevant settings. \n\nImportant fixes and improvements include consistent reasoning controls across all AI SDK providers, including Ollama, ensuring that effort levels and thinking states are respected. Vertex AI credential refreshes now correctly use the configured fetch, resolving authentication issues behind proxies. The stop button is now more visible and clickable, and new keyboard shortcuts (Cmd/Ctrl+N for new session, Cmd/Ctrl+, for settings, Esc to stop turn) have been added for better navigation. The bundled provider and model catalog has also been refreshed. \n\nThere are no breaking changes in this release, making it a straightforward upgrade. Developers should update to 0.0.10 to benefit from enhanced stability, clearer error diagnostics, and a more intuitive user interface, particularly for those working with remote MCP servers or experiencing authentication issues with Vertex AI."
+      "tldr": "cline 3.0.52 introduces a new `cline mcp uninstall` command, simplifying the removal of installed MCP servers. This release significantly enhances the user experience and reliability across various features. Schedules now intelligently reuse your saved provider settings, eliminating the need for separate configuration, and queued messages are now clearly legible in light-theme terminals, resolving a previous visibility issue. The TUI experience is improved with MCP tool results rendering as readable text instead of escaped JSON, and malformed tool payloads no longer crash the renderer, degrading gracefully instead. Critical stability improvements from SDK v0.0.72 ensure that prompts queued during a turn survive interruptions, session context remains durable across aborts and restarts, and hung MCP servers no longer block session creation. OAuth authorization for remote SSE MCP servers is now handled gracefully on 401 errors, and LiteLLM requests are correctly routed through Chat Completions. Network interruptions mid-stream are now retried, and Vertex ADC token refreshes function correctly behind proxies. Checkpoint diffs are more comprehensive, including untracked files, and scheduled run reports provide richer execution context. This update is highly recommended for improved stability, usability, and a more robust development workflow."
     },
     "features": [
       {
@@ -863,7 +857,16 @@
         "source_url": ""
       }
     ],
-    "commands": [],
+    "commands": [
+      {
+        "name": "cline mcp uninstall",
+        "syntax": "cline mcp uninstall",
+        "description": "Removes an installed MCP server.",
+        "since": "3.0.52",
+        "status": "stable",
+        "source_url": ""
+      }
+    ],
     "flags": [],
     "env_vars": [],
     "models": [],
