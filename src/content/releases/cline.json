@@ -15,6 +15,38 @@
   },
   "releases": [
     {
+      "version": "v4.1.7",
+      "name": "v4.1.7",
+      "body": "\n### Added\n\n- Restore the \"View Changes\" button on completion rows, backed by SDK checkpoints, so you can review everything a task touched from the completion card.\n- Bring back a copy button on turn-final response rows.\n- Support pre-registered OAuth clients for remote MCP servers, for setups where dynamic client registration isn't available.\n\n### Changed\n\n- Fade the \"View Changes\" button until changes since the last message are confirmed, and hide it entirely when there is nothing to show.\n- Centralize plugin settings and contributions, with host-aware snapshots and atomic plugin toggles.\n- Carry execution context in scheduled run reports — readable headers, schedule metadata, durations, and lifecycle error details.\n\n### Fixed\n\n- Preserve prompts queued during a turn when that turn is interrupted: they survive aborts, are drained after a turn aborts itself, and the stop is surfaced instead of the queue being silently dropped.\n- Keep session context durable across aborts and hub restarts, so an interrupted session resumes with the state it had.\n- Settle the turn phase when a mode switch aborts a running turn.\n- Report queued-turn failures as `run.failed` instead of letting them complete silently.\n- Keep a hung MCP server from taking down session creation, and give stdio servers that were never configured a 30-second initialize budget instead of blocking indefinitely.\n- Surface OAuth authorization for SSE MCP servers on a 401 instead of failing outright.\n- Route LiteLLM through Chat Completions instead of the Responses API, fixing requests against LiteLLM proxies.\n- Retry network interruptions that happen mid-stream but before any model output, instead of failing the turn.\n- Use the configured fetch for Vertex ADC token refreshes, so they work behind proxies and custom transports.\n- Include files that were untracked when a snapshot was taken in checkpoint diffs, and pick up checkpoints when git is initialized part-way through a session.\n- Fall back to the session cwd or Desktop for @-mention file search in empty windows.\n- Never run a foreign compiled plugin-sandbox bootstrap for a source host.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.1.6...v4.1.7\n",
+      "date": "2026-08-09T04:05:18Z",
+      "url": "https://github.com/cline/cline/releases/tag/v4.1.7",
+      "prerelease": false
+    },
+    {
+      "version": "sdk/sdk/v0.0.72",
+      "name": "SDK v0.0.72",
+      "body": "\n- Prompts queued during a turn now survive being interrupted: they are preserved across user-initiated aborts, drained after a turn aborts itself, and edits made to the queue inside the abort window are applied rather than lost. Stopping a session now has consistent full-stop semantics across hosts\n- Session context stays durable across aborts and hub restarts, so an interrupted session resumes with the state it had rather than a reset one\n- Queued turns that fail are now reported as `run.failed` instead of completing silently\n- A hung MCP server no longer takes down session creation, and stdio servers that were never configured get a 30-second initialize budget instead of blocking indefinitely\n- Remote SSE MCP servers now surface an OAuth authorization prompt on a 401 instead of failing outright, and remote MCP supports pre-registered OAuth clients for setups where dynamic client registration isn't available\n- LiteLLM requests route through Chat Completions instead of the Responses API, fixing calls against LiteLLM proxies\n- Network interruptions that happen mid-stream but before any model output are retried instead of failing the turn\n- Vertex ADC token refreshes use the configured fetch, so they work behind proxies and custom transports\n- Checkpoint diffs now include files that were untracked when the snapshot was taken, and checkpoints are picked up when git is initialized part-way through a session\n- Plugin settings and contributions are centralized in the hub, with host-aware snapshots and atomic host plugin toggles; a source host no longer runs a foreign compiled plugin-sandbox bootstrap\n- Scheduled run reports carry execution context — readable headers, schedule metadata, durations, and lifecycle error details\n\n**Full Changelog**: https://github.com/cline/cline/compare/sdk/sdk/v0.0.71...sdk/sdk/v0.0.72\n",
+      "date": "2026-08-09T02:33:36Z",
+      "url": "https://github.com/cline/cline/releases/tag/sdk/sdk/v0.0.72",
+      "prerelease": false
+    },
+    {
+      "version": "desktop-v0.0.11",
+      "name": "Desktop v0.0.11",
+      "body": "\n- Images can now be pasted straight from the clipboard into the composer.\n- Opening a folder that isn't a git repo no longer shows git jargon, and the welcome suggestions now adapt to what's actually in the folder instead of assuming a code project.\n- The folder picker now reports failures instead of doing nothing, and offers a manual path entry as a fallback.\n- Opening an existing session no longer overwrites the model you had selected.\n- The diff panel now resolves file paths against the session's working directory, so diffs open correctly for sessions rooted outside the app's own directory.\n- `/team` prompts now run through the core runtime.\n- Failed turns surface their error in the transcript instead of leaving the chat blank.\n- Plugins left behind as empty install directories are no longer listed as installed, and plugin settings and contributions are now managed centrally with atomic toggles.\n- Fixed a startup script-load error, and webview errors are now attributed to the source URL that caused them.\n- Signing out is handled as a normal state rather than surfacing as a command error.\n- Native-feel and performance polish: the browser context menu is suppressed on app chrome (kept for text fields and selections), UI chrome is no longer text-selectable while chat content still is, inner scrollers no longer rubber-band the window, Settings/Sessions/Onboarding/Diff load lazily, the composer no longer flickers the caret on every keystroke, slash commands are cached across menu opens, and Escape closes the provider/model picker.\n- Tool output no longer nests its own scrollbar.\n- Prompts queued during a turn now survive being interrupted — they're preserved across aborts, drained after a turn aborts itself, and the stop is surfaced instead of the queue being silently dropped. Queued turns that fail are reported as failures.\n- Session context stays durable across aborts and hub restarts.\n- A hung MCP server no longer takes down session creation, and stdio servers that were never configured get a 30-second initialize budget instead of blocking indefinitely.\n- Remote SSE MCP servers surface an OAuth authorization prompt on a 401 instead of failing outright.\n- LiteLLM requests route through Chat Completions instead of the Responses API.\n- Network interruptions mid-stream but before any model output are retried instead of failing the turn.\n- Checkpoints are picked up when git is initialized part-way through a session, and checkpoint diffs include files that were untracked when the snapshot was taken.\n- Scheduled run reports carry execution context — schedule metadata, durations, and lifecycle error details.\n\n**Full Changelog**: https://github.com/cline/cline/compare/desktop-v0.0.10...desktop-v0.0.11\n",
+      "date": "2026-08-09T04:16:07Z",
+      "url": "https://github.com/cline/cline/releases/tag/desktop-v0.0.11",
+      "prerelease": false
+    },
+    {
+      "version": "cli-v3.0.52",
+      "name": "CLI v3.0.52",
+      "body": "\n- Added `cline mcp uninstall` for removing an installed MCP server\n- Schedules now reuse your saved provider settings instead of needing provider configuration of their own\n- Queued messages are legible on light-theme terminals — they were previously rendered in a color that washed out against a light background\n- MCP tool results render as readable text in the TUI instead of escaped JSON, and binary payloads survive being expanded instead of being mangled\n- Malformed tool input/output payloads no longer break rendering — the formatters degrade gracefully instead of throwing\n- Prompts queued during a turn now survive being interrupted: they are preserved across aborts, drained after a turn aborts itself, and the stop is surfaced instead of leaving the queue silently dropped (from SDK v0.0.72)\n- Session context stays durable across aborts and hub restarts, so an interrupted session resumes with the state it had (from SDK v0.0.72)\n- A hung MCP server no longer takes down session creation, and stdio servers that were never configured get a 30-second initialize budget instead of blocking indefinitely (from SDK v0.0.72)\n- Remote SSE MCP servers surface an OAuth authorization prompt on a 401 instead of failing outright, and pre-registered OAuth clients are supported for setups without dynamic client registration (from SDK v0.0.72)\n- LiteLLM requests route through Chat Completions instead of the Responses API, fixing calls against LiteLLM proxies (from SDK v0.0.72)\n- Network interruptions that happen mid-stream but before any model output are retried instead of failing the turn (from SDK v0.0.72)\n- Vertex ADC token refreshes use the configured fetch, so they work behind proxies and custom transports (from SDK v0.0.72)\n- Checkpoint diffs include files that were untracked when the snapshot was taken, and checkpoints are picked up when git is initialized part-way through a session (from SDK v0.0.72)\n- Scheduled run reports carry execution context — readable headers, schedule metadata, durations, and lifecycle error details (from SDK v0.0.72)\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.51...cli-v3.0.52\n",
+      "date": "2026-08-09T02:40:02Z",
+      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.52",
+      "prerelease": false
+    },
+    {
       "version": "desktop-v0.0.10",
       "name": "Desktop v0.0.10",
       "body": "\n- Remote MCP servers can now authenticate with OAuth from Settings → MCP — authorize a server, see its auth status, and cancel or retry a pending authorization. Servers that require a pre-registered OAuth client (client ID/secret) instead of dynamic registration are now supported, and stored tokens are invalidated when a server's client configuration changes.\n- MCP errors are now shown on the individual server rather than as a page-level error, and a server with invalid configuration is surfaced with its error instead of silently disappearing from the list.\n- Failed turns no longer fail silently. Sending a message with no model credentials — or any queued turn that fails — now shows an error in the transcript, enriched with the underlying cause and a pointer to Settings → Models.\n- Fixed the first message of a chat (and some queued messages) rendering twice.\n- Fixed the composer getting stuck on \"Agent is working…\" after a turn already finished.\n- New \"Connect a model\" notice on the welcome screen when no provider has credentials, with one click to onboarding or model settings. It reacts live as you add credentials, and correctly recognizes Bedrock/Vertex and keyless local endpoints as already connected.\n- Added \"Get an API key\" links for popular providers in onboarding and Settings → Models, plus a link to the Cline dashboard from the Cline API key form.\n- The onboarding welcome step now explains what Cline is.\n- The stop button is now actually visible and clickable, Esc stops the current turn, and new shortcuts: Cmd/Ctrl+N for a new session, Cmd/Ctrl+, for settings.\n- Reasoning controls now resolve consistently across AI SDK providers, including Ollama, so effort levels and thinking on/off are honored wherever the provider supports them.\n- Vertex AI: credential refreshes now use the configured fetch, fixing ADC authentication behind proxies and custom networking.\n- Refreshed the bundled provider and model catalog.\n\n**Full Changelog**: https://github.com/cline/cline/compare/desktop-v0.0.9...desktop-v0.0.10\n",
@@ -221,39 +253,7 @@
       "date": "2026-07-24T19:03:48Z",
       "url": "https://github.com/cline/cline/releases/tag/v4.0.11",
       "prerelease": false
-    },
-    {
-      "version": "desktop-v0.0.4",
-      "name": "Desktop v0.0.4",
-      "body": "\n- Start chatting without opening a project folder — the app now supports workspace-free chat sessions.\n- New first-run onboarding flow to get you set up on launch.\n- Drag and drop files directly onto the chat to attach them.\n- Image attachments now display inline in the chat transcript.\n- Schedule one-time routines (not just recurring ones), with navigation to jump to a routine's run.\n- New custom overlay title bar with in-app navigation.\n- Redesigned channel setup as expandable cards.\n- Added a setting to replay the new-user experience.\n- Cleaner chat markdown rendering, and external links now open correctly in your browser.\n- Agent sessions now use agentic compaction by default, keeping long conversations within context more intelligently.\n- Fixed the agent not finding `gh` and other CLI tools by resolving your login shell's PATH.\n- Headless routines now default to YOLO mode so they can run unattended.\n- Fixed request metering for the SAP AI Core provider.\n\n**Full Changelog**: https://github.com/cline/cline/compare/desktop-v0.0.3...desktop-v0.0.4\n",
-      "date": "2026-07-24T01:59:58Z",
-      "url": "https://github.com/cline/cline/releases/tag/desktop-v0.0.4",
-      "prerelease": false
-    },
-    {
-      "version": "desktop-v0.0.3",
-      "name": "Desktop v0.0.3",
-      "body": "\n- The reasoning section in the chat transcript now reads simply \"Thinking\" — dropped the redundant status text and brain icon.\n\n**Full Changelog**: https://github.com/cline/cline/compare/desktop-v0.0.2...desktop-v0.0.3\n",
-      "date": "2026-07-22T00:37:50Z",
-      "url": "https://github.com/cline/cline/releases/tag/desktop-v0.0.3",
-      "prerelease": false
-    },
-    {
-      "version": "desktop-v0.0.2",
-      "name": "Desktop v0.0.2",
-      "body": "\n- First public release of Cline Code for macOS: a desktop app for running and inspecting Cline agent sessions, signed and notarized for Apple Silicon and Intel.\n- Automatic updates: the app checks on launch and every 2 hours, downloads new versions in the background, and prompts for a one-click restart. Ignored updates apply on the next launch.\n- Download the DMG once from GitHub Releases — every future release arrives automatically.\n\n\n",
-      "date": "2026-07-22T00:08:44Z",
-      "url": "https://github.com/cline/cline/releases/tag/desktop-v0.0.2",
-      "prerelease": false
-    },
-    {
-      "version": "desktop-latest",
-      "name": "Cline Code desktop (auto-update feed)",
-      "body": "Rolling release backing the desktop app auto-updater. The latest.json asset points at the newest desktop-vX.Y.Z release. Do not delete.",
-      "date": "2026-07-22T00:08:48Z",
-      "url": "https://github.com/cline/cline/releases/tag/desktop-latest",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-08-08T06:32:01.083Z"
+  "lastUpdated": "2026-08-09T06:35:47.685Z"
 }
