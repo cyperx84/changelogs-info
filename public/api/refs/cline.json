@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "cline",
   "version": "4.1.7",
-  "generated_at": "2026-08-10T07:28:39.862Z",
+  "generated_at": "2026-08-10T09:17:57.081Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -21,7 +21,11 @@
   "delta": {
     "from_version": "4.1.7",
     "to_version": "4.1.7",
-    "new_features": [],
+    "new_features": [
+      "restore-view-changes-button",
+      "copy-button-on-final-response-rows",
+      "pre-registered-oauth-clients-for-remote-mcp"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -50,7 +54,7 @@
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "cline 4.1.7 brings significant stability and usability improvements, particularly around session management, plugin configuration, and error handling. The 'View Changes' button on completion rows is restored and enhanced with SDK checkpoints, allowing developers to comprehensively review all modifications made by a task directly from the completion card. A copy button has also been reinstated for turn-final responses, improving workflow efficiency. For enterprise users, pre-registered OAuth client support for remote MCP servers simplifies authentication in environments without dynamic client registration. Key changes include centralized plugin settings with host-aware snapshots and atomic toggles, and scheduled run reports now carry full execution context, including headers, metadata, durations, and lifecycle error details, providing better observability. Critical fixes address prompt preservation during turn interruptions, ensuring prompts survive aborts and are drained properly, preventing silent drops. Session context is now durable across aborts and hub restarts, allowing interrupted sessions to resume seamlessly. The release also fixes issues with hung MCP servers blocking session creation, improves OAuth authorization surfacing for SSE MCP servers, and routes LiteLLM through Chat Completions to fix proxy requests. Network interruptions mid-stream are now retried, and Vertex ADC token refreshes correctly use configured fetches, improving proxy compatibility. Checkpoint diffs now include untracked files and pick up checkpoints when git is initialized mid-session, enhancing version control integration. Finally, file search in empty windows now correctly falls back to the session CWD or Desktop, and foreign compiled plugin-sandbox bootstraps are no longer run for source hosts, improving security and stability. This is a recommended upgrade for all users to benefit from enhanced stability, improved error handling, and better integration with development workflows."
+      "tldr": "cline 4.1.7 brings back key UI elements and improves stability and reliability across various functionalities. The 'View Changes' button on completion rows has been restored, now backed by SDK checkpoints, allowing developers to easily review all modifications made by a task directly from the completion card. Additionally, a copy button has been re-introduced on turn-final response rows for convenience. For enterprise users, there's new support for pre-registered OAuth clients for remote MCP servers, addressing environments where dynamic client registration is not feasible.\n\nSignificant changes include a more dynamic 'View Changes' button that fades or hides based on content, and a centralization of plugin settings with host-aware snapshots and atomic toggles for better management. The system now carries execution context in scheduled run reports, providing more detailed headers, schedule metadata, durations, and lifecycle error details. Numerous fixes enhance robustness: prompts queued during an interrupted turn are now preserved, session context remains durable across aborts and hub restarts, and queued-turn failures are correctly reported. The release also addresses issues with hung MCP servers, improves OAuth authorization for SSE MCP servers, and fixes LiteLLM routing. Network interruptions during streaming are now retried, Vertex ADC token refreshes use the configured fetch, and checkpoint diffs include untracked files. File search in empty windows now gracefully falls back to the session CWD or Desktop, and foreign compiled plugin-sandbox bootstraps are no longer run for source hosts. This update is recommended for all users to benefit from improved UI, enhanced stability, and critical bug fixes, particularly those relying on remote MCP servers or complex plugin configurations."
     },
     "features": [
       {
@@ -878,6 +882,33 @@
         "status": "stable",
         "since": "4.1.7",
         "description": "Adds support for pre-registered OAuth clients for remote MCP servers, addressing setups where dynamic client registration is not available.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "restore-view-changes-button",
+        "name": "Restore 'View Changes' button on completion rows",
+        "status": "stable",
+        "since": "4.1.7",
+        "description": "The 'View Changes' button on completion rows has been restored, backed by SDK checkpoints, allowing users to review all modifications a task made directly from the completion card.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "copy-button-on-final-response-rows",
+        "name": "Copy button on turn-final response rows",
+        "status": "stable",
+        "since": "4.1.7",
+        "description": "A copy button has been added back to turn-final response rows.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "pre-registered-oauth-clients-for-remote-mcp",
+        "name": "Support for pre-registered OAuth clients for remote MCP servers",
+        "status": "stable",
+        "since": "4.1.7",
+        "description": "cline now supports pre-registered OAuth clients for remote MCP servers, which is useful in setups where dynamic client registration is not available.",
         "key_details": [],
         "source_url": ""
       }
