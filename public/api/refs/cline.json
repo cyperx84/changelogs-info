@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "cline",
   "version": "4.1.7",
-  "generated_at": "2026-08-10T11:06:18.317Z",
+  "generated_at": "2026-08-10T13:03:37.212Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -22,7 +22,9 @@
     "from_version": "4.1.7",
     "to_version": "4.1.7",
     "new_features": [
-      "pre-registered-oauth-clients-for-remote-mcp-servers"
+      "restore-view-changes-button-sdk-checkpoints",
+      "copy-button-turn-final-response-rows",
+      "pre-registered-oauth-clients-remote-mcp"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -52,7 +54,7 @@
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "This `cline` 4.1.7 release focuses on restoring key UI functionalities, enhancing stability, and improving integration with remote services. The 'View Changes' button on completion rows, backed by SDK checkpoints, has been restored, allowing developers to review all task-related changes directly from the completion card. This button now intelligently fades or hides based on the presence of changes, providing a cleaner user experience. Additionally, a copy button has been reintroduced on turn-final response rows, making it easier to extract information from the chat. For enterprise users, support for pre-registered OAuth clients for remote MCP servers has been added, which is crucial for environments where dynamic client registration is not feasible. Plugin management has been centralized, offering host-aware snapshots and atomic toggles for better control. Several critical fixes address session durability, ensuring that interrupted sessions resume with their previous state and queued prompts survive aborts. Network interruptions during model output are now retried, and issues with LiteLLM routing and Vertex ADC token refreshes behind proxies have been resolved. The release also improves error reporting for queued-turn failures and prevents hung MCP servers from blocking session creation, making the tool more robust. It's recommended to upgrade to benefit from these stability improvements and restored features, especially if you rely on remote MCP servers or frequently encounter interrupted sessions."
+      "tldr": "cline 4.1.7 brings back crucial usability features and significantly improves stability and reliability. The 'View Changes' button is restored on completion rows, now powered by SDK checkpoints, allowing developers to easily review all modifications made by a task directly from the completion card. This is a major enhancement for understanding the impact of automated actions. Additionally, a copy button has been re-introduced on turn-final response rows, streamlining the process of extracting output. For enterprise users, support for pre-registered OAuth clients on remote MCP servers addresses environments where dynamic client registration is restricted. The 'View Changes' button now intelligently fades or hides when no changes are present, providing a cleaner UI. Plugin settings and contributions have been centralized, offering host-aware snapshots and atomic toggles for better management. Execution context in scheduled run reports now includes readable headers, schedule metadata, durations, and lifecycle error details, improving observability. Key fixes include preserving prompts queued during an interrupted turn, ensuring session context durability across aborts and hub restarts, and correctly settling the turn phase during mode switch aborts. Queued-turn failures are now properly reported as `run.failed`, preventing silent completions. Stability improvements address hung MCP servers, provide a 30-second initialization budget for unconfigured stdio servers, and surface OAuth authorization for SSE MCP servers on a 401. LiteLLM routing has been fixed to use Chat Completions, and network interruptions mid-stream are now retried. Vertex ADC token refreshes now use the configured fetch, supporting proxies. Checkpoint diffs now include untracked files and pick up checkpoints when git is initialized mid-session. File search for @-mentions in empty windows now falls back to session cwd or Desktop, and foreign compiled plugin-sandbox bootstraps are no longer run for source hosts. This release is highly recommended for all users to benefit from the restored features, improved stability, and enhanced error handling."
     },
     "features": [
       {
@@ -907,6 +909,33 @@
         "status": "stable",
         "since": "4.1.7",
         "description": "cline now supports pre-registered OAuth clients for remote MCP servers, which is useful in setups where dynamic client registration is not available.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "restore-view-changes-button-sdk-checkpoints",
+        "name": "Restore 'View Changes' Button with SDK Checkpoints",
+        "status": "stable",
+        "since": "4.1.7",
+        "description": "The 'View Changes' button on completion rows has been restored, now backed by SDK checkpoints. This allows users to review all modifications a task made directly from the completion card.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "copy-button-turn-final-response-rows",
+        "name": "Copy Button on Turn-Final Response Rows",
+        "status": "stable",
+        "since": "4.1.7",
+        "description": "A copy button has been added to turn-final response rows, enabling easy copying of the final output.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "pre-registered-oauth-clients-remote-mcp",
+        "name": "Pre-registered OAuth Clients for Remote MCP Servers",
+        "status": "stable",
+        "since": "4.1.7",
+        "description": "Support for pre-registered OAuth clients has been added for remote MCP servers. This is beneficial for setups where dynamic client registration is not available.",
         "key_details": [],
         "source_url": ""
       }
