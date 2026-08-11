@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "4.1.7",
-  "generated_at": "2026-08-11T03:42:08.023Z",
+  "version": "4.1.8",
+  "generated_at": "2026-08-11T05:05:25.817Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,19 +19,20 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "4.1.7",
-    "to_version": "4.1.7",
+    "from_version": "4.1.8",
+    "to_version": "4.1.8",
     "new_features": [
-      "restore-view-changes-button-sdk-checkpoints",
-      "copy-button-turn-final-response-rows",
-      "pre-registered-oauth-clients-remote-mcp"
+      "vertex-model-id-manual-entry",
+      "fable-5-vertex-support"
     ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "yolo-mode-removal"
+    ]
   },
   "payload": {
     "meta": {
@@ -49,12 +50,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "4.1.7",
-      "latest_release_date": "2026-08-09",
+      "latest_stable": "4.1.8",
+      "latest_release_date": "2026-08-11",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "cline 4.1.7 brings back several highly requested features and introduces significant stability and reliability improvements. The 'View Changes' button on completion rows has been restored, now powered by SDK checkpoints, allowing developers to comprehensively review all modifications made by a task directly from the completion card. This is a major quality-of-life improvement for understanding task impact. Additionally, a copy button has been re-added to turn-final response rows for easier content extraction. For enterprise users, cline now supports pre-registered OAuth clients for remote MCP servers, addressing environments where dynamic client registration is not feasible. The 'View Changes' button has also been refined to fade until changes are confirmed and hide when irrelevant, improving UI clarity. Plugin settings and contributions are now centralized with host-aware snapshots and atomic toggles, streamlining plugin management. Scheduled run reports now include richer execution context, such as headers, schedule metadata, durations, and error details, enhancing observability. Critical fixes include preserving queued prompts during interrupted turns, ensuring session context durability across aborts and hub restarts, and correctly settling the turn phase when a mode switch aborts a running turn. Queued-turn failures are now properly reported as `run.failed`, preventing silent completions. Stability improvements address hung MCP servers, preventing them from blocking session creation, and provide a 30-second initialization budget for unconfigured stdio servers. OAuth authorization for SSE MCP servers now surfaces on a 401, preventing outright failures. LiteLLM requests are now correctly routed through Chat Completions, fixing issues with LiteLLM proxies. Network interruptions mid-stream are now retried, and Vertex ADC token refreshes use the configured fetch, improving proxy compatibility. Checkpoint diffs now include untracked files, and checkpoints are picked up even if git is initialized mid-session. File search in empty windows now correctly falls back to the session cwd or Desktop, and foreign compiled plugin-sandbox bootstraps are no longer run for source hosts. This release is recommended for all users to benefit from the restored features and numerous stability fixes."
+      "tldr": "cline 4.1.8 introduces significant improvements to Vertex AI integration and streamlines the auto-approval process. Users can now manually enter any Vertex model ID, including those not yet in the catalog, providing immediate access to the latest models like Fable 5, which is now officially supported. This is a major enhancement for developers working with cutting-edge Vertex AI models, removing previous catalog limitations. The Vertex model catalog has been updated to show all models for every region, eliminating the previous hardcoded list that often lagged behind new model releases. While this offers more choice, selecting a model not served in your region will now result in a request failure with clear recovery guidance. Additionally, the 'Yolo Mode' toggle has been removed, with the auto-approve menu becoming the single source of truth for unattended runs. Existing 'Yolo Mode' configurations will be automatically migrated to auto-approve all actions, ensuring no disruption to unattended workflows. The release also fixes an issue where the configured max output tokens were not respected by the compaction summarizer and removes the stale 'Double-Check Completion' feature tip. Furthermore, Fable 5 cost reporting on Vertex will now show as 'unknown' to accurately reflect region-dependent billing, rather than an understated Anthropic list price. Developers should upgrade to leverage the enhanced Vertex model flexibility and the more robust auto-approval system. No complex migration steps are required for the Yolo Mode change, as it's handled automatically."
     },
     "features": [
       {
@@ -938,6 +939,24 @@
         "description": "Support for pre-registered OAuth clients has been added for remote MCP servers. This is beneficial for setups where dynamic client registration is not available.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "vertex-model-id-manual-entry",
+        "name": "Enter any Vertex model ID by hand",
+        "status": "stable",
+        "since": "4.1.8",
+        "description": "Users can now manually enter any Vertex model ID, including those not yet listed in the catalog, providing immediate access to new or unlisted models.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "fable-5-vertex-support",
+        "name": "Support Fable 5 on Vertex",
+        "status": "stable",
+        "since": "4.1.8",
+        "description": "Added support for the Fable 5 model when using the Vertex provider.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1001,6 +1020,17 @@
           "User interaction with plan-to-act transitions"
         ],
         "migration": "Users will now need to explicitly drive the transition from plan mode to act mode. The model will no longer initiate this switch.",
+        "source_url": ""
+      },
+      {
+        "id": "yolo-mode-removal",
+        "version": "4.1.8",
+        "title": "Removal of Yolo Mode Toggle",
+        "description": "The 'Yolo Mode' toggle has been removed as it was a cosmetic feature with no functional impact on the approval path. The auto-approve menu is now the sole control for unattended runs.",
+        "affected": [
+          "Users who relied on the 'Yolo Mode' toggle for visual confirmation of unattended runs."
+        ],
+        "migration": "Existing configurations that had 'Yolo Mode' or 'auto-approve-all' turned on will be automatically migrated to auto-approve every action, ensuring continued unattended operation. No manual migration steps are required, but users should now use the auto-approve menu for all unattended run configurations.",
         "source_url": ""
       }
     ],
