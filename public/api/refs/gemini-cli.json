@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "gemini-cli",
-  "version": "0.54.4",
-  "generated_at": "2026-08-11T20:02:10.152Z",
+  "version": "0.55.1",
+  "generated_at": "2026-08-11T21:43:50.369Z",
   "extracted_from_sources": [
     "https://github.com/google-gemini/gemini-cli/releases/tag/v0.33.0",
     "https://github.com/google-gemini/gemini-cli/releases"
@@ -14,9 +14,31 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "0.54.4",
-    "to_version": "0.54.4",
-    "new_features": [],
+    "from_version": "0.55.1",
+    "to_version": "0.55.1",
+    "new_features": [
+      "tool-registry-discovery",
+      "caretaker-cloud-run-webhook-ingestion",
+      "caretaker-egress-cloud-run-service-skeleton",
+      "caretaker-triage-worker-foundational-modules",
+      "caretaker-egress-octokit-github-action-handler",
+      "caretaker-triage-worker-execution-loop-and-egress-publisher",
+      "pr-generator-db-firestore-concurrency-dual-locking",
+      "pr-generator-agent-antigravity-runner-and-prompt-templates",
+      "pr-generator-core-environment-config-parser-command-executor-github-r",
+      "pr-generator-orchestrator-iterative-bug-fixing-state-machine",
+      "pr-generator-infra-cloud-run-job-workflows-dockerfile",
+      "caretaker-firestore-schema-update",
+      "caretaker-triage-prompt-hill-climbing-and-orchestrator-updates",
+      "caretaker-triage-cloud-run-job-workflow",
+      "caretaker-evals-triage-evaluation-framework-and-judge-runner",
+      "caretaker-evals-local-golden-issue-collection-and-firestore-sync-tools",
+      "caretaker-publish-workable-spec-event",
+      "caretaker-gcp-deployment-script",
+      "caretaker-evals-cloud-run-job-entrypoint",
+      "ingestion-issue-comment-handling-and-re-triage-workflow",
+      "evals-local-report-command-and-developer-documentation"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -39,14 +61,14 @@
       "changelog_url": "https://github.com/google-gemini/gemini-cli/releases",
       "repo_url": "https://github.com/google-gemini/gemini-cli",
       "license": "apache-2.0",
-      "latest_stable": "0.54.4",
+      "latest_stable": "0.55.1",
       "latest_prerelease": "0.34.0-preview",
-      "latest_release_date": "2026-08-07",
+      "latest_release_date": "2026-08-11",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
       "release_cadence": "Stable on Tuesdays. Preview: Tuesdays UTC 23:59. Nightly: daily UTC 00:00.",
-      "tldr": "This release for gemini-cli, version 0.54.4, primarily focuses on internal maintenance and versioning adjustments. The most notable change is a cherry-pick of a patch (56f9688) to address an unspecified issue, which led to the creation of version 0.54.1 from the 0.54.0 base. Subsequent internal version bumps and a revert of a version bump indicate a period of stabilization and correction within the release process. There are no new features, commands, flags, or breaking changes introduced in this specific update. Developers can consider this a minor patch release aimed at internal consistency rather than user-facing enhancements or modifications. Upgrading is recommended for general stability, but no immediate action or migration steps are required."
+      "tldr": "This release of gemini-cli, version 0.55.1, introduces significant enhancements across tool discovery, security, and internal agent infrastructure, particularly for the 'Caretaker' and 'PR Generator' systems. A major new feature is the improved Tool Registry Discovery, which streamlines how tools are found and utilized within the CLI, making it easier for developers to leverage available functionalities. Security has been tightened with case-insensitive sensitive path blocklists, robust path resolution fixes for core tools, and stricter macOS sandboxing that now aligns with a deny-default model, making the environment more secure by default. Additionally, the `GoogleCredentialsAuthProvider` now strictly enforces HTTPS to prevent credential leakage, and cached credentials are verified more rigorously. The Caretaker system sees substantial development with new Cloud Run webhook ingestion and egress services, foundational modules for triage workers, and an Octokit GitHub action handler, enabling more sophisticated automated issue management and interaction with GitHub. The PR Generator system gains Firestore concurrency dual-locking, an Antigravity agent runner, and an iterative bug-fixing state machine, significantly advancing automated pull request generation capabilities. Developers should note the enhanced security measures, especially around sandboxing and credential handling, which improve overall system integrity. The update to the Vertex AI base URL ensures compatibility with the latest service endpoints. Upgrading is recommended for all users to benefit from the security fixes, improved tool discovery, and advanced automation features, especially those leveraging or planning to leverage the Caretaker and PR Generator systems."
     },
     "features": [
       {
@@ -1935,6 +1957,195 @@
         "description": "Implemented the Antigravity agent runner and prompt templates for the PR generator agent, improving its ability to generate pull requests.",
         "key_details": [],
         "source_url": "https://github.com/google-gemini/gemini-cli/pull/28434"
+      },
+      {
+        "id": "tool-registry-discovery",
+        "name": "Tool Registry Discovery",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Introduces enhanced mechanisms for discovering available tools within the Gemini CLI ecosystem.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28113"
+      },
+      {
+        "id": "caretaker-cloud-run-webhook-ingestion",
+        "name": "Caretaker Cloud Run Webhook Ingestion Service",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Implements a Cloud Run webhook ingestion service for the Caretaker system, enabling external systems to trigger Caretaker workflows.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28015"
+      },
+      {
+        "id": "caretaker-egress-cloud-run-service-skeleton",
+        "name": "Caretaker Egress Cloud Run Service Skeleton",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Provides the foundational structure for an egress Cloud Run service within the Caretaker system.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28167"
+      },
+      {
+        "id": "caretaker-triage-worker-foundational-modules",
+        "name": "Caretaker Triage Worker Core Foundational Modules",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Adds core foundational modules for the Caretaker triage worker.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28163"
+      },
+      {
+        "id": "caretaker-egress-octokit-github-action-handler",
+        "name": "Caretaker Egress Octokit GitHub Action Handler",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Implements an Octokit GitHub action handler for the Caretaker egress service, facilitating interactions with GitHub.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28303"
+      },
+      {
+        "id": "caretaker-triage-worker-execution-loop-and-egress-publisher",
+        "name": "Caretaker Triage Worker Execution Loop and Egress Action Publisher",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Implements the main worker execution loop and egress action publisher for the Caretaker triage system.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28306"
+      },
+      {
+        "id": "pr-generator-db-firestore-concurrency-dual-locking",
+        "name": "PR Generator DB Firestore Concurrency Dual-Locking and Test Ingestion Utilities",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Implements Firestore concurrency dual-locking and provides test ingestion utilities for the PR generator database.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28432"
+      },
+      {
+        "id": "pr-generator-agent-antigravity-runner-and-prompt-templates",
+        "name": "PR Generator Agent Antigravity Runner and Prompt Templates",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Implements the Antigravity agent runner and prompt templates for the PR generator agent.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28434"
+      },
+      {
+        "id": "pr-generator-core-environment-config-parser-command-executor-github-r",
+        "name": "PR Generator Core Environment Config Parser, Command Executor, GitHub R",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Adds an environment configuration parser, command executor, and GitHub related functionalities to the PR generator core.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28435"
+      },
+      {
+        "id": "pr-generator-orchestrator-iterative-bug-fixing-state-machine",
+        "name": "PR Generator Orchestrator Iterative Bug-Fixing State Machine and Container Worker Entrypoint",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Implements an iterative bug-fixing state machine and container worker entrypoint for the PR generator orchestrator.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28433"
+      },
+      {
+        "id": "pr-generator-infra-cloud-run-job-workflows-dockerfile",
+        "name": "PR Generator Infra Cloud Run Job, Workflows Definition, and Dockerfile",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Configures Cloud Run jobs, Workflows definitions, and Dockerfiles for the PR generator infrastructure.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28431"
+      },
+      {
+        "id": "caretaker-firestore-schema-update",
+        "name": "Caretaker Firestore Schema Update with Error and PR Number Fields",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Updates the Caretaker Firestore schema to include `error` and `pr_number` fields.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28467"
+      },
+      {
+        "id": "caretaker-triage-prompt-hill-climbing-and-orchestrator-updates",
+        "name": "Caretaker Triage Prompt Hill-Climbing & Orchestrator Updates",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Introduces prompt hill-climbing techniques and updates to the orchestrator for Caretaker triage.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28524"
+      },
+      {
+        "id": "caretaker-triage-cloud-run-job-workflow",
+        "name": "Caretaker Triage Cloud Run Job Workflow",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Adds a Cloud Run job workflow specifically for Caretaker triage.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28468"
+      },
+      {
+        "id": "caretaker-evals-triage-evaluation-framework-and-judge-runner",
+        "name": "Caretaker Evals Triage Evaluation Framework and Judge Runner",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Adds a triage evaluation framework and judge runner for Caretaker evaluations.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28530"
+      },
+      {
+        "id": "caretaker-evals-local-golden-issue-collection-and-firestore-sync-tools",
+        "name": "Caretaker Evals Local Golden Issue Collection and Firestore Sync Tools",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Adds tools for local golden issue collection and Firestore synchronization for Caretaker evaluations.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28532"
+      },
+      {
+        "id": "caretaker-publish-workable-spec-event",
+        "name": "Caretaker Publish Workable Spec Event to Ready-for-Code Pub/Sub Topic",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Enables publishing workable spec events to the 'ready-for-code' Pub/Sub topic within Caretaker.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28588"
+      },
+      {
+        "id": "caretaker-gcp-deployment-script",
+        "name": "Caretaker GCP Deployment Script for Agent Services",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Adds a GCP deployment script for Caretaker agent services.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28529"
+      },
+      {
+        "id": "caretaker-evals-cloud-run-job-entrypoint",
+        "name": "Caretaker Evals Cloud Run Job Entrypoint for Eval Runner",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Adds a Cloud Run job entrypoint for the evaluation runner in Caretaker evaluations.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28727"
+      },
+      {
+        "id": "ingestion-issue-comment-handling-and-re-triage-workflow",
+        "name": "Ingestion Issue Comment Handling and Re-Triage Workflow",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Adds functionality for handling issue comments and a re-triage workflow within the ingestion system.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28690"
+      },
+      {
+        "id": "evals-local-report-command-and-developer-documentation",
+        "name": "Evals Local Report Command and Developer Documentation",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Adds a local report command for evaluations and corresponding developer documentation.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28369"
       }
     ],
     "commands": [
