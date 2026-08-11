@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "gemini-cli",
   "version": "0.55.1",
-  "generated_at": "2026-08-11T22:39:12.536Z",
+  "generated_at": "2026-08-11T21:43:50.369Z",
   "extracted_from_sources": [
     "https://github.com/google-gemini/gemini-cli/releases/tag/v0.33.0",
     "https://github.com/google-gemini/gemini-cli/releases"
@@ -17,25 +17,25 @@
     "from_version": "0.55.1",
     "to_version": "0.55.1",
     "new_features": [
-      "caretaker-cloud-run-webhook-ingestion-service",
+      "tool-registry-discovery",
+      "caretaker-cloud-run-webhook-ingestion",
       "caretaker-egress-cloud-run-service-skeleton",
-      "caretaker-triage-worker-core-foundational-modules",
+      "caretaker-triage-worker-foundational-modules",
       "caretaker-egress-octokit-github-action-handler",
-      "caretaker-triage-main-worker-execution-loop-and-egress-action-publisher",
-      "eval-coverage-report-command",
-      "pr-generator-db-firestore-concurrency-dual-locking-and-test-ingestion-utilities",
-      "pr-generator-agent-antigravity-agent-runner-and-prompt-templates",
+      "caretaker-triage-worker-execution-loop-and-egress-publisher",
+      "pr-generator-db-firestore-concurrency-dual-locking",
+      "pr-generator-agent-antigravity-runner-and-prompt-templates",
       "pr-generator-core-environment-config-parser-command-executor-github-r",
-      "pr-generator-orchestrator-iterative-bug-fixing-state-machine-and-container-worker-entrypoint",
-      "pr-generator-infra-cloud-run-job-workflows-definition-and-dockerfile",
-      "caretaker-firestore-schema-update-with-error-and-pr-number-fields",
+      "pr-generator-orchestrator-iterative-bug-fixing-state-machine",
+      "pr-generator-infra-cloud-run-job-workflows-dockerfile",
+      "caretaker-firestore-schema-update",
       "caretaker-triage-prompt-hill-climbing-and-orchestrator-updates",
       "caretaker-triage-cloud-run-job-workflow",
       "caretaker-evals-triage-evaluation-framework-and-judge-runner",
       "caretaker-evals-local-golden-issue-collection-and-firestore-sync-tools",
       "caretaker-publish-workable-spec-event",
-      "caretaker-gcp-deployment-script-for-agent-services",
-      "caretaker-evals-cloud-run-job-entrypoint-for-eval-runner",
+      "caretaker-gcp-deployment-script",
+      "caretaker-evals-cloud-run-job-entrypoint",
       "ingestion-issue-comment-handling-and-re-triage-workflow",
       "evals-local-report-command-and-developer-documentation"
     ],
@@ -68,7 +68,7 @@
       "runtime": "node",
       "written_in": "typescript",
       "release_cadence": "Stable on Tuesdays. Preview: Tuesdays UTC 23:59. Nightly: daily UTC 00:00.",
-      "tldr": "This `gemini-cli` release, v0.55.1, focuses heavily on enhancing the Caretaker and PR Generator agents, alongside numerous stability, security, and core functionality fixes. A major highlight is the introduction of comprehensive Caretaker agent features, including a Cloud Run webhook ingestion service, egress service skeleton, core foundational modules for the triage worker, and an Octokit GitHub action handler for egress. These additions significantly bolster the Caretaker agent's ability to manage and process GitHub events, improving issue triage and automation workflows. \n\nFor the PR Generator agent, new features include Firestore concurrency dual-locking, an Antigravity agent runner with prompt templates, an environment config parser, a command executor, and an iterative bug-fixing state machine. The infrastructure for the PR Generator now also includes Cloud Run job configurations, Workflows definitions, and Dockerfiles, streamlining its deployment and operation. These changes enable more robust and automated pull request generation and management.\n\nSeveral critical fixes address security vulnerabilities, such as enforcing a case-insensitive sensitive path blocklist, preventing workspace binary shadowing, and resolving symbolic link directory escapes in memory imports. Core functionality improvements include mitigating infinite ReAct loops, preventing prompt injection loops, and ensuring task cancellation aborts execution loops in the a2a-server. The release also refines error handling for quota limits and capacity exhaustion, providing clearer user feedback. Developers will also benefit from new evaluation tools, including an eval coverage report command and local report command with documentation, aiding in the assessment and improvement of agent performance. The macOS sandbox has been strengthened by making `~/.gitconfig` read-only and aligning Seatbelt profiles with a deny-default model. It is recommended to upgrade to this version to benefit from the enhanced agent capabilities, improved security, and numerous stability fixes."
+      "tldr": "This release of gemini-cli, version 0.55.1, introduces significant enhancements across tool discovery, security, and internal agent infrastructure, particularly for the 'Caretaker' and 'PR Generator' systems. A major new feature is the improved Tool Registry Discovery, which streamlines how tools are found and utilized within the CLI, making it easier for developers to leverage available functionalities. Security has been tightened with case-insensitive sensitive path blocklists, robust path resolution fixes for core tools, and stricter macOS sandboxing that now aligns with a deny-default model, making the environment more secure by default. Additionally, the `GoogleCredentialsAuthProvider` now strictly enforces HTTPS to prevent credential leakage, and cached credentials are verified more rigorously. The Caretaker system sees substantial development with new Cloud Run webhook ingestion and egress services, foundational modules for triage workers, and an Octokit GitHub action handler, enabling more sophisticated automated issue management and interaction with GitHub. The PR Generator system gains Firestore concurrency dual-locking, an Antigravity agent runner, and an iterative bug-fixing state machine, significantly advancing automated pull request generation capabilities. Developers should note the enhanced security measures, especially around sandboxing and credential handling, which improve overall system integrity. The update to the Vertex AI base URL ensures compatibility with the latest service endpoints. Upgrading is recommended for all users to benefit from the security fixes, improved tool discovery, and advanced automation features, especially those leveraging or planning to leverage the Caretaker and PR Generator systems."
     },
     "features": [
       {
@@ -2146,105 +2146,6 @@
         "description": "Adds a local report command for evaluations and corresponding developer documentation.",
         "key_details": [],
         "source_url": "https://github.com/google-gemini/gemini-cli/pull/28369"
-      },
-      {
-        "id": "caretaker-cloud-run-webhook-ingestion-service",
-        "name": "Caretaker Cloud Run Webhook Ingestion Service",
-        "status": "stable",
-        "since": "0.55.1",
-        "description": "Implements a Cloud Run webhook ingestion service for the Caretaker agent.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28015"
-      },
-      {
-        "id": "caretaker-triage-worker-core-foundational-modules",
-        "name": "Caretaker Triage Worker Core Foundational Modules",
-        "status": "stable",
-        "since": "0.55.1",
-        "description": "Adds core foundational modules for the Caretaker triage worker.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28163"
-      },
-      {
-        "id": "caretaker-triage-main-worker-execution-loop-and-egress-action-publisher",
-        "name": "Caretaker Triage Main Worker Execution Loop and Egress Action Publisher",
-        "status": "stable",
-        "since": "0.55.1",
-        "description": "Implements the main worker execution loop and egress action publisher for the Caretaker triage agent.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28306"
-      },
-      {
-        "id": "eval-coverage-report-command",
-        "name": "Eval Coverage Report Command",
-        "status": "stable",
-        "since": "0.55.1",
-        "description": "Adds a command to generate an evaluation coverage report.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28169"
-      },
-      {
-        "id": "pr-generator-db-firestore-concurrency-dual-locking-and-test-ingestion-utilities",
-        "name": "PR Generator DB Firestore Concurrency Dual-Locking and Test Ingestion Utilities",
-        "status": "stable",
-        "since": "0.55.1",
-        "description": "Implements Firestore concurrency dual-locking and test ingestion utilities for the PR Generator database.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28432"
-      },
-      {
-        "id": "pr-generator-agent-antigravity-agent-runner-and-prompt-templates",
-        "name": "PR Generator Agent Antigravity Agent Runner and Prompt Templates",
-        "status": "stable",
-        "since": "0.55.1",
-        "description": "Implements the Antigravity agent runner and prompt templates for the PR Generator agent.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28434"
-      },
-      {
-        "id": "pr-generator-orchestrator-iterative-bug-fixing-state-machine-and-container-worker-entrypoint",
-        "name": "PR Generator Orchestrator Iterative Bug-Fixing State Machine and Container Worker Entrypoint",
-        "status": "stable",
-        "since": "0.55.1",
-        "description": "Implements an iterative bug-fixing state machine and container worker entrypoint for the PR Generator orchestrator.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28433"
-      },
-      {
-        "id": "pr-generator-infra-cloud-run-job-workflows-definition-and-dockerfile",
-        "name": "PR Generator Infra Cloud Run Job, Workflows Definition, and Dockerfile",
-        "status": "stable",
-        "since": "0.55.1",
-        "description": "Configures the Cloud Run job, Workflows definition, and Dockerfile for the PR Generator infrastructure.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28431"
-      },
-      {
-        "id": "caretaker-firestore-schema-update-with-error-and-pr-number-fields",
-        "name": "Caretaker Firestore Schema Update with Error and PR Number Fields",
-        "status": "stable",
-        "since": "0.55.1",
-        "description": "Updates the Caretaker Firestore schema to include 'error' and 'pr_number' fields.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28467"
-      },
-      {
-        "id": "caretaker-gcp-deployment-script-for-agent-services",
-        "name": "Caretaker GCP Deployment Script for Agent Services",
-        "status": "stable",
-        "since": "0.55.1",
-        "description": "Adds a GCP deployment script for Caretaker agent services.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28529"
-      },
-      {
-        "id": "caretaker-evals-cloud-run-job-entrypoint-for-eval-runner",
-        "name": "Caretaker Evals Cloud Run Job Entrypoint for Eval Runner",
-        "status": "stable",
-        "since": "0.55.1",
-        "description": "Adds a Cloud Run job entrypoint for the evaluation runner in Caretaker evaluations.",
-        "key_details": [],
-        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28727"
       }
     ],
     "commands": [
