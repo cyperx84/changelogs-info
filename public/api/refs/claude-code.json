@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.228",
-  "generated_at": "2026-08-12T20:41:00.691Z",
+  "version": "2.1.229",
+  "generated_at": "2026-08-12T21:42:07.463Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,15 +14,24 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.228",
-    "to_version": "2.1.228",
-    "new_features": [],
+    "from_version": "2.1.229",
+    "to_version": "2.1.229",
+    "new_features": [
+      "server-supplied-claude-code-hooks",
+      "sse-keepalive-pings",
+      "plugin-marketplace-command-sources",
+      "vscode-session-groups"
+    ],
     "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [],
+    "new_env_vars": [
+      "CLAUDE_CODE_WORKFLOW_PREFIX_STAGGER_MS"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "self-hosted-runner-windows-startup-base-dir"
+    ]
   },
   "payload": {
     "meta": {
@@ -39,12 +48,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.228",
-      "latest_release_date": "2026-08-11",
+      "latest_stable": "2.1.229",
+      "latest_release_date": "2026-08-12",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release, version 2.1.228, focuses primarily on stability fixes and quality-of-life improvements, with a significant hardening of skills synced from claude.ai. The most impactful change is the enhanced security for claude.ai-synced skills, which now prevent shadowing local commands, sanitize descriptions, and restrict `!` commands and `@` file expansion, making them safer to use. Cross-session messaging has been improved for better readability, displaying sender and body inline, and showing the Remote Control session name for messages to other machines. Vertex AI credential handling is now more efficient, with expired or missing credentials failing quickly instead of prolonged retries, which will save time during setup and debugging. The Write tool's behavior has been updated to allow newer models to overwrite files they haven't read, aligning its rules with the Edit tool, though older models retain the previous restriction. Several critical bugs have been addressed, including interactive sessions freezing, `git` not being found on Windows, `/tui` reverting models, and issues with cross-session messaging initialization and Remote Control `/resume` leaking conversation history. Self-hosted runner stability has been improved by fixing session failures related to `checkout` hooks and background task transitions, and session cleanup no longer deletes contents within a project's memory folder. The release also includes minor updates like improved compaction progress indicators and updated terminal title busy-spinner glyphs for reduced jitter. There are no breaking changes, new commands, or flags introduced in this version. Upgrading is recommended for improved stability, security, and a smoother user experience, especially for users relying on claude.ai-synced skills or self-hosted runners."
+      "tldr": "This release of Claude Code 2.1.229 introduces several key improvements and fixes, most notably enhancing self-hosted runner capabilities and improving stability for long-running sessions. Self-hosted runner sessions now support server-supplied Claude Code hooks, bringing them in line with managed environments. To prevent idle-timeout disconnects during long thinking pauses, SSE keepalive pings have been added to gateway streaming responses for Vertex and Bedrock upstreams. The plugin marketplace gains 'command' sources, allowing local commands (e.g., from an IDE) to define plugin directories that are re-resolved each session without requiring a restart, and `mode: \"link\"` can use this in place of other sources. The VSCode extension now features session groups in the sidebar, enabling users to organize, rename, delete, and move multiple sessions efficiently. A significant breaking change for Windows self-hosted runner users is the new requirement to explicitly specify the `--base-dir` flag at startup, as the default checkout directory has been removed. Workflow fan-outs are now improved to stagger same-prefix sibling agents, reducing prompt re-payment costs, which can be disabled by setting `CLAUDE_CODE_WORKFLOW_PREFIX_STAGGER_MS=0`. Numerous fixes address critical issues, including long responses disappearing or duplicating, crashes related to non-string tool call values, RangeError crashes with narrow terminals or progress bars, and crashes on Windows with extended-length or UNC paths. Auto mode no longer fails for users disabling the attribution header, and `/model` now correctly handles Sonnet/Opus 1M for claude.ai subscribers using custom `ANTHROPIC_BASE_URL`. Other fixes include MCP OAuth redirect URI issues, stuck Remote Control spinners, a bug in the Claude Code Review workflow, UI stalls with many IDE diagnostics, stray liveness files from one-shot `claude plugin` commands, and file-watcher handle leaks. Users should review the `--base-dir` change for Windows self-hosted runners and consider the new plugin marketplace capabilities. Upgrading is recommended for improved stability, especially for long-running sessions and self-hosted environments."
     },
     "features": [
       {
@@ -1474,6 +1483,50 @@
         "description": "Added a workspace trust prompt to `claude agents` for untrusted directories, aligning its behavior with the `claude` command.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "server-supplied-claude-code-hooks",
+        "name": "Server-supplied Claude Code hooks for self-hosted runner sessions",
+        "status": "stable",
+        "since": "2.1.229",
+        "description": "Self-hosted runner sessions now support server-supplied Claude Code hooks, matching the behavior of managed environments.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "sse-keepalive-pings",
+        "name": "SSE keepalive pings for gateway streaming responses",
+        "status": "stable",
+        "since": "2.1.229",
+        "description": "Added Server-Sent Events (SSE) keepalive pings to gateway streaming responses during long thinking pauses. This prevents idle-timeout disconnects on Vertex and Bedrock upstreams.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "plugin-marketplace-command-sources",
+        "name": "Plugin marketplace 'command' sources",
+        "status": "stable",
+        "since": "2.1.229",
+        "description": "The plugin marketplace now supports 'command' sources. A local command (e.g., from an IDE) can print the plugin directory, which is re-resolved each session and applied without a restart. When `mode: \"link\"` is used, it replaces the existing link.",
+        "key_details": [
+          "Supports local commands (e.g., IDEs) to define plugin directories.",
+          "Plugin directories are re-resolved each session.",
+          "Plugins are applied without requiring a restart.",
+          "`mode: \"link\"` uses the command source in place of other sources."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "vscode-session-groups",
+        "name": "VSCode Session Groups in Sidebar",
+        "status": "stable",
+        "since": "2.1.229",
+        "description": "In the VSCode extension, users can now create, rename, and delete session groups in the sidebar. Multiple sessions can be moved at once using Cmd/Ctrl- or Shift-click.",
+        "key_details": [
+          "Right-click to create, rename, or delete session groups.",
+          "Cmd/Ctrl- or Shift-click to move multiple sessions simultaneously."
+        ],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -2690,6 +2743,13 @@
         "status": "stable",
         "since": "2.1.224",
         "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_WORKFLOW_PREFIX_STAGGER_MS",
+        "purpose": "Disables the staggering of workflow fan-outs for same-prefix sibling agents. Setting to `0` will disable the staggering.",
+        "status": "stable",
+        "since": "2.1.229",
+        "source_url": ""
       }
     ],
     "models": [
@@ -3014,6 +3074,17 @@
           "Remote Control auto-start configuration"
         ],
         "migration": "If you previously relied on repo-local settings to enable Remote Control auto-start, you must now enable it at the user scope using the `/config` command.",
+        "source_url": ""
+      },
+      {
+        "id": "self-hosted-runner-windows-startup-base-dir",
+        "version": "2.1.229",
+        "title": "Self-hosted runner Windows startup now requires explicit --base-dir",
+        "description": "On Windows, self-hosted runner startup now explicitly requires the `--base-dir` flag. There is no longer a default checkout directory on Windows.",
+        "affected": [
+          "Self-hosted runner users on Windows"
+        ],
+        "migration": "When starting a self-hosted runner on Windows, you must now explicitly specify the `--base-dir` flag with the desired checkout directory.",
         "source_url": ""
       }
     ],
