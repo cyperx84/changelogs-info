@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.147.0",
-  "generated_at": "2026-08-12T15:57:32.240Z",
+  "generated_at": "2026-08-12T16:58:41.156Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -56,7 +56,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "Codex-cli 0.147.0 introduces significant enhancements to plugin management and conversation organization. The headline feature is the ability to install portable Agent Plugins and search across local, personal, workspace, and remote plugin catalogs, greatly expanding the discoverability and utility of plugins. This allows developers to leverage a wider array of tools and integrate them more seamlessly into their workflows.\n\nMajor new features include the ability to organize conversations into persistent, manually ordered sections, making it easier to manage and browse long transcripts incrementally. This improves the user experience for complex or ongoing projects. Additionally, the release enables automatically reviewed approvals via the new `--approve-for-me` CLI flag, streamlining approval workflows. Developers can now also import Cursor-managed skills and synchronize changes to imported Claude and Cursor conversations, preventing duplicates and ensuring consistency across different platforms. The release also adds support for the opt-in MCP 2026-07-28 protocol, bringing paginated discovery, multi-round requests, and non-blocking server startup, which enhances the capabilities and performance of MCP interactions. Finally, cached web search and remote conversation compaction are now enabled for Amazon Bedrock, improving efficiency for users of that service.\n\nImportant fixes address several critical issues, including redacting secrets and bearer tokens from displayed commands and conversation history, preventing lost or stalled terminal input, and correcting rendering for various character sets and hyperlinks. Windows users will benefit from proper interruption of background processes and consistent handling of filesystem paths. Security has been hardened with explicit trust requirements for unfamiliar local projects and enforced authentication restrictions, as well as improved plugin isolation and denial of network access when policy updates fail. The deprecated `codex exec --full-auto` flag has been removed; users should now use `--sandbox workspace-write` instead. It is recommended to upgrade to this version to benefit from the new features, improved stability, and critical security enhancements."
+      "tldr": "Codex-cli v0.147.0 introduces significant enhancements to plugin management, conversation organization, and approval workflows. The headline feature is the ability to install and search portable Agent Plugins across various catalogs (local, personal, workspace, remote), greatly expanding the tool's extensibility and discoverability of capabilities. This allows developers to leverage a wider range of specialized agents for their tasks.\n\nMajor new features include the ability to organize conversations into persistent, manually ordered sections, making it easier to manage and browse long transcripts incrementally. This improves the user experience for complex or ongoing projects. Additionally, the `--approve-for-me` CLI flag enables automatically reviewed approvals, streamlining workflows that require explicit confirmation. Users can now also import Cursor-managed skills and synchronize changes from Claude and Cursor conversations, preventing duplication and integrating external tools more smoothly. The release also adds support for the opt-in MCP 2026-07-28 protocol, bringing paginated discovery, multi-round requests, and non-blocking server startup, which enhances the performance and capabilities of the MCP system. Finally, cached web search and remote conversation compaction are now enabled for Amazon Bedrock, improving efficiency for users of that platform.\n\nSeveral critical bug fixes are included, such as redacting secrets and bearer tokens from displayed commands and history, preventing stalled terminal input, correcting rendering for various character sets and hyperlinks, and properly interrupting Windows background processes. Plugin isolation has been hardened, and network access is denied if policy updates fail, improving security. A notable deprecation is the `codex exec --full-auto` flag, which should now be replaced with `--sandbox workspace-write`. Users should upgrade to this version to benefit from improved security, stability, and new workflow efficiencies, especially if they rely on plugins, long conversations, or Amazon Bedrock integrations."
     },
     "features": [
       {
@@ -4175,6 +4175,13 @@
         {
           "flag": "--full-auto",
           "replaced_by": "`--sandbox workspace-write`",
+          "deprecated_since": "0.147.0",
+          "removed_in": null,
+          "source_url": ""
+        },
+        {
+          "flag": "--full-auto",
+          "replaced_by": "--sandbox workspace-write",
           "deprecated_since": "0.147.0",
           "removed_in": null,
           "source_url": ""
