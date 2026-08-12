@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.229",
-  "generated_at": "2026-08-12T22:37:48.764Z",
+  "generated_at": "2026-08-12T23:38:34.303Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -17,7 +17,7 @@
     "from_version": "2.1.229",
     "to_version": "2.1.229",
     "new_features": [
-      "server-supplied-claude-code-hooks-self-hosted",
+      "server-supplied-claude-code-hooks-self-hosted-runner",
       "sse-keepalive-pings",
       "plugin-marketplace-command-sources",
       "vscode-session-groups"
@@ -32,10 +32,7 @@
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "self-hosted-runner-windows-base-dir",
-      "commit-push-pr-dangerous-flags"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -57,7 +54,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release of claude-code 2.1.229 introduces significant improvements to stability, performance, and developer experience, particularly for self-hosted environments and VSCode users. A headline change is the extension of server-supplied Claude Code hook support to self-hosted runner sessions, ensuring consistent behavior across managed and self-hosted setups. This is crucial for organizations leveraging their own infrastructure, as it streamlines integration and management. Additionally, SSE keepalive pings have been added to gateway streaming responses, preventing idle-timeout disconnects during long AI thinking pauses on Vertex and Bedrock upstreams, which enhances reliability for long-running tasks. \n\nNew features include plugin marketplace 'command' sources, allowing local commands (e.g., from an IDE) to dynamically provide plugin directories that are re-resolved each session without requiring a restart. For VSCode users, session groups have been introduced in the sidebar, enabling better organization and management of multiple sessions. \n\nNumerous fixes address critical issues, such as crashes related to malformed tool call arguments, narrow terminal rendering, and Windows path handling. Auto mode now correctly functions for users disabling the attribution header, and `/model` issues with custom `ANTHROPIC_BASE_URL` for Sonnet/Opus 1M have been resolved. Self-hosted runners see fixes for startup issues with `managed-mcp.json` and hanging Git Credential Manager prompts, improving their robustness. \n\nBreaking changes include the requirement for an explicit `--base-dir` flag when starting self-hosted runners on Windows, as the default checkout directory has been removed. Also, `/commit-push-pr` no longer auto-approves git/gh commands with dangerous flags like `--force` or `--amend`, requiring manual approval for such operations. An important new environment variable, `CLAUDE_CODE_WORKFLOW_PREFIX_STAGGER_MS`, allows disabling the improved workflow fan-out staggering for sibling agents, which by default now optimizes prompt caching. This release is recommended for all users to improve stability and leverage new features, especially those using self-hosted runners or the VSCode extension."
+      "tldr": "This release of claude-code 2.1.229 focuses on stability, reliability, and developer experience improvements, particularly for self-hosted environments and VSCode users. A key enhancement is the addition of server-supplied Claude Code hook support for self-hosted runner sessions, bringing them in line with managed environments and ensuring consistent behavior across deployment types. This is crucial for organizations leveraging self-hosted infrastructure for their AI development workflows. Additionally, SSE keepalive pings have been introduced to gateway streaming responses, preventing idle-timeout disconnects during long thinking pauses on Vertex and Bedrock upstreams, which significantly improves the reliability of long-running AI interactions.\n\nFor plugin developers and users, the plugin marketplace now supports 'command' sources, allowing local commands (like those from an IDE) to dynamically provide plugin directories that are re-resolved each session without requiring a restart. This offers greater flexibility and integration with existing development tools. VSCode users will appreciate the new session groups in the sidebar, enabling better organization and management of multiple sessions through intuitive drag-and-drop and click-based controls. Several critical bug fixes address issues like long responses disappearing during streaming, crashes related to malformed tool call arguments, and UI stalls in VSCode when editing files with many diagnostics. The `/commit-push-pr` command has been made safer by no longer auto-approving git/gh commands with dangerous flags like `--force`. Self-hosted runner Windows startup now explicitly requires the `--base-dir` flag, removing ambiguity. Overall, this release provides significant stability and usability enhancements, especially for self-hosted deployments and VSCode integration, making it a recommended upgrade for all users to benefit from improved reliability and a smoother development experience."
     },
     "features": [
       {
@@ -1538,6 +1535,15 @@
         "status": "stable",
         "since": "2.1.229",
         "description": "Server-supplied Claude Code hook support has been extended to self-hosted runner sessions, providing parity with managed-environment behavior.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "server-supplied-claude-code-hooks-self-hosted-runner",
+        "name": "Server-supplied Claude Code Hooks for Self-Hosted Runner Sessions",
+        "status": "stable",
+        "since": "2.1.229",
+        "description": "Added support for server-supplied Claude Code hooks in self-hosted runner sessions, aligning their behavior with managed environments.",
         "key_details": [],
         "source_url": ""
       }
