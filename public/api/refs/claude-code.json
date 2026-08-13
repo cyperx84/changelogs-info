@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.229",
-  "generated_at": "2026-08-12T23:38:34.303Z",
+  "generated_at": "2026-08-13T01:48:41.492Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -17,22 +17,24 @@
     "from_version": "2.1.229",
     "to_version": "2.1.229",
     "new_features": [
-      "server-supplied-claude-code-hooks-self-hosted-runner",
+      "server-supplied-claude-code-hook-support-self-hosted-runner",
       "sse-keepalive-pings",
       "plugin-marketplace-command-sources",
       "vscode-session-groups"
     ],
     "new_commands": [],
     "new_flags": [
-      "--continue",
-      "--base-dir"
+      "--continue"
     ],
     "new_env_vars": [
       "CLAUDE_CODE_WORKFLOW_PREFIX_STAGGER_MS"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "self-hosted-runner-windows-base-dir-requirement",
+      "commit-push-pr-dangerous-flags-auto-approval-removed"
+    ]
   },
   "payload": {
     "meta": {
@@ -54,7 +56,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release of claude-code 2.1.229 focuses on stability, reliability, and developer experience improvements, particularly for self-hosted environments and VSCode users. A key enhancement is the addition of server-supplied Claude Code hook support for self-hosted runner sessions, bringing them in line with managed environments and ensuring consistent behavior across deployment types. This is crucial for organizations leveraging self-hosted infrastructure for their AI development workflows. Additionally, SSE keepalive pings have been introduced to gateway streaming responses, preventing idle-timeout disconnects during long thinking pauses on Vertex and Bedrock upstreams, which significantly improves the reliability of long-running AI interactions.\n\nFor plugin developers and users, the plugin marketplace now supports 'command' sources, allowing local commands (like those from an IDE) to dynamically provide plugin directories that are re-resolved each session without requiring a restart. This offers greater flexibility and integration with existing development tools. VSCode users will appreciate the new session groups in the sidebar, enabling better organization and management of multiple sessions through intuitive drag-and-drop and click-based controls. Several critical bug fixes address issues like long responses disappearing during streaming, crashes related to malformed tool call arguments, and UI stalls in VSCode when editing files with many diagnostics. The `/commit-push-pr` command has been made safer by no longer auto-approving git/gh commands with dangerous flags like `--force`. Self-hosted runner Windows startup now explicitly requires the `--base-dir` flag, removing ambiguity. Overall, this release provides significant stability and usability enhancements, especially for self-hosted deployments and VSCode integration, making it a recommended upgrade for all users to benefit from improved reliability and a smoother development experience."
+      "tldr": "This release of claude-code 2.1.229 introduces several key improvements and fixes, with a focus on stability, performance, and self-hosted runner capabilities. A major new feature is the addition of server-supplied Claude Code hook support for self-hosted runner sessions, bringing them in line with managed environments. This enhances flexibility for custom integrations and automation in self-hosted setups. Additionally, SSE keepalive pings have been implemented for gateway streaming responses, preventing idle-timeout disconnects during long thinking pauses on Vertex and Bedrock upstreams, which significantly improves reliability for long-running operations.\n\nPlugin marketplace functionality is expanded with `command` sources, allowing local commands (like an IDE) to dynamically define plugin directories that are re-resolved each session without requiring a restart. This offers greater dynamism and integration possibilities for plugin management. For VSCode users, session groups have been added to the sidebar, enabling better organization and management of multiple sessions. Several critical bugs have been addressed, including fixes for long responses disappearing or being duplicated in the terminal, crashes related to malformed tool call arguments, narrow terminal rendering issues, and Windows path handling. Auto mode failing for users disabling the attribution header and `/model` rejecting Sonnet/Opus 1M for claude.ai subscribers using custom `ANTHROPIC_BASE_URL` are also resolved.\n\nImportant breaking changes include the requirement for an explicit `--base-dir` when starting self-hosted runners on Windows, as the default checkout directory has been removed. Furthermore, the `/commit-push-pr` command will no longer auto-approve git/gh commands with dangerous flags like `--force` or `--amend`, requiring manual approval for such operations. Workflow fan-outs are now improved to stagger sibling agents, optimizing prompt caching, which can be disabled via `CLAUDE_CODE_WORKFLOW_PREFIX_STAGGER_MS=0`. Users should review their self-hosted runner configurations on Windows and adjust any automated `/commit-push-pr` workflows to account for these changes. Upgrading is recommended for improved stability, especially for users experiencing streaming issues, crashes, or managing self-hosted runners."
     },
     "features": [
       {
@@ -1546,6 +1548,15 @@
         "description": "Added support for server-supplied Claude Code hooks in self-hosted runner sessions, aligning their behavior with managed environments.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "server-supplied-claude-code-hook-support-self-hosted-runner",
+        "name": "Server-supplied Claude Code Hook Support for Self-Hosted Runner Sessions",
+        "status": "stable",
+        "since": "2.1.229",
+        "description": "Adds support for server-supplied Claude Code hooks in self-hosted runner sessions, aligning their behavior with managed environments.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -2348,8 +2359,7 @@
         }
       ],
       "new_since_previous": [
-        "--continue",
-        "--base-dir"
+        "--continue"
       ]
     },
     "env_vars": [
@@ -3135,6 +3145,28 @@
           "Workflows using `/commit-push-pr` with dangerous git flags"
         ],
         "migration": "Users will now need to manually approve git/gh commands containing dangerous flags when using `/commit-push-pr`.",
+        "source_url": ""
+      },
+      {
+        "id": "self-hosted-runner-windows-base-dir-requirement",
+        "version": "2.1.229",
+        "title": "Self-hosted Runner Windows Startup Requires Explicit --base-dir",
+        "description": "Self-hosted runner Windows startup now requires an explicit `--base-dir` flag. There is no longer a default checkout directory on Windows.",
+        "affected": [
+          "Self-hosted runner users on Windows"
+        ],
+        "migration": "When starting a self-hosted runner on Windows, you must now explicitly provide the `--base-dir` flag to specify the checkout directory.",
+        "source_url": ""
+      },
+      {
+        "id": "commit-push-pr-dangerous-flags-auto-approval-removed",
+        "version": "2.1.229",
+        "title": "/commit-push-pr No Longer Auto-Approves Dangerous Git Flags",
+        "description": "The `/commit-push-pr` command no longer auto-approves git/gh commands that include dangerous flags such as `--force`, `--amend`, or `--no-verify`.",
+        "affected": [
+          "Users relying on `/commit-push-pr` to auto-approve git commands with dangerous flags."
+        ],
+        "migration": "Users will now need to manually approve or adjust their git/gh commands when using `/commit-push-pr` if they contain dangerous flags. Review your workflows to ensure compatibility.",
         "source_url": ""
       }
     ],
