@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.231",
-  "generated_at": "2026-08-13T22:38:36.006Z",
+  "version": "2.1.232",
+  "generated_at": "2026-08-13T23:38:24.613Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,15 +14,23 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.231",
-    "to_version": "2.1.231",
-    "new_features": [],
+    "from_version": "2.1.232",
+    "to_version": "2.1.232",
+    "new_features": [
+      "subagent-forking-default",
+      "mention-claude-session",
+      "gitlab-secret-redaction",
+      "gitlab-plugin-marketplace-support",
+      "fable-5-advisor-support"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "gateway-policy-validation"
+    ]
   },
   "payload": {
     "meta": {
@@ -39,12 +47,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.231",
+      "latest_stable": "2.1.232",
       "latest_release_date": "2026-08-13",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release, claude-code 2.1.231, primarily focuses on a critical fix for MCP OAuth sign-in. Previously, users on servers configured with pre-registered OAuth clients, like Slack, encountered redirect URI mismatch errors during the authentication process. This issue has now been resolved, ensuring a more reliable and seamless sign-in experience for these specific environments. The fix directly impacts the MCP elicitation support feature, making it more robust for integrations relying on pre-configured OAuth clients. There are no new features, commands, flags, or breaking changes introduced in this version. This is a recommended update for users experiencing OAuth sign-in issues with MCP on Slack or similar pre-registered OAuth client setups to ensure continued smooth operation."
+      "tldr": "This release of claude-code 2.1.232 introduces significant improvements to agent behavior, security, and user experience. The headline change is that subagent forking is now on by default, meaning `subagent_type: \"fork\"` subagents inherit the full conversation and prompt cache, and non-teammate agent spawns in interactive sessions run in the background by default. This streamlines multi-agent workflows and improves performance by reducing foreground clutter.\n\nKey new features include the ability to mention other Claude sessions by name using `@` in the prompt, enabling direct `SendMessage` communication between sessions. GitLab users will benefit from enhanced security with secret redaction for various GitLab token families and full redaction of routable `glpat-`/`gldt-` tokens, along with GitLab support for plugin marketplaces, allowing direct cloning of `gitlab.com` repo URLs. Additionally, Fable 5 is now available as an advisor in `/advisor` for eligible organizations, with consent managed via `/model fable`.\n\nNumerous fixes address critical issues, including PowerShell and Windows permission bypasses, nested git repository trust inheritance, and MCP connection hanging. Remote Control sessions are more robust, with improved reconnection logic and clearer terminal messages about session status. The managed settings approval dialog is enhanced with clearer wording and required approval for server-managed sandbox binary overrides. A breaking change for Gateway users is stricter validation for `managed.policies[].match.groups`, `admin.admin_groups`, and `email_domain` values, which will now cause boot failures if malformed. Developers should review their Gateway configurations to ensure compliance. Overall, this release focuses on stability, security, and a more seamless multi-agent and multi-session experience, making an upgrade highly recommended for all users, especially those leveraging GitLab or multi-agent workflows."
     },
     "features": [
       {
@@ -1544,6 +1552,67 @@
         "since": "2.1.229",
         "description": "Adds support for server-supplied Claude Code hooks in self-hosted runner sessions, aligning their behavior with managed environments.",
         "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "subagent-forking-default",
+        "name": "Subagent Forking On by Default",
+        "status": "stable",
+        "since": "2.1.232",
+        "description": "Subagents of type 'fork' now inherit the full conversation and prompt cache by default. Non-teammate agent spawns in interactive sessions now run in the background by default.",
+        "key_details": [
+          "subagent_type: \"fork\" inherits full conversation and prompt cache",
+          "Non-teammate agent spawns run in background by default in interactive sessions"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "mention-claude-session",
+        "name": "Mention Claude Session by Name",
+        "status": "stable",
+        "since": "2.1.232",
+        "description": "Type '@' in the prompt to mention another Claude session by name, allowing Claude to use SendMessage to reach that session directly.",
+        "key_details": [
+          "Type '@' in prompt to mention another Claude session",
+          "Uses SendMessage to directly reach the mentioned session"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "gitlab-secret-redaction",
+        "name": "GitLab Secret Redaction",
+        "status": "stable",
+        "since": "2.1.232",
+        "description": "Added secret redaction for GitLab token families (glrt-, gloas-, glptt-, glagent-, glimt-, glsoat-, glcbt-, glft-, glffct-) and full redaction of routable glpat-/gldt- tokens. The glab CLI config store gets the same sandbox and credential-path protection as gh.",
+        "key_details": [
+          "Redaction for glrt-, gloas-, glptt-, glagent-, glimt-, glsoat-, glcbt-, glft-, glffct- token families",
+          "Full redaction for glpat-/gldt- tokens",
+          "glab CLI config store protected like gh"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "gitlab-plugin-marketplace-support",
+        "name": "GitLab Plugin Marketplace Support",
+        "status": "stable",
+        "since": "2.1.232",
+        "description": "Added GitLab support to plugin marketplaces. Bare gitlab.com repo URLs (including nested subgroups) now clone like github.com URLs, and clone auth-failure hints name your actual git host.",
+        "key_details": [
+          "Bare gitlab.com repo URLs (including nested subgroups) now clone",
+          "Auth-failure hints name the actual git host"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "fable-5-advisor-support",
+        "name": "Fable 5 Advisor Support",
+        "status": "stable",
+        "since": "2.1.232",
+        "description": "Fable 5 is now offered as an advisor in /advisor again for organizations with Fable access, with usage-credits consent set up through /model fable.",
+        "key_details": [
+          "Fable 5 available in /advisor for organizations with Fable access",
+          "Usage-credits consent configured via /model fable"
+        ],
         "source_url": ""
       }
     ],
@@ -3153,6 +3222,20 @@
           "Users relying on `/commit-push-pr` to auto-approve git commands with dangerous flags."
         ],
         "migration": "Users will now need to manually approve or adjust their git/gh commands when using `/commit-push-pr` if they contain dangerous flags. Review your workflows to ensure compatibility.",
+        "source_url": ""
+      },
+      {
+        "id": "gateway-policy-validation",
+        "version": "2.1.232",
+        "title": "Gateway Policy and Admin Group Validation",
+        "description": "Empty `managed.policies[].match.groups`/`admin.admin_groups` entries and malformed `email_domain` values (empty, or containing '@', whitespace, or commas) now fail at boot instead of silently matching no one or granting admin access.",
+        "affected": [
+          "Gateway configuration",
+          "Managed policies",
+          "Admin group definitions",
+          "Email domain validation"
+        ],
+        "migration": "Ensure `managed.policies[].match.groups` and `admin.admin_groups` are not empty if intended to match specific groups. Verify `email_domain` values are valid (non-empty, no '@', whitespace, or commas). Invalid configurations will now prevent the Gateway from booting.",
         "source_url": ""
       }
     ],
