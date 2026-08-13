@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "4.1.8",
-  "generated_at": "2026-08-13T04:10:42.881Z",
+  "version": "0.0.12",
+  "generated_at": "2026-08-13T06:15:17.164Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,11 +19,16 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "4.1.8",
-    "to_version": "4.1.8",
+    "from_version": "0.0.12",
+    "to_version": "0.0.12",
     "new_features": [
-      "vertex-model-id-manual-entry",
-      "fable-5-vertex-support"
+      "individual-tool-call-rows",
+      "tool-row-status-highlighting",
+      "syntax-highlighted-file-diffs",
+      "refreshed-ui-layout-typography",
+      "persistent-thinking-indicator",
+      "unobtrusive-message-actions",
+      "welcome-screen-ui-refinements"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -48,12 +53,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "4.1.8",
-      "latest_release_date": "2026-08-11",
+      "latest_stable": "0.0.12",
+      "latest_release_date": "2026-08-13",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "This cline 4.1.8 release significantly enhances Vertex AI integration and streamlines auto-approval workflows. The headline change is the ability to manually enter any Vertex model ID, even those not yet in the catalog, providing immediate access to the latest models without waiting for catalog updates. This is crucial for developers working with cutting-edge Vertex AI offerings. Additionally, Fable 5 models are now officially supported on Vertex, expanding the range of available powerful models. The model catalog for Vertex regions has been overhauled to display all available models, rather than a limited hardcoded list, though selecting an unsupported regional model will now result in a runtime error with clear guidance. Cost reporting for Fable 5 on Vertex has been corrected to 'unknown' to reflect the variable, region-dependent pricing, preventing misleading cost estimates. The 'Yolo Mode' toggle has been removed, consolidating unattended run configurations under the auto-approve menu; existing 'Yolo Mode' users will have their settings migrated to auto-approve all actions. Finally, a bug preventing the compaction summarizer from respecting configured max output tokens has been fixed, ensuring summaries adhere to user-defined limits, and the 'Double-Check Completion' feature tip has been removed. Developers should upgrade to leverage the improved Vertex AI model access and more accurate cost reporting, especially if using Fable 5 or relying on unattended runs."
+      "tldr": "This release of cline, version 0.0.12, significantly overhauls the user interface and improves the reliability of tool execution and model interactions. The headline change is a complete redesign of how tool calls are displayed in the transcript: each tool call now gets its own dedicated row with an icon, status, and expandable details, replacing the previous grouped summaries. This provides much greater clarity and transparency into agent actions, with commands appearing like terminal output and file edits showing inline diffs. Running tools are now visually highlighted in violet, settling to gray upon completion, while errors remain red, offering immediate visual feedback on agent progress. \n\nBeyond the transcript, the entire UI has been refreshed with a new layout, message surfaces, composer, and modern Inter and Geist Mono typography, enhancing readability and aesthetics. File diffs across the application now use a consistent, syntax-highlighted renderer that respects the app's theme. The thinking indicator now persists during quiet periods of a turn, such as when tool arguments are streaming, preventing the UI from appearing frozen. \n\nSeveral critical fixes are included: the Claude Code provider is now fully functional for agentic work, correctly anchoring sessions to workspaces and allowing file edits. Issues with truncated tool-call JSON being silently repaired into incorrect arguments have been resolved, and strict providers no longer reject turns with empty text messages. A mid-turn crash related to streamed tool calls with non-zero indexes has been fixed. Compaction now correctly respects the 'Max Output Tokens' setting, preventing reasoning models from consuming the entire budget and skipping summaries. Vertex AI support has been enhanced with Fable 5 and custom model IDs, and the global-region picker no longer hides models from the live catalog. \n\nOther notable improvements include a fix for the first turn of a fresh session getting stuck, scheduled runs no longer appearing in the session sidebar, and improved handling of stale Cline Hub daemon reconnections, including a staged app update process. The Hub daemon now also shuts down cleanly. This release brings substantial UI/UX improvements and critical stability fixes, making it a recommended upgrade for all users to benefit from enhanced clarity, reliability, and a more polished experience."
     },
     "features": [
       {
@@ -954,6 +959,96 @@
         "since": "4.1.8",
         "description": "Added support for the Fable 5 model when using the Vertex provider.",
         "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "individual-tool-call-rows",
+        "name": "Individual Tool Call Rows in Transcript",
+        "status": "stable",
+        "since": "0.0.12",
+        "description": "Every tool call now gets its own row in the transcript, with its own icon, status, and expandable detail, replacing the previous grouping of multiple tool calls. Commands are displayed like a terminal with captured output on expand, and edits show inline diffs per hunk.",
+        "key_details": [
+          "Each tool call has a dedicated row",
+          "Includes icon, status, and expandable details",
+          "Commands render as terminal output (`$ bun test`) with expandable captured output",
+          "Edits show inline diffs, one per hunk"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "tool-row-status-highlighting",
+        "name": "Tool Row Status Highlighting",
+        "status": "stable",
+        "since": "0.0.12",
+        "description": "Running tool rows are highlighted in brand violet, settle to gray upon completion, and errors remain red.",
+        "key_details": [
+          "Running tools: brand violet",
+          "Completed tools: gray",
+          "Errored tools: red"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "syntax-highlighted-file-diffs",
+        "name": "Syntax-Highlighted File Diffs",
+        "status": "stable",
+        "since": "0.0.12",
+        "description": "File diffs, both in chat rows and the diff panel, now render through a shared syntax-highlighted renderer that follows the app's theme instead of the browser's.",
+        "key_details": [
+          "Shared renderer for all diffs",
+          "Syntax highlighting",
+          "Follows app's theme"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "refreshed-ui-layout-typography",
+        "name": "Refreshed UI Layout and Typography",
+        "status": "stable",
+        "since": "0.0.12",
+        "description": "The session transcript layout, message surfaces, and composer have been refreshed with new Inter and Geist Mono typography.",
+        "key_details": [
+          "Updated session transcript layout",
+          "Updated message surfaces",
+          "Updated composer",
+          "New typography: Inter and Geist Mono"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "persistent-thinking-indicator",
+        "name": "Persistent Thinking Indicator",
+        "status": "stable",
+        "since": "0.0.12",
+        "description": "The thinking indicator now remains visible during quiet periods of a turn, such as when tool arguments are streaming, preventing the turn from appearing frozen.",
+        "key_details": [
+          "Thinking indicator stays active during tool argument streaming",
+          "Prevents UI from appearing frozen"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "unobtrusive-message-actions",
+        "name": "Unobtrusive Message Actions and Full Opacity Panels",
+        "status": "stable",
+        "since": "0.0.12",
+        "description": "Message actions (copy, fork, timestamp) no longer overlap with message text, and expanded panels render at full opacity instead of being faded.",
+        "key_details": [
+          "Message actions no longer crowd text",
+          "Expanded panels render at full opacity"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "welcome-screen-ui-refinements",
+        "name": "Welcome Screen UI Refinements",
+        "status": "stable",
+        "since": "0.0.12",
+        "description": "On the welcome screen, the chat input is now centered and top-aligned, and prompt suggestions are temporarily hidden.",
+        "key_details": [
+          "Chat input centered and top-aligned",
+          "Prompt suggestions temporarily hidden"
+        ],
         "source_url": ""
       }
     ],
