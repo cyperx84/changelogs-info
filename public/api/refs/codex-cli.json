@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.147.0",
-  "generated_at": "2026-08-13T10:02:42.722Z",
+  "generated_at": "2026-08-13T11:43:09.562Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -19,7 +19,6 @@
     "new_features": [
       "portable-agent-plugins-and-search",
       "persistent-ordered-conversations",
-      "automatically-reviewed-approvals",
       "cursor-managed-skills-import-and-sync",
       "mcp-2026-07-28-protocol-support",
       "cached-web-search-and-remote-compaction-bedrock"
@@ -57,7 +56,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "Codex-cli 0.147.0 introduces significant enhancements for plugin management, conversation organization, and automation. The headline feature is the ability to install portable Agent Plugins and search across local, personal, workspace, and remote plugin catalogs, greatly expanding the discoverability and usability of agent capabilities. This allows developers to more easily find and integrate tools into their workflows, fostering a richer ecosystem of extensions.\n\nAnother major improvement is the ability to organize conversations into persistent, manually ordered sections, coupled with incremental browsing for long transcripts. This drastically improves the manageability of complex or lengthy interactions, making it easier to navigate and reference past discussions. For automation, a new `--approve-for-me` CLI flag enables automatically reviewed approvals, streamlining workflows that require frequent confirmations. Furthermore, users can now import Cursor-managed skills and synchronize changes to imported Claude and Cursor conversations without creating duplicates, ensuring consistency across different platforms.\n\nUnder the hood, this release adds opt-in support for the MCP 2026-07-28 protocol, bringing paginated discovery, multi-round requests, and non-blocking server startup for improved performance and responsiveness. For Amazon Bedrock users, cached web search and remote conversation compaction are now enabled, optimizing resource usage and speed. Key bug fixes include redacting secrets from displayed commands, preventing lost terminal input, correcting rendering for various characters and hyperlinks, and improving Windows process interruption and path handling. A notable deprecation is the `codex exec --full-auto` flag, which should now be replaced with `--sandbox workspace-write`. Upgrading is recommended for all users to leverage these new features, stability improvements, and security enhancements."
+      "tldr": "Codex-cli 0.147.0 introduces significant enhancements to plugin management and conversation organization. Developers can now install and search across portable Agent Plugins from various catalogs (local, personal, workspace, remote), greatly expanding tool access and discoverability. Conversations can be organized into persistent, manually ordered sections, and long transcripts can be browsed incrementally, improving workflow for complex or ongoing projects.\n\nKey new features include the `--approve-for-me` CLI flag for automatically reviewed approvals, streamlining workflows that require frequent confirmations. Users can also import Cursor-managed skills and synchronize changes to Claude and Cursor conversations without creating duplicates, ensuring consistency across different platforms. The release adds support for the opt-in MCP 2026-07-28 protocol, bringing paginated discovery, multi-round requests, and non-blocking server startup for improved MCP interactions. Additionally, cached web search and remote conversation compaction are now enabled for Amazon Bedrock, optimizing performance and resource usage for Bedrock users.\n\nImportant bug fixes address security and usability: secrets and bearer tokens are now redacted from displayed commands and history, preventing sensitive data exposure. Terminal input issues, such as lost or stalled input when focus returns or MCP servers initialize, have been resolved. Rendering and cursor positioning for various character sets and hyperlinks are corrected, and Windows background processes are properly interrupted with consistent filesystem path handling. Plugin isolation has been hardened, and network access is denied when policy updates fail, enhancing security. The deprecated `codex exec --full-auto` flag has been removed; users should now use `--sandbox workspace-write` instead. This release is recommended for all users to benefit from improved security, stability, and new workflow capabilities."
     },
     "features": [
       {
@@ -4281,6 +4280,13 @@
         {
           "flag": "--full-auto",
           "replaced_by": "`--sandbox workspace-write`",
+          "deprecated_since": "0.147.0",
+          "removed_in": null,
+          "source_url": ""
+        },
+        {
+          "flag": "--full-auto",
+          "replaced_by": "--sandbox workspace-write",
           "deprecated_since": "0.147.0",
           "removed_in": null,
           "source_url": ""
