@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.229",
-  "generated_at": "2026-08-13T06:14:40.119Z",
+  "generated_at": "2026-08-13T08:18:46.384Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -30,7 +30,7 @@
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "self-hosted-runner-windows-startup-base-dir"
+      "self-hosted-runner-windows-base-dir-requirement"
     ]
   },
   "payload": {
@@ -53,7 +53,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release of claude-code 2.1.229 introduces significant improvements for self-hosted runners, streaming stability, and plugin management. A key enhancement is the addition of SSE keepalive pings to gateway streaming responses, which prevents idle-timeout disconnects during long thinking pauses on Vertex and Bedrock upstreams, ensuring more reliable long-running operations. For self-hosted runners, server-supplied Claude Code hook support has been added, bringing their behavior in line with managed environments, though Windows users must now explicitly specify a `--base-dir` at startup, as the default checkout directory has been removed. The plugin marketplace now supports 'command' sources, allowing local commands (e.g., from an IDE) to dynamically provide plugin directories that are re-resolved each session without requiring a restart. Additionally, VSCode users gain session groups in the sidebar for better organization and management of multiple sessions. Numerous fixes address critical issues, including crashes related to malformed tool call arguments, narrow terminal rendering, and Windows paths, as well as problems with auto mode when attribution headers are disabled, and `/model` rejecting Sonnet/Opus 1M for custom `ANTHROPIC_BASE_URL` users. Workflow fan-outs are improved with staggering to optimize prompt prefix caching, and 'prompt too long' errors now provide better explanations. Users should upgrade to benefit from enhanced stability, improved self-hosted runner capabilities, and better plugin integration, especially if experiencing disconnects or issues with custom API gateways."
+      "tldr": "This release of claude-code (2.1.229) introduces several key improvements and fixes, enhancing stability, developer experience, and self-hosted runner capabilities. A major update is the addition of server-supplied Claude Code hook support for self-hosted runner sessions, bringing them in line with managed environments and enabling more flexible integrations. To prevent disconnects during long AI thinking pauses, SSE keepalive pings have been added to gateway streaming responses, particularly beneficial for Vertex and Bedrock users. The plugin marketplace now supports 'command' sources, allowing local commands (e.g., from an IDE) to dynamically provide plugin directories that are re-resolved per session without requiring a restart. For VSCode users, a significant UX improvement is the introduction of session groups in the sidebar, enabling better organization and management of multiple sessions. \n\nSeveral critical bugs have been addressed, including fixes for long responses disappearing or duplicating, crashes related to invalid tool call arguments (non-string `glob`, `file_path`, `command`), RangeError crashes in narrow terminals, and Windows crashes with extended-length or UNC paths. Auto mode now correctly functions for users disabling the attribution header, and `/model` no longer rejects Sonnet/Opus 1M for claude.ai subscribers using custom `ANTHROPIC_BASE_URL` gateways. Workflow fan-outs have been optimized to stagger sibling agents, reducing prompt re-payment, configurable via `CLAUDE_CODE_WORKFLOW_PREFIX_STAGGER_MS`. \n\nA breaking change for self-hosted runner users on Windows is the new requirement to explicitly specify a checkout directory using `--base-dir` at startup, as the default has been removed. Additionally, `/commit-push-pr` now requires explicit approval for git/gh commands with dangerous flags like `--force`. The sandbox has been improved with stricter IPv6 literal handling and `/doctor` flagging ambiguous spellings. Users are encouraged to upgrade to benefit from these stability improvements, new features, and critical bug fixes, especially those using self-hosted runners or experiencing streaming disconnects."
     },
     "features": [
       {

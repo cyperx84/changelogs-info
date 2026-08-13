@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "4.1.9",
-  "generated_at": "2026-08-13T08:19:18.951Z",
+  "version": "0.0.12",
+  "generated_at": "2026-08-13T06:15:17.164Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,9 +19,17 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "4.1.9",
-    "to_version": "4.1.9",
-    "new_features": [],
+    "from_version": "0.0.12",
+    "to_version": "0.0.12",
+    "new_features": [
+      "individual-tool-call-rows",
+      "tool-row-status-highlighting",
+      "syntax-highlighted-file-diffs",
+      "refreshed-ui-layout-typography",
+      "persistent-thinking-indicator",
+      "unobtrusive-message-actions",
+      "welcome-screen-ui-refinements"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -45,12 +53,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "4.1.9",
+      "latest_stable": "0.0.12",
       "latest_release_date": "2026-08-13",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "Cline 4.1.9 brings significant improvements to UI legibility, credential management, and SDK bundle stability. The UI now uses the editor's foreground color for diff block text, ensuring diffs remain readable across various themes, and switches to Inter and Geist Mono fonts for a refreshed look. Credential handling has been made more robust, preventing token discards after successful refreshes when the old token was expired, which previously caused failed requests after idle periods. Involuntary logouts due to rejected refresh tokens are now properly reported instead of silently clearing credentials. For SDK bundle users (v0.0.74 and above), the Claude Code provider is now fully functional for agentic work, correctly running native tools, anchoring sessions to the workspace, and loading user-specific permission rules from `~/.claude` and project settings. Several critical fixes address issues like truncated tool-call JSON being silently repaired into incorrect arguments, strict providers rejecting messages with empty text parts, and mid-turn crashes during streamed tool calls with non-contiguous indexes. Additionally, token counting for per-request buckets has been corrected, preventing inflated totals in cache-heavy sessions. These updates enhance the reliability and usability of Cline, particularly for users leveraging the SDK bundle and those with custom editor themes. Upgrading is recommended for improved stability and a more consistent user experience."
+      "tldr": "This release of cline, version 0.0.12, significantly overhauls the user interface and improves the reliability of tool execution and model interactions. The headline change is a complete redesign of how tool calls are displayed in the transcript: each tool call now gets its own dedicated row with an icon, status, and expandable details, replacing the previous grouped summaries. This provides much greater clarity and transparency into agent actions, with commands appearing like terminal output and file edits showing inline diffs. Running tools are now visually highlighted in violet, settling to gray upon completion, while errors remain red, offering immediate visual feedback on agent progress. \n\nBeyond the transcript, the entire UI has been refreshed with a new layout, message surfaces, composer, and modern Inter and Geist Mono typography, enhancing readability and aesthetics. File diffs across the application now use a consistent, syntax-highlighted renderer that respects the app's theme. The thinking indicator now persists during quiet periods of a turn, such as when tool arguments are streaming, preventing the UI from appearing frozen. \n\nSeveral critical fixes are included: the Claude Code provider is now fully functional for agentic work, correctly anchoring sessions to workspaces and allowing file edits. Issues with truncated tool-call JSON being silently repaired into incorrect arguments have been resolved, and strict providers no longer reject turns with empty text messages. A mid-turn crash related to streamed tool calls with non-zero indexes has been fixed. Compaction now correctly respects the 'Max Output Tokens' setting, preventing reasoning models from consuming the entire budget and skipping summaries. Vertex AI support has been enhanced with Fable 5 and custom model IDs, and the global-region picker no longer hides models from the live catalog. \n\nOther notable improvements include a fix for the first turn of a fresh session getting stuck, scheduled runs no longer appearing in the session sidebar, and improved handling of stale Cline Hub daemon reconnections, including a staged app update process. The Hub daemon now also shuts down cleanly. This release brings substantial UI/UX improvements and critical stability fixes, making it a recommended upgrade for all users to benefit from enhanced clarity, reliability, and a more polished experience."
     },
     "features": [
       {
