@@ -15,6 +15,22 @@
   },
   "releases": [
     {
+      "version": "v1.18.18",
+      "name": "v1.18.18",
+      "body": "## Core\r\n### Bugfixes\r\n- Select the Kimi system prompt correctly for official Moonshot and Kimi providers\r\n- Fix xhigh reasoning effort for xai models\r\n",
+      "date": "2026-08-13T01:15:04Z",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.18.18",
+      "prerelease": false
+    },
+    {
+      "version": "v1.18.17",
+      "name": "v1.18.17",
+      "body": "## Core\n\n### Bugfixes\n\n- Made session compaction keep complete recent turns and produce clearer summaries for smaller models.\n- Added MERGE Gateway reasoning variants so those model options work correctly. (@MatthewFeroz)\n- Capped automatic session retries and added jitter to reduce repeated retry storms.\n- Enabled PDF attachments for GitHub Copilot models that advertise PDF vision support. (@stevenao)\n- Applied the correct sampling defaults to DeepSeek V4 Flash on supported providers.\n- Routed all Muse family models to the correct Meta system prompt. (@mreso)\n\n## Desktop\n\n### Bugfixes\n\n- Updated Chinese developer terminology to use more widely recognized translations.\n- Used the server's current default model instead of stale local config when choosing the default model.\n\n**Thank you to 6 community contributors:**\n- @mreso:\n  - fix(session): route all Muse family models to the Meta system prompt (#41581)\n- @OpeOginni:\n  - fix(ui): correct OC-2 weak icon color (#41504)\n- @peculiarnewbie:\n  - feat(console): add go usage endpoint (#16513)\n- @stevenao:\n  - fix(opencode): detect Copilot PDF input support (#41522)\n- @MatthewFeroz:\n  - fix(provider): add Merge Gateway reasoning variants (#41867)\n- @skyzhao1223:\n  - docs: fix broken DigitalOcean and Daytona links (#42048)\n  - docs: fix provider display name and PAT typos (#42034)\n",
+      "date": "2026-08-12T20:25:07Z",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.18.17",
+      "prerelease": false
+    },
+    {
       "version": "v1.18.16",
       "name": "v1.18.16",
       "body": "## Core\n\n### Bugfixes\n\n- Ignore unknown top-level config fields instead of failing config parsing\n- Register projects opened from Home so they are available to the rest of the app\n\n## Desktop\n\n### Improvements\n\n- Open the project menu with a right-click in Home\n\n### Bugfixes\n\n- Fall back to listing and matching local directories when the project picker server does not support search\n- Use 词元 instead of 令牌 for token-related labels in Simplified Chinese (@Speechlessmanbilibili)\n- Keep the macOS app running after the last window closes and reopen a window when the app is activated\n\n**Thank you to 1 community contributor:**\n- @Speechlessmanbilibili:\n  - fix(i18n): use 词元 instead of 令牌 for token in zh locale (#40977)\n",
@@ -237,23 +253,7 @@
       "date": "2026-07-06T18:50:53Z",
       "url": "https://github.com/anomalyco/opencode/releases/tag/v1.17.14",
       "prerelease": false
-    },
-    {
-      "version": "v1.17.13",
-      "name": "v1.17.13",
-      "body": "## Core\n\n### Bugfixes\n\n- Force reasoning mode for OpenAI-compatible reasoning models so reasoning settings apply reliably on custom deployments\n- Stop replaying stale GitHub Copilot response item IDs, avoiding follow-up request failures\n\n## Desktop\n\n### Bugfixes\n\n- Let question prompts be minimized and restored without dismissing them (@arvsrn)\n- Clean up stale empty and old draft store files to reduce desktop state buildup\n- Keep pending question requests open while reviewing them, instead of dismissing them accidentally (@eXamadeus)\n- Keep session page failures scoped to the affected tab instead of breaking the whole app\n\n### Improvements\n\n- Improve markdown and message layout alignment in the v2 session UI (@arvsrn)\n- Add a searchable v2 model picker and model management flow in the composer (@arvsrn)\n- Show a hover preview for session tabs with the project, path, branch, and server (@usrnk1)\n- Streamline WSL server setup with clearer distro checks and install flows (@arvsrn)\n- Keep desktop tabs scoped to each window so windows restore their own tab sets\n\n**Thank you to 3 community contributors:**\n- @arvsrn:\n  - feat(app): v2 wsl ui (#34233)\n  - feat(app): composer improvements (#34720)\n  - feat(app): more v2 ui alignment (#34465)\n  - feat(app): minor fixes (#34748)\n- @eXamadeus:\n  - fix(app): question UI fixes and UX improvements (#34116)\n- @usrnk1:\n  - feat(desktop): session tab hover preview popover (#34678)\n  - feat(desktop): improve markdown heading spacing in session timeline (#34738)\n",
-      "date": "2026-07-01T15:19:06Z",
-      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.17.13",
-      "prerelease": false
-    },
-    {
-      "version": "v1.17.12",
-      "name": "v1.17.12",
-      "body": "## Core\n### Bugfixes\n- Enable adaptive thinking for Claude Sonnet 5.\n- Prefer MCP content responses over structured output when both are present.\n- Reconnect MCP servers after OAuth even if the server was disabled. (@MaxAnderson95)\n- Request MCP refresh-token scope during OAuth.\n- Show MCP OAuth completion errors instead of a generic failure.\n- Refresh cached remote skills.\n- Preserve skill resource paths.\n- Pick better default small models across providers.\n- Scope MCP auth status to each server URL.\n\n## TUI\n### Improvements\n- Add a yolo mode to auto-approve permissions.\n- Pass ServerAuth headers through external served TUI connections. (@OpeOginni)\n\n## Desktop\n### Improvements\n- Autocomplete MCP resources in the composer.\n- Add workspace controls when starting a new session.\n- Show stored token and cost totals in the session context. (@OpeOginni)\n\n### Bugfixes\n- Autocomplete configured references in prompts.\n- Restore the prompt cursor when the composer regains focus.\n- Remember the last active desktop URL across restarts.\n- Preserve the selected model when promoting a session. (@usrnk1)\n- Keep session pages in sync during concurrent events.\n- Support normal auth input prompts in the desktop connect-provider dialog. (@OpeOginni)\n- Prevent hidden terminal tabs from hanging or resizing incorrectly.\n- Re-enable auto-accept in session settings.\n- Keep session tabs scoped to the correct server.\n- Remember the selected home project and server.\n\n## SDK\n### Improvements\n- Add a live event subscription stream.\n- Add SDK access to active sessions.\n- Restore session runtime operations such as event streaming, interrupts, and message lookup.\n- Add paged durable session history.\n- Add session permission request create and fetch endpoints.\n\n### Bugfixes\n- Preserve `V2Event` names in SSE streams.\n- Wake embedded session execution after new prompts.\n- Improve V2 runtime tool results and avoid duplicate model switch events.\n- Resolve MIME types for prompt attachments sent by URI.\n\n**Thank you to 11 community contributors:**\n- @usrnk1:\n  - feat(app): refine session UI styling (#33860)\n  - fix(desktop): preserve selected model during session promotion (#34466)\n  - fix(desktop): context menu button / tab intermittent issue (#34420)\n  - feat(desktop): add hover background to session title and single-click edit (#34589)\n  - feat(app): hide separators around active tabs (#34591)\n  - feat(desktop): polish inline session title editing (#34607)\n  - feat(desktop): make error view draggable (#34627)\n  - feat(desktop): polish tooltips and session search (#34632)\n- @arvsrn:\n  - feat(app): updates to design system (#34066)\n  - feat(app): update home screen alignment + markdown styles (#34172)\n  - feat(app): minor visual updates (#34205)\n  - feat(app): new debug bar (#34237)\n  - feat(app): sticky session list header (#34220)\n  - feat(app): show loader on session hover (#34224)\n  - feat(app): new timeline header (#34192)\n  - feat(app): improve projects sidebar reactivity (#34391)\n  - feat(app): update message part ui to v2 (#34394)\n  - feat(app): align slash popover to v2 tokens (#34286)\n- @ariane-emory:\n  - docs(providers): document blacklist and whitelist model filtering (#33792)\n- @Slickstef11:\n  - docs: route enterprise contact links (#34080)\n- @affanali2k3:\n  - fix(app): slow tooltip display for models (#30745)\n- @OpeOginni:\n  - fix(desktop): recognize normal auth metadata input prompts in connect provider dialog (#33024)\n  - feat(desktop): Display stored totals for Tokens and Cost in Desktop Session Context (#28887)\n  - feat(tui): integrate ServerAuth headers into transport configuration for external served TUI thread (#29876)\n- @BenGu3:\n  - fix(tui): register `prompt.skills` keybinds (#34180)\n- @neriousy:\n  - fix(app): disable `add project` when given server is offline (#34294)\n  - fix(app): disable empty server chevron (#34292)\n- @MaxAnderson95:\n  - fix(mcp): reconnect after OAuth even when server is disabled\n- @StarpTech:\n  - fix(console): cancel upstream provider requests (#34467)\n- @runvip:\n  - fix(docs): fix Russian translation for index.mdx (#34001)\n",
-      "date": "2026-06-30T19:48:04Z",
-      "url": "https://github.com/anomalyco/opencode/releases/tag/v1.17.12",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-08-12T07:05:17.075Z"
+  "lastUpdated": "2026-08-13T07:09:02.682Z"
 }
