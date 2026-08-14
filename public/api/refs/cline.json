@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "4.1.9",
-  "generated_at": "2026-08-14T06:12:00.850Z",
+  "version": "3.0.55",
+  "generated_at": "2026-08-14T08:14:08.080Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,9 +19,12 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "4.1.9",
-    "to_version": "4.1.9",
-    "new_features": [],
+    "from_version": "3.0.55",
+    "to_version": "3.0.55",
+    "new_features": [
+      "web-search-calls-render-in-transcript",
+      "crusoe-provider-support"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -45,12 +48,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "4.1.9",
-      "latest_release_date": "2026-08-13",
+      "latest_stable": "3.0.55",
+      "latest_release_date": "2026-08-14",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "This 4.1.9 release for Cline focuses on significant bug fixes and UI refinements, particularly for users of the SDK bundle. A key visual improvement is the use of the editor's foreground color for diff block text, ensuring legibility across various themes, and a refreshed interface with the Inter and Geist Mono fonts. Critical fixes include preventing the discarding of successfully refreshed Cline tokens, which previously caused failed requests after idle periods, and addressing issues with legacy-task migration telemetry to ensure accurate reporting. For SDK bundle users, the Claude Code provider is now fully functional for agentic work, correctly utilizing native tools, anchoring sessions to workspace directories, and loading user settings. The release also rectifies issues with truncated tool-call JSON being silently 'repaired' into incorrect arguments, and strict providers rejecting turns with empty text parts in messages. Furthermore, a mid-turn crash with streamed tool calls via LiteLLM's Anthropic passthrough has been resolved, and token counting for cached conversations is now accurate, preventing inflated per-task totals. These updates collectively enhance the stability, usability, and accuracy of Cline, especially for developers leveraging the SDK bundle. Users are encouraged to upgrade to benefit from these crucial fixes and UI improvements, particularly if experiencing issues with token refreshing, agentic workflows with Claude Code, or inaccurate token usage reporting."
+      "tldr": "This `cline` release, version 3.0.55, significantly improves stability and user experience by overhauling the update mechanism and fixing critical daemon interaction issues. The headline change is that auto-updates no longer install while a CLI is attached to the Hub; instead, updates are recorded at startup and installed on exit, preventing live sessions from being killed by unexpected package swaps and 'Hub connection closed' errors. This ensures a much more robust and uninterrupted workflow for developers. \n\nSeveral crucial fixes address long-standing stability problems: protections are added for updates landing under older CLI versions (3.0.54 and earlier) that could brick running sessions, and a fix prevents two Cline installations from different builds from shutting each other's Hub daemon down in a loop, which previously killed live sessions. Furthermore, a newer build will now attach to an existing Hub serving sessions rather than replacing it immediately, ensuring sessions don't die mid-handshake. \n\nUser experience is also enhanced with streaming assistant markdown no longer flashing back to raw text, meaning settled headings, links, and code stay rendered as new chunks arrive, preventing the transcript from jumping vertically. Web search calls and their results from natively-running models now render directly in the transcript, providing better visibility into AI actions. Idle plugin sandbox processes are now properly reclaimed, preventing resource leaks. The `cline doctor fix` command provides more accurate reporting, distinguishing between processes that survived a kill and new ones, and correctly identifying live parents respawning daemons or held startup locks. Finally, the model catalog has been refreshed, introducing Crusoe as a new provider and updating model lists and default models across all providers. The 'outdated Hub' notice has been removed as it was unactionable and poorly rendered. Developers should upgrade to 3.0.55 to benefit from these significant stability and usability improvements, especially if experiencing unexpected session disconnections or resource issues."
     },
     "features": [
       {
@@ -1041,6 +1044,24 @@
           "Chat input centered and top-aligned",
           "Prompt suggestions temporarily hidden"
         ],
+        "source_url": ""
+      },
+      {
+        "id": "web-search-calls-render-in-transcript",
+        "name": "Web search calls and results render in transcript",
+        "status": "stable",
+        "since": "3.0.55",
+        "description": "Web search calls and their results from models that run search natively now render in the transcript.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "crusoe-provider-support",
+        "name": "Crusoe Provider Support",
+        "status": "stable",
+        "since": "3.0.55",
+        "description": "The model catalog has been refreshed, adding Crusoe as a new provider and updating model lists and per-provider default models across the board.",
+        "key_details": [],
         "source_url": ""
       }
     ],
