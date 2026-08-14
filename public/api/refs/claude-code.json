@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.232",
-  "generated_at": "2026-08-14T01:46:38.503Z",
+  "generated_at": "2026-08-14T04:06:30.639Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -16,21 +16,13 @@
   "delta": {
     "from_version": "2.1.232",
     "to_version": "2.1.232",
-    "new_features": [
-      "gitlab-secret-redaction-extended",
-      "gitlab-plugin-marketplace-support-extended",
-      "cross-session-messaging-socket-hardening",
-      "linux-filesystem-sandbox-hardening"
-    ],
+    "new_features": [],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "gateway-managed-policy-validation",
-      "interactive-session-unique-names"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -52,7 +44,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release of claude-code 2.1.232 introduces significant improvements to subagent behavior, security, and user experience. Subagent forking is now enabled by default, allowing subagents to inherit the full conversation and prompt cache, and non-teammate agent spawns in interactive sessions now run in the background, streamlining complex workflows. Security has been a major focus, with extended secret redaction for various GitLab token families and full redaction of routable `glpat-`/`gldt-` tokens, alongside enhanced sandbox protection for `glab` CLI config stores. The Linux filesystem sandbox has been hardened against protected-path bypasses, and the cross-session messaging socket directory is now more secure against symlink attacks. \n\nKey user experience enhancements include improved Remote Control session stability, with longer reconnection attempts after network blips and clearer notifications when sessions are taken over or ended. The `/code-review` command at higher effort levels now runs in the background, and pasted images are processed non-blockingly. The managed settings approval dialog is more informative, showing endpoint URLs and requiring approval for server-managed sandbox binary overrides. Interactive sessions now enforce unique names, preventing conflicts, and `SendMessage` directly targets exact session names. Gateway deployments benefit from stricter validation of `desktop:` overlay settings and managed policy configurations, failing boot on invalid entries. Developers should review their GitLab token usage and managed policy configurations to ensure compliance with the new security and validation rules. The `/plugin install` command now refreshes marketplaces automatically, and Fable 5 is re-enabled as an advisor. This update is recommended for all users to benefit from enhanced security, stability, and workflow improvements."
+      "tldr": "This release significantly enhances Claude Code's multi-session and multi-agent capabilities, making subagent forking the default behavior for more efficient background processing and introducing direct session-to-session communication via `@` mentions. This means non-teammate agent spawns now run in the background by default, and you can directly message other live Claude sessions by name, streamlining collaborative workflows. Key security and stability improvements include extensive GitLab secret redaction and plugin marketplace support, ensuring sensitive tokens are protected and GitLab repositories can be seamlessly integrated. The `desktop:` overlay for Gateway now accepts all Desktop settings, improving configuration flexibility, while stricter validation for Gateway policies prevents silent misconfigurations. Several critical bugs have been fixed, such as PowerShell and Windows permission bypasses, hanging MCP connections, and Remote Control session reattachment issues, leading to a more robust and reliable experience. The managed settings approval dialog is now more informative, and `/feedback` and `/bug` commands open immediately, improving responsiveness. Developers should note the hardening of the Linux filesystem sandbox and the restriction of `sandbox.ripgrep` to user, managed, and `--settings` only, preventing project-level overrides. Overall, this update focuses on improving agent autonomy, inter-session communication, security, and overall stability, making it a recommended upgrade for all users, especially those leveraging multi-agent workflows or GitLab integrations."
     },
     "features": [
       {
