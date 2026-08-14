@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "gemini-cli",
   "version": "0.55.1",
-  "generated_at": "2026-08-14T13:01:52.389Z",
+  "generated_at": "2026-08-14T14:49:16.085Z",
   "extracted_from_sources": [
     "https://github.com/google-gemini/gemini-cli/releases/tag/v0.33.0",
     "https://github.com/google-gemini/gemini-cli/releases"
@@ -22,7 +22,9 @@
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "macos-seatbelt-deny-default-model"
+    ]
   },
   "payload": {
     "meta": {
@@ -46,7 +48,7 @@
       "runtime": "node",
       "written_in": "typescript",
       "release_cadence": "Stable on Tuesdays. Preview: Tuesdays UTC 23:59. Nightly: daily UTC 00:00.",
-      "tldr": "This `gemini-cli` release, v0.55.1, focuses heavily on stability, security, and expanding the `caretaker` and `pr-generator` agent capabilities. Key fixes include preventing workspace binary shadowing in release verification and addressing bad NPM releases, ensuring a more robust CI/CD pipeline. Security has been tightened with case-insensitive sensitive path blocklists, enforcement of workspace trust and task isolation to prevent RCE, and ensuring HTTPS for `GoogleCredentialsAuthProvider` to prevent cleartext leakage. Core tool behavior has been refined, such as bypassing LLM correction for JSON and IPYNB files in `write_file` and `replace` operations, and mitigating infinite ReAct and prompt injection loops. The `caretaker` agent sees significant enhancements with new Cloud Run webhook ingestion, egress service skeleton, core foundational modules for triage workers, and an Octokit GitHub action handler. It also gains an LLM triage orchestrator, the ability to post comments before auto-closing issues, and a comprehensive evaluation framework. The `pr-generator` agent now features Firestore concurrency dual-locking, an Antigravity agent runner, an iterative bug-fixing state machine, and integrated Cloud Run job workflows. Developers will also find a new `/eval-coverage-report` command and improved local report commands for evaluations. These updates collectively improve the reliability, security, and advanced automation capabilities of the `gemini-cli`, making it a recommended upgrade for all users, especially those leveraging agent-based workflows."
+      "tldr": "This `gemini-cli` release, v0.55.1, focuses heavily on stability, security, and expanding the `caretaker` and `pr-generator` agent capabilities. A significant security enhancement involves enforcing a case-insensitive sensitive path blocklist and improving VSCode HITL integration, alongside resolving symbolic link directory escape vulnerabilities in the memory import processor. These fixes prevent potential data leakage and unauthorized access, making the CLI more robust against malicious inputs.\n\nKey new features include substantial advancements in the `caretaker` agent, which now boasts a Cloud Run webhook ingestion service, an egress Cloud Run service skeleton, and core foundational modules for its triage worker. It also gains an Octokit GitHub action handler for egress, a main worker execution loop, and an LLM triage orchestrator with container build capabilities. The `pr-generator` agent also sees significant development, with Firestore concurrency dual-locking, an Antigravity agent runner, and an iterative bug-fixing state machine for its orchestrator. These features enable more sophisticated automated issue management and pull request generation workflows.\n\nImportant fixes address issues like preventing workspace binary shadowing in release verification, ensuring task cancellation aborts execution loops in the `a2a-server`, and mitigating infinite ReAct loops and prompt injection loops. The CLI now also correctly handles capacity exhaustion as a terminal error, preventing retry hangs, and propagates `InvalidStreamError` details to the UI for clearer guidance. For macOS users, Seatbelt profiles have been aligned with a deny-default model, enhancing sandbox security, and the CLI will now fall back to embedded profiles if custom ones are missing. Additionally, `core-tools` now bypass LLM correction for JSON and IPYNB files in `write_file` and `replace` operations, improving accuracy for these file types. Users should review their macOS Seatbelt configurations due to the new deny-default model. This release is recommended for all users to benefit from the enhanced security, stability, and expanded agent functionalities."
     },
     "features": [
       {
@@ -2627,6 +2629,18 @@
         ],
         "migration": "Review existing file keychain entries and ensure they adhere to explicit tag length and validation requirements. Non-compliant entries may need to be recreated or updated.",
         "source_url": "https://github.com/google-gemini/gemini-cli/pull/28523"
+      },
+      {
+        "id": "macos-seatbelt-deny-default-model",
+        "version": "0.55.1",
+        "title": "macOS Seatbelt Profiles Aligned with Deny-Default Model",
+        "description": "The macOS permissive Seatbelt profiles have been refactored to align with a deny-default model, enhancing security. This might affect existing custom Seatbelt configurations.",
+        "affected": [
+          "macOS sandbox behavior",
+          "Custom Seatbelt profiles"
+        ],
+        "migration": "Review and update any custom macOS Seatbelt profiles to ensure compatibility with the new deny-default model. The CLI will now fall back to embedded profiles if custom ones are missing.",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28424"
       }
     ],
     "deprecations": [],
