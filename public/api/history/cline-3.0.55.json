@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "cline",
   "version": "3.0.55",
-  "generated_at": "2026-08-14T09:58:55.324Z",
+  "generated_at": "2026-08-14T08:14:08.080Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -21,7 +21,10 @@
   "delta": {
     "from_version": "3.0.55",
     "to_version": "3.0.55",
-    "new_features": [],
+    "new_features": [
+      "web-search-calls-render-in-transcript",
+      "crusoe-provider-support"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -50,7 +53,7 @@
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "This `cline` release, version 3.0.55, focuses heavily on stability and reliability improvements, particularly around the update process and Hub daemon management. A major change prevents auto-updates from installing while a CLI is attached to the Hub, instead recording the update at startup and installing it on exit, thus avoiding session termination due to package swaps. Protections have also been added for older CLI versions (3.0.54 and earlier) that could brick running sessions during updates by restarting the Hub mid-session. The system now intelligently handles multiple `cline` installations on different builds, ensuring only one can retire the other, preventing an endless loop of Hub shutdowns and abnormal socket closes. Furthermore, a newer build will no longer immediately replace a Hub serving sessions; it will attach to it, and the swap will occur on a later launch, preserving active sessions. The 'outdated Hub' notice has been removed as it reported an unactable state, while genuine build mismatch prompts remain. Streaming assistant markdown no longer flashes back to raw text, providing a smoother user experience as headings, links, and code stay rendered while new chunks arrive. Web search calls and their results from models running search natively now render directly in the transcript. Idle plugin sandbox processes are now properly reclaimed instead of lingering, improving resource management. Finally, `cline doctor fix` provides more accurate reporting on process states, distinguishing between processes that survived a kill and new ones, naming live parents respawning daemons, and correctly reporting held startup locks. The model catalog has also been refreshed, adding Crusoe as a provider and updating model lists and defaults."
+      "tldr": "This `cline` release, version 3.0.55, significantly improves stability and user experience by overhauling the update mechanism and fixing critical daemon interaction issues. The headline change is that auto-updates no longer install while a CLI is attached to the Hub; instead, updates are recorded at startup and installed on exit, preventing live sessions from being killed by unexpected package swaps and 'Hub connection closed' errors. This ensures a much more robust and uninterrupted workflow for developers. \n\nSeveral crucial fixes address long-standing stability problems: protections are added for updates landing under older CLI versions (3.0.54 and earlier) that could brick running sessions, and a fix prevents two Cline installations from different builds from shutting each other's Hub daemon down in a loop, which previously killed live sessions. Furthermore, a newer build will now attach to an existing Hub serving sessions rather than replacing it immediately, ensuring sessions don't die mid-handshake. \n\nUser experience is also enhanced with streaming assistant markdown no longer flashing back to raw text, meaning settled headings, links, and code stay rendered as new chunks arrive, preventing the transcript from jumping vertically. Web search calls and their results from natively-running models now render directly in the transcript, providing better visibility into AI actions. Idle plugin sandbox processes are now properly reclaimed, preventing resource leaks. The `cline doctor fix` command provides more accurate reporting, distinguishing between processes that survived a kill and new ones, and correctly identifying live parents respawning daemons or held startup locks. Finally, the model catalog has been refreshed, introducing Crusoe as a new provider and updating model lists and default models across all providers. The 'outdated Hub' notice has been removed as it was unactionable and poorly rendered. Developers should upgrade to 3.0.55 to benefit from these significant stability and usability improvements, especially if experiencing unexpected session disconnections or resource issues."
     },
     "features": [
       {
