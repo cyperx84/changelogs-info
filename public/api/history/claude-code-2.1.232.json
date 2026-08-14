@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.232",
-  "generated_at": "2026-08-14T01:46:38.503Z",
+  "generated_at": "2026-08-13T23:38:24.613Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -17,10 +17,11 @@
     "from_version": "2.1.232",
     "to_version": "2.1.232",
     "new_features": [
-      "gitlab-secret-redaction-extended",
-      "gitlab-plugin-marketplace-support-extended",
-      "cross-session-messaging-socket-hardening",
-      "linux-filesystem-sandbox-hardening"
+      "subagent-forking-default",
+      "mention-claude-session",
+      "gitlab-secret-redaction",
+      "gitlab-plugin-marketplace-support",
+      "fable-5-advisor-support"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -28,8 +29,7 @@
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "gateway-managed-policy-validation",
-      "interactive-session-unique-names"
+      "gateway-policy-validation"
     ]
   },
   "payload": {
@@ -52,7 +52,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release of claude-code 2.1.232 introduces significant improvements to subagent behavior, security, and user experience. Subagent forking is now enabled by default, allowing subagents to inherit the full conversation and prompt cache, and non-teammate agent spawns in interactive sessions now run in the background, streamlining complex workflows. Security has been a major focus, with extended secret redaction for various GitLab token families and full redaction of routable `glpat-`/`gldt-` tokens, alongside enhanced sandbox protection for `glab` CLI config stores. The Linux filesystem sandbox has been hardened against protected-path bypasses, and the cross-session messaging socket directory is now more secure against symlink attacks. \n\nKey user experience enhancements include improved Remote Control session stability, with longer reconnection attempts after network blips and clearer notifications when sessions are taken over or ended. The `/code-review` command at higher effort levels now runs in the background, and pasted images are processed non-blockingly. The managed settings approval dialog is more informative, showing endpoint URLs and requiring approval for server-managed sandbox binary overrides. Interactive sessions now enforce unique names, preventing conflicts, and `SendMessage` directly targets exact session names. Gateway deployments benefit from stricter validation of `desktop:` overlay settings and managed policy configurations, failing boot on invalid entries. Developers should review their GitLab token usage and managed policy configurations to ensure compliance with the new security and validation rules. The `/plugin install` command now refreshes marketplaces automatically, and Fable 5 is re-enabled as an advisor. This update is recommended for all users to benefit from enhanced security, stability, and workflow improvements."
+      "tldr": "This release of claude-code 2.1.232 introduces significant improvements to agent behavior, security, and user experience. The headline change is that subagent forking is now on by default, meaning `subagent_type: \"fork\"` subagents inherit the full conversation and prompt cache, and non-teammate agent spawns in interactive sessions run in the background by default. This streamlines multi-agent workflows and improves performance by reducing foreground clutter.\n\nKey new features include the ability to mention other Claude sessions by name using `@` in the prompt, enabling direct `SendMessage` communication between sessions. GitLab users will benefit from enhanced security with secret redaction for various GitLab token families and full redaction of routable `glpat-`/`gldt-` tokens, along with GitLab support for plugin marketplaces, allowing direct cloning of `gitlab.com` repo URLs. Additionally, Fable 5 is now available as an advisor in `/advisor` for eligible organizations, with consent managed via `/model fable`.\n\nNumerous fixes address critical issues, including PowerShell and Windows permission bypasses, nested git repository trust inheritance, and MCP connection hanging. Remote Control sessions are more robust, with improved reconnection logic and clearer terminal messages about session status. The managed settings approval dialog is enhanced with clearer wording and required approval for server-managed sandbox binary overrides. A breaking change for Gateway users is stricter validation for `managed.policies[].match.groups`, `admin.admin_groups`, and `email_domain` values, which will now cause boot failures if malformed. Developers should review their Gateway configurations to ensure compliance. Overall, this release focuses on stability, security, and a more seamless multi-agent and multi-session experience, making an upgrade highly recommended for all users, especially those leveraging GitLab or multi-agent workflows."
     },
     "features": [
       {
@@ -1613,42 +1613,6 @@
           "Fable 5 available in /advisor for organizations with Fable access",
           "Usage-credits consent configured via /model fable"
         ],
-        "source_url": ""
-      },
-      {
-        "id": "gitlab-secret-redaction-extended",
-        "name": "Extended GitLab Secret Redaction",
-        "status": "stable",
-        "since": "2.1.232",
-        "description": "Added secret redaction for GitLab token families (`glrt-`, `gloas-`, `glptt-`, `glagent-`, `glimt-`, `glsoat-`, `glcbt-`, `glft-`, `glffct-`) and full redaction of routable `glpat-`/`gldt-` tokens. The `glab` CLI config store now receives the same sandbox and credential-path protection as `gh`.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "gitlab-plugin-marketplace-support-extended",
-        "name": "Extended GitLab Plugin Marketplace Support",
-        "status": "stable",
-        "since": "2.1.232",
-        "description": "Bare `gitlab.com` repository URLs (including nested subgroups) now clone like `github.com` URLs in plugin marketplaces. Clone authentication failure hints now correctly name your actual Git host.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "cross-session-messaging-socket-hardening",
-        "name": "Hardened Cross-Session Messaging Socket Directory",
-        "status": "stable",
-        "since": "2.1.232",
-        "description": "The auto-generated cross-session messaging socket directory on shared `/tmp` is now hardened. A pre-planted symlink or another user's directory is now refused instead of used, preventing potential security vulnerabilities.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "linux-filesystem-sandbox-hardening",
-        "name": "Hardened Linux Filesystem Sandbox",
-        "status": "stable",
-        "since": "2.1.232",
-        "description": "The Linux filesystem sandbox has been hardened against a protected-path bypass, improving security.",
-        "key_details": [],
         "source_url": ""
       }
     ],
@@ -3272,31 +3236,6 @@
           "Email domain validation"
         ],
         "migration": "Ensure `managed.policies[].match.groups` and `admin.admin_groups` are not empty if intended to match specific groups. Verify `email_domain` values are valid (non-empty, no '@', whitespace, or commas). Invalid configurations will now prevent the Gateway from booting.",
-        "source_url": ""
-      },
-      {
-        "id": "gateway-managed-policy-validation",
-        "version": "2.1.232",
-        "title": "Gateway Managed Policy and Admin Group Validation",
-        "description": "Empty `managed.policies[].match.groups`/`admin.admin_groups` entries and malformed `email_domain` values (empty, or containing `@`, whitespace, or commas) now fail at boot instead of silently matching no one or granting admin access.",
-        "affected": [
-          "Gateway deployments",
-          "Managed policies",
-          "Admin group configurations"
-        ],
-        "migration": "Ensure all `managed.policies[].match.groups` and `admin.admin_groups` entries are non-empty and correctly formatted. Verify `email_domain` values are valid (non-empty, no `@`, whitespace, or commas).",
-        "source_url": ""
-      },
-      {
-        "id": "interactive-session-unique-names",
-        "version": "2.1.232",
-        "title": "Interactive Session Unique Naming Enforcement",
-        "description": "Interactive sessions on one machine now keep unique names. Starting or renaming a session to a name another live session already uses will now give it a `name-word-word` variant and notify the user.",
-        "affected": [
-          "Interactive sessions",
-          "Session naming conventions"
-        ],
-        "migration": "Be aware that attempting to use a non-unique session name will result in an automatically generated variant. Update any scripts or workflows that rely on exact session names if conflicts are possible.",
         "source_url": ""
       }
     ],
