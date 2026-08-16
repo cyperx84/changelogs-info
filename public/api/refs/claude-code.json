@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.233",
-  "generated_at": "2026-08-16T02:57:30.025Z",
+  "generated_at": "2026-08-16T03:50:35.953Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -16,15 +16,9 @@
   "delta": {
     "from_version": "2.1.233",
     "to_version": "2.1.233",
-    "new_features": [
-      "gitlab-merge-request-url-support",
-      "forward-user-identity-apps-gateway",
-      "memory-cgroup-bash-tool-commands"
-    ],
+    "new_features": [],
     "new_commands": [],
-    "new_flags": [
-      "--worktree"
-    ],
+    "new_flags": [],
     "new_env_vars": [
       "CLAUDE_CODE_TOOL_MEMORY_LIMIT",
       "CLAUDE_CODE_WEBFETCH_CACHE_TTL_MS",
@@ -32,9 +26,7 @@
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "todo-task-tools-removal"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -56,7 +48,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Claude Code 2.1.233 introduces several key improvements and fixes, enhancing integration with GitLab, providing more control over resource usage, and refining the user experience. A major new feature is the added support for GitLab merge request URLs with the `--worktree` flag and in the `claude agents` view, where MRs are now conveniently displayed as `!N`. This streamlines workflows for developers using GitLab. For Anthropic upstreams, an opt-in `forward_user_identity` apps gateway setting allows sending the signed-in user's identity as headers, enabling better spend attribution per user by a proxy. Additionally, Linux users can now opt-in to memory cgroup support for Bash tool commands via `CLAUDE_CODE_TOOL_MEMORY_LIMIT`, preventing runaway builds from consuming excessive resources and stalling sessions. The `CLAUDE_CODE_WEBFETCH_CACHE_TTL_MS` environment variable has been added to configure the WebFetch session URL cache TTL, though its default remains 15 minutes.\n\nSeveral critical fixes address stability and usability issues. Cloud sessions are no longer occasionally marked as lost when the environment shuts down during a permission prompt, and MCP v2 connections now correctly handle servers that terminate long-held streams, preventing endless re-opening. Notification hooks for permission prompts now fire reliably under Claude Desktop or VS Code, and an issue causing idle Linux sessions to consume 100% CPU with sandboxing enabled has been resolved. Bundled skill aliases like `/checkup` and `/review` no longer report 'Unknown command' when shadowed by user or project skills, and skill/command argument substitution has been fixed to prevent re-expansion of template markers. A security fix addresses Windows paths with the NT `\\??\\` device prefix bypassing UNC path validation, closing an NTLM credential-leak vector. Performance improvements include faster `claude self-hosted-runner` session start times and better apps gateway error forwarding for Vertex, Foundry, and Claude Platform on AWS upstreams. The `claude plugin validate` command now checks bare `.claude/skills` directories for invalid SKILL.md frontmatter, and screen reader mode has been improved for the `/effort` selector and dialog text. Print mode diagnostics now include `[claude-code:unrecognized_model]` for unknown model IDs, which can be silenced with `modelOverrides`.\n\nA significant breaking change is the default removal of Todo/task-tracking tools (TaskCreate/Get/Update/List, TodoWrite) for Opus 4.8, Sonnet 5, Fable 5, Mythos 5, and newer models. Users who rely on these tools must set `CLAUDE_CODE_ENABLE_TODO_TOOLS=1` to re-enable them. The GitHub app setup tip has been refined to only appear for GitHub repositories, with the enterprise marketplace tip covering other internal git hosts. A regression from 2.1.232 on Windows, where auto mode repeatedly stopped for manual approval on ordinary Bash commands like `cd <dir> && <command> > file`, has been fixed. Additionally, the 2.1.232 Bash permission changes for Cygwin-style symlinks on Windows and input redirections (`< file`) have been reverted, with a narrower version planned for a future release. Developers should review the breaking change regarding Todo/task-tracking tools and consider setting `CLAUDE_CODE_ENABLE_TODO_TOOLS=1` if their workflows depend on them with newer models. The release offers substantial stability and quality-of-life improvements, making an upgrade recommended for all users."
+      "tldr": "This release of claude-code 2.1.233 introduces significant improvements to resource management, security, and developer experience. A key enhancement is the opt-in memory cgroup support for Bash tool commands on Linux via `CLAUDE_CODE_TOOL_MEMORY_LIMIT`, which prevents runaway builds from consuming excessive memory and stalling your session, ensuring more stable and predictable agent behavior. Additionally, the `--worktree` flag and `claude agents` view now support GitLab merge request URLs, displaying them as `!N`, which streamlines workflows for GitLab users. \n\nSeveral fixes address critical issues, including cloud sessions being incorrectly marked as lost, MCP v2 connections endlessly reopening streams, and notification hooks failing for permission prompts in Claude Desktop or VS Code. Idle sessions on Linux no longer consume 100% CPU when sandboxing is enabled, and a security fix addresses a Windows NTLM credential-leak vector by properly validating NT `\\??\\` device prefixes. Performance is boosted for `claude self-hosted-runner` with faster session start times, and `claude plugin validate` now checks bare `.claude/skills` directories for frontmatter parsing errors. \n\nDevelopers can now configure the WebFetch session URL cache TTL using `CLAUDE_CODE_WEBFETCH_CACHE_TTL_MS`. For users of newer models like Opus 4.8, Sonnet 5, Fable 5, and Mythos 5, Todo/task-tracking tools are no longer available by default but can be re-enabled with `CLAUDE_CODE_ENABLE_TODO_TOOLS=1`. The GitHub app setup tip is now smarter, no longer appearing for GitLab or Bitbucket repositories, and screen reader mode has been improved for better accessibility. This release is recommended for all users to benefit from enhanced stability, security, and performance."
     },
     "features": [
       {
@@ -2484,9 +2476,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--worktree"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
