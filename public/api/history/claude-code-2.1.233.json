@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.233",
-  "generated_at": "2026-08-16T02:57:30.025Z",
+  "generated_at": "2026-08-14T23:19:02.592Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,27 +14,15 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.233",
-    "to_version": "2.1.233",
-    "new_features": [
-      "gitlab-merge-request-url-support",
-      "forward-user-identity-apps-gateway",
-      "memory-cgroup-bash-tool-commands"
-    ],
+    "from_version": "2.1.232",
+    "to_version": "2.1.232",
+    "new_features": [],
     "new_commands": [],
-    "new_flags": [
-      "--worktree"
-    ],
-    "new_env_vars": [
-      "CLAUDE_CODE_TOOL_MEMORY_LIMIT",
-      "CLAUDE_CODE_WEBFETCH_CACHE_TTL_MS",
-      "CLAUDE_CODE_ENABLE_TODO_TOOLS"
-    ],
+    "new_flags": [],
+    "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "todo-task-tools-removal"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -56,7 +44,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Claude Code 2.1.233 introduces several key improvements and fixes, enhancing integration with GitLab, providing more control over resource usage, and refining the user experience. A major new feature is the added support for GitLab merge request URLs with the `--worktree` flag and in the `claude agents` view, where MRs are now conveniently displayed as `!N`. This streamlines workflows for developers using GitLab. For Anthropic upstreams, an opt-in `forward_user_identity` apps gateway setting allows sending the signed-in user's identity as headers, enabling better spend attribution per user by a proxy. Additionally, Linux users can now opt-in to memory cgroup support for Bash tool commands via `CLAUDE_CODE_TOOL_MEMORY_LIMIT`, preventing runaway builds from consuming excessive resources and stalling sessions. The `CLAUDE_CODE_WEBFETCH_CACHE_TTL_MS` environment variable has been added to configure the WebFetch session URL cache TTL, though its default remains 15 minutes.\n\nSeveral critical fixes address stability and usability issues. Cloud sessions are no longer occasionally marked as lost when the environment shuts down during a permission prompt, and MCP v2 connections now correctly handle servers that terminate long-held streams, preventing endless re-opening. Notification hooks for permission prompts now fire reliably under Claude Desktop or VS Code, and an issue causing idle Linux sessions to consume 100% CPU with sandboxing enabled has been resolved. Bundled skill aliases like `/checkup` and `/review` no longer report 'Unknown command' when shadowed by user or project skills, and skill/command argument substitution has been fixed to prevent re-expansion of template markers. A security fix addresses Windows paths with the NT `\\??\\` device prefix bypassing UNC path validation, closing an NTLM credential-leak vector. Performance improvements include faster `claude self-hosted-runner` session start times and better apps gateway error forwarding for Vertex, Foundry, and Claude Platform on AWS upstreams. The `claude plugin validate` command now checks bare `.claude/skills` directories for invalid SKILL.md frontmatter, and screen reader mode has been improved for the `/effort` selector and dialog text. Print mode diagnostics now include `[claude-code:unrecognized_model]` for unknown model IDs, which can be silenced with `modelOverrides`.\n\nA significant breaking change is the default removal of Todo/task-tracking tools (TaskCreate/Get/Update/List, TodoWrite) for Opus 4.8, Sonnet 5, Fable 5, Mythos 5, and newer models. Users who rely on these tools must set `CLAUDE_CODE_ENABLE_TODO_TOOLS=1` to re-enable them. The GitHub app setup tip has been refined to only appear for GitHub repositories, with the enterprise marketplace tip covering other internal git hosts. A regression from 2.1.232 on Windows, where auto mode repeatedly stopped for manual approval on ordinary Bash commands like `cd <dir> && <command> > file`, has been fixed. Additionally, the 2.1.232 Bash permission changes for Cygwin-style symlinks on Windows and input redirections (`< file`) have been reverted, with a narrower version planned for a future release. Developers should review the breaking change regarding Todo/task-tracking tools and consider setting `CLAUDE_CODE_ENABLE_TODO_TOOLS=1` if their workflows depend on them with newer models. The release offers substantial stability and quality-of-life improvements, making an upgrade recommended for all users."
+      "tldr": "This release significantly enhances Claude Code's multi-session and multi-agent capabilities, making subagent forking the default behavior for more efficient background processing and introducing direct session-to-session communication via `@` mentions. This means non-teammate agent spawns now run in the background by default, and you can directly message other live Claude sessions by name, streamlining collaborative workflows. Key security and stability improvements include extensive GitLab secret redaction and plugin marketplace support, ensuring sensitive tokens are protected and GitLab repositories can be seamlessly integrated. The `desktop:` overlay for Gateway now accepts all Desktop settings, improving configuration flexibility, while stricter validation for Gateway policies prevents silent misconfigurations. Several critical bugs have been fixed, such as PowerShell and Windows permission bypasses, hanging MCP connections, and Remote Control session reattachment issues, leading to a more robust and reliable experience. The managed settings approval dialog is now more informative, and `/feedback` and `/bug` commands open immediately, improving responsiveness. Developers should note the hardening of the Linux filesystem sandbox and the restriction of `sandbox.ripgrep` to user, managed, and `--settings` only, preventing project-level overrides. Overall, this update focuses on improving agent autonomy, inter-session communication, security, and overall stability, making it a recommended upgrade for all users, especially those leveraging multi-agent workflows or GitLab integrations."
     },
     "features": [
       {
@@ -1654,35 +1642,6 @@
         "description": "The Linux filesystem sandbox has been hardened against a protected-path bypass, improving security.",
         "key_details": [],
         "source_url": ""
-      },
-      {
-        "id": "gitlab-merge-request-url-support",
-        "name": "GitLab Merge Request URL Support",
-        "status": "stable",
-        "since": "2.1.233",
-        "description": "Adds support for GitLab merge request URLs to the `--worktree` flag and the `claude agents` view. Merge requests are displayed as `!N`.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "forward-user-identity-apps-gateway",
-        "name": "Opt-in User Identity Forwarding for Apps Gateway",
-        "status": "stable",
-        "since": "2.1.233",
-        "description": "An opt-in `forward_user_identity` apps gateway setting for Anthropic upstreams that sends the signed-in user's identity as headers. This allows a proxy behind the gateway to attribute spend per user.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "memory-cgroup-bash-tool-commands",
-        "name": "Opt-in Memory Cgroup Support for Bash Tool Commands on Linux",
-        "status": "stable",
-        "since": "2.1.233",
-        "description": "Adds opt-in memory cgroup support for Bash tool commands on Linux, preventing runaway builds from stalling the session.",
-        "key_details": [
-          "Enabled via `CLAUDE_CODE_TOOL_MEMORY_LIMIT` environment variable."
-        ],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -2484,9 +2443,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--worktree"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
@@ -2914,27 +2871,6 @@
         "status": "stable",
         "since": "2.1.229",
         "source_url": ""
-      },
-      {
-        "name": "CLAUDE_CODE_TOOL_MEMORY_LIMIT",
-        "purpose": "Enables opt-in memory cgroup support for Bash tool commands on Linux to prevent runaway builds from stalling the session.",
-        "status": "stable",
-        "since": "2.1.233",
-        "source_url": ""
-      },
-      {
-        "name": "CLAUDE_CODE_WEBFETCH_CACHE_TTL_MS",
-        "purpose": "Configures the WebFetch session URL cache TTL in milliseconds. The default remains 15 minutes.",
-        "status": "stable",
-        "since": "2.1.233",
-        "source_url": ""
-      },
-      {
-        "name": "CLAUDE_CODE_ENABLE_TODO_TOOLS",
-        "purpose": "When set to `1`, re-enables Todo/task-tracking tools (TaskCreate/Get/Update/List, TodoWrite) for Opus 4.8, Sonnet 5, Fable 5, Mythos 5, and newer models, which are otherwise disabled by default.",
-        "status": "stable",
-        "since": "2.1.233",
-        "source_url": ""
       }
     ],
     "models": [
@@ -3353,26 +3289,6 @@
           "Session naming conventions"
         ],
         "migration": "Be aware that attempting to use a non-unique session name will result in an automatically generated variant. Update any scripts or workflows that rely on exact session names if conflicts are possible.",
-        "source_url": ""
-      },
-      {
-        "id": "todo-task-tools-removal",
-        "version": "2.1.233",
-        "title": "Todo/Task-tracking Tools Removed for Newer Models by Default",
-        "description": "Todo/task-tracking tools (TaskCreate/Get/Update/List, TodoWrite) are no longer available by default on Opus 4.8, Sonnet 5, Fable 5, Mythos 5, and newer models.",
-        "affected": [
-          "Opus 4.8",
-          "Sonnet 5",
-          "Fable 5",
-          "Mythos 5",
-          "Newer models",
-          "TaskCreate tool",
-          "TaskGet tool",
-          "TaskUpdate tool",
-          "TaskList tool",
-          "TodoWrite tool"
-        ],
-        "migration": "To re-enable these tools, set the environment variable `CLAUDE_CODE_ENABLE_TODO_TOOLS=1`.",
         "source_url": ""
       }
     ],

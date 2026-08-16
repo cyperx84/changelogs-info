@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "cline",
   "version": "4.1.10",
-  "generated_at": "2026-08-16T02:57:55.972Z",
+  "generated_at": "2026-08-14T17:50:43.145Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,11 +19,9 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "4.1.10",
-    "to_version": "4.1.10",
-    "new_features": [
-      "web-search-for-models"
-    ],
+    "from_version": "3.0.55",
+    "to_version": "3.0.55",
+    "new_features": [],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -52,7 +50,7 @@
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "cline 4.1.10 introduces a significant new capability: models can now perform web searches during tasks, with results appearing directly in the conversation and persisting across sessions. This feature, controllable via a toggle in Feature Settings, empowers models to access real-time information, greatly enhancing their utility and accuracy for various tasks. The release also includes crucial stability fixes, addressing an issue where multiple cline installations could interfere with each other's Hub daemons, leading to abnormal socket closures and interrupted live sessions. This is resolved by comparing build identities to ensure only one Hub daemon is active. Furthermore, idle plugin sandbox processes are now reclaimed, preventing them from consuming resources unnecessarily. The model catalog has been refreshed, adding Crusoe as a new provider and updating default models across all providers. This update is delivered through the SDK bundle, meaning it applies to Windows installations using that bundle. Developers should upgrade to 4.1.10 to benefit from enhanced model capabilities and improved system stability, especially if running multiple cline instances or relying on the latest model offerings."
+      "tldr": "This `cline` release, version 3.0.55, focuses heavily on stability and reliability improvements, particularly around the update process and Hub daemon management. A major change prevents auto-updates from installing while a CLI is attached to the Hub, instead recording the update at startup and installing it on exit, thus avoiding session termination due to package swaps. Protections have also been added for older CLI versions (3.0.54 and earlier) that could brick running sessions during updates by restarting the Hub mid-session. The system now intelligently handles multiple `cline` installations on different builds, ensuring only one can retire the other, preventing an endless loop of Hub shutdowns and abnormal socket closes. Furthermore, a newer build will no longer immediately replace a Hub serving sessions; it will attach to it, and the swap will occur on a later launch, preserving active sessions. The 'outdated Hub' notice has been removed as it reported an unactable state, while genuine build mismatch prompts remain. Streaming assistant markdown no longer flashes back to raw text, providing a smoother user experience as headings, links, and code stay rendered while new chunks arrive. Web search calls and their results from models running search natively now render directly in the transcript. Idle plugin sandbox processes are now properly reclaimed instead of lingering, improving resource management. Finally, `cline doctor fix` provides more accurate reporting on process states, distinguishing between processes that survived a kill and new ones, naming live parents respawning daemons, and correctly reporting held startup locks. The model catalog has also been refreshed, adding Crusoe as a provider and updating model lists and defaults."
     },
     "features": [
       {
@@ -1060,15 +1058,6 @@
         "status": "stable",
         "since": "3.0.55",
         "description": "The model catalog has been refreshed, adding Crusoe as a new provider and updating model lists and per-provider default models across the board.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "web-search-for-models",
-        "name": "Web Search for Models",
-        "status": "stable",
-        "since": "4.1.10",
-        "description": "Allows models that support web search to perform searches during a task. This feature can be toggled on in Feature Settings. Search calls and their results are displayed in the conversation and persist across reloads.",
         "key_details": [],
         "source_url": ""
       }

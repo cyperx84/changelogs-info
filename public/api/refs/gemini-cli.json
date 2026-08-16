@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "gemini-cli",
   "version": "0.55.1",
-  "generated_at": "2026-08-14T14:49:16.085Z",
+  "generated_at": "2026-08-16T02:57:45.319Z",
   "extracted_from_sources": [
     "https://github.com/google-gemini/gemini-cli/releases/tag/v0.33.0",
     "https://github.com/google-gemini/gemini-cli/releases"
@@ -22,9 +22,7 @@
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "macos-seatbelt-deny-default-model"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -48,7 +46,7 @@
       "runtime": "node",
       "written_in": "typescript",
       "release_cadence": "Stable on Tuesdays. Preview: Tuesdays UTC 23:59. Nightly: daily UTC 00:00.",
-      "tldr": "This `gemini-cli` release, v0.55.1, focuses heavily on stability, security, and expanding the `caretaker` and `pr-generator` agent capabilities. A significant security enhancement involves enforcing a case-insensitive sensitive path blocklist and improving VSCode HITL integration, alongside resolving symbolic link directory escape vulnerabilities in the memory import processor. These fixes prevent potential data leakage and unauthorized access, making the CLI more robust against malicious inputs.\n\nKey new features include substantial advancements in the `caretaker` agent, which now boasts a Cloud Run webhook ingestion service, an egress Cloud Run service skeleton, and core foundational modules for its triage worker. It also gains an Octokit GitHub action handler for egress, a main worker execution loop, and an LLM triage orchestrator with container build capabilities. The `pr-generator` agent also sees significant development, with Firestore concurrency dual-locking, an Antigravity agent runner, and an iterative bug-fixing state machine for its orchestrator. These features enable more sophisticated automated issue management and pull request generation workflows.\n\nImportant fixes address issues like preventing workspace binary shadowing in release verification, ensuring task cancellation aborts execution loops in the `a2a-server`, and mitigating infinite ReAct loops and prompt injection loops. The CLI now also correctly handles capacity exhaustion as a terminal error, preventing retry hangs, and propagates `InvalidStreamError` details to the UI for clearer guidance. For macOS users, Seatbelt profiles have been aligned with a deny-default model, enhancing sandbox security, and the CLI will now fall back to embedded profiles if custom ones are missing. Additionally, `core-tools` now bypass LLM correction for JSON and IPYNB files in `write_file` and `replace` operations, improving accuracy for these file types. Users should review their macOS Seatbelt configurations due to the new deny-default model. This release is recommended for all users to benefit from the enhanced security, stability, and expanded agent functionalities."
+      "tldr": "This `gemini-cli` release, version 0.55.1, focuses heavily on stability, security, and expanding the 'Caretaker' and 'PR Generator' agent capabilities. A significant security enhancement enforces case-insensitive sensitive path blocklisting and improves VSCode HITL integration, preventing potential exploits. Core tools now bypass LLM correction for JSON and IPYNB files during `write_file` and `replace` operations, ensuring data integrity for these formats. The release also introduces robust fixes for infinite ReAct loops and prompt injection loops, making agent interactions more reliable and secure.\n\nKey new features include comprehensive updates to the 'Caretaker' agent, which now boasts a Cloud Run webhook ingestion service, an egress Cloud Run service skeleton, and foundational modules for its triage worker. It also gains an Octokit GitHub action handler for egress, a main worker execution loop, and an LLM triage orchestrator with container build capabilities. The 'PR Generator' agent sees the implementation of Firestore concurrency dual-locking, an Antigravity agent runner with prompt templates, an environment config parser, and an iterative bug-fixing state machine with a container worker entrypoint. Additionally, it now supports Cloud Run job, Workflows definition, and Dockerfile configurations.\n\nImportant fixes address symbolic link directory escapes in the memory import processor, prevent workspace binary shadowing in release verification, and ensure task cancellation aborts the execution loop in the A2A server. macOS sandbox security is tightened by making `~/.gitconfig` read-only and aligning permissive Seatbelt profiles with a deny-default model. Capacity exhaustion is reclassified as a terminal error to prevent retry hangs, and false model capacity exhaustion issues are resolved. Developers should review the updated security measures, especially those related to path handling and sandbox configurations, and note the enhanced capabilities of the 'Caretaker' and 'PR Generator' agents for automated workflows. No explicit migration steps are required for this release, but understanding the new agent features will be beneficial."
     },
     "features": [
       {
