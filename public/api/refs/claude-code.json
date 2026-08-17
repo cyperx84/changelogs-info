@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.233",
-  "generated_at": "2026-08-17T19:25:26.166Z",
+  "version": "2.1.234",
+  "generated_at": "2026-08-17T20:23:24.833Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,15 +14,23 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.233",
-    "to_version": "2.1.233",
-    "new_features": [],
+    "from_version": "2.1.234",
+    "to_version": "2.1.234",
+    "new_features": [
+      "gitlab-merge-request-badge",
+      "auto-session-continuation-on-usage-limit-reset",
+      "remote-control-permission-mode-sync",
+      "remote-control-effort-sync",
+      "markdown-rendering-in-user-prompts",
+      "mid-turn-permissions-dialog",
+      "mid-turn-add-dir-and-other-dialogs",
+      "goal-checkin-on-long-background-tasks"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [
-      "CLAUDE_CODE_TOOL_MEMORY_LIMIT",
-      "CLAUDE_CODE_WEBFETCH_CACHE_TTL_MS",
-      "CLAUDE_CODE_ENABLE_TODO_TOOLS"
+      "CLAUDE_CODE_PROJECT_DIR_NAME",
+      "CLAUDE_CODE_GOAL_CHECKIN_MINUTES"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -43,12 +51,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.233",
-      "latest_release_date": "2026-08-14",
+      "latest_stable": "2.1.234",
+      "latest_release_date": "2026-08-17",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release of claude-code 2.1.233 introduces significant improvements to resource management, security, and developer experience. A key enhancement is the opt-in memory cgroup support for Bash tool commands on Linux via `CLAUDE_CODE_TOOL_MEMORY_LIMIT`, which prevents runaway builds from consuming excessive memory and stalling your session, ensuring more stable and predictable agent behavior. Additionally, the `--worktree` flag and `claude agents` view now support GitLab merge request URLs, displaying them as `!N`, which streamlines workflows for GitLab users. \n\nSeveral fixes address critical issues, including cloud sessions being incorrectly marked as lost, MCP v2 connections endlessly reopening streams, and notification hooks failing for permission prompts in Claude Desktop or VS Code. Idle sessions on Linux no longer consume 100% CPU when sandboxing is enabled, and a security fix addresses a Windows NTLM credential-leak vector by properly validating NT `\\??\\` device prefixes. Performance is boosted for `claude self-hosted-runner` with faster session start times, and `claude plugin validate` now checks bare `.claude/skills` directories for frontmatter parsing errors. \n\nDevelopers can now configure the WebFetch session URL cache TTL using `CLAUDE_CODE_WEBFETCH_CACHE_TTL_MS`. For users of newer models like Opus 4.8, Sonnet 5, Fable 5, and Mythos 5, Todo/task-tracking tools are no longer available by default but can be re-enabled with `CLAUDE_CODE_ENABLE_TODO_TOOLS=1`. The GitHub app setup tip is now smarter, no longer appearing for GitLab or Bitbucket repositories, and screen reader mode has been improved for better accessibility. This release is recommended for all users to benefit from enhanced stability, security, and performance."
+      "tldr": "Claude Code 2.1.234 introduces several significant improvements, most notably the automatic continuation of sessions when claude.ai usage limits reset, enhancing workflow continuity. This behavior is configurable via `/config`. Security has been hardened by rejecting Windows NT-namespace paths in remote file reads, session restore, CLAUDE.md includes, workflow scripts, and file uploads, mitigating NTLM credential-leak vectors. Developers will appreciate the new GitLab merge request badge in the footer and statusline, providing quick status updates for MRs. User prompts now render markdown, including code blocks and lists, making conversations more readable. The `/permissions` and `/add-dir` commands, along with several other dialogs, can now be opened mid-turn, allowing for dynamic adjustments without interrupting Claude's work. For long-running background tasks, Claude will now check in on goals after 30 minutes, a feature configurable via `CLAUDE_CODE_GOAL_CHECKIN_MINUTES`. Remote Control sessions now sync permission modes, models, and effort levels across devices, and the context cost of the `claude-api` skill has been drastically reduced. This release also includes numerous fixes for crashes, performance issues (like slow markdown rendering), and UI glitches, such as `SendMessage` issues with long session names and incorrect repository detection. Upgrading is recommended for improved security, stability, and enhanced developer experience, especially for users leveraging GitLab, Remote Control, or frequently hitting usage limits."
     },
     "features": [
       {
@@ -1675,6 +1683,82 @@
           "Enabled via `CLAUDE_CODE_TOOL_MEMORY_LIMIT` environment variable."
         ],
         "source_url": ""
+      },
+      {
+        "id": "gitlab-merge-request-badge",
+        "name": "GitLab Merge Request Badge",
+        "status": "stable",
+        "since": "2.1.234",
+        "description": "A GitLab merge request badge is now displayed in the footer and statusline for repositories with a GitLab remote and an authenticated glab CLI. It shows MR !N with draft/pending/green states.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "auto-session-continuation-on-usage-limit-reset",
+        "name": "Automatic Session Continuation on Usage Limit Reset",
+        "status": "stable",
+        "since": "2.1.234",
+        "description": "Claude Code now automatically continues your session when a claude.ai usage limit resets. This can be disabled in `/config` under the setting 'Continue automatically at usage limit'.",
+        "key_details": [
+          "Configurable via `/config` setting 'Continue automatically at usage limit'."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "remote-control-permission-mode-sync",
+        "name": "Remote Control Permission Mode and Model Sync",
+        "status": "stable",
+        "since": "2.1.234",
+        "description": "Remote Control sessions started from Claude Code Desktop or VS Code now keep phones and claude.ai/code updated on the session's permission mode (and claude.ai/code on the model) as they change.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "remote-control-effort-sync",
+        "name": "Remote Control Effort Level Sync",
+        "status": "stable",
+        "since": "2.1.234",
+        "description": "Effort picks made on a phone or on claude.ai/code now apply to terminal- and Desktop/VS Code-hosted sessions, and the session publishes its effort level to connected clients.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "markdown-rendering-in-user-prompts",
+        "name": "Markdown Rendering in User Prompts",
+        "status": "stable",
+        "since": "2.1.234",
+        "description": "Your own prompts now render markdown (highlighted code blocks, inline code, lists) the same way replies do, improving transcript readability.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "mid-turn-permissions-dialog",
+        "name": "Mid-Turn Permissions Dialog",
+        "status": "stable",
+        "since": "2.1.234",
+        "description": "The `/permissions` command can now be opened while Claude is working, and rule changes apply to the rest of the current turn.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "mid-turn-add-dir-and-other-dialogs",
+        "name": "Mid-Turn Dialogs for `/add-dir`, `/autocompact`, `/theme`, `/help`, `/config`, `/advisor`",
+        "status": "stable",
+        "since": "2.1.234",
+        "description": "The `/add-dir <path>` command can now be used while Claude is working. Additionally, `/add-dir`, `/autocompact`, `/theme`, `/help`, `/config`, and `/advisor` dialogs now open mid-turn in the fullscreen TUI.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "goal-checkin-on-long-background-tasks",
+        "name": "Goal Check-in for Long Background Tasks",
+        "status": "stable",
+        "since": "2.1.234",
+        "description": "When background tasks keep a goal waiting for 30+ minutes, Claude now checks in on them instead of waiting indefinitely. This behavior can be opted out of by setting the `CLAUDE_CODE_GOAL_CHECKIN_MINUTES` environment variable to `0`.",
+        "key_details": [
+          "Opt-out via `CLAUDE_CODE_GOAL_CHECKIN_MINUTES=0`."
+        ],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -2924,6 +3008,20 @@
         "purpose": "When set to `1`, re-enables Todo/task-tracking tools (TaskCreate/Get/Update/List, TodoWrite) for Opus 4.8, Sonnet 5, Fable 5, Mythos 5, and newer models, which are otherwise disabled by default.",
         "status": "stable",
         "since": "2.1.233",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_PROJECT_DIR_NAME",
+        "purpose": "Allows hosts that give each session its own config directory to choose a short name for the per-project transcript directory.",
+        "status": "stable",
+        "since": "2.1.234",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_GOAL_CHECKIN_MINUTES",
+        "purpose": "Configures the interval (in minutes) after which Claude will check in on background tasks if a goal is waiting. Setting to `0` opts out of this behavior.",
+        "status": "stable",
+        "since": "2.1.234",
         "source_url": ""
       }
     ],
