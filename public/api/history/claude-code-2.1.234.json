@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.234",
-  "generated_at": "2026-08-17T21:23:11.147Z",
+  "generated_at": "2026-08-17T20:23:24.833Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -18,7 +18,13 @@
     "to_version": "2.1.234",
     "new_features": [
       "gitlab-merge-request-badge",
-      "auto-session-continuation-on-usage-limit-reset"
+      "auto-session-continuation-on-usage-limit-reset",
+      "remote-control-permission-mode-sync",
+      "remote-control-effort-sync",
+      "markdown-rendering-in-user-prompts",
+      "mid-turn-permissions-dialog",
+      "mid-turn-add-dir-and-other-dialogs",
+      "goal-checkin-on-long-background-tasks"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -50,7 +56,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Claude Code 2.1.234 introduces significant quality-of-life improvements, security enhancements, and bug fixes. A major new feature is the automatic session continuation when claude.ai usage limits reset, which can be configured via `/config`, ensuring uninterrupted workflows for long-running tasks. Additionally, a GitLab merge request badge has been added to the footer and statusline, providing immediate visibility into MR status for GitLab users. \n\nSecurity has been a key focus, with remote file reads, session restore, CLAUDE.md includes, workflow scripts, and file uploads now rejecting Windows NT-namespace (`\\??\\`) paths to harden against NTLM credential-leak vectors. Credential masking on relayed permission previews has been improved to prevent sensitive information exposure, and provider API tokens are now masked even when followed by shell delimiters. \n\nSeveral long-standing issues have been addressed, including fixes for auto mode's network access re-checking in long sessions, session-scoped permission answers being dropped for background subagents, and crashes related to malformed API responses. Markdown rendering performance for unusual Unicode sequences has been significantly improved, and issues with `SendMessage` and `ListAgents` for long session names have been resolved. The context cost of the built-in `claude-api` skill has been drastically reduced from ~200k+ to ~25k tokens by loading reference docs on demand, leading to more efficient API interactions. \n\nUser experience enhancements include the ability to open `/permissions` and `/add-dir` while Claude is working, with rule changes applying immediately. Your own prompts now render markdown, making transcripts more readable. Auto-generated session titles are now more concise and specific. Remote Control sessions now provide better synchronization of permission modes, models, and effort levels across devices, and files sent during these sessions now upload correctly. The new `CLAUDE_CODE_PROJECT_DIR_NAME` environment variable allows for shorter project transcript directory names, and `CLAUDE_CODE_GOAL_CHECKIN_MINUTES` provides control over goal check-in intervals for long background tasks. Overall, this release offers a more stable, secure, and user-friendly experience, with a strong recommendation to upgrade for improved security and workflow efficiency."
+      "tldr": "Claude Code 2.1.234 introduces several significant improvements, most notably the automatic continuation of sessions when claude.ai usage limits reset, enhancing workflow continuity. This behavior is configurable via `/config`. Security has been hardened by rejecting Windows NT-namespace paths in remote file reads, session restore, CLAUDE.md includes, workflow scripts, and file uploads, mitigating NTLM credential-leak vectors. Developers will appreciate the new GitLab merge request badge in the footer and statusline, providing quick status updates for MRs. User prompts now render markdown, including code blocks and lists, making conversations more readable. The `/permissions` and `/add-dir` commands, along with several other dialogs, can now be opened mid-turn, allowing for dynamic adjustments without interrupting Claude's work. For long-running background tasks, Claude will now check in on goals after 30 minutes, a feature configurable via `CLAUDE_CODE_GOAL_CHECKIN_MINUTES`. Remote Control sessions now sync permission modes, models, and effort levels across devices, and the context cost of the `claude-api` skill has been drastically reduced. This release also includes numerous fixes for crashes, performance issues (like slow markdown rendering), and UI glitches, such as `SendMessage` issues with long session names and incorrect repository detection. Upgrading is recommended for improved security, stability, and enhanced developer experience, especially for users leveraging GitLab, Remote Control, or frequently hitting usage limits."
     },
     "features": [
       {
