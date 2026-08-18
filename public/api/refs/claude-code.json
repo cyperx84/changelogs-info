@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.234",
-  "generated_at": "2026-08-18T20:20:35.046Z",
+  "version": "2.1.235",
+  "generated_at": "2026-08-18T21:21:08.613Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,18 +14,14 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.234",
-    "to_version": "2.1.234",
+    "from_version": "2.1.235",
+    "to_version": "2.1.235",
     "new_features": [
-      "gitlab-merge-request-badge",
-      "auto-session-continuation-on-usage-limit-reset"
+      "spellcheck-setting"
     ],
     "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [
-      "CLAUDE_CODE_PROJECT_DIR_NAME",
-      "CLAUDE_CODE_GOAL_CHECKIN_MINUTES"
-    ],
+    "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -45,12 +41,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.234",
-      "latest_release_date": "2026-08-17",
+      "latest_stable": "2.1.235",
+      "latest_release_date": "2026-08-18",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Claude Code 2.1.234 introduces significant quality-of-life improvements, security enhancements, and bug fixes. A major new feature is the automatic session continuation when claude.ai usage limits reset, which can be configured via `/config`, ensuring uninterrupted workflows for long-running tasks. Additionally, a GitLab merge request badge has been added to the footer and statusline, providing immediate visibility into MR status for GitLab users. \n\nSecurity has been a key focus, with remote file reads, session restore, CLAUDE.md includes, workflow scripts, and file uploads now rejecting Windows NT-namespace (`\\??\\`) paths to harden against NTLM credential-leak vectors. Credential masking on relayed permission previews has been improved to prevent sensitive information exposure, and provider API tokens are now masked even when followed by shell delimiters. \n\nSeveral long-standing issues have been addressed, including fixes for auto mode's network access re-checking in long sessions, session-scoped permission answers being dropped for background subagents, and crashes related to malformed API responses. Markdown rendering performance for unusual Unicode sequences has been significantly improved, and issues with `SendMessage` and `ListAgents` for long session names have been resolved. The context cost of the built-in `claude-api` skill has been drastically reduced from ~200k+ to ~25k tokens by loading reference docs on demand, leading to more efficient API interactions. \n\nUser experience enhancements include the ability to open `/permissions` and `/add-dir` while Claude is working, with rule changes applying immediately. Your own prompts now render markdown, making transcripts more readable. Auto-generated session titles are now more concise and specific. Remote Control sessions now provide better synchronization of permission modes, models, and effort levels across devices, and files sent during these sessions now upload correctly. The new `CLAUDE_CODE_PROJECT_DIR_NAME` environment variable allows for shorter project transcript directory names, and `CLAUDE_CODE_GOAL_CHECKIN_MINUTES` provides control over goal check-in intervals for long background tasks. Overall, this release offers a more stable, secure, and user-friendly experience, with a strong recommendation to upgrade for improved security and workflow efficiency."
+      "tldr": "This release introduces an optional `spellcheck` setting, which underlines misspelled words in the prompt input using your system's `aspell`, `hunspell`, or `ispell` tools. This significantly enhances the user experience by providing immediate feedback on typos, improving the clarity and accuracy of your interactions with Claude. Several critical fixes address long-standing UI and functional issues, including the invalidation of the whole-prompt-cache when a language server disconnects, misaligned nested markdown lists in the terminal UI, and shifted prompt input highlights in multi-line prompts. The Agent tool now provides more informative error messages when a `subagent_type` is omitted, guiding users to available agents. Notebook cell approval dialogs are more transparent, explicitly stating why content might be missing. Performance improvements have been made for background cloud sessions like `/ultrareview` and `/autofix-pr`, reducing memory and CPU usage by optimizing event stream processing. Permission dialogs are now more consistent and user-friendly, accurately reflecting grant coverage and intelligently withholding 'don't ask again' options when content is truncated. The embedded `grep` in macOS/Linux builds is more robust, handling pathological patterns without exhausting memory and correctly printing context with `-m N` and `-A/-C`. The context-limit error message is also improved, advising users when auto-compact is off and directing them to `/config`. Vim mode now preserves NORMAL mode and cursor position when toggling the detailed transcript or closing panels, enhancing workflow continuity. Dialogs respond more reliably to quick arrow key and Enter presses, selecting the navigated option. `SendMessage` proactively rejects oversized messages for cross-session delivery, preventing silent failures. Finally, `claude rc` now performs the same enterprise-gateway availability check as interactive startup, ensuring consistent remote control behavior. This release offers substantial quality-of-life improvements and bug fixes, making an upgrade highly recommended for all users."
     },
     "features": [
       {
@@ -1752,6 +1748,15 @@
         "key_details": [
           "Opt-out via `CLAUDE_CODE_GOAL_CHECKIN_MINUTES=0`."
         ],
+        "source_url": ""
+      },
+      {
+        "id": "spellcheck-setting",
+        "name": "Spellcheck Setting",
+        "status": "stable",
+        "since": "2.1.235",
+        "description": "An optional `spellcheck` setting that underlines misspelled words in the prompt input as you type, leveraging installed `aspell`, `hunspell`, or `ispell` utilities.",
+        "key_details": [],
         "source_url": ""
       }
     ],
