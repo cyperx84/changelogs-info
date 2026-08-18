@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.234",
-  "generated_at": "2026-08-18T06:38:56.472Z",
+  "generated_at": "2026-08-18T07:35:54.968Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -18,8 +18,7 @@
     "to_version": "2.1.234",
     "new_features": [
       "gitlab-merge-request-badge",
-      "auto-session-continuation-on-usage-limit-reset",
-      "mid-turn-add-dir-and-other-dialogs"
+      "auto-session-continuation-on-usage-limit-reset"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -51,7 +50,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release of Claude Code, version 2.1.234, introduces several quality-of-life improvements, security enhancements, and bug fixes. A headline feature is the new GitLab merge request badge, which displays MR status directly in the footer and statusline for GitLab repositories, providing immediate visibility into code review progress. Additionally, Claude Code can now automatically continue your session when claude.ai usage limits reset, a convenient feature configurable via `/config` to ensure uninterrupted workflows. \n\nKey improvements include enhanced markdown rendering for user prompts, making transcripts more readable, and a significant reduction in the context cost of the `claude-api` skill, now loading reference docs on demand to save tokens. Several dialogs, including `/add-dir`, `/permissions`, `/autocompact`, `/theme`, `/help`, `/config`, and `/advisor`, can now be opened mid-turn in the fullscreen TUI, allowing for dynamic adjustments without interrupting Claude's work. For long-running background tasks, Claude will now proactively check in on goals waiting for over 30 minutes, a behavior that can be disabled with the `CLAUDE_CODE_GOAL_CHECKIN_MINUTES=0` environment variable. \n\nSecurity has been tightened by rejecting Windows NT-namespace paths (`\\??\\`) in remote file reads, session restores, CLAUDE.md includes, workflow scripts, and file uploads to prevent NTLM credential leaks. Numerous bugs have been squashed, including issues with auto mode re-checking network access, dropped session-scoped permissions for subagents, crashes from malformed API responses, slow markdown rendering, and incorrect repository detection. Remote Control sessions now sync permission modes and effort levels more reliably across devices. Users should upgrade to benefit from these stability, security, and usability enhancements, especially those working with GitLab or frequently hitting usage limits."
+      "tldr": "Claude Code 2.1.234 introduces significant quality-of-life improvements, security enhancements, and bug fixes. A major new feature is the automatic session continuation when claude.ai usage limits reset, which can be configured via `/config`, ensuring uninterrupted workflows for long-running tasks. Additionally, a GitLab merge request badge has been added to the footer and statusline, providing immediate visibility into MR status for GitLab users. \n\nSecurity has been a key focus, with remote file reads, session restore, CLAUDE.md includes, workflow scripts, and file uploads now rejecting Windows NT-namespace (`\\??\\`) paths to harden against NTLM credential-leak vectors. Credential masking on relayed permission previews has been improved to prevent sensitive information exposure, and provider API tokens are now masked even when followed by shell delimiters. \n\nSeveral long-standing issues have been addressed, including fixes for auto mode's network access re-checking in long sessions, session-scoped permission answers being dropped for background subagents, and crashes related to malformed API responses. Markdown rendering performance for unusual Unicode sequences has been significantly improved, and issues with `SendMessage` and `ListAgents` for long session names have been resolved. The context cost of the built-in `claude-api` skill has been drastically reduced from ~200k+ to ~25k tokens by loading reference docs on demand, leading to more efficient API interactions. \n\nUser experience enhancements include the ability to open `/permissions` and `/add-dir` while Claude is working, with rule changes applying immediately. Your own prompts now render markdown, making transcripts more readable. Auto-generated session titles are now more concise and specific. Remote Control sessions now provide better synchronization of permission modes, models, and effort levels across devices, and files sent during these sessions now upload correctly. The new `CLAUDE_CODE_PROJECT_DIR_NAME` environment variable allows for shorter project transcript directory names, and `CLAUDE_CODE_GOAL_CHECKIN_MINUTES` provides control over goal check-in intervals for long background tasks. Overall, this release offers a more stable, secure, and user-friendly experience, with a strong recommendation to upgrade for improved security and workflow efficiency."
     },
     "features": [
       {
