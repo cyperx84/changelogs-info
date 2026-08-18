@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.234",
-  "generated_at": "2026-08-18T15:29:03.364Z",
+  "generated_at": "2026-08-18T16:28:34.858Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -23,7 +23,8 @@
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [
-      "CLAUDE_CODE_PROJECT_DIR_NAME"
+      "CLAUDE_CODE_PROJECT_DIR_NAME",
+      "CLAUDE_CODE_GOAL_CHECKIN_MINUTES"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -49,7 +50,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Claude Code 2.1.234 introduces significant quality-of-life improvements, security enhancements, and bug fixes. A major new feature is the automatic session continuation when claude.ai usage limits reset, which can be toggled in `/config`, ensuring uninterrupted workflows for long-running tasks. Additionally, a new GitLab merge request badge in the footer and statusline provides immediate visibility into MR states (draft/pending/green) for GitLab users, enhancing developer productivity by integrating critical information directly into the UI.\n\nSecurity has been a key focus, with hardening against NTLM credential leaks by rejecting Windows NT-namespace paths in file operations, and improved credential masking on permission previews to prevent sensitive data exposure. Numerous fixes address long-standing issues, such as auto mode repeatedly denying network access in long sessions, crashes with malformed API responses, and slow markdown rendering for unusual Unicode sequences. The context cost of the built-in `claude-api` skill has been drastically reduced from over 200k tokens to ~25k, making it more efficient. Commands like `/permissions` and `/add-dir` can now be used mid-turn, improving interactivity, and `/goal` now intelligently clears on unrecoverable errors and checks in on long-running background tasks after 30 minutes (configurable via `CLAUDE_CODE_GOAL_CHECKIN_MINUTES`).\n\nOther notable improvements include better auto-generated session titles, more informative API error messages, and enhanced Remote Control synchronization for permission modes and effort levels across devices. The `CLAUDE_CODE_PROJECT_DIR_NAME` environment variable offers more control over project directory naming for self-hosted environments. Developers should upgrade to benefit from these stability, security, and usability enhancements, particularly those relying on GitLab integration or frequently encountering usage limits. No breaking changes are reported, making this a straightforward upgrade."
+      "tldr": "Claude Code 2.1.234 introduces significant quality-of-life improvements, security enhancements, and bug fixes. A major new feature is the automatic session continuation when claude.ai usage limits reset, which can be configured via `/config`, ensuring uninterrupted workflows for long-running tasks. Additionally, a GitLab merge request badge has been added to the footer and statusline, providing immediate visibility into MR status for GitLab users. \n\nSecurity has been a key focus, with remote file reads, session restore, CLAUDE.md includes, workflow scripts, and file uploads now rejecting Windows NT-namespace (`\\??\\`) paths to harden against NTLM credential-leak vectors. Credential masking on relayed permission previews has been improved to prevent sensitive information exposure, and provider API tokens are now masked even when followed by shell delimiters. \n\nSeveral long-standing issues have been addressed, including fixes for auto mode's network access re-checking in long sessions, session-scoped permission answers being dropped for background subagents, and crashes related to malformed API responses. Markdown rendering performance for unusual Unicode sequences has been significantly improved, and issues with `SendMessage` and `ListAgents` for long session names have been resolved. The context cost of the built-in `claude-api` skill has been drastically reduced from ~200k+ to ~25k tokens by loading reference docs on demand, leading to more efficient API interactions. \n\nUser experience enhancements include the ability to open `/permissions` and `/add-dir` while Claude is working, with rule changes applying immediately. Your own prompts now render markdown, making transcripts more readable. Auto-generated session titles are now more concise and specific. Remote Control sessions now provide better synchronization of permission modes, models, and effort levels across devices, and files sent during these sessions now upload correctly. The new `CLAUDE_CODE_PROJECT_DIR_NAME` environment variable allows for shorter project transcript directory names, and `CLAUDE_CODE_GOAL_CHECKIN_MINUTES` provides control over goal check-in intervals for long background tasks. Overall, this release offers a more stable, secure, and user-friendly experience, with a strong recommendation to upgrade for improved security and workflow efficiency."
     },
     "features": [
       {
