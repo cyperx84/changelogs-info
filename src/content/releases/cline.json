@@ -15,6 +15,22 @@
   },
   "releases": [
     {
+      "version": "desktop-v0.0.14-beta.1",
+      "name": "Desktop v0.0.14-beta.1",
+      "body": "\n- First beta release. Cline Code Beta installs side by side with the stable app so you can compare the two, and updates automatically from its own beta channel — stable installs are unaffected.\n- Cloud sessions (preview): run sessions in Cline's cloud straight from the desktop app. Connect GitHub during onboarding, pick a repository and branch, and hand sessions off between devices — transcripts, approvals, and queued prompts stay in sync, and you can rename cloud sessions and switch models mid-session. Turn it on with the Cloud sessions toggle in Settings.\n- Avatar overlay (preview): a floating desktop companion that reacts to what your sessions are doing.\n- Onboarding now includes a GitHub integration step.\n- Early proof of concept for running sessions in SSH remote environments.\n- Includes everything from the upcoming stable release: microphone voice input in the composer, model-driven image generation, redesigned question prompts, animated reasoning and tool disclosures, and session list polish.\n\n**Full Changelog**: https://github.com/cline/cline/compare/desktop-v0.0.13...desktop-v0.0.14-beta.1\n",
+      "date": "2026-08-18T01:42:16Z",
+      "url": "https://github.com/cline/cline/releases/tag/desktop-v0.0.14-beta.1",
+      "prerelease": true
+    },
+    {
+      "version": "desktop-beta",
+      "name": "Cline Code desktop beta (auto-update feed)",
+      "body": "Rolling release backing the beta desktop app auto-updater. The latest.json asset points at the newest desktop-vX.Y.Z-beta.N release. Only beta installs poll this feed; stable installs use desktop-latest. Do not delete.",
+      "date": "2026-08-18T01:42:25Z",
+      "url": "https://github.com/cline/cline/releases/tag/desktop-beta",
+      "prerelease": true
+    },
+    {
       "version": "v4.1.10",
       "name": "v4.1.10",
       "body": "\nEverything in this release lands through the SDK bundle, so it applies to windows running that bundle and not the legacy one. The legacy bundle is unchanged from 4.1.9.\n\n### Added\n\n- Let models that support it search the web during a task, with a toggle in Feature Settings to turn it on. Search calls and their results appear in the conversation and persist across reloads.\n\n### Fixed\n\n- Stop two Cline installations on different builds from shutting each other's Hub daemon down in a loop, which killed live sessions with an abnormal socket close. Build identity is now compared through a total order, so at most one side of a pair can decide to retire the other.\n- Leave a Hub that is still serving sessions in place instead of replacing it mid-handshake; the swap happens once it goes idle.\n- Reclaim idle plugin sandbox processes instead of leaving them running for the life of the session.\n\n### Changed\n\n- Refresh the model catalog, which adds Crusoe as a provider and updates model lists and per-provider default models across the board.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.1.9...v4.1.10\n",
@@ -237,23 +253,7 @@
       "date": "2026-08-02T04:52:05Z",
       "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.49",
       "prerelease": false
-    },
-    {
-      "version": "sdk/sdk/v0.0.68",
-      "name": "SDK v0.0.68",
-      "body": "\n- Provider errors forwarded through the Vercel AI Gateway now surface the real upstream message (e.g. \"This model's maximum context length is 40960 tokens...\") instead of a raw Zod issue dump, and opaque object errors no longer render as `[object Object]`\n- `fetchClineRecommendedModels` now returns display-ready model names, resolved through the model catalog (including Vercel and OpenRouter id aliases) under a single shared timeout budget, so hosts no longer have to map ids to names themselves\n- Cline free models now resolve their OpenRouter display names in the catalog\n- The live catalog no longer drops the video input capability\n- On Windows, PowerShell commands now travel over UTF-8 stdin instead of the command line, so non-ASCII commands survive the active code page and long commands are not capped by the Windows command-line limit — `getShellInvocation()` replaces the now-deprecated `getShellArgs()`, and a stdin write failure surfaces as a command error instead of hanging\n- Fixed sessions rooted at the filesystem root (`/`) failing to run any command: `basename(\"/\")` produced an empty workspace hint that schema validation rejected, so every command threw\n- Exported the finish-reason and auth-error helpers used to describe agent errors\n\n**Full Changelog**: https://github.com/cline/cline/compare/sdk/sdk/v0.0.67...sdk/sdk/v0.0.68\n",
-      "date": "2026-08-01T05:29:37Z",
-      "url": "https://github.com/cline/cline/releases/tag/sdk/sdk/v0.0.68",
-      "prerelease": false
-    },
-    {
-      "version": "v4.1.2",
-      "name": "v4.1.2",
-      "body": "\n### Added\n\n- Show which extension variant is active — \"Legacy\" or \"Next\" — next to the version in the settings About page, in both bundles of the combined rollout package.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.1.1...v4.1.2\n",
-      "date": "2026-07-31T05:23:49Z",
-      "url": "https://github.com/cline/cline/releases/tag/v4.1.2",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-08-17T06:30:30.683Z"
+  "lastUpdated": "2026-08-18T06:22:13.785Z"
 }
