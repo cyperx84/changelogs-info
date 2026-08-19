@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.235",
-  "generated_at": "2026-08-19T19:22:33.494Z",
+  "version": "2.1.236",
+  "generated_at": "2026-08-19T20:24:00.085Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,14 +14,17 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.235",
-    "to_version": "2.1.235",
+    "from_version": "2.1.236",
+    "to_version": "2.1.236",
     "new_features": [
-      "spellcheck-setting"
+      "notify-when-idle-cross-session-sendmessage",
+      "vscode-screen-reader-transcript-support"
     ],
     "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [],
+    "new_env_vars": [
+      "ANTHROPIC_DEFAULT_MODEL"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -41,12 +44,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.235",
-      "latest_release_date": "2026-08-18",
+      "latest_stable": "2.1.236",
+      "latest_release_date": "2026-08-19",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces an optional `spellcheck` setting that underlines misspelled words in the prompt input, leveraging your system's `aspell`, `hunspell`, or `ispell` installations. This enhances the user experience by providing immediate feedback on typing errors, improving prompt accuracy and efficiency. Several critical fixes address issues like whole-prompt-cache invalidation after language server disconnections, misaligned nested markdown lists, and shifted prompt input highlights in multi-line prompts, ensuring a more stable and visually consistent UI. The Agent tool now provides clearer error messages when an agent is unavailable, and notebook cell dialogs are more informative about content reading failures. Performance improvements for background cloud sessions like `/ultrareview` and `/autofix-pr` reduce memory and CPU usage by optimizing event stream processing. Permission dialogs are more precise, with 'don't ask again' options accurately reflecting the scope of the grant. The embedded `grep` on macOS/Linux is more robust, handling pathological patterns gracefully and providing correct context with `-m N`. Vim mode now preserves state when toggling the transcript or closing panels, and dialog navigation is more reliable. `SendMessage` prevents oversized messages from being silently dropped, and `claude rc` includes enterprise-gateway availability checks. Users should upgrade to benefit from these stability, performance, and usability enhancements, particularly for improved prompt input and background task efficiency."
+      "tldr": "This release introduces a new `ANTHROPIC_DEFAULT_MODEL` environment variable, allowing users to set a preferred model for new sessions that persists across restarts, offering more control over initial session configurations. A significant new feature is `notify_when_idle` for cross-session `SendMessage`, enabling one Claude Code session to request a one-time notification from another session when it becomes idle, improving inter-session communication on macOS and Linux without polling. The sandbox on macOS has been hardened, with wildcard read-deny rules now taking precedence and preventing bypasses by file renaming, enhancing security. Auto mode has seen several improvements, including setting aside `Monitor` allow rules for consistent review with Bash commands, and using more sophisticated classification defaults on Bedrock, Vertex AI, Foundry, and when telemetry is disabled. The `/model` picker now highlights only the newest model, and `/goal` check-ins for idle sessions with background work are now automated at increasing intervals. VSCode users gain screen reader support for the transcript, with live announcements and navigation. Numerous fixes address issues such as broken clipboard copy and background processes after directory removal, fullscreen renderer failures, `/model` picker rendering, malformed `SendMessage` calls, unhandled promise rejections from subprocess failures (e.g., PowerShell on WSL), and terminal tab title jumping in tmux. Startup performance is improved by writing the session counter in the background, and `SendMessage` now proactively refuses messages to sessions exceeding inbox capacity. The `/usage` command now consistently shows usage-credits spend rows for Team and Enterprise members. This update is recommended for all users to benefit from enhanced stability, security, and new communication features, particularly those using macOS sandboxing, auto mode, or VSCode with screen readers."
     },
     "features": [
       {
@@ -1758,6 +1761,32 @@
         "description": "An optional `spellcheck` setting that underlines misspelled words in the prompt input as you type, leveraging installed `aspell`, `hunspell`, or `ispell` utilities.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "notify-when-idle-cross-session-sendmessage",
+        "name": "Notify When Idle (Cross-Session SendMessage)",
+        "status": "stable",
+        "since": "2.1.236",
+        "description": "Allows one Claude Code session to ask another session on the same machine to send a single notification when it next becomes idle. This is an opt-in, one-shot mechanism without polling.",
+        "key_details": [
+          "Opt-in",
+          "One-shot notification",
+          "No polling",
+          "Supported on macOS and Linux"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "vscode-screen-reader-transcript-support",
+        "name": "VSCode Screen Reader Support for Transcript",
+        "status": "stable",
+        "since": "2.1.236",
+        "description": "Adds screen reader support within VSCode for the transcript, including live announcements for replies, permission requests, errors, and status changes, as well as per-turn heading navigation.",
+        "key_details": [
+          "Live announcements for replies, permission requests, errors, status changes",
+          "Per-turn heading navigation"
+        ],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -3021,6 +3050,13 @@
         "purpose": "Configures the interval (in minutes) after which Claude will check in on background tasks if a goal is waiting. Setting to `0` opts out of this behavior.",
         "status": "stable",
         "since": "2.1.234",
+        "source_url": ""
+      },
+      {
+        "name": "ANTHROPIC_DEFAULT_MODEL",
+        "purpose": "Sets the default model for new sessions. This value can be overridden by a `/model` pick, which then persists across restarts (unlike `ANTHROPIC_MODEL`).",
+        "status": "stable",
+        "since": "2.1.236",
         "source_url": ""
       }
     ],
