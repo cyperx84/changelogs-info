@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "4.1.10",
-  "generated_at": "2026-08-19T05:27:58.346Z",
+  "version": "0.0.14",
+  "generated_at": "2026-08-19T06:40:07.449Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,10 +19,16 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "4.1.10",
-    "to_version": "4.1.10",
+    "from_version": "0.0.14",
+    "to_version": "0.0.14",
     "new_features": [
-      "web-search-for-models"
+      "macos-native-notifications",
+      "voice-input-composer",
+      "streaming-command-output",
+      "inline-image-generation",
+      "collapsed-agent-run-summary",
+      "redesigned-question-card",
+      "cline-code-beta-app"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -47,12 +53,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "4.1.10",
-      "latest_release_date": "2026-08-14",
+      "latest_stable": "0.0.14",
+      "latest_release_date": "2026-08-19",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "This `cline` 4.1.10 release, delivered entirely through the SDK bundle, introduces a significant new feature: web search capabilities for models. Developers can now enable a toggle in Feature Settings to allow supported models to perform web searches during tasks, with search calls and results appearing directly in the conversation and persisting across reloads, enhancing the models' ability to gather real-time information. The release also includes crucial stability fixes, addressing an issue where two `cline` installations could interfere with each other's Hub daemon, leading to abnormal socket closures and session termination; this is resolved by comparing build identities to ensure only one instance can retire another. Furthermore, the Hub now waits for active sessions to go idle before swapping, preventing mid-handshake interruptions. Performance is improved by reclaiming idle plugin sandbox processes, preventing them from running indefinitely. Finally, the model catalog has been refreshed, integrating Crusoe as a new provider and updating model lists and default models across all providers. This update is recommended for all users of the SDK bundle to benefit from enhanced model capabilities and improved system stability."
+      "tldr": "Cline 0.0.14 introduces significant quality-of-life improvements and new capabilities, most notably native macOS notifications for task completion and input, allowing you to run Cline in the background. This enhances productivity by keeping you informed without needing to constantly monitor the application. Another major addition is voice input in the composer, enabling speech-to-text transcription using your configured model, streamlining interaction for hands-free or faster input. \n\nCommand output now streams in real-time into the transcript, preserving terminal colors and allowing long-running commands to be backgrounded with 'Proceed while running', preventing UI freezes and improving responsiveness. Models supporting image generation can now render images directly inline in the transcript, enriching visual communication. Agent run summaries are now collapsible, keeping the final answer visible, and the agent's decision-making question card has been redesigned for clarity with explicit selections and keyboard shortcuts. \n\nUI polish includes animated reasoning traces and tool rows, consistent markdown rendering between desktop and cloud, and floating message hover actions for a more compact chat. Several critical fixes address issues like turns getting stuck on streaming shimmer, incorrect Yolo-mode system prompts when auto-approve was on, and command execution failures for full command lines. Gemini custom base URLs are now functional, LiteLLM token limits are preserved, and checkpoint restorations correctly trim the transcript. It is recommended to upgrade to 0.0.14 to benefit from these stability improvements and new features, especially for users on macOS or those who frequently interact with long-running commands and agent decisions."
     },
     "features": [
       {
@@ -1070,6 +1076,95 @@
         "since": "4.1.10",
         "description": "Allows models that support web search to perform searches during a task. This feature can be toggled on in Feature Settings. Search calls and their results are displayed in the conversation and persist across reloads.",
         "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "macos-native-notifications",
+        "name": "macOS Native Notifications",
+        "status": "stable",
+        "since": "0.0.14",
+        "description": "The app now posts native macOS notifications when a task finishes or needs your input, allowing Cline to work in the background. These can be configured under Settings → Notifications.",
+        "key_details": [
+          "Configurable via Settings → Notifications",
+          "Notifies for task completion and input requests"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "voice-input-composer",
+        "name": "Voice Input in Composer",
+        "status": "stable",
+        "since": "0.0.14",
+        "description": "Dictate into the composer using the microphone button, and your speech is transcribed as you talk. Transcription uses the currently configured provider and model.",
+        "key_details": [
+          "Microphone button in composer",
+          "Uses configured provider and model for transcription"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "streaming-command-output",
+        "name": "Streaming Command Output",
+        "status": "stable",
+        "since": "0.0.14",
+        "description": "Commands now stream their output into the transcript as they run, rather than appearing all at once. Output retains terminal colors, is scrollable, and long-running commands can be sent to the background with 'Proceed while running'.",
+        "key_details": [
+          "Output streams in real-time",
+          "Preserves terminal colors",
+          "Scrollable output",
+          "Option to 'Proceed while running' for background execution"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "inline-image-generation",
+        "name": "Inline Image Generation",
+        "status": "stable",
+        "since": "0.0.14",
+        "description": "Models that support image generation can now produce images during a task, and these images render inline within the transcript.",
+        "key_details": [
+          "Requires models with image generation capabilities",
+          "Images render directly in the transcript"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "collapsed-agent-run-summary",
+        "name": "Collapsed Agent Run Summary",
+        "status": "stable",
+        "since": "0.0.14",
+        "description": "Finished agent runs now collapse into a single summary (e.g., 'Worked for 4m 12s and made 14 tool calls') that can be expanded. This keeps the final answer in view without being buried by working rows.",
+        "key_details": [
+          "Summarizes agent activity",
+          "Expandable for full details",
+          "Improves readability of final answers"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "redesigned-question-card",
+        "name": "Redesigned Agent Question Card",
+        "status": "stable",
+        "since": "0.0.14",
+        "description": "The question card shown when the agent needs a decision has been redesigned. Options are explicitly selected and submitted with a button, multiple-choice questions are supported, and arrow-key/A–Z shortcuts are available.",
+        "key_details": [
+          "Explicit option selection and submission",
+          "Supports multiple-choice questions",
+          "Arrow-key and A–Z shortcuts for selection",
+          "Removes internal request IDs, iteration counts, and timestamps"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "cline-code-beta-app",
+        "name": "Cline Code Beta App",
+        "status": "experimental",
+        "since": "0.0.14",
+        "description": "A separate 'Cline Code Beta' app is now available, installing side-by-side with the main app and tracking the experimental branch. It identifies itself as beta in the sidebar, Settings, window title, and tray.",
+        "key_details": [
+          "Separate installation for experimental branch",
+          "Identified as 'beta' in UI elements"
+        ],
         "source_url": ""
       }
     ],
