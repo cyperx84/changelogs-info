@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.236",
-  "generated_at": "2026-08-19T23:20:13.204Z",
+  "version": "2.1.237",
+  "generated_at": "2026-08-20T01:06:12.675Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,17 +14,14 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.236",
-    "to_version": "2.1.236",
+    "from_version": "2.1.237",
+    "to_version": "2.1.237",
     "new_features": [
-      "notify-when-idle-cross-session-sendmessage",
-      "vscode-screen-reader-transcript-support"
+      "concise-output-style"
     ],
     "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [
-      "ANTHROPIC_DEFAULT_MODEL"
-    ],
+    "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -44,12 +41,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.236",
-      "latest_release_date": "2026-08-19",
+      "latest_stable": "2.1.237",
+      "latest_release_date": "2026-08-20",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces the `ANTHROPIC_DEFAULT_MODEL` environment variable, allowing developers to set a preferred model for new sessions, which can still be overridden by the `/model` command. A significant new feature is `notify_when_idle` for cross-session `SendMessage`, enabling one Claude Code session to request a one-time idle notification from another session on the same machine, improving inter-session communication on macOS and Linux. Sandbox security on macOS has been enhanced, with wildcard read-deny rules now taking precedence and covering matched directories, preventing bypasses by file renaming. Several critical fixes address regressions from previous versions, including clipboard copy and background processes breaking after a session's directory was removed (since 2.1.229), and unhandled promise rejections when subprocesses fail to start (regression in 2.1.234). The `/model` picker now renders correctly within terminal bounds, and fullscreen mode issues like permanent failures and blank bands have been resolved. Auto mode has been improved to better handle `Monitor` allow rules and provide consistent classification across different platforms, while the `/goal` command now offers automatic check-ins for idle sessions with long-running background tasks. The `/usage` command now provides more comprehensive usage-credits information for Team and Enterprise members. Finally, VSCode users gain screen reader support for the transcript, offering live announcements and heading navigation for improved accessibility. This release focuses on stability, security, and user experience enhancements, making it a recommended upgrade for all users."
+      "tldr": "Claude Code 2.1.237 introduces a significant quality-of-life improvement with the new 'Concise' output style. This style allows Claude to prioritize direct results and omit conversational preambles and narration, streamlining interactions for developers who prefer a more direct approach, without compromising the thoroughness of the work. Users can activate this new output style via the `/config` command under the 'Output style' setting. Additionally, this release includes a crucial fix for prompt caching issues that affected sessions utilizing an LLM gateway or a custom base URL, ensuring more reliable and consistent performance for these configurations. This update is recommended for all users, especially those experiencing caching problems or seeking a more efficient interaction style."
     },
     "features": [
       {
@@ -1786,6 +1783,15 @@
           "Live announcements for replies, permission requests, errors, status changes",
           "Per-turn heading navigation"
         ],
+        "source_url": ""
+      },
+      {
+        "id": "concise-output-style",
+        "name": "Concise Output Style",
+        "status": "stable",
+        "since": "2.1.237",
+        "description": "A new built-in output style where Claude leads with results and skips preamble and narration, while still performing the work thoroughly. This can be selected under 'Output style' in the `/config` command.",
+        "key_details": [],
         "source_url": ""
       }
     ],
