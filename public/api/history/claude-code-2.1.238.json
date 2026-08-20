@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.238",
-  "generated_at": "2026-08-20T22:24:26.267Z",
+  "generated_at": "2026-08-20T21:25:01.146Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -30,7 +30,9 @@
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "clear-shortcut-removed"
+      "clear-shortcut-removed",
+      "mcp-headershelper-trust-requirement",
+      "mcp-headershelper-credential-isolation"
     ]
   },
   "payload": {
@@ -53,7 +55,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces a new `keybindingFlavor` setting, allowing users to configure Ctrl+W behavior in the prompt to mimic Bash's word deletion, providing a more familiar experience for command-line users. A significant enhancement for plugin developers and self-hosted environments is the `headersHelper` for plugin marketplaces and catalog entries, which enables dynamic generation of HTTP headers (like short-lived tokens) for secure fetching of plugin resources, running with user confirmation during install/update. For self-hosted runners, new flags `--defer-shutdown-max-min`, `--proxy-authorization-command`, and `--proxy-authorization-file` provide more robust shutdown management and support for egress proxies requiring dynamic authorization headers. Several critical fixes address long-standing issues: unbounded memory growth in interactive sessions by releasing subagent tool results, custom output styles drifting back to default, and `CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION=true` not working near usage limits. Remote Control stability is improved with fixes for session unavailability after crashes, message disappearance, and model pick synchronization. Cross-session messaging now provides explicit feedback when messages are refused or dropped. A breaking change removes the double-press Ctrl+L/Cmd+K shortcut for `/clear`, making these keys exclusively repaint the screen. The bundled `claude-api` skill is updated for Managed Agents, including web search/fetch domain settings and memory stores on self-hosted sandboxes. Users should upgrade to benefit from improved stability, new configuration options, and enhanced security features, especially those using self-hosted runners or relying on specific keybinding behaviors."
+      "tldr": "Claude Code 2.1.238 introduces significant improvements to user experience, plugin management, and self-hosted runner stability. A new `keybindingFlavor` setting allows users to switch Ctrl+W behavior in the prompt to a Bash-like 'delete back to previous whitespace' mode, enhancing terminal interaction for many. Plugin marketplaces now support a `headersHelper` for URL marketplaces and catalog entries, enabling dynamic generation of HTTP headers (like short-lived tokens) for secure plugin fetching and updates, though this requires user confirmation during install/update. For self-hosted runners, new flags `--defer-shutdown-max-min`, `--proxy-authorization-command`, and `--proxy-authorization-file` provide more robust shutdown control and better handling of egress proxies requiring dynamic authentication. Several critical fixes address long-standing issues: unbounded memory growth in long interactive sessions, custom output styles drifting, prompt suggestions not persisting near usage limits, and various Remote Control stability and usability problems, including improved connection resilience and accurate status reporting. Notably, the double-press `/clear` shortcut for Ctrl+L/Cmd+K has been removed, making these keys exclusively for screen repainting, and MCP `headersHelper` and inline MCP servers now require explicit folder trust and run without inherited credential environment variables, which are breaking changes requiring user awareness and potential configuration adjustments. The bundled `claude-api` skill is also updated for Managed Agents, supporting new web search/fetch domain settings and memory stores on self-hosted sandboxes. Users should review the breaking changes, especially regarding MCP configurations, and consider upgrading for enhanced stability and new features."
     },
     "features": [
       {

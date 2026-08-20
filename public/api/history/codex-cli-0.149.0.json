@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.149.0",
-  "generated_at": "2026-08-20T22:24:34.966Z",
+  "generated_at": "2026-08-20T21:25:15.628Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -18,19 +18,28 @@
     "to_version": "0.149.0",
     "new_features": [
       "agents-dashboard",
+      "tui-working-directory-commands",
+      "codex-queue-command",
+      "vim-editing-enhancements",
       "sdk-config-overrides-reasoning-effort"
     ],
     "new_commands": [
       "/cd",
       "/pwd",
       "/cwd",
-      "codex queue"
+      "codex queue",
+      "codex agents"
     ],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "skill-model-delegation-removal",
+      "obsolete-app-server-permission-profile-fields",
+      "legacy-permission-projection-rejection",
+      "untrusted-approval-policy-retirement"
+    ]
   },
   "payload": {
     "meta": {
@@ -54,7 +63,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "Codex CLI v0.149.0 introduces a significant new 'codex agents' dashboard, providing an interactive way to manage tasks like searching, starting, and stopping agents directly from the TUI, complete with configurable shortcuts. This greatly enhances the user experience for multi-agent workflows and task management. Developers can now also manage their working directory within TUI sessions using new `/cd`, `/pwd`, and `/cwd` commands, improving session context and navigation. The `codex queue` command is a powerful addition, enabling messages to be sent to existing local or remote sessions, which is crucial for automation and inter-session communication. Vim editing capabilities have been expanded with character replacement and more change motions like `cw`, `c$`, and `cc`, offering a more fluid editing experience for Vim users. The `codex doctor` utility has been enhanced to provide more comprehensive diagnostics, covering endpoint protection, network/proxy issues, desktop app state, and update connectivity, making it easier to troubleshoot common problems. For SDK users, there's new flexibility to pass exact CLI config overrides and specify 'max' or 'ultra' reasoning effort, allowing for fine-grained control over agent behavior. This release also includes critical bug fixes, such as reliable message queuing for idle sessions, correct restoration of permission profiles for resumed/forked threads, and improved stability for Realtime WebRTC connections. Users should upgrade to leverage these new features and stability improvements, especially if they rely on multi-agent workflows, TUI-based development, or the SDK."
+      "tldr": "Codex CLI v0.149.0 introduces a significant new interactive `codex agents` dashboard, allowing users to search, start, open, rename, and stop tasks directly from the TUI with configurable shortcuts. This greatly streamlines agent management workflows. Additionally, TUI sessions now support `/cd`, `/pwd`, and `/cwd` commands for managing the working directory, enhancing command-line navigation. A new `codex queue` command enables sending messages to existing local or remote sessions, improving inter-session communication. Vim editing in the TUI has been expanded with character replacement and new change motions like `cw`, `c$`, and `cc`, offering more powerful text manipulation. The `codex doctor` utility has been significantly improved to diagnose endpoint protection, network/proxy failures, desktop app state, and update connectivity, providing more comprehensive system health checks. SDK users gain the ability to pass exact CLI config overrides and select 'max' or 'ultra' reasoning efforts for agents, offering finer control over agent behavior. Several bug fixes improve reliability, including queued messages waking idle sessions, correct restoration of permission profiles in resumed/forked threads, and reliable reconnection of WebRTC sideband connections. Notably, support for skill model delegation has been removed, and obsolete app-server permission profile fields are now rejected, requiring users to update their configurations. The 'untrusted approval policy' has also been retired. Users should review their configurations for these breaking changes. An upgrade is recommended to leverage the new agent management features, improved diagnostics, and enhanced TUI experience."
     },
     "features": [
       {
