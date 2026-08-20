@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.148.0",
-  "generated_at": "2026-08-20T20:25:19.317Z",
+  "version": "0.149.0",
+  "generated_at": "2026-08-20T21:25:15.628Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,24 +14,32 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.148.0",
-    "to_version": "0.148.0",
+    "from_version": "0.149.0",
+    "to_version": "0.149.0",
     "new_features": [
-      "export-tui-conversations-markdown",
-      "fork-archive-restore-sessions",
-      "draft-prompts-during-tui-init",
-      "view-estimated-thread-cost",
-      "amazon-bedrock-runtime-provider",
-      "async-hooks-mcp-tools"
+      "agents-dashboard",
+      "tui-working-directory-commands",
+      "codex-queue-command",
+      "vim-editing-enhancements",
+      "sdk-config-overrides-reasoning-effort"
     ],
     "new_commands": [
-      "/export"
+      "/cd",
+      "/pwd",
+      "/cwd",
+      "codex queue",
+      "codex agents"
     ],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "skill-model-delegation-removal",
+      "obsolete-app-server-permission-profile-fields",
+      "legacy-permission-projection-rejection",
+      "untrusted-approval-policy-retirement"
+    ]
   },
   "payload": {
     "meta": {
@@ -48,14 +56,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.148.0",
+      "latest_stable": "0.149.0",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-08-18",
+      "latest_release_date": "2026-08-20",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "Codex-cli 0.148.0 introduces significant enhancements to conversation management and model integration. The headline feature is the ability to export complete TUI conversations to Markdown using the new `/export` command, allowing developers to easily document or share their interactions, either to the clipboard or a file. This greatly improves the utility of past sessions for review and collaboration. \n\nNew session management capabilities include `codex exec fork` for session forking, and options to archive or restore sessions directly from the TUI resume picker, providing more control over session lifecycle. Users can now draft prompts even while the TUI is initializing, with resume and fork progress displayed during startup, making the initial experience smoother and more interactive. For better cost management, estimated thread credits or costs are now visible in `/status`, status lines, and terminal titles for applicable workspaces. \n\nModel support expands with the integration of Amazon Bedrock Runtime as a built-in provider, offering robust support for AWS profiles, regions, and GPT-5.6 routing. Hooks have also become more powerful, now capable of running commands asynchronously and invoking MCP tools, enabling more complex automation workflows. \n\nKey bug fixes address model switching stability, ensuring settings updates don't leave stale instructions or interrupt active turns. Session resumption is more reliable, restoring persisted working directories and approval policies with accurate transcript previews. Connection resilience is improved, with turns reconnecting through temporary provider outages and MCP servers recovering after OAuth reauthentication without requiring a Codex restart. TUI startup input handling is hardened, preventing accidental prompt activation, and onboarding now correctly appears for unauthenticated users. Composer and transcript rendering now handle CRLF pastes, wrapped whitespace, and long URLs correctly, and sandbox restrictions are more robust, failing closed for denied or unreadable paths across Linux and Windows. \n\nDevelopers should upgrade to 0.148.0 to leverage these new features and stability improvements. No breaking changes are reported, making this a straightforward upgrade. Ensure your AWS credentials are configured if you plan to use the new Amazon Bedrock Runtime provider."
+      "tldr": "Codex CLI v0.149.0 introduces a significant new interactive `codex agents` dashboard, allowing users to search, start, open, rename, and stop tasks directly from the TUI with configurable shortcuts. This greatly streamlines agent management workflows. Additionally, TUI sessions now support `/cd`, `/pwd`, and `/cwd` commands for managing the working directory, enhancing command-line navigation. A new `codex queue` command enables sending messages to existing local or remote sessions, improving inter-session communication. Vim editing in the TUI has been expanded with character replacement and new change motions like `cw`, `c$`, and `cc`, offering more powerful text manipulation. The `codex doctor` utility has been significantly improved to diagnose endpoint protection, network/proxy failures, desktop app state, and update connectivity, providing more comprehensive system health checks. SDK users gain the ability to pass exact CLI config overrides and select 'max' or 'ultra' reasoning efforts for agents, offering finer control over agent behavior. Several bug fixes improve reliability, including queued messages waking idle sessions, correct restoration of permission profiles in resumed/forked threads, and reliable reconnection of WebRTC sideband connections. Notably, support for skill model delegation has been removed, and obsolete app-server permission profile fields are now rejected, requiring users to update their configurations. The 'untrusted approval policy' has also been retired. Users should review their configurations for these breaking changes. An upgrade is recommended to leverage the new agent management features, improved diagnostics, and enhanced TUI experience."
     },
     "features": [
       {
@@ -2099,6 +2107,67 @@
           "Hooks can invoke MCP tools"
         ],
         "source_url": "https://github.com/openai/codex/pull/37533"
+      },
+      {
+        "id": "agents-dashboard",
+        "name": "Interactive Agents Dashboard",
+        "status": "stable",
+        "since": "0.149.0",
+        "description": "An interactive dashboard within the TUI for managing agents. Users can search, start, open, rename, and stop tasks, and configure shortcuts for these actions.",
+        "key_details": [
+          "Search, start, open, rename, and stop tasks.",
+          "Configurable shortcuts for dashboard actions."
+        ],
+        "source_url": "https://github.com/openai/codex/pull/39094"
+      },
+      {
+        "id": "tui-working-directory-commands",
+        "name": "TUI Working Directory Commands",
+        "status": "stable",
+        "since": "0.149.0",
+        "description": "New commands `/cd`, `/pwd`, and `/cwd` are available in TUI sessions for managing the current working directory.",
+        "key_details": [
+          "`/cd`: Change directory.",
+          "`/pwd`: Print working directory.",
+          "`/cwd`: Show current working directory."
+        ],
+        "source_url": "https://github.com/openai/codex/pull/38894"
+      },
+      {
+        "id": "codex-queue-command",
+        "name": "codex queue command",
+        "status": "stable",
+        "since": "0.149.0",
+        "description": "A new `codex queue` command allows sending messages to existing local or remote sessions.",
+        "key_details": [
+          "Send messages to active sessions.",
+          "Supports both local and remote sessions."
+        ],
+        "source_url": "https://github.com/openai/codex/pull/39092"
+      },
+      {
+        "id": "vim-editing-enhancements",
+        "name": "Expanded Vim Editing",
+        "status": "stable",
+        "since": "0.149.0",
+        "description": "Vim editing capabilities have been expanded to include character replacement and additional change motions like `cw`, `c$`, and `cc`.",
+        "key_details": [
+          "Character replacement.",
+          "New change motions: `cw` (change word), `c$` (change to end of line), `cc` (change line)."
+        ],
+        "source_url": "https://github.com/openai/codex/pull/39661"
+      },
+      {
+        "id": "sdk-config-overrides-reasoning-effort",
+        "name": "SDK CLI Config Overrides and Reasoning Effort",
+        "status": "stable",
+        "since": "0.149.0",
+        "description": "SDK users can now pass exact CLI configuration overrides and select 'max' or 'ultra' reasoning effort for agents.",
+        "key_details": [
+          "Pass exact CLI config overrides via the SDK.",
+          "Select 'max' or 'ultra' reasoning effort for agents."
+        ],
+        "source_url": "https://github.com/openai/codex/pull/38817"
       }
     ],
     "commands": [
@@ -2333,6 +2402,46 @@
         "since": "0.148.0",
         "status": "stable",
         "source_url": "https://github.com/openai/codex/pull/37358"
+      },
+      {
+        "name": "/cd",
+        "syntax": "/cd [path]",
+        "description": "Changes the current working directory within the TUI session.",
+        "since": "0.149.0",
+        "status": "stable",
+        "source_url": "https://github.com/openai/codex/pull/38894"
+      },
+      {
+        "name": "/pwd",
+        "syntax": "/pwd",
+        "description": "Prints the current working directory within the TUI session.",
+        "since": "0.149.0",
+        "status": "stable",
+        "source_url": "https://github.com/openai/codex/pull/38894"
+      },
+      {
+        "name": "/cwd",
+        "syntax": "/cwd",
+        "description": "Shows the current working directory within the TUI session.",
+        "since": "0.149.0",
+        "status": "stable",
+        "source_url": "https://github.com/openai/codex/pull/38894"
+      },
+      {
+        "name": "codex queue",
+        "syntax": "codex queue <session_id_or_name> <message>",
+        "description": "Sends a message to an existing local or remote session.",
+        "since": "0.149.0",
+        "status": "stable",
+        "source_url": "https://github.com/openai/codex/pull/39092"
+      },
+      {
+        "name": "codex agents",
+        "syntax": "codex agents",
+        "description": "Opens the interactive agents dashboard in the TUI for managing tasks.",
+        "since": "0.149.0",
+        "status": "stable",
+        "source_url": "https://github.com/openai/codex/pull/39114"
       }
     ],
     "flags": {
@@ -5124,6 +5233,52 @@
         ],
         "migration": "Migrate to the new profile configuration using the guidance provided in the error messages.",
         "source_url": ""
+      },
+      {
+        "id": "skill-model-delegation-removal",
+        "version": "0.149.0",
+        "title": "Removal of Skill Model Delegation Support",
+        "description": "Support for skill model delegation has been removed. This may affect workflows that relied on delegating model responsibilities for skills.",
+        "affected": [
+          "Skill model delegation configurations",
+          "Workflows using delegated skill models"
+        ],
+        "migration": "Review and update any configurations or workflows that previously utilized skill model delegation. Skills should now directly specify their models or rely on default model resolution.",
+        "source_url": "https://github.com/openai/codex/pull/39068"
+      },
+      {
+        "id": "obsolete-app-server-permission-profile-fields",
+        "version": "0.149.0",
+        "title": "Rejection of Obsolete App-Server Permission Profile Fields",
+        "description": "The app-server now rejects obsolete permission profile fields. Configurations using these fields will no longer be valid.",
+        "affected": [
+          "App-server permission profile configurations"
+        ],
+        "migration": "Update app-server permission profiles to remove any obsolete fields. Refer to the latest permission profile schema for valid entries.",
+        "source_url": "https://github.com/openai/codex/pull/38919"
+      },
+      {
+        "id": "legacy-permission-projection-rejection",
+        "version": "0.149.0",
+        "title": "Rejection of Lossy Legacy Permission Projections",
+        "description": "Lossy legacy permission projections are now rejected. This ensures that permission profiles are accurately and securely applied.",
+        "affected": [
+          "Legacy permission configurations",
+          "Permission profile migration paths"
+        ],
+        "migration": "Ensure all permission configurations are up-to-date and do not rely on legacy, lossy projections. Migrate to current permission profile formats.",
+        "source_url": "https://github.com/openai/codex/pull/39117"
+      },
+      {
+        "id": "untrusted-approval-policy-retirement",
+        "version": "0.149.0",
+        "title": "Retirement of Untrusted Approval Policy",
+        "description": "The 'untrusted approval policy' has been retired. This policy is no longer supported and will not be honored.",
+        "affected": [
+          "Configurations relying on the 'untrusted approval policy'"
+        ],
+        "migration": "Remove any references to the 'untrusted approval policy' from your configurations. Implement alternative, more secure approval mechanisms if needed.",
+        "source_url": "https://github.com/openai/codex/pull/39630"
       }
     ],
     "deprecations": [

@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.237",
-  "generated_at": "2026-08-20T20:25:05.380Z",
+  "version": "2.1.238",
+  "generated_at": "2026-08-20T21:25:01.146Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,15 +14,26 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.237",
-    "to_version": "2.1.237",
-    "new_features": [],
+    "from_version": "2.1.238",
+    "to_version": "2.1.238",
+    "new_features": [
+      "keybinding-flavor-setting",
+      "plugin-marketplace-headers-helper"
+    ],
     "new_commands": [],
-    "new_flags": [],
+    "new_flags": [
+      "--defer-shutdown-max-min",
+      "--proxy-authorization-command",
+      "--proxy-authorization-file"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "clear-shortcut-removed",
+      "mcp-headershelper-trust-requirement",
+      "mcp-headershelper-credential-isolation"
+    ]
   },
   "payload": {
     "meta": {
@@ -39,12 +50,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.237",
+      "latest_stable": "2.1.238",
       "latest_release_date": "2026-08-20",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release, version 2.1.237, introduces a significant improvement to how Claude presents its output with the addition of a new 'Concise' output style. This style is designed to streamline interactions by having Claude prioritize results and omit conversational preambles and narrative explanations, while maintaining the same level of thoroughness in its work. Developers can activate this new output style by navigating to the `/config` command and selecting 'Output style'. This change is particularly beneficial for users who prefer direct, action-oriented responses and want to reduce verbosity in their interactions with Claude. Additionally, a crucial fix has been implemented for prompt caching, specifically addressing sessions that utilize an LLM gateway or a custom base URL. This ensures more reliable and consistent performance for users operating in these specific network configurations. There are no breaking changes, new commands, or deprecated features in this release, making it a straightforward upgrade. Developers are encouraged to update to leverage the new concise output and benefit from the prompt caching fix, especially if using custom LLM gateways."
+      "tldr": "Claude Code 2.1.238 introduces significant improvements to user experience, plugin management, and self-hosted runner stability. A new `keybindingFlavor` setting allows users to switch Ctrl+W behavior in the prompt to a Bash-like 'delete back to previous whitespace' mode, enhancing terminal interaction for many. Plugin marketplaces now support a `headersHelper` for URL marketplaces and catalog entries, enabling dynamic generation of HTTP headers (like short-lived tokens) for secure plugin fetching and updates, though this requires user confirmation during install/update. For self-hosted runners, new flags `--defer-shutdown-max-min`, `--proxy-authorization-command`, and `--proxy-authorization-file` provide more robust shutdown control and better handling of egress proxies requiring dynamic authentication. Several critical fixes address long-standing issues: unbounded memory growth in long interactive sessions, custom output styles drifting, prompt suggestions not persisting near usage limits, and various Remote Control stability and usability problems, including improved connection resilience and accurate status reporting. Notably, the double-press `/clear` shortcut for Ctrl+L/Cmd+K has been removed, making these keys exclusively for screen repainting, and MCP `headersHelper` and inline MCP servers now require explicit folder trust and run without inherited credential environment variables, which are breaking changes requiring user awareness and potential configuration adjustments. The bundled `claude-api` skill is also updated for Managed Agents, supporting new web search/fetch domain settings and memory stores on self-hosted sandboxes. Users should review the breaking changes, especially regarding MCP configurations, and consider upgrading for enhanced stability and new features."
     },
     "features": [
       {
@@ -1791,6 +1802,33 @@
         "description": "A new built-in output style where Claude leads with results and skips preamble and narration, while still performing the work thoroughly. This can be selected under 'Output style' in the `/config` command.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "keybinding-flavor-setting",
+        "name": "Keybinding Flavor Setting",
+        "status": "stable",
+        "since": "2.1.238",
+        "description": "A new setting `keybindingFlavor` allows users to change the behavior of keybindings in the prompt. Setting it to `\"readline\"` makes Ctrl+W delete back to the previous whitespace, similar to Bash. The default behavior (`\"classic\"`) remains unchanged.",
+        "key_details": [
+          "Setting: `keybindingFlavor`",
+          "Value `\"readline\"`: Ctrl+W deletes back to previous whitespace (Bash-like)",
+          "Value `\"classic\"`: Default behavior"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "plugin-marketplace-headers-helper",
+        "name": "Plugin Marketplace headersHelper",
+        "status": "stable",
+        "since": "2.1.238",
+        "description": "Introduced `headersHelper` for URL marketplaces and catalog entries. This helper runs a command to mint HTTP headers (e.g., short-lived tokens) for catalog and same-origin archive fetches. It runs only during plugin installation or update, after its command is shown, requiring user confirmation (`[y/N]`) or the `-y` flag for `claude plugin install/update`.",
+        "key_details": [
+          "Available on URL marketplaces and catalog entries",
+          "Runs a command to generate HTTP headers",
+          "Used for catalog and same-origin archive fetches",
+          "Requires user confirmation during `claude plugin install/update` (or `-y` flag)"
+        ],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -2559,6 +2597,24 @@
           "description": "Required for self-hosted runner Windows startup to specify the checkout directory.",
           "since": "2.1.229",
           "source_url": ""
+        },
+        {
+          "flag": "--defer-shutdown-max-min",
+          "description": "Used with `claude self-hosted-runner`. On SIGTERM, keeps serving attached sessions, parks remaining sessions after the specified number of minutes, then exits.",
+          "since": "2.1.238",
+          "source_url": ""
+        },
+        {
+          "flag": "--proxy-authorization-command",
+          "description": "Used with `claude self-hosted-runner`. Specifies a command to generate a freshly issued `Proxy-Authorization` header for egress proxies on every connection.",
+          "since": "2.1.238",
+          "source_url": ""
+        },
+        {
+          "flag": "--proxy-authorization-file",
+          "description": "Used with `claude self-hosted-runner`. Specifies a file containing a freshly issued `Proxy-Authorization` header for egress proxies on every connection.",
+          "since": "2.1.238",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -2592,7 +2648,11 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--defer-shutdown-max-min",
+        "--proxy-authorization-command",
+        "--proxy-authorization-file"
+      ]
     },
     "env_vars": [
       {
@@ -3500,6 +3560,45 @@
           "TodoWrite tool"
         ],
         "migration": "To re-enable these tools, set the environment variable `CLAUDE_CODE_ENABLE_TODO_TOOLS=1`.",
+        "source_url": ""
+      },
+      {
+        "id": "clear-shortcut-removed",
+        "version": "2.1.238",
+        "title": "Double-press /clear shortcut removed for Ctrl+L and Cmd+K",
+        "description": "The double-press shortcut for `/clear` (previously triggered by pressing Ctrl+L or Cmd+K twice) has been removed. Ctrl+L and Cmd+K in fullscreen mode will now always just repaint the screen. This also prevents 1-row nvim terminals from triggering automatic `/clear` loops.",
+        "affected": [
+          "Ctrl+L keybinding behavior",
+          "Cmd+K keybinding behavior",
+          "Automatic `/clear` loops in 1-row nvim terminals"
+        ],
+        "migration": "Users who relied on the double-press `/clear` shortcut will need to use the `/clear` command explicitly. No action is needed for users who only used Ctrl+L/Cmd+K for repainting.",
+        "source_url": ""
+      },
+      {
+        "id": "mcp-headershelper-trust-requirement",
+        "version": "2.1.238",
+        "title": "MCP headersHelper and inline MCP servers now require folder trust",
+        "description": "MCP `headersHelper` defined in a project `.mcp.json` file, and inline MCP servers specified in project or `--add-dir` agent files, now require the corresponding folder's trust dialog to have been accepted. This also applies when running `claude -p`.",
+        "affected": [
+          "MCP `headersHelper` in `.mcp.json`",
+          "Inline MCP servers in project agent files",
+          "Inline MCP servers in `--add-dir` agent files",
+          "`claude -p` command behavior"
+        ],
+        "migration": "Ensure that the folders containing `.mcp.json` files or agent files with inline MCP servers are trusted. Users will be prompted to accept the trust dialog if it hasn't been accepted already.",
+        "source_url": ""
+      },
+      {
+        "id": "mcp-headershelper-credential-isolation",
+        "version": "2.1.238",
+        "title": "MCP headersHelper runs without inherited credential environment variables",
+        "description": "MCP `headersHelper` originating from a project `.mcp.json`, a plugin, or an agent file will now run without inheriting credential environment variables. User, managed, and claude.ai-scope helpers will continue to run from the Claude config directory with appropriate credentials.",
+        "affected": [
+          "MCP `headersHelper` execution environment",
+          "Credential inheritance for `headersHelper`"
+        ],
+        "migration": "If your `headersHelper` in project `.mcp.json`, plugins, or agent files relied on inherited credential environment variables, you will need to adjust them to source credentials differently or use user, managed, or claude.ai-scope helpers which retain credential access.",
         "source_url": ""
       }
     ],
