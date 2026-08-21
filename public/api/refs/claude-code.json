@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.239",
-  "generated_at": "2026-08-21T21:21:40.079Z",
+  "generated_at": "2026-08-21T22:21:44.738Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -17,8 +17,9 @@
     "from_version": "2.1.239",
     "to_version": "2.1.239",
     "new_features": [
-      "fullscreen-renderer-offer",
+      "fullscreen-renderer-offer-bedrock-vertex-foundry",
       "alpine-musl-native-addons",
+      "cloud-sessions-synced-plugins",
       "windows-cross-session-messaging"
     ],
     "new_commands": [
@@ -52,7 +53,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release of claude-code 2.1.239 introduces several key improvements, most notably the inclusion of a 1.1x US-only-inference premium in cost estimates for data-residency workspaces, providing more accurate financial projections. New installations on Bedrock, Vertex, and Foundry now offer a one-time fullscreen renderer, enhancing the initial user experience. For Python developers, a new `/claude-api upgrade` command simplifies migration from `anthropic` 0.x to 1.x, updating timeout references to `anthropic.Timeout`. Cloud sessions now handle synced plugins from claude.ai more robustly, identifying them as `name@synced` and preventing conflicts with locally installed plugins. Alpine/musl users benefit from native image paste, clipboard, and audio-capture add-ons, resolving previous runtime issues. The usage-limit message now provides more comprehensive information, including session and weekly reset times. Numerous fixes address critical issues, such as Bedrock streaming behind proxies, Claude Code hanging at startup with HTTPS proxies, raw crash dumps from deleted directories, and Edit/Write call pauses in JetBrains IDEs. Other notable fixes include WebFetch retaining expired content, cloud sessions resuming out of plan mode, and MCP elicitation forms being clipped in fullscreen. Cross-session messaging is now available on Windows, aligning its capabilities with macOS and Linux. The `ListAgents` command and `/list-agents` now provide a more complete view of live teammates and session names, while `keybindingFlavor: \"readline\"` now offers improved Bash-like word navigation. Persistent retry mode, controlled by `CLAUDE_CODE_RETRY_WATCHDOG`, now fails immediately on spend-limit errors, preventing indefinite waits. Chrome integration sees `/clear` closing session tab groups, and remote sessions now include image file paths from mobile uploads. Overall, this release focuses on cost transparency, platform compatibility, developer tooling, and significant bug fixes to improve stability and user experience across various environments. Users are encouraged to upgrade to benefit from these enhancements and fixes."
+      "tldr": "This release of claude-code 2.1.239 introduces significant improvements across cost estimation, platform support, and session management. Cost estimates now accurately reflect the 1.1x US-only-inference premium for data-residency workspaces, providing more transparent billing. A new `/claude-api upgrade` command simplifies migration for Python projects from `anthropic` 0.x to 1.x, updating timeout handling to `anthropic.Timeout`, which is crucial for developers maintaining Python integrations. The fullscreen renderer offer is now available for Bedrock, Vertex, and Foundry setups, ensuring new installs on these platforms start in fullscreen mode for a consistent user experience. Cloud sessions now handle synced plugins more robustly, displaying them as `name@synced` and preventing them from overriding local installations. Alpine/musl builds gain native support for image paste, clipboard, and audio-capture, expanding functionality for users on these environments. The usage-limit message now provides more comprehensive information, including session and weekly reset times, helping users manage their spend. Numerous fixes address critical issues, including Bedrock streaming behind proxies, Claude Code hanging at startup, and various UI glitches in fullscreen mode and agent views. Persistent retry mode (`CLAUDE_CODE_RETRY_WATCHDOG`) now fails immediately on spend-limit errors, preventing indefinite waits. Cross-session messaging is now available on Windows, enabling `SendMessage` and `ListAgents` functionality across machines. Developers should review the updated cost estimation behavior and consider using the new `/claude-api upgrade` command for Python projects. The improved handling of synced plugins and enhanced usage limit messages will benefit all users. This update is recommended for all users to leverage new features, stability improvements, and critical bug fixes."
     },
     "features": [
       {
@@ -1851,6 +1852,24 @@
         "status": "stable",
         "since": "2.1.239",
         "description": "Cross-session messaging is now available on Windows, allowing Claude Code sessions across your machines to message each other with `SendMessage` and find each other with `ListAgents`, similar to macOS and Linux.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "fullscreen-renderer-offer-bedrock-vertex-foundry",
+        "name": "Fullscreen Renderer Offer for Bedrock, Vertex, Foundry",
+        "status": "stable",
+        "since": "2.1.239",
+        "description": "The one-time fullscreen renderer offer is now extended to Bedrock, Vertex, Foundry, and other previously excluded setups. New installations on these platforms will now start in fullscreen mode.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "cloud-sessions-synced-plugins",
+        "name": "Cloud Sessions: Synced Plugins",
+        "status": "stable",
+        "since": "2.1.239",
+        "description": "Plugins synced from claude.ai in cloud sessions now display as `name@synced`, are manageable with `claude plugin enable/disable <name>@synced`, and will not override locally installed plugins with the same name.",
         "key_details": [],
         "source_url": ""
       }
