@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "0.0.14",
-  "generated_at": "2026-08-21T04:36:51.585Z",
+  "version": "3.0.56",
+  "generated_at": "2026-08-21T05:30:26.149Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,16 +19,11 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "0.0.14",
-    "to_version": "0.0.14",
+    "from_version": "3.0.56",
+    "to_version": "3.0.56",
     "new_features": [
-      "macos-native-notifications",
-      "voice-input-composer",
-      "streaming-command-output",
-      "inline-image-generation",
-      "collapsed-agent-run-summary",
-      "redesigned-question-card",
-      "cline-code-beta-app"
+      "image-generation-support",
+      "new-model-providers"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -53,12 +48,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "0.0.14",
-      "latest_release_date": "2026-08-19",
+      "latest_stable": "3.0.56",
+      "latest_release_date": "2026-08-21",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "Cline 0.0.14 introduces significant enhancements to user interaction and output display, with the headline feature being native macOS notifications. These notifications alert you when a task finishes or requires input, allowing you to run Cline in the background and stay productive. Complementing this, voice input is now available in the composer, transcribing your speech using your configured model, and command output streams directly into the transcript as it runs, preserving colors and scrollability, with an option to background long-running commands. Image generation from supported models now renders inline, and completed agent runs collapse into a concise summary to keep the final answer visible. The agent's question card has been redesigned for clearer decision-making with explicit selections and multiple-choice support, and internal details like request IDs are removed for a cleaner interface. UI polish includes animated reasoning traces and tool rows, consistent markdown rendering across desktop and cloud, and floating message hover actions for a denser chat experience. A new 'Cline Code Beta' app is available for experimental features, and several critical bug fixes address issues like stuck streaming shimmers, incorrect Yolo-mode system prompts with auto-approve, and command execution failures due to `ENOENT`. Gemini custom base URLs are now fully functional, and LiteLLM input token limits are correctly preserved. This release significantly improves the user experience, making Cline more efficient and visually refined. Upgrading is highly recommended to benefit from these stability and usability improvements."
+      "tldr": "The latest cline release, 3.0.56, introduces significant enhancements, most notably the ability for models to generate images directly within a turn. This means generated media is saved to a temporary path in the TUI, embedded in HTML session exports, and sent as image content to ACP clients, opening up new possibilities for interactive and multimedia-rich agent interactions.\n\nKey improvements include a major overhaul of how skill slash commands are handled; they now load via the skills tool, resulting in cleaner history, more efficient model instruction delivery, and better performance. The model catalog has also been substantially refreshed, adding new providers like AMD, Arcee, Echo, Jalapeno, Kosmik, LLM Gateway, RunInfra, and SCNet, alongside updated model lists, pricing, and default models. This expands the range of available models and ensures up-to-date information for users.\n\nSeveral critical fixes address issues such as TUI dialog colors not updating with theme changes, incorrect account dialog chevron alignment, and dropped provider-executed tool activity from the Claude Code provider. Important fixes also include ensuring `PreToolUse` hook `contextModification` reaches the model, `PostToolUse` hooks execute correctly, `run_commands` handles structured commands with full command lines, and PowerShell commands fail fast on errors. Additionally, Gemini custom base URLs are now correctly configured, and `cline schedule` commands against a remote hub now properly register a workspace client for authorization. Usage now accurately displays the billed gateway cost. Developers should upgrade to leverage these new capabilities and benefit from the numerous stability and performance improvements."
     },
     "features": [
       {
@@ -1164,6 +1159,33 @@
         "key_details": [
           "Separate installation for experimental branch",
           "Identified as 'beta' in UI elements"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "image-generation-support",
+        "name": "Image Generation Support",
+        "status": "stable",
+        "since": "3.0.56",
+        "description": "Models that support image generation can now produce media during a turn. The TUI saves each generated file to a temporary path and prints it so you can open it with your usual tools, HTML session exports embed images inline, and ACP clients receive generated images as image content.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "new-model-providers",
+        "name": "New Model Providers",
+        "status": "stable",
+        "since": "3.0.56",
+        "description": "The model catalog has been refreshed to include new providers: AMD, Arcee, Echo, Jalapeno, Kosmik, LLM Gateway, RunInfra, and SCNet. This update also includes updated model lists, pricing, and per-provider default models across the board.",
+        "key_details": [
+          "AMD",
+          "Arcee",
+          "Echo",
+          "Jalapeno",
+          "Kosmik",
+          "LLM Gateway",
+          "RunInfra",
+          "SCNet"
         ],
         "source_url": ""
       }
