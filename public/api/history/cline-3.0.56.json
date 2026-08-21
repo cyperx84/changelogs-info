@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "4.1.11",
-  "generated_at": "2026-08-21T06:42:00.478Z",
+  "version": "3.0.56",
+  "generated_at": "2026-08-21T05:30:26.149Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,10 +19,11 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "4.1.11",
-    "to_version": "4.1.11",
+    "from_version": "3.0.56",
+    "to_version": "3.0.56",
     "new_features": [
-      "image-generation-during-task"
+      "image-generation-support",
+      "new-model-providers"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -47,12 +48,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "4.1.11",
+      "latest_stable": "3.0.56",
       "latest_release_date": "2026-08-21",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "Cline 4.1.11 introduces the ability for models to generate images inline during a task, enhancing interactive workflows. This release also brings significant stability and usability improvements, particularly for VS Code users and those working with various model providers. Key fixes include resolving 'command not found' errors for code actions in VS Code 1.134 and correctly handling file paths with spaces in `@` file mentions. Multi-line diff edits in files with CRLF line endings now display correctly, and task resumption continues the existing session rather than rebuilding it. Task-scoped settings are now properly cleared to prevent leakage between tasks. For model providers, custom base URLs for Gemini are restored, and legacy host-root values are normalized. Provider signup links now point directly to API key pages, and non-chat models are no longer offered in chat model pickers. The `PreToolUse` and `PostToolUse` hooks are now fully honored, and tool activity from providers like Claude Code is visible in conversations. PowerShell commands now run fail-fast, preventing silent failures. The model catalog has been refreshed, adding new providers like AMD, Arcee, Echo, and others, along with updated pricing and default models. Finally, the billed cost for Cline gateway usage is now displayed, and a legacy bundle fix ensures Anthropic `invalid_request_error` only triggers context-overflow recovery when explicitly stated in the message. Upgrading is recommended to benefit from these stability and feature enhancements, especially for VS Code users and those leveraging diverse model providers."
+      "tldr": "The latest cline release, 3.0.56, introduces significant enhancements, most notably the ability for models to generate images directly within a turn. This means generated media is saved to a temporary path in the TUI, embedded in HTML session exports, and sent as image content to ACP clients, opening up new possibilities for interactive and multimedia-rich agent interactions.\n\nKey improvements include a major overhaul of how skill slash commands are handled; they now load via the skills tool, resulting in cleaner history, more efficient model instruction delivery, and better performance. The model catalog has also been substantially refreshed, adding new providers like AMD, Arcee, Echo, Jalapeno, Kosmik, LLM Gateway, RunInfra, and SCNet, alongside updated model lists, pricing, and default models. This expands the range of available models and ensures up-to-date information for users.\n\nSeveral critical fixes address issues such as TUI dialog colors not updating with theme changes, incorrect account dialog chevron alignment, and dropped provider-executed tool activity from the Claude Code provider. Important fixes also include ensuring `PreToolUse` hook `contextModification` reaches the model, `PostToolUse` hooks execute correctly, `run_commands` handles structured commands with full command lines, and PowerShell commands fail fast on errors. Additionally, Gemini custom base URLs are now correctly configured, and `cline schedule` commands against a remote hub now properly register a workspace client for authorization. Usage now accurately displays the billed gateway cost. Developers should upgrade to leverage these new capabilities and benefit from the numerous stability and performance improvements."
     },
     "features": [
       {
@@ -1186,15 +1187,6 @@
           "RunInfra",
           "SCNet"
         ],
-        "source_url": ""
-      },
-      {
-        "id": "image-generation-during-task",
-        "name": "Image Generation During Task",
-        "status": "stable",
-        "since": "4.1.11",
-        "description": "Models that support image generation can now generate images during a task, and these images will render inline in the conversation.",
-        "key_details": [],
         "source_url": ""
       }
     ],
