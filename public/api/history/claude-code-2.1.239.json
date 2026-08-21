@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.239",
-  "generated_at": "2026-08-21T21:21:40.079Z",
+  "generated_at": "2026-08-21T20:22:42.455Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,23 +14,24 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.239",
-    "to_version": "2.1.239",
+    "from_version": "2.1.238",
+    "to_version": "2.1.238",
     "new_features": [
-      "fullscreen-renderer-offer",
-      "alpine-musl-native-addons",
-      "windows-cross-session-messaging"
+      "keybinding-flavor-setting",
+      "plugin-marketplace-headers-helper"
     ],
-    "new_commands": [
-      "/claude-api upgrade"
+    "new_commands": [],
+    "new_flags": [
+      "--defer-shutdown-max-min",
+      "--proxy-authorization-command",
+      "--proxy-authorization-file"
     ],
-    "new_flags": [],
-    "new_env_vars": [
-      "CLAUDE_CODE_RETRY_WATCHDOG"
-    ],
+    "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "clear-shortcut-removed"
+    ]
   },
   "payload": {
     "meta": {
@@ -52,7 +53,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release of claude-code 2.1.239 introduces several key improvements, most notably the inclusion of a 1.1x US-only-inference premium in cost estimates for data-residency workspaces, providing more accurate financial projections. New installations on Bedrock, Vertex, and Foundry now offer a one-time fullscreen renderer, enhancing the initial user experience. For Python developers, a new `/claude-api upgrade` command simplifies migration from `anthropic` 0.x to 1.x, updating timeout references to `anthropic.Timeout`. Cloud sessions now handle synced plugins from claude.ai more robustly, identifying them as `name@synced` and preventing conflicts with locally installed plugins. Alpine/musl users benefit from native image paste, clipboard, and audio-capture add-ons, resolving previous runtime issues. The usage-limit message now provides more comprehensive information, including session and weekly reset times. Numerous fixes address critical issues, such as Bedrock streaming behind proxies, Claude Code hanging at startup with HTTPS proxies, raw crash dumps from deleted directories, and Edit/Write call pauses in JetBrains IDEs. Other notable fixes include WebFetch retaining expired content, cloud sessions resuming out of plan mode, and MCP elicitation forms being clipped in fullscreen. Cross-session messaging is now available on Windows, aligning its capabilities with macOS and Linux. The `ListAgents` command and `/list-agents` now provide a more complete view of live teammates and session names, while `keybindingFlavor: \"readline\"` now offers improved Bash-like word navigation. Persistent retry mode, controlled by `CLAUDE_CODE_RETRY_WATCHDOG`, now fails immediately on spend-limit errors, preventing indefinite waits. Chrome integration sees `/clear` closing session tab groups, and remote sessions now include image file paths from mobile uploads. Overall, this release focuses on cost transparency, platform compatibility, developer tooling, and significant bug fixes to improve stability and user experience across various environments. Users are encouraged to upgrade to benefit from these enhancements and fixes."
+      "tldr": "This release introduces a new `keybindingFlavor` setting, allowing users to configure Ctrl+W behavior in the prompt to mimic Bash's word deletion, providing a more familiar experience for command-line users. A significant enhancement for plugin developers and self-hosted environments is the `headersHelper` for plugin marketplaces and catalog entries, which enables dynamic generation of HTTP headers (like short-lived tokens) for secure fetching of plugin resources, running with user confirmation during install/update. For self-hosted runners, new flags `--defer-shutdown-max-min`, `--proxy-authorization-command`, and `--proxy-authorization-file` provide more robust shutdown management and support for egress proxies requiring dynamic authorization headers. Several critical fixes address long-standing issues: unbounded memory growth in interactive sessions by releasing subagent tool results, custom output styles drifting back to default, and `CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION=true` not working near usage limits. Remote Control stability is improved with fixes for session unavailability after crashes, message disappearance, and model pick synchronization. Cross-session messaging now provides explicit feedback when messages are refused or dropped. A breaking change removes the double-press Ctrl+L/Cmd+K shortcut for `/clear`, making these keys exclusively repaint the screen. The bundled `claude-api` skill is updated for Managed Agents, including web search/fetch domain settings and memory stores on self-hosted sandboxes. Users should upgrade to benefit from improved stability, new configuration options, and enhanced security features, especially those using self-hosted runners or relying on specific keybinding behaviors."
     },
     "features": [
       {
@@ -1826,33 +1827,6 @@
           "Requires user confirmation during `claude plugin install/update` (or `-y` flag)"
         ],
         "source_url": ""
-      },
-      {
-        "id": "fullscreen-renderer-offer",
-        "name": "Fullscreen Renderer Offer on Bedrock, Vertex, Foundry",
-        "status": "stable",
-        "since": "2.1.239",
-        "description": "New installs on Bedrock, Vertex, Foundry, and other previously excluded setups now start in fullscreen mode after a one-time fullscreen renderer offer.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "alpine-musl-native-addons",
-        "name": "Native Image Paste, Clipboard, Audio-Capture Add-ons for Alpine/musl",
-        "status": "stable",
-        "since": "2.1.239",
-        "description": "Native image paste, clipboard, and audio-capture add-ons now load correctly on Alpine/musl builds, using musl-built binaries instead of glibc ones.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "windows-cross-session-messaging",
-        "name": "Cross-Session Messaging on Windows",
-        "status": "stable",
-        "since": "2.1.239",
-        "description": "Cross-session messaging is now available on Windows, allowing Claude Code sessions across your machines to message each other with `SendMessage` and find each other with `ListAgents`, similar to macOS and Linux.",
-        "key_details": [],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -2308,14 +2282,6 @@
         "since": "2.1.223",
         "status": "stable",
         "source_url": ""
-      },
-      {
-        "name": "/claude-api upgrade",
-        "syntax": "/claude-api upgrade",
-        "description": "Migrates Python projects from `anthropic` 0.x to 1.x, and updates the skill's Python reference for 1.x (timeouts use `anthropic.Timeout`, not `httpx.Timeout`).",
-        "since": "2.1.239",
-        "status": "stable",
-        "source_url": ""
       }
     ],
     "flags": {
@@ -2680,7 +2646,11 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--defer-shutdown-max-min",
+        "--proxy-authorization-command",
+        "--proxy-authorization-file"
+      ]
     },
     "env_vars": [
       {
@@ -3149,13 +3119,6 @@
         "purpose": "Sets the default model for new sessions. This value can be overridden by a `/model` pick, which then persists across restarts (unlike `ANTHROPIC_MODEL`).",
         "status": "stable",
         "since": "2.1.236",
-        "source_url": ""
-      },
-      {
-        "name": "CLAUDE_CODE_RETRY_WATCHDOG",
-        "purpose": "Enables persistent retry mode, which now fails immediately on organization spend-limit and out-of-credits errors instead of waiting indefinitely for a reset.",
-        "status": "stable",
-        "since": "2.1.239",
         "source_url": ""
       }
     ],
