@@ -15,6 +15,14 @@
   },
   "releases": [
     {
+      "version": "v4.1.12",
+      "name": "v4.1.12",
+      "body": "\nEverything here lands through the SDK bundle, so it applies to windows running that bundle.\n\n### Fixed\n\n- Enforce enterprise MCP controls on the Customize marketplace. MCP entries are now hidden when remote config disables the marketplace, and limited to `allowedMCPServers` when an allowlist is configured.\n- Restore tool calling for custom OpenAI-Compatible models whose stored capability list was empty.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.1.11...v4.1.12\n",
+      "date": "2026-08-21T22:39:29Z",
+      "url": "https://github.com/cline/cline/releases/tag/v4.1.12",
+      "prerelease": false
+    },
+    {
       "version": "v4.1.11",
       "name": "v4.1.11",
       "body": "\nEverything here lands through the SDK bundle, so it applies to windows running that bundle — except the last section, which is a legacy-bundle fix.\n\n### Added\n\n- Let models that support it generate images during a task. Generated images render inline in the conversation.\n\n### Fixed\n\n- Fix code actions failing with \"command not found\" on VS Code 1.134.\n- Fix `@` file mentions breaking on paths that contain spaces.\n- Show the diff edit view for multi-line edits in files with CRLF line endings.\n- Continue the surviving session when resuming a task, instead of rebuilding it from the original task text.\n- Clear the task-scoped settings overlay when the task view is cleared or switched, so one task's overrides no longer leak into the next.\n- Honor the classic truncation range when migrating legacy tasks.\n- Preserve LiteLLM input token limits instead of overwriting them with catalog values.\n- Restore custom base URLs for Gemini, and normalize legacy host-root values so they keep working.\n- Point provider signup links at each provider's API key page instead of a generic landing page.\n- Load skill slash commands through the skills tool instead of pasting their instructions into your message, which previously delivered them twice.\n- Stop offering image, voice, and other non-chat models in chat model pickers.\n- Deliver a `PreToolUse` hook's `contextModification` to the model again, and wait for `PostToolUse` hooks so their output and `cancel` control are honored.\n- Show tool activity a provider runs itself — every tool the Claude Code provider executes inside its own session — instead of dropping it from the conversation.\n- Fix `run_commands` failing with ENOENT when a structured command carried a full command line with no arguments.\n- Run PowerShell commands fail-fast, so a pipeline erroring per item stops at the first error instead of flooding output and still reporting success.\n- Keep remote configuration in step with the SDK: coordinated refreshes, session gating, and a fail-closed opt-out.\n\n### Changed\n\n- Show the billed cost for Cline gateway usage.\n- Refresh the model catalog, which adds AMD, Arcee, Echo, Jalapeno, Kosmik, LLM Gateway, RunInfra, and SCNet as providers and updates model lists, pricing, and per-provider default models across the board.\n\n### Fixed (legacy bundle)\n\n- Only treat an Anthropic `invalid_request_error` as a context-overflow when its message says so. An unrelated invalid request (bad tool schema, oversized image, unknown model id) no longer triggers context-overflow recovery.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.1.10...v4.1.11\n",
@@ -53,6 +61,14 @@
       "date": "2026-08-21T05:03:03Z",
       "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.56",
       "prerelease": false
+    },
+    {
+      "version": "desktop-v0.0.16-beta.1",
+      "name": "Desktop v0.0.16-beta.1",
+      "body": "\n- Beta: your typed prompt is no longer lost when a cloud handoff starts — the live draft carries into the handoff and is restored if it fails.\n- Beta: fixed a closed model popover blocking clicks in the composer.\n- Beta: cleaned up visual regressions in provider settings, notifications, and the avatar overlay from the previous sync.\n- Includes the 0.0.16-track main updates: the redesigned first-run onboarding with an interactive welcome graphic, centralized tool availability, hook fixes (PostToolUse output and context changes now reach the model), and the fix for checkpoint restore staying locked after queued turns.\n\n**Full Changelog**: https://github.com/cline/cline/compare/desktop-v0.0.15-beta.1...desktop-v0.0.16-beta.1\n",
+      "date": "2026-08-21T20:06:23Z",
+      "url": "https://github.com/cline/cline/releases/tag/desktop-v0.0.16-beta.1",
+      "prerelease": true
     },
     {
       "version": "desktop-v0.0.15-beta.1",
@@ -237,23 +253,7 @@
       "date": "2026-08-06T07:46:56Z",
       "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.51",
       "prerelease": false
-    },
-    {
-      "version": "v4.1.5",
-      "name": "v4.1.5",
-      "body": "\n### Added\n\n- Explain when a free model promotion ends. Requests to a retired free model now show a dedicated notice with a button to pick another model, instead of a generic error with nothing but a Retry prompt.\n\n### Changed\n\n- Map reasoning settings onto a shared path across AI SDK providers, so effort levels and enable/disable toggles behave consistently (including on Ollama) instead of relying on per-provider overrides.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.1.4...v4.1.5\n",
-      "date": "2026-08-05T21:54:07Z",
-      "url": "https://github.com/cline/cline/releases/tag/v4.1.5",
-      "prerelease": false
-    },
-    {
-      "version": "v4.1.4",
-      "name": "v4.1.4",
-      "body": "\n### Added\n\n- Recognize Chutes as a provider.\n- Show skills alongside workflows in the slash command menu, and disambiguate commands that share a name instead of letting one shadow the other.\n\n### Changed\n\n- Remove model-initiated plan-to-act switching. Switching out of plan mode is now driven by you, not by the model deciding mid-turn.\n- Hard-block file-editing shell commands in plan mode instead of relying on prompting alone. Read-only investigation still works, but file manipulation, in-place editors, redirection to files, mutating git subcommands, and package installs are refused.\n\n### Fixed\n\n- Stop treating a turn that completes with a plan as a failed turn when a plan-blocked command was its only tool call. The turn no longer ends in the error state with a Retry footer, and toggling to Act correctly re-runs the presented plan instead of appearing to do nothing.\n- Show tool paths relative to the workspace in the chat view instead of absolute paths.\n- Reset pending attachments when starting a new task, so images from the previous task no longer carry over.\n- Surface a clear error when the selected provider has no API key configured, instead of a generic failure.\n- Refresh MCP tool and resource lists when a server sends a `list_changed` notification, instead of only showing a toast.\n- Show installed plugins under their real package names instead of all appearing as \"index\".\n- Correct the Linux keybinding label in the Plan/Act mode tooltip.\n- Recover from running out of context instead of failing with a raw provider error — the run compacts and retries once, and the cases that genuinely cannot be recovered explain why.\n- Retry empty model responses on every provider rather than only Ollama, fixing hard \"Model returned empty response\" failures on OpenRouter, Cline, and OpenAI-compatible endpoints.\n- Stop Claude 4.6+ and 5.x models being rejected with \"thinking.type.enabled is not supported\" when they resolve from the offline catalog or from a hand-typed model id.\n- Restore Bedrock prompt caching, which reported zero cache reads and writes because the provider sent a cache format Bedrock discards, and route Bedrock foundation models through geo inference profiles.\n- Send `max_completion_tokens` for reasoning models on OpenAI-compatible endpoints, and substitute image content for models without image support instead of failing the request.\n- Inherit the MiniMax default model from models.dev, and refresh the bundled catalog, which adds Infomaniak and SCX.ai.\n- Report the same provider failure once instead of twice in error telemetry, and rate-limit repeated failures from unattended retry loops.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.1.3...v4.1.4\n",
-      "date": "2026-08-05T10:29:32Z",
-      "url": "https://github.com/cline/cline/releases/tag/v4.1.4",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-08-21T06:25:19.340Z"
+  "lastUpdated": "2026-08-22T06:19:35.202Z"
 }
