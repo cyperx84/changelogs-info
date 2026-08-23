@@ -15,6 +15,38 @@
   },
   "releases": [
     {
+      "version": "v4.1.13",
+      "name": "v4.1.13",
+      "body": "\nEverything here lands through the SDK bundle, so it applies to windows running that bundle.\n\n### Fixed\n\n- Restore tool calling for custom OpenAI-Compatible models whose capability list was inferred from convenience flags like `supportsReasoning`. The inferred list read as an authoritative denial and stripped every tool from the request; an explicitly authored capability list still decides.\n- Keep Hub-backed sessions intact across a Hub restart or upgrade. Clients replay the events they missed while disconnected, and the same event is no longer delivered twice when the replay and live streams overlap.\n- Carry session and client identity into Langfuse traces for Hub-backed and delegated-agent runs, which previously arrived without their session grouping or client version.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.1.12...v4.1.13\n",
+      "date": "2026-08-22T20:23:56Z",
+      "url": "https://github.com/cline/cline/releases/tag/v4.1.13",
+      "prerelease": false
+    },
+    {
+      "version": "sdk/sdk/v0.0.78",
+      "name": "SDK v0.0.78",
+      "body": "\n- The hub can now be drained and upgraded without losing work. A draining hub refuses new mutating work while it finishes what it is running, a durable event log lets a reconnecting client replay everything it missed, and durable runs are queued rather than dropped. Replayed events are deduped by event id, so an event that arrives on both the replay and the live stream is delivered once\n- Fixed tool calling being silently disabled for custom OpenAI-Compatible models whose capability list was synthesized from convenience flags like `supportsReasoning`. An inferred list read as an authoritative denial and stripped every tool from the request; explicitly authored capability lists still decide\n- Langfuse traces now carry session and client identity for hub-backed and delegated-agent runs. Hub sessions rebuild client name and version from request headers, and delegated agents group under their parent session instead of appearing as unattributed traces\n- Refreshed the model catalog, which updates model lists and pricing across providers and changes the resolved default model for several of them (DeepSeek, Crof, CrossModel, Eden AI, Kilo, and NanoGPT). If you use one of those providers without pinning a model, you will get a different default\n\n**Full Changelog**: https://github.com/cline/cline/compare/sdk/sdk/v0.0.77...sdk/sdk/v0.0.78\n",
+      "date": "2026-08-22T23:58:28Z",
+      "url": "https://github.com/cline/cline/releases/tag/sdk/sdk/v0.0.78",
+      "prerelease": false
+    },
+    {
+      "version": "desktop-v0.0.16",
+      "name": "Desktop v0.0.16",
+      "body": "\n- The agent can now be handed off between Hub instances without losing work: a Hub that is restarting refuses new work while it finishes what it is running, and the app replays anything it missed while disconnected instead of dropping it\n- Fixed tool calling being silently disabled for custom OpenAI-Compatible models whose capability list was inferred from convenience flags like `supportsReasoning`\n- Refreshed the model catalog, which updates model lists and pricing across providers and changes the resolved default model for several of them (DeepSeek, Crof, CrossModel, Eden AI, Kilo, and NanoGPT)\n- The app now honors server-side feature flags, refreshing them when your account changes\n\n**Full Changelog**: https://github.com/cline/cline/compare/desktop-v0.0.15...desktop-v0.0.16\n",
+      "date": "2026-08-22T23:45:18Z",
+      "url": "https://github.com/cline/cline/releases/tag/desktop-v0.0.16",
+      "prerelease": false
+    },
+    {
+      "version": "cli-v3.0.57",
+      "name": "CLI v3.0.57",
+      "body": "\n- Added `cline hub drain`, which stops a hub from accepting new mutating work while it finishes what it is already running, and `cline hub drain --off` to lift it\n- Added `cline hub upgrade`, which drains the hub, waits for it to go idle, stops it, and starts a fresh one on the current build. An aborted upgrade lifts the drain again, so the hub is never left refusing work\n- Sessions now survive a hub restart. A reconnecting client replays the events it missed while disconnected, deduped by event id so nothing is delivered twice\n- Fixed tool calling being silently disabled for custom OpenAI-Compatible models whose capability list was inferred from convenience flags like `supportsReasoning`. The inferred list read as an authoritative denial and stripped every tool from the request\n- Langfuse traces now carry session and client identity for hub-backed and delegated-agent runs, instead of arriving without their session grouping or client version\n- Refreshed the model catalog, which updates model lists and pricing across providers and changes the resolved default model for several of them (DeepSeek, Crof, CrossModel, Eden AI, Kilo, and NanoGPT)\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.56...cli-v3.0.57\n",
+      "date": "2026-08-23T00:04:14Z",
+      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.57",
+      "prerelease": false
+    },
+    {
       "version": "v4.1.12",
       "name": "v4.1.12",
       "body": "\nEverything here lands through the SDK bundle, so it applies to windows running that bundle.\n\n### Fixed\n\n- Enforce enterprise MCP controls on the Customize marketplace. MCP entries are now hidden when remote config disables the marketplace, and limited to `allowedMCPServers` when an allowlist is configured.\n- Restore tool calling for custom OpenAI-Compatible models whose stored capability list was empty.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.1.11...v4.1.12\n",
@@ -221,39 +253,7 @@
       "date": "2026-08-09T02:40:02Z",
       "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.52",
       "prerelease": false
-    },
-    {
-      "version": "desktop-v0.0.10",
-      "name": "Desktop v0.0.10",
-      "body": "\n- Remote MCP servers can now authenticate with OAuth from Settings → MCP — authorize a server, see its auth status, and cancel or retry a pending authorization. Servers that require a pre-registered OAuth client (client ID/secret) instead of dynamic registration are now supported, and stored tokens are invalidated when a server's client configuration changes.\n- MCP errors are now shown on the individual server rather than as a page-level error, and a server with invalid configuration is surfaced with its error instead of silently disappearing from the list.\n- Failed turns no longer fail silently. Sending a message with no model credentials — or any queued turn that fails — now shows an error in the transcript, enriched with the underlying cause and a pointer to Settings → Models.\n- Fixed the first message of a chat (and some queued messages) rendering twice.\n- Fixed the composer getting stuck on \"Agent is working…\" after a turn already finished.\n- New \"Connect a model\" notice on the welcome screen when no provider has credentials, with one click to onboarding or model settings. It reacts live as you add credentials, and correctly recognizes Bedrock/Vertex and keyless local endpoints as already connected.\n- Added \"Get an API key\" links for popular providers in onboarding and Settings → Models, plus a link to the Cline dashboard from the Cline API key form.\n- The onboarding welcome step now explains what Cline is.\n- The stop button is now actually visible and clickable, Esc stops the current turn, and new shortcuts: Cmd/Ctrl+N for a new session, Cmd/Ctrl+, for settings.\n- Reasoning controls now resolve consistently across AI SDK providers, including Ollama, so effort levels and thinking on/off are honored wherever the provider supports them.\n- Vertex AI: credential refreshes now use the configured fetch, fixing ADC authentication behind proxies and custom networking.\n- Refreshed the bundled provider and model catalog.\n\n**Full Changelog**: https://github.com/cline/cline/compare/desktop-v0.0.9...desktop-v0.0.10\n",
-      "date": "2026-08-07T07:04:07Z",
-      "url": "https://github.com/cline/cline/releases/tag/desktop-v0.0.10",
-      "prerelease": false
-    },
-    {
-      "version": "v4.1.6",
-      "name": "v4.1.6",
-      "body": "\n### Added\n\n- Offer `meta/muse-spark-1.2-contributor` on the Cline provider, alongside a refreshed model catalog.\n\n### Fixed\n\n- Attribute error telemetry to the model actually in use for a run, so failures are no longer reported against the wrong model.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.1.5...v4.1.6\n",
-      "date": "2026-08-06T08:09:41Z",
-      "url": "https://github.com/cline/cline/releases/tag/v4.1.6",
-      "prerelease": false
-    },
-    {
-      "version": "sdk/sdk/v0.0.71",
-      "name": "SDK v0.0.71",
-      "body": "\n- Reasoning settings now resolve portably across AI SDK providers — effort levels and enable/disable flags map to the AI SDK's native reasoning setting (including Ollama), replacing the per-provider thinking overrides, and an explicit request to disable reasoning now takes priority\n- `sdk.error` telemetry from agent runs is attributed to the model actually in use, and undefined values are stripped from the event properties\n- Refreshed the model catalog from models.dev, and surfaced `meta/muse-spark-1.2-contributor` for the Cline provider\n\n**Full Changelog**: https://github.com/cline/cline/compare/sdk/sdk/v0.0.70...sdk/sdk/v0.0.71\n",
-      "date": "2026-08-06T07:29:51Z",
-      "url": "https://github.com/cline/cline/releases/tag/sdk/sdk/v0.0.71",
-      "prerelease": false
-    },
-    {
-      "version": "cli-v3.0.51",
-      "name": "CLI v3.0.51",
-      "body": "\n- Reasoning effort now applies consistently across providers instead of going through per-provider thinking overrides, including Ollama, and asking for reasoning to be off is respected everywhere (from SDK v0.0.71)\n- `meta/muse-spark-1.2-contributor` is now selectable on the Cline provider, alongside a refreshed model catalog (from SDK v0.0.71)\n- Error telemetry now reports the model that was actually in use for the run (from SDK v0.0.71)\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.50...cli-v3.0.51\n",
-      "date": "2026-08-06T07:46:56Z",
-      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.51",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-08-22T06:19:35.202Z"
+  "lastUpdated": "2026-08-23T06:21:22.043Z"
 }
