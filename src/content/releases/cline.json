@@ -15,6 +15,22 @@
   },
   "releases": [
     {
+      "version": "v4.1.15",
+      "name": "v4.1.15",
+      "body": "\nEverything here lands through the SDK bundle, so it applies to windows running that bundle.\n\n### Fixed\n\n- Auto-approve every MCP tool call while the \"Use MCP servers\" toggle is on. The toggle only took effect on tools that had also been opted in individually, so turning it on appeared to do nothing; it now governs all MCP tools on its own.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.1.14...v4.1.15\n",
+      "date": "2026-08-23T19:56:07Z",
+      "url": "https://github.com/cline/cline/releases/tag/v4.1.15",
+      "prerelease": false
+    },
+    {
+      "version": "v4.1.14",
+      "name": "v4.1.14",
+      "body": "\nEverything here lands through the SDK bundle, so it applies to windows running that bundle.\n\n### Added\n\n- Refresh the built-in model catalog. New entries include Claude Fable 5, Grok 4.6 on Vertex, several DeepSeek V4 Flash variants (including the vision preview), MiMo v2.5, Qwen3.8 27B, Gemma 4 26B, LongCat 2.0, Nemotron 3.5 Lightning, and Thinking Machines' Inkling models.\n\n### Fixed\n\n- Restore task completion telemetry for interactive sessions. A share of interactive stops routed through a teardown path that never reported completion after 4.1.11 changed how session status is tracked; every session now reports it exactly once.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.1.13...v4.1.14\n",
+      "date": "2026-08-23T10:11:14Z",
+      "url": "https://github.com/cline/cline/releases/tag/v4.1.14",
+      "prerelease": false
+    },
+    {
       "version": "v4.1.13",
       "name": "v4.1.13",
       "body": "\nEverything here lands through the SDK bundle, so it applies to windows running that bundle.\n\n### Fixed\n\n- Restore tool calling for custom OpenAI-Compatible models whose capability list was inferred from convenience flags like `supportsReasoning`. The inferred list read as an authoritative denial and stripped every tool from the request; an explicitly authored capability list still decides.\n- Keep Hub-backed sessions intact across a Hub restart or upgrade. Clients replay the events they missed while disconnected, and the same event is no longer delivered twice when the replay and live streams overlap.\n- Carry session and client identity into Langfuse traces for Hub-backed and delegated-agent runs, which previously arrived without their session grouping or client version.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.1.12...v4.1.13\n",
@@ -237,23 +253,7 @@
       "date": "2026-08-09T02:33:36Z",
       "url": "https://github.com/cline/cline/releases/tag/sdk/sdk/v0.0.72",
       "prerelease": false
-    },
-    {
-      "version": "desktop-v0.0.11",
-      "name": "Desktop v0.0.11",
-      "body": "\n- Images can now be pasted straight from the clipboard into the composer.\n- Opening a folder that isn't a git repo no longer shows git jargon, and the welcome suggestions now adapt to what's actually in the folder instead of assuming a code project.\n- The folder picker now reports failures instead of doing nothing, and offers a manual path entry as a fallback.\n- Opening an existing session no longer overwrites the model you had selected.\n- The diff panel now resolves file paths against the session's working directory, so diffs open correctly for sessions rooted outside the app's own directory.\n- `/team` prompts now run through the core runtime.\n- Failed turns surface their error in the transcript instead of leaving the chat blank.\n- Plugins left behind as empty install directories are no longer listed as installed, and plugin settings and contributions are now managed centrally with atomic toggles.\n- Fixed a startup script-load error, and webview errors are now attributed to the source URL that caused them.\n- Signing out is handled as a normal state rather than surfacing as a command error.\n- Native-feel and performance polish: the browser context menu is suppressed on app chrome (kept for text fields and selections), UI chrome is no longer text-selectable while chat content still is, inner scrollers no longer rubber-band the window, Settings/Sessions/Onboarding/Diff load lazily, the composer no longer flickers the caret on every keystroke, slash commands are cached across menu opens, and Escape closes the provider/model picker.\n- Tool output no longer nests its own scrollbar.\n- Prompts queued during a turn now survive being interrupted — they're preserved across aborts, drained after a turn aborts itself, and the stop is surfaced instead of the queue being silently dropped. Queued turns that fail are reported as failures.\n- Session context stays durable across aborts and hub restarts.\n- A hung MCP server no longer takes down session creation, and stdio servers that were never configured get a 30-second initialize budget instead of blocking indefinitely.\n- Remote SSE MCP servers surface an OAuth authorization prompt on a 401 instead of failing outright.\n- LiteLLM requests route through Chat Completions instead of the Responses API.\n- Network interruptions mid-stream but before any model output are retried instead of failing the turn.\n- Checkpoints are picked up when git is initialized part-way through a session, and checkpoint diffs include files that were untracked when the snapshot was taken.\n- Scheduled run reports carry execution context — schedule metadata, durations, and lifecycle error details.\n\n**Full Changelog**: https://github.com/cline/cline/compare/desktop-v0.0.10...desktop-v0.0.11\n",
-      "date": "2026-08-09T04:16:07Z",
-      "url": "https://github.com/cline/cline/releases/tag/desktop-v0.0.11",
-      "prerelease": false
-    },
-    {
-      "version": "cli-v3.0.52",
-      "name": "CLI v3.0.52",
-      "body": "\n- Added `cline mcp uninstall` for removing an installed MCP server\n- Schedules now reuse your saved provider settings instead of needing provider configuration of their own\n- Queued messages are legible on light-theme terminals — they were previously rendered in a color that washed out against a light background\n- MCP tool results render as readable text in the TUI instead of escaped JSON, and binary payloads survive being expanded instead of being mangled\n- Malformed tool input/output payloads no longer break rendering — the formatters degrade gracefully instead of throwing\n- Prompts queued during a turn now survive being interrupted: they are preserved across aborts, drained after a turn aborts itself, and the stop is surfaced instead of leaving the queue silently dropped (from SDK v0.0.72)\n- Session context stays durable across aborts and hub restarts, so an interrupted session resumes with the state it had (from SDK v0.0.72)\n- A hung MCP server no longer takes down session creation, and stdio servers that were never configured get a 30-second initialize budget instead of blocking indefinitely (from SDK v0.0.72)\n- Remote SSE MCP servers surface an OAuth authorization prompt on a 401 instead of failing outright, and pre-registered OAuth clients are supported for setups without dynamic client registration (from SDK v0.0.72)\n- LiteLLM requests route through Chat Completions instead of the Responses API, fixing calls against LiteLLM proxies (from SDK v0.0.72)\n- Network interruptions that happen mid-stream but before any model output are retried instead of failing the turn (from SDK v0.0.72)\n- Vertex ADC token refreshes use the configured fetch, so they work behind proxies and custom transports (from SDK v0.0.72)\n- Checkpoint diffs include files that were untracked when the snapshot was taken, and checkpoints are picked up when git is initialized part-way through a session (from SDK v0.0.72)\n- Scheduled run reports carry execution context — readable headers, schedule metadata, durations, and lifecycle error details (from SDK v0.0.72)\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.51...cli-v3.0.52\n",
-      "date": "2026-08-09T02:40:02Z",
-      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.52",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-08-23T06:21:22.043Z"
+  "lastUpdated": "2026-08-24T06:33:38.414Z"
 }
