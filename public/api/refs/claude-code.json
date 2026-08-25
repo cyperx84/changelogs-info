@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.245",
-  "generated_at": "2026-08-25T22:24:01.370Z",
+  "version": "2.1.246",
+  "generated_at": "2026-08-25T23:22:55.929Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,9 +14,11 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.245",
-    "to_version": "2.1.245",
-    "new_features": [],
+    "from_version": "2.1.246",
+    "to_version": "2.1.246",
+    "new_features": [
+      "auto-mode-permissions-tab"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -39,12 +41,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.245",
+      "latest_stable": "2.1.246",
       "latest_release_date": "2026-08-25",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release, claude-code 2.1.245, primarily focuses on stability for Linux users. The most significant change is a critical fix addressing a startup crash that affected distributions shipping glibc 2.44, such as Arch Linux, CachyOS, and Fedora Rawhide. This resolves a major blocker for users on these specific Linux environments, ensuring the application can launch and operate correctly. There are no new features, commands, flags, or breaking changes introduced in this version. Users on affected Linux distributions should upgrade immediately to resolve the startup issue and ensure application functionality. For all other users, this is a minor stability update with no direct impact on existing workflows or configurations."
+      "tldr": "This release, version 2.1.246, introduces a new 'Auto mode' tab within the `/permissions` command, allowing developers to easily view and edit classifier rules for automated workflows. This enhances control and transparency over how Claude operates in auto mode, making it easier to fine-tune its behavior. The release also significantly improves the reliability and user experience of background sessions, addressing issues where they would fail to open due to deleted directories, machine sleep, or concurrent npm package re-installations, ensuring smoother continuous operation. \n\nSeveral critical fixes enhance the stability and performance of the UI and core functionalities. A severe transcript slowdown caused by very long single lines (e.g., base64 strings) in diffs has been resolved by truncating such lines, preventing UI freezes. Erratic fullscreen scrolling and issues with keyboard focus in fullscreen mode have also been fixed, providing a more consistent user interface. Plugin management sees improvements, with fixes for duplicate SHA-named directories in the cache, correct display of plugin skill names in the slash menu, and successful updates and installations of plugins using bare names or `plugin.json` files with BOMs. \n\nFurthermore, the release refines tool interactions and session management. MCP tool calls interrupted by incoming messages in headless/remote sessions are now correctly reported as 'interrupted' instead of 'completed with no output,' providing accurate feedback to the model. The `/cd` command now immediately applies project settings, hooks, and skills from the new directory, streamlining workflow changes. Non-interactive sessions (`-p`, SDK, cloud sessions) will now automatically continue responses cut off mid-stream by server errors or connection loss, improving resilience. Telemetry and metrics requests now correctly handle API keys for third-party gateways, and expired cached tokens are refreshed silently, preventing visible API errors. This update is recommended for all users to benefit from enhanced stability, improved plugin management, and more robust session handling."
     },
     "features": [
       {
@@ -1984,6 +1986,15 @@
         "key_details": [
           "Visibility into subagent execution parameters"
         ],
+        "source_url": ""
+      },
+      {
+        "id": "auto-mode-permissions-tab",
+        "name": "Auto mode tab in /permissions",
+        "status": "stable",
+        "since": "2.1.246",
+        "description": "A new tab in the `/permissions` command interface for viewing and editing auto mode classifier rules.",
+        "key_details": [],
         "source_url": ""
       }
     ],
