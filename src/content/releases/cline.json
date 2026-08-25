@@ -15,6 +15,22 @@
   },
   "releases": [
     {
+      "version": "sdk/sdk/v0.0.79",
+      "name": "SDK v0.0.79",
+      "body": "\n- The hub's durable event log is now capped at 64 MiB on disk. Event envelopes carrying full session snapshots could previously accumulate to tens of gigabytes, since row and time retention alone did not bound file size and deletes never shrink a SQLite file. Oldest events are dropped first and the file is vacuumed to return the space, and pruning now also runs after every 16 MiB appended instead of waiting for the hourly sweep\n- Fixed `task.completed` telemetry being dropped for most interactive sessions. The event is now emitted from every session teardown path, exactly once per session\n- Refreshed the model catalog. Adds two providers (AgentRouter and Opper) and updates model lists and pricing across providers. The resolved default model changes for Aki.io and NanoGPT, so if you use one of those without pinning a model you will get a different default\n\n**Full Changelog**: https://github.com/cline/cline/compare/sdk/sdk/v0.0.78...sdk/sdk/v0.0.79\n",
+      "date": "2026-08-24T23:01:12Z",
+      "url": "https://github.com/cline/cline/releases/tag/sdk/sdk/v0.0.79",
+      "prerelease": false
+    },
+    {
+      "version": "cli-v3.0.58",
+      "name": "CLI v3.0.58",
+      "body": "\n- The first-launch \"Try ClinePass\" dialog no longer advertises the $4.99 first-month promo, which is ending\n- The hub's event log is now capped at 64 MiB on disk. Events carrying full session snapshots could previously grow the log to tens of gigabytes on a long-running hub, since deleting rows never shrinks the file. Oldest events are dropped first and the space is returned, and pruning runs on volume as well as on a timer\n- Refreshed the model catalog. Adds two providers (AgentRouter and Opper) and updates model lists and pricing across providers. The resolved default model changes for Aki.io and NanoGPT, so if you use one of those without pinning a model you will get a different default\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.57...cli-v3.0.58\n",
+      "date": "2026-08-24T23:07:51Z",
+      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.58",
+      "prerelease": false
+    },
+    {
       "version": "v4.1.15",
       "name": "v4.1.15",
       "body": "\nEverything here lands through the SDK bundle, so it applies to windows running that bundle.\n\n### Fixed\n\n- Auto-approve every MCP tool call while the \"Use MCP servers\" toggle is on. The toggle only took effect on tools that had also been opted in individually, so turning it on appeared to do nothing; it now governs all MCP tools on its own.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.1.14...v4.1.15\n",
@@ -237,23 +253,7 @@
       "date": "2026-08-11T19:00:06Z",
       "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.53",
       "prerelease": false
-    },
-    {
-      "version": "v4.1.7",
-      "name": "v4.1.7",
-      "body": "\n### Added\n\n- Restore the \"View Changes\" button on completion rows, backed by SDK checkpoints, so you can review everything a task touched from the completion card.\n- Bring back a copy button on turn-final response rows.\n- Support pre-registered OAuth clients for remote MCP servers, for setups where dynamic client registration isn't available.\n\n### Changed\n\n- Fade the \"View Changes\" button until changes since the last message are confirmed, and hide it entirely when there is nothing to show.\n- Centralize plugin settings and contributions, with host-aware snapshots and atomic plugin toggles.\n- Carry execution context in scheduled run reports — readable headers, schedule metadata, durations, and lifecycle error details.\n\n### Fixed\n\n- Preserve prompts queued during a turn when that turn is interrupted: they survive aborts, are drained after a turn aborts itself, and the stop is surfaced instead of the queue being silently dropped.\n- Keep session context durable across aborts and hub restarts, so an interrupted session resumes with the state it had.\n- Settle the turn phase when a mode switch aborts a running turn.\n- Report queued-turn failures as `run.failed` instead of letting them complete silently.\n- Keep a hung MCP server from taking down session creation, and give stdio servers that were never configured a 30-second initialize budget instead of blocking indefinitely.\n- Surface OAuth authorization for SSE MCP servers on a 401 instead of failing outright.\n- Route LiteLLM through Chat Completions instead of the Responses API, fixing requests against LiteLLM proxies.\n- Retry network interruptions that happen mid-stream but before any model output, instead of failing the turn.\n- Use the configured fetch for Vertex ADC token refreshes, so they work behind proxies and custom transports.\n- Include files that were untracked when a snapshot was taken in checkpoint diffs, and pick up checkpoints when git is initialized part-way through a session.\n- Fall back to the session cwd or Desktop for @-mention file search in empty windows.\n- Never run a foreign compiled plugin-sandbox bootstrap for a source host.\n\n**Full Changelog**: https://github.com/cline/cline/compare/v4.1.6...v4.1.7\n",
-      "date": "2026-08-09T04:05:18Z",
-      "url": "https://github.com/cline/cline/releases/tag/v4.1.7",
-      "prerelease": false
-    },
-    {
-      "version": "sdk/sdk/v0.0.72",
-      "name": "SDK v0.0.72",
-      "body": "\n- Prompts queued during a turn now survive being interrupted: they are preserved across user-initiated aborts, drained after a turn aborts itself, and edits made to the queue inside the abort window are applied rather than lost. Stopping a session now has consistent full-stop semantics across hosts\n- Session context stays durable across aborts and hub restarts, so an interrupted session resumes with the state it had rather than a reset one\n- Queued turns that fail are now reported as `run.failed` instead of completing silently\n- A hung MCP server no longer takes down session creation, and stdio servers that were never configured get a 30-second initialize budget instead of blocking indefinitely\n- Remote SSE MCP servers now surface an OAuth authorization prompt on a 401 instead of failing outright, and remote MCP supports pre-registered OAuth clients for setups where dynamic client registration isn't available\n- LiteLLM requests route through Chat Completions instead of the Responses API, fixing calls against LiteLLM proxies\n- Network interruptions that happen mid-stream but before any model output are retried instead of failing the turn\n- Vertex ADC token refreshes use the configured fetch, so they work behind proxies and custom transports\n- Checkpoint diffs now include files that were untracked when the snapshot was taken, and checkpoints are picked up when git is initialized part-way through a session\n- Plugin settings and contributions are centralized in the hub, with host-aware snapshots and atomic host plugin toggles; a source host no longer runs a foreign compiled plugin-sandbox bootstrap\n- Scheduled run reports carry execution context — readable headers, schedule metadata, durations, and lifecycle error details\n\n**Full Changelog**: https://github.com/cline/cline/compare/sdk/sdk/v0.0.71...sdk/sdk/v0.0.72\n",
-      "date": "2026-08-09T02:33:36Z",
-      "url": "https://github.com/cline/cline/releases/tag/sdk/sdk/v0.0.72",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-08-24T06:33:38.414Z"
+  "lastUpdated": "2026-08-25T06:24:53.657Z"
 }
