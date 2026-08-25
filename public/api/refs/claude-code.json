@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.241",
-  "generated_at": "2026-08-24T23:19:56.234Z",
+  "version": "2.1.243",
+  "generated_at": "2026-08-25T01:08:13.919Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,9 +14,20 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.241",
-    "to_version": "2.1.241",
-    "new_features": [],
+    "from_version": "2.1.243",
+    "to_version": "2.1.243",
+    "new_features": [
+      "loops-breakdown-usage",
+      "model-picker-setting",
+      "prompt-cache-ttl-settings",
+      "model-pricing-managed-setting",
+      "keyless-anthropic-console-sign-in",
+      "skipped-sources-status-line",
+      "managed-marker-mcp-plugins",
+      "github-connection-tip-web-setup",
+      "github-connection-status-line",
+      "subagent-model-effort-tasks"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -39,12 +50,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.241",
-      "latest_release_date": "2026-08-23",
+      "latest_stable": "2.1.243",
+      "latest_release_date": "2026-08-24",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release, version 2.1.241, focuses primarily on foundational improvements rather than new user-facing features. Developers can expect a more stable and reliable experience due to a series of bug fixes and general reliability enhancements. While no new commands, flags, or environment variables have been introduced, these under-the-hood improvements are crucial for maintaining a robust development environment. There are no breaking changes or deprecations in this version, ensuring a smooth upgrade path for all users. This update is recommended for all users to benefit from the increased stability and reduced potential for unexpected behavior, contributing to a more consistent and productive workflow."
+      "tldr": "Claude Code 2.1.243 introduces significant enhancements for usage monitoring, model management, and organizational control. The headline change is the new `/usage` breakdown for `/loop` tasks, providing granular details like run count, total tokens, and tokens per run, making it much easier to identify and manage resource-intensive loops. This is crucial for optimizing costs and performance in automated workflows.\n\nNew features include a `modelPicker` setting for curating the `/model` selection, allowing organizations to define preferred models and their order, including Vertex/Bedrock IDs. `promptCacheTtl` and `subagentPromptCacheTtl` settings offer fine-grained control over prompt caching, enabling different cache durations for main conversations and subagents. A `modelPricing` managed setting allows organizations to apply their contracted rates and discounts to cost calculations, ensuring accurate `/cost` reporting and telemetry. For organizations restricting API keys, a keyless sign-in option via Anthropic Console is now available under `/login`.\n\nSeveral fixes improve stability and user experience: remote MCP servers now auto-reconnect, auto mode availability is more robust, and the `/model` picker correctly applies Ultracode selections. Cross-session messaging is hardened against silent failures in user namespaces, and API requests now time out more gracefully. Performance improvements include faster startup, smaller binary sizes (due to zstd compression and compact skill storage), and reduced memory usage. The `/status` command now shows 'Skipped sources' for managed settings and GitHub connection status, while `/tasks` and agent detail dialogs display subagent model and effort levels. The `claude remote-control` command is more resilient to server drops, and the `/login` experience over SSH is improved. This release is recommended for all users, especially those in organizations with specific model pricing, API key restrictions, or complex automated workflows, to leverage new cost controls, improved stability, and enhanced monitoring capabilities."
     },
     "features": [
       {
@@ -1862,6 +1873,128 @@
         "since": "2.1.239",
         "description": "Plugins synced from claude.ai in cloud sessions now display as `name@synced`, are manageable with `claude plugin enable/disable <name>@synced`, and will not override locally installed plugins with the same name.",
         "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "loops-breakdown-usage",
+        "name": "Loops Breakdown in /usage",
+        "status": "stable",
+        "since": "2.1.243",
+        "description": "Adds a detailed breakdown for /loop tasks in the /usage command output, including per-loop run count, total tokens, tokens per run, and last run time. This helps identify runaway or chatty /loop tasks.",
+        "key_details": [
+          "Per-loop run count",
+          "Total tokens used by the loop",
+          "Tokens consumed per run of the loop",
+          "Timestamp of the last loop run"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "model-picker-setting",
+        "name": "modelPicker Setting",
+        "status": "stable",
+        "since": "2.1.243",
+        "description": "Allows users to curate the /model picker with an ordered, labeled list of models. This list can append to or replace the built-in lineup and supports any model ID spelling, including Vertex/Bedrock IDs.",
+        "key_details": [
+          "Ordered and labeled list of models",
+          "Can append to or replace built-in models",
+          "Supports Vertex/Bedrock model IDs"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "prompt-cache-ttl-settings",
+        "name": "promptCacheTtl and subagentPromptCacheTtl Settings",
+        "status": "stable",
+        "since": "2.1.243",
+        "description": "Introduces settings to configure the Time-To-Live (TTL) for prompt caches. `promptCacheTtl` applies to the main conversation, while `subagentPromptCacheTtl` applies to subagents. This allows for different caching strategies, e.g., 1-hour for main conversation and 5 minutes for subagents, particularly useful for API-key and cloud-provider users.",
+        "key_details": [
+          "Configurable TTL for main conversation prompt cache",
+          "Configurable TTL for subagent prompt cache",
+          "Useful for API-key and cloud-provider users"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "model-pricing-managed-setting",
+        "name": "modelPricing Managed Setting",
+        "status": "stable",
+        "since": "2.1.243",
+        "description": "Enables organizations to use their contracted per-model rates and discount multipliers for cost calculations. These custom prices will be reflected in /cost, the status line, and telemetry cost figures, overriding the default list prices.",
+        "key_details": [
+          "Uses organization's contracted model rates",
+          "Applies discount multipliers",
+          "Affects /cost command, status line, and telemetry"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "keyless-anthropic-console-sign-in",
+        "name": "Keyless Anthropic Console Sign-in",
+        "status": "stable",
+        "since": "2.1.243",
+        "description": "Adds a new sign-in option under `/login` -> Anthropic Console: 'Sign in with your Console account'. This is recommended for organizations that do not permit the creation or use of API keys.",
+        "key_details": [
+          "Alternative to API key sign-in",
+          "Recommended for organizations with API key restrictions"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "skipped-sources-status-line",
+        "name": "Skipped Sources Line in /status",
+        "status": "stable",
+        "since": "2.1.243",
+        "description": "The `/status` command now includes a 'Skipped sources' line. This lists managed settings sources (e.g., `managed-settings.json`) that were present but not applied because a higher-precedence managed source was active.",
+        "key_details": [
+          "Identifies managed settings files that were ignored",
+          "Indicates higher-precedence settings are active"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "managed-marker-mcp-plugins",
+        "name": "Managed Marker in /mcp and /plugins",
+        "status": "stable",
+        "since": "2.1.243",
+        "description": "Adds a 'managed' marker in the output of `/mcp` and `/plugins` for claude.ai connectors whose authentication is managed by the user's organization.",
+        "key_details": [
+          "Indicates organization-managed authentication for connectors"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "github-connection-tip-web-setup",
+        "name": "GitHub Connection Tip for Claude.ai Users",
+        "status": "stable",
+        "since": "2.1.243",
+        "description": "Adds a tip for claude.ai users who haven't connected GitHub for Claude Code on the web, pointing them to `/web-setup` to do so.",
+        "key_details": [
+          "Guides users to connect GitHub for web-based Claude Code"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "github-connection-status-line",
+        "name": "GitHub Connection Status Line in /status",
+        "status": "stable",
+        "since": "2.1.243",
+        "description": "Adds a line to `/status` indicating whether GitHub is connected for Claude Code on the web (for Pro/Max users). If not connected, it points to `/web-setup`.",
+        "key_details": [
+          "Shows GitHub connection status for Claude Code on the web",
+          "Directs to /web-setup if not connected"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "subagent-model-effort-tasks",
+        "name": "Subagent Model and Effort Level in /tasks",
+        "status": "stable",
+        "since": "2.1.243",
+        "description": "The `/tasks` command and agent detail dialogs now display the model and effort level each subagent ran on.",
+        "key_details": [
+          "Visibility into subagent execution parameters"
+        ],
         "source_url": ""
       }
     ],
