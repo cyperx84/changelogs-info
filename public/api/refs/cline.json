@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "3.0.58",
-  "generated_at": "2026-08-25T08:39:12.044Z",
+  "version": "0.0.17",
+  "generated_at": "2026-08-25T09:33:01.315Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,15 +19,27 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "3.0.58",
-    "to_version": "3.0.58",
-    "new_features": [],
+    "from_version": "0.0.17",
+    "to_version": "0.0.17",
+    "new_features": [
+      "customize-hub-with-tabs",
+      "redesigned-models-page",
+      "dedicated-voice-settings-page",
+      "project-grouped-sidebar-sessions",
+      "labeled-new-schedule-customize-rows",
+      "session-search-dialog",
+      "suggested-schedule-templates",
+      "add-provider-dialog",
+      "unified-desktop-notifications-settings"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "removed-agent-todo-tool-and-agenda-panel"
+    ]
   },
   "payload": {
     "meta": {
@@ -45,12 +57,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "3.0.58",
-      "latest_release_date": "2026-08-24",
+      "latest_stable": "0.0.17",
+      "latest_release_date": "2026-08-25",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "Cline 3.0.58 introduces significant improvements to resource management and model cataloging. The hub's event log is now capped at 64 MiB, preventing it from consuming excessive disk space by automatically pruning older events, which is a crucial fix for long-running hubs that previously could grow to tens of gigabytes. This ensures better system stability and resource utilization. Additionally, the model catalog has been refreshed, integrating new providers like AgentRouter and Opper, and updating model lists and pricing across the board. This update also changes the default models for Aki.io and NanoGPT, meaning users who haven't explicitly pinned a model will now experience different default behavior. Finally, the first-launch 'Try ClinePass' dialog no longer advertises the $4.99 first-month promotion, as that offer is concluding. Developers should consider upgrading to benefit from the improved log management and access to the updated model catalog, especially if they rely on Aki.io or NanoGPT defaults."
+      "tldr": "cline 0.0.17 introduces a major overhaul of the user interface, primarily focusing on consolidation and improved user experience. The most significant change is the new 'Customize' hub, which unifies Plugins, MCP, Skills, Rules, Hooks, and Tools into a single, tabbed interface with live counts, replacing the separate 'Marketplace' page. This streamlines the management and discovery of extensions. The 'Models' page has also been completely redesigned, grouping providers and offering a more intuitive OAuth browser sign-in flow, making model configuration much easier. Voice input now has its own dedicated settings page, and the composer's microphone button only appears when a voice model is configured, simplifying the voice interaction workflow. Session management is enhanced with sidebar sessions now always grouped by project, and the 'Favorite' action has been renamed to 'Pin' for clarity. A new session search dialog allows searching the full history, and 'New', 'Schedule', and 'Customize' actions are now clearly labeled. Desktop notifications are unified under a single 'General' section, simplifying notification settings. A notable breaking change is the removal of the agent's 'todo' tool and the 'Agenda' panel, though existing scheduled tasks remain unaffected. Several bug fixes improve stability, including resolving unscrollable provider lists, failed settings saves, broken uninstall buttons, unreadable text in input fields, and app crashes due to large lines in codebase search. New files are now created with native line endings, and the hub's event log is prevented from growing indefinitely. This release significantly refines the user interface and interaction patterns, making it a recommended upgrade for a more streamlined and stable experience."
     },
     "features": [
       {
@@ -1312,6 +1324,87 @@
         "description": "Adds support for Opper as a new model provider.",
         "key_details": [],
         "source_url": "https://github.com/cline/cline/compare/cli-v3.0.57...cli-v3.0.58"
+      },
+      {
+        "id": "customize-hub-with-tabs",
+        "name": "Customize Hub with Tabbed Sections and Live Counts",
+        "status": "stable",
+        "since": "0.0.17",
+        "description": "Plugins, MCP, Skills, Rules, Hooks, and Tools are now consolidated into a single 'Customize' hub. This hub features tabbed sections for each category and displays live counts. Catalog-backed tabs show installed items, followed by an inline 'Browse' section, making newly installed items immediately visible. The separate 'Marketplace' page has been removed.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "redesigned-models-page",
+        "name": "Redesigned Models Page",
+        "status": "stable",
+        "since": "0.0.17",
+        "description": "The Models page has been redesigned to group providers into 'Connected', 'Popular', and 'All' categories. It now displays their authentication type and configuration status instead of per-row toggles. OAuth providers offer a browser sign-in flow, with a collapsed manual-key escape hatch where supported, and explicit 'Connect', 'Disconnect', and 'Sign out' actions.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "dedicated-voice-settings-page",
+        "name": "Dedicated Voice Settings Page",
+        "status": "stable",
+        "since": "0.0.17",
+        "description": "Voice input has been moved to its own 'Settings → Voice' page. This page only offers connected transcription-capable providers and preselects a default model. The composer's microphone button now only appears once a voice model is configured.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "project-grouped-sidebar-sessions",
+        "name": "Sidebar Sessions Grouped by Project",
+        "status": "stable",
+        "since": "0.0.17",
+        "description": "Sidebar sessions are now always grouped by project. Pinned sessions lead each group, and scheduled sessions are marked by an inline clock icon.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "labeled-new-schedule-customize-rows",
+        "name": "Labeled 'New', 'Schedule', and 'Customize' Rows",
+        "status": "stable",
+        "since": "0.0.17",
+        "description": "The 'New', 'Schedule', and 'Customize' actions now each have their own labeled row below the logo. 'New' starts a fresh task and places the cursor directly in the composer.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "session-search-dialog",
+        "name": "Session Search Dialog",
+        "status": "stable",
+        "since": "0.0.17",
+        "description": "Session search has been moved into a dialog, accessible via the search icon in the logo row. It now searches the full session history instead of only the sessions already loaded in the sidebar.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "suggested-schedule-templates",
+        "name": "Suggested Schedule Templates",
+        "status": "stable",
+        "since": "0.0.17",
+        "description": "Added suggested schedule templates to the Schedule page.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "add-provider-dialog",
+        "name": "Add Provider Dialog",
+        "status": "stable",
+        "since": "0.0.17",
+        "description": "The 'Add Provider' action now opens a dialog instead of swapping out the entire page.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "unified-desktop-notifications-settings",
+        "name": "Unified Desktop Notifications Settings",
+        "status": "stable",
+        "since": "0.0.17",
+        "description": "Desktop notifications are now consolidated into a single section under 'General' settings. The 'Event/Notify/Sound' matrix is no longer a peer of other settings like 'Dark mode'.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1386,6 +1479,18 @@
           "Users who relied on the 'Yolo Mode' toggle for visual confirmation of unattended runs."
         ],
         "migration": "Existing configurations that had 'Yolo Mode' or 'auto-approve-all' turned on will be automatically migrated to auto-approve every action, ensuring continued unattended operation. No manual migration steps are required, but users should now use the auto-approve menu for all unattended run configurations.",
+        "source_url": ""
+      },
+      {
+        "id": "removed-agent-todo-tool-and-agenda-panel",
+        "version": "0.0.17",
+        "title": "Removal of Agent's Todo Tool and Agenda Panel",
+        "description": "The agent's 'todo' tool and the 'Agenda' panel have been removed from cline. Scheduled tasks created previously are unaffected and will continue to function.",
+        "affected": [
+          "Agent's 'todo' tool",
+          "Agenda panel"
+        ],
+        "migration": "Users who relied on the 'todo' tool or 'Agenda' panel will need to find alternative methods for managing tasks. Existing scheduled tasks will continue to run.",
         "source_url": ""
       }
     ],
