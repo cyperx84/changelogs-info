@@ -15,6 +15,14 @@
   },
   "releases": [
     {
+      "version": "desktop-v0.0.17",
+      "name": "Desktop v0.0.17",
+      "body": "\n- Plugins, MCP, Skills, Rules, Hooks, and Tools are now one Customize hub with tabbed sections and live counts. Catalog-backed tabs show what you have installed followed by an inline Browse section, so installing something from the catalog immediately appears above — the separate Marketplace page is gone\n- Redesigned the Models page: providers are grouped into Connected, Popular, and All with their auth kind and configuration status instead of per-row toggles. OAuth providers now offer a browser sign-in rather than an API key field, with a collapsed manual-key escape hatch where supported, and explicit Connect / Disconnect / Sign out actions\n- Voice input moved to its own Settings → Voice page that only offers connected transcription-capable providers and preselects a default model. The composer's microphone button now appears only once a voice model is configured\n- Sidebar sessions are always grouped by project, with pinned sessions leading each group and scheduled sessions marked by an inline clock. The Favorite action is now called Pin\n- New, Schedule, and Customize each got their own labeled row below the logo. New starts a fresh task and puts your cursor straight in the composer\n- Session search moved into a dialog behind the search icon in the logo row, and it now searches your full history instead of only the sessions already loaded in the sidebar\n- Added suggested schedule templates to the Schedule page\n- Add Provider opens a dialog instead of swapping out the page\n- Desktop notifications are now a single section under General, so the Event/Notify/Sound matrix no longer reads as a peer of settings like Dark mode\n- The agent's todo tool and the Agenda panel have been removed; scheduled tasks are unaffected\n- Fixed the provider list being unscrollable while a provider detail panel was open\n- Fixed a failed settings save leaving the Models page claiming a provider configuration that was never written to disk\n- Fixed Uninstall buttons collapsing to a broken square next to Install\n- Fixed unreadable selected text inside input fields\n- New files are now created with your platform's native line endings\n- Fixed the codebase search tool crashing the app on files containing a single enormous line\n- The hub's event log can no longer grow until it fills your disk\n\n**Full Changelog**: https://github.com/cline/cline/compare/desktop-v0.0.16...desktop-v0.0.17\n",
+      "date": "2026-08-25T09:06:31Z",
+      "url": "https://github.com/cline/cline/releases/tag/desktop-v0.0.17",
+      "prerelease": false
+    },
+    {
       "version": "sdk/sdk/v0.0.79",
       "name": "SDK v0.0.79",
       "body": "\n- The hub's durable event log is now capped at 64 MiB on disk. Event envelopes carrying full session snapshots could previously accumulate to tens of gigabytes, since row and time retention alone did not bound file size and deletes never shrink a SQLite file. Oldest events are dropped first and the file is vacuumed to return the space, and pruning now also runs after every 16 MiB appended instead of waiting for the hourly sweep\n- Fixed `task.completed` telemetry being dropped for most interactive sessions. The event is now emitted from every session teardown path, exactly once per session\n- Refreshed the model catalog. Adds two providers (AgentRouter and Opper) and updates model lists and pricing across providers. The resolved default model changes for Aki.io and NanoGPT, so if you use one of those without pinning a model you will get a different default\n\n**Full Changelog**: https://github.com/cline/cline/compare/sdk/sdk/v0.0.78...sdk/sdk/v0.0.79\n",
@@ -245,15 +253,7 @@
       "date": "2026-08-11T18:29:59Z",
       "url": "https://github.com/cline/cline/releases/tag/sdk/sdk/v0.0.73",
       "prerelease": false
-    },
-    {
-      "version": "cli-v3.0.53",
-      "name": "CLI v3.0.53",
-      "body": "\n- Fixed the CLI reconnecting to a stale Hub daemon after an upgrade. Hub daemons now carry a runtime build fingerprint, so an upgraded CLI retires and respawns a daemon still running older code instead of attaching to it (from SDK v0.0.73)\n- Fixed compaction being silently skipped on reasoning models. The summarizer no longer hardcodes a 1024-token output cap — it honors your max output tokens setting, defaults to 4096 (lowered when the model reports less), and logs a diagnostic when a summary comes back empty (from SDK v0.0.73)\n- Added Fable 5 (`claude-fable-5`) to the Vertex model catalog. Pricing is intentionally omitted because Vertex bills region-dependently, so cost shows as unknown rather than wrong (from SDK v0.0.73)\n- Custom Vertex model IDs are now passed through unchanged, routing Claude-style IDs to the Anthropic-on-Vertex path (from SDK v0.0.73)\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.52...cli-v3.0.53\n",
-      "date": "2026-08-11T19:00:06Z",
-      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.53",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-08-25T06:24:53.657Z"
+  "lastUpdated": "2026-08-26T06:27:01.879Z"
 }
