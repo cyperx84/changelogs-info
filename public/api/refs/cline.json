@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "0.0.17",
-  "generated_at": "2026-08-26T07:43:31.055Z",
+  "version": "0.0.18",
+  "generated_at": "2026-08-26T08:40:26.954Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,28 +19,18 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "0.0.17",
-    "to_version": "0.0.17",
+    "from_version": "0.0.18",
+    "to_version": "0.0.18",
     "new_features": [
-      "customize-hub-with-tabs",
-      "redesigned-models-page",
-      "dedicated-voice-settings-page",
-      "project-grouped-sidebar-sessions",
-      "labeled-new-schedule-customize-rows",
-      "session-search-dialog",
-      "suggested-schedule-templates",
-      "add-provider-dialog",
-      "unified-desktop-notifications-settings"
+      "sidebar-project-grouping-toggle",
+      "marketplace-page"
     ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "removed-agent-todo-tool-and-agenda-panel",
-      "marketplace-page-removed"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -58,12 +48,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "0.0.17",
-      "latest_release_date": "2026-08-25",
+      "latest_stable": "0.0.18",
+      "latest_release_date": "2026-08-26",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "cline 0.0.17 introduces a major overhaul of the user interface, primarily focusing on consolidation and improved navigation. The most significant change is the new 'Customize' hub, which unifies Plugins, MCP, Skills, Rules, Hooks, and Tools into a single, tabbed interface with live counts and an integrated browsing experience, effectively replacing the standalone Marketplace page. This streamlines discovery and management of extensions. The Models page has also been redesigned for clarity, grouping providers by status and offering a more intuitive OAuth sign-in process. Voice input settings are now isolated on their own 'Settings → Voice' page, ensuring a cleaner configuration flow, and the microphone button only appears when a voice model is active. Session management is enhanced with project-grouped sidebar sessions, where 'Favorite' is now 'Pin', and a new dialog-based search allows searching your entire session history. Additionally, 'New', 'Schedule', and 'Customize' actions are now clearly labeled below the logo, and 'Add Provider' uses a dialog instead of a page swap. Desktop notifications have been simplified into a single 'General' settings section. Developers should note the removal of the agent's todo tool and the Agenda panel, which might require adjusting workflows. This release focuses heavily on UI/UX improvements and consolidation, making it a recommended upgrade for a more streamlined and intuitive experience."
+      "tldr": "This release of Cline, version 0.0.18, introduces significant improvements to the user interface and core functionality, primarily focusing on sidebar organization, session management, and plugin/server installation. The most notable change is the revamped sidebar, which is now time-sorted by default with collapsible sections for Pinned, Scheduled, and Tasks, and includes a new one-click toggle for project grouping, replacing the previous dropdown. This makes navigating sessions more intuitive and efficient. Additionally, session rows now feature a convenient trash button on hover for quick deletion, streamlining session management. \n\nA major workflow enhancement is the introduction of a dedicated Marketplace page, which centralizes browsing and installation of plugins, MCP servers, and skills, complete with type-filters and tag chips. This separates browsing from the 'Customize' section, which now focuses solely on installed inventory. Schedule cards have also been improved, becoming fully clickable targets to open details, with larger, more accessible control buttons and the removal of the redundant eye icon. Schedule details are now presented in a single scrollable view, integrating the meta grid, configuration, and recent runs with an expander for all runs. \n\nKey fixes include resolving an issue where installing plugins and MCP servers from the Marketplace failed due to `Executable not found in $PATH: \"cline\"`; installations now run in-process, removing the CLI dependency. The release also fixes a bug where opening a running scheduled session would leave it stuck on a thinking shimmer, and addresses an issue causing the app to beach-ball for several seconds upon quitting. Cost estimates are no longer shown for subscription-billed providers like ClinePass, ChatGPT via Codex, and Claude Code to avoid confusion with real charges. Furthermore, credentials embedded in git remote URLs are now redacted from workspace information sent to the model, enhancing security. This update is highly recommended for all users to benefit from improved usability, stability, and security."
     },
     "features": [
       {
@@ -1406,6 +1396,27 @@
         "description": "Desktop notifications are now consolidated into a single section under 'General' settings. The 'Event/Notify/Sound' matrix is no longer a peer of other settings like 'Dark mode'.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "sidebar-project-grouping-toggle",
+        "name": "Sidebar Project Grouping Toggle",
+        "status": "stable",
+        "since": "0.0.18",
+        "description": "A one-click toggle to switch the sidebar from time-sorted to project grouping. The old dropdown for this functionality has been removed.",
+        "key_details": [],
+        "source_url": "https://github.com/cline/cline/compare/desktop-v0.0.17...desktop-v0.0.18"
+      },
+      {
+        "id": "marketplace-page",
+        "name": "Dedicated Marketplace Page",
+        "status": "stable",
+        "since": "0.0.18",
+        "description": "A new dedicated Marketplace page for browsing and installing plugins, MCP servers, and skills. It features a single list with type-filter and tag chips.",
+        "key_details": [
+          "Replaces the browsing functionality previously in 'Customize'.",
+          "Links to and from the 'Customize' page."
+        ],
+        "source_url": "https://github.com/cline/cline/compare/desktop-v0.0.17...desktop-v0.0.18"
       }
     ],
     "commands": [
