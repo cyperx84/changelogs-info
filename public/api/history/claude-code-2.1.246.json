@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.246",
-  "generated_at": "2026-08-26T01:10:27.860Z",
+  "generated_at": "2026-08-25T23:22:55.929Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -16,7 +16,9 @@
   "delta": {
     "from_version": "2.1.246",
     "to_version": "2.1.246",
-    "new_features": [],
+    "new_features": [
+      "auto-mode-permissions-tab"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -44,7 +46,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release of claude-code 2.1.246 focuses heavily on stability, bug fixes, and quality-of-life improvements, with several key enhancements to existing features. A significant improvement is that Claude can now autonomously initiate code reviews on various platforms, expanding its utility in automated workflows. The `/cd` command has been enhanced to immediately apply new project settings, hooks, and agents upon directory change, streamlining development. Additionally, non-interactive sessions are now more resilient, automatically resuming responses interrupted by network issues or server errors, which is crucial for long-running background tasks and CI/CD integrations. Performance of Bash tools has been boosted, and subagent results are now more informative when they hit turn limits. Many fixes address UI glitches, such as fullscreen mode rendering, transcript slowdowns with long lines, and erratic scrolling. Plugin management sees fixes for installation issues, skill loading, and marketplace integration. Critical fixes also address background session failures, incorrect MCP tool argument handling, and memory leaks in transcript views. Telemetry attribution and API key handling for third-party gateways have been refined for better security and accuracy. While there are no breaking changes, users should note the updated behavior of `/code-review`, `/goal`, and the `claude install`/`update` commands regarding consent prompts. This release is recommended for all users to benefit from the numerous stability and performance enhancements."
+      "tldr": "This release, version 2.1.246, introduces a new 'Auto mode' tab within the `/permissions` command, allowing developers to easily view and edit classifier rules for automated workflows. This enhances control and transparency over how Claude operates in auto mode, making it easier to fine-tune its behavior. The release also significantly improves the reliability and user experience of background sessions, addressing issues where they would fail to open due to deleted directories, machine sleep, or concurrent npm package re-installations, ensuring smoother continuous operation. \n\nSeveral critical fixes enhance the stability and performance of the UI and core functionalities. A severe transcript slowdown caused by very long single lines (e.g., base64 strings) in diffs has been resolved by truncating such lines, preventing UI freezes. Erratic fullscreen scrolling and issues with keyboard focus in fullscreen mode have also been fixed, providing a more consistent user interface. Plugin management sees improvements, with fixes for duplicate SHA-named directories in the cache, correct display of plugin skill names in the slash menu, and successful updates and installations of plugins using bare names or `plugin.json` files with BOMs. \n\nFurthermore, the release refines tool interactions and session management. MCP tool calls interrupted by incoming messages in headless/remote sessions are now correctly reported as 'interrupted' instead of 'completed with no output,' providing accurate feedback to the model. The `/cd` command now immediately applies project settings, hooks, and skills from the new directory, streamlining workflow changes. Non-interactive sessions (`-p`, SDK, cloud sessions) will now automatically continue responses cut off mid-stream by server errors or connection loss, improving resilience. Telemetry and metrics requests now correctly handle API keys for third-party gateways, and expired cached tokens are refreshed silently, preventing visible API errors. This update is recommended for all users to benefit from enhanced stability, improved plugin management, and more robust session handling."
     },
     "features": [
       {
