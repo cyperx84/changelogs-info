@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.149.1",
-  "generated_at": "2026-08-26T18:58:29.598Z",
+  "version": "0.150.0",
+  "generated_at": "2026-08-26T21:43:57.295Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,9 +14,17 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.149.1",
-    "to_version": "0.149.1",
-    "new_features": [],
+    "from_version": "0.150.0",
+    "to_version": "0.150.0",
+    "new_features": [
+      "task-mentions",
+      "copy-picker",
+      "auto-descriptive-terminal-titles",
+      "clickable-markdown-links",
+      "permission-mode-cycling-keybinds",
+      "vim-dot-repeat",
+      "interrupt-hooks"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -39,14 +47,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.149.1",
+      "latest_stable": "0.150.0",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-08-24",
+      "latest_release_date": "2026-08-26",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release of codex-cli, version 0.149.1, is a patch release with no new features, updated features, commands, flags, environment variables, deprecations, or breaking changes. It primarily focuses on internal improvements and stability, as indicated by the lack of user-facing changes in the changelog. Developers can upgrade to this version without anticipating any workflow disruptions or requiring any migration steps. The release likely includes minor bug fixes or performance enhancements that are not explicitly detailed in the public changelog. Upgrading is recommended for general stability, but there is no immediate urgency unless specific internal fixes are critical to your operations."
+      "tldr": "Codex CLI v0.150.0 introduces significant enhancements to task management and user interaction. The headline feature is the ability to reference other Codex tasks using `@` mentions, allowing agents to read, create, or message tasks directly from the terminal, streamlining complex workflows and inter-task communication. The `/copy` command has been upgraded with a new picker, enabling precise copying of full responses, individual code blocks, or blockquotes, which greatly improves content extraction flexibility. Additionally, unnamed terminal tasks now automatically receive descriptive titles, and the `/rename` command intelligently suggests editable titles based on conversation context, making session organization more intuitive. Markdown links are now rendered as clickable labels in supported terminals, enhancing navigation and information access. For power users, new keybindings allow cycling through permission modes, and Vim mode gains the `.` command for repeating the last edit, boosting productivity. Finally, new `Interrupt` hooks provide powerful automation capabilities, allowing commands or MCP handlers to run when a top-level turn is interrupted. This release also includes crucial bug fixes, such as improved credential redaction in app-server diagnostics, fixes for remote MCP bearer-token lookup, and resolution of Windows sandbox setup issues under Unicode paths. Users are encouraged to upgrade to leverage these new features and stability improvements, particularly those relying on multi-agent workflows, Amazon Bedrock models, or advanced TUI interactions."
     },
     "features": [
       {
@@ -2151,6 +2159,87 @@
           "Select 'max' or 'ultra' reasoning effort for agents."
         ],
         "source_url": "https://github.com/openai/codex/pull/38817"
+      },
+      {
+        "id": "task-mentions",
+        "name": "Task Mentions and Management",
+        "status": "stable",
+        "since": "0.150.0",
+        "description": "Reference other Codex tasks using `@` mentions within the TUI composer. Agents can now read, create, or message tasks directly from the terminal.",
+        "key_details": [
+          "Use `@` to mention tasks.",
+          "Agents can interact with tasks."
+        ],
+        "source_url": "https://github.com/openai/codex/compare/rust-v0.149.0...rust-v0.150.0#40308"
+      },
+      {
+        "id": "copy-picker",
+        "name": "Enhanced /copy Command with Picker",
+        "status": "stable",
+        "since": "0.150.0",
+        "description": "The `/copy` command now provides a picker interface, allowing users to select whether to copy full responses, individual code blocks, or blockquotes.",
+        "key_details": [
+          "Picker for full responses, code blocks, and blockquotes."
+        ],
+        "source_url": "https://github.com/openai/codex/compare/rust-v0.149.0...rust-v0.150.0#39997"
+      },
+      {
+        "id": "auto-descriptive-terminal-titles",
+        "name": "Automatic Descriptive Terminal Titles and /rename Suggestions",
+        "status": "stable",
+        "since": "0.150.0",
+        "description": "Unnamed terminal tasks now automatically receive descriptive titles. The `/rename` command suggests an editable title based on the current conversation context.",
+        "key_details": [
+          "Automatic titles for unnamed tasks.",
+          "`/rename` suggests conversation-based titles."
+        ],
+        "source_url": "https://github.com/openai/codex/compare/rust-v0.149.0...rust-v0.150.0#40492"
+      },
+      {
+        "id": "clickable-markdown-links",
+        "name": "Clickable Markdown Links in TUI",
+        "status": "stable",
+        "since": "0.150.0",
+        "description": "Markdown links are now rendered as clickable labels in supported terminals, while their visible URLs are retained in other contexts.",
+        "key_details": [
+          "Links are clickable in compatible terminals.",
+          "URLs remain visible elsewhere."
+        ],
+        "source_url": "https://github.com/openai/codex/compare/rust-v0.149.0...rust-v0.150.0#40471"
+      },
+      {
+        "id": "permission-mode-cycling-keybinds",
+        "name": "Keybindings for Cycling Permission Modes",
+        "status": "stable",
+        "since": "0.150.0",
+        "description": "Users can now bind shortcuts to cycle through different permission modes within the TUI.",
+        "key_details": [
+          "Configurable keybindings for permission mode switching."
+        ],
+        "source_url": "https://github.com/openai/codex/compare/rust-v0.149.0...rust-v0.150.0#39873"
+      },
+      {
+        "id": "vim-dot-repeat",
+        "name": "Vim Mode Dot Repeat",
+        "status": "stable",
+        "since": "0.150.0",
+        "description": "Vim mode now supports the `.` command to repeat the last edit.",
+        "key_details": [
+          "Repeat last edit with `.` in Vim mode."
+        ],
+        "source_url": "https://github.com/openai/codex/compare/rust-v0.149.0...rust-v0.150.0#40521"
+      },
+      {
+        "id": "interrupt-hooks",
+        "name": "Interrupt Hooks",
+        "status": "stable",
+        "since": "0.150.0",
+        "description": "New `Interrupt` hooks can be configured to run commands or MCP handlers when an active top-level turn is interrupted.",
+        "key_details": [
+          "Hooks trigger on turn interruption.",
+          "Can execute commands or MCP handlers."
+        ],
+        "source_url": "https://github.com/openai/codex/compare/rust-v0.149.0...rust-v0.150.0#40511"
       }
     ],
     "commands": [
