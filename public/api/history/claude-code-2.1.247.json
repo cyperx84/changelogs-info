@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.247",
-  "generated_at": "2026-08-27T13:47:01.245Z",
+  "generated_at": "2026-08-27T02:54:54.194Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -16,7 +16,11 @@
   "delta": {
     "from_version": "2.1.247",
     "to_version": "2.1.247",
-    "new_features": [],
+    "new_features": [
+      "send-feedback-tool",
+      "spinner-tips-override-customization",
+      "bash-permission-prompts-auto-mode-tip"
+    ],
     "new_commands": [
       "/claude-api cost-optimize"
     ],
@@ -46,7 +50,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces the new `/claude-api cost-optimize` command, a significant addition for developers looking to manage their Claude API spend. This command allows users to profile their project's API usage and systematically apply cost-saving measures like caching, token hygiene, batch processing, effort adjustments, and model choice, making cost management a more guided and measurable process. \n\nSeveral critical fixes enhance stability and user experience. Issues with fast arrow-key + Enter sequences in history search and config menus are resolved, preventing actions on incorrect rows. Sub-agents are now more resilient, using the session's fallback model chain on 404 errors and providing detailed error information to the parent. A fix addresses unbounded memory growth and conversation wedging caused by large error outputs from hooks or background agents. Keyboard shortcut issues with non-Latin layouts in kitty-protocol terminals and prompt insertion of mouse reports are also resolved. \n\nImportant fixes for configuration management include `/terminal-setup` now merging keybindings into Zed's `keymap.json` instead of overwriting it, and `/rename` now correctly indicating when the session registry cannot be updated. Background session reliability is improved, with `claude agents` now failing quickly with a reason instead of showing 'opening…' indefinitely if the host process dies. Self-hosted runner sessions no longer report `running` prematurely, preventing false 'Claude is waiting for your input' notifications. \n\nImprovements include enhanced plugin marketplace hardening, rejecting names with control characters and ensuring escape-safe text. Bedrock, Vertex, and Foundry sessions now correctly report MCP server connection failures. Sonnet 5's auto-compact window has been expanded to its full 1M context, allowing more tokens before compaction. Cross-session peer messages now collapse by default for a cleaner interface, and terminal hyperlinks are rendered as plain text if they pose a security risk. Analytics behavior is refined to stay off from startup when managed settings enforce gateway login, and Claude apps gateway sign-in requests now correctly identify Claude Code. Organizations using managed settings for sign-in enforcement will find the tool now exits at start if these settings cannot be read, preventing inconsistent behavior. This release offers significant stability, cost management, and security enhancements, making an upgrade highly recommended for all users."
+      "tldr": "This release introduces the new `SendFeedback` tool, allowing Claude to draft feedback reports for review and submission via `/feedback`, which can be disabled with the `feedbackDrafts` setting. Organizations gain more control over spinner tips with new `id`, `text`, `cooldownSessions`, `priority`, `tipsFile`, and `label` options in `spinnerTipsOverride`, enabling custom tip rotation. A helpful new tip for Bash permission prompts now offers a one-keystroke option to switch to auto mode. For cost management, a new `/claude-api cost-optimize` command helps profile and optimize Claude API spend by guiding users through changes like caching, token hygiene, and model selection. The existing `/claude-api` skill has been significantly expanded to include full Admin API coverage for managing organization members, API keys, workspaces, and more. Numerous fixes address critical issues: fast arrow-key + Enter sequences no longer act on the wrong row in various UI elements, sub-agents now gracefully handle model 404 errors by falling back to session defaults and providing detailed error reports, and large error outputs from hooks or background agents no longer wedge sessions with 'Prompt is too long' errors. Keyboard shortcuts now function correctly under non-Latin layouts in kitty-protocol terminals, and various sandbox, configuration, and session management issues have been resolved, including `/terminal-setup` overwriting Zed keymaps and background sessions showing 'opening…' indefinitely. Plugin marketplace hardening has been improved, and cross-session peer messages now collapse by default for a cleaner UI. It is recommended to upgrade to leverage these new features, improved stability, and enhanced administrative capabilities."
     },
     "features": [
       {
