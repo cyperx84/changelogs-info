@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.246",
-  "generated_at": "2026-08-26T21:43:41.160Z",
+  "version": "2.1.247",
+  "generated_at": "2026-08-27T02:54:54.194Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,10 +14,16 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.246",
-    "to_version": "2.1.246",
-    "new_features": [],
-    "new_commands": [],
+    "from_version": "2.1.247",
+    "to_version": "2.1.247",
+    "new_features": [
+      "send-feedback-tool",
+      "spinner-tips-override-customization",
+      "bash-permission-prompts-auto-mode-tip"
+    ],
+    "new_commands": [
+      "/claude-api cost-optimize"
+    ],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
@@ -39,12 +45,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.246",
-      "latest_release_date": "2026-08-25",
+      "latest_stable": "2.1.247",
+      "latest_release_date": "2026-08-26",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release of claude-code 2.1.246 focuses heavily on stability, bug fixes, and quality-of-life improvements, with several key enhancements to existing features. A significant improvement is that Claude can now autonomously initiate code reviews on various platforms, expanding its utility in automated workflows. The `/cd` command has been enhanced to immediately apply new project settings, hooks, and agents upon directory change, streamlining development. Additionally, non-interactive sessions are now more resilient, automatically resuming responses interrupted by network issues or server errors, which is crucial for long-running background tasks and CI/CD integrations. Performance of Bash tools has been boosted, and subagent results are now more informative when they hit turn limits. Many fixes address UI glitches, such as fullscreen mode rendering, transcript slowdowns with long lines, and erratic scrolling. Plugin management sees fixes for installation issues, skill loading, and marketplace integration. Critical fixes also address background session failures, incorrect MCP tool argument handling, and memory leaks in transcript views. Telemetry attribution and API key handling for third-party gateways have been refined for better security and accuracy. While there are no breaking changes, users should note the updated behavior of `/code-review`, `/goal`, and the `claude install`/`update` commands regarding consent prompts. This release is recommended for all users to benefit from the numerous stability and performance enhancements."
+      "tldr": "This release introduces the new `SendFeedback` tool, allowing Claude to draft feedback reports for review and submission via `/feedback`, which can be disabled with the `feedbackDrafts` setting. Organizations gain more control over spinner tips with new `id`, `text`, `cooldownSessions`, `priority`, `tipsFile`, and `label` options in `spinnerTipsOverride`, enabling custom tip rotation. A helpful new tip for Bash permission prompts now offers a one-keystroke option to switch to auto mode. For cost management, a new `/claude-api cost-optimize` command helps profile and optimize Claude API spend by guiding users through changes like caching, token hygiene, and model selection. The existing `/claude-api` skill has been significantly expanded to include full Admin API coverage for managing organization members, API keys, workspaces, and more. Numerous fixes address critical issues: fast arrow-key + Enter sequences no longer act on the wrong row in various UI elements, sub-agents now gracefully handle model 404 errors by falling back to session defaults and providing detailed error reports, and large error outputs from hooks or background agents no longer wedge sessions with 'Prompt is too long' errors. Keyboard shortcuts now function correctly under non-Latin layouts in kitty-protocol terminals, and various sandbox, configuration, and session management issues have been resolved, including `/terminal-setup` overwriting Zed keymaps and background sessions showing 'opening…' indefinitely. Plugin marketplace hardening has been improved, and cross-session peer messages now collapse by default for a cleaner UI. It is recommended to upgrade to leverage these new features, improved stability, and enhanced administrative capabilities."
     },
     "features": [
       {
@@ -1994,6 +2000,45 @@
         "description": "A new tab in the `/permissions` command interface for viewing and editing auto mode classifier rules.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "send-feedback-tool",
+        "name": "SendFeedback Tool",
+        "status": "stable",
+        "since": "2.1.247",
+        "description": "Claude can now draft feedback reports when something goes wrong in a session. Users can review and send these reports using the `/feedback` command. This feature can be disabled via the `feedbackDrafts` setting.",
+        "key_details": [
+          "Claude drafts feedback reports automatically.",
+          "Reports are sent via the `/feedback` command.",
+          "Can be turned off with the `feedbackDrafts` setting."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "spinner-tips-override-customization",
+        "name": "Spinner Tips Override Customization",
+        "status": "stable",
+        "since": "2.1.247",
+        "description": "Organizations can now customize spinner tips with their own entries, including `id`, `text`, `cooldownSessions`, and `priority`. The `tipsFile` and `label` fields have also been added to `spinnerTipsOverride` for better management and rotation of custom tips alongside built-in ones.",
+        "key_details": [
+          "Customizable spinner tips with `id`, `text`, `cooldownSessions`, `priority`.",
+          "`tipsFile` and `label` fields added to `spinnerTipsOverride`.",
+          "Allows organizations to rotate their own tips."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "bash-permission-prompts-auto-mode-tip",
+        "name": "Bash Permission Prompts Auto Mode Tip",
+        "status": "stable",
+        "since": "2.1.247",
+        "description": "A new tip has been added for Bash permission prompts, guiding users towards auto mode. It includes a convenient one-keystroke option to 'Yes, and switch to auto mode'.",
+        "key_details": [
+          "Tip for Bash permission prompts.",
+          "Suggests switching to auto mode.",
+          "One-keystroke option to accept and switch to auto mode."
+        ],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -2455,6 +2500,14 @@
         "syntax": "/claude-api upgrade",
         "description": "Migrates Python projects from `anthropic` 0.x to 1.x, and updates the skill's Python reference for 1.x (timeouts use `anthropic.Timeout`, not `httpx.Timeout`).",
         "since": "2.1.239",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "/claude-api cost-optimize",
+        "syntax": "/claude-api cost-optimize",
+        "description": "Profiles an existing project's Claude API spend and guides users through cost optimization levers. This includes caching, token hygiene, batching, effort levels, and model choice, applying one measured change at a time.",
+        "since": "2.1.247",
         "status": "stable",
         "source_url": ""
       }
