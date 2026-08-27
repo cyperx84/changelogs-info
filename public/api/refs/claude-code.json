@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.247",
-  "generated_at": "2026-08-27T13:47:01.245Z",
+  "version": "2.1.248",
+  "generated_at": "2026-08-27T23:35:46.429Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,14 +14,24 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.247",
-    "to_version": "2.1.247",
-    "new_features": [],
-    "new_commands": [
-      "/claude-api cost-optimize"
+    "from_version": "2.1.248",
+    "to_version": "2.1.248",
+    "new_features": [
+      "agent-prompt-cache-ttl",
+      "server-managed-settings-diagnostics",
+      "cross-session-messaging-bedrock-vertex-foundry"
     ],
-    "new_flags": [],
-    "new_env_vars": [],
+    "new_commands": [
+      "/usage-credits"
+    ],
+    "new_flags": [
+      "--restricted",
+      "--client-label"
+    ],
+    "new_env_vars": [
+      "CLAUDE_CODE_RESTRICTED",
+      "SELF_HOSTED_RUNNER_CLIENT_LABEL"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -41,12 +51,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.247",
-      "latest_release_date": "2026-08-26",
+      "latest_stable": "2.1.248",
+      "latest_release_date": "2026-08-27",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces the new `/claude-api cost-optimize` command, a significant addition for developers looking to manage their Claude API spend. This command allows users to profile their project's API usage and systematically apply cost-saving measures like caching, token hygiene, batch processing, effort adjustments, and model choice, making cost management a more guided and measurable process. \n\nSeveral critical fixes enhance stability and user experience. Issues with fast arrow-key + Enter sequences in history search and config menus are resolved, preventing actions on incorrect rows. Sub-agents are now more resilient, using the session's fallback model chain on 404 errors and providing detailed error information to the parent. A fix addresses unbounded memory growth and conversation wedging caused by large error outputs from hooks or background agents. Keyboard shortcut issues with non-Latin layouts in kitty-protocol terminals and prompt insertion of mouse reports are also resolved. \n\nImportant fixes for configuration management include `/terminal-setup` now merging keybindings into Zed's `keymap.json` instead of overwriting it, and `/rename` now correctly indicating when the session registry cannot be updated. Background session reliability is improved, with `claude agents` now failing quickly with a reason instead of showing 'opening…' indefinitely if the host process dies. Self-hosted runner sessions no longer report `running` prematurely, preventing false 'Claude is waiting for your input' notifications. \n\nImprovements include enhanced plugin marketplace hardening, rejecting names with control characters and ensuring escape-safe text. Bedrock, Vertex, and Foundry sessions now correctly report MCP server connection failures. Sonnet 5's auto-compact window has been expanded to its full 1M context, allowing more tokens before compaction. Cross-session peer messages now collapse by default for a cleaner interface, and terminal hyperlinks are rendered as plain text if they pose a security risk. Analytics behavior is refined to stay off from startup when managed settings enforce gateway login, and Claude apps gateway sign-in requests now correctly identify Claude Code. Organizations using managed settings for sign-in enforcement will find the tool now exits at start if these settings cannot be read, preventing inconsistent behavior. This release offers significant stability, cost management, and security enhancements, making an upgrade highly recommended for all users."
+      "tldr": "Claude Code 2.1.248 introduces a new `--restricted` flag and `CLAUDE_CODE_RESTRICTED` environment variable, which significantly enhance security by disabling code execution tools, restricting file access to the working directory, and ignoring local settings. This is crucial for environments requiring strict control over agent capabilities. The release also adds an experimental `experimental.cacheTtl` setting to agent frontmatter, allowing per-agent prompt cache TTL configuration, which can improve performance for long-running sessions. For self-hosted runners, a new `--client-label` flag and `SELF_HOSTED_RUNNER_CLIENT_LABEL` environment variable provide more control over how runners identify themselves. Diagnostics for server-managed settings have been improved, offering clearer warnings and status updates for load failures. Cross-session messaging is now supported on Bedrock, Vertex, and Foundry, and a new `/usage-credits` command is available for Enterprise users to request higher usage limits. Several critical fixes address prompt-cache misses in long sessions, issues with `ScheduleWakeup` tool definitions, and Claude Desktop/Cowork sessions disappearing after 30 days. The Workflow tool's prompt footprint has been optimized, and cross-session messaging has improved fallback mechanisms and Linux user namespace handling. Users should upgrade to benefit from enhanced security, improved stability, and better diagnostics, especially in managed or enterprise environments."
     },
     "features": [
       {
@@ -2035,6 +2045,36 @@
           "One-keystroke option to accept and switch to auto mode."
         ],
         "source_url": ""
+      },
+      {
+        "id": "agent-prompt-cache-ttl",
+        "name": "Agent Prompt Cache TTL",
+        "status": "experimental",
+        "since": "2.1.248",
+        "description": "Allows setting a per-agent prompt cache TTL in agent frontmatter, used when no subagent TTL setting is configured.",
+        "key_details": [
+          "`experimental.cacheTtl` in agent frontmatter",
+          "Accepts values like `\"5m\"` or `\"1h\"`"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "server-managed-settings-diagnostics",
+        "name": "Server-Managed Settings Diagnostics",
+        "status": "stable",
+        "since": "2.1.248",
+        "description": "Provides startup warnings and `/doctor` / `/status` line explanations for server-managed settings load failures or when they weren't fetched (e.g., due to Bedrock/Vertex/third-party provider, custom `ANTHROPIC_BASE_URL`).",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "cross-session-messaging-bedrock-vertex-foundry",
+        "name": "Cross-Session Messaging on Bedrock, Vertex, and Foundry",
+        "status": "stable",
+        "since": "2.1.248",
+        "description": "Enables cross-session messaging (`SendMessage` / `ListAgents`) between sessions on the same machine when using Bedrock, Vertex, Foundry, and when telemetry is disabled.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -2837,6 +2877,18 @@
           "description": "Used with `claude self-hosted-runner`. Specifies a file containing a freshly issued `Proxy-Authorization` header for egress proxies on every connection.",
           "since": "2.1.238",
           "source_url": ""
+        },
+        {
+          "flag": "--restricted",
+          "description": "Removes built-in tools that run commands or code and `WebFetch` (unless named in `--tools`), keeps file tools inside the working directory, refuses `bypassPermissions`, and ignores user, project, and local settings files.",
+          "since": "2.1.248",
+          "source_url": ""
+        },
+        {
+          "flag": "--client-label",
+          "description": "Overrides the label the self-hosted runner registers with (default: hostname). Used with `claude self-hosted-runner`.",
+          "since": "2.1.248",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -2870,7 +2922,10 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--restricted",
+        "--client-label"
+      ]
     },
     "env_vars": [
       {
@@ -3346,6 +3401,20 @@
         "purpose": "Enables persistent retry mode, which now fails immediately on organization spend-limit and out-of-credits errors instead of waiting indefinitely for a reset.",
         "status": "stable",
         "since": "2.1.239",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_RESTRICTED",
+        "purpose": "Enables restricted mode, removing built-in tools that run commands or code and `WebFetch` (unless named in `--tools`), keeping file tools inside the working directory, refusing `bypassPermissions`, and ignoring user, project, and local settings files.",
+        "status": "stable",
+        "since": "2.1.248",
+        "source_url": ""
+      },
+      {
+        "name": "SELF_HOSTED_RUNNER_CLIENT_LABEL",
+        "purpose": "Overrides the label the self-hosted runner registers with (default: hostname).",
+        "status": "stable",
+        "since": "2.1.248",
         "source_url": ""
       }
     ],
