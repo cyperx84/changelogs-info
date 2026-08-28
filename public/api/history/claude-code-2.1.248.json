@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.250",
-  "generated_at": "2026-08-28T09:35:00.481Z",
+  "version": "2.1.248",
+  "generated_at": "2026-08-27T23:35:46.429Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,12 +14,24 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.250",
-    "to_version": "2.1.250",
-    "new_features": [],
-    "new_commands": [],
-    "new_flags": [],
-    "new_env_vars": [],
+    "from_version": "2.1.248",
+    "to_version": "2.1.248",
+    "new_features": [
+      "agent-prompt-cache-ttl",
+      "server-managed-settings-diagnostics",
+      "cross-session-messaging-bedrock-vertex-foundry"
+    ],
+    "new_commands": [
+      "/usage-credits"
+    ],
+    "new_flags": [
+      "--restricted",
+      "--client-label"
+    ],
+    "new_env_vars": [
+      "CLAUDE_CODE_RESTRICTED",
+      "SELF_HOSTED_RUNNER_CLIENT_LABEL"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -39,12 +51,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.250",
-      "latest_release_date": "2026-08-28",
+      "latest_stable": "2.1.248",
+      "latest_release_date": "2026-08-27",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release, claude-code 2.1.250, focuses primarily on foundational improvements rather than new features. It includes a series of bug fixes and reliability enhancements designed to improve the overall stability and performance of the tool. While no new commands, flags, or environment variables are introduced, and no existing features are explicitly updated with new functionality, users can expect a more robust and dependable experience. There are no breaking changes or deprecations in this version, making it a safe and recommended upgrade for all users. The improvements are aimed at refining the core functionality and ensuring a smoother workflow for developers. Users should upgrade to benefit from these stability improvements."
+      "tldr": "Claude Code 2.1.248 introduces a new `--restricted` flag and `CLAUDE_CODE_RESTRICTED` environment variable, which significantly enhance security by disabling code execution tools, restricting file access to the working directory, and ignoring local settings. This is crucial for environments requiring strict control over agent capabilities. The release also adds an experimental `experimental.cacheTtl` setting to agent frontmatter, allowing per-agent prompt cache TTL configuration, which can improve performance for long-running sessions. For self-hosted runners, a new `--client-label` flag and `SELF_HOSTED_RUNNER_CLIENT_LABEL` environment variable provide more control over how runners identify themselves. Diagnostics for server-managed settings have been improved, offering clearer warnings and status updates for load failures. Cross-session messaging is now supported on Bedrock, Vertex, and Foundry, and a new `/usage-credits` command is available for Enterprise users to request higher usage limits. Several critical fixes address prompt-cache misses in long sessions, issues with `ScheduleWakeup` tool definitions, and Claude Desktop/Cowork sessions disappearing after 30 days. The Workflow tool's prompt footprint has been optimized, and cross-session messaging has improved fallback mechanisms and Linux user namespace handling. Users should upgrade to benefit from enhanced security, improved stability, and better diagnostics, especially in managed or enterprise environments."
     },
     "features": [
       {
@@ -2910,7 +2922,10 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--restricted",
+        "--client-label"
+      ]
     },
     "env_vars": [
       {

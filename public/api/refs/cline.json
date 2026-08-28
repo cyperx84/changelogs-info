@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "4.1.16",
-  "generated_at": "2026-08-27T23:36:06.766Z",
+  "version": "0.0.20",
+  "generated_at": "2026-08-28T09:35:22.526Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,9 +19,16 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "4.1.16",
-    "to_version": "4.1.16",
-    "new_features": [],
+    "from_version": "0.0.20",
+    "to_version": "0.0.20",
+    "new_features": [
+      "cline-desktop-on-windows",
+      "inline-image-rendering-from-tools",
+      "github-integration-onboarding-step",
+      "agent-created-schedules-centralized",
+      "finished-scheduled-session-final-answer",
+      "suggested-routine-templates-final-report"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -45,12 +52,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "4.1.16",
-      "latest_release_date": "2026-08-26",
+      "latest_stable": "0.0.20",
+      "latest_release_date": "2026-08-28",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "Cline 4.1.16 primarily focuses on stability and user experience improvements, with a significant change to how MCP auto-approval is managed. The per-tool MCP auto-approve checkboxes have been removed, as auto-approval is now exclusively controlled by the global 'Use MCP servers' toggle, simplifying the configuration. This release also addresses several critical bugs, including an issue where cost estimates were incorrectly displayed for flat-rate subscription providers like ClinePass, ChatGPT via Codex, and Claude Code, which could mislead users into thinking they were incurring additional API charges. Another key fix ensures that signing back in no longer inadvertently switches your last-used provider away from ClinePass after a credential refresh. Furthermore, the resolution of workspace hooks has been improved, now correctly resolving from the VS Code window rather than a shared global state, which previously caused issues with hook discovery and path resolution in multi-project setups. New files will now be created with native line endings, and a crash related to the codebase search tool on files with single enormous lines has been resolved. Security is enhanced by redacting credentials embedded in git remote URLs from workspace information sent to the model, which now also includes richer metadata. Finally, issues with installing MCP servers from the marketplace and the hub's event log growing indefinitely have been fixed, preventing potential disk space exhaustion."
+      "tldr": "Cline Desktop now officially supports Windows with a code-signed x64 installer and auto-updates, bringing the full Cline experience to a new platform. This release also significantly improves the handling of images from tool results, which now render inline and are viewable in a carousel, replacing raw base64 text. Session search has been upgraded to cover your entire indexed history, accessible via the command bar (Cmd/Ctrl+P) for server-ranked results, a major improvement over the previous memory-intensive local dialog. Onboarding now includes a GitHub integration step, streamlining developer workflows. Scheduled tasks are more robust, with agent-created schedules centralized in `~/.cline/schedules` and no longer disappearing after app updates. Finished scheduled sessions now clearly surface their final answers in markdown, and routine templates prompt for specific final reports. Provider configuration is more accurate, only showing 'Configured' when real credentials exist and updating live. Critical fixes include resolving silent dead-ends for OpenAI Codex sign-ins when port 1455 is in use, providing actionable errors, and preventing token refresh failures from dropping sign-ins. Checkpoint restore now intelligently refuses to reset workspaces with post-checkpoint commits, and global rules stored in `~/Cline/Rules` are now correctly discovered, benefiting WSL and headless installs. The `apply_patch` command now preserves CRLF line endings, and the window title bar remains draggable across all views. These updates enhance stability, user experience, and platform compatibility, making an upgrade highly recommended for all users, especially those on Windows or relying on scheduled tasks and global rules."
     },
     "features": [
       {
@@ -1414,6 +1421,62 @@
           "Links to and from the 'Customize' page."
         ],
         "source_url": "https://github.com/cline/cline/compare/desktop-v0.0.17...desktop-v0.0.18"
+      },
+      {
+        "id": "cline-desktop-on-windows",
+        "name": "Cline Desktop now ships on Windows",
+        "status": "stable",
+        "since": "0.0.20",
+        "description": "Cline Desktop is now available on Windows, with a code-signed x64 installer. Installed apps auto-update on the same feed as macOS.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "inline-image-rendering-from-tools",
+        "name": "Inline Image Rendering from Tool Results",
+        "status": "stable",
+        "since": "0.0.20",
+        "description": "Tool results that return images (e.g., screenshots from browser or MCP tools) now render as inline images. These images can be clicked to expand, and a carousel is provided for stepping through multiple images, replacing raw base64 text output.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "github-integration-onboarding-step",
+        "name": "GitHub Integration Step in Onboarding",
+        "status": "stable",
+        "since": "0.0.20",
+        "description": "Onboarding now includes a new step for GitHub integration.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "agent-created-schedules-centralized",
+        "name": "Centralized Agent-Created Schedules",
+        "status": "stable",
+        "since": "0.0.20",
+        "description": "Agent-created schedules are now stored in a single user-level home directory (`~/.cline/schedules`) instead of being scattered across chat folders. They also now appear on the Schedules page.",
+        "key_details": [
+          "Location: `~/.cline/schedules`"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "finished-scheduled-session-final-answer",
+        "name": "Final Answer Surfacing for Finished Scheduled Sessions",
+        "status": "stable",
+        "since": "0.0.20",
+        "description": "A finished scheduled session now surfaces its final answer. The completing step auto-expands, is labeled 'Scheduled task completed' (or failed), and its summary renders as markdown.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "suggested-routine-templates-final-report",
+        "name": "Suggested Routine Templates Request Final Report",
+        "status": "stable",
+        "since": "0.0.20",
+        "description": "Suggested routine templates now ask for a specific final report, ensuring a scheduled run ends with a readable output.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
