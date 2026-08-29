@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.150.1",
-  "generated_at": "2026-08-29T03:29:56.072Z",
+  "version": "0.151.0",
+  "generated_at": "2026-08-29T10:47:45.464Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,9 +14,13 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.150.1",
-    "to_version": "0.150.1",
-    "new_features": [],
+    "from_version": "0.151.0",
+    "to_version": "0.151.0",
+    "new_features": [
+      "configurable-mcp-tool-discovery-grace-period",
+      "extensions-inspect-replace-mcp-tool-results",
+      "plugin-catalogs-per-repository-config-invalid-marketplace-reporting"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -39,14 +43,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.150.1",
+      "latest_stable": "0.151.0",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-08-27",
+      "latest_release_date": "2026-08-29",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This `codex-cli` release, version 0.150.1, primarily focuses on a crucial bug fix related to remote compaction. The most significant change is that remote compaction now intelligently budgets for retained images, ensuring that older images are automatically trimmed to stay within token limits. This enhancement to the `cached-web-search-and-remote-compaction-bedrock` feature improves resource management and prevents potential overages or performance issues when dealing with cached images during remote operations. This update is a maintenance release, addressing a specific behavior in image handling. There are no new features, commands, flags, or breaking changes introduced in this version. Developers should consider upgrading to benefit from the improved stability and resource management in remote compaction workflows, especially if they frequently use cached images."
+      "tldr": "Codex-cli v0.151.0 introduces significant enhancements to tool discovery, extension capabilities, and security. A new configurable grace period for discovering tools from optional MCP servers allows for more flexible integration with diverse agent ecosystems, improving startup reliability for complex setups. Extensions can now inspect or replace MCP tool results before they reach the model, providing powerful new hooks for custom logic, data transformation, or security checks within agent workflows. Plugin catalogs have been improved to combine per-repository configuration and accurately report invalid project marketplaces without obscuring valid plugins, streamlining plugin management and discovery. Key bug fixes include preserving restored permission profiles across TUI turns and preventing `/cd` from weakening sandbox restrictions, which significantly hardens the security posture of interactive sessions. Tool availability and reasoning effort are now correctly maintained when switching models or falling back, ensuring consistent agent behavior. Remote sandbox enforcement has been improved by using the executor’s actual home directory, operating system, and path conventions, leading to more robust and predictable sandboxed environments. Additionally, structured MCP tool and resource errors are now preserved in app-server responses, offering richer diagnostic information. Nested subagent token usage is now correctly accounted for in root goal budgets, providing better cost visibility for multi-agent systems, and stale Guardian classifications are prevented from authorizing actions after permission state changes, enhancing security. Telemetry for escalated stdin reviews and remote executor MCP discovery has been added to aid in understanding usage patterns and improving the system. Developers should upgrade to benefit from these security, stability, and extensibility improvements, particularly if using multi-agent setups, custom extensions, or remote execution environments."
     },
     "features": [
       {
@@ -2232,6 +2236,33 @@
           "Can execute commands or MCP handlers."
         ],
         "source_url": "https://github.com/openai/codex/compare/rust-v0.149.0...rust-v0.150.0#40511"
+      },
+      {
+        "id": "configurable-mcp-tool-discovery-grace-period",
+        "name": "Configurable Grace Period for MCP Tool Discovery",
+        "status": "stable",
+        "since": "0.151.0",
+        "description": "Introduced a configurable grace period for discovering tools from optional MCP (Multi-Agent Communication Protocol) servers.",
+        "key_details": [],
+        "source_url": "https://github.com/openai/codex/pull/41199"
+      },
+      {
+        "id": "extensions-inspect-replace-mcp-tool-results",
+        "name": "Extensions Can Inspect/Replace MCP Tool Results",
+        "status": "stable",
+        "since": "0.151.0",
+        "description": "Extensions now have the capability to inspect or replace the results of MCP tool calls before these results are passed to the model.",
+        "key_details": [],
+        "source_url": "https://github.com/openai/codex/pull/41202"
+      },
+      {
+        "id": "plugin-catalogs-per-repository-config-invalid-marketplace-reporting",
+        "name": "Plugin Catalogs Combine Per-Repository Config and Report Invalid Marketplaces",
+        "status": "stable",
+        "since": "0.151.0",
+        "description": "Plugin catalogs now integrate per-repository configuration settings and will report invalid project marketplaces without suppressing the display of valid plugins.",
+        "key_details": [],
+        "source_url": "https://github.com/openai/codex/pull/41208"
       }
     ],
     "commands": [

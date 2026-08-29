@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.251",
-  "generated_at": "2026-08-29T03:29:51.240Z",
+  "generated_at": "2026-08-29T10:47:36.260Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -18,9 +18,8 @@
     "to_version": "2.1.251",
     "new_features": [
       "pre-post-model-switch-hooks",
-      "session-start-resume-hooks-staleness-cost",
       "remote-control-foreground-subagent-streaming",
-      "spend-limit-bar-usage",
+      "spend-limit-bar",
       "per-session-prompt-cache-cost"
     ],
     "new_commands": [],
@@ -30,9 +29,7 @@
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "project-settings-env-vars"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -54,7 +51,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Claude Code 2.1.251 introduces significant enhancements to model interaction, session management, and security. A headline change is the addition of `PreModelSwitch` and `PostModelSwitch` hooks, allowing developers to block, confirm, or annotate model switches, providing greater control over AI behavior. Remote Control clients now benefit from live streaming of foreground subagent tool calls and results, offering real-time visibility into agent actions. For users behind a Claude apps gateway, a new spend limit bar in `/usage` and a `rate_limits.spend_limit` status line field provide better cost management. The `/cost` command now includes a per-session prompt-cache line, detailing hit ratios, misses, and token re-caching, alongside a `prompt_cache` object for status line scripts, enabling more granular cost analysis. Several `claude` CLI commands like `attach`, `logs`, `stop`, `respawn`, and `rm` have been added for improved background session management, with `--resume` now providing the exact `claude attach <id>` command. Critical security fixes address path traversal vulnerabilities in file tools, plugin commands, and the Workflow tool, preventing unauthorized file access. Project-level `.claude/settings.json` can no longer set `CLAUDE_CONFIG_DIR`, `CLAUDE_CODE_TMPDIR`, or `TMPDIR`/`TMP`/`TEMP`, requiring these to be set in shell, user, or managed settings. The release also includes numerous stability fixes, such as resolving TUI lag with many subagents, ensuring agent team final answers reach the lead, and improving handling of malformed model tool calls. Upgrade is recommended for improved security, enhanced control over AI behavior, and better session management."
+      "tldr": "This release introduces significant enhancements for model interaction, resource management, and security. Developers can now exert finer control over model switches with new `PreModelSwitch` and `PostModelSwitch` hooks, allowing for blocking, confirmation, or annotation of these events. For Remote Control users, foreground subagent tool calls and results are now streamed live, providing real-time visibility into their execution, while background subagents continue to show status updates. Resource management is improved with a new spend limit bar in `/usage` and a `rate_limits.spend_limit` status line field for those behind a Claude apps gateway, alongside a detailed per-session prompt-cache line in `/cost` and a `prompt_cache` object for status line scripts, offering insights into cache hit ratios and re-cache costs.\n\nSeveral critical security fixes have been implemented, addressing vulnerabilities where file tools could follow symlinks outside approved directories, plugin commands could point outside their directories, and project settings could bypass OTLP collectors. The Workflow tool's `scriptPath` reading is now permission-checked, and Grep/Glob apply `Read(...)` deny rules to symlinked search paths. The `claude` CLI has been expanded with `attach`, `logs`, `stop`, `respawn`, and `rm` subcommands, and the `--resume` message now explicitly provides the `claude attach <id>` command for running background sessions. Performance is boosted with reduced CPU usage during interactive turns and a 5 MB smaller native binary. Managed settings that impact sandbox security or credential handling now require explicit approval, and project-level `env` settings can no longer override critical `CLAUDE_CONFIG_DIR`, `CLAUDE_CODE_TMPDIR`, or `TMPDIR` variables, requiring them to be set in the shell, user, or managed settings instead.\n\nOther notable improvements include better handling of malformed model tool calls, more informative error messages for cloud session connection drops, and refined analytics behavior around gateway logins. The default model for Enterprise subscriptions is now Opus 5, and `/effort` now saves per-model default effort levels. It is recommended to upgrade promptly to benefit from the security fixes, performance improvements, and enhanced control over model interactions and resource usage. No specific prerequisites beyond a standard upgrade process are noted."
     },
     "features": [
       {
@@ -2116,6 +2113,15 @@
         "status": "stable",
         "since": "2.1.251",
         "description": "Added a per-session prompt-cache line to `/cost` (hit ratio, misses, tokens re-cached, warm/cold) and a matching `prompt_cache` object for status line scripts.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "spend-limit-bar",
+        "name": "Spend Limit Bar and Status Line Field",
+        "status": "stable",
+        "since": "2.1.251",
+        "description": "A spend limit bar has been added to the `/usage` command and a `rate_limits.spend_limit` status line field is available for developers behind a Claude apps gateway with spend limits.",
         "key_details": [],
         "source_url": ""
       }
