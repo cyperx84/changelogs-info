@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.151.0",
-  "generated_at": "2026-08-29T19:12:30.134Z",
+  "generated_at": "2026-08-29T22:22:02.613Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -16,7 +16,11 @@
   "delta": {
     "from_version": "0.151.0",
     "to_version": "0.151.0",
-    "new_features": [],
+    "new_features": [
+      "configurable-mcp-tool-discovery-grace-period",
+      "extensions-inspect-replace-mcp-tool-results",
+      "plugin-catalogs-per-repository-config-invalid-marketplace-reporting"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -46,7 +50,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "Codex-cli v0.151.0 introduces significant enhancements to tool discovery, extension capabilities, and plugin management. A new configurable grace period for discovering tools from optional MCP servers allows for more flexible integration with diverse development environments, improving startup reliability. Extensions gain powerful new abilities to inspect and even replace MCP tool results before they are processed by the model, opening up advanced customization and pre-processing workflows for tool outputs. Plugin catalogs have been refined to better handle per-repository configurations, now intelligently reporting invalid project marketplaces without disrupting access to valid plugins, which streamlines plugin discovery and management in complex projects. Several critical bug fixes improve the stability and security of the tool. Permission profiles are now correctly preserved across TUI turns, and the `/cd` command no longer inadvertently weakens sandbox restrictions, enhancing security. Tool availability and reasoning effort remain accurate even when switching models or during model fallbacks, ensuring consistent agent behavior. Remote sandbox enforcement has been significantly improved by leveraging the executor’s actual home directory, operating system, and path conventions, leading to more robust and predictable sandboxed environments. Structured MCP tool and resource errors are now properly preserved in app-server responses, aiding in debugging. Nested subagent token usage is now correctly accounted for in root goal budgets, providing more accurate cost tracking. Stale Guardian classifications are prevented from authorizing actions after permission state changes, bolstering security. Telemetry has been added for escalated stdin reviews and remote executor MCP discovery, providing valuable insights for future improvements. Core test fixtures and Guardian WebSocket tests have been stabilized for improved reliability in CI environments. Upgrading is recommended for all users to benefit from enhanced stability, security, and new extension capabilities."
+      "tldr": "Codex-cli 0.151.0 introduces significant enhancements to tool discovery, extension capabilities, and plugin management, alongside crucial bug fixes for sandbox security and model reasoning. The headline feature is the new configurable grace period for discovering tools from optional MCP servers, allowing developers to fine-tune how long the CLI waits for external tool availability, which is vital for complex, distributed development environments. Extensions can now inspect or even replace MCP tool results before they reach the model, offering unprecedented control over tool output and enabling more sophisticated custom workflows and integrations. Plugin catalogs have been improved to combine per-repository configurations and intelligently report invalid project marketplaces without disrupting access to valid plugins, streamlining plugin discovery and management. Key bug fixes include preserving restored permission profiles across TUI turns and preventing the `/cd` command from inadvertently weakening sandbox restrictions, significantly bolstering security. Tool availability and reasoning effort are now correctly maintained when switching models or falling back, ensuring consistent agent behavior. Remote sandbox enforcement has been improved by using the executor’s actual home directory, operating system, and path conventions, leading to more robust and predictable sandboxed environments. Structured MCP tool and resource errors are now preserved in app-server responses, aiding in debugging, and nested subagent token usage is correctly counted toward root goal budgets. Additionally, stale Guardian classifications are prevented from authorizing actions after permission state changes, enhancing security. Telemetry has been added for escalated stdin reviews and remote executor MCP discovery, providing valuable insights for future improvements. Developers should upgrade to benefit from these security, stability, and extensibility improvements, especially those relying on MCP tools, custom extensions, or robust sandboxing."
     },
     "features": [
       {
