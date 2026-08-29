@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.251",
-  "generated_at": "2026-08-29T03:29:51.240Z",
+  "generated_at": "2026-08-28T21:05:09.690Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,25 +14,15 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.251",
-    "to_version": "2.1.251",
-    "new_features": [
-      "pre-post-model-switch-hooks",
-      "session-start-resume-hooks-staleness-cost",
-      "remote-control-foreground-subagent-streaming",
-      "spend-limit-bar-usage",
-      "per-session-prompt-cache-cost"
-    ],
+    "from_version": "2.1.250",
+    "to_version": "2.1.250",
+    "new_features": [],
     "new_commands": [],
-    "new_flags": [
-      "--resume"
-    ],
+    "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "project-settings-env-vars"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -54,7 +44,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Claude Code 2.1.251 introduces significant enhancements to model interaction, session management, and security. A headline change is the addition of `PreModelSwitch` and `PostModelSwitch` hooks, allowing developers to block, confirm, or annotate model switches, providing greater control over AI behavior. Remote Control clients now benefit from live streaming of foreground subagent tool calls and results, offering real-time visibility into agent actions. For users behind a Claude apps gateway, a new spend limit bar in `/usage` and a `rate_limits.spend_limit` status line field provide better cost management. The `/cost` command now includes a per-session prompt-cache line, detailing hit ratios, misses, and token re-caching, alongside a `prompt_cache` object for status line scripts, enabling more granular cost analysis. Several `claude` CLI commands like `attach`, `logs`, `stop`, `respawn`, and `rm` have been added for improved background session management, with `--resume` now providing the exact `claude attach <id>` command. Critical security fixes address path traversal vulnerabilities in file tools, plugin commands, and the Workflow tool, preventing unauthorized file access. Project-level `.claude/settings.json` can no longer set `CLAUDE_CONFIG_DIR`, `CLAUDE_CODE_TMPDIR`, or `TMPDIR`/`TMP`/`TEMP`, requiring these to be set in shell, user, or managed settings. The release also includes numerous stability fixes, such as resolving TUI lag with many subagents, ensuring agent team final answers reach the lead, and improving handling of malformed model tool calls. Upgrade is recommended for improved security, enhanced control over AI behavior, and better session management."
+      "tldr": "This release, claude-code 2.1.250, focuses primarily on foundational improvements rather than new features. It includes a series of bug fixes and reliability enhancements designed to improve the overall stability and performance of the tool. While no new commands, flags, or environment variables are introduced, and no existing features are explicitly updated with new functionality, users can expect a more robust and dependable experience. There are no breaking changes or deprecations in this version, making it a safe and recommended upgrade for all users. The improvements are aimed at refining the core functionality and ensuring a smoother workflow for developers. Users should upgrade to benefit from these stability improvements."
     },
     "features": [
       {
@@ -2073,51 +2063,6 @@
         "description": "Enables cross-session messaging (`SendMessage` / `ListAgents`) between sessions on the same machine when using Bedrock, Vertex, Foundry, and when telemetry is disabled.",
         "key_details": [],
         "source_url": ""
-      },
-      {
-        "id": "pre-post-model-switch-hooks",
-        "name": "PreModelSwitch and PostModelSwitch Hooks",
-        "status": "stable",
-        "since": "2.1.251",
-        "description": "Added `PreModelSwitch` and `PostModelSwitch` hook events to block, confirm, or annotate a model switch.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "session-start-resume-hooks-staleness-cost",
-        "name": "SessionStart Resume Hooks with Staleness and Re-cache Cost",
-        "status": "stable",
-        "since": "2.1.251",
-        "description": "`SessionStart` resume hooks now receive session staleness and the estimated re-cache cost.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "remote-control-foreground-subagent-streaming",
-        "name": "Live Streaming of Foreground Subagent Tool Calls to Remote Control",
-        "status": "stable",
-        "since": "2.1.251",
-        "description": "Added live streaming of a foreground subagent's tool calls and results to Remote Control clients. Background subagents still show status only.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "spend-limit-bar-usage",
-        "name": "Spend Limit Bar in /usage and Status Line",
-        "status": "stable",
-        "since": "2.1.251",
-        "description": "Added a Spend limit bar to `/usage` and a `rate_limits.spend_limit` status line field for developers behind a Claude apps gateway with spend limits.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "per-session-prompt-cache-cost",
-        "name": "Per-Session Prompt-Cache Line in /cost and Status Line",
-        "status": "stable",
-        "since": "2.1.251",
-        "description": "Added a per-session prompt-cache line to `/cost` (hit ratio, misses, tokens re-cached, warm/cold) and a matching `prompt_cache` object for status line scripts.",
-        "key_details": [],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -2965,9 +2910,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--resume"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
@@ -3935,18 +3878,6 @@
           "Credential inheritance for `headersHelper`"
         ],
         "migration": "If your `headersHelper` in project `.mcp.json`, plugins, or agent files relied on inherited credential environment variables, you will need to adjust them to source credentials differently or use user, managed, or claude.ai-scope helpers which retain credential access.",
-        "source_url": ""
-      },
-      {
-        "id": "project-settings-env-vars",
-        "version": "2.1.251",
-        "title": "Project-level .claude/settings.json `env` no longer sets specific environment variables",
-        "description": "Project-level `.claude/settings.json` `env` can no longer set `CLAUDE_CONFIG_DIR`, `CLAUDE_CODE_TMPDIR`, or `TMPDIR`/`TMP`/`TEMP`. These variables must now be set in your shell, user, or managed settings.",
-        "affected": [
-          "Project-level settings in `.claude/settings.json`",
-          "Environment variables: `CLAUDE_CONFIG_DIR`, `CLAUDE_CODE_TMPDIR`, `TMPDIR`, `TMP`, `TEMP`"
-        ],
-        "migration": "Move the setting of `CLAUDE_CONFIG_DIR`, `CLAUDE_CODE_TMPDIR`, `TMPDIR`, `TMP`, or `TEMP` from your project's `.claude/settings.json` to your shell environment, user settings, or managed settings.",
         "source_url": ""
       }
     ],
