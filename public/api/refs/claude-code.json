@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.251",
-  "generated_at": "2026-08-29T10:47:36.260Z",
+  "generated_at": "2026-08-30T01:03:04.845Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -22,14 +22,20 @@
       "spend-limit-bar",
       "per-session-prompt-cache-cost"
     ],
-    "new_commands": [],
-    "new_flags": [
-      "--resume"
+    "new_commands": [
+      "claude attach",
+      "claude logs",
+      "claude stop",
+      "claude respawn",
+      "claude rm"
     ],
+    "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "project-settings-env-vars-restricted"
+    ]
   },
   "payload": {
     "meta": {
@@ -51,7 +57,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces significant enhancements for model interaction, resource management, and security. Developers can now exert finer control over model switches with new `PreModelSwitch` and `PostModelSwitch` hooks, allowing for blocking, confirmation, or annotation of these events. For Remote Control users, foreground subagent tool calls and results are now streamed live, providing real-time visibility into their execution, while background subagents continue to show status updates. Resource management is improved with a new spend limit bar in `/usage` and a `rate_limits.spend_limit` status line field for those behind a Claude apps gateway, alongside a detailed per-session prompt-cache line in `/cost` and a `prompt_cache` object for status line scripts, offering insights into cache hit ratios and re-cache costs.\n\nSeveral critical security fixes have been implemented, addressing vulnerabilities where file tools could follow symlinks outside approved directories, plugin commands could point outside their directories, and project settings could bypass OTLP collectors. The Workflow tool's `scriptPath` reading is now permission-checked, and Grep/Glob apply `Read(...)` deny rules to symlinked search paths. The `claude` CLI has been expanded with `attach`, `logs`, `stop`, `respawn`, and `rm` subcommands, and the `--resume` message now explicitly provides the `claude attach <id>` command for running background sessions. Performance is boosted with reduced CPU usage during interactive turns and a 5 MB smaller native binary. Managed settings that impact sandbox security or credential handling now require explicit approval, and project-level `env` settings can no longer override critical `CLAUDE_CONFIG_DIR`, `CLAUDE_CODE_TMPDIR`, or `TMPDIR` variables, requiring them to be set in the shell, user, or managed settings instead.\n\nOther notable improvements include better handling of malformed model tool calls, more informative error messages for cloud session connection drops, and refined analytics behavior around gateway logins. The default model for Enterprise subscriptions is now Opus 5, and `/effort` now saves per-model default effort levels. It is recommended to upgrade promptly to benefit from the security fixes, performance improvements, and enhanced control over model interactions and resource usage. No specific prerequisites beyond a standard upgrade process are noted."
+      "tldr": "This release of claude-code 2.1.251 introduces significant enhancements to model interaction, cost transparency, and background session management. Developers can now leverage `PreModelSwitch` and `PostModelSwitch` hooks to control model changes, offering more granular control over AI behavior. Remote Control clients gain live streaming of foreground subagent tool calls, providing real-time visibility into active subagent operations, while background subagents continue to show status only. Cost tracking is improved with a new spend limit bar in `/usage` and a `rate_limits.spend_limit` status line field for gateway users, alongside detailed per-session prompt cache metrics in `/cost` and a `prompt_cache` object for status line scripts. The CLI has been expanded with `claude attach`, `logs`, `stop`, `respawn`, and `rm` commands for better background session management, and the `--resume` message now explicitly suggests `claude attach <id>`. Critical security fixes address symlink vulnerabilities in file tools, path traversal in plugin commands, and sandbox escapes related to project settings and the Workflow tool. Performance is boosted with reduced UI re-renders and a smaller binary size. A breaking change restricts setting `CLAUDE_CONFIG_DIR`, `CLAUDE_CODE_TMPDIR`, `TMPDIR`, `TMP`, or `TEMP` from project-level `.claude/settings.json`, requiring these to be configured in the shell or user/managed settings. It is recommended to upgrade to this version to benefit from the security fixes, improved control, and enhanced visibility into session costs and subagent activity."
     },
     "features": [
       {
@@ -2595,6 +2601,46 @@
         "since": "2.1.247",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "claude attach",
+        "syntax": "claude attach <id>",
+        "description": "Attaches to a running background session.",
+        "since": "2.1.251",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "claude logs",
+        "syntax": "claude logs",
+        "description": "Displays logs for Claude Code.",
+        "since": "2.1.251",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "claude stop",
+        "syntax": "claude stop",
+        "description": "Stops a running Claude Code process or session.",
+        "since": "2.1.251",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "claude respawn",
+        "syntax": "claude respawn",
+        "description": "Restarts a Claude Code process or session.",
+        "since": "2.1.251",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "claude rm",
+        "syntax": "claude rm",
+        "description": "Removes Claude Code related files or sessions.",
+        "since": "2.1.251",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -2971,9 +3017,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--resume"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
@@ -3953,6 +3997,18 @@
           "Environment variables: `CLAUDE_CONFIG_DIR`, `CLAUDE_CODE_TMPDIR`, `TMPDIR`, `TMP`, `TEMP`"
         ],
         "migration": "Move the setting of `CLAUDE_CONFIG_DIR`, `CLAUDE_CODE_TMPDIR`, `TMPDIR`, `TMP`, or `TEMP` from your project's `.claude/settings.json` to your shell environment, user settings, or managed settings.",
+        "source_url": ""
+      },
+      {
+        "id": "project-settings-env-vars-restricted",
+        "version": "2.1.251",
+        "title": "Project-level `env` in `.claude/settings.json` no longer sets critical environment variables",
+        "description": "The `env` section in project-level `.claude/settings.json` can no longer set `CLAUDE_CONFIG_DIR`, `CLAUDE_CODE_TMPDIR`, `TMPDIR`, `TMP`, or `TEMP`. These variables must now be set in your shell, user settings, or managed settings.",
+        "affected": [
+          "Project-level `.claude/settings.json`",
+          "Environment variable configuration"
+        ],
+        "migration": "Move `CLAUDE_CONFIG_DIR`, `CLAUDE_CODE_TMPDIR`, `TMPDIR`, `TMP`, and `TEMP` environment variable definitions from `.claude/settings.json` to your shell environment, user settings, or managed settings.",
         "source_url": ""
       }
     ],
