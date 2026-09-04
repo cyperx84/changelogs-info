@@ -15,6 +15,14 @@
   },
   "releases": [
     {
+      "version": "desktop-v0.0.23",
+      "name": "Desktop v0.0.23",
+      "body": "\n- Agent Plugins are now discovered and run by the shared Hub. Packages under `~/.agents/plugins` are validated from their `plugin.json`, their valid Agent Skills become available to the agent, and their stdio / Streamable HTTP / SSE MCP servers start automatically. Settings → Customize lists Agent Plugins separately from Cline Plugins, with each plugin's description, badge, and contributed tools, and enable/disable is Hub-managed per plugin. Workspace `.agents/plugins` directories are intentionally ignored\n- The \"Cline Hub was updated\" dialog no longer appears on every launch and reconnect. The app no longer prompts about a Hub running the same core version it does — a desktop and CLI release cut from different commits bundle the same core but never share a build fingerprint, so anyone with both installed got a dialog whose \"Update and restart\" looped on \"no app update available\". The build-mismatch dialog now also waits until an app update is actually staged, and \"Later\" sticks across session switches, reloads, and relaunches instead of resurfacing every time. A Hub the app genuinely cannot talk to still warns every time\n- Signing in now shows the device confirmation code in the app while you wait on the browser, so you can match it against the code the browser asks you to confirm — in onboarding, Account settings, and the provider list\n- Voice input failures caused by provider setup — missing credentials, transcription config — now take you straight to voice settings instead of a toast you cannot act on. Genuine microphone permission failures still toast, with a clearer message\n- Fixed the scheduled-task report vanishing when a finished run's step collapsed\n- Fixed one wedged MCP server blocking the rest from shutting down, leaking their processes\n\n**Full Changelog**: https://github.com/cline/cline/compare/desktop-v0.0.22...desktop-v0.0.23\n",
+      "date": "2026-09-03T18:33:13Z",
+      "url": "https://github.com/cline/cline/releases/tag/desktop-v0.0.23",
+      "prerelease": false
+    },
+    {
       "version": "desktop-v0.0.23-beta.1",
       "name": "Desktop v0.0.23-beta.1",
       "body": "\n- Beta: configure and opt in to image generation under Customize → Tools. Provider credentials stay server-side, and generated images remain available in session history.\n- Scheduled runs are grouped within their runtime environment so similarly named local and SSH schedules stay separate. While an SSH environment is selected, media-generation settings now make clear that they configure only the local runtime.\n- Includes all stable desktop improvements through 0.0.22, including resumable imports from Claude Code, Codex, and opencode; grouped schedule runs; macOS voice input; safer Hub upgrades; and provider and tool compatibility fixes.\n\n**Full Changelog**: https://github.com/cline/cline/compare/desktop-v0.0.22-beta.1...desktop-v0.0.23-beta.1\n",
@@ -245,15 +253,7 @@
       "date": "2026-08-21T05:56:11Z",
       "url": "https://github.com/cline/cline/releases/tag/desktop-v0.0.15",
       "prerelease": false
-    },
-    {
-      "version": "cli-v3.0.56",
-      "name": "CLI v3.0.56",
-      "body": "\n- Models that support image generation can now produce media during a turn. The TUI saves each generated file to a temporary path and prints it so you can open it with your usual tools, HTML session exports embed images inline, and ACP clients receive generated images as image content\n- Skill slash commands now load through the skills tool instead of expanding into your message. History and resume show the `/command` you typed instead of the whole skill body, and the instructions reach the model once instead of twice. Workflows still expand, as does zen mode, whose preset has no skills tool\n- Image, voice, and other non-chat models are no longer offered in the onboarding and model pickers or ACP model listings, and are rejected for `--model`\n- Fixed TUI dialog colors not following theme changes live\n- Fixed the account dialog's selection chevron so it matches the other dialogs\n- Fixed provider-executed tool activity — every tool the Claude Code provider runs inside its own session — being dropped instead of shown as a tool card\n- Fixed `PreToolUse` hook `contextModification` never reaching the model, and `PostToolUse` hooks running fire-and-forget with their output and `cancel` control discarded\n- Fixed `run_commands` failing with ENOENT when a structured command carried a full command line with no `args`\n- PowerShell commands now fail fast on the first error instead of emitting an error record per enumerated item and still reporting success\n- Fixed Gemini custom base URLs configured as a host root\n- Fixed `cline schedule` commands against a remote hub, which now register a workspace client so they are authorized under the new workspace-scoped schedule rules\n- Usage now displays the billed gateway cost\n- Refreshed the model catalog, which adds AMD, Arcee, Echo, Jalapeno, Kosmik, LLM Gateway, RunInfra, and SCNet as providers and updates model lists, pricing, and per-provider default models across the board\n\n**Full Changelog**: https://github.com/cline/cline/compare/cli-v3.0.55...cli-v3.0.56\n",
-      "date": "2026-08-21T05:03:03Z",
-      "url": "https://github.com/cline/cline/releases/tag/cli-v3.0.56",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-09-03T10:17:41.438Z"
+  "lastUpdated": "2026-09-04T10:06:10.037Z"
 }
