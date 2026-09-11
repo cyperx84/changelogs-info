@@ -15,6 +15,78 @@
   },
   "releases": [
     {
+      "version": "rust-v0.155.0-alpha.3.8",
+      "name": "0.155.0-alpha.3.8",
+      "body": "Release 0.155.0-alpha.3.8\n\n",
+      "date": "2026-09-11T09:18:04Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.155.0-alpha.3.8",
+      "prerelease": true
+    },
+    {
+      "version": "rust-v0.155.0-alpha.3.7",
+      "name": "0.155.0-alpha.3.7",
+      "body": "Release 0.155.0-alpha.3.7\n\n",
+      "date": "2026-09-11T07:58:14Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.155.0-alpha.3.7",
+      "prerelease": true
+    },
+    {
+      "version": "rust-v0.155.0-alpha.3",
+      "name": "0.155.0-alpha.3",
+      "body": "Release 0.155.0-alpha.3\n\n",
+      "date": "2026-09-11T02:35:52Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.155.0-alpha.3",
+      "prerelease": true
+    },
+    {
+      "version": "rust-v0.154.0-alpha.6.2",
+      "name": "0.154.0-alpha.6.2",
+      "body": "Release 0.154.0-alpha.6.2\n\n",
+      "date": "2026-09-11T01:25:48Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.154.0-alpha.6.2",
+      "prerelease": true
+    },
+    {
+      "version": "python-v0.154.0",
+      "name": "Python SDK 0.154.0",
+      "body": "Install with `pip install --upgrade openai-codex==0.154.0` (Python 3.10 or later). This release includes the matching `openai-codex-cli-bin==0.154.0` runtime.\n\n- Add `max` and `ultra` reasoning-effort values. [#39662](https://github.com/openai/codex/pull/39662)\n- Add `ExternalMessage` to synchronous and asynchronous `run()` and `turn()` calls. External content can start a turn or join an active regular turn with tool-level authority; it does not grant user authorization. Consumers receive independent event streams. [#44086](https://github.com/openai/codex/pull/44086)\n- Add `include_turns` on resume/fork, `turn_service_tier` for one newly started turn, and `source` metadata. History selection changes the returned response, not model context. Existing defaults are preserved when these options are omitted. [#44084](https://github.com/openai/codex/pull/44084)\n- Refresh generated protocol models and notifications, and preserve completion events that arrive before a turn-start response. [#44032](https://github.com/openai/codex/pull/44032), [#44400](https://github.com/openai/codex/pull/44400)\n\nCheck these migrations when upgrading:\n\n- `HookMetadata` wraps its handler in `.root`. Replace accesses such as `hook.command` with `hook.root.command`, checking `hook.root.handler_type` before reading handler-specific fields.\n- Some previously unknown notifications now have typed payloads. Read named fields instead of `.params`; unknown or invalid payloads still use `UnknownNotification`.\n- Manually constructed or late-joining turn handles receive events from their attachment point. Earlier output is not replayed, so collected results can be partial; attaching after completion can raise `TransportClosedError`. Use `thread.read(include_turns=True)` for saved history. Handles returned directly by `thread.turn(...)` retain events from when their request is sent.\n\nCustom `codex_bin` overrides require CLI 0.151.0 or newer for `ExternalMessage` and the new history/per-turn options.\n",
+      "date": "2026-09-10T19:51:43Z",
+      "url": "https://github.com/openai/codex/releases/tag/python-v0.154.0",
+      "prerelease": false
+    },
+    {
+      "version": "voice-cygwin-108b38cf67cbb731",
+      "name": "Cygwin build inputs and matching source for Windows voice",
+      "body": "CI-only build tools for native Windows voice releases. These archives are **not included** in Codex user packages.\n\n- `cygwin-build-inputs.tar.gz`: 103 pinned Cygwin binary packages and the signed package index used by the offline build installer.\n- `cygwin-build-sources.tar`: all 83 corresponding source package archives at the exact versions named by that index. It includes the upstream source, patches, and build recipes provided in Cygwin's `-src` packages.\n- `cygwin-source-map.json`: each selected binary package mapped to its source archive and the source size and SHA-512 digest from the pinned index.\n- `CYGWIN-SOURCE-NOTICE.txt`: source access and licensing notice.\n\nThe binary and source archive SHA-256 pins live in `.github/scripts/voice-cygwin-snapshot.json` in the Codex repository. Cygwin describes the licensing terms at https://cygwin.com/licensing.html. Licenses vary by package; consult the corresponding source and binary package archives for their notices.\n",
+      "date": "2026-09-10T20:19:50Z",
+      "url": "https://github.com/openai/codex/releases/tag/voice-cygwin-108b38cf67cbb731",
+      "prerelease": true
+    },
+    {
+      "version": "rust-v0.155.0-alpha.2.3",
+      "name": "0.155.0-alpha.2.3",
+      "body": "Release 0.155.0-alpha.2.3\n\n",
+      "date": "2026-09-11T00:28:26Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.155.0-alpha.2.3",
+      "prerelease": true
+    },
+    {
+      "version": "rust-v0.155.0-alpha.2",
+      "name": "0.155.0-alpha.2",
+      "body": "Release 0.155.0-alpha.2\n\n",
+      "date": "2026-09-10T18:02:58Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.155.0-alpha.2",
+      "prerelease": true
+    },
+    {
+      "version": "rust-v0.155.0-alpha.1",
+      "name": "0.155.0-alpha.1",
+      "body": "Release 0.155.0-alpha.1\n\n",
+      "date": "2026-09-10T11:53:05Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.155.0-alpha.1",
+      "prerelease": true
+    },
+    {
       "version": "rust-v0.154.0",
       "name": "0.154.0",
       "body": "## New Features\n\n- GPT-6-Astra is now available in the model picker and Amazon Bedrock catalogs. (#42879, #42619)\n- Experimental worktree support lets you create isolated checkouts for new or forked sessions using `--worktree` or `/worktree`, then browse and resume them. (#42652, #43069, #43120, #43286)\n- Answer questions inline while Codex continues working, using suggested choices or custom text without losing your main draft. (#42891, #42894, #42897)\n- Windows sessions can now share a background Codex server, with daemon lifecycle commands and managed updates. (#42405, #42392)\n- Vim editing gains `R` replace mode with undo and dot-repeat, plus more reliable Escape handling in legacy terminals. (#42194, #42584)\n- Copying responses preserves formatting in rich-text apps, and `/copy` can copy status output or individual session fields. (#42847, #43055)\n\n## Bug Fixes\n\n- Existing sessions pick up newly installed plugin tools and refresh skills and hooks after external plugin upgrades or rollbacks. (#42284, #42593, #42990)\n- MCP connections coordinate OAuth token refreshes and surface login challenges when refresh fails, without automatically replaying rejected tool calls. (#42413, #42552)\n- Startup avoids running workspace-controlled helpers before trust is established, and the macOS sandbox blocks terminal input injection. (#42324, #42590)\n- Remote resume and fork operations preserve saved permissions; fresh sessions and forks respect server model defaults unless explicitly overridden. (#43330, #43177, #43355)\n- Resuming a conversation open in another app now shows a read-only transcript with a retry option while preserving your draft. (#43253)\n- Automatic approval reviews better preserve authorization context through compaction and reject approvals invalidated by new user instructions or answers. (#42844, #42852, #43442)\n\n## Documentation\n\n- Updated the bundled OpenAI Docs skill with GPT-6-Astra migration, compatibility, and prompting guidance. (#42931)\n\n## Chores\n\n- The deprecated `codex mcp-server` entry point is no longer available. (#42993)\n\n## Changelog\n\nFull Changelog: https://github.com/openai/codex/compare/rust-v0.153.0...rust-v0.154.0\n\n- #42188 Fix punctuation in npm packaging documentation @copyberry\n- #42192 Use native spawning for bare macOS MCP commands @copyberry\n- #42194 Add Vim replace mode to the TUI composer @copyberry\n- #42196 Add managed worktree creation @copyberry\n- #42199 Refactor shared TUI input routing @copyberry\n- #42202 Separate TUI preferences from server configuration @copyberry\n- #42204 Add macOS voice runtime projection @copyberry\n- #42207 Retry TUI reconnects while threads are closing @copyberry\n- #42208 Add GNU Linux voice runtime preparation @copyberry\n- #42209 Add Windows voice runtime preparation @copyberry\n- #42247 Track history notes thread hint outcomes @copyberry\n- #42256 Skip Guardian scoring in User approval mode @copyberry\n- #42270 Report the exec-server release version in environment info @copyberry\n- #42284 Refresh plugin skills after out-of-process version changes @copyberry\n- #42288 Fetch rules_rs zlib packages from Ubuntu snapshots @copyberry\n- #42290 Expand Guardian history coverage across resume and rollback @copyberry\n- #42293 Preserve verified answers across history compaction @copyberry\n- #42298 Preserve retained answers across steer rollbacks @copyberry\n- #42306 Stabilize the detached exec-server session resume test @copyberry\n- #42309 Separate Windows sandbox provisioning from ACL refresh @copyberry\n- #42314 Preserve target-native cwd in permission approval requests @copyberry\n- #42316 Refactor exec-server startup futures @copyberry\n- #42318 Support packaged managed Codex binary paths @copyberry\n- #42319 Show live context compaction status in the TUI @copyberry\n- #42320 Make the app-server thread unload delay configurable @copyberry\n- #42324 Avoid executing PATH helpers before workspace trust @copyberry\n- #42325 Render completed assistant messages directly during replay @copyberry\n- #42326 Harden Windows control socket rendezvous @copyberry\n- #42328 Support durable reasoning configuration updates @copyberry\n- #42330 Protect Windows sandbox binaries from inherited write access @copyberry\n- #42332 Package prepared runtimes with the voice host @copyberry\n- #42334 Add a Windows sandbox provisioning protocol @copyberry\n- #42337 Add an authenticated Windows sandbox provisioning client @copyberry\n- #42341 Add Windows sandbox service lifecycle scaffolding @copyberry\n- #42342 Harden Windows sandbox provisioning file handling @copyberry\n- #42344 Prepare managed policy validation for Windows sandbox provisioning @copyberry\n- #42348 Add Windows sandbox client authentication @copyberry\n- #42351 Enable authenticated Windows sandbox provisioning @copyberry\n- #42353 Add experimental Windows sandbox service provisioning @copyberry\n- #42354 Add free-form asynchronous user messages @copyberry\n- #42356 Initialize questions in buffered replay test messages @copyberry\n- #42358 Extend rate limit reads with usage capabilities @copyberry\n- #42364 Support graceful daemon shutdown on Windows @copyberry\n- #42366 List managed worktrees for a repository @copyberry\n- #42369 Keep SQLite history projection moving past invalid records @copyberry\n- #42370 Improve MCP server startup error logging @copyberry\n- #42372 Add Luna Reserve usage fallback to the TUI @copyberry\n- #42373 Add attributed exec process lifecycle telemetry @copyberry\n- #42374 Extract PID startup into a dedicated module @copyberry\n- #42375 Clean up Windows sandbox resources on app uninstall @copyberry\n- #42377 Make app-server realtime sessions always available @copyberry\n- #42378 Route rollout reads through the canonical JSON decoder @copyberry\n- #42380 Require confirmation for safety-buffered retries @copyberry\n- #42381 Support managed app-server lifecycle on Windows @copyberry\n- #42383 Update rmcp to 3.2.0 @copyberry\n- #42384 Add an RMCP OAuth credential store adapter @copyberry\n- #42385 Add experimental context management activation @copyberry\n- #42386 Expose loaded thread environments in app-server responses @copyberry\n- #42388 Recover deferred environments after provisioning failure @copyberry\n- #42391 Authorize `apply_patch` in the executor path context @copyberry\n- #42392 Support managed daemon updates on Windows @copyberry\n- #42395 Expose the Codex version to commands and turn metadata @copyberry\n- #42397 Extract focused TUI logic into submodules @copyberry\n- #42399 Preserve restored input after resolved misalignment errors @copyberry\n- #42401 Discover TUI collaboration modes from the app server @copyberry\n- #42403 Expose the last accepted environment ready report @copyberry\n- #42404 Read voice helper frames independently of pipe chunks @copyberry\n- #42405 Support the app-server daemon on Windows @copyberry\n- #42406 Honor explicit plugin mentions during MCP startup @copyberry\n- #42408 Harden embedded composer input handling @copyberry\n- #42410 Allow reviewing and continuing misalignment-paused chats @copyberry\n- #42413 Enable coordinated MCP OAuth refresh @copyberry\n- #42417 Expose managed application network requirements @copyberry\n- #42419 Add session resume to the agent command center @copyberry\n- #42422 Honor model requirements in Guardian computer-use scoring @copyberry\n- #42425 Discover TUI experimental features from the server @copyberry\n- #42428 Use the shared composer in the agent command center @copyberry\n- #42432 Box the TUI resume picker future @copyberry\n- #42445 Include originator in plugin measurement analytics @copyberry\n- #42451 Acknowledge pending TUI steers by submission ID @copyberry\n- #42453 Discover permission profiles from the app server @copyberry\n- #42455 Show live task details in the agent command center @copyberry\n- #42458 Expose thread originators through the app-server API @copyberry\n- #42529 Register the Guardian thread context feature flag @copyberry\n- #42552 Preserve MCP authentication challenges on tool calls @copyberry\n- #42577 Preserve target-native paths in command approvals @copyberry\n- #42579 Persist verified user answers in Guardian thread context @copyberry\n- #42584 Recover Vim escape input in legacy terminals @copyberry\n- #42588 Require Guardian review for incompatible compaction checkpoints @copyberry\n- #42590 Harden the macOS sandbox against terminal input injection @copyberry\n- #42593 Reload user config after local plugin installation @copyberry\n- #42596 Record Windows sandbox private desktop usage @copyberry\n- #42598 Report MCP tool discovery errors in server status @copyberry\n- #42602 Deprecate detached review delivery @copyberry\n- #42603 Expose global metrics installation in `codex-otel` @copyberry\n- #42606 Support trusted headers for remote exec WebSockets @copyberry\n- #42607 Add GPT-6-Astra to the bundled model catalog @copyberry\n- #42609 Condense TUI startup warnings @copyberry\n- #42619 Add GPT-6-Astra to Amazon Bedrock catalogs @copyberry\n- #42623 Bound Noise handshakes by the exec server initialization timeout @copyberry\n- #42624 Centralize prompt image detail modes @copyberry\n- #42631 Initialize the packaged GStreamer runtime in the voice host @copyberry\n- #42634 Add an injectable attachment store to ThreadManager @copyberry\n- #42638 Update GPT-6-Astra Fast tier speed description @copyberry\n- #42639 Warn when saved model defaults are overridden @copyberry\n- #42640 Harden TUI parsing of assistant markup @copyberry\n- #42641 Restore the inline TUI after full-screen overlays @copyberry\n- #42650 Render assistant file citations as local links @copyberry\n- #42652 Add managed worktrees to `codex exec` @copyberry\n- #42654 Update the stable exec-server test to Codex 0.153.1 @copyberry\n- #42657 Use a generic fallback model name in status tests @copyberry\n- #42667 Tailor TUI cyber refusal notices to Daybreak eligibility @copyberry\n- #42668 Cancel remote control enrollment on stdio shutdown @copyberry\n- #42671 Preserve TUI sessions while starting replacement threads @copyberry\n- #42674 Persist server-advertised experimental features from the TUI @copyberry\n- #42676 Add WebRTC negotiation to the voice host @copyberry\n- #42677 Narrow async user message guidance @copyberry\n- #42682 Fix the worktrees experimental feature test fixture @copyberry\n- #42716 Allow trusted symlinks beneath CODEX_HOME on macOS @copyberry\n- #42718 Gate unified exec TTY support behind a feature flag @copyberry\n- #42741 Make the TUI symlink startup test Bazel-compatible @copyberry\n- #42744 Honor model-provided Guardian review policies @copyberry\n- #42746 Handle pending network reviews after process completion @copyberry\n- #42749 Improve automatic thread naming in the TUI @copyberry\n- #42752 Preserve response IDs for fast collaborator tool events @copyberry\n- #42755 Stabilize the interactive tmux startup safety test @copyberry\n- #42758 Propagate response tickets to Guardian reviews @copyberry\n- #42762 Retain user instructions in guardian thread context @copyberry\n- #42767 Avoid port races in streamable HTTP tests @copyberry\n- #42770 Preserve acceptance order in retained thread context @copyberry\n- #42773 Avoid holding metadata permit during cold resume config load @copyberry\n- #42781 Add direct SigV4 transport to exec-server @copyberry\n- #42791 Keep TUI prompt history tied to local settings @copyberry\n- #42792 Extract the note input view into its own module @copyberry\n- #42798 Add data-use disclosures to the user report dialog @copyberry\n- #42801 Keep the Windows sandbox command runner hidden @copyberry\n- #42807 Add request-scoped Guardian approval decisions @copyberry\n- #42811 Enable staging login issuer overrides in packaged builds @copyberry\n- #42814 Support custom report event titles @copyberry\n- #42819 Route Guardian approvals independently of async scoring @copyberry\n- #42821 Report managed filesystem policy in `codex doctor` @copyberry\n- #42823 Expose managed WebMCP policy through the app server @copyberry\n- #42824 Refine user input guidance for GPT-6 @copyberry\n- #42832 Preserve root authorization context in Guardian reviews @copyberry\n- #42833 Preserve SystemRoot for Windows sandbox wrapper setup @copyberry\n- #42835 Preserve Windows managed deny reads in the sandbox CLI @copyberry\n- #42836 Make GPT-6-Astra user input guidance conditional @copyberry\n- #42838 Preserve executor paths in Guardian approval reviews @copyberry\n- #42841 Add a native Windows MXC sandbox adapter @copyberry\n- #42842 Add Astra sparkle effects to the TUI composer @copyberry\n- #42844 Retain user instructions in Guardian context @copyberry\n- #42847 Preserve Markdown formatting when copying TUI responses @copyberry\n- #42850 Use jemalloc for Linux musl binaries @copyberry\n- #42852 Harden Guardian reviews after context compaction @copyberry\n- #42854 Persist Daybreak preferences in thread metadata @copyberry\n- #42863 Preserve precedence across feature requirement aliases @copyberry\n- #42870 Avoid redundant filesystem sandbox path resolution @copyberry\n- #42879 List GPT-6-Astra in the model picker @copyberry\n- #42883 Add client-side exec-server RPC attempt metrics @copyberry\n- #42889 Add TUI building blocks for inline async question editing @copyberry\n- #42891 Integrate asynchronous questions into the TUI @copyberry\n- #42894 Support selectable answers for asynchronous TUI questions @copyberry\n- #42897 Add inline Other answers to async question choices @copyberry\n- #42900 Establish root turn identity for independent tasks and memory requests @copyberry\n- #42903 Preserve TUI question state and integrate history and queue navigation @copyberry\n- #42904 Use static instructions for the Default collaboration mode @copyberry\n- #42931 Update OpenAI Docs skill guidance for GPT-6 Astra @copyberry\n- #42933 Wait for turn analytics before shutting down the Guardian v2 test @copyberry\n- #42990 Refresh session hooks after external plugin updates @copyberry\n- #42993 Remove the deprecated `codex mcp-server` command @copyberry\n- #43000 Preserve the resolved multi-agent version when reverting threads @copyberry\n- #43002 Replace Guardian tickets with parent response IDs @copyberry\n- #43005 Add Guardian V2 failure reasons and connection timing metrics @copyberry\n- #43031 Keep refreshed MCP tool catalogs with their clients @copyberry\n- #43039 Refresh live thread tools through `app/installed` @copyberry\n- #43043 Avoid filesystem scans when seeding the agents overview @copyberry\n- #43055 Allow `/copy` to copy status output and individual fields @copyberry\n- #43069 Support managed worktrees for interactive sessions and forks @copyberry\n- #43070 Clarify comments in CI setup and the Rust workflow @copyberry\n- #43074 Show a retryable error when the apps popup fails to load @copyberry\n- #43079 Add opt-in local audio devices to the voice helper @copyberry\n- #43083 Supply Bazel-managed CMake and Ninja for the bundled Opus build @copyberry\n- #43090 Send processed microphone audio over RTP in voice-host @copyberry\n- #43097 Add a helper-backed realtime WebRTC session API @copyberry\n- #43099 Add receipt-verified native voice SDK export @copyberry\n- #43100 Add bounded incoming Opus RTP handling to the voice host @copyberry\n- #43102 Include GIO in voice SDKs and native runtimes @copyberry\n- #43104 Move Guardian thread context into `guardianv2` configuration @copyberry\n- #43109 Add explicit toolchain inputs for native voice builds @copyberry\n- #43110 Record reasoning effort changes in conversation history behind a flag @copyberry\n- #43111 Add a Bazel target for native voice dependencies @copyberry\n- #43113 Save subagent and memory opt-ins through the app server @copyberry\n- #43114 Add Bazel preparation for native voice runtimes @copyberry\n- #43117 Link Unix Bazel bindings against the prepared voice runtime @copyberry\n- #43120 Add managed worktree creation to TUI session commands @copyberry\n- #43121 Require a prepared runtime when assembling voice helper packages @copyberry\n- #43125 Add explicit Windows tool selection for native voice builds @copyberry\n- #43126 Expose native Windows build tools through Bazel targets @copyberry\n- #43144 Add Windows MSVC Bazel targets for native voice libraries @copyberry\n- #43147 Gate experimental context by model capability at session startup @copyberry\n- #43177 Use server model defaults for fresh TUI startup @copyberry\n- #43178 Allow guarded legacy resume with background migration enabled @copyberry\n- #43244 Add bounded GStreamer playback components to the voice host @copyberry\n- #43248 Connect voice-host RTP audio to speaker playback @copyberry\n- #43253 Show read-only conversations when resume encounters an active writer @copyberry\n- #43261 Use server defaults when starting TUI background tasks @copyberry\n- #43265 Add experimental user verification API contracts @copyberry\n- #43279 Include linked worktrees in TUI session discovery @copyberry\n- #43281 Move npm package staging into a separate release workflow job @copyberry\n- #43282 Make Bazel binary stamping opt-in @copyberry\n- #43286 Add a managed worktree browser to the TUI @copyberry\n- #43289 Add capability-gated MCP user-verification handling @copyberry\n- #43298 Defer managed worktree transitions to fresh TUI loop iterations @copyberry\n- #43304 Isolate Bazel build commit metadata from Rust compilation inputs @copyberry\n- #43308 Replace Windows app-server shutdown files with socket requests @copyberry\n- #43315 Resolve session labels uniquely before acting on them @copyberry\n- #43325 Sort JSON schema object keys for consistent Cargo and Bazel output @copyberry\n- #43330 Preserve saved permissions when resuming or forking remote tasks @copyberry\n- #43340 Enable remote named permission profile selection in the TUI @copyberry\n- #43352 Add opt-in MCP user-verification transport @copyberry\n- #43355 Let the app server resolve implicit model settings for CLI forks @copyberry\n- #43359 Show the server's model provider ID in TUI status @copyberry\n- #43360 Use app-server metadata for TUI session restoration @copyberry\n- #43376 Defer resume picker and directory changes to a fresh TUI stack @copyberry\n- #43408 Avoid WebSocket connection waits in Guardian v2 classification @copyberry\n- #43419 Initialize `cwd` in TUI resume and fork test fixtures @copyberry\n- #43421 Remove the app-server README and its contributor guidance references @copyberry\n- #43423 Remove the app-server docs update requirement from `AGENTS.md` @copyberry\n- #43426 Handle Luna HTTP requests in guardian history tests @copyberry\n- #43428 Notify opted-in stdio MCP servers of auth changes @copyberry\n- #43432 Route approvals through the extension decision API @copyberry\n- #43442 Keep Guardian review evidence consistent and reject stale approvals @copyberry\n- #43444 Pin V8 release manifests and prevent published release replacement @copyberry\n- #43447 Route MCP elicitations through the shared approval decision path @copyberry\n- #43454 Add diagnostic labels to shell snapshot capture metrics @copyberry\n- #43456 Wait for thread idle before rollback in model-switching tests @copyberry\n- #43458 Centralize Guardian context mode and checkpoint policy @copyberry\n- #43462 Remove legacy Guardian approval review paths @copyberry\n- #43472 Recover missing Guardian root instructions in acceptance order @copyberry\n- #43478 Retain inherited Guardian instructions in standalone forks @copyberry\n- #43490 Expose shared Guardian reviewer helpers through `guardian_review` @copyberry\n- #43491 Include unloaded children in multi-agent v2 environment context @copyberry\n- #43494 Limit archive rollout reads to requested threads @copyberry\n- #43495 Allow internal sessions to fork from selected history @copyberry\n- #43504 Treat zombie processes as inactive in the Unix PID backend @copyberry\n- #43513 Expose a stable executor build identity in environment metadata @copyberry\n- #43519 Set `recursion_limit` to 256 for app-server, exec, and TUI @copyberry\n\n\n",
@@ -181,79 +253,7 @@
       "date": "2026-09-01T21:02:49Z",
       "url": "https://github.com/openai/codex/releases/tag/rust-v0.153.0-alpha.4",
       "prerelease": true
-    },
-    {
-      "version": "rust-v0.153.0-alpha.2",
-      "name": "0.153.0-alpha.2",
-      "body": "Release 0.153.0-alpha.2\n\n",
-      "date": "2026-09-01T06:15:12Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.153.0-alpha.2",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.153.0-alpha.1",
-      "name": "0.153.0-alpha.1",
-      "body": "Release 0.153.0-alpha.1\n\n",
-      "date": "2026-09-01T04:40:58Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.153.0-alpha.1",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.152.0-alpha.7.2",
-      "name": "0.152.0-alpha.7.2",
-      "body": "Release 0.152.0-alpha.7.2\n\n",
-      "date": "2026-09-01T00:30:15Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.152.0-alpha.7.2",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.152.0-alpha.7",
-      "name": "0.152.0-alpha.7",
-      "body": "Release 0.152.0-alpha.7\n\n",
-      "date": "2026-08-31T16:18:27Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.152.0-alpha.7",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.152.0-alpha.6",
-      "name": "0.152.0-alpha.6",
-      "body": "Release 0.152.0-alpha.6\n\n",
-      "date": "2026-08-31T02:12:53Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.152.0-alpha.6",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.152.0-alpha.5",
-      "name": "0.152.0-alpha.5",
-      "body": "Release 0.152.0-alpha.5\n\n",
-      "date": "2026-08-31T01:11:03Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.152.0-alpha.5",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.152.0-alpha.4",
-      "name": "0.152.0-alpha.4",
-      "body": "Release 0.152.0-alpha.4\n\n",
-      "date": "2026-08-30T13:56:08Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.152.0-alpha.4",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.151.0",
-      "name": "0.151.0",
-      "body": "## New Features\n\n- Added a configurable grace period for discovering tools from optional MCP servers. (#41199)\n- Extensions can now inspect or replace MCP tool results before they reach the model. (#41202)\n- Plugin catalogs now combine per-repository configuration and report invalid project marketplaces without hiding valid plugins. (#41208)\n\n## Bug Fixes\n\n- Preserved restored permission profiles across TUI turns and prevented `/cd` from weakening sandbox restrictions. (#41192)\n- Kept tool availability and reasoning effort correct when switching models or falling back to another model. (#41195, #41206)\n- Improved remote sandbox enforcement using the executor’s actual home directory, operating system, and path conventions. (#41196, #41204, #41207, #41209)\n- Preserved structured MCP tool and resource errors in app-server responses. (#41196)\n- Counted nested subagent token usage toward root goal budgets. (#41183)\n- Prevented stale Guardian classifications from authorizing actions after permission state changes. (#41196)\n\n## Chores\n\n- Added telemetry for escalated stdin reviews and remote executor MCP discovery. (#41189, #41205)\n- Stabilized Guardian WebSocket and core fixture tests under slow or highly concurrent CI. (#41191, #41194)\n\n## Changelog\n\nFull Changelog: https://github.com/openai/codex/compare/rust-v0.150.0...rust-v0.151.0\n\n- #41183 Account subagent token usage toward root goals @copyberry\n- #41189 Instrument stdin review size checks @copyberry\n- #41191 Stabilize Guardian WebSocket tests @copyberry\n- #41192 Preserve restored permission profiles in TUI sessions @copyberry\n- #41193 Report affected capabilities from remote plugin syncs @copyberry\n- #41194 Harden core test fixture startup assertions @copyberry\n- #41195 Finalize model-specific tool plans in `ToolRouter` @copyberry\n- #41196 Improve sandboxing, MCP errors, and cached approvals @copyberry\n- #41199 Make the optional MCP startup grace configurable @copyberry\n- #41202 Let extensions process MCP tool results @copyberry\n- #41204 Propagate executor home directories into sandbox contexts @copyberry\n- #41205 Track executor MCP discovery telemetry @copyberry\n- #41206 Make Ultra reasoning fallback model-aware @copyberry\n- #41207 Propagate executor OS into turn environments @copyberry\n- #41208 Honor per-repository plugin configuration in catalog requests @copyberry\n- #41209 Align deny-read matching with executor path semantics @copyberry\n\n\n",
-      "date": "2026-08-29T09:55:39Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.151.0",
-      "prerelease": false
-    },
-    {
-      "version": "rust-v0.152.0-alpha.1",
-      "name": "0.152.0-alpha.1",
-      "body": "Release 0.152.0-alpha.1\n\n",
-      "date": "2026-08-29T10:47:53Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.152.0-alpha.1",
-      "prerelease": true
     }
   ],
-  "lastUpdated": "2026-09-10T10:11:49.006Z"
+  "lastUpdated": "2026-09-11T10:08:36.693Z"
 }
