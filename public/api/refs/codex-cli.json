@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.157.1",
-  "generated_at": "2026-09-28T03:43:25.487Z",
+  "version": "0.158.0",
+  "generated_at": "2026-09-28T10:35:08.292Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,11 +14,19 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.157.1",
-    "to_version": "0.157.1",
-    "new_features": [],
+    "from_version": "0.158.0",
+    "to_version": "0.158.0",
+    "new_features": [
+      "tui-copy-on-select-right-click-paste",
+      "mcp-oauth-client-secrets",
+      "exec-server-websocket-bearer-tokens",
+      "image-generation-transparent-backgrounds-file-backed-edits",
+      "terminal-input-approval-default-elevated-permissions"
+    ],
     "new_commands": [],
-    "new_flags": [],
+    "new_flags": [
+      "--oauth-client-secret"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -39,14 +47,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.157.1",
+      "latest_stable": "0.158.0",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-09-26",
+      "latest_release_date": "2026-09-28",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release of codex-cli, version 0.157.1, appears to be a maintenance or internal release with no explicit new features, commands, flags, or breaking changes detailed in the provided changelog. The release notes indicate that highlights could not be determined due to an empty PR index and a 404 error on the GitHub tag comparison. This suggests that the changes are likely minor bug fixes, internal improvements, or infrastructure updates that do not directly impact user-facing functionality or require any migration steps. Developers can likely upgrade without concern for compatibility issues or changes to their existing workflows. The full changelog link is provided for those who wish to investigate the underlying code changes, but based on the available information, no immediate action or re-evaluation of existing configurations is necessary. The upgrade urgency is low, as there are no critical fixes or new capabilities highlighted."
+      "tldr": "Codex CLI v0.158.0 introduces significant enhancements to user interaction, security, and core functionality. A major highlight is the ability to configure copy-on-select and right-click paste in the fullscreen TUI, with copied transcript selections now preserving Markdown formatting, greatly improving usability for developers. Security is bolstered with support for connecting to MCP servers requiring pre-registered OAuth client secrets via `codex mcp add --oauth-client-secret`, and direct exec-server WebSocket connections can now be secured with bearer tokens, including those configured through the app-server. Image generation and editing capabilities are expanded, allowing explicit requests for transparent backgrounds and accepting file-backed conversation images for edits. Furthermore, terminal input approval is now enabled by default for commands with elevated permissions, streamlining workflows by preventing unnecessary reviews for runtime-only grants. Bug fixes address critical issues such as Windows sandbox failures with ordinary paths and large permission policies, Linux sandbox startup with nested writable roots, and macOS patch operations now correctly recognizing system path aliases to avoid approval prompts. Approval reviews are also more robust, retrying on new user input instead of aborting. This release also includes numerous internal improvements, such as parallelizing instruction refresh and tool preparation, adding OTLP logging for agent responses and Guardian assessments, and enhancing multi-agent V2 context handling. Developers should consider upgrading to benefit from these usability, security, and stability improvements, particularly if working with MCP servers, image generation, or elevated permission commands."
     },
     "features": [
       {
@@ -2259,6 +2267,67 @@
         "description": "Plugin catalogs now integrate per-repository configuration settings and will report invalid project marketplaces without suppressing the display of valid plugins.",
         "key_details": [],
         "source_url": "https://github.com/openai/codex/pull/41208"
+      },
+      {
+        "id": "tui-copy-on-select-right-click-paste",
+        "name": "Configurable Copy-on-Select and Right-Click Paste in Fullscreen TUI",
+        "status": "stable",
+        "since": "0.158.0",
+        "description": "Users can now configure copy-on-select and right-click paste behavior within the fullscreen TUI. Copied transcript selections will also preserve Markdown formatting.",
+        "key_details": [
+          "Configurable copy-on-select",
+          "Configurable right-click paste",
+          "Markdown formatting preserved in copied selections"
+        ],
+        "source_url": "https://github.com/openai/codex/compare/rust-v0.157.0...rust-v0.158.0#47639"
+      },
+      {
+        "id": "mcp-oauth-client-secrets",
+        "name": "Connect to MCP servers with pre-registered OAuth client secrets",
+        "status": "stable",
+        "since": "0.158.0",
+        "description": "codex-cli can now connect to MCP servers that require pre-registered OAuth client secrets. This includes support through the `codex mcp add --oauth-client-secret` command.",
+        "key_details": [
+          "Support for MCP servers requiring pre-registered OAuth client secrets",
+          "New flag `--oauth-client-secret` for `codex mcp add`"
+        ],
+        "source_url": "https://github.com/openai/codex/compare/rust-v0.157.0...rust-v0.158.0#47891"
+      },
+      {
+        "id": "exec-server-websocket-bearer-tokens",
+        "name": "Secure direct exec-server WebSocket connections with bearer tokens",
+        "status": "stable",
+        "since": "0.158.0",
+        "description": "Direct exec-server WebSocket connections can now be secured using bearer tokens. This functionality extends to connections configured via the app-server.",
+        "key_details": [
+          "Bearer token authentication for direct exec-server WebSocket connections",
+          "App-server configured connections also support bearer tokens"
+        ],
+        "source_url": "https://github.com/openai/codex/compare/rust-v0.157.0...rust-v0.158.0#47601"
+      },
+      {
+        "id": "image-generation-transparent-backgrounds-file-backed-edits",
+        "name": "Image generation and editing with transparent backgrounds and file-backed conversation images",
+        "status": "stable",
+        "since": "0.158.0",
+        "description": "Image generation and editing now support explicit requests for transparent backgrounds. Additionally, image edits can now utilize file-backed conversation images.",
+        "key_details": [
+          "Explicit request for transparent backgrounds in image generation/editing",
+          "Image edits accept file-backed conversation images"
+        ],
+        "source_url": "https://github.com/openai/codex/compare/rust-v0.157.0...rust-v0.158.0#47484"
+      },
+      {
+        "id": "terminal-input-approval-default-elevated-permissions",
+        "name": "Terminal input approval enabled by default for elevated permissions",
+        "status": "stable",
+        "since": "0.158.0",
+        "description": "Terminal input approval is now enabled by default for commands running with elevated permissions. This change also ensures that runtime-only grants no longer trigger unnecessary reviews.",
+        "key_details": [
+          "Terminal input approval enabled by default for elevated permission commands",
+          "Runtime-only grants no longer cause unnecessary reviews"
+        ],
+        "source_url": "https://github.com/openai/codex/compare/rust-v0.157.0...rust-v0.158.0#47799"
       }
     ],
     "commands": [
@@ -2644,6 +2713,12 @@
           "description": "Enables automatically reviewed approvals for CLI operations.",
           "since": "0.147.0",
           "source_url": "https://github.com/openai/codex/compare/rust-v0.146.0...rust-v0.147.0#36373"
+        },
+        {
+          "flag": "--oauth-client-secret",
+          "description": "Used with `codex mcp add` to connect to MCP servers requiring pre-registered OAuth client secrets.",
+          "since": "0.158.0",
+          "source_url": "https://github.com/openai/codex/compare/rust-v0.157.0...rust-v0.158.0#47891"
         }
       ],
       "deprecated": [
@@ -5154,7 +5229,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--oauth-client-secret"
+      ]
     },
     "env_vars": [
       {
