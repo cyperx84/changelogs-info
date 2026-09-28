@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.284",
-  "generated_at": "2026-09-28T18:27:03.219Z",
+  "version": "2.1.283",
+  "generated_at": "2026-09-25T23:49:07.727Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,31 +14,28 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.284",
-    "to_version": "2.1.284",
+    "from_version": "2.1.251",
+    "to_version": "2.1.251",
     "new_features": [
-      "claude-sonnet-5-5",
-      "auto-mode-ask-again-next-time",
-      "gateway-spend-limit-dollar-amounts",
-      "keybinding-effort-slider-ultracode",
-      "mcp-reconnect-all",
-      "gateway-telemetry-google-cloud-otlp",
-      "gateway-certificate-client-auth",
-      "vscode-show-message-timestamps",
-      "vscode-plugin-load-errors-notes",
-      "vscode-ultracode-on-off-switch",
-      "claude-tag-model-family-choices",
-      "claude-tag-spend-projection-org-limit"
+      "pre-post-model-switch-hooks",
+      "remote-control-foreground-subagent-streaming",
+      "spend-limit-bar",
+      "per-session-prompt-cache-cost"
     ],
     "new_commands": [
-      "/rate-limit-options",
-      "/mcp reconnect all"
+      "claude attach",
+      "claude logs",
+      "claude stop",
+      "claude respawn",
+      "claude rm"
     ],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "project-settings-env-vars-restricted"
+    ]
   },
   "payload": {
     "meta": {
@@ -55,12 +52,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.284",
-      "latest_release_date": "2026-09-28",
+      "latest_stable": "2.1.283",
+      "latest_release_date": "2026-09-25",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Claude Code 2.1.284 introduces Claude Sonnet 5.5 as the new default Sonnet model on the Anthropic API, featuring a 1M context window and updated pricing. This is a significant upgrade for users relying on Sonnet, offering more capacity and potentially better performance. The release also enhances the user experience with new keybinding actions for the effort slider and Ultracode toggle, allowing for greater customization of workflow. For Claude apps gateway users, spend limits now display in dollar amounts in `/usage` and the status line, providing clearer cost visibility, and new telemetry and authentication options improve integration with Google Cloud and identity providers. Critical fixes address issues like damaged response streams, persistent 'Prompt is too long' errors after compaction, and Agent SDK crashes with malformed image sources, making the tool more robust and reliable. The `/mcp reconnect all` command simplifies managing MCP server connections, and the Ultracode feature is now a standalone toggle, no longer forcing xhigh effort. VS Code users gain message timestamps, improved plugin error reporting, and a dedicated Ultracode switch. Claude Tag sees improvements in model family selection, spend projection for organization limits, and more robust handling of sign-in notices and channel management. Users should upgrade to benefit from the new Sonnet model, improved stability, and enhanced usability across various features."
+      "tldr": "This release of claude-code 2.1.251 introduces significant enhancements to model interaction, cost transparency, and background session management. Developers can now leverage `PreModelSwitch` and `PostModelSwitch` hooks to control model changes, offering more granular control over AI behavior. Remote Control clients gain live streaming of foreground subagent tool calls, providing real-time visibility into active subagent operations, while background subagents continue to show status only. Cost tracking is improved with a new spend limit bar in `/usage` and a `rate_limits.spend_limit` status line field for gateway users, alongside detailed per-session prompt cache metrics in `/cost` and a `prompt_cache` object for status line scripts. The CLI has been expanded with `claude attach`, `logs`, `stop`, `respawn`, and `rm` commands for better background session management, and the `--resume` message now explicitly suggests `claude attach <id>`. Critical security fixes address symlink vulnerabilities in file tools, path traversal in plugin commands, and sandbox escapes related to project settings and the Workflow tool. Performance is boosted with reduced UI re-renders and a smaller binary size. A breaking change restricts setting `CLAUDE_CONFIG_DIR`, `CLAUDE_CODE_TMPDIR`, `TMPDIR`, `TMP`, or `TEMP` from project-level `.claude/settings.json`, requiring these to be configured in the shell or user/managed settings. It is recommended to upgrade to this version to benefit from the security fixes, improved control, and enhanced visibility into session costs and subagent activity."
     },
     "features": [
       {
@@ -2133,133 +2130,6 @@
         "description": "A spend limit bar has been added to the `/usage` command and a `rate_limits.spend_limit` status line field is available for developers behind a Claude apps gateway with spend limits.",
         "key_details": [],
         "source_url": ""
-      },
-      {
-        "id": "claude-sonnet-5-5",
-        "name": "Claude Sonnet 5.5",
-        "status": "stable",
-        "since": "2.1.284",
-        "description": "Added Claude Sonnet 5.5, now the default Sonnet model on the Anthropic API. It features a 1M context window and pricing of $2/$10 per Mtok with $0.20/Mtok cache reads.",
-        "key_details": [
-          "Default Sonnet model on Anthropic API",
-          "1M context window",
-          "Pricing: $2/$10 per Mtok, $0.20/Mtok cache reads"
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "auto-mode-ask-again-next-time",
-        "name": "Auto Mode 'Yes, but ask again next time' Option",
-        "status": "stable",
-        "since": "2.1.284",
-        "description": "Added a 'Yes, but ask again next time' answer to auto mode's prompt before a read outside the working directories. This allows a single read while ensuring future reads still prompt for permission.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "gateway-spend-limit-dollar-amounts",
-        "name": "Claude Apps Gateway Spend Limit Dollar Amounts",
-        "status": "stable",
-        "since": "2.1.284",
-        "description": "Dollar amounts are now displayed for the Claude apps gateway spend limit in `/usage` and the status line (e.g., '$271.40 / $500.00 spent this month') when the gateway runs this version or later. The status line's `rate_limits.spend_limit` also gains `used_usd`, `limit_usd`, and `period` fields.",
-        "key_details": [
-          "Displays dollar amounts in `/usage` and status line",
-          "Status line `rate_limits.spend_limit` includes `used_usd`, `limit_usd`, `period`"
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "keybinding-effort-slider-ultracode",
-        "name": "Keybinding Actions for Effort Slider and Ultracode",
-        "status": "stable",
-        "since": "2.1.284",
-        "description": "Added `effortSlider:decreaseEffort`, `increaseEffort`, and `toggleUltracode` keybinding actions. This allows rebinding the `/effort` slider's arrow and Tab keys in `keybindings.json`.",
-        "key_details": [
-          "New keybinding actions: `effortSlider:decreaseEffort`, `increaseEffort`, `toggleUltracode`",
-          "Allows custom keybindings for effort slider and Ultracode toggle"
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "mcp-reconnect-all",
-        "name": "MCP Reconnect All Command",
-        "status": "stable",
-        "since": "2.1.284",
-        "description": "Added `/mcp reconnect all` in the interactive terminal to retry every MCP server that failed to connect or needs authentication at once.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "gateway-telemetry-google-cloud-otlp",
-        "name": "Claude Apps Gateway Telemetry to Google Cloud OTLP",
-        "status": "stable",
-        "since": "2.1.284",
-        "description": "Added `auth: { google: {} }` for Claude apps gateway `telemetry.forward_to` destinations, enabling telemetry export directly to Google Cloud's OTLP endpoint using the gateway's Google Cloud credentials.",
-        "key_details": [
-          "Configuration: `auth: { google: {} }` in `telemetry.forward_to`",
-          "Exports telemetry to Google Cloud OTLP endpoint"
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "gateway-certificate-client-auth",
-        "name": "Claude Apps Gateway Certificate Client Authentication",
-        "status": "stable",
-        "since": "2.1.284",
-        "description": "Added certificate client authentication (`private_key_jwt`) between the Claude apps gateway and its identity provider, supporting identity providers that issue certificate credentials instead of client secrets.",
-        "key_details": [
-          "Uses `private_key_jwt` for client authentication",
-          "Supports identity providers issuing certificate credentials"
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "vscode-show-message-timestamps",
-        "name": "[VSCode] Show Message Timestamps",
-        "status": "stable",
-        "since": "2.1.284",
-        "description": "Added an optional time above each prompt and response in VS Code, with a date line where the day changes. Configurable via the 'Claude Code: Show Message Timestamps' setting (off by default).",
-        "key_details": [
-          "VS Code setting: `claudeCode.showMessageTimestamps` (off by default)",
-          "Displays timestamps and date lines in chat"
-        ],
-        "source_url": ""
-      },
-      {
-        "id": "vscode-plugin-load-errors-notes",
-        "name": "[VSCode] Plugin Load Errors and Notes in Manage Plugins",
-        "status": "stable",
-        "since": "2.1.284",
-        "description": "Added plugin load errors and notes to the Manage plugins rows in VS Code, with a popup to disable, uninstall, or copy the error.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "vscode-ultracode-on-off-switch",
-        "name": "[VSCode] Ultracode On/Off Switch",
-        "status": "stable",
-        "since": "2.1.284",
-        "description": "Added an Ultracode on/off switch under the Effort slider in VS Code, replacing the slider's Ultracode stop. The model pill now shows '· Ultracode' at any effort level.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "claude-tag-model-family-choices",
-        "name": "[Claude Tag] Model Family Choices",
-        "status": "stable",
-        "since": "2.1.284",
-        "description": "Added model family choices such as 'Opus (latest)' for a thread, a channel default, or your DM in Claude Tag, so the choice follows the newest model in that family.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "claude-tag-spend-projection-org-limit",
-        "name": "[Claude Tag] Spend Projection for Organization-Wide Limit",
-        "status": "stable",
-        "since": "2.1.284",
-        "description": "Added the spend that counts toward your organization-wide limit to the analytics spend projection chart in Claude Tag, along with how much of the limit is used.",
-        "key_details": [],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -2769,22 +2639,6 @@
         "syntax": "claude rm",
         "description": "Removes Claude Code related files or sessions.",
         "since": "2.1.251",
-        "status": "stable",
-        "source_url": ""
-      },
-      {
-        "name": "/rate-limit-options",
-        "syntax": "/rate-limit-options",
-        "description": "Provides options related to rate limits for claude.ai subscribers. Added to `/help` and the command menu.",
-        "since": "2.1.284",
-        "status": "stable",
-        "source_url": ""
-      },
-      {
-        "name": "/mcp reconnect all",
-        "syntax": "/mcp reconnect all",
-        "description": "Retries connection for all MCP servers that failed to connect or require authentication.",
-        "since": "2.1.284",
         "status": "stable",
         "source_url": ""
       }

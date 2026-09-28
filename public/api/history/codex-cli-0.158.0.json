@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.158.0",
-  "generated_at": "2026-09-28T18:27:12.756Z",
+  "generated_at": "2026-09-28T10:35:08.292Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -17,7 +17,7 @@
     "from_version": "0.158.0",
     "to_version": "0.158.0",
     "new_features": [
-      "tui-copy-on-select-right-click-paste-markdown",
+      "tui-copy-on-select-right-click-paste",
       "mcp-oauth-client-secrets",
       "exec-server-websocket-bearer-tokens",
       "image-generation-transparent-backgrounds-file-backed-edits",
@@ -54,7 +54,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release of codex-cli, version 0.158.0, introduces several significant enhancements across user experience, security, and core functionality. A major user-facing improvement is the ability to configure copy-on-select and right-click paste in the fullscreen TUI, with the added benefit of preserving Markdown formatting in copied transcript selections, streamlining interaction and content portability. Security has been bolstered with support for connecting to MCP servers requiring pre-registered OAuth client secrets, accessible via `codex mcp add --oauth-client-secret`, and direct exec-server WebSocket connections can now be secured using bearer tokens, including those configured through the app-server. Image generation and editing workflows are more flexible, allowing explicit requests for transparent backgrounds and enabling edits using file-backed conversation images. Furthermore, terminal input approval is now enabled by default for commands with elevated permissions, reducing unnecessary review prompts for runtime-only grants. Bug fixes address critical issues such as Windows sandbox failures related to paths, credentials, and large permission policies, as well as Linux sandbox startup with nested writable roots and Git metadata preservation. macOS patch operations now correctly recognize system path aliases, preventing redundant approval prompts, and approval reviews will retry on new user input, avoiding premature action abortion. Mermaid flowcharts now render quoted labels and ampersands correctly, and command completion events provide early output and report process-launch failures. These updates collectively enhance the tool's usability, security, and reliability, making an upgrade highly recommended for all users to benefit from the improved workflows and stability."
+      "tldr": "Codex CLI v0.158.0 introduces significant enhancements to user interaction, security, and core functionality. A major highlight is the ability to configure copy-on-select and right-click paste in the fullscreen TUI, with copied transcript selections now preserving Markdown formatting, greatly improving usability for developers. Security is bolstered with support for connecting to MCP servers requiring pre-registered OAuth client secrets via `codex mcp add --oauth-client-secret`, and direct exec-server WebSocket connections can now be secured with bearer tokens, including those configured through the app-server. Image generation and editing capabilities are expanded, allowing explicit requests for transparent backgrounds and accepting file-backed conversation images for edits. Furthermore, terminal input approval is now enabled by default for commands with elevated permissions, streamlining workflows by preventing unnecessary reviews for runtime-only grants. Bug fixes address critical issues such as Windows sandbox failures with ordinary paths and large permission policies, Linux sandbox startup with nested writable roots, and macOS patch operations now correctly recognizing system path aliases to avoid approval prompts. Approval reviews are also more robust, retrying on new user input instead of aborting. This release also includes numerous internal improvements, such as parallelizing instruction refresh and tool preparation, adding OTLP logging for agent responses and Guardian assessments, and enhancing multi-agent V2 context handling. Developers should consider upgrading to benefit from these usability, security, and stability improvements, particularly if working with MCP servers, image generation, or elevated permission commands."
     },
     "features": [
       {
@@ -2328,19 +2328,6 @@
           "Runtime-only grants no longer cause unnecessary reviews"
         ],
         "source_url": "https://github.com/openai/codex/compare/rust-v0.157.0...rust-v0.158.0#47799"
-      },
-      {
-        "id": "tui-copy-on-select-right-click-paste-markdown",
-        "name": "Configurable Copy-on-Select and Right-Click Paste in TUI with Markdown Preservation",
-        "status": "stable",
-        "since": "0.158.0",
-        "description": "Users can now configure copy-on-select and right-click paste functionality within the fullscreen TUI. Copied transcript selections will automatically preserve Markdown formatting.",
-        "key_details": [
-          "Configurable copy-on-select",
-          "Configurable right-click paste",
-          "Markdown formatting preserved in copied transcript selections"
-        ],
-        "source_url": ""
       }
     ],
     "commands": [
