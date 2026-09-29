@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.158.0",
-  "generated_at": "2026-09-29T04:17:40.447Z",
+  "version": "0.159.0",
+  "generated_at": "2026-09-29T11:05:55.780Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,19 +14,18 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.158.0",
-    "to_version": "0.158.0",
+    "from_version": "0.159.0",
+    "to_version": "0.159.0",
     "new_features": [
-      "tui-copy-on-select-right-click-paste-markdown",
-      "mcp-oauth-client-secrets",
-      "exec-server-websocket-bearer-tokens",
-      "image-generation-transparent-backgrounds-file-backed-edits",
-      "terminal-input-approval-default-elevated-permissions"
+      "instant-interrupt",
+      "compact-welcome-screen-and-tips",
+      "warnings-viewer-dismissal",
+      "scroll-transcript-during-plan-decision",
+      "native-mermaid-rendering-enhancements",
+      "app-server-thread-history-pagination"
     ],
     "new_commands": [],
-    "new_flags": [
-      "--oauth-client-secret"
-    ],
+    "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -47,14 +46,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.158.0",
+      "latest_stable": "0.159.0",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-09-28",
+      "latest_release_date": "2026-09-29",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release of codex-cli, version 0.158.0, introduces significant improvements to user experience, security, and core functionality. A headline feature is the configurable copy-on-select and right-click paste in the fullscreen TUI, which now preserves Markdown formatting, greatly enhancing the usability of copied transcript selections. This makes sharing and documenting conversations much more efficient and accurate. \n\nSecurity has been bolstered with support for MCP servers requiring pre-registered OAuth client secrets, accessible via `codex mcp add --oauth-client-secret`, and the ability to secure direct exec-server WebSocket connections with bearer tokens, including those configured through the app-server. Image generation and editing now offer explicit control for transparent backgrounds and can accept file-backed conversation images, providing more creative flexibility. \n\nTerminal input approval is now enabled by default for commands with elevated permissions, streamlining workflows by avoiding unnecessary reviews for runtime-only grants. Numerous bug fixes address critical issues, including Windows sandbox failures related to paths, credentials, and large permission policies, and Linux sandbox startup with nested writable roots. macOS patch operations now correctly recognize system path aliases, reducing approval prompts, and approval reviews retry on new user input, preventing premature abortion of pending actions. Mermaid flowcharts render more robustly, and command completion events now include early output and report process-launch failures, improving diagnostic capabilities. Developers should upgrade to leverage these new features, enhanced security, and stability improvements, particularly if working with Windows or macOS sandboxes, or requiring advanced image and TUI functionalities."
+      "tldr": "Codex CLI v0.159.0 introduces several quality-of-life improvements and bug fixes. The headline feature is the opt-in `instant_interrupt` which allows users to immediately steer Codex during model responses or long-running code-mode calls, significantly improving responsiveness and control during interactive sessions. This means you no longer have to wait for a full response or code execution to complete before providing new input, making workflows much more fluid.\n\nNew sessions now greet users with a compact welcome screen and consistent headers, complemented by occasional tips during and after turns to enhance the onboarding experience. The warnings viewer has been improved to automatically dismiss reviewed warnings upon closing, with a new 'k' keybind to keep specific warnings for later, streamlining warning management. Users can now scroll the transcript while deliberating on plan implementation, offering better context during critical decision points. Furthermore, native Mermaid rendering has been enhanced to support more flowchart edges, labels, and node groups, improving diagram visualization within the TUI. App-server clients gain more control over thread history with the ability to paginate from a specific item.\n\nKey bug fixes include preventing stray console windows for MCP servers, code-mode hosts, and piped commands on Windows, with a fallback to embedded mode for restrictive launchers. Copying transcript selections now reliably preserves Markdown tables, formatting, and significant whitespace, and automatic copying on selection is supported in more terminals. Blank sessions retain drafts when switching tasks, and threads can be archived and listed even before their first turn. Local ChatGPT sign-in is more reliable, and onboarding provides a shortcut to copy login links. Approved commands now correctly retain explicit filesystem denials, and `.aws` directories are protected by default under writable roots. macOS TLS access in network-enabled sandboxes and remote environments requiring proxy access has also been fixed. The `tui.prompt_suggestions` setting and the bundled `plugin-creator` skill have been removed as part of chores. This update is recommended for all users to benefit from improved stability, responsiveness, and user experience."
     },
     "features": [
       {
@@ -2341,6 +2340,82 @@
           "Markdown formatting preserved in copied transcript selections"
         ],
         "source_url": ""
+      },
+      {
+        "id": "instant-interrupt",
+        "name": "Opt-in Instant Interrupt",
+        "status": "stable",
+        "since": "0.159.0",
+        "description": "An opt-in feature that allows new user input to immediately steer Codex, interrupting ongoing model responses or long-running code-mode calls.",
+        "key_details": [
+          "Interrupts model responses",
+          "Interrupts long-running code-mode calls",
+          "Opt-in functionality"
+        ],
+        "source_url": "https://github.com/openai/codex/compare/rust-v0.158.0...rust-v0.159.0#48135"
+      },
+      {
+        "id": "compact-welcome-screen-and-tips",
+        "name": "Compact Welcome Screen and Consistent Headers with Tips",
+        "status": "stable",
+        "since": "0.159.0",
+        "description": "New sessions now feature a compact welcome screen and consistent headers. Occasional tips are displayed during and after turns to guide the user.",
+        "key_details": [
+          "Compact welcome screen for new sessions",
+          "Consistent borderless session headers",
+          "Occasional tips during and after turns"
+        ],
+        "source_url": "https://github.com/openai/codex/compare/rust-v0.158.0...rust-v0.159.0#48513"
+      },
+      {
+        "id": "warnings-viewer-dismissal",
+        "name": "Warnings Viewer Dismisses Reviewed Warnings",
+        "status": "stable",
+        "since": "0.159.0",
+        "description": "The warnings viewer now automatically dismisses warnings that have been reviewed when it is closed. Users can press 'k' to keep a warning for later review.",
+        "key_details": [
+          "Automatically dismisses reviewed warnings on close",
+          "Press 'k' to keep a warning for later"
+        ],
+        "source_url": "https://github.com/openai/codex/compare/rust-v0.158.0...rust-v0.159.0#48205"
+      },
+      {
+        "id": "scroll-transcript-during-plan-decision",
+        "name": "Scroll Transcript While Deciding on Plan Implementation",
+        "status": "stable",
+        "since": "0.159.0",
+        "description": "Users can now scroll through the transcript even when a modal is open, specifically while deciding whether to implement a plan.",
+        "key_details": [
+          "Allows scrolling transcript with open modals",
+          "Facilitates review during plan decision-making"
+        ],
+        "source_url": "https://github.com/openai/codex/compare/rust-v0.158.0...rust-v0.159.0#48805"
+      },
+      {
+        "id": "native-mermaid-rendering-enhancements",
+        "name": "Enhanced Native Mermaid Rendering",
+        "status": "stable",
+        "since": "0.159.0",
+        "description": "Native Mermaid rendering now supports more flowchart edges, labels, and node groups, improving the visualization of diagrams.",
+        "key_details": [
+          "Supports more flowchart edges",
+          "Supports more labels",
+          "Supports more node groups",
+          "Preserves punctuation and semicolons in Mermaid labels"
+        ],
+        "source_url": "https://github.com/openai/codex/compare/rust-v0.158.0...rust-v0.159.0#48814"
+      },
+      {
+        "id": "app-server-thread-history-pagination",
+        "name": "App-Server Thread History Pagination by Item",
+        "status": "stable",
+        "since": "0.159.0",
+        "description": "App-server clients can now paginate thread history from a specific item, providing more granular control over history retrieval.",
+        "key_details": [
+          "Pagination of thread history",
+          "Can start pagination from a specific item"
+        ],
+        "source_url": "https://github.com/openai/codex/compare/rust-v0.158.0...rust-v0.159.0#48151"
       }
     ],
     "commands": [
@@ -5242,9 +5317,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--oauth-client-secret"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
