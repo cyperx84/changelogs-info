@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.159.0",
-  "generated_at": "2026-09-29T17:39:19.491Z",
+  "generated_at": "2026-09-29T11:05:55.780Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -29,10 +29,7 @@
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "removed-follow-up-prompt-suggestions",
-      "removed-plugin-creator-skill"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -56,7 +53,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "Codex CLI v0.159.0 introduces the highly anticipated `instant_interrupt` feature, allowing users to steer the AI during model responses or long-running code-mode calls with new input, significantly improving interactivity and control. This opt-in feature prevents the AI from continuing down an undesirable path, saving time and resources. The release also brings a refreshed TUI experience with a compact welcome screen, consistent headers, and helpful tips during and after turns, making new sessions more welcoming and informative. \n\nKey new features include an improved warnings viewer that dismisses reviewed warnings upon closing, with an option to keep specific warnings for later by pressing 'k'. Users can now scroll the transcript while reviewing a plan, enhancing the decision-making process. Mermaid rendering has been upgraded to support more flowchart edges, labels, and node groups, improving visualization capabilities. App-server clients gain the ability to paginate thread history from a specific item using item anchors in the `thread/items/list` API. \n\nNumerous bug fixes enhance stability and user experience. Windows launches now consistently avoid stray console windows for MCP servers, code-mode hosts, and piped commands, with a fallback to embedded mode for restrictive launchers. Transcript copying is more robust, preserving Markdown tables, formatting, and significant whitespace, and automatic selection copying is enabled for more terminals. Blank sessions now correctly retain drafts when switching tasks, and threads can be archived and listed even before their first turn. Local ChatGPT sign-in is more reliable, and onboarding provides a shortcut to copy login links. Filesystem permissions are strengthened, with explicit denials retained for approved commands and `.aws` directories protected by default. macOS TLS access in network-enabled sandboxes and remote environments requiring proxy access has also been fixed. \n\nHowever, this release includes two breaking changes: the automatic follow-up prompt suggestions and the `tui.prompt_suggestions` setting have been removed, requiring manual prompting. Additionally, the bundled `plugin-creator` skill has been removed. Users should review these changes and adjust their workflows accordingly. Upgrading is recommended for improved interactivity, stability, and a more polished user interface, especially for Windows users and those who frequently interact with the AI during its responses."
+      "tldr": "Codex CLI v0.159.0 introduces several quality-of-life improvements and bug fixes. The headline feature is the opt-in `instant_interrupt` which allows users to immediately steer Codex during model responses or long-running code-mode calls, significantly improving responsiveness and control during interactive sessions. This means you no longer have to wait for a full response or code execution to complete before providing new input, making workflows much more fluid.\n\nNew sessions now greet users with a compact welcome screen and consistent headers, complemented by occasional tips during and after turns to enhance the onboarding experience. The warnings viewer has been improved to automatically dismiss reviewed warnings upon closing, with a new 'k' keybind to keep specific warnings for later, streamlining warning management. Users can now scroll the transcript while deliberating on plan implementation, offering better context during critical decision points. Furthermore, native Mermaid rendering has been enhanced to support more flowchart edges, labels, and node groups, improving diagram visualization within the TUI. App-server clients gain more control over thread history with the ability to paginate from a specific item.\n\nKey bug fixes include preventing stray console windows for MCP servers, code-mode hosts, and piped commands on Windows, with a fallback to embedded mode for restrictive launchers. Copying transcript selections now reliably preserves Markdown tables, formatting, and significant whitespace, and automatic copying on selection is supported in more terminals. Blank sessions retain drafts when switching tasks, and threads can be archived and listed even before their first turn. Local ChatGPT sign-in is more reliable, and onboarding provides a shortcut to copy login links. Approved commands now correctly retain explicit filesystem denials, and `.aws` directories are protected by default under writable roots. macOS TLS access in network-enabled sandboxes and remote environments requiring proxy access has also been fixed. The `tui.prompt_suggestions` setting and the bundled `plugin-creator` skill have been removed as part of chores. This update is recommended for all users to benefit from improved stability, responsiveness, and user experience."
     },
     "features": [
       {
@@ -5536,29 +5533,6 @@
         ],
         "migration": "Remove any references to the 'untrusted approval policy' from your configurations. Implement alternative, more secure approval mechanisms if needed.",
         "source_url": "https://github.com/openai/codex/pull/39630"
-      },
-      {
-        "id": "removed-follow-up-prompt-suggestions",
-        "version": "0.159.0",
-        "title": "Removed Follow-up Prompt Suggestions",
-        "description": "The automatic follow-up prompt suggestions feature and the associated `tui.prompt_suggestions` setting have been removed.",
-        "affected": [
-          "TUI prompt suggestions",
-          "`tui.prompt_suggestions` setting"
-        ],
-        "migration": "Users who relied on automatic follow-up prompt suggestions will need to manually craft subsequent prompts.",
-        "source_url": "https://github.com/openai/codex/pull/48621"
-      },
-      {
-        "id": "removed-plugin-creator-skill",
-        "version": "0.159.0",
-        "title": "Removed Bundled `plugin-creator` Skill",
-        "description": "The bundled `plugin-creator` skill has been removed from Codex.",
-        "affected": [
-          "`plugin-creator` skill"
-        ],
-        "migration": "Users who relied on the `plugin-creator` skill will need to find alternative methods for plugin creation or re-implement the functionality.",
-        "source_url": "https://github.com/openai/codex/pull/48604"
       }
     ],
     "deprecations": [
