@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.286",
-  "generated_at": "2026-09-30T19:49:59.717Z",
+  "version": "2.1.285",
+  "generated_at": "2026-09-29T21:52:22.625Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,18 +14,23 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.286",
-    "to_version": "2.1.286",
+    "from_version": "2.1.284",
+    "to_version": "2.1.284",
     "new_features": [
-      "permission-prompt-count",
-      "fullscreen-list-mouse-support",
-      "vscode-bookmarks",
-      "vscode-question-cards-in-conversation",
-      "vscode-question-card-option-previews",
-      "vscode-message-details-rows",
-      "claude-tag-add-channel-button"
+      "claude-sonnet-5-5",
+      "auto-mode-ask-again-next-time",
+      "gateway-spend-limit-dollar-amounts",
+      "gateway-telemetry-google-cloud-otlp",
+      "gateway-certificate-client-auth",
+      "vscode-show-message-timestamps",
+      "vscode-plugin-load-errors-notes",
+      "vscode-ultracode-on-off-switch",
+      "claude-tag-model-family-choices",
+      "claude-tag-spend-projection-org-limit"
     ],
-    "new_commands": [],
+    "new_commands": [
+      "/mcp reconnect all"
+    ],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
@@ -47,12 +52,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.286",
-      "latest_release_date": "2026-09-30",
+      "latest_stable": "2.1.285",
+      "latest_release_date": "2026-09-29",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Claude Code 2.1.286 introduces several quality-of-life improvements and crucial bug fixes, enhancing stability, user experience, and security. A key new feature is the addition of bookmarks in VS Code, allowing developers to save and easily reference Claude's responses in a dedicated side panel, streamlining complex debugging or development workflows. The release also improves the clarity of permission prompts by adding a 'N of M' count when multiple requests stack up, and enhances fullscreen list navigation with mouse support for 'N more' rows. \n\nSignificant fixes address persistent login issues across different Claude Code processes and IDE extensions, especially concerning expired GCP/AWS credentials and macOS sessions. Stability is boosted by resolving crashes during parallel tool calls, API 400 errors from non-text tool returns, and cloud sessions failing to wake up due to large histories. The spend meter now accurately prices prompt cache writes and counts input tokens for streamed turns with server-side tools. Security is tightened with improved redaction of secrets in logs and transcripts, handling various punctuation and invisible characters in passwords and keys. \n\nUsability improvements include better commit guidance, more responsive slash command suggestions, and a refined output style picker. The `/hooks` command now presents a more streamlined view of configured hooks. For VS Code users, question cards now appear directly in the conversation with option previews, and message details can be expanded to show terminal output, browser tabs, and code. Cloud sessions see fixes for idle states, setup script persistence, and routine run status reporting. Claude Tag gains an 'Add channel' button for spend limits and improved session titles from Slack. Developers should upgrade to benefit from these stability, security, and usability enhancements, particularly if experiencing login issues, API errors, or working with large session histories."
+      "tldr": "This release introduces Claude Sonnet 5.5 as the new default Sonnet model on the Anthropic API, offering a 1M context window and updated pricing, which is a significant upgrade for users relying on Sonnet. Auto mode now includes a 'Yes, but ask again next time' option for reads outside working directories, providing more granular control over permissions without disabling future prompts. The Claude apps gateway now displays spend limits in dollar amounts in `/usage` and the status line, offering clearer cost visibility, and supports Google Cloud OTLP telemetry export and certificate client authentication for enhanced integration and security. Keybinding actions for the `/effort` slider have been added, allowing users to customize `decreaseEffort`, `increaseEffort`, and `toggleUltracode` in `keybindings.json`. The `/mcp reconnect all` command is new, enabling a single action to retry all failed or unauthenticated MCP server connections. Numerous fixes address issues like damaged response streams, persistent 'Prompt is too long' errors after compaction, and Agent SDK session crashes due to malformed image sources, improving overall stability and user experience. VSCode users gain optional message timestamps, plugin load error details, and a dedicated Ultracode on/off switch, decoupling it from the xhigh effort level. Claude Tag now supports model family choices like 'Opus (latest)' and includes organization-wide spend limits in analytics, alongside various improvements to admin settings and self-hosted environment notifications. The `/recap` command's behavior has been refined, now declining when relayed from chat threads or webhooks but functioning normally when typed directly. Artifact publishing now refuses network share paths unless added via `--add-dir` for security. Users should review the updated `/effort` command for Ultracode changes and note the new default auto mode behavior for interactive terminal and VS Code sessions. This update is recommended for all users to benefit from model improvements, enhanced cost visibility, and critical bug fixes."
     },
     "features": [
       {
@@ -2250,69 +2255,6 @@
         "status": "stable",
         "since": "2.1.284",
         "description": "Added the spend that counts toward your organization-wide limit to the analytics spend projection chart in Claude Tag, along with how much of the limit is used.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "permission-prompt-count",
-        "name": "Permission Prompt Count",
-        "status": "stable",
-        "since": "2.1.286",
-        "description": "Added a count such as '2 of 5' to the permission prompt when several permission requests stack up.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "fullscreen-list-mouse-support",
-        "name": "Fullscreen List Mouse Support",
-        "status": "stable",
-        "since": "2.1.286",
-        "description": "Added mouse support for the 'N more' rows of lists in fullscreen mode: click one to jump to that end of the list, with hover and pressed states.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "vscode-bookmarks",
-        "name": "VSCode Bookmarks",
-        "status": "stable",
-        "since": "2.1.286",
-        "description": "Added bookmarks: save Claude's responses and keep them in view in a Bookmarks side panel in VS Code.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "vscode-question-cards-in-conversation",
-        "name": "VSCode Question Cards in Conversation",
-        "status": "stable",
-        "since": "2.1.286",
-        "description": "Added the questions Claude asks and your answers to the conversation in VS Code: after you answer a question card, a Questions row shows each question with your picks.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "vscode-question-card-option-previews",
-        "name": "VSCode Question Card Option Previews",
-        "status": "stable",
-        "since": "2.1.286",
-        "description": "Added option previews to question cards in the chat panel in VS Code: the highlighted choice's mockup or snippet shows beside or under the options.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "vscode-message-details-rows",
-        "name": "VSCode Message Details Rows",
-        "status": "stable",
-        "since": "2.1.286",
-        "description": "Added rows under a message that open to the terminal output, browser tab, browser instructions and selected code sent with it in VS Code.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "claude-tag-add-channel-button",
-        "name": "Claude Tag Add Channel Button",
-        "status": "stable",
-        "since": "2.1.286",
-        "description": "Added an Add channel button to Claude Tag's spend limits page in admin settings, so a limit can be set on any channel, including a private one, from its channel ID or Slack link.",
         "key_details": [],
         "source_url": ""
       }
