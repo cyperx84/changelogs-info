@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "0.0.37",
-  "generated_at": "2026-09-30T01:05:57.708Z",
+  "version": "4.1.22",
+  "generated_at": "2026-09-30T08:01:01.068Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,12 +19,17 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "0.0.37",
-    "to_version": "0.0.37",
-    "new_features": [],
+    "from_version": "4.1.22",
+    "to_version": "4.1.22",
+    "new_features": [
+      "bee-heossi-provider",
+      "pareto-inference-provider"
+    ],
     "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [],
+    "new_env_vars": [
+      "PARETO_API_KEY"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -45,12 +50,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "0.0.37",
-      "latest_release_date": "2026-09-26",
+      "latest_stable": "4.1.22",
+      "latest_release_date": "2026-09-30",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "This cline release, version 0.0.37, significantly enhances the user experience around updates, diagnostics, and model compatibility. The most notable improvement is the revamped 'About' page in Settings, which now serves as a central hub for version information, update management, release notes, and issue reporting, making it much easier to stay informed and troubleshoot. Following an update, a new 'What's new' dialog provides a concise overview of recent features, including SSH remotes, worktrees, pull request status, and parallel sub-agents, ensuring users are immediately aware of new capabilities. For macOS users, exporting diagnostics has been streamlined, with the 'Help → Export Diagnostics…' option now directly initiating the export process, bypassing the need to navigate through Settings. Additionally, a critical bug affecting OpenAI models accessed via inference profiles on Amazon Bedrock has been resolved, preventing 'Unknown parameter: 'reasoningConfig'' errors when reasoning effort is configured. This update is recommended for all users to benefit from improved usability and stability."
+      "tldr": "Cline 4.1.22 introduces support for two new AI providers: Bee (by HEOSSI) and Pareto Inference, which requires the `PARETO_API_KEY` environment variable. This expands the range of models and services available to developers. A significant change is the improved handling of Anthropic requests, which now leverage server-side refusal fallback and can fail over to other upstream providers on OpenRouter and Cline, preventing complete request failures. The model catalog has been refreshed, updating default models for numerous providers like OpenAI, OpenRouter, and GitHub Copilot to GPT-6.1 Sol, and introducing Claude Sonnet 5.5 and Claude Opus 5.5 to Cline's recommended list, meaning users without pinned models will see new defaults. Key fixes include the ability to send new messages after an API error instead of just retrying, and commands like `/compact` now staying in the composer during recovery. The 'Reset Code' button logic is improved, correctly disabling when no checkpoint exists and applying checkpoint settings to active tasks. Canceling a message immediately after sending now reliably stops the task, and reasoning tokens are no longer double-counted in usage. Amazon Bedrock integration is enhanced with proper routing for GPT-6/5.6 through inference profiles, correct region resolution for India, and better handling of reasoning effort settings and rejected requests. Gateway models now maintain their specific API protocols, preventing fallback issues. This release offers substantial stability improvements, broader model access, and more robust error handling, making an upgrade highly recommended for all users."
     },
     "features": [
       {
@@ -1488,6 +1493,26 @@
         "description": "A one-time 'What's new' dialog that appears after an update to highlight recent features. The initial dialog covers SSH remotes, worktrees, pull request status in the composer, and parallel sub-agents. This dialog can be re-accessed via 'Highlights' on the About page.",
         "key_details": [],
         "source_url": "https://github.com/cline/cline/compare/desktop-v0.0.36...desktop-v0.0.37"
+      },
+      {
+        "id": "bee-heossi-provider",
+        "name": "Bee (by HEOSSI) Provider",
+        "status": "stable",
+        "since": "4.1.22",
+        "description": "Added support for the Bee provider by HEOSSI.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "pareto-inference-provider",
+        "name": "Pareto Inference Provider",
+        "status": "stable",
+        "since": "4.1.22",
+        "description": "Added support for the Pareto Inference provider, requiring `PARETO_API_KEY`.",
+        "key_details": [
+          "Requires `PARETO_API_KEY` environment variable."
+        ],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1501,7 +1526,15 @@
       }
     ],
     "flags": [],
-    "env_vars": [],
+    "env_vars": [
+      {
+        "name": "PARETO_API_KEY",
+        "purpose": "API key for the Pareto Inference provider.",
+        "status": "stable",
+        "since": "4.1.22",
+        "source_url": ""
+      }
+    ],
     "models": [],
     "breaking_changes": [
       {
