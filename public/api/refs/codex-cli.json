@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.159.3",
-  "generated_at": "2026-10-01T18:02:39.834Z",
+  "version": "0.160.0",
+  "generated_at": "2026-10-01T23:00:40.315Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,10 +14,13 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.159.3",
-    "to_version": "0.159.3",
+    "from_version": "0.160.0",
+    "to_version": "0.160.0",
     "new_features": [
-      "account-security-setup-reminders"
+      "agent-command-center-pagination",
+      "x11-middle-click-paste",
+      "projectless-tui-sessions-with-workspace-defaults",
+      "guardian-review-context-retrieval"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -41,14 +44,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.159.3",
+      "latest_stable": "0.160.0",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-09-30",
+      "latest_release_date": "2026-10-01",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release introduces a new feature for local sessions signed in with ChatGPT: optional reminders to complete account security setup. This enhancement aims to improve user account security by prompting users to finalize their setup, ensuring a more secure environment for their interactions. The reminders are designed to be non-intrusive and appear only for eligible sessions, providing a helpful nudge without disrupting workflows. This update is a minor point release, focusing on this specific security-related user experience improvement. There are no new commands, flags, or breaking changes in this version. Users signed in with ChatGPT locally will benefit from these new prompts. Upgrading is recommended for all users to leverage this security-focused reminder system."
+      "tldr": "This release of codex-cli, version 0.160.0, introduces significant improvements to the agent command center, TUI interactions, and Guardian review capabilities. Users can now browse older tasks in the agent command center with a keyboard-accessible 'Show more' action, enhancing navigation and historical task review. For Linux X11 users, selecting transcript text and pasting with middle-click is now supported in fullscreen mode, streamlining text manipulation. Additionally, an opt-in Guardian review feature allows retrieval of earlier user instructions and context from agent handoffs, providing richer context for reviews.\n\nKey bug fixes include the reliable resumption of unsent queued messages after reconnection, preventing duplicate sends. The terminal UI now consistently preserves server provider, reasoning-summary, and verbosity settings, and accurately displays sessions in resume and fork history. Windows sandbox stability is improved with fixes for PowerShell fallbacks, long-path permission repairs, and the suppression of unwanted console windows from background helpers. Subagents now correctly retain starting environments and receive their configuration or failure status. SQLite logging has been made more robust by preventing stalls during connection setup and surfacing initialization errors, alongside background reclamation of unused log database space to reduce disk usage. Furthermore, explicit provider model catalogs are now authoritative, no longer including unsupported bundled models or stale entries after refresh failures.\n\nDocumentation has been clarified regarding provider credentials and the use of `env_key` for API-key environment variables. Performance enhancements include caching parsed plugin manifests and reusing HTTP connections for remote plugin requests, reducing repeated plugin-loading work. This update is recommended for all users to benefit from improved stability, new features, and performance optimizations."
     },
     "features": [
       {
@@ -2433,6 +2436,42 @@
         "description": "Eligible local sessions signed in with ChatGPT can now display optional reminders to complete account security setup.",
         "key_details": [],
         "source_url": "https://github.com/openai/codex/pull/49744"
+      },
+      {
+        "id": "agent-command-center-pagination",
+        "name": "Agent Command Center Pagination",
+        "status": "stable",
+        "since": "0.160.0",
+        "description": "Browse older tasks in the agent command center with a keyboard-accessible “Show more” action.",
+        "key_details": [],
+        "source_url": "https://github.com/openai/codex/pull/49106"
+      },
+      {
+        "id": "x11-middle-click-paste",
+        "name": "X11 Middle-Click Paste",
+        "status": "stable",
+        "since": "0.160.0",
+        "description": "Select transcript text and paste with middle-click in fullscreen mode on supported local Linux X11 terminals.",
+        "key_details": [],
+        "source_url": "https://github.com/openai/codex/pull/49112"
+      },
+      {
+        "id": "projectless-tui-sessions-with-workspace-defaults",
+        "name": "Projectless TUI Sessions with Workspace Defaults",
+        "status": "stable",
+        "since": "0.160.0",
+        "description": "Start sessions outside a project with workspace defaults when policy permits, and restore saved permissions when resuming.",
+        "key_details": [],
+        "source_url": "https://github.com/openai/codex/pull/49160"
+      },
+      {
+        "id": "guardian-review-context-retrieval",
+        "name": "Guardian Review Context Retrieval",
+        "status": "stable",
+        "since": "0.160.0",
+        "description": "Added opt-in Guardian review capabilities to retrieve earlier user instructions and include context from agent handoffs.",
+        "key_details": [],
+        "source_url": "https://github.com/openai/codex/pull/49036"
       }
     ],
     "commands": [
