@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "0.0.42",
-  "generated_at": "2026-10-02T16:07:04.367Z",
+  "version": "0.0.41",
+  "generated_at": "2026-10-02T09:23:11.922Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,15 +19,18 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "0.0.42",
-    "to_version": "0.0.42",
+    "from_version": "0.0.41",
+    "to_version": "0.0.41",
     "new_features": [
-      "connector-brand-logos",
-      "connector-availability-messaging"
+      "cloud-sessions-model-picker-updates",
+      "unsent-prompt-persistence",
+      "sidebar-highlighting-for-open-sessions",
+      "customize-connectors-ui-overhaul",
+      "marketplace-item-type-display",
+      "connector-details-tool-count",
+      "agent-teams-long-session-performance"
     ],
-    "new_commands": [
-      "/compact"
-    ],
+    "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
@@ -50,12 +53,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "0.0.42",
+      "latest_stable": "0.0.41",
       "latest_release_date": "2026-10-02",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "This `cline` release, version 0.0.42, introduces a new `/compact` slash command that allows users to summarize their conversation history, freeing up valuable context without sending the summary to the model. This is a significant improvement for managing long conversations and optimizing model usage. The 'Customize' section has received a major overhaul, with 'Connectors' now being the default and first tab, featuring a new 'Browse' section that provides a comprehensive, searchable catalog of connectors directly within the Customize interface, reducing reliance on the separate Marketplace. Additionally, connectors now display their brand logos in both the 'Customize' and 'Marketplace' views, enhancing visual recognition. For users who cannot access connectors, the 'Connectors' tab now provides clear, actionable messages, such as prompting signed-out users to sign in or informing beta users about rollout status. These changes streamline connector discovery and management, improve user experience with long conversations, and provide better transparency regarding feature availability. Developers should consider upgrading to benefit from improved context management and a more intuitive connector experience."
+      "tldr": "Cline 0.0.41 introduces significant improvements to cloud session model access and user experience. Cloud sessions can now leverage the full range of models available on the web, including 'Cline Usage-Billing', 'ClinePass', and 'ClineFree' options, with new sessions intelligently waiting for model readiness and offering retry mechanisms. This greatly expands the capabilities of cloud-based workflows. A major quality-of-life enhancement is the persistence of unsent prompts, meaning developers no longer lose their work when switching between sessions; 'New' in the sidebar now intelligently restores drafts, while 'Cmd/Ctrl+N' remains for fresh starts. The sidebar also now consistently highlights all open sessions and prevents self-marking as unread, improving session management clarity. The 'Customize → Connectors' interface has been completely revamped to align with other configuration tabs, featuring search, a refresh button, and a new 'Suggested' section that provides ready-made connector combinations with one-click installs and example prompts, streamlining setup for common tasks. Marketplace entries now clearly display item types, resolving ambiguity for similarly named components, and category filters are consolidated for easier navigation. Furthermore, connector details now accurately reflect the number of tools they add to new sessions, providing more precise information. Agent teams will experience improved performance in long sessions and during streaming, thanks to automatic data compaction. Finally, the model catalog has been refreshed, updating default models for several providers like DigitalOcean, GMI Cloud, NanoGPT, Nvidia, and Ofox. Developers should upgrade to take advantage of these enhanced features, particularly the expanded model access and improved UI for connectors and session management."
     },
     "features": [
       {
@@ -1605,24 +1608,6 @@
           "Existing team data is automatically compacted upon first opening."
         ],
         "source_url": ""
-      },
-      {
-        "id": "connector-brand-logos",
-        "name": "Connector Brand Logos",
-        "status": "stable",
-        "since": "0.0.42",
-        "description": "Connectors now display their brand logo in both the Customize section and Marketplace rows.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "connector-availability-messaging",
-        "name": "Connector Availability Messaging",
-        "status": "stable",
-        "since": "0.0.42",
-        "description": "If connectors are not available, the Connectors tab now provides clear messaging explaining why. This includes a sign-in card for signed-out users or a rollout notice with a 'Check again' option for accounts without beta access.",
-        "key_details": [],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -1631,14 +1616,6 @@
         "syntax": "cline mcp uninstall",
         "description": "Removes an installed MCP server.",
         "since": "3.0.52",
-        "status": "stable",
-        "source_url": ""
-      },
-      {
-        "name": "/compact",
-        "syntax": "/compact",
-        "description": "Summarizes the conversation history to free up context. The summary is generated using the session's provider settings and is not sent to the model as a prompt.",
-        "since": "0.0.42",
         "status": "stable",
         "source_url": ""
       }

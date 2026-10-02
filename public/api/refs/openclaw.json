@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.8.34",
-  "generated_at": "2026-10-02T09:23:01.816Z",
+  "version": "2026.8.35",
+  "generated_at": "2026-10-02T16:06:59.660Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,9 +14,11 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.8.34",
-    "to_version": "2026.8.34",
-    "new_features": [],
+    "from_version": "2026.8.35",
+    "to_version": "2026.8.35",
+    "new_features": [
+      "gpt-6-1-sol-support"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -40,13 +42,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.8.34",
+      "latest_stable": "2026.8.35",
       "latest_release_date": "2026-10-02",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This `extended-stable` release of OpenClaw, version 2026.8.34, is a gateway-only LTS-equivalent update focusing on stability, security, and performance. It backports 113 critical fixes across various components, including Doctor, authentication, sessions, channels, plugins, sandboxing, and model runtimes. A key highlight is the comprehensive re-evaluation of the 2026.8.33 discovery range and 2026.7.35 lineage, ensuring a thorough rollup of fixes rather than incremental updates. Upgrade and recovery hardening is significantly improved, preserving credentials, agent state, plugin inventory, transcripts, schedules, service ownership, and runtime links through upgrades, restarts, and Doctor repair. This means less data loss and smoother transitions during maintenance. Boundary fixes tighten remote filesystem mutation, plugin and skill scanning, browser authentication, channel reply identity, private skill ingress, and scoped runtime ownership, enhancing security and isolation. For example, Doctor now preserves per-agent memory search during upgrades and detects shared auth migration by provenance, while the Gateway refreshes its model catalog after auth changes. Docker users will find `libgomp1` installed in the runtime image for managed `llama.cpp`, and source builds are restored after dependency ownership guard. Microsoft Teams thread context is no longer dropped when a channel reply lacks a `replyToId`, and Slack preserves replacement webhook registrations. Overall, this release provides a more robust, secure, and reliable OpenClaw experience, making it a recommended upgrade for all users, especially those prioritizing long-term stability and data integrity."
+      "tldr": "This `extended-stable` release of OpenClaw, version 2026.8.35, focuses on critical security updates, reliability, performance, and new model support. The headline feature is the integration of GPT-6.1 Sol, enhancing OpenAI routing, discovery, reasoning, and guard-model boundaries, which significantly expands the platform's AI capabilities. Key improvements include safer updates and recovery mechanisms, such as preserving plugin settings through migrations and preventing duplicate Gateways, ensuring a more robust and stable upgrade experience. Agent completion has been made more reliable by preserving delegated and CLI answers, recovering full cron output, and preventing failed requests from consuming steered questions, leading to more consistent and accurate agent interactions. Security has been hardened by stabilizing secret-store kinds during rotation and restoring admitted secret-egress execution. Channel and integration reliability has seen significant fixes, addressing issues with Gmail and IMAP watchers, Matrix direct mappings, Telegram progress, and managed llama.cpp startup on Windows. Performance and UI continuity are also improved, with bounded model-catalog waits and reduced Codex fleet heap pressure, ensuring a smoother user experience. This release is recommended for all users to benefit from enhanced stability, security, and the new GPT-6.1 Sol model."
     },
     "features": [
       {
@@ -3154,6 +3156,21 @@
           "Supports Bedrock tool-result images."
         ],
         "source_url": "#135397, #149336"
+      },
+      {
+        "id": "gpt-6-1-sol-support",
+        "name": "GPT-6.1 Sol Support",
+        "status": "stable",
+        "since": "2026.8.35",
+        "description": "Integration of the GPT-6.1 Sol model across OpenAI routing, discovery, reasoning, harness, and Reef guard-model boundaries, enhancing model compatibility and capabilities.",
+        "key_details": [
+          "Supports OpenAI routing",
+          "Supports discovery",
+          "Supports reasoning",
+          "Supports harness",
+          "Supports Reef guard-model boundaries"
+        ],
+        "source_url": "https://github.com/openclaw/openclaw/pull/161400"
       }
     ],
     "commands": [
