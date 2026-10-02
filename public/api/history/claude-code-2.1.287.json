@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.288",
-  "generated_at": "2026-10-02T21:09:25.964Z",
+  "version": "2.1.287",
+  "generated_at": "2026-10-01T18:01:34.312Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,26 +14,21 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.288",
-    "to_version": "2.1.288",
+    "from_version": "2.1.286",
+    "to_version": "2.1.286",
     "new_features": [
-      "ui-selection-for-mods",
-      "gh-api-built-in-cloud-sessions",
-      "prompt-cleared-recovery",
-      "mcp-oauth-reauthentication",
-      "agents-view-navigation-and-search",
-      "screen-reader-permission-mode-announcement"
+      "permission-prompt-stack-count",
+      "fullscreen-list-mouse-support",
+      "vscode-bookmarks",
+      "vscode-question-cards-in-conversation",
+      "vscode-question-card-option-previews",
+      "vscode-message-details-rows",
+      "claude-tag-add-channel-button"
     ],
     "new_commands": [],
-    "new_flags": [
-      "--max-findings"
-    ],
-    "new_env_vars": [
-      "CLAUDE_CODE_DISABLE_STRUCTURED_OUTPUTS"
-    ],
-    "deprecated_commands": [
-      "claude project purge"
-    ],
+    "new_flags": [],
+    "new_env_vars": [],
+    "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
   },
@@ -52,12 +47,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.288",
-      "latest_release_date": "2026-10-02",
+      "latest_stable": "2.1.287",
+      "latest_release_date": "2026-10-01",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Claude Code 2.1.288 introduces several quality-of-life improvements and critical bug fixes, enhancing stability, user experience, and developer workflows. A major new feature for mod developers is `$.ui.selection()`, allowing mods to access the user's selected text in fullscreen mode, enabling more interactive and context-aware custom tools. Cloud sessions now benefit from a built-in `gh api` command, streamlining GitHub interactions even when the CLI isn't pre-installed, and a new prompt recovery mechanism allows users to restore cleared drafts, including pasted content, by pressing Up after Ctrl+C. These changes significantly improve the robustness and usability of the Claude Code environment. \n\nKey fixes address long-standing issues such as mid-response API timeouts no longer failing turns in non-interactive sessions and subagents, and long conversations now auto-compacting instead of failing with 'Prompt is too long' when token usage is zero. Resumed sessions are more reliable, with fixes for dropped files, unsaved responses, and truncated transcripts. The release also introduces `--max-findings` for `/code-review`, offering granular control over finding limits, and enhances the Agents view with Ctrl+F for session search and Alt+↑/↓ for group navigation. For self-hosted environments, `CLAUDE_CODE_DISABLE_STRUCTURED_OUTPUTS` is a new environment variable to mitigate issues with structured outputs on certain gateways. The `claude project purge` command has been deprecated in favor of `claude purge`, though the old command still works with a notice. These updates make Claude Code more resilient and user-friendly, particularly for complex and long-running tasks. Users are encouraged to upgrade to benefit from these stability and feature enhancements."
+      "tldr": "This release of claude-code 2.1.286 introduces several quality-of-life improvements and critical bug fixes, enhancing user experience and system stability. Key new features include a permission prompt stack count, mouse support for fullscreen list navigation, and several VSCode-specific additions like bookmarks, question cards in conversation, and option previews for question cards. These features streamline interactions and provide better context within the IDE. \n\nSignificant improvements have been made to commit guidance, subagent interaction (send now moves commands to background), and background agent replies, making workflows smoother. Permission prompts across various tools now have a consistent look, and the external editor integration is more precise, opening at the cursor's line. The output style picker and `/hooks` command have been refined for better usability, and slash command suggestions are more responsive. \n\nSeveral critical bugs have been addressed, including issues with login browser pop-ups, session recovery after parallel tool calls, API 400 errors from invalid tool/hook returns, and cloud session wake-up failures for large histories. Security fixes include improved redaction of secrets in logs and transcripts, and better handling of API key reporting. Remote Control sessions now correctly disconnect when policies change, and model fallback retries are more robust. \n\nChanges include prompts showing in normal text color immediately when nothing is running, a more robust API request retry mechanism, and a refined `--bare` mode for focused operations. Plugin installs now refuse npm sources that are git repositories or folders, enhancing security. The `/exit` command on Windows now correctly stops servers before attempting worktree deletion. Overall, this release focuses on stability, security, and user experience, making it a recommended upgrade for all users, especially those relying on cloud sessions, VSCode integration, or Claude Tag."
     },
     "features": [
       {
@@ -2329,60 +2324,6 @@
         "description": "Added a count such as '2 of 5' to the permission prompt when several permission requests stack up.",
         "key_details": [],
         "source_url": ""
-      },
-      {
-        "id": "ui-selection-for-mods",
-        "name": "UI Selection for Mods",
-        "status": "stable",
-        "since": "2.1.288",
-        "description": "Adds `$.ui.selection()` for mods, which returns the text last selected in fullscreen mode. If the selection is within a single transcript row, that row is also returned.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "gh-api-built-in-cloud-sessions",
-        "name": "Built-in `gh api` for Cloud Sessions",
-        "status": "stable",
-        "since": "2.1.288",
-        "description": "Introduces a built-in `gh api` command for cloud sessions where the image lacks GitHub CLI. This also fixes issues with the built-in `gh api` sending control characters from file names, jq filters, or GitHub errors to the terminal.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "prompt-cleared-recovery",
-        "name": "Prompt Cleared Recovery",
-        "status": "stable",
-        "since": "2.1.288",
-        "description": "Allows recovery of a prompt cleared with Ctrl+C. Pressing Up on the empty prompt restores the draft, including pasted text and images.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "mcp-oauth-reauthentication",
-        "name": "MCP OAuth Re-authentication Prompt",
-        "status": "stable",
-        "since": "2.1.288",
-        "description": "Adds a re-authenticate prompt when an MCP server requests additional OAuth scope during a tool call.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "agents-view-navigation-and-search",
-        "name": "Agents View Navigation and Search",
-        "status": "stable",
-        "since": "2.1.288",
-        "description": "Adds Ctrl+F to find a session by name and Alt+↑/↓ to jump between groups in the agents view. These, along with rename, can be rebound in `keybindings.json`.",
-        "key_details": [],
-        "source_url": ""
-      },
-      {
-        "id": "screen-reader-permission-mode-announcement",
-        "name": "Screen Reader Permission Mode Announcement",
-        "status": "stable",
-        "since": "2.1.288",
-        "description": "Adds a screen reader mode announcement for the new permission mode when a plan is approved, including with Shift+Tab.",
-        "key_details": [],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -3253,12 +3194,6 @@
           "description": "Overrides the label the self-hosted runner registers with (default: hostname). Used with `claude self-hosted-runner`.",
           "since": "2.1.248",
           "source_url": ""
-        },
-        {
-          "flag": "--max-findings",
-          "description": "Sets the maximum number of findings to report for `/code-review`. Accepts a number or `all`. The choice is reused until `--max-findings default` is passed.",
-          "since": "2.1.288",
-          "source_url": ""
         }
       ],
       "deprecated": [
@@ -3292,9 +3227,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--max-findings"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
@@ -3784,13 +3717,6 @@
         "purpose": "Overrides the label the self-hosted runner registers with (default: hostname).",
         "status": "stable",
         "since": "2.1.248",
-        "source_url": ""
-      },
-      {
-        "name": "CLAUDE_CODE_DISABLE_STRUCTURED_OUTPUTS",
-        "purpose": "Disables structured outputs, which can fix issues with session titles, memory recall, and prompt hooks failing on Mantle or behind gateways that reject structured outputs.",
-        "status": "stable",
-        "since": "2.1.288",
         "source_url": ""
       }
     ],
@@ -5897,12 +5823,6 @@
         "name": "/review",
         "replaced_by": "/code-review",
         "deprecated_since": "2.1.223",
-        "source_url": ""
-      },
-      {
-        "name": "claude project purge",
-        "replaced_by": "claude purge",
-        "deprecated_since": "2.1.288",
         "source_url": ""
       }
     ],
