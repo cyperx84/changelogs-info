@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "4.1.22",
-  "generated_at": "2026-10-02T02:08:34.374Z",
+  "version": "0.0.41",
+  "generated_at": "2026-10-02T09:23:11.922Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,17 +19,20 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "4.1.22",
-    "to_version": "4.1.22",
+    "from_version": "0.0.41",
+    "to_version": "0.0.41",
     "new_features": [
-      "bee-heossi-provider",
-      "pareto-inference-provider"
+      "cloud-sessions-model-picker-updates",
+      "unsent-prompt-persistence",
+      "sidebar-highlighting-for-open-sessions",
+      "customize-connectors-ui-overhaul",
+      "marketplace-item-type-display",
+      "connector-details-tool-count",
+      "agent-teams-long-session-performance"
     ],
     "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [
-      "PARETO_API_KEY"
-    ],
+    "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -50,12 +53,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "4.1.22",
-      "latest_release_date": "2026-09-30",
+      "latest_stable": "0.0.41",
+      "latest_release_date": "2026-10-02",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "This Cline 4.1.22 release introduces new AI model providers, Bee (by HEOSSI) and Pareto Inference, expanding the range of available models for developers. The Pareto Inference provider requires setting the `PARETO_API_KEY` environment variable for authentication. A significant update to Anthropic model handling means direct requests now use server-side refusal fallback, and on OpenRouter/Cline, these models can fail over to other upstream providers, improving reliability. The model catalog has been refreshed, with GPT-6.1 Sol becoming the new default for many providers like OpenAI and OpenRouter, and other providers shifting to models like Ling 3.1 Flash and Claude Sonnet 5.5, which will change default model behavior for users not pinning specific models. Key fixes include improved API error recovery, allowing users to send new messages after an error instead of just retrying, and ensuring commands like `/compact` stay in the composer during recovery. The 'Reset Code' button now behaves more predictably, being disabled only when no checkpoint exists and applying checkpoint setting changes to the active task correctly. Task cancellation is more robust, stopping tasks even when initiated immediately after sending a message. Token usage calculations are more accurate, no longer double-counting reasoning tokens, though cost remains unchanged. Amazon Bedrock integration sees improvements in model routing for GPT-6/5.6 and region resolution, along with better handling of reasoning effort settings and legacy AWS profile authentication. Finally, gateway models on mixed-endpoint providers now correctly maintain their specific API protocols."
+      "tldr": "Cline 0.0.41 introduces significant improvements to cloud session model access and user experience. Cloud sessions can now leverage the full range of models available on the web, including 'Cline Usage-Billing', 'ClinePass', and 'ClineFree' options, with new sessions intelligently waiting for model readiness and offering retry mechanisms. This greatly expands the capabilities of cloud-based workflows. A major quality-of-life enhancement is the persistence of unsent prompts, meaning developers no longer lose their work when switching between sessions; 'New' in the sidebar now intelligently restores drafts, while 'Cmd/Ctrl+N' remains for fresh starts. The sidebar also now consistently highlights all open sessions and prevents self-marking as unread, improving session management clarity. The 'Customize → Connectors' interface has been completely revamped to align with other configuration tabs, featuring search, a refresh button, and a new 'Suggested' section that provides ready-made connector combinations with one-click installs and example prompts, streamlining setup for common tasks. Marketplace entries now clearly display item types, resolving ambiguity for similarly named components, and category filters are consolidated for easier navigation. Furthermore, connector details now accurately reflect the number of tools they add to new sessions, providing more precise information. Agent teams will experience improved performance in long sessions and during streaming, thanks to automatic data compaction. Finally, the model catalog has been refreshed, updating default models for several providers like DigitalOcean, GMI Cloud, NanoGPT, Nvidia, and Ofox. Developers should upgrade to take advantage of these enhanced features, particularly the expanded model access and improved UI for connectors and session management."
     },
     "features": [
       {
@@ -1511,6 +1514,98 @@
         "description": "Added support for the Pareto Inference provider, requiring `PARETO_API_KEY`.",
         "key_details": [
           "Requires `PARETO_API_KEY` environment variable."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "cloud-sessions-model-picker-updates",
+        "name": "Cloud Sessions Model Picker Updates",
+        "status": "stable",
+        "since": "0.0.41",
+        "description": "Cloud sessions can now access the same models as Cline on the web. The model picker now lists 'Cline Usage-Billing', 'ClinePass', and 'ClineFree' models (organization accounts do not get ClinePass), replacing the previous 'Cline only' listing. A new Cloud session will wait for a model to be ready before sending, and users can retry if the model list fails to load.",
+        "key_details": [
+          "Model picker now shows 'Cline Usage-Billing', 'ClinePass', and 'ClineFree' models.",
+          "Organization accounts do not have 'ClinePass' models.",
+          "New Cloud sessions wait for model readiness before sending.",
+          "Option to retry model list loading if it fails."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "unsent-prompt-persistence",
+        "name": "Unsent Prompt Persistence Across Sessions",
+        "status": "stable",
+        "since": "0.0.41",
+        "description": "An unsent prompt is no longer lost when switching between sessions. Using 'New' in the sidebar will return to an unfinished draft, while 'Cmd/Ctrl+N' will still start a fresh session.",
+        "key_details": [
+          "Unsent prompts are preserved when switching sessions.",
+          "'New' in the sidebar reopens the unfinished draft.",
+          "'Cmd/Ctrl+N' starts a fresh session."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "sidebar-highlighting-for-open-sessions",
+        "name": "Sidebar Highlighting for Open Sessions",
+        "status": "stable",
+        "since": "0.0.41",
+        "description": "Sessions started in the app are now highlighted in the sidebar while open, extending this behavior beyond just sessions reopened from history. Additionally, these sessions are no longer marked as unread by their own messages.",
+        "key_details": [
+          "Sessions started in the app are highlighted in the sidebar.",
+          "Highlighting applies to all open sessions, not just those reopened from history.",
+          "Open sessions are no longer marked unread by their own messages."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "customize-connectors-ui-overhaul",
+        "name": "Customize Connectors UI Overhaul",
+        "status": "stable",
+        "since": "0.0.41",
+        "description": "The 'Customize → Connectors' section has been redesigned to match the Skills, Plugins, and MCP tabs. It now includes search functionality, a refresh button, and an 'Installed' section. A new 'Suggested' section offers ready-made connector combinations with example prompts and one-click installation.",
+        "key_details": [
+          "New UI for 'Customize → Connectors' matching other configuration tabs.",
+          "Includes search, refresh button, and 'Installed' section.",
+          "New 'Suggested' section with pre-configured connector combos.",
+          "Suggested combos include example prompts and one-click install."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "marketplace-item-type-display",
+        "name": "Marketplace Item Type Display",
+        "status": "stable",
+        "since": "0.0.41",
+        "description": "Marketplace rows now display the type of each item, making it easier to distinguish between similarly named entries (e.g., Figma MCP server vs. Figma connector). Category filters have been consolidated into a single dropdown.",
+        "key_details": [
+          "Marketplace rows show item types.",
+          "Helps differentiate items with the same name.",
+          "Category filters are now in a single dropdown."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "connector-details-tool-count",
+        "name": "Connector Details Show Tools Added to New Sessions",
+        "status": "stable",
+        "since": "0.0.41",
+        "description": "A connector's details now accurately show the number of tools it adds to new sessions, rather than displaying the catalog's total tool count.",
+        "key_details": [
+          "Connector details now show tools added to new sessions.",
+          "Replaces the previous display of the catalog's total tool count."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "agent-teams-long-session-performance",
+        "name": "Agent Teams Performance in Long Sessions",
+        "status": "stable",
+        "since": "0.0.41",
+        "description": "Agent teams now maintain performance in long sessions and while teammates are streaming. Existing team data is automatically compacted the first time it's opened to improve efficiency.",
+        "key_details": [
+          "Improved agent team performance in long sessions.",
+          "Better performance during teammate streaming.",
+          "Existing team data is automatically compacted upon first opening."
         ],
         "source_url": ""
       }
