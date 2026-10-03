@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.288",
-  "generated_at": "2026-10-03T00:55:51.531Z",
+  "generated_at": "2026-10-02T21:09:25.964Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -32,7 +32,7 @@
       "CLAUDE_CODE_DISABLE_STRUCTURED_OUTPUTS"
     ],
     "deprecated_commands": [
-      "/project purge"
+      "claude project purge"
     ],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -57,7 +57,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Claude Code 2.1.288 introduces several quality-of-life improvements and critical bug fixes. A major new feature is the `$.ui.selection()` for mods, allowing them to retrieve selected text in fullscreen mode, enhancing mod interactivity. Additionally, cloud sessions now include a built-in `gh api` for environments without GitHub CLI, and a new prompt recovery feature allows users to restore cleared prompts with Ctrl+C and then Up arrow, including pasted content.\n\nKey fixes address long-standing issues such as mid-response API timeouts, which now allow non-interactive sessions and subagents to continue from partial responses. The release also resolves problems with long conversations failing due to 'Prompt is too long' by enabling auto-compaction, and fixes various `--resume` issues that led to lost context or unsaved responses. A new environment variable, `CLAUDE_CODE_DISABLE_STRUCTURED_OUTPUTS`, is introduced to mitigate issues with structured outputs on Mantle or behind certain gateways. The `/code-review` command gains a `--max-findings` flag for more granular control over reported findings, and the `/project purge` command is deprecated in favor of `/purge`.\n\nOther notable improvements include enhanced screen reader support, better error messages for artifact database limits, and more concise Bash permission prompts. Remote Control's credential recovery has been made more robust, and the agents view now supports Ctrl+F for searching and Alt+↑/↓ for group navigation. Developers should review the changes, especially if using cloud sessions, mods, or relying on structured outputs, and consider upgrading to benefit from these stability and usability enhancements."
+      "tldr": "Claude Code 2.1.288 introduces several quality-of-life improvements and critical bug fixes, enhancing stability, user experience, and developer workflows. A major new feature for mod developers is `$.ui.selection()`, allowing mods to access the user's selected text in fullscreen mode, enabling more interactive and context-aware custom tools. Cloud sessions now benefit from a built-in `gh api` command, streamlining GitHub interactions even when the CLI isn't pre-installed, and a new prompt recovery mechanism allows users to restore cleared drafts, including pasted content, by pressing Up after Ctrl+C. These changes significantly improve the robustness and usability of the Claude Code environment. \n\nKey fixes address long-standing issues such as mid-response API timeouts no longer failing turns in non-interactive sessions and subagents, and long conversations now auto-compacting instead of failing with 'Prompt is too long' when token usage is zero. Resumed sessions are more reliable, with fixes for dropped files, unsaved responses, and truncated transcripts. The release also introduces `--max-findings` for `/code-review`, offering granular control over finding limits, and enhances the Agents view with Ctrl+F for session search and Alt+↑/↓ for group navigation. For self-hosted environments, `CLAUDE_CODE_DISABLE_STRUCTURED_OUTPUTS` is a new environment variable to mitigate issues with structured outputs on certain gateways. The `claude project purge` command has been deprecated in favor of `claude purge`, though the old command still works with a notice. These updates make Claude Code more resilient and user-friendly, particularly for complex and long-running tasks. Users are encouraged to upgrade to benefit from these stability and feature enhancements."
     },
     "features": [
       {
@@ -5902,12 +5902,6 @@
       {
         "name": "claude project purge",
         "replaced_by": "claude purge",
-        "deprecated_since": "2.1.288",
-        "source_url": ""
-      },
-      {
-        "name": "/project purge",
-        "replaced_by": "/purge",
         "deprecated_since": "2.1.288",
         "source_url": ""
       }
