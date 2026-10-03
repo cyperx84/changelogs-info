@@ -23,6 +23,14 @@
       "prerelease": false
     },
     {
+      "version": "desktop-v0.0.43",
+      "name": "Desktop v0.0.43",
+      "body": "\n- Existing users get a one-time **What's new** dialog introducing Connectors, with connector logos, a clickable example prompt, and an **Open Connectors** button. You can replay it from **Settings → About → Show what's new**\n\n**Full Changelog**: https://github.com/cline/cline/compare/desktop-v0.0.42...desktop-v0.0.43\n",
+      "date": "2026-10-02T20:39:04Z",
+      "url": "https://github.com/cline/cline/releases/tag/desktop-v0.0.43",
+      "prerelease": false
+    },
+    {
       "version": "desktop-v0.0.42",
       "name": "Desktop v0.0.42",
       "body": "\n- New `/compact` slash command. It summarizes the conversation so far to free up context. The summary uses your session's provider settings and is not sent to the model as a prompt\n- **Connectors** is now the first and default tab in **Customize**. A new **Browse** section lists the full connector catalog in two columns with search, so you no longer need the Marketplace to find a connector. Installed and Browse each have their own search box\n- Connectors now show their brand logo, both in Customize and in Marketplace rows\n- If connectors aren't available to you, the Connectors tab now says why: a sign-in card when you're signed out, or a rollout notice with **Check again** when your account doesn't have beta access yet\n\n**Full Changelog**: https://github.com/cline/cline/compare/desktop-v0.0.41...desktop-v0.0.42\n",
@@ -245,15 +253,7 @@
       "date": "2026-09-17T21:41:12Z",
       "url": "https://github.com/cline/cline/releases/tag/desktop-v0.0.31",
       "prerelease": false
-    },
-    {
-      "version": "desktop-v0.0.30",
-      "name": "Desktop v0.0.30",
-      "body": "\n- Windows updates no longer fail with \"Error opening file for writing\". The installer hook meant to stop the running backend never terminated anything: Tauri ships a 32-bit NSIS installer, so its PowerShell ran under WOW64, where `Get-Process` reports an empty path for every 64-bit process — the filter matched no sidecar on any x64 machine. The installer then wrote over an executable the detached Hub daemon still held open, which is why updating from 0.0.25 through 0.0.28 failed exactly as 0.0.24 did. The installer now asks the Windows Restart Manager which processes hold this install's files and shuts those down; that is bitness-independent, covers the connector processes the Hub spawns, and leaves a side-by-side Cline Beta alone. If Restart Manager itself fails you get a Retry/Cancel prompt rather than a half-replaced install\n- On Windows, Cline no longer runs a program out of your workspace when it means to run the system one. Windows resolves a bare program name through the child process's working directory before it searches PATH, and Cline runs `rg`, `git`, and `powershell` with your workspace as that directory — so a repository that happened to contain its own `rg.exe` would have that copy executed as soon as the workspace was indexed. Cline now opts out of current-directory executable search at startup, and every process it spawns inherits the setting\n- Long sessions now compact when they actually need to rather than running out of room. The trigger compared a character-based estimate of the transcript (~3 characters per token) against the model's context limit, so content that tokenizes far denser than that — disassembly, image dumps, minified sources — could fill the real context window while the estimate stayed under the threshold and compaction never fired; the turn was then squeezed down to a handful of output tokens. The trigger now also uses the token count the provider itself reports, and how much history is kept is scaled by how far off the estimate turned out to be. The summarizer's output budget also doubled, so a model that reasons before answering can no longer spend the whole budget thinking and return no summary at all\n- A tool that streams its output no longer keeps spinning after it has finished. When a tool streamed everything as it went, its completion event carried no final output, which chat read as \"still running\" — so the tool kept its running presentation, spinner included, for the rest of the turn\n- Refreshed Cline's logo and app icons throughout the app, the Dock and taskbar, and the installer\n- The CoreWeave provider's branding and setup links now match CoreWeave's current documentation, and Weights & Biases gained a direct link to its API key page from provider setup\n\n**Full Changelog**: https://github.com/cline/cline/compare/desktop-v0.0.29...desktop-v0.0.30\n",
-      "date": "2026-09-17T03:35:22Z",
-      "url": "https://github.com/cline/cline/releases/tag/desktop-v0.0.30",
-      "prerelease": false
     }
   ],
-  "lastUpdated": "2026-10-02T11:30:49.053Z"
+  "lastUpdated": "2026-10-03T10:46:09.129Z"
 }
