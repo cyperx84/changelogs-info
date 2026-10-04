@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.289",
-  "generated_at": "2026-10-04T09:21:09.592Z",
+  "generated_at": "2026-10-04T15:08:46.976Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -17,7 +17,7 @@
     "from_version": "2.1.289",
     "to_version": "2.1.289",
     "new_features": [
-      "agent-spawn-teammates-idle-waiting-states"
+      "agent-spawn-teammates-plugin-hooks"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -46,7 +46,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release primarily focuses on stability and bug fixes, particularly around plugin behavior, sandbox rules, and UI rendering. A significant new feature is the introduction of `agent.spawn` for teammates, which provides a consistent agent ID across plugin hook events and adds idle and waiting states to `$.agent.list()`, improving agent management and observability. Numerous fixes address issues with plugin loading, stale data display in `plugin list`, `plugin eval`, and `plugin update`, and correct rendering problems in plugin panes, especially with specific link formats or malformed content. Sandbox deny/ask rules for Bash commands have been made more robust, now correctly applying to complex shell commands, symlinked files, and commands prefixed with expanded environment variables. UI stability has been enhanced, preventing sessions from ending due to plugin rendering errors and improving error reporting for failed plugin components. Developers should review their plugin implementations for any edge cases related to rendering or sandbox interactions, though no explicit breaking changes are noted. Upgrading is recommended for improved stability and more reliable plugin and sandbox behavior."
+      "tldr": "Claude-code 2.1.289 introduces a significant new feature for agent management: `agent.spawn` for teammates. This allows for more sophisticated multi-agent workflows by providing a consistent agent ID across plugin hook events and exposing idle and waiting states via `$.agent.list()`, enabling better monitoring and control of collaborative agent tasks. This release also focuses heavily on stability and UI rendering fixes, particularly for plugins and the terminal experience. Key fixes include resolving issues where `Read` deny rules didn't apply to symlinked files, preventing terminal freezes on specific code blocks with unclosed tags or deeply nested substitutions, and addressing various plugin rendering problems such as panes drawing nothing with certain link types or failing to update correctly. Performance for opening large files in plugin code panes has been improved, and several issues related to plugin validation and error handling in UI components have been resolved, making the plugin ecosystem more robust. Developers should upgrade to benefit from enhanced agent capabilities and a more stable and reliable user interface, especially when working with complex plugins or large codebases. No breaking changes are reported, making this a straightforward upgrade."
     },
     "features": [
       {
@@ -2394,6 +2394,19 @@
         "key_details": [
           "Consistent agent ID across plugin hook events.",
           "New idle and waiting states in `$.agent.list()`."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "agent-spawn-teammates-plugin-hooks",
+        "name": "Agent Spawn Teammates with Plugin Hook Events and Idle/Waiting States",
+        "status": "stable",
+        "since": "2.1.289",
+        "description": "Introduces `agent.spawn` for teammates, providing a consistent agent ID across plugin hook events and exposing idle and waiting states in `$.agent.list()`.",
+        "key_details": [
+          "Adds `agent.spawn` for creating teammates.",
+          "Ensures a single agent ID for all plugin hook events related to an agent.",
+          "Exposes idle and waiting states for agents via `$.agent.list()`."
         ],
         "source_url": ""
       }
