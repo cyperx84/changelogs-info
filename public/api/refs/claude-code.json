@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.288",
-  "generated_at": "2026-10-03T22:41:08.016Z",
+  "version": "2.1.289",
+  "generated_at": "2026-10-04T02:24:00.792Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,26 +14,15 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.288",
-    "to_version": "2.1.288",
+    "from_version": "2.1.289",
+    "to_version": "2.1.289",
     "new_features": [
-      "ui-selection-for-mods",
-      "gh-api-built-in-cloud-sessions",
-      "prompt-cleared-recovery",
-      "mcp-oauth-reauthentication",
-      "agents-view-navigation-and-search",
-      "screen-reader-permission-mode-announcement"
+      "agent-spawn-teammates"
     ],
     "new_commands": [],
-    "new_flags": [
-      "--max-findings"
-    ],
-    "new_env_vars": [
-      "CLAUDE_CODE_DISABLE_STRUCTURED_OUTPUTS"
-    ],
-    "deprecated_commands": [
-      "/project purge"
-    ],
+    "new_flags": [],
+    "new_env_vars": [],
+    "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
   },
@@ -52,12 +41,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.288",
-      "latest_release_date": "2026-10-02",
+      "latest_stable": "2.1.289",
+      "latest_release_date": "2026-10-03",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Claude Code 2.1.288 introduces several quality-of-life improvements and critical bug fixes. A major new feature is the `$.ui.selection()` for mods, allowing them to retrieve selected text in fullscreen mode, enhancing mod interactivity. Additionally, cloud sessions now include a built-in `gh api` for environments without GitHub CLI, and a new prompt recovery feature allows users to restore cleared prompts with Ctrl+C and then Up arrow, including pasted content.\n\nKey fixes address long-standing issues such as mid-response API timeouts, which now allow non-interactive sessions and subagents to continue from partial responses. The release also resolves problems with long conversations failing due to 'Prompt is too long' by enabling auto-compaction, and fixes various `--resume` issues that led to lost context or unsaved responses. A new environment variable, `CLAUDE_CODE_DISABLE_STRUCTURED_OUTPUTS`, is introduced to mitigate issues with structured outputs on Mantle or behind certain gateways. The `/code-review` command gains a `--max-findings` flag for more granular control over reported findings, and the `/project purge` command is deprecated in favor of `/purge`.\n\nOther notable improvements include enhanced screen reader support, better error messages for artifact database limits, and more concise Bash permission prompts. Remote Control's credential recovery has been made more robust, and the agents view now supports Ctrl+F for searching and Alt+↑/↓ for group navigation. Developers should review the changes, especially if using cloud sessions, mods, or relying on structured outputs, and consider upgrading to benefit from these stability and usability enhancements."
+      "tldr": "Claude Code 2.1.289 primarily focuses on stability and reliability improvements, particularly for plugin interactions and sandbox behavior, alongside a new feature for agent management. The most notable new feature is `agent.spawn` for teammates, which streamlines agent identification across plugin hook events and introduces idle/waiting states in `$.agent.list()`, enhancing visibility and control over agent activities. This release addresses numerous critical bug fixes that previously led to freezes, crashes, or incorrect behavior, especially concerning plugin rendering, marketplace interactions, and sandbox rule application. For instance, issues with `Read` deny rules not applying to symlinked files, stale plugin data in `plugin list`/`eval`/`update`, and various UI rendering glitches in plugin panes have been resolved. Importantly, it fixes several sandbox-related issues where deny/ask rules for Bash commands were skipped under auto-allow conditions, particularly with environment variable prefixes or bare variable assignments. Developers using plugins will find a more robust experience, as fixes prevent sessions from ending due to asynchronous errors in plugin handlers or UI rendering failures. The release also improves error reporting for failed plugin components, providing clearer messages to authors. Users are recommended to upgrade to benefit from these stability enhancements and the new agent management capabilities, which should lead to a more reliable and predictable development environment, especially for those heavily relying on plugins and sandboxed operations."
     },
     "features": [
       {
@@ -2383,6 +2372,18 @@
         "description": "Adds a screen reader mode announcement for the new permission mode when a plan is approved, including with Shift+Tab.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "agent-spawn-teammates",
+        "name": "Agent Spawn for Teammates",
+        "status": "stable",
+        "since": "2.1.289",
+        "description": "Introduces `agent.spawn` for teammates, allowing for a single agent ID across plugin hook events, and includes idle and waiting states in `$.agent.list()`.",
+        "key_details": [
+          "Single agent ID across plugin hook events",
+          "Idle and waiting states in `$.agent.list()`"
+        ],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -3292,9 +3293,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--max-findings"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
