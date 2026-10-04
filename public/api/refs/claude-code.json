@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.289",
-  "generated_at": "2026-10-04T15:08:46.976Z",
+  "generated_at": "2026-10-04T19:10:56.974Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -17,7 +17,7 @@
     "from_version": "2.1.289",
     "to_version": "2.1.289",
     "new_features": [
-      "agent-spawn-teammates-plugin-hooks"
+      "agent-spawn-teammates-plugin-hooks-agent-id-idle-waiting-states"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -46,7 +46,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Claude-code 2.1.289 introduces a significant new feature for agent management: `agent.spawn` for teammates. This allows for more sophisticated multi-agent workflows by providing a consistent agent ID across plugin hook events and exposing idle and waiting states via `$.agent.list()`, enabling better monitoring and control of collaborative agent tasks. This release also focuses heavily on stability and UI rendering fixes, particularly for plugins and the terminal experience. Key fixes include resolving issues where `Read` deny rules didn't apply to symlinked files, preventing terminal freezes on specific code blocks with unclosed tags or deeply nested substitutions, and addressing various plugin rendering problems such as panes drawing nothing with certain link types or failing to update correctly. Performance for opening large files in plugin code panes has been improved, and several issues related to plugin validation and error handling in UI components have been resolved, making the plugin ecosystem more robust. Developers should upgrade to benefit from enhanced agent capabilities and a more stable and reliable user interface, especially when working with complex plugins or large codebases. No breaking changes are reported, making this a straightforward upgrade."
+      "tldr": "This `claude-code` release, version 2.1.289, primarily focuses on stability and reliability improvements, particularly for plugin interactions and sandbox behavior, alongside a notable enhancement for agent management. The most significant new feature is the introduction of `agent.spawn` for teammates, which now provides a consistent agent ID across plugin hook events and exposes idle and waiting states in `$.agent.list()`. This allows for more robust and predictable management of sub-agents within plugins, improving the visibility of their operational status.\n\nNumerous fixes address critical issues, including a regression in `claude auth status` for VSCode users that could lead to more frequent sign-outs, which has now been reverted. Plugin stability sees major improvements, with fixes for stale plugin data in `plugin list`, `plugin eval`, and `plugin update` when installed from local folders, and hot reload for symlinked `--plugin-dir`. Issues causing sessions to end due to plugin errors, such as asynchronous handler failures or interface errors from zero-height regions, have been resolved. Visual glitches related to plugin panes drawing nothing for certain link types or freezing due to unknown border styles are also fixed, enhancing the overall plugin user experience. Furthermore, sandbox security has been tightened, correcting issues where deny/ask rules for compound shell commands or commands prefixed by environment variables were not properly applied, preventing potential bypasses under auto-allow conditions. `claude plugin validate` now correctly processes plugins within marketplace manifests and provides accurate `--json` output for Anthropic marketplace plugins. This release is recommended for all users to benefit from enhanced stability, improved plugin functionality, and more reliable sandbox security."
     },
     "features": [
       {
@@ -2406,6 +2406,19 @@
         "key_details": [
           "Adds `agent.spawn` for creating teammates.",
           "Ensures a single agent ID for all plugin hook events related to an agent.",
+          "Exposes idle and waiting states for agents via `$.agent.list()`."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "agent-spawn-teammates-plugin-hooks-agent-id-idle-waiting-states",
+        "name": "Agent Spawn Teammates with Agent ID, Idle, and Waiting States in Plugin Hooks",
+        "status": "stable",
+        "since": "2.1.289",
+        "description": "Introduces `agent.spawn` for teammates, providing a consistent agent ID across plugin hook events, and exposing idle and waiting states in `$.agent.list()` for better agent management and monitoring.",
+        "key_details": [
+          "Adds `agent.spawn` for creating teammate agents.",
+          "Ensures a single agent ID is used across all plugin hook events for a given agent.",
           "Exposes idle and waiting states for agents via `$.agent.list()`."
         ],
         "source_url": ""
