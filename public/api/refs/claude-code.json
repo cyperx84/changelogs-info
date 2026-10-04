@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.289",
-  "generated_at": "2026-10-04T19:10:56.974Z",
+  "generated_at": "2026-10-04T22:44:18.855Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -16,9 +16,7 @@
   "delta": {
     "from_version": "2.1.289",
     "to_version": "2.1.289",
-    "new_features": [
-      "agent-spawn-teammates-plugin-hooks-agent-id-idle-waiting-states"
-    ],
+    "new_features": [],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -46,7 +44,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This `claude-code` release, version 2.1.289, primarily focuses on stability and reliability improvements, particularly for plugin interactions and sandbox behavior, alongside a notable enhancement for agent management. The most significant new feature is the introduction of `agent.spawn` for teammates, which now provides a consistent agent ID across plugin hook events and exposes idle and waiting states in `$.agent.list()`. This allows for more robust and predictable management of sub-agents within plugins, improving the visibility of their operational status.\n\nNumerous fixes address critical issues, including a regression in `claude auth status` for VSCode users that could lead to more frequent sign-outs, which has now been reverted. Plugin stability sees major improvements, with fixes for stale plugin data in `plugin list`, `plugin eval`, and `plugin update` when installed from local folders, and hot reload for symlinked `--plugin-dir`. Issues causing sessions to end due to plugin errors, such as asynchronous handler failures or interface errors from zero-height regions, have been resolved. Visual glitches related to plugin panes drawing nothing for certain link types or freezing due to unknown border styles are also fixed, enhancing the overall plugin user experience. Furthermore, sandbox security has been tightened, correcting issues where deny/ask rules for compound shell commands or commands prefixed by environment variables were not properly applied, preventing potential bypasses under auto-allow conditions. `claude plugin validate` now correctly processes plugins within marketplace manifests and provides accurate `--json` output for Anthropic marketplace plugins. This release is recommended for all users to benefit from enhanced stability, improved plugin functionality, and more reliable sandbox security."
+      "tldr": "This release, 2.1.289, focuses heavily on stability and reliability, particularly for plugin interactions and sandbox behavior. A significant improvement is the fix for deny/ask rules on nested shell commands in managed machines, ensuring consistent security policies even with user-installed mods. Terminal freezing issues with short code blocks containing many unclosed `<script>` tags or deeply nested `${` substitutions have been resolved, enhancing the user experience when viewing complex code. Additionally, `Read` deny rules now correctly apply to files referenced via symlinks, whether @-mentioned, changed, or selected in the IDE, closing a potential security loophole. Plugin management sees several fixes, including `plugin list`, `plugin eval`, and `plugin update` no longer showing stale copies of locally installed plugins, and hot reload now works for symlinked `--plugin-dir`. The `claude plugin validate` command has been improved to correctly validate plugins, even when the folder contains a marketplace manifest, and no longer fails for Anthropic marketplace's own plugins. Visual rendering issues with plugins, such as panes drawing nothing for certain link types (localhost, `@` in path, uppercase host, `file:` path), stale rows above the prompt, and drawing failures due to invalid Box border styles or asynchronous errors in on-screen handlers, have been addressed. Crucially, the stability of sessions has been improved, preventing crashes or unrecoverable interface errors when plugin components fail to draw or when a plugin region with no height keeps growing. Sandbox auto-allow behavior has been refined to ensure Bash deny/ask rules are not skipped when commands are prefixed with environment variables or bare variable assignments. The `agent.spawn` feature for teammates now provides a consistent agent ID across plugin hook events and exposes idle/waiting states in `$.agent.list()`, offering better visibility into agent activity."
     },
     "features": [
       {
