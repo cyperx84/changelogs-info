@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.160.0",
-  "generated_at": "2026-10-05T17:53:36.843Z",
+  "version": "0.160.1",
+  "generated_at": "2026-10-05T23:45:45.407Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,14 +14,9 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.160.0",
-    "to_version": "0.160.0",
-    "new_features": [
-      "agent-command-center-pagination",
-      "x11-middle-click-paste",
-      "projectless-tui-sessions-with-workspace-defaults",
-      "guardian-review-context-retrieval"
-    ],
+    "from_version": "0.160.1",
+    "to_version": "0.160.1",
+    "new_features": [],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -44,14 +39,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.160.0",
+      "latest_stable": "0.160.1",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-10-01",
+      "latest_release_date": "2026-10-05",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release of codex-cli, version 0.160.0, introduces several key improvements focused on user experience, stability, and agent capabilities. A major highlight is the new ability to browse older tasks in the agent command center with a keyboard-accessible 'Show more' action, significantly enhancing task management. For Linux X11 users, selecting transcript text and pasting with middle-click in fullscreen mode is now supported, streamlining text manipulation. Sessions can now be started outside a project with workspace defaults, and saved permissions are intelligently restored upon resuming, offering greater flexibility and security. Additionally, Guardian reviews now include opt-in capabilities to retrieve earlier user instructions and context from agent handoffs, improving the accuracy and relevance of agent interactions.\n\nUnder the hood, numerous bug fixes enhance stability and reliability. Unsent queued messages now correctly resume after reconnection, preventing duplicate submissions. The terminal UI now consistently preserves server provider, reasoning-summary, and verbosity settings, and accurately displays sessions in resume and fork history. Windows sandbox users will benefit from fixed PowerShell fallbacks, long-path permission repairs, and suppressed unwanted console windows from background helpers. Subagents now correctly retain starting environments, and SQLite stalls during connection setup and logging have been resolved, with initialization errors now properly surfaced. Plugin loading is more efficient due to cached manifests and reused HTTP connections for remote requests, and explicit provider model catalogs are now authoritative, preventing unsupported or stale entries. Background reclamation of unused log database space has also been added to reduce disk usage. These changes collectively make codex-cli more robust, user-friendly, and efficient for developers."
+      "tldr": "This `codex-cli` release, version 0.160.1, primarily focuses on a critical bug fix related to environment variable preservation when launching remote stdio MCP servers. Specifically, it ensures that `SYSTEMROOT`, `TEMP`, and `TMP` environment variables are correctly maintained when remote environment variables are explicitly configured. This fix is particularly important for Unix hosts interacting with Windows executors, as it allows the Windows executor's startup environment to be retained, preventing potential issues with applications or scripts that rely on these system-level environment variables. The change was backported from a larger pull request, indicating its importance for stability. There are no new features, commands, flags, or breaking changes introduced in this patch release. Developers using remote stdio MCP servers, especially in mixed Unix/Windows environments, should consider upgrading to ensure proper environment variable handling and prevent unexpected behavior."
     },
     "features": [
       {
