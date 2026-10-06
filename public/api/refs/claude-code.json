@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.291",
-  "generated_at": "2026-10-06T17:56:27.149Z",
+  "version": "2.1.292",
+  "generated_at": "2026-10-06T22:25:39.017Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,12 +14,20 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.291",
-    "to_version": "2.1.291",
-    "new_features": [],
+    "from_version": "2.1.292",
+    "to_version": "2.1.292",
+    "new_features": [
+      "prompt-autocomplete-mod-hooks",
+      "prompt-caching-model-complete",
+      "workflow-agents-agent-spawn-hook"
+    ],
     "new_commands": [],
-    "new_flags": [],
-    "new_env_vars": [],
+    "new_flags": [
+      "--marketplace <source>"
+    ],
+    "new_env_vars": [
+      "CLAUDE_CODE_OVERLOADED_RETRY_BASE_DELAY_MS"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -39,12 +47,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.291",
+      "latest_stable": "2.1.292",
       "latest_release_date": "2026-10-06",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release, claude-code 2.1.291, primarily focuses on critical bug fixes to improve session stability and reliability. It addresses a regression introduced in version 2.1.290 where cloud sessions could intermittently fail to process answers to permission prompts, potentially leading to stalled or unresponsive interactions. Additionally, a significant bug from version 2.1.288, which caused the loss of the last messages of a session upon quitting, has been resolved. These fixes ensure that user input is consistently registered and that session history is preserved, preventing data loss and improving the overall user experience, especially for those relying on cloud-based sessions. Users experiencing these specific issues should upgrade immediately to benefit from these stability improvements."
+      "tldr": "This release, version 2.1.292, introduces significant improvements to plugin management, mod extensibility, and overall stability, making Claude Code more robust and customizable. A key enhancement is the `--marketplace <source>` flag for `claude plugin install`, which streamlines plugin installation by automatically adding the specified marketplace if it's not already present, subject to policy checks. This simplifies the process of integrating new tools and functionalities into your Claude Code environment.\n\nDevelopers can now leverage new mod hooks, including `prompt.autocomplete` for custom prompt box suggestions and the ability to inspect workflow agents within `agent.spawn` hooks, offering greater control over agent behavior. Performance is boosted with prompt caching for `$.model.complete` calls, allowing mods to cache parts of requests for efficiency. An important new environment variable, `CLAUDE_CODE_OVERLOADED_RETRY_BASE_DELAY_MS`, provides fine-grained control over retry delays for overloaded API requests, improving resilience in high-load scenarios.\n\nNumerous fixes address critical issues, such as sandboxed commands accessing sensitive files, managed sandbox read-deny paths, and macOS/Windows file read vulnerabilities. Security is enhanced by preventing PreToolUse hook approvals from bypassing permission prompts for network file reads. Plugin stability is improved with fixes for long MCP tool names, managed settings loading, and various plugin hook execution issues, including those related to `$.state` calls and `tool.check` behavior. Cloud sessions see fixes for routine run statuses, push notifications, image attachment, and approval prompts. Remote Control now correctly handles various file types in its first message, and Claude Tag gains an 'Edit' button for Allowed domains and improved Slack thread handling. Code Review analytics now include total changes and repository breakdowns, and queued reviews are more resilient to base branch changes. Upgrading is recommended for improved security, stability, and enhanced customization options, particularly for users relying on plugins, mods, or cloud sessions."
     },
     "features": [
       {
@@ -2420,6 +2428,33 @@
           "Exposes idle and waiting states for agents via `$.agent.list()`."
         ],
         "source_url": ""
+      },
+      {
+        "id": "prompt-autocomplete-mod-hooks",
+        "name": "Prompt Autocomplete Mod Hooks",
+        "status": "stable",
+        "since": "2.1.292",
+        "description": "Adds `prompt.autocomplete`, an event a mod hooks to add its own rows to the prompt box's autocomplete list.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "prompt-caching-model-complete",
+        "name": "Prompt Caching for $.model.complete",
+        "status": "stable",
+        "since": "2.1.292",
+        "description": "Adds prompt caching to `$.model.complete` for mods. `prompt` and `system` take blocks of text, and `cache: true` on a block caches the request up to it.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "workflow-agents-agent-spawn-hook",
+        "name": "Workflow Agents in agent.spawn Mod Hook",
+        "status": "stable",
+        "since": "2.1.292",
+        "description": "Adds workflow agents to the `agent.spawn` mod hook, with their run and index, so a mod can refuse them.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -3296,6 +3331,12 @@
           "description": "Sets the maximum number of findings to report for `/code-review`. Accepts a number or `all`. The choice is reused until `--max-findings default` is passed.",
           "since": "2.1.288",
           "source_url": ""
+        },
+        {
+          "flag": "--marketplace <source>",
+          "description": "Adds the marketplace if needed, under the same policy checks as `claude plugin marketplace add`, then installs the plugin from it. Used with `claude plugin install`.",
+          "since": "2.1.292",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -3329,7 +3370,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--marketplace <source>"
+      ]
     },
     "env_vars": [
       {
@@ -3826,6 +3869,13 @@
         "purpose": "Disables structured outputs, which can fix issues with session titles, memory recall, and prompt hooks failing on Mantle or behind gateways that reject structured outputs.",
         "status": "stable",
         "since": "2.1.288",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_OVERLOADED_RETRY_BASE_DELAY_MS",
+        "purpose": "Sets a longer base delay for the backoff when retrying an overloaded (529) request.",
+        "status": "stable",
+        "since": "2.1.292",
         "source_url": ""
       }
     ],
