@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "0.0.43",
-  "generated_at": "2026-10-07T02:06:21.331Z",
+  "version": "4.1.23",
+  "generated_at": "2026-10-07T09:50:16.906Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,15 +19,17 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "0.0.43",
-    "to_version": "0.0.43",
+    "from_version": "4.1.23",
+    "to_version": "4.1.23",
     "new_features": [],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "vultr-model-id-rename"
+    ]
   },
   "payload": {
     "meta": {
@@ -45,12 +47,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "0.0.43",
-      "latest_release_date": "2026-10-02",
+      "latest_stable": "4.1.23",
+      "latest_release_date": "2026-10-07",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "This release, cline 0.0.43, focuses on improving the onboarding experience for existing users regarding the Connectors feature. The primary update is a new one-time 'What's new' dialog that introduces Connectors to existing users. This dialog is designed to be informative and engaging, featuring connector logos, a clickable example prompt to demonstrate functionality, and a direct 'Open Connectors' button for easy access. Users who wish to revisit this introduction can do so at any time via 'Settings → About → Show what's new'. This update aims to ensure that all users are aware of and can easily explore the capabilities of Connectors, enhancing feature discoverability and user engagement. There are no new features, commands, flags, or breaking changes in this release. The update is primarily a UI/UX improvement for feature discoverability."
+      "tldr": "Cline 4.1.23 introduces significant improvements to model interaction and reliability, alongside a refreshed model catalog. The most impactful change is how Cline handles incomplete model responses; if a model ends without a recognized finish reason, Cline will now prompt it to continue once, preventing premature truncation of responses. This enhances the completeness and accuracy of AI interactions, especially with models that might occasionally provide partial outputs. \n\nThe model catalog has been updated, adding GPT-6.1 Sol to the recommended list and Solar Mini 4 to the free list, while removing DeepSeek V4.1 Flash and space-bunny-alpha. Default models have also changed for numerous providers, including Vultr, where model IDs were renamed upstream, potentially requiring users with pinned Vultr models to re-select them. \n\nSeveral critical fixes are included: 'Generate Commit Message' now respects `.clinerules`, ensuring consistent conventions. Claude through custom Anthropic base URLs no longer fails with 400 errors, resolving a regression from 4.1.22. Kimi K3 and other models with specific reasoning level requirements are now handled correctly, with Cline selecting the closest supported level. A major fix addresses MCP tool output truncation, allowing Cline to read full outputs by providing a preview and a `read_files` link for paging through content beyond the initial context window. Finally, tool approvals and rejections now work instantly, even during panel updates, preventing unrelated approval failures. \n\nDevelopers should review their Vultr model configurations due to the ID renaming. This release is recommended for all users to benefit from improved model interaction, enhanced reliability, and critical bug fixes, particularly for those using custom Anthropic endpoints or MCP tools with large outputs."
     },
     "features": [
       {
@@ -1746,6 +1748,18 @@
           "Marketplace page"
         ],
         "migration": "Users should now access catalog items and browse for new plugins, MCPs, skills, rules, hooks, and tools directly within the 'Customize' hub.",
+        "source_url": ""
+      },
+      {
+        "id": "vultr-model-id-rename",
+        "version": "4.1.23",
+        "title": "Vultr Model IDs Renamed Upstream",
+        "description": "Vultr's model IDs have been renamed upstream. If you have a Vultr model pinned, you may need to re-select it in Cline's model catalog. If you use Vultr without pinning a model, expect a different default model.",
+        "affected": [
+          "Vultr provider users with pinned models",
+          "Vultr provider users relying on default models"
+        ],
+        "migration": "Users with pinned Vultr models should re-select their desired model from the refreshed model catalog. Users relying on default Vultr models should be aware that the default may have changed.",
         "source_url": ""
       }
     ],
