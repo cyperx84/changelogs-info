@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.293",
-  "generated_at": "2026-10-07T22:43:11.833Z",
+  "version": "2.1.292",
+  "generated_at": "2026-10-06T22:25:39.017Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,14 +14,20 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.293",
-    "to_version": "2.1.293",
+    "from_version": "2.1.292",
+    "to_version": "2.1.292",
     "new_features": [
-      "claude-haiku-5-5"
+      "prompt-autocomplete-mod-hooks",
+      "prompt-caching-model-complete",
+      "workflow-agents-agent-spawn-hook"
     ],
     "new_commands": [],
-    "new_flags": [],
-    "new_env_vars": [],
+    "new_flags": [
+      "--marketplace <source>"
+    ],
+    "new_env_vars": [
+      "CLAUDE_CODE_OVERLOADED_RETRY_BASE_DELAY_MS"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -41,12 +47,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.293",
-      "latest_release_date": "2026-10-07",
+      "latest_stable": "2.1.292",
+      "latest_release_date": "2026-10-06",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces Claude Haiku 5.5 as the new default Haiku model on the Anthropic API, offering a 1M context window and updated pricing, making it a significant upgrade for users leveraging Haiku models. Subagents now expose `agentType` in their status line, enabling more granular control and scripting for custom subagent types, while plugin developers can now register tools to be immediately visible in the prompt using `isDeferred: false` in `$.tool.register`. Numerous fixes address critical issues, including Claude's tendency to re-do actions after context compaction, a memory leak in HTTP MCP connections, and lost messages when backgrounding sessions with unsent text. The `/model` command's effort level wrapping has been corrected, and various issues with `/tui` in Chrome, subagent tool availability, and claude.ai skill syncing have been resolved. Important fixes for `claude logs`, `stop`, `kill`, `rm`, `daemon status`, and `daemon uninstall` prevent unexpected sign-outs due to expired logins. Claude Tag sees improvements in Slack channel joining behavior, increased channel rule limits, and better handling of Enterprise Grid connections and Google connector displays. Code Review's 'Add a repository' dialog now provides more detailed error messages, and artifact creation now pins libraries to older, stable versions. Startup for Team and Enterprise organizations is improved with earlier policy and managed settings fetching, and `claude purge` now provides better feedback on deletion failures. The auto mode denial message change from 2.1.281 and the cloud session wakeup fix from 2.1.290 have been reverted. Overall, this release focuses on stability, performance, and enhanced developer control, with a new model offering and several quality-of-life improvements across the platform. Users should upgrade to benefit from the new Haiku model, improved stability, and enhanced plugin capabilities."
+      "tldr": "This release, version 2.1.292, introduces significant improvements to plugin management, mod extensibility, and overall stability, making Claude Code more robust and customizable. A key enhancement is the `--marketplace <source>` flag for `claude plugin install`, which streamlines plugin installation by automatically adding the specified marketplace if it's not already present, subject to policy checks. This simplifies the process of integrating new tools and functionalities into your Claude Code environment.\n\nDevelopers can now leverage new mod hooks, including `prompt.autocomplete` for custom prompt box suggestions and the ability to inspect workflow agents within `agent.spawn` hooks, offering greater control over agent behavior. Performance is boosted with prompt caching for `$.model.complete` calls, allowing mods to cache parts of requests for efficiency. An important new environment variable, `CLAUDE_CODE_OVERLOADED_RETRY_BASE_DELAY_MS`, provides fine-grained control over retry delays for overloaded API requests, improving resilience in high-load scenarios.\n\nNumerous fixes address critical issues, such as sandboxed commands accessing sensitive files, managed sandbox read-deny paths, and macOS/Windows file read vulnerabilities. Security is enhanced by preventing PreToolUse hook approvals from bypassing permission prompts for network file reads. Plugin stability is improved with fixes for long MCP tool names, managed settings loading, and various plugin hook execution issues, including those related to `$.state` calls and `tool.check` behavior. Cloud sessions see fixes for routine run statuses, push notifications, image attachment, and approval prompts. Remote Control now correctly handles various file types in its first message, and Claude Tag gains an 'Edit' button for Allowed domains and improved Slack thread handling. Code Review analytics now include total changes and repository breakdowns, and queued reviews are more resilient to base branch changes. Upgrading is recommended for improved security, stability, and enhanced customization options, particularly for users relying on plugins, mods, or cloud sessions."
     },
     "features": [
       {
@@ -2449,19 +2455,6 @@
         "description": "Adds workflow agents to the `agent.spawn` mod hook, with their run and index, so a mod can refuse them.",
         "key_details": [],
         "source_url": ""
-      },
-      {
-        "id": "claude-haiku-5-5",
-        "name": "Claude Haiku 5.5",
-        "status": "stable",
-        "since": "2.1.293",
-        "description": "Introduces Claude Haiku 5.5 as the new default Haiku model on the Anthropic API. It features a 1M context window and updated pricing.",
-        "key_details": [
-          "1M context",
-          "Pricing: $0.10/$0.50 per Mtok (for prompts under 100K tokens)",
-          "Pricing: $0.50/$2.50 per Mtok (for prompts over 100K tokens)"
-        ],
-        "source_url": ""
       }
     ],
     "commands": [
@@ -3377,7 +3370,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--marketplace <source>"
+      ]
     },
     "env_vars": [
       {

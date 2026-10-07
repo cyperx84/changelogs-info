@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.161.0",
-  "generated_at": "2026-10-07T22:43:24.532Z",
+  "generated_at": "2026-10-07T17:16:30.819Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -18,13 +18,15 @@
     "to_version": "0.161.0",
     "new_features": [
       "gpt-6-1-sol-default-model",
-      "bedrock-multi-agent-v2-ultra-reasoning-govcloud",
+      "bedrock-multi-agent-v2-ultra-reasoning",
       "mcp-login-from-terminal",
       "voice-conversation-device-selection",
       "daybreak-opt-in",
       "per-turn-cyber-access-program-selection"
     ],
-    "new_commands": [],
+    "new_commands": [
+      "/mcp login"
+    ],
     "new_flags": [
       "--enable cli_daybreak",
       "--cyber-access-program"
@@ -56,7 +58,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "Codex CLI 0.161.0 introduces GPT-6.1 Sol as the new default model across bundled and Amazon Bedrock catalogs, enhancing model capabilities out-of-the-box. Amazon Bedrock now significantly expands its utility by supporting multi-agent V2 and Ultra reasoning on compatible models, and Bedrock Mantle now accepts AWS GovCloud regions, broadening its applicability for government and regulated workloads. Users can now sign in to MCP servers directly from the terminal with `/mcp login <name>`, streamlining authentication workflows. Voice conversations gain more control with new options to select specific microphone, speaker, and input channels, with preferences saved locally for convenience. The Daybreak feature is now opt-in, requiring `--enable cli_daybreak` or `features.cli_daybreak=true` to activate its full functionality, including controls, indicators, and automatic Cyber routing, ensuring users explicitly enable this powerful feature. Furthermore, per-turn Cyber access program selection is now available via `codex exec --cyber-access-program` or the TypeScript SDK, offering granular control over access policies for specific interactions. Bug fixes include improved filesystem escalation permissions, persistent launch permissions across sessions, better handling of Windows terminal sessions and PowerShell paths, and more robust thread resume with SQLite corruption detection. Authentication documentation has been updated to reflect keyring storage, and internal chores prevent npm alpha tags from moving backward. This release offers significant enhancements in model access, security, user control, and stability, making an upgrade highly recommended for all users, especially those leveraging Bedrock, multi-agent workflows, or voice interactions."
+      "tldr": "Codex CLI v0.161.0 introduces GPT-6.1 Sol as the new default model across bundled and Amazon Bedrock catalogs, enhancing AI capabilities out-of-the-box. Amazon Bedrock now significantly expands its functionality by supporting Multi-Agent V2 and Ultra reasoning on compatible models, and Bedrock Mantle now includes AWS GovCloud regions, broadening its applicability for government and regulated workloads. Developers can now sign in to MCP servers directly from their terminal using `/mcp login <name>`, streamlining authentication workflows. Voice conversations gain more control with new options to select specific microphone, speaker, and input channels, with preferences saved locally for convenience. The Daybreak feature is now opt-in, requiring `--enable cli_daybreak` or `features.cli_daybreak=true` to activate its controls and Cyber routing, ensuring users explicitly enable this powerful capability. Furthermore, per-turn Cyber access program selection is now available via `codex exec --cyber-access-program` or the TypeScript SDK, offering granular control over access policies. Bug fixes include improved filesystem escalation permissions, ensuring background tasks inherit correct permissions, and persistent explicit launch permissions across sessions. Windows users will benefit from elevated terminal sessions starting with an embedded server and sandboxed PowerShell preserving relative paths. SQLite corruption detection has been enhanced during startup, preserving damaged databases as backups, and network retries now honor server guidance, reducing premature failures. Upgrading is recommended for all users to leverage the latest model, enhanced Bedrock capabilities, improved security, and a more robust user experience."
     },
     "features": [
       {
@@ -2539,15 +2541,6 @@
           "Override works even if `cli_daybreak` is disabled",
           "Does not change saved Cyber access program preferences"
         ],
-        "source_url": ""
-      },
-      {
-        "id": "bedrock-multi-agent-v2-ultra-reasoning-govcloud",
-        "name": "Amazon Bedrock Multi-Agent V2, Ultra Reasoning, and GovCloud Support",
-        "status": "stable",
-        "since": "0.161.0",
-        "description": "Amazon Bedrock now supports multi-agent V2 and Ultra reasoning on compatible models. Additionally, Bedrock Mantle now accepts AWS GovCloud regions.",
-        "key_details": [],
         "source_url": ""
       }
     ],
