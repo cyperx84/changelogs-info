@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.160.1",
-  "generated_at": "2026-10-07T09:49:57.989Z",
+  "version": "0.161.0",
+  "generated_at": "2026-10-07T17:16:30.819Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,11 +14,23 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.160.1",
-    "to_version": "0.160.1",
-    "new_features": [],
-    "new_commands": [],
-    "new_flags": [],
+    "from_version": "0.161.0",
+    "to_version": "0.161.0",
+    "new_features": [
+      "gpt-6-1-sol-default-model",
+      "bedrock-multi-agent-v2-ultra-reasoning",
+      "mcp-login-from-terminal",
+      "voice-conversation-device-selection",
+      "daybreak-opt-in",
+      "per-turn-cyber-access-program-selection"
+    ],
+    "new_commands": [
+      "/mcp login"
+    ],
+    "new_flags": [
+      "--enable cli_daybreak",
+      "--cyber-access-program"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -39,14 +51,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.160.1",
+      "latest_stable": "0.161.0",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-10-05",
+      "latest_release_date": "2026-10-07",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This `codex-cli` 0.160.1 patch release primarily focuses on a critical bug fix related to remote execution environments. Specifically, it addresses an issue where essential Windows environment variables like `SYSTEMROOT`, `TEMP`, and `TMP` were not being preserved when launching remote stdio MCP servers with explicitly configured remote environment variables. This fix ensures that Unix hosts can now correctly retain the Windows executor's startup environment, preventing potential execution failures or unexpected behavior in cross-OS remote development workflows. The change is a backport to the 0.160 series, indicating its importance for stability. There are no new features, commands, flags, or breaking changes introduced in this version. Users leveraging remote Windows executors from Unix hosts are strongly encouraged to upgrade to ensure proper environment variable propagation and stable operation."
+      "tldr": "Codex CLI v0.161.0 introduces GPT-6.1 Sol as the new default model across bundled and Amazon Bedrock catalogs, enhancing AI capabilities out-of-the-box. Amazon Bedrock now significantly expands its functionality by supporting Multi-Agent V2 and Ultra reasoning on compatible models, and Bedrock Mantle now includes AWS GovCloud regions, broadening its applicability for government and regulated workloads. Developers can now sign in to MCP servers directly from their terminal using `/mcp login <name>`, streamlining authentication workflows. Voice conversations gain more control with new options to select specific microphone, speaker, and input channels, with preferences saved locally for convenience. The Daybreak feature is now opt-in, requiring `--enable cli_daybreak` or `features.cli_daybreak=true` to activate its controls and Cyber routing, ensuring users explicitly enable this powerful capability. Furthermore, per-turn Cyber access program selection is now available via `codex exec --cyber-access-program` or the TypeScript SDK, offering granular control over access policies. Bug fixes include improved filesystem escalation permissions, ensuring background tasks inherit correct permissions, and persistent explicit launch permissions across sessions. Windows users will benefit from elevated terminal sessions starting with an embedded server and sandboxed PowerShell preserving relative paths. SQLite corruption detection has been enhanced during startup, preserving damaged databases as backups, and network retries now honor server guidance, reducing premature failures. Upgrading is recommended for all users to leverage the latest model, enhanced Bedrock capabilities, improved security, and a more robust user experience."
     },
     "features": [
       {
@@ -2467,6 +2479,69 @@
         "description": "Added opt-in Guardian review capabilities to retrieve earlier user instructions and include context from agent handoffs.",
         "key_details": [],
         "source_url": "https://github.com/openai/codex/pull/49036"
+      },
+      {
+        "id": "bedrock-multi-agent-v2-ultra-reasoning",
+        "name": "Amazon Bedrock Multi-Agent V2 and Ultra Reasoning",
+        "status": "stable",
+        "since": "0.161.0",
+        "description": "Amazon Bedrock now supports Multi-Agent V2 and Ultra reasoning on compatible models. Additionally, Bedrock Mantle now accepts AWS GovCloud regions.",
+        "key_details": [
+          "Multi-Agent V2 support",
+          "Ultra reasoning support",
+          "AWS GovCloud regions for Bedrock Mantle"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "mcp-login-from-terminal",
+        "name": "MCP Server Login from Terminal",
+        "status": "stable",
+        "since": "0.161.0",
+        "description": "Users can now sign in to MCP servers directly from an active terminal session using the new `/mcp login <name>` command.",
+        "key_details": [
+          "Command: `/mcp login <name>`"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "voice-conversation-device-selection",
+        "name": "Voice Conversation Audio Device Selection",
+        "status": "stable",
+        "since": "0.161.0",
+        "description": "Users can now choose their microphone, speaker, and microphone input channels for voice conversations. These preferences are saved locally.",
+        "key_details": [
+          "Select microphone, speaker, and input channels",
+          "Preferences saved locally"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "daybreak-opt-in",
+        "name": "Daybreak Opt-in Mechanism",
+        "status": "stable",
+        "since": "0.161.0",
+        "description": "Daybreak is now opt-in, requiring explicit enablement via `--enable cli_daybreak` or `features.cli_daybreak=true`. By default, Daybreak controls and indicators are hidden, the `/daybreak` command is unavailable, and automatic Cyber routing is omitted, even for saved Daybreak threads. Saved preferences remain intact. Opt-in routing requires an eligible ChatGPT sign-in, the OpenAI provider, and advertised model/program support.",
+        "key_details": [
+          "Opt-in via `--enable cli_daybreak` or `features.cli_daybreak=true`",
+          "Default state: hidden controls, `/daybreak` unavailable, no automatic Cyber routing",
+          "Requires ChatGPT sign-in, OpenAI provider, and model/program support for routing"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "per-turn-cyber-access-program-selection",
+        "name": "Per-Turn Cyber Access Program Selection",
+        "status": "stable",
+        "since": "0.161.0",
+        "description": "Users can now select a Cyber access program per turn using `codex exec --cyber-access-program` or the TypeScript SDK’s `cyberAccessProgram` option. This explicit override remains available even with `cli_daybreak` disabled and does not alter saved choices.",
+        "key_details": [
+          "CLI flag: `codex exec --cyber-access-program`",
+          "TypeScript SDK option: `cyberAccessProgram`",
+          "Override works even if `cli_daybreak` is disabled",
+          "Does not change saved Cyber access program preferences"
+        ],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -2741,6 +2816,14 @@
         "since": "0.149.0",
         "status": "stable",
         "source_url": "https://github.com/openai/codex/pull/39114"
+      },
+      {
+        "name": "/mcp login",
+        "syntax": "/mcp login <name>",
+        "description": "Sign in to an MCP server from the active terminal session.",
+        "since": "0.161.0",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -2858,6 +2941,18 @@
           "description": "Used with `codex mcp add` to connect to MCP servers requiring pre-registered OAuth client secrets.",
           "since": "0.158.0",
           "source_url": "https://github.com/openai/codex/compare/rust-v0.157.0...rust-v0.158.0#47891"
+        },
+        {
+          "flag": "--enable cli_daybreak",
+          "description": "Enables the Daybreak feature, making its controls, indicators, and automatic Cyber routing available.",
+          "since": "0.161.0",
+          "source_url": ""
+        },
+        {
+          "flag": "--cyber-access-program",
+          "description": "Selects a specific Cyber access program for the current `codex exec` turn.",
+          "since": "0.161.0",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -5368,7 +5463,10 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--enable cli_daybreak",
+        "--cyber-access-program"
+      ]
     },
     "env_vars": [
       {
