@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.294",
-  "generated_at": "2026-10-08T17:20:32.096Z",
+  "version": "2.1.295",
+  "generated_at": "2026-10-08T22:57:39.599Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,12 +14,26 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.294",
-    "to_version": "2.1.294",
-    "new_features": [],
+    "from_version": "2.1.295",
+    "to_version": "2.1.295",
+    "new_features": [
+      "on-failure-block-for-hooks",
+      "program-status-protocol-osc-7501",
+      "gateway-upstream-ttfb-ms-timeout",
+      "gateway-upstream-models-list",
+      "force-login-method-gateway",
+      "gateway-inference-audit-upstream-request-id",
+      "ui-notify-for-mods",
+      "mod-button-children-strings-text",
+      "gateway-inference-request-id-header",
+      "vscode-chat-row-for-files",
+      "claude-tag-channel-manager-confirmation"
+    ],
     "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [],
+    "new_env_vars": [
+      "CLAUDE_CODE_RETRY_WATCHDOG_MAX_WAIT_MS"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -39,12 +53,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.294",
+      "latest_stable": "2.1.295",
       "latest_release_date": "2026-10-08",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release, version 2.1.294, focuses on refining the behavior of `prompt` and `agent` hooks, particularly when they are expressed as instructions. A significant fix addresses an issue where `prompt` and `agent` hooks, when written as blocking instructions (e.g., \"Block commands that...\"), were inadvertently allowing the very actions they were designed to prevent. This update ensures that such blocking instructions are now correctly enforced, enhancing the reliability and security of agent operations. Additionally, the release improves the judgment logic for `prompt` hooks on `Stop` and `SubagentStop` events, especially when these hooks are phrased as conditional instructions (e.g., \"Carry on if the build is broken\"). This enhancement reduces the likelihood of Claude prematurely stopping an operation, leading to more robust and predictable agent behavior. Developers can expect more accurate and consistent enforcement of their defined agent and prompt instructions, particularly for critical blocking and conditional continuation scenarios."
+      "tldr": "This release introduces significant improvements to hook reliability, terminal integration, and gateway functionality. A major highlight is the addition of `onFailure: \"block\"` for command and HTTP hooks, which prevents actions from proceeding if a hook fails, times out, or exits unexpectedly, enhancing system stability. Program Status Protocol (OSC 7501) support allows terminals to visually indicate Claude Code's state (working, waiting, or done), improving user feedback. The Claude apps gateway gains new controls, including `timeouts.upstream_ttfb_ms` to limit stream start times and an optional `models` list per upstream to restrict model routing, offering more granular control over cloud interactions. For self-hosted environments, `forceLoginMethod: \"gateway\"` and `forceLoginGatewayUrl` enable custom gateway login flows. Mod developers benefit from `$.ui.notify` for native notifications and enhanced `Button` components supporting strings and `Text` children for richer UI. Numerous fixes address issues ranging from `claude -p` output consistency and MCP server reconnection stability to plugin loading errors and terminal rendering glitches. Notably, token counting for Bedrock behind a gateway now uses AWS's CountTokens API for improved accuracy, and the `plugin-authoring` skill is smarter about terminal commands. VS Code users will find a new chat row for files Claude sends, improving file interaction. Overall, this release focuses on robustness, better user experience, and more flexible configuration for advanced deployments, making it a recommended upgrade for all users, especially those relying on hooks, gateways, or developing mods."
     },
     "features": [
       {
@@ -2460,6 +2474,105 @@
           "Pricing: $0.50/$2.50 per Mtok (for prompts over 100K tokens)"
         ],
         "source_url": ""
+      },
+      {
+        "id": "on-failure-block-for-hooks",
+        "name": "onFailure: \"block\" for Command and HTTP Hooks",
+        "status": "stable",
+        "since": "2.1.295",
+        "description": "Introduced `onFailure: \"block\"` for command and HTTP hooks. If a hook fails to start, times out, or exits with an unexpected code, the action it was meant to trigger is now blocked instead of proceeding.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "program-status-protocol-osc-7501",
+        "name": "Program Status Protocol (OSC 7501) Support",
+        "status": "stable",
+        "since": "2.1.295",
+        "description": "Added support for Program Status Protocol (OSC 7501). Terminals that implement this protocol can now display whether Claude Code is actively working, waiting for user input, or has completed its task.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "gateway-upstream-ttfb-ms-timeout",
+        "name": "Claude Apps Gateway Upstream TTFB Timeout",
+        "status": "stable",
+        "since": "2.1.295",
+        "description": "Added support for `timeouts.upstream_ttfb_ms` on the Claude apps gateway for Bedrock, Vertex, Foundry, and other cloud upstreams. This setting limits how long a stream may take to start, failing over or returning a 502 if the limit is exceeded.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "gateway-upstream-models-list",
+        "name": "Optional Models List for Gateway Upstreams",
+        "status": "stable",
+        "since": "2.1.295",
+        "description": "Added an optional `models` list to every Claude apps gateway upstream. Only the listed models are sent to that upstream, including during failover. Wildcards (`*`) are supported in entries.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "force-login-method-gateway",
+        "name": "Force Login Method to Gateway",
+        "status": "stable",
+        "since": "2.1.295",
+        "description": "Added support for `forceLoginMethod: \"gateway\"` and `forceLoginGatewayUrl` in user settings on machines without managed settings. This allows `/login` to open on a specified Claude apps gateway.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "gateway-inference-audit-upstream-request-id",
+        "name": "upstream_request_id in Gateway Inference Audit Event",
+        "status": "stable",
+        "since": "2.1.295",
+        "description": "Added `upstream_request_id` to the Claude apps gateway's `inference` audit event. This field contains the request ID from Amazon Bedrock, the Anthropic API, or another upstream, useful for support cases.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "ui-notify-for-mods",
+        "name": "$.ui.notify for Mods",
+        "status": "stable",
+        "since": "2.1.295",
+        "description": "Introduced `$.ui.notify` for mods, allowing them to raise native notifications through the user's notification settings, indicating which channel sent the notification.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "mod-button-children-strings-text",
+        "name": "Strings and Text as Children for Mod Buttons",
+        "status": "stable",
+        "since": "2.1.295",
+        "description": "Added support for strings and `Text` as children to a mod's `Button` component. This enables creating pressable rows in lists with chips or dim details inside.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "gateway-inference-request-id-header",
+        "name": "request-id Header in Gateway Inference Responses",
+        "status": "stable",
+        "since": "2.1.295",
+        "description": "Added a `request-id` header to the Claude apps gateway's successful inference responses. This ensures that `request_id` in Claude Code telemetry matches the gateway's audit log.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "vscode-chat-row-for-files",
+        "name": "[VSCode] Chat Row for Files Claude Sends",
+        "status": "stable",
+        "since": "2.1.295",
+        "description": "In VS Code, a new chat row is added for files Claude sends. Clicking the file name opens it in the editor, Claude's caption is shown below, and the row remains visible in Focus view.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "claude-tag-channel-manager-confirmation",
+        "name": "[Claude Tag] Confirmation for Channel Manager Moves",
+        "status": "stable",
+        "since": "2.1.295",
+        "description": "Added a confirmation in Claude Tag admin settings before adding a channel manager, as this action moves the member to Custom roles and can remove their other access.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -3879,6 +3992,13 @@
         "purpose": "Sets a longer base delay for the backoff when retrying an overloaded (529) request.",
         "status": "stable",
         "since": "2.1.292",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_RETRY_WATCHDOG_MAX_WAIT_MS",
+        "purpose": "Limits how long unattended retry mode (`CLAUDE_CODE_RETRY_WATCHDOG`) waits out 429 and 529 errors.",
+        "status": "stable",
+        "since": "2.1.295",
         "source_url": ""
       }
     ],

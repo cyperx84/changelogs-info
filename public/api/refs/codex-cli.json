@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.161.0",
-  "generated_at": "2026-10-07T22:43:24.532Z",
+  "version": "0.162.0",
+  "generated_at": "2026-10-08T22:57:50.533Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,20 +14,19 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.161.0",
-    "to_version": "0.161.0",
+    "from_version": "0.162.0",
+    "to_version": "0.162.0",
     "new_features": [
-      "gpt-6-1-sol-default-model",
-      "bedrock-multi-agent-v2-ultra-reasoning-govcloud",
-      "mcp-login-from-terminal",
-      "voice-conversation-device-selection",
-      "daybreak-opt-in",
-      "per-turn-cyber-access-program-selection"
+      "managed-git-worktrees",
+      "agent-command-center-task-pinning",
+      "tui-transcript-navigation-copy",
+      "clickable-urls-tui",
+      "custom-model-provider-web-access-compaction",
+      "javascript-streaming-helpers-ranked-tool-search"
     ],
     "new_commands": [],
     "new_flags": [
-      "--enable cli_daybreak",
-      "--cyber-access-program"
+      "--incremental-tools"
     ],
     "new_env_vars": [],
     "deprecated_commands": [],
@@ -49,14 +48,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.161.0",
+      "latest_stable": "0.162.0",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-10-07",
+      "latest_release_date": "2026-10-08",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "Codex CLI 0.161.0 introduces GPT-6.1 Sol as the new default model across bundled and Amazon Bedrock catalogs, enhancing model capabilities out-of-the-box. Amazon Bedrock now significantly expands its utility by supporting multi-agent V2 and Ultra reasoning on compatible models, and Bedrock Mantle now accepts AWS GovCloud regions, broadening its applicability for government and regulated workloads. Users can now sign in to MCP servers directly from the terminal with `/mcp login <name>`, streamlining authentication workflows. Voice conversations gain more control with new options to select specific microphone, speaker, and input channels, with preferences saved locally for convenience. The Daybreak feature is now opt-in, requiring `--enable cli_daybreak` or `features.cli_daybreak=true` to activate its full functionality, including controls, indicators, and automatic Cyber routing, ensuring users explicitly enable this powerful feature. Furthermore, per-turn Cyber access program selection is now available via `codex exec --cyber-access-program` or the TypeScript SDK, offering granular control over access policies for specific interactions. Bug fixes include improved filesystem escalation permissions, persistent launch permissions across sessions, better handling of Windows terminal sessions and PowerShell paths, and more robust thread resume with SQLite corruption detection. Authentication documentation has been updated to reflect keyring storage, and internal chores prevent npm alpha tags from moving backward. This release offers significant enhancements in model access, security, user control, and stability, making an upgrade highly recommended for all users, especially those leveraging Bedrock, multi-agent workflows, or voice interactions."
+      "tldr": "This release of codex-cli, version 0.162.0, introduces several significant enhancements, particularly around developer workflows and TUI usability. The headline feature is the addition of tools for creating and listing managed Git worktrees from trusted local projects, streamlining version control within the CLI for users with the worktrees feature enabled. This allows for more organized and isolated development environments directly from the codex interface. \n\nMajor new features include the ability to pin tasks in the agent Command Center using the `p` key, keeping important tasks easily accessible in a shared 'Pinned' group. TUI transcript navigation and copying have been greatly improved; users can now navigate and copy transcript blocks with the `/copy` command, use `Ctrl+Insert` to copy selections, and fine-tune mouse-wheel scrolling speed via the `tui.mouse_scroll_speed` configuration. Furthermore, URLs are now universally clickable across various TUI elements like approval headers, MCP prompts, warnings, and banners, even when they wrap across lines, significantly improving interactive feedback. For custom model providers, there's new configurability for live web access and remote compaction capabilities, expanding their integration options. Developers using Code Mode will benefit from new JavaScript helpers for streaming promise results and an opt-in ranked tool search feature. \n\nBug fixes address critical issues such as respecting server model defaults for new TUI threads, preserving CRLF line endings in `apply_patch` without opt-in, and fixing Linux sandbox startup issues with denied files. Windows users will see restored ordinary drive-letter file access on Windows 10 and aligned sandbox temp permissions. The CLI now honors server `Retry-After` headers for Responses and WebSocket failures, and installer checksum verification on Windows PowerShell has been fixed. \n\nThere are no breaking changes in this release, making it a straightforward upgrade. It is recommended to upgrade promptly to leverage these new features and stability improvements, especially for users relying on Git worktrees, TUI interactions, or custom model providers."
     },
     "features": [
       {
@@ -2549,6 +2548,68 @@
         "description": "Amazon Bedrock now supports multi-agent V2 and Ultra reasoning on compatible models. Additionally, Bedrock Mantle now accepts AWS GovCloud regions.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "managed-git-worktrees",
+        "name": "Managed Git Worktrees",
+        "status": "stable",
+        "since": "0.162.0",
+        "description": "Adds tools for creating and listing managed Git worktrees from trusted local projects when the worktrees feature is enabled.",
+        "key_details": [],
+        "source_url": "#50148"
+      },
+      {
+        "id": "agent-command-center-task-pinning",
+        "name": "Agent Command Center Task Pinning",
+        "status": "stable",
+        "since": "0.162.0",
+        "description": "Allows pinning tasks in the agent Command Center with 'p' and keeps them in a shared Pinned group when supported by the server.",
+        "key_details": [
+          "Keybind: `p` to pin tasks"
+        ],
+        "source_url": "#51500"
+      },
+      {
+        "id": "tui-transcript-navigation-copy",
+        "name": "TUI Transcript Navigation and Copy",
+        "status": "stable",
+        "since": "0.162.0",
+        "description": "Enables navigation and copying of transcript blocks with `/copy`, using `Ctrl+Insert` to copy selections, and tuning mouse-wheel scrolling speed.",
+        "key_details": [
+          "Command: `/copy`",
+          "Keybind: `Ctrl+Insert` for copying selections",
+          "Config: `tui.mouse_scroll_speed`"
+        ],
+        "source_url": "#50434"
+      },
+      {
+        "id": "clickable-urls-tui",
+        "name": "Clickable URLs in TUI",
+        "status": "stable",
+        "since": "0.162.0",
+        "description": "Makes URLs clickable in approval headers, questions, MCP prompts, warnings, banners, and verification prompts, including when links wrap across lines.",
+        "key_details": [],
+        "source_url": "#51439"
+      },
+      {
+        "id": "custom-model-provider-web-access-compaction",
+        "name": "Custom Model Provider Web Access and Compaction",
+        "status": "stable",
+        "since": "0.162.0",
+        "description": "Allows configuring live web access and remote compaction capabilities for custom Responses-compatible model providers.",
+        "key_details": [],
+        "source_url": "#50459"
+      },
+      {
+        "id": "javascript-streaming-helpers-ranked-tool-search",
+        "name": "JavaScript Streaming Helpers and Ranked Tool Search",
+        "status": "stable",
+        "since": "0.162.0",
+        "description": "Adds JavaScript helpers for streaming promise results as they settle, and introduces opt-in ranked tool search in Code Mode.",
+        "key_details": [
+          "Code Mode: Opt-in ranked tool search"
+        ],
+        "source_url": "#51126"
       }
     ],
     "commands": [
@@ -2960,6 +3021,12 @@
           "description": "Selects a specific Cyber access program for the current `codex exec` turn.",
           "since": "0.161.0",
           "source_url": ""
+        },
+        {
+          "flag": "--incremental-tools",
+          "description": "Feature flag to enable incremental tool updates.",
+          "since": "0.162.0",
+          "source_url": "#50464"
         }
       ],
       "deprecated": [
@@ -5471,8 +5538,7 @@
         }
       ],
       "new_since_previous": [
-        "--enable cli_daybreak",
-        "--cyber-access-program"
+        "--incremental-tools"
       ]
     },
     "env_vars": [
