@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
-  "version": "1.18.35",
-  "generated_at": "2026-10-10T23:14:43.320Z",
+  "version": "1.19.0",
+  "generated_at": "2026-10-11T04:04:22.780Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -14,15 +14,21 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "1.18.35",
-    "to_version": "1.18.35",
+    "from_version": "1.19.0",
+    "to_version": "1.19.0",
     "new_features": [],
-    "new_commands": [],
-    "new_flags": [],
+    "new_commands": [
+      "/update"
+    ],
+    "new_flags": [
+      "--major"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "automatic-updates-removed"
+    ]
   },
   "payload": {
     "meta": {
@@ -40,13 +46,13 @@
       "changelog_url": "https://github.com/anomalyco/opencode/releases",
       "repo_url": "https://github.com/anomalyco/opencode",
       "license": "mit",
-      "latest_stable": "1.18.35",
-      "latest_release_date": "2026-10-06",
+      "latest_stable": "1.19.0",
+      "latest_release_date": "2026-10-11",
       "status": "active",
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "This `opencode` release, version 1.18.35, focuses on refining agent-readable statistics and improving tool result handling for xAI. The agent-readable stats now support canonical redirects and offer data in both JSON and Markdown formats, making it easier for agents to consume and process this information programmatically. This enhancement streamlines automation and integration workflows involving agent performance metrics.\n\nA significant bugfix addresses how xAI tool results handle images. Previously, there might have been issues with image formats; now, supported images are correctly included in xAI tool results, while unsupported formats are gracefully skipped. This ensures more robust and reliable interactions when using xAI tools that involve image processing.\n\nWhile there are no new features, commands, flags, or breaking changes in this release, the improvements to agent-readable stats and the xAI image handling fix contribute to a more stable and developer-friendly experience. Developers leveraging agent statistics or xAI integrations should find these updates beneficial. Upgrading is recommended for those using xAI tools or relying on agent-readable stats for automated processes, as it provides increased reliability and data accessibility."
+      "tldr": "OpenCode 1.19.0 introduces a significant change to the update mechanism, removing automatic updates. Users must now explicitly run `/update` in the TUI or `opencode upgrade` from the CLI to get the latest versions, including a new `opencode upgrade --major` command for upgrading to OpenCode 2. This change gives users more control over when updates occur, preventing unexpected interruptions. Additionally, this release includes a bugfix that allows the OpenAI `ultrafast` service tier to be used, expanding options for high-performance AI interactions. Another core bugfix improves security by validating PTY connection origins and tickets before checking for PTY existence. Developers should be aware of the update process change and integrate the new `/update` or `opencode upgrade` commands into their workflow. The upgrade to OpenCode 2 is a major version bump, so users should review its specific migration guides. This release is recommended for all users to benefit from the bug fixes and to adapt to the new update process."
     },
     "features": [
       {
@@ -1258,6 +1264,14 @@
         "since": "1.4.4",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "/update",
+        "syntax": "/update",
+        "description": "Installs OpenCode updates or upgrades to OpenCode 2. Updates are no longer installed automatically.",
+        "since": "1.19.0",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -1313,10 +1327,18 @@
           "description": "Show recent history when resuming interactive runs.",
           "since": "1.15.5",
           "source_url": ""
+        },
+        {
+          "flag": "--major",
+          "description": "Used with `opencode upgrade` to upgrade to OpenCode 2.",
+          "since": "1.19.0",
+          "source_url": ""
         }
       ],
       "deprecated": [],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--major"
+      ]
     },
     "env_vars": [
       {
@@ -1541,6 +1563,18 @@
           "HTTP API"
         ],
         "migration": "Clients relying on internal defect details from the HTTP API will need to be updated to use supported API endpoints.",
+        "source_url": ""
+      },
+      {
+        "id": "automatic-updates-removed",
+        "version": "1.19.0",
+        "title": "Automatic OpenCode updates removed",
+        "description": "OpenCode updates are no longer installed automatically. Users must now manually trigger updates or upgrades using the new `/update` command in the TUI or `opencode upgrade` CLI command.",
+        "affected": [
+          "OpenCode TUI users",
+          "OpenCode CLI users"
+        ],
+        "migration": "To update OpenCode, use the `/update` command within the TUI. To upgrade to OpenCode 2, use `opencode upgrade --major` from the command line.",
         "source_url": ""
       }
     ],
