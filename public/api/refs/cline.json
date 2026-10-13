@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "0.0.45",
-  "generated_at": "2026-10-13T07:23:09.157Z",
+  "version": "4.1.24",
+  "generated_at": "2026-10-13T15:36:31.247Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,15 +19,24 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "0.0.45",
-    "to_version": "0.0.45",
-    "new_features": [],
+    "from_version": "4.1.24",
+    "to_version": "4.1.24",
+    "new_features": [
+      "ai-ml-api-provider",
+      "lowrouter-provider",
+      "prime-inference-provider",
+      "step-5-preview-model"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "default-model-changes",
+      "opencode-go-endpoint-change",
+      "v0-provider-model-restriction"
+    ]
   },
   "payload": {
     "meta": {
@@ -45,12 +54,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "0.0.45",
-      "latest_release_date": "2026-10-08",
+      "latest_stable": "4.1.24",
+      "latest_release_date": "2026-10-13",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "This `cline` release, version 0.0.45, primarily focuses on stability improvements and an updated model catalog. A critical fix addresses SSH remote connection failures, which previously resulted in `SyntaxError: Invalid character` since version 0.0.38, making SSH environments usable again. For SSH environments, the git branch label's refresh rate has been optimized, now checking every 30 seconds instead of every 5 seconds, reducing unnecessary SSH logins while still allowing immediate updates upon branch switching. The model catalog has been significantly refreshed, introducing support for Claude Haiku 5.5 and making it the new default for several providers including Google Vertex AI, Cortecs, DevPass, Eden AI, GitHub Copilot, LLM Gateway, NanoGPT, OpenCode Go, Requesty, and Vivgrid. This update ensures users have access to the latest models and improved default selections. Additionally, a bug causing 400 errors when turning off reasoning for GPT-6 Astra, GPT-6.1 Sol, Claude Fable 5, or Claude Opus 5.5 has been resolved. The background service no longer crashes prematurely when an MCP server or hook quits, improving overall reliability. Finally, an issue where migrating settings from the VS Code extension would incorrectly add an empty SAP AI Core provider has been fixed. Users are encouraged to upgrade to benefit from these stability enhancements and the updated model catalog, especially those relying on SSH environments or the latest Claude models."
+      "tldr": "Cline 4.1.24 introduces significant updates to model defaults and provider configurations, most notably defaulting Cline and OpenRouter to Claude Sonnet 5.5 when no model is explicitly chosen. This means if you rely on a specific model without pinning it, your conversations with these providers will now use Sonnet 5.5. The model catalog has been extensively refreshed, adding new providers like AI/ML API, LowRouter, and Prime Inference, and including Claude Haiku 5.5. Many existing providers, including 302.AI, Google Vertex AI, and GitHub Copilot, have also updated their default models, often to Claude Haiku 5.5 or Muse Wonder 1.0, requiring users to pin models if they need specific older defaults. The 'ai&' selection now offers a dedicated API key and model picker, simplifying configuration for that provider. Crucial fixes include resolving 400 errors when turning off reasoning for advanced models like GPT-6 Astra and Claude Opus 5.5, ensuring it works across all providers. Crashes related to MCP servers exiting prematurely have been eliminated, and stale model ID errors now correctly display the actual issue instead of a misleading sign-in problem. Token estimation for images has been fixed to prevent premature auto-compaction, and symlinked rule files and skills in `.claude/skills` are now properly discovered. Users should review their model configurations, especially if using default settings for any of the affected providers, and consider pinning models to maintain consistent behavior. This update is recommended for all users to benefit from improved stability, expanded model access, and more accurate error reporting."
     },
     "features": [
       {
@@ -1642,6 +1651,42 @@
         "description": "Added support for the Claude Haiku 5.5 model to the model catalog.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "ai-ml-api-provider",
+        "name": "AI/ML API Provider",
+        "status": "stable",
+        "since": "4.1.24",
+        "description": "New provider added to the model catalog.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "lowrouter-provider",
+        "name": "LowRouter Provider",
+        "status": "stable",
+        "since": "4.1.24",
+        "description": "New provider added to the model catalog.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "prime-inference-provider",
+        "name": "Prime Inference Provider",
+        "status": "stable",
+        "since": "4.1.24",
+        "description": "New provider added to the model catalog.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "step-5-preview-model",
+        "name": "Step 5 Preview Model",
+        "status": "stable",
+        "since": "4.1.24",
+        "description": "Added to the Cline free list of models.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1767,6 +1812,59 @@
           "Vultr provider users relying on default models"
         ],
         "migration": "Users with pinned Vultr models should re-select their desired model from the refreshed model catalog. Users relying on default Vultr models should be aware that the default may have changed.",
+        "source_url": ""
+      },
+      {
+        "id": "default-model-changes",
+        "version": "4.1.24",
+        "title": "Default Model Changes for Various Providers",
+        "description": "The default models for numerous providers have changed. If you are using any of the affected providers (302.AI, Cortecs, CrossModel, DevPass, DigitalOcean, Eden AI, GitHub Copilot, Google Vertex AI, LLM Gateway, Meta, Moark, NanoGPT, NEAR AI Cloud, Neuralwatt, Novita AI, Ofox, OpenCode Go, Requesty, Vivgrid) without explicitly pinning a model, your default model will now be different, often defaulting to Claude Haiku 5.5 or Muse Wonder 1.0. Cline and OpenRouter also now default to Claude Sonnet 5.5 when no model is chosen.",
+        "affected": [
+          "302.AI",
+          "Cortecs",
+          "CrossModel",
+          "DevPass",
+          "DigitalOcean",
+          "Eden AI",
+          "GitHub Copilot",
+          "Google Vertex AI",
+          "LLM Gateway",
+          "Meta",
+          "Moark",
+          "NanoGPT",
+          "NEAR AI Cloud",
+          "Neuralwatt",
+          "Novita AI",
+          "Ofox",
+          "OpenCode Go",
+          "Requesty",
+          "Vivgrid",
+          "Cline (default)",
+          "OpenRouter (default)"
+        ],
+        "migration": "If you rely on a specific model for any of the affected providers, you must explicitly pin that model in your configuration to maintain previous behavior. Otherwise, expect a change in the default model used.",
+        "source_url": ""
+      },
+      {
+        "id": "opencode-go-endpoint-change",
+        "version": "4.1.24",
+        "title": "OpenCode Go Endpoint Update",
+        "description": "The OpenCode Go provider now uses a new endpoint: `https://opencode.ai/inference/go/v1`. This change is internal but may affect network configurations or firewalls if you have specific rules for the old endpoint.",
+        "affected": [
+          "OpenCode Go provider"
+        ],
+        "migration": "No direct user action is required unless your network environment has strict firewall rules or proxy configurations that specifically whitelist the old OpenCode Go endpoint. In such cases, you may need to update your network configuration to allow access to `https://opencode.ai/inference/go/v1`.",
+        "source_url": ""
+      },
+      {
+        "id": "v0-provider-model-restriction",
+        "version": "4.1.24",
+        "title": "v0 Provider Model Restriction",
+        "description": "The v0 provider now exclusively offers its default model, `v0-1.5-md`. Any attempts to use other models with the v0 provider will likely fail.",
+        "affected": [
+          "v0 provider users"
+        ],
+        "migration": "If you were using a model other than `v0-1.5-md` with the v0 provider, you must switch to `v0-1.5-md` or choose a different provider that supports your desired model.",
         "source_url": ""
       }
     ],

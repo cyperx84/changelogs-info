@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.10.2",
-  "generated_at": "2026-10-13T07:23:04.301Z",
+  "version": "2026.10.3",
+  "generated_at": "2026-10-13T15:35:53.155Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,9 +14,11 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.10.2",
-    "to_version": "2026.10.2",
-    "new_features": [],
+    "from_version": "2026.10.3",
+    "to_version": "2026.10.3",
+    "new_features": [
+      "meta-muse-wonder-model"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -40,13 +42,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.10.2",
-      "latest_release_date": "2026-10-12",
+      "latest_stable": "2026.10.3",
+      "latest_release_date": "2026-10-13",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "The openclaw 2026.10.2 release focuses heavily on stability and reliability, particularly around the update process and core agent functionalities. The most significant improvement is the robust update mechanism, which now ensures clean, in-place upgrades from 2026.10.1, resolving previous issues with errors, stalling, and rollbacks on Windows, cloned-filesystem, and private-Node environments. This means developers can upgrade with confidence, avoiding disruptive failures. \n\nKey enhancements include improved Doctor diagnostics, which no longer halts on legacy imports, stale Gateway locks, or slow state inspections, and ensures stale-receipt sessions retain their data. Provider-native compaction is now the default for OpenAI and Anthropic API-key routes, enhancing efficiency and recovery. Secret redaction has been made more robust and performant, masking credentials across chunk boundaries in tool output and speeding up large text redaction. Prompt-cache stability has been significantly improved, ensuring consistent cache hits across various scenarios like follow-ups, replays, and Gateway restarts. \n\nNumerous fixes address critical issues: replies are no longer lost during agent startup or with streamed Telegram messages, Claude CLI sessions now correctly display runtime prompts, and subagent/ACP answers are no longer truncated. Stability for async tools, plugin approvals, and context engine advancement has been improved. OpenAI turns are more resilient to regex-lookaround tool schemas and websocket expiry, and cron runs no longer lose plugin registries or tool access. The Control UI's dictate button and `typed /stop` command now function reliably, and various macOS crashes related to the Swift compiler and llama.cpp setup have been resolved. \n\nThis release is a recommended upgrade for all users, especially those who experienced issues with previous updates or core agent stability. No breaking changes are noted, making the upgrade path straightforward."
+      "tldr": "OpenClaw 2026.10.3 significantly improves reliability and stability across various core components, particularly around updates, Doctor repairs, and agent turns. The headline change is a robust recovery mechanism for updates that previously got stuck due to lost leases, unrecognized receipts, or legacy activation records, ensuring that updates now complete successfully instead of failing retries. This means fewer interrupted updates and a more stable upgrade path for all users. \n\nKey improvements include Doctor no longer destroying data during repair operations, preserving OAuth profiles, memory files, and plugin states even when encountering unreadable or malformed data. Windows, macOS, and pnpm updates are now more resilient, preventing the Gateway from stopping or rolling back by correctly handling task accounts, install paths, and service commands. Agent turns are also more reliable, with fixes for issues after native compaction, ChatGPT WebSocket closures, switching OpenAI models, and Codex follow-ups. \n\nNew features include the availability of Meta's Muse Wonder model. MiniMax M3.1 models now respect thinking effort levels, and OAuth tokens refresh correctly. The Gateway sees fixes for Claude CLI session tools, channel tool failures, and node request issues, along with cleaner restarts and improved outbound queue recovery. Networking now falls back to IPv6 for guarded model requests when IPv4 is unreachable, maintaining SSRF validation. Copilot now honors context capacity, Anthropic's Claude CLI is better integrated with OpenClaw tools, and DeepSeek recovers `calls` markup to prevent tool payload leaks. \n\nThis release is highly recommended for all users to improve overall system stability, update reliability, and data integrity. Users experiencing issues with updates, Doctor, or agent turn reliability should upgrade immediately. No specific migration steps or breaking changes are noted, making this a straightforward upgrade."
     },
     "features": [
       {
@@ -3169,6 +3171,15 @@
           "Supports Reef guard-model boundaries"
         ],
         "source_url": "https://github.com/openclaw/openclaw/pull/161400"
+      },
+      {
+        "id": "meta-muse-wonder-model",
+        "name": "Meta: Muse Wonder Model",
+        "status": "stable",
+        "since": "2026.10.3",
+        "description": "Meta's Muse Wonder model is now available for use within openclaw.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
