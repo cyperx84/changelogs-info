@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.300",
-  "generated_at": "2026-10-14T20:27:09.863Z",
+  "generated_at": "2026-10-14T23:41:05.721Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -41,9 +41,7 @@
       "--sandbox",
       "--no-sandbox"
     ],
-    "breaking_changes": [
-      "remote-control-sandbox-flags-removed"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -65,7 +63,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Claude Code 2.1.300 introduces significant enhancements for mod developers, OpenTelemetry integration, and workflow management, alongside numerous stability and usability fixes. A headline change for mod developers is the addition of `virtualText` to prompt decorations, allowing mods to display non-submittable text in the prompt box, which is crucial for interactive guidance without polluting the actual prompt. This release also adds `$.ui.view({ agentId })` for mods to programmatically display agent transcripts, and a `prompt.change` mod hook for reacting to prompt box text changes not initiated by typing. \n\nFor observability, OpenTelemetry `api_request` events now include `cache_creation_5m_tokens` and `cache_creation_1h_tokens` for detailed cache write analysis, and trace spans are enriched with GenAI semantic-convention attributes like `gen_ai.provider.name` and `gen_ai.tool.name`. Workflow agents gain more flexibility with the ability to rewrite their `prompt` and `model` within the `agent.spawn` mod hook. \n\nClaude Tag users will benefit from new Slack Connect channel support, private 'Allow once / Deny' approval cards for connector actions, and the ability for Claude to read Slack voice clip transcripts. The `/advisor` command is now available on Claude Platform on AWS, allowing users to explicitly select an advisor model. \n\nNumerous fixes address issues ranging from cloud session policy blocking, `/autocompact` warnings, and `SessionEnd` hook reliability, to `claude agents` refresh problems and subagent visibility in `/tasks`. Critical fixes include resolving `Artifact` tool display issues, preventing transcript loss after crashes, and handling Unicode characters in `/branch` and `claude purge`. VS Code users will find fixes for fast mode credit exhaustion, `Shift+drag` file paths, font size consistency, and session resume issues. \n\nA breaking change removes the `--sandbox` and `--no-sandbox` flags from `claude remote-control`; users should now use the `sandbox.enabled` setting. Other changes include improved WebFetch in Cowork sessions, better mod sharing in `plugin-authoring`, and more precise artifact updates. `CLAUDE_CODE_DISABLE_ADVISOR_TOOL` and `CLAUDE_CODE_GZIP_REQUEST_BODIES` environment variables are introduced for fine-grained control. This is a recommended upgrade for all users to benefit from improved stability, new mod capabilities, and enhanced observability. Developers leveraging remote control should update their scripts to use the `sandbox.enabled` setting instead of the deprecated flags."
+      "tldr": "This release introduces significant enhancements for mod developers, offering finer control over the prompt UI and improved debugging with new OpenTelemetry attributes. Mods can now use `virtualText` for prompt decorations that don't become part of the draft, and `$.ui.view({ agentId })` to programmatically display agent transcripts, enabling more dynamic and informative mod experiences. Additionally, the `prompt.change` mod hook provides better reactivity to prompt box text changes, and `agent.spawn` hook now allows rewriting workflow agent prompts and models, expanding customization options. \n\nKey fixes address several critical issues, including cloud sessions incorrectly reporting policy blocks, `/autocompact` warnings, and `SessionEnd` hooks not always running. Important improvements include more robust handling of background agents after cloud session container replacements, better artifact update mechanisms, and enhanced mod sharing in `plugin-authoring`. For VS Code users, issues with fast mode, the Thinking toggle, and file path insertion on Windows/WSL have been resolved. \n\nBreaking changes include the deprecation of `--sandbox` and `--no-sandbox` flags for `claude remote-control`, which now exit with an error; users should migrate to the `sandbox.enabled` setting. New environment variables like `CLAUDE_CODE_DISABLE_ADVISOR_TOOL` and `CLAUDE_CODE_GZIP_REQUEST_BODIES` offer more configuration options. Overall, this release focuses on developer tooling, stability, and user experience, making an upgrade highly recommended for all users, especially those leveraging mods or cloud sessions, to benefit from the numerous fixes and new capabilities."
     },
     "features": [
       {
@@ -3602,6 +3600,20 @@
         {
           "flag": "--no-sandbox",
           "replaced_by": "sandbox.enabled setting",
+          "deprecated_since": "2.1.300",
+          "removed_in": null,
+          "source_url": ""
+        },
+        {
+          "flag": "--sandbox",
+          "replaced_by": "`sandbox.enabled` setting",
+          "deprecated_since": "2.1.300",
+          "removed_in": null,
+          "source_url": ""
+        },
+        {
+          "flag": "--no-sandbox",
+          "replaced_by": "`sandbox.enabled` setting",
           "deprecated_since": "2.1.300",
           "removed_in": null,
           "source_url": ""
