@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.300",
-  "generated_at": "2026-10-15T18:05:11.433Z",
+  "version": "2.1.301",
+  "generated_at": "2026-10-15T21:55:58.955Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,33 +14,22 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.300",
-    "to_version": "2.1.300",
+    "from_version": "2.1.301",
+    "to_version": "2.1.301",
     "new_features": [
-      "mod-prompt-virtual-text",
-      "opentelemetry-cache-creation-tokens",
-      "mod-ui-view-agent-id",
-      "mod-text-dir-prop",
-      "opentelemetry-genai-semantic-attributes",
-      "workflow-agent-prompt-model-rewrite",
-      "mod-prompt-change-hook",
-      "claude-tag-slack-connect-channels",
-      "claude-tag-private-approval-card",
-      "claude-tag-slack-voice-clips"
+      "vim-percent-motion",
+      "mod-input-rows",
+      "opentelemetry-tool-decision-classifier-details",
+      "vscode-latex-math-rendering",
+      "vscode-get-more-usage-link"
     ],
-    "new_commands": [
-      "/advisor"
-    ],
+    "new_commands": [],
     "new_flags": [],
     "new_env_vars": [
-      "CLAUDE_CODE_DISABLE_ADVISOR_TOOL",
-      "CLAUDE_CODE_GZIP_REQUEST_BODIES"
+      "CLAUDE_CODE_RETRY_WATCHDOG_MAX_USAGE_LIMIT_WAIT_MS"
     ],
     "deprecated_commands": [],
-    "deprecated_flags": [
-      "--sandbox",
-      "--no-sandbox"
-    ],
+    "deprecated_flags": [],
     "breaking_changes": []
   },
   "payload": {
@@ -58,12 +47,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.300",
-      "latest_release_date": "2026-10-14",
+      "latest_stable": "2.1.301",
+      "latest_release_date": "2026-10-15",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces significant enhancements for mod developers, offering finer control over the prompt UI and improved debugging with new OpenTelemetry attributes. Mods can now use `virtualText` for prompt decorations that don't become part of the draft, and `$.ui.view({ agentId })` to programmatically display agent transcripts, enabling more dynamic and informative mod experiences. Additionally, the `prompt.change` mod hook provides better reactivity to prompt box text changes, and `agent.spawn` hook now allows rewriting workflow agent prompts and models, expanding customization options. \n\nKey fixes address several critical issues, including cloud sessions incorrectly reporting policy blocks, `/autocompact` warnings, and `SessionEnd` hooks not always running. Important improvements include more robust handling of background agents after cloud session container replacements, better artifact update mechanisms, and enhanced mod sharing in `plugin-authoring`. For VS Code users, issues with fast mode, the Thinking toggle, and file path insertion on Windows/WSL have been resolved. \n\nBreaking changes include the deprecation of `--sandbox` and `--no-sandbox` flags for `claude remote-control`, which now exit with an error; users should migrate to the `sandbox.enabled` setting. New environment variables like `CLAUDE_CODE_DISABLE_ADVISOR_TOOL` and `CLAUDE_CODE_GZIP_REQUEST_BODIES` offer more configuration options. Overall, this release focuses on developer tooling, stability, and user experience, making an upgrade highly recommended for all users, especially those leveraging mods or cloud sessions, to benefit from the numerous fixes and new capabilities."
+      "tldr": "Claude Code 2.1.301 introduces significant improvements in developer experience, particularly for power users and those integrating with observability tools. The headline feature is the new `CLAUDE_CODE_RETRY_WATCHDOG_MAX_USAGE_LIMIT_WAIT_MS` environment variable, which prevents unattended retry mode from waiting indefinitely for distant usage limit resets, ensuring more predictable behavior during automated tasks. This is crucial for maintaining continuous integration and deployment pipelines without unexpected stalls. \n\nFor developers leveraging OpenTelemetry, the `claude-api` skill now includes comprehensive tracing guidance, and `tool_decision` events are enriched with `classifier_verdict`, `permission_mode`, and `classifier_category` (when `OTEL_LOG_TOOL_DETAILS=1`), offering deeper insights into auto mode and permission rule decisions. Vim users will appreciate the addition of the `%` motion for jumping to matching brackets, enhancing navigation and editing efficiency. Mod developers gain more flexible UI with multi-line text input via the `rows` property in `Input`, and VS Code users can now render LaTeX math directly in Claude's responses, improving readability for technical discussions. \n\nNumerous fixes address critical issues, including preventing worktree removal without confirmation, improving model alias error handling for Fable models, and providing clearer error messages for disk space issues. Performance has been boosted with incremental subagent progress updates and faster skill/command invocation by optimizing argument processing. Self-hosted runner stability is enhanced with better handling of source branch reporting and retry logic. VS Code users will also find the chat panel more responsive during long thinking processes and a new 'Get more usage' link for Pro/Max plans. Upgrading is recommended for all users to benefit from these stability, performance, and feature enhancements, especially those relying on automated workflows, OpenTelemetry, or advanced editing modes."
     },
     "features": [
       {
@@ -2668,6 +2657,69 @@
         "description": "Added support for Slack voice clips in Claude in Slack: Claude reads Slack's transcript of a clip when Slack has one.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "vim-percent-motion",
+        "name": "Vim '%' Motion",
+        "status": "stable",
+        "since": "2.1.301",
+        "description": "Added the '%' motion to vim mode, allowing users to jump to the matching bracket. This motion can be used alone or in combination with d/c/y for delete, change, or yank operations.",
+        "key_details": [
+          "Jump to matching bracket",
+          "Usable with d/c/y commands"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "mod-input-rows",
+        "name": "Mod Input 'rows' Field",
+        "status": "stable",
+        "since": "2.1.301",
+        "description": "Added a 'rows' property to a mod's 'Input', enabling multi-line text fields in the terminal. Enter submits the input, while Shift+Enter or a backslash before Enter starts a new line.",
+        "key_details": [
+          "Multi-line text input for mods",
+          "Enter to submit",
+          "Shift+Enter or \\+Enter for new line"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "opentelemetry-tool-decision-classifier-details",
+        "name": "OpenTelemetry Tool Decision Classifier Details",
+        "status": "stable",
+        "since": "2.1.301",
+        "description": "Added 'classifier_verdict' and 'permission_mode' to OpenTelemetry 'tool_decision' events to distinguish auto mode classifier decisions from permission rules. Also added 'classifier_category' to name the built-in rule matched by a classifier block when 'OTEL_LOG_TOOL_DETAILS=1' is set.",
+        "key_details": [
+          "Distinguish auto mode classifier decisions from permission rules",
+          "Includes 'classifier_verdict' and 'permission_mode'",
+          "'classifier_category' for built-in rule names (with OTEL_LOG_TOOL_DETAILS=1)"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "vscode-latex-math-rendering",
+        "name": "VS Code LaTeX Math Rendering",
+        "status": "stable",
+        "since": "2.1.301",
+        "description": "Added LaTeX math rendering support in Claude's responses within VS Code. This includes support for `$$` and multi-line `\\[ … \\]` blocks, as well as inline `$…$` and `\\(…\\)` math.",
+        "key_details": [
+          "LaTeX math rendering in VS Code responses",
+          "Supports block and inline math syntax"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "vscode-get-more-usage-link",
+        "name": "VS Code 'Get more usage' Link",
+        "status": "stable",
+        "since": "2.1.301",
+        "description": "Added a 'Get more usage' link to the usage-limit banner for Pro and Max plans in the VS Code and JetBrains panels, providing a direct path for users to increase their usage.",
+        "key_details": [
+          "Link in usage-limit banner",
+          "For Pro and Max plans",
+          "Available in VS Code and JetBrains panels"
+        ],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -4200,6 +4252,13 @@
         "purpose": "Controls gzip compression for large requests to api.anthropic.com. Set to `0` to turn it off.",
         "status": "stable",
         "since": "2.1.300",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_RETRY_WATCHDOG_MAX_USAGE_LIMIT_WAIT_MS",
+        "purpose": "Configures the maximum wait time (in milliseconds) for unattended retry mode (`CLAUDE_CODE_RETRY_WATCHDOG`) when a usage limit resets too far away, preventing indefinite waiting.",
+        "status": "stable",
+        "since": "2.1.301",
         "source_url": ""
       }
     ],
