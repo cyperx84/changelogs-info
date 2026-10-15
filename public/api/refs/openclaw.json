@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.10.3",
-  "generated_at": "2026-10-15T08:51:41.359Z",
+  "version": "2026.9.33",
+  "generated_at": "2026-10-15T13:57:52.214Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,9 +14,13 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.10.3",
-    "to_version": "2026.10.3",
-    "new_features": [],
+    "from_version": "2026.9.33",
+    "to_version": "2026.9.33",
+    "new_features": [
+      "meta-muse-wonder-model",
+      "minimax-m3-1-flash-preview-model",
+      "minimax-portal-oauth-token-expiry"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -40,13 +44,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.10.3",
-      "latest_release_date": "2026-10-13",
+      "latest_stable": "2026.9.33",
+      "latest_release_date": "2026-10-15",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "This release, OpenClaw v2026.10.3, primarily focuses on internal maintenance, verification, and publishing processes, with no new features, commands, flags, or breaking changes introduced. The release notes highlight the successful execution of various CI/CD pipelines for npm package publishing, integrity checks, plugin submissions to ClawHub, and overall release validation. Notably, the Android APK build was skipped due to a version mismatch (apps/android/version.json is 2026.8.2 while the release train is 2026.10.3), with a clear instruction to run `pnpm android:version:pin -- --from-gateway` before the next tag. This indicates a focus on ensuring the stability and reliability of the release infrastructure rather than introducing new user-facing functionalities. Developers should review the CI reports for detailed verification evidence, but no immediate action is required for feature adoption or migration. The release is a standard maintenance update, ensuring the robustness of the OpenClaw ecosystem."
+      "tldr": "This `extended-stable` release, OpenClaw 2026.9.33, focuses on critical security updates, reliability, performance, and new model support, making it a recommended upgrade for stability. Key highlights include safer September upgrades that preserve state and plugin data, and robust updates across pnpm, npm, and Windows environments, ensuring smoother transitions and preventing rollbacks. New model support has been added for Meta Muse Wonder and MiniMax M3.1 Flash Preview, expanding the available AI capabilities, alongside improved MiniMax portal OAuth persistence. \n\nReliability for model turns has been significantly enhanced, with agent runs now honoring live thinking levels, local providers receiving response-header deadlines, and ChatGPT WebSocket connections recovering gracefully. Work now survives Gateway restarts, meaning interrupted automation, steered sessions, and partial worker replies will resume or persist. Delivery and device stability are also improved, with live sends surviving queue recovery and node requests no longer failing due to unrelated pairing activity. \n\nNumerous fixes address update and Doctor issues, ensuring Doctor runs under various error conditions, preventing update history writes from stalling cron, and avoiding accidental OAuth profile deletions. Updates from 2026.8.35 are more robust, with cron jobs continuing to run and Doctor checks deferring to allow updates to complete. Gateway responsiveness is improved by optimizing how streamed replies are parsed, and Tailscale integration is more stable, preventing serve process issues and 503 errors. The context engine no longer repeats blocked-turn warnings, and the state database recovers more reliably after cleanup failures. Providers now correctly recover DeepSeek `calls` markup and Codex follow-up requests, and aliased llama.cpp models can be selected. Channel tools remain functional after config writes, ACP agents retain tools when `acpx` is separate, and Talk consultations no longer abort. Failed one-shot automations now always alert, and cron no longer blocks state writing. Release checks are more tolerant of slow `gateway stop` and busy Gateway ports, and extended-stable candidates now qualify upgrades from previous extended-stable releases. This release is crucial for maintaining a stable and performant OpenClaw environment."
     },
     "features": [
       {
@@ -3178,6 +3182,24 @@
         "description": "Meta's Muse Wonder model is now available for use within openclaw.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "minimax-m3-1-flash-preview-model",
+        "name": "MiniMax M3.1 Flash Preview Model Support",
+        "status": "stable",
+        "since": "2026.9.33",
+        "description": "Added the MiniMax M3.1 Flash Preview model and routed its thinking effort levels to the provider.",
+        "key_details": [],
+        "source_url": "https://github.com/openclaw/openclaw/pull/160089"
+      },
+      {
+        "id": "minimax-portal-oauth-token-expiry",
+        "name": "MiniMax Portal OAuth Past Token Expiry",
+        "status": "stable",
+        "since": "2026.9.33",
+        "description": "Users can now stay signed in to MiniMax portal OAuth past token expiry.",
+        "key_details": [],
+        "source_url": "https://github.com/openclaw/openclaw/pull/160459"
       }
     ],
     "commands": [
