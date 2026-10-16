@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "4.1.24",
-  "generated_at": "2026-10-16T05:28:07.742Z",
+  "version": "4.1.25",
+  "generated_at": "2026-10-16T10:44:28.407Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,15 +19,19 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "4.1.24",
-    "to_version": "4.1.24",
-    "new_features": [],
+    "from_version": "4.1.25",
+    "to_version": "4.1.25",
+    "new_features": [
+      "cline-cloud-sessions"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "openai-compatible-base-url-behavior-change"
+    ]
   },
   "payload": {
     "meta": {
@@ -45,12 +49,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "4.1.24",
-      "latest_release_date": "2026-10-13",
+      "latest_stable": "4.1.25",
+      "latest_release_date": "2026-10-16",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "This Cline 4.1.24 release brings significant updates to model defaults and provider configurations, primarily impacting how models are selected and managed. The most notable change is that both Cline and OpenRouter providers now default to Claude Sonnet 5.5 when no specific model is chosen, aligning with Cline's recommended list. This means users who previously relied on implicit model selection for these providers will now experience a shift to Claude Sonnet 5.5. \n\nProvider management has been streamlined, with the 'ai&' provider now featuring a dedicated API key and model picker, eliminating the need for generic OpenAI-compatible forms and manual base URL/header configurations. The model catalog has been extensively refreshed, introducing Claude Haiku 5.5, and new providers like AI/ML API, LowRouter, and Prime Inference. The Cline free list now includes Step 5 Preview, and the v0 provider is now restricted to its default `v0-1.5-md` model. OpenCode Go has updated its inference endpoint to `https://opencode.ai/inference/go/v1`. Many other providers, including 302.AI, Cortecs, and Google Vertex AI, have updated their default models, often to Claude Haiku 5.5 or Muse Wonder 1.0, which will affect users not explicitly pinning models.\n\nSeveral critical fixes enhance stability and user experience. Turning off reasoning no longer results in 400 errors for GPT-6 Astra, GPT-6.1 Sol, Claude Fable 5, or Claude Opus 5.5, and now functions across all providers. Level-only Gemini models no longer reject requests due to thinking-budget errors. Crashes related to MCP servers or hooks exiting prematurely have been resolved. Stale or retired model IDs now display accurate 404 errors instead of misleading sign-in problems, and Cline output logs now retain full error details, improving debugging. Token estimation for images has been corrected, preventing premature auto-compaction, and auto-compaction now correctly uses the selected model's context window when catalog entries lack one. Symlinked rule files and skills in `.claude/skills` are now properly discovered, and the editor tool no longer receives null values for text replacement. Finally, an issue where settings migration from older versions added an empty SAP AI Core provider has been fixed. Users are encouraged to upgrade to benefit from improved model selection, enhanced stability, and clearer error reporting."
+      "tldr": "Cline 4.1.25 introduces Cline Cloud sessions, a significant new feature allowing developers to run tasks in hosted sandboxes on GitHub repositories and branches. These cloud tasks persist, run in the background even after closing the editor, and provide status notifications, greatly enhancing remote development workflows and task management. This feature is rolling out gradually and can be enabled in Settings.\n\nThe release also brings a comprehensive refresh to the model catalog. The Cline provider now defaults to Gemini 4 Argon when no model is chosen, and OpenRouter maintains Claude Sonnet 5.5. New providers like Boundless and Standard Compute are added, and SambaNova now defaults to MiniMax M3. The Cline recommended list updates to include Gemini 4 Argon and remove Grok 4.7, while the free list replaces Step 5 Preview with Nemotron 3.5 Super VL. Numerous default models have changed across various providers, including Cortecs, Google Gemini, GitHub Copilot, and others, meaning users not pinning specific models will experience new defaults.\n\nSeveral critical fixes are included: long requests to local models (LM Studio, Ollama) no longer time out after 5 minutes of silence, resolving `terminated: BodyTimeoutError`. OpenAI Compatible base URLs are now used exactly as entered, with a one-time adjustment for existing host-only URLs to ensure continuity. Images and files attached to answers are now correctly sent to the model, preventing data loss. Provider errors that interrupt responses mid-stream will now trigger up to 3 retries before failing the turn, improving resilience. UI refinements include the Run task card staying above the Auto-approve bar in JetBrains and the Auto Compact settings being grouped together in Feature settings. Developers should review their model configurations due to the extensive default model changes and be aware of the OpenAI Compatible base URL behavior change, though existing setups are largely handled."
     },
     "features": [
       {
@@ -1678,6 +1682,21 @@
         "description": "Added to the Cline free list of models.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "cline-cloud-sessions",
+        "name": "Cline Cloud sessions",
+        "status": "experimental",
+        "since": "4.1.25",
+        "description": "Run a task in a hosted sandbox on a GitHub repository and branch you pick. Cloud tasks show in Recent and History with their status, notify you when they finish, and keep running after you close your editor.",
+        "key_details": [
+          "Gradual rollout",
+          "Turn on in Settings",
+          "Hosted sandbox environment",
+          "Integrates with GitHub repos and branches",
+          "Tasks persist and run in the background"
+        ],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1856,6 +1875,17 @@
           "v0 provider users"
         ],
         "migration": "If you were using a model other than `v0-1.5-md` with the v0 provider, you must switch to `v0-1.5-md` or choose a different provider that supports your desired model.",
+        "source_url": ""
+      },
+      {
+        "id": "openai-compatible-base-url-behavior-change",
+        "version": "4.1.25",
+        "title": "OpenAI Compatible base URLs are used exactly as entered",
+        "description": "Previously, a host-only URL like `https://abc.com` for OpenAI Compatible base URLs would silently have `/v1` appended. Now, base URLs are used exactly as entered. Host-only URLs saved by earlier versions will have `/v1` added once to maintain existing setups.",
+        "affected": [
+          "Users configuring OpenAI Compatible providers with host-only base URLs."
+        ],
+        "migration": "If you previously relied on the implicit `/v1` suffix for a host-only URL, you should explicitly add `/v1` to your configuration if you want to maintain that behavior for new configurations. Existing configurations saved by earlier versions will be automatically adjusted once.",
         "source_url": ""
       }
     ],
