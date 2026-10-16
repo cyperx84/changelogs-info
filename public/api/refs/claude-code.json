@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.301",
-  "generated_at": "2026-10-16T19:18:18.505Z",
+  "version": "2.1.302",
+  "generated_at": "2026-10-16T22:31:30.344Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,18 +14,13 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.301",
-    "to_version": "2.1.301",
-    "new_features": [
-      "vim-percent-motion",
-      "mod-input-rows",
-      "vscode-latex-math-rendering",
-      "vscode-get-more-usage-link"
-    ],
+    "from_version": "2.1.302",
+    "to_version": "2.1.302",
+    "new_features": [],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [
-      "CLAUDE_CODE_RETRY_WATCHDOG_MAX_USAGE_LIMIT_WAIT_MS"
+      "CLAUDE_CODE_AUTO_MODE_MODEL"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -46,12 +41,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.301",
-      "latest_release_date": "2026-10-15",
+      "latest_stable": "2.1.302",
+      "latest_release_date": "2026-10-16",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release of claude-code 2.1.301 introduces several key improvements and fixes, enhancing developer experience and stability. A significant new feature for Vim users is the addition of the `%` motion, allowing quick jumps to matching brackets, which can be combined with delete, change, or yank commands for more efficient text manipulation. For mod developers, the `Input` component now supports multi-line text fields via the `rows` attribute, improving user interaction in terminal-based mods. Additionally, VS Code users will benefit from native LaTeX math rendering in Claude's responses, supporting both inline and display math, and a new 'Get more usage' link in the usage-limit banner for Pro and Max plans. \n\nOpenTelemetry tracing has been enhanced with `classifier_verdict`, `permission_mode`, and `classifier_category` added to `tool_decision` events, providing deeper insights into auto mode classifier decisions and permission rules. The `claude-api` skill now includes guidance for setting up OpenTelemetry trace destinations. A new environment variable, `CLAUDE_CODE_RETRY_WATCHDOG_MAX_USAGE_LIMIT_WAIT_MS`, allows users to configure the maximum wait time for unattended retry mode when usage limits are far from resetting, preventing indefinite waits. \n\nNumerous fixes address critical issues: worktree removal now prompts for unpushed commits, model alias errors for unavailable Fable models are retried, and misleading 'Please run /login' errors due to full disks are clarified. Grep and Glob now report search failures correctly, workflow agents no longer skip steps silently, and artifact updates are handled gracefully with `PreToolUse` hooks. Performance issues with skills/commands having many arguments and memory usage for large arguments have been resolved. Terminal display glitches on older VTE versions and iTerm2 have been fixed, along with issues related to model switching, sign-in refresh, tool call reporting, conversation compaction, and vim mode behavior. Self-hosted runner issues with repository attachment, source branch reporting, and session retry logging have also been addressed. Overall, this release brings significant stability, performance, and usability improvements, making it a recommended upgrade for all users."
+      "tldr": "This release introduces a new environment variable, `CLAUDE_CODE_AUTO_MODE_MODEL`, allowing users to specify the model for client-side auto mode classification, providing more control over local AI behavior. A new 'Idle compaction' row has been added to `/config`, enabling users to easily toggle idle compaction on or off, with notices now guiding users on how to disable it after compaction events. This improves user control over resource management and reduces potential interruptions. \n\nSeveral critical fixes address stability and usability issues. A 'Prompt is too long' error during conversation compaction has been resolved, preventing interruptions during long conversations. Issues with requests failing after switching to Vertex or Bedrock mid-session, and incorrect model saving for `/autocompact` and `/effort` with prefixed Opus 4 models, have been fixed, ensuring consistent behavior across different AI providers and model naming conventions. The Read tool now refuses image sources over 128 MB, preventing memory exhaustion, and plugin marketplaces no longer re-clone on every refresh, improving performance and stability for git-based plugins. \n\nSignificant improvements include enhanced auto mode with server-side classification, which now compacts overly long conversations instead of denying tool calls, leading to a smoother user experience. Startup time with many plugins is significantly improved, especially on Windows, due to fewer file system calls. Fork subagents are now on by default in `claude -p`, the Agent SDK, desktop app, and VS Code, aligning behavior across platforms, though they can be disabled with `CLAUDE_CODE_FORK_SUBAGENT=0`. \n\nFor cloud sessions, a banner now explains why routine runs failed to start, and 'Rewind to here' now works for all messages. Claude Tag admin settings have been reorganized into four tabs (Bundles, Connectors, Skills and plugins, Channels) for better navigation, and repository search capabilities have been expanded. Users should consider upgrading to benefit from these stability improvements, performance enhancements, and increased control over AI behavior, especially if using auto mode, plugins, or cloud sessions."
     },
     "features": [
       {
@@ -4284,6 +4279,13 @@
         "purpose": "Configures the maximum wait time (in milliseconds) for unattended retry mode (`CLAUDE_CODE_RETRY_WATCHDOG`) when a usage limit resets too far away, preventing indefinite waiting.",
         "status": "stable",
         "since": "2.1.301",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_AUTO_MODE_MODEL",
+        "purpose": "Choose the model the client-side auto mode classifier uses; it does not change the model for server-side auto mode.",
+        "status": "stable",
+        "since": "2.1.302",
         "source_url": ""
       }
     ],
