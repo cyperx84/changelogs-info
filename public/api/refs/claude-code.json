@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.301",
-  "generated_at": "2026-10-15T21:55:58.955Z",
+  "generated_at": "2026-10-16T00:05:43.573Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -17,9 +17,8 @@
     "from_version": "2.1.301",
     "to_version": "2.1.301",
     "new_features": [
-      "vim-percent-motion",
-      "mod-input-rows",
-      "opentelemetry-tool-decision-classifier-details",
+      "opentelemetry-tool-decision-classifier-verdict-permission-mode",
+      "opentelemetry-tool-decision-classifier-category",
       "vscode-latex-math-rendering",
       "vscode-get-more-usage-link"
     ],
@@ -52,7 +51,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Claude Code 2.1.301 introduces significant improvements in developer experience, particularly for power users and those integrating with observability tools. The headline feature is the new `CLAUDE_CODE_RETRY_WATCHDOG_MAX_USAGE_LIMIT_WAIT_MS` environment variable, which prevents unattended retry mode from waiting indefinitely for distant usage limit resets, ensuring more predictable behavior during automated tasks. This is crucial for maintaining continuous integration and deployment pipelines without unexpected stalls. \n\nFor developers leveraging OpenTelemetry, the `claude-api` skill now includes comprehensive tracing guidance, and `tool_decision` events are enriched with `classifier_verdict`, `permission_mode`, and `classifier_category` (when `OTEL_LOG_TOOL_DETAILS=1`), offering deeper insights into auto mode and permission rule decisions. Vim users will appreciate the addition of the `%` motion for jumping to matching brackets, enhancing navigation and editing efficiency. Mod developers gain more flexible UI with multi-line text input via the `rows` property in `Input`, and VS Code users can now render LaTeX math directly in Claude's responses, improving readability for technical discussions. \n\nNumerous fixes address critical issues, including preventing worktree removal without confirmation, improving model alias error handling for Fable models, and providing clearer error messages for disk space issues. Performance has been boosted with incremental subagent progress updates and faster skill/command invocation by optimizing argument processing. Self-hosted runner stability is enhanced with better handling of source branch reporting and retry logic. VS Code users will also find the chat panel more responsive during long thinking processes and a new 'Get more usage' link for Pro/Max plans. Upgrading is recommended for all users to benefit from these stability, performance, and feature enhancements, especially those relying on automated workflows, OpenTelemetry, or advanced editing modes."
+      "tldr": "This release of claude-code 2.1.301 introduces significant improvements to OpenTelemetry tracing, developer experience in VS Code, and robustness across various features. The headline change is the addition of `CLAUDE_CODE_RETRY_WATCHDOG_MAX_USAGE_LIMIT_WAIT_MS`, an environment variable that prevents unattended retry mode from indefinitely waiting for distant usage limit resets, ensuring more predictable behavior for long-running tasks. This is crucial for developers relying on automated processes and helps avoid unexpected delays. \n\nKey new features include enhanced OpenTelemetry tracing with `classifier_verdict`, `permission_mode`, and `classifier_category` fields in `tool_decision` events, providing deeper insights into how tool decisions are made, especially in auto mode. VS Code users will benefit from new LaTeX math rendering in Claude's responses, supporting both inline and display equations, and a convenient 'Get more usage' link in the usage-limit banner for Pro and Max plans. The `%` motion in vim mode has been extended to jump to matching brackets and integrate with d/c/y commands, improving navigation and editing efficiency. Mods now support multi-line input fields in the terminal via the `rows` attribute, and their `.catch` handlers are more precise, only triggering on throws or timeouts.\n\nNumerous fixes address critical issues, such as preventing worktrees from being removed without confirmation, handling Anthropic API errors for the `fable` model alias by retrying with a previous version, and providing clearer error messages for full disk conditions. Workflow agents are now more reliable, no longer skipping steps after reading harness notes, and artifact updates are correctly handled by republishing after edits. Performance issues with skills and commands having many arguments, memory usage, and UI glitches in various terminal emulators (VTE, iTerm2) have been resolved. Model switching behavior has been refined to summarize conversations with the previous model before switching to a smaller context window, preventing unexpected credit usage. Self-hosted runner issues related to repository attachment, source branch reporting, and log retries have also been fixed. Developers should consider upgrading to leverage these stability and feature enhancements, particularly those using OpenTelemetry, VS Code, or self-hosted runners."
     },
     "features": [
       {
@@ -2718,6 +2717,32 @@
           "Link in usage-limit banner",
           "For Pro and Max plans",
           "Available in VS Code and JetBrains panels"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "opentelemetry-tool-decision-classifier-verdict-permission-mode",
+        "name": "OpenTelemetry Tool Decision Classifier Verdict and Permission Mode",
+        "status": "stable",
+        "since": "2.1.301",
+        "description": "Added `classifier_verdict` and `permission_mode` to OpenTelemetry `tool_decision` events. This allows distinguishing between auto mode classifier decisions and permission rules, providing more granular insights into how tool decisions are made.",
+        "key_details": [
+          "classifier_verdict field added to tool_decision events",
+          "permission_mode field added to tool_decision events",
+          "Helps differentiate auto mode classifier decisions from permission rule decisions"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "opentelemetry-tool-decision-classifier-category",
+        "name": "OpenTelemetry Tool Decision Classifier Category",
+        "status": "stable",
+        "since": "2.1.301",
+        "description": "Added `classifier_category` to OpenTelemetry `tool_decision` events. This field names the built-in rule that a classifier block matched, providing more context when `OTEL_LOG_TOOL_DETAILS=1` is enabled.",
+        "key_details": [
+          "classifier_category field added to tool_decision events",
+          "Names the built-in rule matched by a classifier block",
+          "Requires `OTEL_LOG_TOOL_DETAILS=1` environment variable to be set"
         ],
         "source_url": ""
       }
