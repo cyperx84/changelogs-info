@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "4.1.25",
-  "generated_at": "2026-10-17T01:04:28.410Z",
+  "version": "0.0.48",
+  "generated_at": "2026-10-17T06:34:45.564Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,10 +19,12 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "4.1.25",
-    "to_version": "4.1.25",
+    "from_version": "0.0.48",
+    "to_version": "0.0.48",
     "new_features": [
-      "cline-cloud-sessions"
+      "gpt-6-model-support",
+      "commandcode-provider",
+      "reflection-provider"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -47,12 +49,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "4.1.25",
-      "latest_release_date": "2026-10-16",
+      "latest_stable": "0.0.48",
+      "latest_release_date": "2026-10-17",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "Cline 4.1.25 introduces a significant new feature: Cline Cloud sessions. This allows developers to run tasks in a hosted sandbox environment on a specified GitHub repository and branch, with tasks continuing to run even after closing the editor, and providing status updates and notifications. This enhances developer productivity by offloading compute and ensuring task completion without active supervision. The release also brings a substantial refresh to the model catalog, introducing new providers like Boundless and Standard Compute, updating default models for numerous existing providers, and adjusting Cline's recommended and free model lists. For instance, the Cline provider now defaults to Gemini 4 Argon, and many other providers have new default models, which might change behavior for users who haven't pinned specific models. Several critical fixes are included, such as resolving long request failures to local models (LM Studio, Ollama) that previously timed out after 5 minutes, ensuring OpenAI Compatible base URLs are used exactly as entered (with a one-time `/v1` addition for existing host-only URLs to maintain compatibility), and fixing an issue where images and files attached to answers were dropped. Additionally, Cline now retries provider errors up to three times before failing a turn, improving resilience. The JetBrains integration sees a fix where the Run task card now correctly stays above the Auto-approve bar, and the Auto Compact feature settings are now properly grouped. Developers should review their model configurations, especially if relying on default models, to understand potential changes in model behavior."
+      "tldr": "Cline 0.0.48 brings significant improvements to model compatibility and expands the available model catalog. The headline change is the full support for GPT-6 models like `gpt-6-sol` and `gpt-6.1-sol` on OpenAI and Azure OpenAI-compatible endpoints, resolving previous rejection issues caused by incorrect `max_tokens` parameter usage. This means developers can now leverage the latest GPT-6 capabilities within Cline without workarounds. Additionally, the Cline provider's default model has reverted to Claude Sonnet 5.5, reflecting its re-establishment as a top recommended model. The model catalog has been thoroughly refreshed, introducing new providers such as CommandCode and Reflection, and updating default models for several existing providers. Specifically, 302.AI now defaults to Gemini 4 Argon, Eden AI and Prime Inference to Muse Spark Open, CoreWeave to Reflection Beam 1.0, NanoGPT, Pioneer to Nemotron 3.5 Super VL, and Scaleway to DeepSeek V4.1 Flash. These updates offer developers a wider range of powerful models and ensure optimal default selections for various providers. There are no breaking changes in this release, making it a straightforward upgrade. It is recommended to upgrade to 0.0.48 to take advantage of the new GPT-6 model support and the expanded, optimized model catalog."
     },
     "features": [
       {
@@ -1695,6 +1697,37 @@
           "Tasks persist and run in the background"
         ],
         "source_url": ""
+      },
+      {
+        "id": "gpt-6-model-support",
+        "name": "GPT-6 Model Support",
+        "status": "stable",
+        "since": "0.0.48",
+        "description": "GPT-6 models, including `gpt-6-sol` and `gpt-6.1-sol`, are now supported on OpenAI and Azure OpenAI-compatible endpoints. Previously, requests for these models were rejected due to incorrect parameter handling (sending `max_tokens` instead of `max_completion_tokens`).",
+        "key_details": [
+          "Supports `gpt-6-sol` and `gpt-6.1-sol` models.",
+          "Works with OpenAI and Azure OpenAI-compatible endpoints.",
+          "Fixes an issue where `max_tokens` was sent instead of `max_completion_tokens`."
+        ],
+        "source_url": "https://github.com/cline/cline/compare/desktop-v0.0.47...desktop-v0.0.48"
+      },
+      {
+        "id": "commandcode-provider",
+        "name": "CommandCode Provider",
+        "status": "stable",
+        "since": "0.0.48",
+        "description": "The CommandCode provider has been added to the refreshed model catalog.",
+        "key_details": [],
+        "source_url": "https://github.com/cline/cline/compare/desktop-v0.0.47...desktop-v0.0.48"
+      },
+      {
+        "id": "reflection-provider",
+        "name": "Reflection Provider",
+        "status": "stable",
+        "since": "0.0.48",
+        "description": "The Reflection provider has been added to the refreshed model catalog.",
+        "key_details": [],
+        "source_url": "https://github.com/cline/cline/compare/desktop-v0.0.47...desktop-v0.0.48"
       }
     ],
     "commands": [
