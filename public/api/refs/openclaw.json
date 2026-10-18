@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.10.4",
-  "generated_at": "2026-10-18T20:06:58.747Z",
+  "version": "2026.10.5",
+  "generated_at": "2026-10-18T22:47:11.371Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,15 +14,25 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.10.4",
-    "to_version": "2026.10.4",
-    "new_features": [],
+    "from_version": "2026.10.5",
+    "to_version": "2026.10.5",
+    "new_features": [
+      "x-channel",
+      "worker-local-inference",
+      "device-joins-session-host",
+      "public-threads",
+      "control-ui-customization",
+      "configurable-terminal-fonts"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "tool-approval-hooks-rewrite",
+      "codex-runtime-compatibility"
+    ]
   },
   "payload": {
     "meta": {
@@ -40,13 +50,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.10.4",
-      "latest_release_date": "2026-10-16",
+      "latest_stable": "2026.10.5",
+      "latest_release_date": "2026-10-18",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "OpenClaw 2026.10.4 delivers significant stability and reliability improvements, particularly for the Gateway, ensuring it remains operational and responsive under various conditions. The Gateway now robustly handles computer sleep, system clock changes, and long reply streams without restarting or hanging, which is crucial for continuous operation and agent performance. This release also addresses critical issues across various components, enhancing the overall developer experience and system resilience.\n\nKey fixes include preventing Tlon group DMs from misidentifying owners, ensuring headless browser pages remain interactive during passkey waits, and allowing manual `/compact` to settle active agent runs gracefully. Updates to the agent system prevent writer-claim errors and history forks in Claude CLI sessions. OpenAI tool turns for reasoning models on Completions routes are now stable, resolving previous 400 errors. The update process itself is more robust, with improved handling of database snapshots, host admission, and error reporting, including cleanup of abandoned runtime directories on Linux.\n\nSpecific channel and platform improvements include fixes for Telegram polling workers, Discord agent consults after voice changes, and Feishu config hot-reload issues. IRC now correctly handles long non-ASCII replies. For macOS users, app recovery is smarter, preserving newer Gateways and accepting in-progress LaunchAgent bootstraps. Tailscale integration is also more reliable, with better handling of interrupted starts and Doctor checks for prerequisites. These changes collectively make OpenClaw more dependable and efficient, reducing unexpected interruptions and improving the accuracy of agent interactions. Upgrading is highly recommended for all users to benefit from these stability and reliability enhancements."
+      "tldr": "OpenClaw 2026.10.5 delivers significant improvements in reliability, performance, and new capabilities. The `openclaw update` command is now more robust, completing across various environments and recovering from issues like stale handoff leases, ensuring updates are less likely to strand installations. Crucially, conversations are now restart-safe, meaning interrupted turns, subagent work, and user input survive Gateway restarts, preventing data loss and improving workflow continuity.\n\nThe Gateway itself is faster and lighter, with session, transcript, and history reads offloaded to worker threads, reducing SQLite overhead and memory usage back to 2026.10.4 levels. A new 'X channel' plugin enables answering Twitter mentions with streaming, guest mode, and API cost limits. Voice calls are enhanced with per-call briefs, reports, live steering, callbacks, and voicemail detection. Model pickers are smarter, prioritizing recommended models and instantly showing new Claude, ChatGPT, and Ollama models, with Google adding Gemini 4 Argon and Gemini 3.8 Flash. ClawHub integration in the Gateway allows browsing and searching plugins and skills directly, with automatic selection of the newest official plugin releases.\n\nBreaking changes include stricter tool approval hooks, where ordinary hooks can no longer rewrite trusted-inline-approved tool arguments without re-approval, and plugins must request separate approval for final arguments. Additionally, plugin admission now rejects Codex runtimes older than 2026.9.7. Developers should consult `docs/plugins/hooks/tool-policy.md` for migration details. Performance across the board has been optimized, including session, turn, state, and maintenance operations, as well as agent and model catalog performance. Numerous fixes address memory leaks, data safety, security boundaries, turn reliability, restart recovery, and channel-specific issues for Telegram, Discord, Slack, and others. Upgrade is highly recommended for improved stability, performance, and access to new features, especially for users experiencing update or session reliability issues."
     },
     "features": [
       {
@@ -3196,6 +3206,77 @@
         "description": "Users can now stay signed in to MiniMax portal OAuth past token expiry.",
         "key_details": [],
         "source_url": "https://github.com/openclaw/openclaw/pull/160459"
+      },
+      {
+        "id": "x-channel",
+        "name": "X Channel",
+        "status": "stable",
+        "since": "2026.10.5",
+        "description": "A new channel plugin for answering X (Twitter) mentions with streaming, guest mode for repository questions, and enforced API cost limits.",
+        "key_details": [
+          "Activity API streaming and backfill",
+          "Repository-question guest mode with hidden same-agent helpers",
+          "GitHub-verified repository writers",
+          "Daily and monthly X API cost limits"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "worker-local-inference",
+        "name": "Worker-local Inference",
+        "status": "stable",
+        "since": "2026.10.5",
+        "description": "A native worker inference runtime with Gateway dispatch, client placement, required worker policy and destination checks before local inference, and clear setup-failure explanations.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "device-joins-session-host",
+        "name": "Device Joins with Session Hosting",
+        "status": "stable",
+        "since": "2026.10.5",
+        "description": "The CLI and Control UI join command now installs a background node service that can host agent sessions (`--service --session-host`), with a command-only service alternative. Already-paired devices get a working command to enable session hosting.",
+        "key_details": [
+          "Background node service for session hosting",
+          "Command-only service alternative",
+          "Command to enable session hosting on paired devices"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "public-threads",
+        "name": "Public Threads",
+        "status": "stable",
+        "since": "2026.10.5",
+        "description": "Open public threads at their regular links.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "control-ui-customization",
+        "name": "Control UI Customization",
+        "status": "stable",
+        "since": "2026.10.5",
+        "description": "Themes can now customize Control UI branding, use agent avatars or unlocked Lobsterdex icons for browser tabs, choose favicon shapes, and add seven Lobsterdex character variants.",
+        "key_details": [
+          "Customizable Control UI branding",
+          "Agent avatars or Lobsterdex icons for browser tabs",
+          "Configurable favicon shapes",
+          "Seven new Lobsterdex character variants"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "configurable-terminal-fonts",
+        "name": "Configurable Terminal Fonts",
+        "status": "stable",
+        "since": "2026.10.5",
+        "description": "Add configurable terminal fonts with built-in Nerd Font icons.",
+        "key_details": [
+          "Configurable terminal fonts",
+          "Built-in Nerd Font icons"
+        ],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -5524,6 +5605,29 @@
         ],
         "migration": "Download the new DMG from the website or update from 2026.9.5 within the app. If you installed the earlier 2026.9.6 build and it does not launch, install the DMG once.",
         "source_url": "https://docs.openclaw.ai/releases/2026.9.6"
+      },
+      {
+        "id": "tool-approval-hooks-rewrite",
+        "version": "2026.10.5",
+        "title": "Tool Approval Hooks Cannot Rewrite Trusted-Inline-Approved Arguments",
+        "description": "Ordinary hooks can no longer rewrite trusted-inline-approved tool arguments without another approval. Transforming plugins must request separate approval for their final arguments or the call is blocked.",
+        "affected": [
+          "Tool approval hooks",
+          "Transforming plugins"
+        ],
+        "migration": "See `docs/plugins/hooks/tool-policy.md` for migration guidance.",
+        "source_url": ""
+      },
+      {
+        "id": "codex-runtime-compatibility",
+        "version": "2026.10.5",
+        "title": "Codex Runtime Compatibility Enforcement",
+        "description": "Plugin admission now rejects official Codex runtimes below 2026.9.7. Incompatible plugins remain inspectable but cannot be imported.",
+        "affected": [
+          "Plugins using older Codex runtimes"
+        ],
+        "migration": "Update Codex runtimes to 2026.9.7 or newer. Repair guidance is provided.",
+        "source_url": ""
       }
     ],
     "deprecations": [

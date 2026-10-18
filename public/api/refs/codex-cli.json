@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.163.0",
-  "generated_at": "2026-10-18T20:06:44.982Z",
+  "generated_at": "2026-10-18T22:46:17.976Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -16,14 +16,21 @@
   "delta": {
     "from_version": "0.163.0",
     "to_version": "0.163.0",
-    "new_features": [],
+    "new_features": [
+      "searchable-config-panel",
+      "instant-interrupts-and-steered-responses",
+      "configurable-leader-key",
+      "restart-managed-background-server",
+      "parallel-read-only-tool-execution",
+      "daybreak-default-and-exec-selection"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "patched-zsh-removal"
+      "removed-patched-zsh-shell"
     ]
   },
   "payload": {
@@ -48,7 +55,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "Codex CLI 0.163.0 introduces significant usability and performance enhancements, most notably a searchable `/config` panel that allows users to find and modify preferences across categories instantly, with clear indications of changes requiring a restart. This greatly streamlines configuration management, making it easier to customize your Codex experience without guesswork. Another major improvement is the ability to send follow-up prompts to steer Codex immediately, even while it's responding, which also interrupts active Code Mode cells and nested tool calls, providing more dynamic control over agent behavior. Users can now configure a leader key in `/keymap` (default `Ctrl+X`) for persistent shortcuts, and voice mute has moved to `F9`. For background services, managed servers can be restarted directly from `/daemon` with automatic reconnection, improving daemon management. Performance is boosted by parallel execution of read-only tools like skill and memory lookups. Daybreak is now enabled by default for eligible accounts, and `codex exec` can leverage it with an OpenAI API key. Bug fixes include proper restoration of permissions and network approvals on thread resume, enhanced network proxy security against DNS bypasses and duplicate headers, and improved side conversation handling. On Windows, `Ctrl+V` and `Shift+Insert` now paste images, and WSL clipboard operations are more robust. A breaking change is the removal of the bundled patched `zsh`, with Codex now using its standard shell executor; users with `zsh`-specific configurations will receive migration notices. It's recommended to upgrade to leverage these new controls, performance gains, and security fixes, especially if you rely on precise agent steering or frequently adjust configurations."
+      "tldr": "Codex CLI 0.163.0 introduces significant usability and performance enhancements. The headline feature is a new searchable `/config` panel, allowing developers to easily find and modify preferences across categories, apply changes immediately, and see which settings require a restart, greatly improving configuration management. This makes customizing your Codex experience much more intuitive and efficient. \n\nKey new features include instant interrupts, enabling you to steer Codex's responses in real-time by sending follow-up messages, which also stops active Code Mode cells and nested tool calls. A configurable leader key, defaulting to `Ctrl+X`, is now available in `/keymap` for personalized shortcuts, with voice mute moving to `F9`. You can now restart managed background servers directly from `/daemon`, with warnings for potential work interruptions and automatic reconnection. Performance is boosted with parallel execution for read-only tools like skill, memory, and conversation-history lookups. Daybreak is now enabled by default for eligible accounts, and `codex exec` can select it with an OpenAI API key.\n\nImportant bug fixes include proper restoration of permissions and network approvals when resuming saved threads, enhanced network proxy security with pre-DNS permission checks and duplicate `Host` header rejection, and improved side conversation handling with `/side` after thread switching. Windows users benefit from `Ctrl+V` and `Shift+Insert` pasting both text and images, while WSL clipboard operations are more robust. `codex exec` no longer repeats file diffs unnecessarily. A breaking change is the removal of the bundled patched `zsh` shell; Codex now uses its standard shell executor, and configurations using retired `zsh` flags will receive migration notices. Developers should review their shell configurations to ensure compatibility. Upgrading is recommended for improved workflow efficiency, enhanced security, and better configuration control."
     },
     "features": [
       {
