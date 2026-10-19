@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.303",
-  "generated_at": "2026-10-19T19:00:16.031Z",
+  "version": "2.1.304",
+  "generated_at": "2026-10-19T22:52:32.808Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,10 +14,18 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.303",
-    "to_version": "2.1.303",
-    "new_features": [],
-    "new_commands": [],
+    "from_version": "2.1.304",
+    "to_version": "2.1.304",
+    "new_features": [
+      "mod-tool-check-decider-person",
+      "mod-tool-check-isreadonly",
+      "code-review-review-levels",
+      "code-review-org-wide-repo-review"
+    ],
+    "new_commands": [
+      "/auto-mode-setup",
+      "/claude-api managed-agents-secure"
+    ],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
@@ -39,12 +47,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.303",
-      "latest_release_date": "2026-10-18",
+      "latest_stable": "2.1.304",
+      "latest_release_date": "2026-10-19",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release, version 2.1.303, focuses primarily on foundational improvements, delivering crucial bug fixes and reliability enhancements. While there are no new features, commands, or breaking changes introduced, these under-the-hood improvements are vital for a more stable and dependable developer experience. Users can expect a smoother operation with fewer unexpected issues, particularly in long-running sessions or complex workflows. This update is recommended for all users to benefit from increased stability and reduced friction in their daily development tasks. No specific migration steps or prerequisites are required for this upgrade."
+      "tldr": "This release of claude-code (2.1.304) introduces significant enhancements to mod capabilities, auto-mode setup, and code review features, alongside numerous stability and performance fixes. A key new feature for mod developers is the ability to specify `decider: \"person\"` in `tool.check` answers, ensuring human approval for sensitive tool calls, and `e.isReadOnly` to identify read-only tool calls. The `/auto-mode-setup` command is now more broadly available across various platforms, including Bedrock and Vertex, making it easier to configure auto-mode for diverse environments. For security-conscious users, a new `/claude-api managed-agents-secure` command allows auditing Managed Agents settings against Anthropic's security guidelines without altering configurations.\n\nCode Review gains new 'Quick', 'Standard', and 'Deep' review levels, configurable per organization or repository, and an option to automatically review all current and future GitHub organization repositories. The compaction summary in the transcript view now includes names of previously called tools, improving context. Cloud sessions are more responsive, with initial turns no longer waiting for local plugin servers unless explicitly configured. Mod authoring is improved with better feedback on loading and failure, and `settings.read` hooks now offer more control over merged settings layers. Tool search is now enabled by default behind custom `ANTHROPIC_BASE_URL`s, with retries for gateway errors. Skill hooks now have limits (1,024 hooks, 16,384 matcher characters per source), and the `/fast` dialog on Opus 5.5 is out of research preview.\n\nNumerous fixes address issues like sandboxed commands failing with specific glob patterns, `rm -r` safety prompts, `CLAUDE_CODE_TRANSCRIPT_LOCAL_GC` data loss, plugin-induced headless run overruns, mod reload failures, and lost button clicks. Performance improvements include better responsiveness with many subagents, reduced memory usage in long conversations, and faster resume for large compacted sessions. VSCode users will see mod drawings in chat panels for various LLM gateways and telemetry-disabled sessions, and background sub-agents now show a consolidated status line. Users should upgrade to benefit from these stability, security, and feature enhancements, especially if using auto-mode, code review, or developing mods."
     },
     "features": [
       {
@@ -2738,6 +2746,47 @@
           "Requires `OTEL_LOG_TOOL_DETAILS=1` environment variable to be set"
         ],
         "source_url": ""
+      },
+      {
+        "id": "mod-tool-check-decider-person",
+        "name": "Mod Tool Check Decider: Person",
+        "status": "stable",
+        "since": "2.1.304",
+        "description": "Adds `decider: \"person\"` to a mod's `tool.check` answer. This ensures that only the permission dialog or a host's callback can approve the tool ask. If refused, it includes the mod's reason, preventing further automated approval.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "mod-tool-check-isreadonly",
+        "name": "Mod Tool Check Read-Only Flag",
+        "status": "stable",
+        "since": "2.1.304",
+        "description": "Adds `e.isReadOnly` to a mod's `tool.check` event, which is set to `true` when the tool call is read-only.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "code-review-review-levels",
+        "name": "Code Review Levels",
+        "status": "stable",
+        "since": "2.1.304",
+        "description": "Introduces review levels for Code Review: Owners can choose Quick, Standard (default), or Deep for their organization. Individual repositories can also be assigned their own specific review level.",
+        "key_details": [
+          "Levels: Quick, Standard (default), Deep",
+          "Configurable at organization and repository levels"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "code-review-org-wide-repo-review",
+        "name": "Code Review All GitHub Organization Repositories",
+        "status": "stable",
+        "since": "2.1.304",
+        "description": "Adds an option in Code Review admin settings to review every repository in a GitHub organization, including those added in the future, without needing to select them individually.",
+        "key_details": [
+          "Automatically reviews new repositories in a GitHub organization"
+        ],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -3271,6 +3320,22 @@
         "syntax": "/advisor",
         "description": "Enables the advisor tool on Claude Platform on AWS. No advisor runs until one is picked with this command, `advisorModel` setting, or `--advisor` flag.",
         "since": "2.1.300",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "/auto-mode-setup",
+        "syntax": "/auto-mode-setup",
+        "description": "Initiates a guided setup process that reads your project and recent sessions to teach auto mode about your environment. Now available on Bedrock, Vertex, Foundry, Claude apps gateway, and telemetry-disabled sessions.",
+        "since": "2.1.304",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "/claude-api managed-agents-secure",
+        "syntax": "/claude-api managed-agents-secure",
+        "description": "Compares a Managed Agents agent's settings with Anthropic's published security guide, without making any changes.",
+        "since": "2.1.304",
         "status": "stable",
         "source_url": ""
       }
