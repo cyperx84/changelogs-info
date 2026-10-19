@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.163.0",
-  "generated_at": "2026-10-19T05:43:48.502Z",
+  "generated_at": "2026-10-19T12:09:46.782Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -16,14 +16,21 @@
   "delta": {
     "from_version": "0.163.0",
     "to_version": "0.163.0",
-    "new_features": [],
+    "new_features": [
+      "configurable-preferences-panel",
+      "instant-interrupts-and-steered-responses",
+      "configurable-leader-key",
+      "restart-managed-background-server",
+      "parallel-read-only-tool-execution",
+      "daybreak-default-and-exec-selection"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "patched-zsh-removal"
+      "removed-patched-zsh-bundle"
     ]
   },
   "payload": {
@@ -48,7 +55,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "This release of codex-cli, version 0.163.0, introduces significant usability and performance enhancements. The `/config` panel has been overhauled, now offering a searchable interface to preferences across categories, allowing immediate changes to supported settings, and clearly indicating which modifications require a restart. This greatly improves the discoverability and management of Codex's extensive configuration options, making it easier for developers to tailor their environment without guesswork.\n\nKey new features include instant steering of Codex responses: you can now send follow-up input while Codex is still generating a response, immediately guiding its output and interrupting any active Code Mode cells or nested tool calls. This provides a much more interactive and efficient workflow. A configurable leader key has been added to `/keymap`, defaulting to `Ctrl+X`, which streamlines common shortcuts and moves voice mute to `F9`. For daemon management, you can now restart managed background servers directly from `/daemon`, with Codex providing warnings about potential work interruptions and automatically reconnecting. Performance is boosted by parallel execution for read-only tools, including skill, memory, and conversation-history lookups, leading to faster information retrieval. Daybreak is now enabled by default for eligible accounts, and `codex exec` can leverage it with an OpenAI API key.\n\nSeveral important bug fixes improve stability and user experience. Thread permissions and network approvals are now correctly restored when resuming saved threads, respecting overrides and managed policies. The network proxy has enhanced security by checking permissions before DNS lookups, rejecting duplicate `Host` headers, and preventing credential aliases from bypassing inspection hooks. Side conversations are better managed, allowing users to return to existing ones with `/side` after switching threads, and pending prompts correctly route answers back to their originating thread. Windows users benefit from improved clipboard handling, with `Ctrl+V` and `Shift+Insert` now pasting both text and images, and WSL clipboard operations are more robust. `codex exec` no longer prints redundant file diffs, and local/remote commands handle output pipes more reliably.\n\nA breaking change in this release is the removal of the bundled patched `zsh` shell executor; Codex now exclusively uses its standard shell executor. Users with configurations relying on the retired shell flags will receive a migration notice and should update their setups accordingly. Upgrading is recommended for all users to benefit from the improved configurability, interactive steering, performance gains, and critical bug fixes, especially those impacting security and workflow stability."
+      "tldr": "Codex-cli 0.163.0 introduces significant improvements to user experience and performance. The headline feature is a new searchable `/config` preferences panel, allowing immediate changes to supported settings and indicating which require a restart, streamlining configuration management. Developers can now instantly steer Codex by sending follow-up prompts while it's responding, which also interrupts active Code Mode cells and nested tool calls, providing more dynamic control over agent behavior. A configurable leader key, defaulting to `Ctrl+X`, enhances TUI navigation, with voice mute moving to `F9` for better keybinding organization. For background processes, a new `/daemon` command allows restarting managed background servers with automatic reconnection, improving reliability. Performance is boosted by enabling parallel execution for read-only tools like skill and memory lookups. Daybreak is now enabled by default for eligible accounts, and `codex exec` can leverage it with an OpenAI API key. Bug fixes include restoring permissions and network approvals on thread resume, improved network proxy security, and better handling of side conversations and clipboard operations on Windows and WSL. Notably, the bundled patched `zsh` has been removed, with Codex now using its standard shell executor, requiring users of the old flags to migrate. This release offers substantial quality-of-life improvements and performance gains, making an upgrade highly recommended for all users."
     },
     "features": [
       {
@@ -2695,6 +2702,15 @@
           "Indicates which changes require a restart."
         ],
         "source_url": "https://github.com/openai/codex/compare/rust-v0.162.0...rust-v0.163.0#52990"
+      },
+      {
+        "id": "configurable-preferences-panel",
+        "name": "Configurable Preferences Panel",
+        "status": "stable",
+        "since": "0.163.0",
+        "description": "Open `/config` to search preferences across categories, change supported settings immediately, and see which changes require a restart.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -5913,6 +5929,18 @@
         ],
         "migration": "Review your shell configurations. If you were relying on the bundled patched `zsh`, you may need to adjust your environment or scripts to use the standard shell executor. Codex will provide migration notices for affected configurations.",
         "source_url": "https://github.com/openai/codex/compare/rust-v0.162.0...rust-v0.163.0#52160"
+      },
+      {
+        "id": "removed-patched-zsh-bundle",
+        "version": "0.163.0",
+        "title": "Removed Bundled Patched Zsh",
+        "description": "Codex no longer bundles a patched `zsh` shell. It now uses its standard shell executor. Configurations that previously relied on the retired shell flags will receive a migration notice.",
+        "affected": [
+          "Users relying on the bundled patched `zsh`",
+          "Configurations using retired shell flags"
+        ],
+        "migration": "Update your configurations to use the standard shell executor. Review any migration notices provided by Codex.",
+        "source_url": ""
       }
     ],
     "deprecations": [

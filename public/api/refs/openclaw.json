@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
   "version": "2026.10.5",
-  "generated_at": "2026-10-18T22:47:11.371Z",
+  "generated_at": "2026-10-19T12:10:33.427Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -18,19 +18,24 @@
     "to_version": "2026.10.5",
     "new_features": [
       "x-channel",
+      "voice-calls-briefs-reports-steering",
+      "smarter-model-pickers",
+      "google-gemini-4-argon-3-8-flash",
+      "clawhub-gateway-integration",
       "worker-local-inference",
       "device-joins-session-host",
       "public-threads",
-      "control-ui-customization",
       "configurable-terminal-fonts"
     ],
     "new_commands": [],
-    "new_flags": [],
+    "new_flags": [
+      "--service --session-host"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "tool-approval-hooks-rewrite",
+      "tool-approval-hooks-argument-rewrite",
       "codex-runtime-compatibility"
     ]
   },
@@ -56,7 +61,7 @@
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "OpenClaw 2026.10.5 delivers significant improvements in reliability, performance, and new capabilities. The `openclaw update` command is now more robust, completing across various environments and recovering from issues like stale handoff leases, ensuring updates are less likely to strand installations. Crucially, conversations are now restart-safe, meaning interrupted turns, subagent work, and user input survive Gateway restarts, preventing data loss and improving workflow continuity.\n\nThe Gateway itself is faster and lighter, with session, transcript, and history reads offloaded to worker threads, reducing SQLite overhead and memory usage back to 2026.10.4 levels. A new 'X channel' plugin enables answering Twitter mentions with streaming, guest mode, and API cost limits. Voice calls are enhanced with per-call briefs, reports, live steering, callbacks, and voicemail detection. Model pickers are smarter, prioritizing recommended models and instantly showing new Claude, ChatGPT, and Ollama models, with Google adding Gemini 4 Argon and Gemini 3.8 Flash. ClawHub integration in the Gateway allows browsing and searching plugins and skills directly, with automatic selection of the newest official plugin releases.\n\nBreaking changes include stricter tool approval hooks, where ordinary hooks can no longer rewrite trusted-inline-approved tool arguments without re-approval, and plugins must request separate approval for final arguments. Additionally, plugin admission now rejects Codex runtimes older than 2026.9.7. Developers should consult `docs/plugins/hooks/tool-policy.md` for migration details. Performance across the board has been optimized, including session, turn, state, and maintenance operations, as well as agent and model catalog performance. Numerous fixes address memory leaks, data safety, security boundaries, turn reliability, restart recovery, and channel-specific issues for Telegram, Discord, Slack, and others. Upgrade is highly recommended for improved stability, performance, and access to new features, especially for users experiencing update or session reliability issues."
+      "tldr": "This OpenClaw release, 2026.10.5, significantly improves update reliability and Gateway performance, making upgrades smoother and the core system faster. `openclaw update` now completes across diverse environments, handles various failure scenarios, and `--no-restart` updates report success accurately, preventing stranded installations and ensuring a more robust update experience. Conversations are now restart-safe, meaning interrupted turns, first messages, subagent work, and deferred tasks resume seamlessly after a Gateway restart, and user input and committed session data are preserved through restarts and publication failures, greatly enhancing reliability. The Gateway itself is faster and lighter, with session, transcript, history, and metadata reads offloaded to worker threads, reducing SQLite overhead and memory usage to 2026.10.4 levels, leading to quicker startups and more responsive operations. New features include a dedicated X (Twitter) channel plugin for answering mentions with streaming and API cost limits, and enhanced voice calls with per-call briefs, reports, live steering, callbacks, and voicemail detection. Model pickers are smarter, prioritizing recommended models and instantly showing new Claude, ChatGPT, and Ollama models without requiring an OpenClaw release, alongside the addition of Google Gemini 4 Argon (now default) and Gemini 3.8 Flash. ClawHub is now integrated directly into the Gateway, allowing browsing and searching plugins and skills, with automatic selection of the newest official plugin releases. A new worker-local inference runtime provides client-placed inference with clear setup-failure explanations, and the `openclaw join` command can now install a background node service to host agent sessions using `--service --session-host`. A breaking change requires tool approval hooks to request separate approval for rewriting trusted-inline-approved tool arguments, and Codex runtime compatibility now rejects plugins built for versions older than 2026.9.7. Upgrading is highly recommended for improved stability, performance, and access to new features, especially for users experiencing update issues or seeking enhanced conversational reliability."
     },
     "features": [
       {
@@ -3277,6 +3282,52 @@
           "Built-in Nerd Font icons"
         ],
         "source_url": ""
+      },
+      {
+        "id": "voice-calls-briefs-reports-steering",
+        "name": "Voice Calls: Per-call Briefs, Reports, Live Steering, Callbacks, Voicemail Detection",
+        "status": "stable",
+        "since": "2026.10.5",
+        "description": "Voice calls gain per-call briefs, call reports, live steering, callbacks, and voicemail detection.",
+        "key_details": [],
+        "source_url": "#165716"
+      },
+      {
+        "id": "smarter-model-pickers",
+        "name": "Smarter Model Pickers",
+        "status": "stable",
+        "since": "2026.10.5",
+        "description": "Model pickers now lead with each provider's recommended models and show newly listed Claude, ChatGPT, and Ollama models without waiting for an OpenClaw release.",
+        "key_details": [
+          "Pickers lead with recommended models",
+          "Show newly listed Claude, ChatGPT, and Ollama models without OpenClaw release"
+        ],
+        "source_url": "#167370, #166737, #167658, #167387, #167463, #171852, #172339"
+      },
+      {
+        "id": "google-gemini-4-argon-3-8-flash",
+        "name": "Google Gemini 4 Argon and Gemini 3.8 Flash",
+        "status": "stable",
+        "since": "2026.10.5",
+        "description": "Google adds Gemini 4 Argon and Gemini 3.8 Flash models, with Gemini 4 Argon becoming the default Google model.",
+        "key_details": [
+          "Gemini 4 Argon added",
+          "Gemini 3.8 Flash added",
+          "Gemini 4 Argon is the default Google model"
+        ],
+        "source_url": "#171852, #172339"
+      },
+      {
+        "id": "clawhub-gateway-integration",
+        "name": "ClawHub in the Gateway",
+        "status": "stable",
+        "since": "2026.10.5",
+        "description": "Browse and search ClawHub plugins and skills directly from the Gateway. Plugins automatically pick the newest official release supported by your OpenClaw version.",
+        "key_details": [
+          "Browse and search ClawHub plugins and skills from Gateway",
+          "Plugins automatically pick newest official release"
+        ],
+        "source_url": "#163459, #167485, #166588"
       }
     ],
     "commands": [
@@ -3982,6 +4033,12 @@
           "description": "Stores a single returned provider auth profile under a requested profile ID.",
           "since": "2026.5.22",
           "source_url": ""
+        },
+        {
+          "flag": "--service --session-host",
+          "description": "Used with the `openclaw join` command to install a background node service capable of hosting agent sessions.",
+          "since": "2026.10.5",
+          "source_url": "#168623"
         }
       ],
       "deprecated": [
@@ -4112,7 +4169,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--service --session-host"
+      ]
     },
     "env_vars": [
       {
@@ -5628,6 +5687,18 @@
         ],
         "migration": "Update Codex runtimes to 2026.9.7 or newer. Repair guidance is provided.",
         "source_url": ""
+      },
+      {
+        "id": "tool-approval-hooks-argument-rewrite",
+        "version": "2026.10.5",
+        "title": "Tool Approval Hooks Cannot Rewrite Trusted-Inline-Approved Arguments",
+        "description": "Ordinary hooks can no longer rewrite trusted-inline-approved tool arguments without another approval. Transforming plugins must now request separate approval for their final arguments, or the call will be blocked.",
+        "affected": [
+          "Tool approval hooks",
+          "Plugins transforming tool arguments"
+        ],
+        "migration": "See `docs/plugins/hooks/tool-policy.md` for migration guidance. Plugins that transform tool arguments must now explicitly request separate approval for their final arguments.",
+        "source_url": "#142700"
       }
     ],
     "deprecations": [
