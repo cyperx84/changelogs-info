@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "gemini-cli",
-  "version": "0.64.0",
-  "generated_at": "2026-10-20T18:20:44.042Z",
+  "version": "0.65.0",
+  "generated_at": "2026-10-20T22:06:17.721Z",
   "extracted_from_sources": [
     "https://github.com/google-gemini/gemini-cli/releases/tag/v0.33.0",
     "https://github.com/google-gemini/gemini-cli/releases"
@@ -14,9 +14,11 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "0.64.0",
-    "to_version": "0.64.0",
-    "new_features": [],
+    "from_version": "0.65.0",
+    "to_version": "0.65.0",
+    "new_features": [
+      "custom-otlp-headers-telemetry"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -39,14 +41,14 @@
       "changelog_url": "https://github.com/google-gemini/gemini-cli/releases",
       "repo_url": "https://github.com/google-gemini/gemini-cli",
       "license": "apache-2.0",
-      "latest_stable": "0.64.0",
+      "latest_stable": "0.65.0",
       "latest_prerelease": "0.34.0-preview",
-      "latest_release_date": "2026-10-13",
+      "latest_release_date": "2026-10-20",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
       "release_cadence": "Stable on Tuesdays. Preview: Tuesdays UTC 23:59. Nightly: daily UTC 00:00.",
-      "tldr": "Gemini-CLI v0.64.0 focuses heavily on stability, reliability, and core functionality fixes, with significant improvements to headless mode, ACP, and chat recording. A key refactor introduces V1 to V2 settings migration logic for the a2a-server, ensuring smoother transitions for configuration. Headless mode now correctly propagates resolved folder trust states, addressing a critical issue for automated workflows.\n\nSeveral fixes enhance the user experience and system robustness: the CLI now prevents CPU hangs and quote swallowing when an '@' symbol is within code, and file tool operations are serialized with atomic writes to prevent data corruption. Chat recording has been improved with append-only delta patching and bounded history windowing, making session history more reliable. State persistence is now atomic, with recovery from backup on corruption, and Ctrl+C emergency aborts reliably reach cancellation handlers during active operations. UI fixes include ensuring Windows ConPTY forwards IME cursor position, preserving scroll position, and reliably confirming selection list options with Enter and Spacebar. Additionally, directory removal on Windows now retries on locking errors during extension updates, improving the reliability of extension management. ACP mode now bridges PromptResponse.usage and emits usage_update notifications, and resolves sessions by exact ID while handling listener cleanup on session failure. These changes collectively improve the stability, data integrity, and overall user experience of the Gemini-CLI, making it a recommended upgrade for all users, especially those relying on headless operations or frequent extension updates."
+      "tldr": "Gemini CLI v0.65.0 introduces a significant new feature: the ability to configure custom OTLP headers for telemetry. This enhancement provides greater flexibility for integrating with diverse telemetry systems, allowing developers to include authentication tokens or other metadata directly in their telemetry exports, which is crucial for secure and compliant data collection.\n\nThis release also focuses heavily on stability and user experience, with numerous fixes across the CLI and core components. Key improvements include enforcing read-only workspace settings in untrusted folders, preventing duplicate tool responses and accidental history deletion when resuming sessions, and aligning OAuth callback validation with RFC 9207 metadata to improve authentication reliability. Terminal interactions are smoother, with fixes for unnecessary clears/scroll resets during expansion and resolving hangs on Enter keypress in interactive mode.\n\nPerformance has been optimized with improved ignore filtering and subtree pruning. Critical bug fixes address infinite verification/OAuth retry loops, JSON parse and response stream errors, and issues with tool rejection in sequential batches. The CLI now handles unicode characters correctly in reverse search, treats whitespace-only UTF-16/UTF-32 files as empty, and restores debounced static UI refresh on terminal width changes. Additionally, session poisoning on rapid Ctrl-C interruption is prevented, and cached credentials are cleared when re-selecting Google login. Developers should upgrade to benefit from these stability and performance enhancements, especially if encountering issues with session management, authentication, or telemetry integration."
     },
     "features": [
       {
@@ -2250,6 +2252,15 @@
         "description": "Adds support for the new Gemini 3.8 Flash and 3.5 Flash Lite models, expanding the range of available models for various tasks.",
         "key_details": [],
         "source_url": "https://github.com/google-gemini/gemini-cli/pull/29443"
+      },
+      {
+        "id": "custom-otlp-headers-telemetry",
+        "name": "Custom OTLP Headers in Telemetry Configuration",
+        "status": "stable",
+        "since": "0.65.0",
+        "description": "Adds support for configuring custom OTLP (OpenTelemetry Protocol) headers within the telemetry configuration. This allows for more flexible and secure integration with various telemetry backends that might require specific headers for authentication, routing, or other purposes.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/29641"
       }
     ],
     "commands": [

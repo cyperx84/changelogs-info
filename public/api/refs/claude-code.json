@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.304",
-  "generated_at": "2026-10-20T18:20:28.460Z",
+  "version": "2.1.305",
+  "generated_at": "2026-10-20T22:05:57.987Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,22 +14,21 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.304",
-    "to_version": "2.1.304",
-    "new_features": [
-      "mod-tool-check-decider-person",
-      "mod-tool-check-isreadonly",
-      "code-review-org-wide-repo-review"
-    ],
-    "new_commands": [
-      "/auto-mode-setup",
-      "/claude-api managed-agents-secure"
-    ],
+    "from_version": "2.1.305",
+    "to_version": "2.1.305",
+    "new_features": [],
+    "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [],
+    "new_env_vars": [
+      "CLAUDE_CODE_RETRY_WATCHDOG_USAGE_LIMIT_RECHECK_MS"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "allowed-mcp-servers-filtering-change",
+      "plugin-allowed-tools-override-by-managed-settings",
+      "artifacts-delete-confirmation-change"
+    ]
   },
   "payload": {
     "meta": {
@@ -46,12 +45,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.304",
-      "latest_release_date": "2026-10-19",
+      "latest_stable": "2.1.305",
+      "latest_release_date": "2026-10-20",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Claude Code 2.1.304 introduces significant improvements to mod development, auto-mode setup, and Code Review capabilities, alongside numerous stability and performance fixes. A key highlight for mod developers is the new `decider: \"person\"` option for `tool.check`, allowing explicit human approval for tool actions, and `e.isReadOnly` to identify read-only tool calls. The `/auto-mode-setup` command is now more broadly available across various platforms, including Bedrock, Vertex, and Foundry, making it easier to configure auto-mode for diverse environments. For organizations, Code Review now supports organization-wide repository reviews, automatically including new repositories, and offers configurable review levels (Quick, Standard, Deep) per organization or repository. Many fixes address critical issues, such as sandboxed commands failing with specific glob patterns, `rm -r` not prompting for safety on mounted drives, and plugins keeping headless runs active past `--max-turns`. Performance and memory usage have been improved for large compacted sessions and when many subagents are running. The release also includes updates to OpenTelemetry settings handling, environment variable visibility in unsandboxed Bash commands, and more informative `/usage` output. VSCode users will benefit from mod drawing support in the chat panel for various cloud platforms and fixes for session startup issues. Overall, this release enhances control for mod authors, streamlines setup for auto-mode, and provides robust stability and performance upgrades, making it a recommended upgrade for all users."
+      "tldr": "Claude Code 2.1.305 introduces a crucial fix for request failures on Vertex, Bedrock, and other providers when tool search is rejected or disallowed, ensuring retries without it. This resolves a significant regression from 2.1.304 that caused all requests to fail in such scenarios. The release also enhances sandboxing capabilities on Linux with `sandbox.allowNestedUserNamespaces`, enabling sandboxed commands to create user namespaces and bypass file protections, which is beneficial for tools like Chromium and rootless Podman. A new environment variable, `CLAUDE_CODE_RETRY_WATCHDOG_USAGE_LIMIT_RECHECK_MS`, allows configuring the recheck interval for lifted usage limits in unattended retry mode. Several fixes address issues with `/effort` and `/autocompact` settings not applying due to model name mismatches, worktree cleanup, Bash command failures on full disks, and MCP server replacement logic. Cloud sessions and teammates now correctly inform Claude when compaction omits old messages, and Workflow resume properly serves `pipeline()` and `parallel()` agents from the journal instead of re-running them. The `/artifacts` delete confirmation now uses `1`/`Enter` to keep and `2` to delete, replacing `y`/`n`. Additionally, plugins mounted by path will lose their `allowed-tools` if `allowManagedPermissionRulesOnly` is set in managed settings, requiring adjustments to managed permission rules. This release is recommended for all users, especially those experiencing request failures with tool search or needing enhanced sandboxing capabilities."
     },
     "features": [
       {
@@ -4376,6 +4375,13 @@
         "status": "stable",
         "since": "2.1.302",
         "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_RETRY_WATCHDOG_USAGE_LIMIT_RECHECK_MS",
+        "purpose": "Configures the interval (in milliseconds) at which the unattended retry mode (`CLAUDE_CODE_RETRY_WATCHDOG`) rechecks for lifted usage limits before its reset.",
+        "status": "stable",
+        "since": "2.1.305",
+        "source_url": ""
       }
     ],
     "models": [
@@ -4889,6 +4895,42 @@
           "Scripts or workflows using `--sandbox` or `--no-sandbox` with `claude remote-control`"
         ],
         "migration": "To control sandboxing for remote control sessions, use the `sandbox.enabled` setting instead.",
+        "source_url": ""
+      },
+      {
+        "id": "allowed-mcp-servers-filtering-change",
+        "version": "2.1.305",
+        "title": "Change in `allowedMcpServers` filtering for `managed-mcp.json` stdio servers",
+        "description": "The `allowedMcpServers` setting no longer filters `managed-mcp.json` stdio servers that use `${VAR}` only in `env`. This means a server previously excluded by your allowlist will now load on upgrade. To keep it off, you must explicitly use `deniedMcpServers`.",
+        "affected": [
+          "MCP server loading",
+          "Managed settings (`managed-mcp.json`)"
+        ],
+        "migration": "If you previously relied on `allowedMcpServers` to implicitly deny `managed-mcp.json` stdio servers using `${VAR}` in `env`, you must now explicitly add them to `deniedMcpServers` to prevent them from loading.",
+        "source_url": ""
+      },
+      {
+        "id": "plugin-allowed-tools-override-by-managed-settings",
+        "version": "2.1.305",
+        "title": "Plugins mounted by path lose `allowed-tools` when `allowManagedPermissionRulesOnly` is set",
+        "description": "Plugins that Claude Desktop mounts by path will no longer retain their `allowed-tools` if your organization's managed settings have `allowManagedPermissionRulesOnly` enabled. This means their tool permissions will be restricted by the managed rules.",
+        "affected": [
+          "Plugins mounted by path",
+          "Plugin tool permissions",
+          "Managed settings (`allowManagedPermissionRulesOnly`)"
+        ],
+        "migration": "If you use plugins mounted by path and your organization enables `allowManagedPermissionRulesOnly`, you may need to adjust your managed permission rules to grant necessary tool access to these plugins.",
+        "source_url": ""
+      },
+      {
+        "id": "artifacts-delete-confirmation-change",
+        "version": "2.1.305",
+        "title": "Changed `/artifacts` delete confirmation input",
+        "description": "The `/artifacts` delete confirmation prompt now requires `1` or `Enter` to keep, `2` to delete, and `Esc` to cancel. The `y` and `n` inputs are no longer accepted.",
+        "affected": [
+          "`/artifacts` command interaction"
+        ],
+        "migration": "Users must now use `1` or `Enter` to keep, `2` to delete, and `Esc` to cancel when prompted by the `/artifacts` delete confirmation.",
         "source_url": ""
       }
     ],
