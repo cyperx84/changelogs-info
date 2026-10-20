@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.163.0",
-  "generated_at": "2026-10-20T13:20:40.769Z",
+  "generated_at": "2026-10-20T18:20:40.444Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -17,7 +17,7 @@
     "from_version": "0.163.0",
     "to_version": "0.163.0",
     "new_features": [
-      "instant-interrupts-and-steered-responses",
+      "instant-interrupts-steered-responses",
       "configurable-leader-key",
       "restart-managed-background-server",
       "parallel-read-only-tool-execution",
@@ -54,7 +54,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "Codex-cli 0.163.0 introduces significant enhancements to user interaction and performance. A major highlight is the ability to send follow-up prompts while Codex is responding, allowing for instant steering of agent behavior and immediate interruption of active Code Mode cells and nested tool calls. This provides a much more dynamic and responsive conversational experience, enabling users to course-correct agents in real-time without waiting for a full response.\n\nKey new features include a searchable `/config` panel for managing preferences, which now allows immediate changes and indicates when a restart is needed. Users can also configure a leader key in `/keymap` (default `Ctrl+X`) for TUI shortcuts, with persistent hints and voice mute moved to `F9`. The `/daemon` command now supports restarting managed background servers, with warnings for potential work interruption and automatic reconnection. Performance is boosted by parallel execution for read-only tools like skill, memory, and conversation-history lookups. Daybreak is now enabled by default for eligible accounts, and `codex exec` can select it with an OpenAI API key.\n\nSeveral bug fixes improve stability and user experience. Resuming threads now correctly restores permissions and network approvals, respecting overrides and managed policies. The network proxy has enhanced security with pre-DNS lookup permission checks, rejection of duplicate `Host` headers, and prevention of credential alias bypasses. Side conversations are preserved across thread navigation, and Windows users gain `Ctrl+V` and `Shift+Insert` for pasting text and images, with WSL clipboard improvements. Local and remote commands now handle output pipes more robustly, and `codex exec` avoids reprinting file diffs after unrelated commands.\n\nNotably, the bundled patched `zsh` shell has been removed; Codex now uses its standard shell executor, and users with configurations relying on retired shell flags will receive migration notices. This release also includes documentation updates for GPT-6 model migrations and Linux sandbox details, along with reduced Linux and macOS package sizes. Upgrading is recommended for improved interactivity, performance, and security, especially for users who frequently steer agent conversations or manage background services."
+      "tldr": "Codex-cli 0.163.0 introduces significant improvements to user interaction and performance. A major highlight is the ability to send follow-up prompts while Codex is responding, allowing for instant steering and interruption of active Code Mode cells and nested tool calls, making interactions much more dynamic and responsive. The `/config` panel has been upgraded to be searchable across categories, enabling immediate setting changes and clearly indicating which require a restart, greatly enhancing user control and discoverability of preferences. \n\nUsers can now configure a leader key in `/keymap` (default `Ctrl+X`) for TUI shortcuts, with hints remaining open until a choice is made, and voice mute moved to `F9`. Managed background servers can be restarted directly from `/daemon`, with warnings for work interruption and automatic reconnection. Performance is boosted by parallel execution for read-only tools like skill, memory, and conversation-history lookups. Daybreak is now enabled by default for eligible accounts, and `codex exec` can select it with an OpenAI API key. \n\nKey bug fixes include restoring thread permissions and network approvals on resume, improved network proxy security checks, and better handling of side conversations and Windows clipboard operations. A notable breaking change is the removal of the bundled patched `zsh` shell; Codex now uses its standard shell executor, and users with configurations relying on the old shell flags will receive a migration notice. This release focuses on a more fluid, secure, and performant developer experience, making it a recommended upgrade for all users."
     },
     "features": [
       {
@@ -2710,6 +2710,18 @@
         "description": "Open `/config` to search preferences across categories, change supported settings immediately, and see which changes require a restart.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "instant-interrupts-steered-responses",
+        "name": "Instant Interrupts and Steered Responses",
+        "status": "stable",
+        "since": "0.163.0",
+        "description": "Users can now send follow-up prompts while Codex is actively responding, immediately steering its behavior. This also stops any active Code Mode cells and their nested tool calls.",
+        "key_details": [
+          "Interrupts active responses immediately.",
+          "Stops Code Mode cells and nested tool calls upon interruption."
+        ],
+        "source_url": "https://github.com/openai/codex/pull/51812"
       }
     ],
     "commands": [
