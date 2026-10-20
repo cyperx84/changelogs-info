@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.304",
-  "generated_at": "2026-10-20T01:34:55.175Z",
+  "generated_at": "2026-10-20T07:10:27.187Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -22,6 +22,7 @@
       "mod-tool-check-isreadonly",
       "code-review-review-levels",
       "code-review-org-wide-repo-review",
+      "transcript-tool-names-compaction-summary",
       "vscode-mod-drawing-bedrock-vertex-foundry"
     ],
     "new_commands": [
@@ -54,7 +55,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Claude Code 2.1.304 introduces significant improvements to mod development, auto-mode setup, and Code Review capabilities, alongside numerous stability and performance fixes. A key enhancement for mod developers is the ability to specify `decider: \"person\"` in `tool.check` answers, ensuring human approval for sensitive actions, and the addition of `e.isReadOnly` for read-only tool calls. The `/auto-mode-setup` command is now more broadly available across various platforms, including Bedrock and Vertex AI, making it easier to configure auto-mode for diverse environments. For security-conscious users, a new `/claude-api managed-agents-secure` command allows auditing Managed Agents settings against Anthropic's security guidelines without making changes. Code Review gains new 'Quick', 'Standard', and 'Deep' review levels, configurable per organization or repository, and an option to automatically review all repositories in a GitHub organization, including future ones. The release also brings VSCode mod drawing support to Bedrock, Vertex AI, and Foundry sessions. Numerous fixes address issues like sandboxed command failures with specific glob patterns, `rm -r` safety prompts, `CLAUDE_CODE_TRANSCRIPT_LOCAL_GC` dropping messages, and plugins keeping headless runs active. Performance is boosted with improved responsiveness for multiple subagents and better memory usage in long conversations. Users should review the updated skill hook limits (1,024 hooks and 16,384 matcher characters per source) and note that tool search is now on by default behind custom `ANTHROPIC_BASE_URL`s. This update is recommended for all users to benefit from enhanced stability, security, and new features."
+      "tldr": "This release of claude-code 2.1.304 introduces several key improvements and fixes, enhancing developer workflows and system stability. A major new feature is the `/auto-mode-setup` command, which now supports Bedrock, Vertex, Foundry, Claude apps gateway, and telemetry-disabled sessions, making it easier to configure auto mode for diverse environments. For security-conscious users, `/claude-api managed-agents-secure` allows comparing Managed Agents settings against Anthropic's security guide without making changes. The Code Review feature has been significantly upgraded with new review levels (Quick, Standard, Deep) and an option for organization-wide repository review, streamlining code quality processes across GitHub organizations. \n\nMod development sees enhancements with `decider: \"person\"` and `e.isReadOnly` in `tool.check` events, providing more granular control over tool execution and permissions. The transcript view now includes tool names in the compaction summary, improving traceability. VSCode users will benefit from mod drawing support for Bedrock, Vertex, and Foundry sessions, as well as fixes for session startup issues and mod drawing persistence. \n\nNumerous fixes address critical issues, including sandboxed commands failing with bracketed globs, `rm -r` safety prompts for mounted drives, and `CLAUDE_CODE_TRANSCRIPT_LOCAL_GC` dropping messages. Plugin behavior is more robust, preventing headless runs from exceeding `--max-turns` and ensuring mod reloads correctly update tools and commands. Remote Control reliability is improved, no longer withholding history or failing to start due to telemetry settings. Performance and memory usage are optimized for large compacted sessions and concurrent subagents. \n\nSkill hooks now have limits of 1,024 hooks and 16,384 matcher characters per source, and tool search is on by default for custom `ANTHROPIC_BASE_URL`. The `/artifacts` delete confirmation is more user-friendly with numbered choices. Users are encouraged to upgrade to leverage these stability improvements, new features, and enhanced security checks, especially those using auto mode, Code Review, or developing mods."
     },
     "features": [
       {
@@ -2805,6 +2806,15 @@
         "status": "stable",
         "since": "2.1.304",
         "description": "[VSCode] Adds mod drawing in the chat panel for sessions on Amazon Bedrock, Google Vertex AI, and Microsoft Foundry, behind an LLM gateway, or with telemetry turned off.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "transcript-tool-names-compaction-summary",
+        "name": "Tool Names in Compaction Summary",
+        "status": "stable",
+        "since": "2.1.304",
+        "description": "Adds the names of the tools called earlier to the compaction summary in the transcript view (Ctrl+O).",
         "key_details": [],
         "source_url": ""
       }
