@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.305",
-  "generated_at": "2026-10-21T01:16:39.941Z",
+  "version": "2.1.306",
+  "generated_at": "2026-10-21T07:03:23.663Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,14 +14,12 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.305",
-    "to_version": "2.1.305",
+    "from_version": "2.1.306",
+    "to_version": "2.1.306",
     "new_features": [],
     "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [
-      "CLAUDE_CODE_RETRY_WATCHDOG_USAGE_LIMIT_RECHECK_MS"
-    ],
+    "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -41,12 +39,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.305",
-      "latest_release_date": "2026-10-20",
+      "latest_stable": "2.1.306",
+      "latest_release_date": "2026-10-21",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces a crucial `sandbox.allowNestedUserNamespaces` setting, enabling sandboxed commands on Linux to create user namespaces, which is vital for tools like Chromium and rootless Podman to bypass file protections. This significantly enhances the flexibility and compatibility of sandboxed environments. Additionally, a new environment variable, `CLAUDE_CODE_RETRY_WATCHDOG_USAGE_LIMIT_RECHECK_MS`, allows the unattended retry mode to detect and react to lifted usage limits more promptly, improving reliability for long-running tasks.\n\nSeveral critical fixes address regressions and improve stability across various providers and features. A major fix resolves an issue where all requests failed on Vertex, Bedrock, and other providers when tool search was rejected or disallowed, with Claude Code now retrying without it. Issues with `/effort` and `/autocompact` settings not applying due to model name case differences or `[1m]` tags have been resolved. Worktree management is improved, fixing new worktrees sometimes starting from local HEAD and ensuring subagent worktrees are cleaned up. Bash command failures on full disks now provide clearer error messages, and MCP server handling is more robust, preventing cloud session or SDK-provided servers from being overwritten by local settings.\n\nOther notable improvements include better handling of subagent fallback models, more accurate compaction summaries for cloud sessions, and reduced waiting times for scheduled Cowork cloud sessions requiring URL approvals. Workflow resume now correctly serves already-completed `pipeline()` and `parallel()` agents from the run's journal, preventing unnecessary re-runs. The `/usage` command now provides one-line fixes for warnings, and MCP consent dialogs are less prone to misinterpreting user input. For VS Code users, a \"Running start-up hooks\" spinner status has been added, and startup messages for failed sessions are more informative. Claude Tag admins will find public Slack channels more discoverable for setup, and Code Review re-reviews are smarter about not prematurely marking findings as LGTM. Admins should review the `allowedMcpServers` change, as it stops filtering `managed-mcp.json` stdio servers using `${VAR}` in `env`, potentially loading previously disallowed servers. Upgrade is recommended for improved stability, sandbox flexibility, and enhanced user experience."
+      "tldr": "Claude-code version 2.1.306 primarily focuses on critical bug fixes to improve stability and user experience. A significant fix addresses an issue where `claude -p` would incorrectly report 'Not logged in' within cloud sessions if started without the session's environment variables, ensuring proper authentication and functionality for cloud-based workflows. Additionally, an API error that was previously being masked by a generic 'prompt is too long' message and an unnecessary compaction in sessions utilizing numerous MCP tools has been resolved. This fix provides more accurate error reporting and prevents unwanted prompt compaction, leading to a smoother experience when working with complex tool configurations. This release is recommended for all users to benefit from these stability improvements, especially those using cloud sessions or extensive MCP tool setups."
     },
     "features": [
       {
