@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.306",
-  "generated_at": "2026-10-21T22:06:01.994Z",
+  "version": "2.1.307",
+  "generated_at": "2026-10-22T01:12:52.757Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,11 +14,18 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.306",
-    "to_version": "2.1.306",
-    "new_features": [],
-    "new_commands": [],
-    "new_flags": [],
+    "from_version": "2.1.307",
+    "to_version": "2.1.307",
+    "new_features": [
+      "opentelemetry-safety-event"
+    ],
+    "new_commands": [
+      "/claude-api api-version",
+      "@claude review stop"
+    ],
+    "new_flags": [
+      "--checkout-hook-timeout-min"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -39,12 +46,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.306",
+      "latest_stable": "2.1.307",
       "latest_release_date": "2026-10-21",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release, version 2.1.306, primarily focuses on bug fixes to improve the stability and reliability of `claude-code`. A significant fix addresses an issue where running `claude -p` within cloud sessions would incorrectly report 'Not logged in' if the command was initiated without the session's environment variables, ensuring proper authentication and functionality in these environments. Additionally, an API error that was previously being masked by a generic 'prompt is too long' message, leading to unnecessary prompt compaction in sessions utilizing numerous MCP tools, has been resolved. This fix provides more accurate error reporting and prevents unwanted compaction, streamlining interactions with Claude when complex tool configurations are in use. Developers should find these fixes enhance the robustness of cloud session interactions and API error handling. No new features, commands, flags, or breaking changes are introduced in this version, making it a straightforward and recommended upgrade for improved stability."
+      "tldr": "Claude Code 2.1.307 introduces the `/claude-api api-version` command to update the Claude API code to version `2026-10-21`, ensuring compatibility with the latest API features and improvements. This is a critical update for developers leveraging the Claude API directly, as it aligns the tool with the most current API specifications. Additionally, a new OpenTelemetry event, `claude_code.safety_event`, has been added to provide detailed telemetry whenever a tool call is stopped, prompted, or sent back due to safety checks, permissions, auto mode, hooks, or the sandbox, offering deeper insights into agent behavior and security. \n\nSeveral important fixes address stability and usability issues. Requests no longer fail with 'model-not-found' errors when `CLAUDE_CODE_DISABLE_1M_CONTEXT` is set for models with the `[1m]` suffix. MCP servers on macOS now provide clearer authentication messages when the login keychain is locked and recover gracefully after unlock. HTTP MCP tool calls are now retried only for read-only or idempotent operations, preventing duplicate actions on connection closure. Issues with 'Autocompact is thrashing' errors in turns with large tool results, `/autocompact` resetting in cloud sessions, and cleared conversations reappearing after restarts have been resolved. \n\nImprovements include enhanced recovery from unparseable tool calls, with Claude Code now retrying up to twice before erroring. Forked subagents launched together are now better coordinated, reducing work duplication. Browser sign-in is faster, and web search errors in cloud/self-hosted runner sessions provide more specific reasons for 403 responses. Remote Control connection times are improved for sessions with large pasted images or PDF reads. The `axScreenReader` setting and `CLAUDE_AX_SCREEN_READER` now apply only from user, managed, or `--settings` settings. Self-hosted runner checkout hooks now have a default 30-minute timeout, configurable via `--checkout-hook-timeout-min`. \n\nFor VSCode users, voice dictation now provides notices when it stops automatically, and long prompts are capped to 40% of the chat panel. Dictation and extension requests now correctly handle TLS-inspecting proxies and trust `NODE_EXTRA_CA_CERTS`. Cloud sessions now show 'Searching…' in the repository picker and provide more detailed 'Waiting for a runner' statuses. Code Review gains `@claude review stop` to end `always` subscriptions. It is recommended to upgrade to ensure API compatibility, improve telemetry, and benefit from numerous stability and usability enhancements, especially for self-hosted runner deployments and VSCode users."
     },
     "features": [
       {
@@ -2806,6 +2813,15 @@
         "description": "Adds the names of the tools called earlier to the compaction summary in the transcript view (Ctrl+O).",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "opentelemetry-safety-event",
+        "name": "OpenTelemetry Safety Event",
+        "status": "stable",
+        "since": "2.1.307",
+        "description": "Adds the `claude_code.safety_event` OpenTelemetry event, emitted for each tool call where a permission rule, auto mode, a safety check, a hook, or the sandbox stopped, prompted, or sent back the call.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -3357,6 +3373,22 @@
         "since": "2.1.304",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "/claude-api api-version",
+        "syntax": "/claude-api api-version",
+        "description": "Moves Claude API code to API version `2026-10-21`.",
+        "since": "2.1.307",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "@claude review stop",
+        "syntax": "@claude review stop|off|pause",
+        "description": "Ends an `@claude review always` subscription on a pull request without starting a new review.",
+        "since": "2.1.307",
+        "status": "stable",
+        "source_url": ""
       }
     ],
     "flags": {
@@ -3712,6 +3744,12 @@
           "description": "Adds the marketplace if needed, under the same policy checks as `claude plugin marketplace add`, then installs the plugin from it. Used with `claude plugin install`.",
           "since": "2.1.292",
           "source_url": ""
+        },
+        {
+          "flag": "--checkout-hook-timeout-min",
+          "description": "Sets the timeout for self-hosted runner checkout hooks in minutes. Default is 30 minutes. Set to `0` for no timeout.",
+          "since": "2.1.307",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -3829,7 +3867,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--checkout-hook-timeout-min"
+      ]
     },
     "env_vars": [
       {
