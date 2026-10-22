@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.10.5",
-  "generated_at": "2026-10-22T07:06:12.037Z",
+  "version": "2026.10.6",
+  "generated_at": "2026-10-22T13:27:36.896Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,15 +14,17 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.10.5",
-    "to_version": "2026.10.5",
+    "from_version": "2026.10.6",
+    "to_version": "2026.10.6",
     "new_features": [],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "node-runtime-requirement"
+    ]
   },
   "payload": {
     "meta": {
@@ -40,13 +42,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.10.5",
-      "latest_release_date": "2026-10-18",
+      "latest_stable": "2026.10.6",
+      "latest_release_date": "2026-10-22",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "OpenClaw v2026.10.5 is a maintenance release with no new features, commands, flags, or breaking changes. It primarily focuses on internal improvements and stability, as indicated by the large number of commits and pull requests from a wide range of contributors. Developers should note that the Android APK build was skipped for this release due to a version mismatch, requiring a manual pin of the Android version before the next tag. This release is recommended for all users to ensure they are on the latest stable version, benefiting from general bug fixes and performance enhancements that are not explicitly detailed but are implied by the extensive contributor list and commit count. No specific migration steps or prerequisites are mentioned beyond the Android version pinning for future releases."
+      "tldr": "OpenClaw 2026.10.6 is a critical patch release focused entirely on reliability and security, with no new user-facing features. The most significant change is a mandatory upgrade to Node.js 24.22.1+ or 26.12.1+ to address compromised TLS certificate keys; `openclaw update` will now prevent installation on older, vulnerable Node versions and guide users through recovery. This ensures a more secure runtime environment for all OpenClaw operations.\n\nKey improvements include safer updates and recovery mechanisms, with package swaps now refusing unsafe service states and platform-specific update failures being recoverable on Windows and macOS. Data-preserving migrations and backups have been enhanced, preventing malformed workspace imports, preserving Notes bytes, rejecting unsafe wiki rewrites, and retaining staging evidence during restore inspection. Reliable delivery across restarts has been a major focus, ensuring queued turns, watched child results, dead-lettered deliveries, and streamed replies survive recovery without data loss or duplication. Provider and model resilience has also been improved, with consistent behavior for GPT-5.6 tool turns, OpenRouter DeepSeek tool calls, LM Studio overflow recovery, parallel OpenAI reasoning settings, and model retry/fallback budgets. Windows and mobile stability fixes address startup blocks in fresh Windows state stores, Proxy-backed environments, and stored Anthropic credentials, while iOS Talk and chat connectivity now recover from first-reply and timeout failures. Agent and tool-call recovery is more robust, with unfinished tools timing out visibly, context overflow compacting after steered tool results, and malformed calls continuing after earlier refusals. Channel delivery correctness has been addressed for WhatsApp retries and stickers, Telegram albums and dual-stack replies, Slack relay recovery, and Discord voice-call replies, preventing message loss or duplication. Worker and worktree recovery ensures hosts reclaim worker capacity after reboot, partial-clone worktrees repair missing objects, and child-result and exec-wake evidence survives Gateway restarts. Scheduled follow-ups now retain operator authority, and media/TTS operations handle timeouts and report errors more effectively. This release is highly recommended for all users due to the critical security and stability fixes."
     },
     "features": [
       {
@@ -5682,6 +5684,19 @@
         ],
         "migration": "See `docs/plugins/hooks/tool-policy.md` for migration guidance. Plugins that transform tool arguments must now explicitly request separate approval for their final arguments.",
         "source_url": "#142700"
+      },
+      {
+        "id": "node-runtime-requirement",
+        "version": "2026.10.6",
+        "title": "Patched Node.js Runtime Required",
+        "description": "OpenClaw now requires Node.js 24.22.1+ (on the 24 line) or 26.12.1+ (on the 26 line). These versions reject TLS chains signed with compromised certificate keys addressed in the October 2026 Node.js security releases. `openclaw update` will refuse to install on an older Node version and provide recovery guidance.",
+        "affected": [
+          "Node.js runtime",
+          "TLS certificate validation",
+          "openclaw update command"
+        ],
+        "migration": "Ensure your Node.js environment is updated to at least 24.22.1 or 26.12.1. Docker images ship with Node 24.22.1, and installers will select patched runtimes. Source builds now pin pnpm 12.15.0.",
+        "source_url": "https://github.com/openclaw/openclaw/pull/179992"
       }
     ],
     "deprecations": [
