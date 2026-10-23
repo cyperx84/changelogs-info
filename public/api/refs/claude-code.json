@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.309",
-  "generated_at": "2026-10-23T01:12:16.375Z",
+  "generated_at": "2026-10-23T06:58:06.553Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -27,8 +27,8 @@
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "sed-i-behavior-change",
-      "claude-ultrareview-workspace-trust"
+      "ultrareview-workspace-trust",
+      "sed-i-behavior-change"
     ]
   },
   "payload": {
@@ -51,7 +51,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release, 2.1.309, introduces significant fixes and behavior changes, particularly around sandboxing, `sed -i` command execution, and the `claude ultrareview` command. A major change is that `sed -i` commands now run as written and are no longer restored by `/rewind`, requiring adjustments for workflows that relied on this undo capability. Additionally, `claude ultrareview` now mandates workspace trust, necessitating the `--trust-workspace` flag for scripts or the `CLAUDE_CODE_DISABLE_ULTRAREVIEW_TRUST_CHECK=1` environment variable for non-interactive use. \n\nNumerous sandboxing issues have been resolved across macOS and Linux, including fixes for startup file execution, `denyWrite` glob patterns with symlinks, and protection of the MCP config file. Bash permission checks are more robust, correctly prompting for compound commands and preventing modifications via failed redirects. Worktree-isolated sessions are also more secure, refusing locale-prefixed and arithmetic commands that should be blocked. \n\nImprovements include faster git commands on Windows, clearer error messages for hooks modules and disk-full scenarios, and enhanced `/claude-api` skill capabilities for OpenTelemetry tracing and Managed Agents. The bundled dataviz skill now supports APCA contrast measures. VS Code users will see fixes for blank Claude panels, empty session history, and improved message folding and Edit/Write speeds. Cloud sessions and Claude Tag in Slack also received several stability and usability fixes. \n\nDevelopers should review the `sed -i` and `claude ultrareview` changes carefully before upgrading, as they may require workflow adjustments or new flags/environment variables. The overall release focuses on stability, security, and user experience improvements across various platforms and integrations, making an upgrade recommended for enhanced reliability and functionality."
+      "tldr": "This release, 2.1.309, introduces a significant change to the `claude ultrareview` command, which now requires workspace trust. This means scripts using `ultrareview` must now pass `--trust-workspace` or set `CLAUDE_CODE_DISABLE_ULTRAREVIEW_TRUST_CHECK=1` to continue functioning, impacting automated code review workflows. Additionally, `sed -i` commands now execute directly and are no longer reversible with `/rewind`, requiring careful consideration for file modification operations. \n\nNumerous fixes enhance stability and reliability across the platform. Sandboxing on macOS and Linux is improved, preventing startup files from running outside the sandbox and correctly applying `denyWrite` patterns to symlinked paths. Permissions checks for Bash commands are more robust, correctly prompting for complex `cd` commands and preventing sandboxed commands from modifying the MCP config file. Worktree isolation is also strengthened against locale-prefixed and arithmetic commands in zsh. \n\nUser experience improvements include faster Edit and Write operations in the VS Code chat panel, reduced flickering for API response hints, and better handling of oversized `/feedback` reports. Cloud sessions now provide more accurate connector loading status and improved environment variable editing. The `/claude-api` skill is enhanced with better OpenTelemetry tracing support and dynamic workflow defaults for Managed Agents. \n\nFor Claude Tag users, Slack integration fixes prevent misdirected drafts, ensure approval cards restart sessions, and correctly handle untagged messages after workspace migration. Overall, this release focuses on hardening security, improving core functionality, and refining the developer experience. Users should review their `ultrareview` scripts and be aware of the `sed -i` behavior change. An upgrade is recommended for improved stability and security."
     },
     "features": [
       {
@@ -5004,6 +5004,18 @@
           "Non-interactive sessions"
         ],
         "migration": "For interactive use, accept the workspace trust prompt. For scripts or non-interactive use, either pass the new `--trust-workspace` flag (without a value, placing PR number or base branch before it) or set the `CLAUDE_CODE_DISABLE_ULTRAREVIEW_TRUST_CHECK=1` environment variable.",
+        "source_url": ""
+      },
+      {
+        "id": "ultrareview-workspace-trust",
+        "version": "2.1.309",
+        "title": "`claude ultrareview` now requires workspace trust",
+        "description": "The `claude ultrareview` command now requires workspace trust. If run from a terminal, it will prompt for trust. If run from scripts, it will refuse to run unless `--trust-workspace` is passed or `CLAUDE_CODE_DISABLE_ULTRAREVIEW_TRUST_CHECK=1` is set.",
+        "affected": [
+          "`claude ultrareview` command",
+          "Scripts using `claude ultrareview`"
+        ],
+        "migration": "For scripts, pass `--trust-workspace` before any PR number or base branch, or set the environment variable `CLAUDE_CODE_DISABLE_ULTRAREVIEW_TRUST_CHECK=1` to bypass the check (use with caution).",
         "source_url": ""
       }
     ],
