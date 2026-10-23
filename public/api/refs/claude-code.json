@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.309",
-  "generated_at": "2026-10-23T20:59:51.265Z",
+  "version": "2.1.310",
+  "generated_at": "2026-10-23T23:49:10.690Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,22 +14,15 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.309",
-    "to_version": "2.1.309",
+    "from_version": "2.1.310",
+    "to_version": "2.1.310",
     "new_features": [],
     "new_commands": [],
-    "new_flags": [
-      "--trust-workspace"
-    ],
-    "new_env_vars": [
-      "CLAUDE_CODE_DISABLE_ULTRAREVIEW_TRUST_CHECK"
-    ],
+    "new_flags": [],
+    "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "sed-i-behavior-change",
-      "ultrareview-workspace-trust-requirement"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -46,12 +39,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.309",
-      "latest_release_date": "2026-10-22",
+      "latest_stable": "2.1.310",
+      "latest_release_date": "2026-10-23",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release, 2.1.309, focuses heavily on stability, security, and user experience fixes across various components, with notable changes to `sed -i` behavior and `claude ultrareview` requiring workspace trust. The `sed -i` command now executes as a standard Bash command, meaning its changes are no longer reversible with `/rewind`, requiring users to be more mindful of its impact. For automated workflows, `claude ultrareview` now demands explicit workspace trust, either via the new `--trust-workspace` flag or by setting the `CLAUDE_CODE_DISABLE_ULTRAREVIEW_TRUST_CHECK=1` environment variable, which is a breaking change for existing scripts. \n\nKey improvements include enhanced sandboxing on macOS and Linux, fixing issues where startup files ran outside the sandbox or `denyWrite` patterns failed on symlinks. Permission checks for Bash commands, especially those involving `cd` or redirects, have been made more robust, preventing unintended modifications to the MCP config and ensuring proper prompting. The `/claude-api` skill has been updated to offer API tracing, check live docs for feature support, and use `multiagent_20261001` for Managed Agents, while the dataviz skill now supports APCA contrast measures. \n\nNumerous fixes address UI glitches in VS Code, such as long messages folding correctly and prompt labels not overlapping menus. Cloud sessions see improvements in connector loading, environment variable handling, and the 'Changes' pane. Claude Tag in Slack has received critical fixes for approval cards, untagged messages, and threaded replies, ensuring more reliable interaction. Overall, this release significantly tightens security, improves the reliability of core features, and refines the user experience across the CLI, VS Code, and cloud environments. Users should review their scripts for `ultrareview` and be aware of the `sed -i` change. An upgrade is recommended for improved stability and security."
+      "tldr": "This release of claude-code 2.1.310 introduces significant improvements to the Monitor tool, now supporting Bedrock, Vertex, and Foundry, and ensuring long foreground sleeps are blocked in these environments, even when telemetry is disabled. This enhances monitoring capabilities across various cloud platforms and improves stability. Several critical fixes address issues like requests failing behind certain gateways due to beta values, background cleanup deleting recent files with large `cleanupPeriodDays` values, and compaction failures after 'Prompt is too long' errors with dense text. These fixes improve the reliability and robustness of Claude Code's core operations.\n\nKey improvements include enhanced auto mode prompts that clarify permission requests for shell commands when blocking reads outside working directories, and better memory utilization for non-interactive sessions during compaction of large transcript files. Visual enhancements allow mod `Image` elements to render correctly within tmux in specific terminal emulators, improving the user experience for those using these setups. For Linux users, the `/sandbox` command and startup warnings now provide more specific guidance on resolving AppArmor restrictions on user namespaces, making sandbox setup smoother.\n\nCloud session management sees substantial upgrades, with Claude Code cloud sessions and Remote Control permissions now integrated into Enterprise custom roles, offering granular access control. Users can now load cloud environment setup scripts via a 'Choose file' button, and the session start checklist provides a scrolling box for setup script output. The cloud environment dialog has been redesigned for better usability, presenting network access, setup script, and environment variables in a more organized row-based format. Confirmation prompts are now displayed when enabling Cloud sessions or Remote Control in admin settings, listing affected custom roles.\n\nClaude Tag and Code Review features also received attention. Claude Tag now correctly interprets `!` commands even when formatted with bold, italic, or strikethrough, and fixes address load errors on admin pages and incorrect channel matching on the spend limits page. The Code Review admin section is more resilient, retrying failed repository list refreshes and displaying a 'Try again' banner. These updates collectively enhance stability, user experience, and administrative control across various facets of Claude Code. Upgrading is recommended to benefit from these stability fixes and feature enhancements, especially for users leveraging cloud sessions, the Monitor tool, or working in Linux sandbox environments."
     },
     "features": [
       {
@@ -3873,9 +3866,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--trust-workspace"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
