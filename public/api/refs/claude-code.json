@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.308",
-  "generated_at": "2026-10-22T22:05:25.149Z",
+  "version": "2.1.309",
+  "generated_at": "2026-10-23T01:12:16.375Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,15 +14,22 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.308",
-    "to_version": "2.1.308",
+    "from_version": "2.1.309",
+    "to_version": "2.1.309",
     "new_features": [],
     "new_commands": [],
-    "new_flags": [],
-    "new_env_vars": [],
+    "new_flags": [
+      "--trust-workspace"
+    ],
+    "new_env_vars": [
+      "CLAUDE_CODE_DISABLE_ULTRAREVIEW_TRUST_CHECK"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "sed-i-behavior-change",
+      "claude-ultrareview-workspace-trust"
+    ]
   },
   "payload": {
     "meta": {
@@ -39,12 +46,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.308",
+      "latest_stable": "2.1.309",
       "latest_release_date": "2026-10-22",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release, version 2.1.308, focuses primarily on foundational improvements rather than new features. It includes general bug fixes and reliability enhancements across the board. While no specific new commands, flags, or environmental variables are introduced, these underlying improvements aim to provide a more stable and consistent experience for developers using claude-code. There are no breaking changes or deprecations in this version, ensuring a smooth upgrade path. Developers can expect a more robust and dependable tool, particularly in long-running sessions or complex workflows, due to these internal optimizations. Upgrading is recommended to benefit from these stability improvements, though it is not critical for immediate functionality."
+      "tldr": "This release, 2.1.309, introduces significant fixes and behavior changes, particularly around sandboxing, `sed -i` command execution, and the `claude ultrareview` command. A major change is that `sed -i` commands now run as written and are no longer restored by `/rewind`, requiring adjustments for workflows that relied on this undo capability. Additionally, `claude ultrareview` now mandates workspace trust, necessitating the `--trust-workspace` flag for scripts or the `CLAUDE_CODE_DISABLE_ULTRAREVIEW_TRUST_CHECK=1` environment variable for non-interactive use. \n\nNumerous sandboxing issues have been resolved across macOS and Linux, including fixes for startup file execution, `denyWrite` glob patterns with symlinks, and protection of the MCP config file. Bash permission checks are more robust, correctly prompting for compound commands and preventing modifications via failed redirects. Worktree-isolated sessions are also more secure, refusing locale-prefixed and arithmetic commands that should be blocked. \n\nImprovements include faster git commands on Windows, clearer error messages for hooks modules and disk-full scenarios, and enhanced `/claude-api` skill capabilities for OpenTelemetry tracing and Managed Agents. The bundled dataviz skill now supports APCA contrast measures. VS Code users will see fixes for blank Claude panels, empty session history, and improved message folding and Edit/Write speeds. Cloud sessions and Claude Tag in Slack also received several stability and usability fixes. \n\nDevelopers should review the `sed -i` and `claude ultrareview` changes carefully before upgrading, as they may require workflow adjustments or new flags/environment variables. The overall release focuses on stability, security, and user experience improvements across various platforms and integrations, making an upgrade recommended for enhanced reliability and functionality."
     },
     "features": [
       {
@@ -3743,6 +3750,12 @@
           "description": "Sets the timeout for self-hosted runner checkout hooks in minutes. Default is 30 minutes. Set to `0` for no timeout.",
           "since": "2.1.307",
           "source_url": ""
+        },
+        {
+          "flag": "--trust-workspace",
+          "description": "Required for `claude ultrareview` when run in scripts or non-interactive environments. Takes no value; a PR number or base branch should be placed before it.",
+          "since": "2.1.309",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -3860,7 +3873,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--trust-workspace"
+      ]
     },
     "env_vars": [
       {
@@ -4406,6 +4421,13 @@
         "purpose": "Configures the interval (in milliseconds) at which the unattended retry mode (`CLAUDE_CODE_RETRY_WATCHDOG`) rechecks for lifted usage limits before its reset.",
         "status": "stable",
         "since": "2.1.305",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_DISABLE_ULTRAREVIEW_TRUST_CHECK",
+        "purpose": "Disables the workspace trust check for the `claude ultrareview` command, allowing it to run in non-trusted environments without prompting or requiring the `--trust-workspace` flag. Set to `1` to enable.",
+        "status": "stable",
+        "since": "2.1.309",
         "source_url": ""
       }
     ],
@@ -4956,6 +4978,32 @@
           "`/artifacts` command interaction"
         ],
         "migration": "Users must now use `1` or `Enter` to keep, `2` to delete, and `Esc` to cancel when prompted by the `/artifacts` delete confirmation.",
+        "source_url": ""
+      },
+      {
+        "id": "sed-i-behavior-change",
+        "version": "2.1.309",
+        "title": "sed -i commands now run as written and are not restored by /rewind",
+        "description": "The behavior of `sed -i` commands has changed. They now get the standard Bash prompt and run as written, rather than as a simulated file-edit preview. Consequently, like other Bash edits, changes made by `sed -i` are no longer restored by `/rewind`.",
+        "affected": [
+          "Bash commands",
+          "sed -i",
+          "/rewind command"
+        ],
+        "migration": "Users relying on `/rewind` to undo changes made by `sed -i` will need to adjust their workflows. Consider using alternative methods for reversible file modifications or managing changes outside of Claude Code's `/rewind` functionality for `sed -i` operations.",
+        "source_url": ""
+      },
+      {
+        "id": "claude-ultrareview-workspace-trust",
+        "version": "2.1.309",
+        "title": "claude ultrareview now requires workspace trust",
+        "description": "The `claude ultrareview` command now requires workspace trust. If run in a terminal, it will prompt for trust. In scripts or non-interactive environments, it will refuse to run unless `--trust-workspace` is passed or the `CLAUDE_CODE_DISABLE_ULTRAREVIEW_TRUST_CHECK=1` environment variable is set.",
+        "affected": [
+          "claude ultrareview command",
+          "Scripts using claude ultrareview",
+          "Non-interactive sessions"
+        ],
+        "migration": "For interactive use, accept the workspace trust prompt. For scripts or non-interactive use, either pass the new `--trust-workspace` flag (without a value, placing PR number or base branch before it) or set the `CLAUDE_CODE_DISABLE_ULTRAREVIEW_TRUST_CHECK=1` environment variable.",
         "source_url": ""
       }
     ],
