@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.10.6",
-  "generated_at": "2026-10-24T08:40:19.475Z",
+  "version": "2026.10.7",
+  "generated_at": "2026-10-24T13:07:53.286Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,17 +14,15 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.10.6",
-    "to_version": "2026.10.6",
+    "from_version": "2026.10.7",
+    "to_version": "2026.10.7",
     "new_features": [],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "node-runtime-requirement"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -42,13 +40,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.10.6",
-      "latest_release_date": "2026-10-22",
+      "latest_stable": "2026.10.7",
+      "latest_release_date": "2026-10-24",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "OpenClaw 2026.10.6 is a critical patch release focused entirely on reliability and security, with no new user-facing features. The most significant change is a mandatory upgrade to Node.js 24.22.1+ or 26.12.1+ to address compromised TLS certificate keys; `openclaw update` will guide you through this. This release also brings safer update mechanisms, improving recovery from platform-specific failures on Windows and macOS, and allowing clean retirement of frozen Gateway startup owners. Data integrity is enhanced with doctor and migration paths now refusing malformed workspace imports, preserving malformed Notes bytes, rejecting unsafe non-UTF-8 wiki rewrites, and retaining staging evidence during restore inspection. Reliability across restarts is a major theme, with queued turns, watched child results, dead-lettered deliveries, and streamed replies now surviving recovery without data loss or duplication. Provider and model resilience has been improved, ensuring consistent behavior for GPT-5.6 tool turns, OpenRouter DeepSeek tool calls, LM Studio overflow recovery, parallel OpenAI reasoning settings, and model retry/fallback budgets. Windows and mobile stability are also addressed, fixing startup blocks in fresh Windows state stores, Proxy-backed environments, and stored Anthropic credentials, while iOS Talk and chat connectivity now recover from first-reply and timeout failures. Agent and tool-call recovery is more robust, with unfinished tools timing out visibly, context overflow compacting after steered tool results, and malformed calls continuing after earlier refusals. Channel delivery correctness is improved for WhatsApp, Telegram, Slack, and Discord, preventing message loss or duplication. Worker and worktree recovery ensures hosts reclaim worker capacity after reboot, partial-clone worktrees repair missing objects, and child-result and exec-wake evidence survives Gateway restarts. This is a recommended upgrade for all users to ensure security, stability, and data integrity."
+      "tldr": "OpenClaw 2026.10.7 focuses heavily on stability, reliability, and continuity across various core components, with a major highlight on replay-safe session recovery. This means interrupted sessions now retain recovery provenance and unfinished tool outcomes, stopped conversations retire terminal recovery residue before accepting the next message, and rejected Claude CLI drafts stay out of final replies, significantly improving the resilience of conversational workflows. Key improvements include safer update activation and recovery, ensuring verified activations remain successful through maintenance or ledger errors, and interrupted package updates resume safely, preventing data loss during upgrades.\n\nDatabase and worker continuity have been enhanced, with maintenance refusals preserving peer readers and borrowers, and worker shutdown completing after inventory retirement, leading to more robust background operations. Backup and state durability are also strengthened, as snapshots now retain supported legacy exec-approval policies, and Memory Wiki re-imports preserve human-authored notes. Operator control continuity sees native computer control recovering after session expiry, and late-attached GitHub operators can publish PRs, streamlining developer workflows. Provider and plugin continuity is improved, with model refresh, configured-account readiness, and incremental plugin loading retaining current state instead of rejecting valid setup or discarding providers. Managed integration reliability is boosted, with saved Linux Gateway dashboards preserving pairing across restarts, and Copilot setup verifying SDK-backed agents correctly. Cross-platform app-managed upgrades now converge without losing agent access across macOS and Windows, simplifying the upgrade process. A new Google model, Gemini 4 Argon, has been added for enhanced AI capabilities. Fixes include avoiding irrelevant database-repair advice when a package manager is missing, allowing fresh macOS profiles to start the Gateway, preventing the Gateway from wedging at full CPU due to stale log directories, and clearing slash-steer chips in the Control UI after commands are consumed. Upgrading is recommended for all users to benefit from the significant stability and reliability enhancements, particularly for those experiencing issues with session recovery, updates, or database continuity."
     },
     "features": [
       {
