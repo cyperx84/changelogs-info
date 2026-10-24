@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.310",
-  "generated_at": "2026-10-24T03:19:31.807Z",
+  "generated_at": "2026-10-24T08:38:54.870Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -16,10 +16,7 @@
   "delta": {
     "from_version": "2.1.310",
     "to_version": "2.1.310",
-    "new_features": [
-      "cloud-sessions-enterprise-custom-roles",
-      "cloud-environment-setup-script-file-upload"
-    ],
+    "new_features": [],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -47,7 +44,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release of claude-code 2.1.310 introduces significant stability and usability improvements, particularly for cloud sessions and the Monitor tool. The Monitor tool and plugin monitors are now fully supported across Bedrock, Vertex, and Foundry, even when telemetry is disabled, and long foreground sleeps are now blocked in these environments, enhancing reliability for critical tasks. For Enterprise users, cloud sessions and Remote Control permissions can now be managed through custom roles, providing granular access control, and a new 'Choose file' button simplifies loading cloud environment setup scripts from local files. Several critical fixes address issues like requests failing behind certain gateways due to beta values, background cleanup deleting recent files with large `cleanupPeriodDays`, and compaction failures after 'Prompt is too long' errors with dense text. The release also improves the sandbox startup warning on Linux by detailing AppArmor restrictions on Ubuntu and offers guidance on how to lift them. Memory usage for non-interactive sessions during compaction has been optimized, and a mod's `Image` now renders correctly within tmux in various terminal emulators. Cloud session admin settings now require confirmation for activation and list affected custom roles, and the cloud environment dialog has been streamlined for better navigation. Finally, Claude Tag now correctly interprets bolded or italicized `!` commands, and the Code Review admin section is more resilient to failed repository list refreshes. Users are encouraged to upgrade to benefit from these stability and feature enhancements, especially those leveraging cloud sessions or the Monitor tool."
+      "tldr": "This release of claude-code 2.1.310 introduces significant stability and usability improvements, particularly for cloud sessions and non-interactive workflows. The Monitor tool and plugin monitors are now fully supported across Bedrock, Vertex, and Foundry, even when telemetry is disabled, and long foreground sleeps are now proactively blocked in these environments to prevent hangs. This enhances reliability and performance for users leveraging these platforms.\n\nSeveral critical fixes address issues with gateway compatibility, preventing requests from failing when servers reject specific beta values or mid-conversation system messages by retrying without them. Compaction logic has been improved to better handle dense text after 'Prompt is too long' errors, ensuring subsequent requests don't immediately fail. File read permission prompts now correctly show the target of symbolic links, and a bug causing auto-continue timeouts after long external editor sessions has been resolved. For Windows users, PreToolUse and PermissionRequest hooks now correctly prevent tool calls when Git Bash is missing and the command consists only of quoted strings.\n\nCloud sessions receive substantial enhancements, including the integration of Claude Code cloud sessions and Remote Control permissions into Enterprise custom roles, offering granular access control. Users can now load cloud environment setup scripts directly from files, and the session start checklist provides a scrolling box for setup script output. Admin settings for Cloud sessions and Remote Control now require confirmation and list affected custom roles, while the cloud environment dialog has been streamlined to open network access, setup script, and environment variables from rows. Claude Tag also sees fixes for command parsing in rich text and improved loading of admin pages and spend limits. The Code Review admin section now includes retry logic and better error reporting for repository list failures. These updates collectively improve the robustness, security, and user experience across various aspects of claude-code, making an upgrade highly recommended for all users, especially those utilizing cloud sessions or non-interactive agents."
     },
     "features": [
       {
