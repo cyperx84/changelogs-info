@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "cline",
-  "version": "0.0.48",
-  "generated_at": "2026-10-26T03:16:54.637Z",
+  "version": "4.1.26",
+  "generated_at": "2026-10-26T09:43:52.835Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -19,9 +19,18 @@
   },
   "stale_after": "2026-03-21T07:00:00.000Z",
   "delta": {
-    "from_version": "0.0.48",
-    "to_version": "0.0.48",
-    "new_features": [],
+    "from_version": "4.1.26",
+    "to_version": "4.1.26",
+    "new_features": [
+      "cloud-tasks-local-cloud-toggle",
+      "cloud-sandbox-progress-card",
+      "liquid-inference-provider",
+      "munito-ai-provider",
+      "reflection-beam-model",
+      "laguna-s-2-1-model",
+      "minimax-m3-1-flash-model",
+      "deepseek-v4-1-flash-1017-model"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -45,12 +54,12 @@
       "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/cline/cline",
       "license": "Apache-2.0",
-      "latest_stable": "0.0.48",
-      "latest_release_date": "2026-10-17",
+      "latest_stable": "4.1.26",
+      "latest_release_date": "2026-10-26",
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "This `cline` release, version 0.0.48, significantly improves support for GPT-6 models like `gpt-6-sol` and `gpt-6.1-sol` on OpenAI and Azure OpenAI-compatible endpoints. Previously, these models were unusable due to an incorrect `max_tokens` parameter being sent instead of `max_completion_tokens`, which has now been corrected, enabling developers to leverage these advanced models. The model catalog has received a comprehensive refresh, introducing the CommandCode and Reflection providers, expanding the range of available tools for developers. Additionally, several default models have been updated across various providers, including 302.AI (now Gemini 4 Argon), Eden AI and Prime Inference (now Muse Spark Open), CoreWeave (now Reflection Beam 1.0), NanoGPT, Pioneer (now Nemotron 3.5 Super VL), and Scaleway (now DeepSeek V4.1 Flash). Notably, the Cline provider's default model has reverted to Claude Sonnet 5.5, which is once again prominently featured in Cline's recommended list, offering a reliable and high-performing option. This release primarily focuses on model compatibility and catalog updates, with no breaking changes or new commands/flags. Developers are recommended to upgrade to take advantage of the enhanced GPT-6 support and the updated model offerings."
+      "tldr": "Cline 4.1.26 introduces significant improvements for cloud sessions and model management. A new 'Local | Cloud' toggle in Settings > API Configuration allows users to select separate models for local and cloud tasks, enhancing flexibility for cloud-based workflows. Additionally, starting or resuming a cloud sandbox now displays a detailed progress card, showing the repository, branch, and agent startup steps, which then collapses once the agent is active, providing better visibility into cloud environment provisioning. Cloud sessions also now hide the Plan/Act toggle and auto-approve bar for a cleaner interface. \n\nModel handling has been refined: the Cline provider now defaults to Claude Sonnet 5.5, and the model catalog has been refreshed, adding Liquid Inference and Munito AI providers while removing CrofAI, iFlow, and Llama. The free model list now includes Reflection Beam, Nemotron 3.5 Lightning, and Laguna S 2.1, with Mimo V2.6 Flash and Muse Spark 1.3 Contributor removed. ClinePass now defaults to Kimi K3.1 Pro and supports MiniMax M3.1 Flash and DeepSeek V4.1 Flash 1017. Model requests now retry a maximum of 3 times instead of 5. \n\nKey fixes include GPT-6 models now working correctly on OpenAI and Azure OpenAI endpoints with `max_completion_tokens`, and Gemini API keys no longer sending native Google Search requests, resolving 429 quota errors and tool dropping issues. Toggling Plan/Act during task startup no longer drops prompts, disabled rules remain disabled, and keyboard focus no longer shifts to the terminal when starting a command. Issues with cancelling tasks during questions, dropped connections after reasoning, and auto-compaction for unknown context limits have also been resolved. The `ask_question` tool now continues after an option is picked and rejects empty answers, while `run_commands` with an empty list returns an error and provides PowerShell quote escaping guidance. Task header badges now wrap, and UI padding for the Local/Cloud toggle is fixed. This update is recommended for all users to benefit from improved cloud session management, enhanced model support, and critical bug fixes."
     },
     "features": [
       {
@@ -1724,6 +1733,87 @@
         "description": "The Reflection provider has been added to the refreshed model catalog.",
         "key_details": [],
         "source_url": "https://github.com/cline/cline/compare/desktop-v0.0.47...desktop-v0.0.48"
+      },
+      {
+        "id": "cloud-tasks-local-cloud-toggle",
+        "name": "Cloud Tasks Local | Cloud Toggle",
+        "status": "stable",
+        "since": "4.1.26",
+        "description": "A new toggle in Settings > API Configuration allows switching between Local and Cloud models for new cloud tasks. The Cloud model selection is saved separately from local models. Clicking the model label in a cloud session's composer opens the cloud model selection.",
+        "key_details": [
+          "Location: Settings > API Configuration",
+          "Functionality: Toggles between local and cloud model selection for new cloud tasks.",
+          "Cloud model selection: Saved separately from local models.",
+          "Composer integration: Clicking model label in cloud session composer opens cloud model selection."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "cloud-sandbox-progress-card",
+        "name": "Cloud Sandbox Progress Card",
+        "status": "stable",
+        "since": "4.1.26",
+        "description": "When starting or resuming a cloud sandbox, a progress card is displayed. This card shows the repository, branch, and steps involved (start sandbox, clone repository, start agent). It automatically collapses once the agent has successfully started.",
+        "key_details": [
+          "Visibility: Shown when starting or resuming a cloud sandbox.",
+          "Information displayed: Repository, branch, and steps (start sandbox, clone repository, start agent).",
+          "Behavior: Collapses automatically once the agent starts."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "liquid-inference-provider",
+        "name": "Liquid Inference Provider",
+        "status": "stable",
+        "since": "4.1.26",
+        "description": "Added support for the Liquid Inference provider to the model catalog.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "munito-ai-provider",
+        "name": "Munito AI Provider",
+        "status": "stable",
+        "since": "4.1.26",
+        "description": "Added support for the Munito AI provider to the model catalog.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "reflection-beam-model",
+        "name": "Reflection Beam Model",
+        "status": "stable",
+        "since": "4.1.26",
+        "description": "Added Reflection Beam to the Cline free model list.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "laguna-s-2-1-model",
+        "name": "Laguna S 2.1 Model",
+        "status": "stable",
+        "since": "4.1.26",
+        "description": "Added Laguna S 2.1 to the Cline free model list.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "minimax-m3-1-flash-model",
+        "name": "MiniMax M3.1 Flash Model",
+        "status": "stable",
+        "since": "4.1.26",
+        "description": "Added MiniMax M3.1 Flash to ClinePass.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "deepseek-v4-1-flash-1017-model",
+        "name": "DeepSeek V4.1 Flash 1017 Model",
+        "status": "stable",
+        "since": "4.1.26",
+        "description": "Added DeepSeek V4.1 Flash 1017 to ClinePass.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
