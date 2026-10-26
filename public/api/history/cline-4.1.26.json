@@ -1,0 +1,2023 @@
+{
+  "schema": "clwatch.payload.v1",
+  "tool": "cline",
+  "version": "4.1.26",
+  "generated_at": "2026-10-26T09:43:52.835Z",
+  "extracted_from_sources": [
+    "https://github.com/cline/cline/releases",
+    "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
+  ],
+  "verification": {
+    "status": "verified",
+    "confidence": 0.5,
+    "unverified_fields": [
+      "features",
+      "commands",
+      "flags",
+      "env_vars"
+    ]
+  },
+  "stale_after": "2026-03-21T07:00:00.000Z",
+  "delta": {
+    "from_version": "4.1.26",
+    "to_version": "4.1.26",
+    "new_features": [
+      "cloud-tasks-local-cloud-toggle",
+      "cloud-sandbox-progress-card",
+      "liquid-inference-provider",
+      "munito-ai-provider",
+      "reflection-beam-model",
+      "laguna-s-2-1-model",
+      "minimax-m3-1-flash-model",
+      "deepseek-v4-1-flash-1017-model"
+    ],
+    "new_commands": [],
+    "new_flags": [],
+    "new_env_vars": [],
+    "deprecated_commands": [],
+    "deprecated_flags": [],
+    "breaking_changes": []
+  },
+  "payload": {
+    "meta": {
+      "display_name": "Cline",
+      "vendor": "Cline (Open Source)",
+      "kind": "extension",
+      "tags": [
+        "coding-agent",
+        "vscode",
+        "agentic",
+        "oss"
+      ],
+      "homepage": "https://cline.bot",
+      "docs_url": "https://docs.cline.bot",
+      "changelog_url": "https://github.com/cline/cline/blob/main/CHANGELOG.md",
+      "repo_url": "https://github.com/cline/cline",
+      "license": "Apache-2.0",
+      "latest_stable": "4.1.26",
+      "latest_release_date": "2026-10-26",
+      "status": "active",
+      "runtime": "vscode",
+      "written_in": "typescript",
+      "tldr": "Cline 4.1.26 introduces significant improvements for cloud sessions and model management. A new 'Local | Cloud' toggle in Settings > API Configuration allows users to select separate models for local and cloud tasks, enhancing flexibility for cloud-based workflows. Additionally, starting or resuming a cloud sandbox now displays a detailed progress card, showing the repository, branch, and agent startup steps, which then collapses once the agent is active, providing better visibility into cloud environment provisioning. Cloud sessions also now hide the Plan/Act toggle and auto-approve bar for a cleaner interface. \n\nModel handling has been refined: the Cline provider now defaults to Claude Sonnet 5.5, and the model catalog has been refreshed, adding Liquid Inference and Munito AI providers while removing CrofAI, iFlow, and Llama. The free model list now includes Reflection Beam, Nemotron 3.5 Lightning, and Laguna S 2.1, with Mimo V2.6 Flash and Muse Spark 1.3 Contributor removed. ClinePass now defaults to Kimi K3.1 Pro and supports MiniMax M3.1 Flash and DeepSeek V4.1 Flash 1017. Model requests now retry a maximum of 3 times instead of 5. \n\nKey fixes include GPT-6 models now working correctly on OpenAI and Azure OpenAI endpoints with `max_completion_tokens`, and Gemini API keys no longer sending native Google Search requests, resolving 429 quota errors and tool dropping issues. Toggling Plan/Act during task startup no longer drops prompts, disabled rules remain disabled, and keyboard focus no longer shifts to the terminal when starting a command. Issues with cancelling tasks during questions, dropped connections after reasoning, and auto-compaction for unknown context limits have also been resolved. The `ask_question` tool now continues after an option is picked and rejects empty answers, while `run_commands` with an empty list returns an error and provides PowerShell quote escaping guidance. Task header badges now wrap, and UI padding for the Local/Cloud toggle is fixed. This update is recommended for all users to benefit from improved cloud session management, enhanced model support, and critical bug fixes."
+    },
+    "features": [
+      {
+        "id": "w-b-inference-by-coreweave-api-provider",
+        "name": "W&B Inference by CoreWeave API provider",
+        "status": "stable",
+        "since": "3.73.0",
+        "description": "Added W&B Inference by CoreWeave as a new API provider with 17 models",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "parallel-tool-calling-support",
+        "name": "Parallel tool calling support",
+        "status": "stable",
+        "since": "3.73.0",
+        "description": "Improved parallel tool calling support for OpenRouter and Cline providers",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "dynamic-free-model-detection-for-cline-api",
+        "name": "Dynamic Free Model Detection for Cline API",
+        "status": "stable",
+        "since": "3.74.0",
+        "description": "Implement dynamic free model detection for Cline API",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "file-read-deduplication-cache",
+        "name": "File Read Deduplication Cache",
+        "status": "stable",
+        "since": "3.74.0",
+        "description": "Add file read deduplication cache to prevent repeated reads",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "feature-tips-tooltip-during-thinking-state",
+        "name": "Feature Tips Tooltip During Thinking State",
+        "status": "stable",
+        "since": "3.74.0",
+        "description": "Add feature tips tooltip during thinking state",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "latency-improvements-for-remote-workspaces",
+        "name": "Latency improvements for remote workspaces",
+        "status": "stable",
+        "since": "3.75.0",
+        "description": "Latency improvements for remote workspaces",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "cline-kanban-launch-modal",
+        "name": "Cline Kanban Launch Modal",
+        "status": "stable",
+        "since": "3.76.0",
+        "description": "Launches Cline Kanban by default with a migration view in webview.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "disable-feature-tips-toggle",
+        "name": "Disable Feature Tips Toggle",
+        "status": "stable",
+        "since": "3.76.0",
+        "description": "Adds a toggle to disable feature tips in chat.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "repeated-tool-call-loop-detection",
+        "name": "Repeated Tool Call Loop Detection",
+        "status": "stable",
+        "since": "3.76.0",
+        "description": "Detects repeated tool call loops to prevent infinite loops and token wastage.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "lazy-teammate-mode",
+        "name": "Lazy Teammate Mode",
+        "status": "experimental",
+        "since": "3.77.0",
+        "description": "Adds an experimental toggle for 'Lazy Teammate Mode'.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "read-file-tool-chunked-reading",
+        "name": "`read_file` tool chunked reading",
+        "status": "stable",
+        "since": "3.77.0",
+        "description": "`read_file` tool now supports chunked reading for targeted file access",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "lazy-teammate-mode-experimental-toggle",
+        "name": "Lazy Teammate Mode experimental toggle",
+        "status": "experimental",
+        "since": "3.77.0",
+        "description": "Adds an experimental toggle for \"Lazy Teammate Mode\".",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "spend-limit-reached-error-ui",
+        "name": "Spend Limit Reached Error UI",
+        "status": "stable",
+        "since": "3.78.0",
+        "description": "Adds a dedicated UI to inform users when they have reached their spend limit.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "claude-opus-4-7-model-support",
+        "name": "Claude Opus 4.7 model support",
+        "status": "stable",
+        "since": "3.79.0",
+        "description": "Adds support for the Claude Opus 4.7 model.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "azure-blob-storage-provider",
+        "name": "Azure Blob Storage as a storage provider",
+        "status": "stable",
+        "since": "3.79.0",
+        "description": "Adds Azure Blob Storage as a supported storage provider.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "global-skills-remote-config",
+        "name": "globalSkills in remote config",
+        "status": "stable",
+        "since": "3.79.0",
+        "description": "Adds `globalSkills` to remote config.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "inline-value-reuse-remote-config",
+        "name": "Inline value reuse in user-level remote-config discovery",
+        "status": "stable",
+        "since": "3.79.0",
+        "description": "Enables inline value reuse in user-level remote-config discovery.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "enterprise-managed-global-skills",
+        "name": "Enterprise Managed Global Skills",
+        "status": "stable",
+        "since": "3.80.0",
+        "description": "Remote `globalSkills` from enterprise remote config are now fully integrated with UI, toggle support, and system prompt integration. Enterprise-managed skills appear under a dedicated \"Enterprise Skills\" section and support `alwaysEnabled` enforcement.",
+        "key_details": [
+          "Skills appear under \"Enterprise Skills\" section.",
+          "Supports `alwaysEnabled` enforcement."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "dynamic-recommended-models-onboarding",
+        "name": "Dynamic Recommended Models Onboarding",
+        "status": "stable",
+        "since": "3.80.0",
+        "description": "The onboarding flow now uses dynamically fetched recommended models instead of a hardcoded list, with a fallback to the welcome view on failure.",
+        "key_details": [
+          "Fetches recommended models dynamically.",
+          "Falls back to welcome view on failure."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "quota-exceeded-error-message",
+        "name": "Quota Exceeded Error Message",
+        "status": "stable",
+        "since": "3.80.0",
+        "description": "A dedicated \"Quota Exceeded\" error message is now displayed in the chat error UI when Cline account spend caps are hit.",
+        "key_details": [
+          "Displays a dedicated \"Quota Exceeded\" error message.",
+          "Appears in the chat error UI."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "enterprise-managed-global-skills-ui-remote-config",
+        "name": "Enterprise Managed Global Skills UI and Remote Config",
+        "status": "stable",
+        "since": "3.80.0",
+        "description": "Integrates remote `globalSkills` from enterprise remote config with full UI, toggle support, and system prompt integration. Enterprise-managed skills now appear under a dedicated \"Enterprise Skills\" section and support `alwaysEnabled` enforcement.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "dynamic-recommended-models-onboarding-flow",
+        "name": "Dynamic Recommended Models Onboarding Flow",
+        "status": "stable",
+        "since": "3.80.0",
+        "description": "The onboarding flow now uses dynamically fetched recommended models instead of a hardcoded list, with a fallback to the welcome view on failure.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "quota-exceeded-error-message-in-chat-ui",
+        "name": "Quota Exceeded Error Message in Chat UI",
+        "status": "stable",
+        "since": "3.80.0",
+        "description": "Adds a dedicated \"Quota Exceeded\" error message in the chat error UI when Cline account spend caps are hit.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "enterprise-managed-global-skills-with-ui-and-system-prompt",
+        "name": "Enterprise Managed Global Skills with UI and System Prompt",
+        "status": "stable",
+        "since": "3.80.0",
+        "description": "Wire up remote `globalSkills` from enterprise remote config with full UI, toggle support, and system prompt integration. Enterprise-managed skills now appear under a dedicated \"Enterprise Skills\" section and support `alwaysEnabled` enforcement.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "gpt-5-5-model-support",
+        "name": "GPT-5.5 Model Support",
+        "status": "stable",
+        "since": "3.81.0",
+        "description": "Adds support for the GPT-5.5 model for users with an OpenAI Codex subscription.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "restore-vs-code-foreground-terminal-support",
+        "name": "Restore VS Code foreground terminal support",
+        "status": "stable",
+        "since": "3.82.0",
+        "description": "Restores the ability to run cline in the foreground terminal of VS Code, along with associated settings.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "add-latest-models",
+        "name": "Add latest models",
+        "status": "stable",
+        "since": "3.82.0",
+        "description": "Adds support for the latest models from OpenAI, SAP AI Core, and Z AI.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "search-replace-diff-for-large-files",
+        "name": "Search & Replace Diff for Large Files",
+        "status": "stable",
+        "since": "3.0.0",
+        "description": "Cline now uses a search & replace diff based approach when editing large files to prevent code deletion issues.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "comprehensive-auto-approve-configuration",
+        "name": "Comprehensive Auto-Approve Configuration",
+        "status": "stable",
+        "since": "3.0.0",
+        "description": "Adds support for a more comprehensive auto-approve configuration, allowing you to specify which tools require approval and which don't.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "system-notifications-for-approval-and-completion",
+        "name": "System Notifications for Approval and Completion",
+        "status": "stable",
+        "since": "3.0.0",
+        "description": "Adds ability to enable system notifications for when Cline needs approval or completes a task.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "root-level-clinerules-file",
+        "name": "Root-Level .clinerules File",
+        "status": "stable",
+        "since": "3.0.0",
+        "description": "Adds support for a root-level `.clinerules` file that can be used to specify custom instructions for the project.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "block-anchor-matching-for-diff-edits",
+        "name": "Block Anchor Matching for Diff Edits",
+        "status": "stable",
+        "since": "3.0.2",
+        "description": "Adds block anchor matching for more reliable diff edits. If the diff consists of 3 or more lines, the first and last lines are used as anchors to search for the correct location to apply the edit.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "gemini-model-support",
+        "name": "Gemini Model Support",
+        "status": "stable",
+        "since": "3.0.2",
+        "description": "Adds support for new Gemini models.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "session-status-in-cli-history-view",
+        "name": "Session Status in CLI History View",
+        "status": "stable",
+        "since": "3.0.3",
+        "description": "Shows session status in the CLI history view and refreshes status rows in place while the standalone history TUI is open.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "openai-compatible-provider-restore",
+        "name": "OpenAI Compatible Provider Restore",
+        "status": "stable",
+        "since": "3.0.3",
+        "description": "Restores the OpenAI compatible provider in the auth flow and preserves stored model metadata when configuring or migrating OpenAI-compatible providers.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "aws-bedrock-bearer-token-auth",
+        "name": "AWS Bedrock Bearer Token Auth",
+        "status": "stable",
+        "since": "3.0.3",
+        "description": "Accepts bearer token auth for AWS Bedrock and maps AWS profiles correctly when configuring the Bedrock gateway.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "refined-shared-system-prompt",
+        "name": "Refined Shared System Prompt",
+        "status": "stable",
+        "since": "3.0.3",
+        "description": "Refines the shared system prompt with clearer guidance on tool output formatting, unsupported file reads, long-running shell commands, and final verification before completing a task.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "plugin-provided-tools-in-cli-settings",
+        "name": "Plugin-Provided Tools in CLI Settings",
+        "status": "stable",
+        "since": "3.0.5",
+        "description": "Show plugin-provided tools and slash commands in the CLI settings dialog by hydrating them through the sandbox.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "preserve-hydrated-plugin-tools-config",
+        "name": "Preserve Hydrated Plugin Tools and Config",
+        "status": "stable",
+        "since": "3.0.5",
+        "description": "Preserve hydrated plugin tools and config reload options when toggling settings, so they no longer disappear after a toggle.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "sap-ai-core-support-for-additional-hosted-models",
+        "name": "SAP AI Core Support for Additional Hosted Models",
+        "status": "stable",
+        "since": "3.84.0",
+        "description": "Adds support for additional hosted models within SAP AI Core.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "deepseek-provider-for-api",
+        "name": "DeepSeek provider for API",
+        "status": "stable",
+        "since": "3.0.10",
+        "description": "Adds DeepSeek as an available API provider option.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "gpt-5-5-support-sap-ai-core",
+        "name": "GPT-5.5 Support for SAP AI Core",
+        "status": "stable",
+        "since": "3.85.0",
+        "description": "Adds support for GPT-5.5 models when using SAP AI Core as a provider.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "deepseek-v4-flash-pro-models",
+        "name": "DeepSeek V4 Flash and Pro Models",
+        "status": "stable",
+        "since": "3.85.0",
+        "description": "Adds support for DeepSeek V4 Flash and Pro models.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "gemini-3-5-flash-gemini-vertex-providers",
+        "name": "Gemini 3.5 Flash for Gemini and Vertex Providers",
+        "status": "stable",
+        "since": "3.85.0",
+        "description": "Adds support for Gemini 3.5 Flash model to both Gemini and Vertex AI providers.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "lg-task-uri-webhook-integration",
+        "name": "/lg-task URI Webhook Integration",
+        "status": "stable",
+        "since": "3.85.0",
+        "description": "Adds `/lg-task` URI webhook integration for LG dashboard flows.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "claude-opus-4-8-provider-support",
+        "name": "Claude Opus 4.8 Provider Support",
+        "status": "stable",
+        "since": "3.86.0",
+        "description": "Adds support for Claude Opus 4.8 provider, including 1M-context variants where available.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "moonshot-kimi-k2-6-model-support",
+        "name": "Moonshot Kimi K2.6 Model Support",
+        "status": "stable",
+        "since": "3.86.0",
+        "description": "Adds Moonshot Kimi K2.6 model support.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "claude-opus-4-8-provider-support-1m-context",
+        "name": "Claude Opus 4.8 Provider Support with 1M Context",
+        "status": "stable",
+        "since": "3.86.0",
+        "description": "Adds support for Claude Opus 4.8 provider, including variants with a 1 million token context window where available.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "cline-hub-web-app",
+        "name": "Cline Hub Web App",
+        "status": "stable",
+        "since": "3.0.15",
+        "description": "Introduces Cline Hub, a web application for monitoring connected clients, viewing and driving sessions, streaming assistant output, and restarting the local hub.",
+        "key_details": [
+          "Supports local, LAN, and tunnel usage.",
+          "Access is gated by a room secret."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "global-agents-rules",
+        "name": "Global AGENTS Rules",
+        "status": "stable",
+        "since": "3.0.15",
+        "description": "Supports global AGENTS rules that apply across all sessions, not just per-project.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "plugin-rule-contribution",
+        "name": "Plugin Rule Contribution",
+        "status": "stable",
+        "since": "3.0.15",
+        "description": "Allows plugins to contribute static or dynamic rule content when installed in the sandbox.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "discord-session-binding",
+        "name": "Discord Session Binding",
+        "status": "stable",
+        "since": "3.0.15",
+        "description": "Binds Discord sessions to individual message authors, preventing different Discord users from sharing chat state in a thread.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "discord-participant-mute-targets",
+        "name": "Discord Participant Mute Targets",
+        "status": "stable",
+        "since": "3.0.15",
+        "description": "Supports participant mute targets in Discord, resolving `/mute` and `/unmute` from user mentions or raw user IDs to mute a specific participant in a thread.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "clickable-oauth-urls-in-tui",
+        "name": "Clickable OAuth URLs in TUI",
+        "status": "stable",
+        "since": "3.0.15",
+        "description": "Makes OAuth URLs clickable in the TUI.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "sdk-skill-directory-symlink-discovery",
+        "name": "SDK Skill Directory Symlink Discovery",
+        "status": "stable",
+        "since": "3.0.15",
+        "description": "Discovers SDK skill directories that are symlinked, including handling circular symlinks.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "active-connector-session-steering",
+        "name": "Active Connector Session Steering",
+        "status": "stable",
+        "since": "3.0.15",
+        "description": "Steers active connector sessions across turn keys by matching on session ID, so replies continue the existing session instead of starting a duplicate.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "cline-hub-web-app-monitoring",
+        "name": "Cline Hub Web App",
+        "status": "stable",
+        "since": "3.0.15",
+        "description": "A web app for monitoring connected clients, viewing and driving sessions, streaming assistant output, and restarting the local hub.",
+        "key_details": [
+          "Supports local, LAN, and tunnel usage.",
+          "Gated by a room secret."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "system-tray-icon",
+        "name": "System Tray Icon",
+        "status": "stable",
+        "since": "0.0.7",
+        "description": "A new system tray icon is available, displaying the application's status and the number of active agent sessions.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "paginated-session-history",
+        "name": "Paginated Session History",
+        "status": "stable",
+        "since": "0.0.7",
+        "description": "Session history is now paginated in ten-session increments, with older history fetched only when the end of the current page is reached.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "favorite-sessions",
+        "name": "Favorite Sessions",
+        "status": "stable",
+        "since": "0.0.7",
+        "description": "Users can now favorite sessions. Sessions are ordered by most recent activity and display consistent status dot colors across all views.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "subagent-teammate-runs-in-app",
+        "name": "Subagent and Teammate Runs in App",
+        "status": "stable",
+        "since": "0.0.7",
+        "description": "Subagent and teammate runs from a session are now visible within the application, showing their status and results.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "chat-polish-tool-icons",
+        "name": "Chat Polish: Tool-Specific Icons",
+        "status": "stable",
+        "since": "0.0.7",
+        "description": "Tool disclosures in chat now feature tool-specific icons.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "chat-polish-thinking-time-reasoning",
+        "name": "Chat Polish: Elapsed Thinking Time and Restyled Reasoning",
+        "status": "stable",
+        "since": "0.0.7",
+        "description": "Chat now displays elapsed thinking time and features restyled reasoning sections.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "chat-polish-aligned-timestamps",
+        "name": "Chat Polish: Aligned Timestamps",
+        "status": "stable",
+        "since": "0.0.7",
+        "description": "Timestamps in chat are now aligned for better readability.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "chat-polish-message-actions-no-shift",
+        "name": "Chat Polish: Message Actions No Longer Shift Layout",
+        "status": "stable",
+        "since": "0.0.7",
+        "description": "Message actions in chat no longer shift the layout while scrolling remains anchored to the conversation viewport.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "free-cline-models-support",
+        "name": "Free Cline Models Support",
+        "status": "stable",
+        "since": "0.0.7",
+        "description": "Free Cline models are now supported and labeled '(free)' in model pickers, with a clear message, including reset time, when the free-tier limit is reached.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "chutes-provider-recognition",
+        "name": "Recognize Chutes as a provider",
+        "status": "stable",
+        "since": "4.1.4",
+        "description": "cline now recognizes Chutes as a valid provider.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "skills-alongside-workflows-slash-command-menu",
+        "name": "Show skills alongside workflows in the slash command menu",
+        "status": "stable",
+        "since": "4.1.4",
+        "description": "Skills are now displayed alongside workflows in the slash command menu, improving discoverability. Commands with shared names are disambiguated instead of one shadowing the other.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "free-model-promotion-explanation",
+        "name": "Explain when a free model promotion ends",
+        "status": "stable",
+        "since": "4.1.5",
+        "description": "When a free model promotion ends or a free model is retired, cline now provides a dedicated notice explaining the situation and offers a button to pick another model. This replaces the previous generic error message with only a 'Retry' prompt.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "meta-muse-spark-1-2-contributor-cline-provider",
+        "name": "Offer `meta/muse-spark-1.2-contributor` on the Cline provider",
+        "status": "stable",
+        "since": "4.1.6",
+        "description": "The `meta/muse-spark-1.2-contributor` model is now available on the Cline provider, expanding the range of models accessible to users.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "refreshed-model-catalog",
+        "name": "Refreshed model catalog",
+        "status": "stable",
+        "since": "4.1.6",
+        "description": "The model catalog has been refreshed, likely including new models and updated information for existing ones, alongside the addition of `meta/muse-spark-1.2-contributor`.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "remote-mcp-oauth-authentication",
+        "name": "Remote MCP Servers OAuth Authentication",
+        "status": "stable",
+        "since": "0.0.10",
+        "description": "Remote MCP servers can now authenticate with OAuth from Settings → MCP. Users can authorize a server, see its auth status, and cancel or retry a pending authorization. Support for servers requiring pre-registered OAuth clients (client ID/secret) instead of dynamic registration has been added, and stored tokens are invalidated when a server's client configuration changes.",
+        "key_details": [
+          "Authenticate with OAuth from Settings → MCP",
+          "View auth status, cancel, or retry authorization",
+          "Supports pre-registered OAuth clients (client ID/secret)",
+          "Invalidates stored tokens on client configuration changes"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "connect-model-welcome-notice",
+        "name": "Connect a model notice on welcome screen",
+        "status": "stable",
+        "since": "0.0.10",
+        "description": "A new 'Connect a model' notice appears on the welcome screen when no provider has credentials. It offers one-click access to onboarding or model settings, reacts live to credential additions, and correctly recognizes Bedrock/Vertex and keyless local endpoints as already connected.",
+        "key_details": [
+          "Notice on welcome screen when no provider credentials",
+          "One-click to onboarding or model settings",
+          "Reacts live to credential changes",
+          "Recognizes Bedrock/Vertex and keyless local endpoints"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "get-api-key-links",
+        "name": "Get an API key links for popular providers",
+        "status": "stable",
+        "since": "0.0.10",
+        "description": "Added 'Get an API key' links for popular providers in onboarding and Settings → Models. Also includes a link to the Cline dashboard from the Cline API key form.",
+        "key_details": [
+          "Links for popular providers in onboarding and Settings → Models",
+          "Link to Cline dashboard from Cline API key form"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "onboarding-welcome-explanation",
+        "name": "Onboarding welcome step explains Cline",
+        "status": "stable",
+        "since": "0.0.10",
+        "description": "The onboarding welcome step now provides an explanation of what Cline is.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "new-keyboard-shortcuts",
+        "name": "New Keyboard Shortcuts",
+        "status": "stable",
+        "since": "0.0.10",
+        "description": "New keyboard shortcuts have been added: Cmd/Ctrl+N for a new session and Cmd/Ctrl+, for settings. The stop button is now visible and clickable, and Esc stops the current turn.",
+        "key_details": [
+          "Cmd/Ctrl+N for new session",
+          "Cmd/Ctrl+, for settings",
+          "Esc stops current turn"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "oauth-authentication-for-remote-mcp-servers",
+        "name": "OAuth Authentication for Remote MCP Servers",
+        "status": "stable",
+        "since": "0.0.10",
+        "description": "Remote MCP servers can now authenticate using OAuth from Settings → MCP. This includes authorizing a server, viewing its authentication status, and canceling or retrying pending authorizations. Support for servers requiring pre-registered OAuth clients (client ID/secret) is also added, and stored tokens are invalidated upon client configuration changes.",
+        "key_details": [
+          "Authenticate via Settings → MCP",
+          "Supports pre-registered OAuth clients",
+          "Token invalidation on client config change"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "improved-mcp-error-reporting",
+        "name": "Improved MCP Error Reporting",
+        "status": "stable",
+        "since": "0.0.10",
+        "description": "MCP errors are now displayed on the individual server entry rather than as a page-level error. Servers with invalid configurations are now surfaced with their specific error message instead of silently disappearing from the list.",
+        "key_details": [
+          "Errors shown per server",
+          "Invalid configurations are no longer hidden"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "failed-turn-error-reporting",
+        "name": "Failed Turn Error Reporting",
+        "status": "stable",
+        "since": "0.0.10",
+        "description": "Failed turns, such as sending a message without model credentials or any queued turn that fails, now display an error directly in the transcript. These errors are enriched with the underlying cause and provide a pointer to Settings → Models for resolution.",
+        "key_details": [
+          "Errors in transcript for failed turns",
+          "Includes underlying cause and link to Settings → Models"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "improved-stop-button-visibility-and-shortcuts",
+        "name": "Improved Stop Button Visibility and Shortcuts",
+        "status": "stable",
+        "since": "0.0.10",
+        "description": "The stop button is now consistently visible and clickable. Additionally, new keyboard shortcuts have been introduced: Esc to stop the current turn, Cmd/Ctrl+N for a new session, and Cmd/Ctrl+, for settings.",
+        "key_details": [
+          "Stop button always visible and clickable",
+          "Esc stops current turn",
+          "Cmd/Ctrl+N for new session",
+          "Cmd/Ctrl+, for settings"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "consistent-reasoning-controls-across-sdk-providers",
+        "name": "Consistent Reasoning Controls Across AI SDK Providers",
+        "status": "stable",
+        "since": "0.0.10",
+        "description": "Reasoning controls, including effort levels and thinking on/off settings, now resolve consistently across various AI SDK providers, including Ollama. This ensures these settings are honored wherever the provider supports them.",
+        "key_details": [
+          "Effort levels and thinking on/off honored consistently",
+          "Applies to Ollama and other AI SDK providers"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "vertex-ai-credential-refresh-fix",
+        "name": "Vertex AI Credential Refresh Fix",
+        "status": "stable",
+        "since": "0.0.10",
+        "description": "Vertex AI credential refreshes now correctly use the configured fetch mechanism, resolving issues with ADC authentication behind proxies and custom networking setups.",
+        "key_details": [
+          "Fixes ADC authentication behind proxies/custom networking for Vertex AI"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "refreshed-bundled-provider-and-model-catalog",
+        "name": "Refreshed Bundled Provider and Model Catalog",
+        "status": "stable",
+        "since": "0.0.10",
+        "description": "The bundled provider and model catalog has been refreshed to include the latest offerings.",
+        "key_details": [
+          "Updated list of available providers and models"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "view-changes-button-on-completion-rows",
+        "name": "View Changes Button on Completion Rows",
+        "status": "stable",
+        "since": "4.1.7",
+        "description": "Restores the 'View Changes' button on completion rows, backed by SDK checkpoints, allowing users to review everything a task touched from the completion card.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "copy-button-on-turn-final-response-rows",
+        "name": "Copy Button on Turn-Final Response Rows",
+        "status": "stable",
+        "since": "4.1.7",
+        "description": "Brings back a copy button on turn-final response rows for easier content extraction.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "pre-registered-oauth-clients-for-remote-mcp-servers",
+        "name": "Pre-registered OAuth Clients for Remote MCP Servers",
+        "status": "stable",
+        "since": "4.1.7",
+        "description": "Adds support for pre-registered OAuth clients for remote MCP servers, addressing setups where dynamic client registration is not available.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "restore-view-changes-button",
+        "name": "Restore 'View Changes' button on completion rows",
+        "status": "stable",
+        "since": "4.1.7",
+        "description": "The 'View Changes' button on completion rows has been restored, backed by SDK checkpoints, allowing users to review all modifications a task made directly from the completion card.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "copy-button-on-final-response-rows",
+        "name": "Copy button on turn-final response rows",
+        "status": "stable",
+        "since": "4.1.7",
+        "description": "A copy button has been added back to turn-final response rows.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "pre-registered-oauth-clients-for-remote-mcp",
+        "name": "Support for pre-registered OAuth clients for remote MCP servers",
+        "status": "stable",
+        "since": "4.1.7",
+        "description": "cline now supports pre-registered OAuth clients for remote MCP servers, which is useful in setups where dynamic client registration is not available.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "restore-view-changes-button-sdk-checkpoints",
+        "name": "Restore 'View Changes' Button with SDK Checkpoints",
+        "status": "stable",
+        "since": "4.1.7",
+        "description": "The 'View Changes' button on completion rows has been restored, now backed by SDK checkpoints. This allows users to review all modifications a task made directly from the completion card.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "copy-button-turn-final-response-rows",
+        "name": "Copy Button on Turn-Final Response Rows",
+        "status": "stable",
+        "since": "4.1.7",
+        "description": "A copy button has been added to turn-final response rows, enabling easy copying of the final output.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "pre-registered-oauth-clients-remote-mcp",
+        "name": "Pre-registered OAuth Clients for Remote MCP Servers",
+        "status": "stable",
+        "since": "4.1.7",
+        "description": "Support for pre-registered OAuth clients has been added for remote MCP servers. This is beneficial for setups where dynamic client registration is not available.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "vertex-model-id-manual-entry",
+        "name": "Enter any Vertex model ID by hand",
+        "status": "stable",
+        "since": "4.1.8",
+        "description": "Users can now manually enter any Vertex model ID, including those not yet listed in the catalog, providing immediate access to new or unlisted models.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "fable-5-vertex-support",
+        "name": "Support Fable 5 on Vertex",
+        "status": "stable",
+        "since": "4.1.8",
+        "description": "Added support for the Fable 5 model when using the Vertex provider.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "individual-tool-call-rows",
+        "name": "Individual Tool Call Rows in Transcript",
+        "status": "stable",
+        "since": "0.0.12",
+        "description": "Every tool call now gets its own row in the transcript, with its own icon, status, and expandable detail, replacing the previous grouping of multiple tool calls. Commands are displayed like a terminal with captured output on expand, and edits show inline diffs per hunk.",
+        "key_details": [
+          "Each tool call has a dedicated row",
+          "Includes icon, status, and expandable details",
+          "Commands render as terminal output (`$ bun test`) with expandable captured output",
+          "Edits show inline diffs, one per hunk"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "tool-row-status-highlighting",
+        "name": "Tool Row Status Highlighting",
+        "status": "stable",
+        "since": "0.0.12",
+        "description": "Running tool rows are highlighted in brand violet, settle to gray upon completion, and errors remain red.",
+        "key_details": [
+          "Running tools: brand violet",
+          "Completed tools: gray",
+          "Errored tools: red"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "syntax-highlighted-file-diffs",
+        "name": "Syntax-Highlighted File Diffs",
+        "status": "stable",
+        "since": "0.0.12",
+        "description": "File diffs, both in chat rows and the diff panel, now render through a shared syntax-highlighted renderer that follows the app's theme instead of the browser's.",
+        "key_details": [
+          "Shared renderer for all diffs",
+          "Syntax highlighting",
+          "Follows app's theme"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "refreshed-ui-layout-typography",
+        "name": "Refreshed UI Layout and Typography",
+        "status": "stable",
+        "since": "0.0.12",
+        "description": "The session transcript layout, message surfaces, and composer have been refreshed with new Inter and Geist Mono typography.",
+        "key_details": [
+          "Updated session transcript layout",
+          "Updated message surfaces",
+          "Updated composer",
+          "New typography: Inter and Geist Mono"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "persistent-thinking-indicator",
+        "name": "Persistent Thinking Indicator",
+        "status": "stable",
+        "since": "0.0.12",
+        "description": "The thinking indicator now remains visible during quiet periods of a turn, such as when tool arguments are streaming, preventing the turn from appearing frozen.",
+        "key_details": [
+          "Thinking indicator stays active during tool argument streaming",
+          "Prevents UI from appearing frozen"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "unobtrusive-message-actions",
+        "name": "Unobtrusive Message Actions and Full Opacity Panels",
+        "status": "stable",
+        "since": "0.0.12",
+        "description": "Message actions (copy, fork, timestamp) no longer overlap with message text, and expanded panels render at full opacity instead of being faded.",
+        "key_details": [
+          "Message actions no longer crowd text",
+          "Expanded panels render at full opacity"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "welcome-screen-ui-refinements",
+        "name": "Welcome Screen UI Refinements",
+        "status": "stable",
+        "since": "0.0.12",
+        "description": "On the welcome screen, the chat input is now centered and top-aligned, and prompt suggestions are temporarily hidden.",
+        "key_details": [
+          "Chat input centered and top-aligned",
+          "Prompt suggestions temporarily hidden"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "web-search-calls-render-in-transcript",
+        "name": "Web search calls and results render in transcript",
+        "status": "stable",
+        "since": "3.0.55",
+        "description": "Web search calls and their results from models that run search natively now render in the transcript.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "crusoe-provider-support",
+        "name": "Crusoe Provider Support",
+        "status": "stable",
+        "since": "3.0.55",
+        "description": "The model catalog has been refreshed, adding Crusoe as a new provider and updating model lists and per-provider default models across the board.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "web-search-for-models",
+        "name": "Web Search for Models",
+        "status": "stable",
+        "since": "4.1.10",
+        "description": "Allows models that support web search to perform searches during a task. This feature can be toggled on in Feature Settings. Search calls and their results are displayed in the conversation and persist across reloads.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "macos-native-notifications",
+        "name": "macOS Native Notifications",
+        "status": "stable",
+        "since": "0.0.14",
+        "description": "The app now posts native macOS notifications when a task finishes or needs your input, allowing Cline to work in the background. These can be configured under Settings → Notifications.",
+        "key_details": [
+          "Configurable via Settings → Notifications",
+          "Notifies for task completion and input requests"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "voice-input-composer",
+        "name": "Voice Input in Composer",
+        "status": "stable",
+        "since": "0.0.14",
+        "description": "Dictate into the composer using the microphone button, and your speech is transcribed as you talk. Transcription uses the currently configured provider and model.",
+        "key_details": [
+          "Microphone button in composer",
+          "Uses configured provider and model for transcription"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "streaming-command-output",
+        "name": "Streaming Command Output",
+        "status": "stable",
+        "since": "0.0.14",
+        "description": "Commands now stream their output into the transcript as they run, rather than appearing all at once. Output retains terminal colors, is scrollable, and long-running commands can be sent to the background with 'Proceed while running'.",
+        "key_details": [
+          "Output streams in real-time",
+          "Preserves terminal colors",
+          "Scrollable output",
+          "Option to 'Proceed while running' for background execution"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "inline-image-generation",
+        "name": "Inline Image Generation",
+        "status": "stable",
+        "since": "0.0.14",
+        "description": "Models that support image generation can now produce images during a task, and these images render inline within the transcript.",
+        "key_details": [
+          "Requires models with image generation capabilities",
+          "Images render directly in the transcript"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "collapsed-agent-run-summary",
+        "name": "Collapsed Agent Run Summary",
+        "status": "stable",
+        "since": "0.0.14",
+        "description": "Finished agent runs now collapse into a single summary (e.g., 'Worked for 4m 12s and made 14 tool calls') that can be expanded. This keeps the final answer in view without being buried by working rows.",
+        "key_details": [
+          "Summarizes agent activity",
+          "Expandable for full details",
+          "Improves readability of final answers"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "redesigned-question-card",
+        "name": "Redesigned Agent Question Card",
+        "status": "stable",
+        "since": "0.0.14",
+        "description": "The question card shown when the agent needs a decision has been redesigned. Options are explicitly selected and submitted with a button, multiple-choice questions are supported, and arrow-key/A–Z shortcuts are available.",
+        "key_details": [
+          "Explicit option selection and submission",
+          "Supports multiple-choice questions",
+          "Arrow-key and A–Z shortcuts for selection",
+          "Removes internal request IDs, iteration counts, and timestamps"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "cline-code-beta-app",
+        "name": "Cline Code Beta App",
+        "status": "experimental",
+        "since": "0.0.14",
+        "description": "A separate 'Cline Code Beta' app is now available, installing side-by-side with the main app and tracking the experimental branch. It identifies itself as beta in the sidebar, Settings, window title, and tray.",
+        "key_details": [
+          "Separate installation for experimental branch",
+          "Identified as 'beta' in UI elements"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "image-generation-support",
+        "name": "Image Generation Support",
+        "status": "stable",
+        "since": "3.0.56",
+        "description": "Models that support image generation can now produce media during a turn. The TUI saves each generated file to a temporary path and prints it so you can open it with your usual tools, HTML session exports embed images inline, and ACP clients receive generated images as image content.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "new-model-providers",
+        "name": "New Model Providers",
+        "status": "stable",
+        "since": "3.0.56",
+        "description": "The model catalog has been refreshed to include new providers: AMD, Arcee, Echo, Jalapeno, Kosmik, LLM Gateway, RunInfra, and SCNet. This update also includes updated model lists, pricing, and per-provider default models across the board.",
+        "key_details": [
+          "AMD",
+          "Arcee",
+          "Echo",
+          "Jalapeno",
+          "Kosmik",
+          "LLM Gateway",
+          "RunInfra",
+          "SCNet"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "image-generation-during-task",
+        "name": "Image Generation During Task",
+        "status": "stable",
+        "since": "4.1.11",
+        "description": "Models that support image generation can now generate images during a task, and these images will render inline in the conversation.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "refreshed-built-in-model-catalog",
+        "name": "Refreshed Built-in Model Catalog",
+        "status": "stable",
+        "since": "4.1.14",
+        "description": "The built-in model catalog has been refreshed with several new model entries, expanding the range of available models for users.",
+        "key_details": [
+          "Includes Claude Fable 5",
+          "Includes Grok 4.6 on Vertex",
+          "Includes several DeepSeek V4 Flash variants (including vision preview)",
+          "Includes MiMo v2.5",
+          "Includes Qwen3.8 27B",
+          "Includes Gemma 4 26B",
+          "Includes LongCat 2.0",
+          "Includes Nemotron 3.5 Lightning",
+          "Includes Thinking Machines' Inkling models"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "claude-fable-5-model-support",
+        "name": "Claude Fable 5 Model Support",
+        "status": "stable",
+        "since": "4.1.14",
+        "description": "Added support for the Claude Fable 5 model in the built-in model catalog.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "grok-4-6-vertex-model-support",
+        "name": "Grok 4.6 on Vertex Model Support",
+        "status": "stable",
+        "since": "4.1.14",
+        "description": "Added support for the Grok 4.6 model available on Vertex AI in the built-in model catalog.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "deepseek-v4-flash-variants-model-support",
+        "name": "DeepSeek V4 Flash Variants Model Support",
+        "status": "stable",
+        "since": "4.1.14",
+        "description": "Added support for several DeepSeek V4 Flash variants, including the vision preview, in the built-in model catalog.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "mimo-v2-5-model-support",
+        "name": "MiMo v2.5 Model Support",
+        "status": "stable",
+        "since": "4.1.14",
+        "description": "Added support for the MiMo v2.5 model in the built-in model catalog.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "qwen3-8-27b-model-support",
+        "name": "Qwen3.8 27B Model Support",
+        "status": "stable",
+        "since": "4.1.14",
+        "description": "Added support for the Qwen3.8 27B model in the built-in model catalog.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "gemma-4-26b-model-support",
+        "name": "Gemma 4 26B Model Support",
+        "status": "stable",
+        "since": "4.1.14",
+        "description": "Added support for the Gemma 4 26B model in the built-in model catalog.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "longcat-2-0-model-support",
+        "name": "LongCat 2.0 Model Support",
+        "status": "stable",
+        "since": "4.1.14",
+        "description": "Added support for the LongCat 2.0 model in the built-in model catalog.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "nemotron-3-5-lightning-model-support",
+        "name": "Nemotron 3.5 Lightning Model Support",
+        "status": "stable",
+        "since": "4.1.14",
+        "description": "Added support for the Nemotron 3.5 Lightning model in the built-in model catalog.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "thinking-machines-inkling-models-support",
+        "name": "Thinking Machines' Inkling Models Support",
+        "status": "stable",
+        "since": "4.1.14",
+        "description": "Added support for Thinking Machines' Inkling models in the built-in model catalog.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "agentrouter-provider",
+        "name": "AgentRouter Provider",
+        "status": "stable",
+        "since": "3.0.58",
+        "description": "Adds support for AgentRouter as a new model provider.",
+        "key_details": [],
+        "source_url": "https://github.com/cline/cline/compare/cli-v3.0.57...cli-v3.0.58"
+      },
+      {
+        "id": "opper-provider",
+        "name": "Opper Provider",
+        "status": "stable",
+        "since": "3.0.58",
+        "description": "Adds support for Opper as a new model provider.",
+        "key_details": [],
+        "source_url": "https://github.com/cline/cline/compare/cli-v3.0.57...cli-v3.0.58"
+      },
+      {
+        "id": "customize-hub-with-tabs",
+        "name": "Customize Hub with Tabbed Sections and Live Counts",
+        "status": "stable",
+        "since": "0.0.17",
+        "description": "Plugins, MCP, Skills, Rules, Hooks, and Tools are now consolidated into a single 'Customize' hub. This hub features tabbed sections for each category and displays live counts. Catalog-backed tabs show installed items, followed by an inline 'Browse' section, making newly installed items immediately visible. The separate 'Marketplace' page has been removed.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "redesigned-models-page",
+        "name": "Redesigned Models Page",
+        "status": "stable",
+        "since": "0.0.17",
+        "description": "The Models page has been redesigned to group providers into 'Connected', 'Popular', and 'All' categories. It now displays their authentication type and configuration status instead of per-row toggles. OAuth providers offer a browser sign-in flow, with a collapsed manual-key escape hatch where supported, and explicit 'Connect', 'Disconnect', and 'Sign out' actions.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "dedicated-voice-settings-page",
+        "name": "Dedicated Voice Settings Page",
+        "status": "stable",
+        "since": "0.0.17",
+        "description": "Voice input has been moved to its own 'Settings → Voice' page. This page only offers connected transcription-capable providers and preselects a default model. The composer's microphone button now only appears once a voice model is configured.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "project-grouped-sidebar-sessions",
+        "name": "Sidebar Sessions Grouped by Project",
+        "status": "stable",
+        "since": "0.0.17",
+        "description": "Sidebar sessions are now always grouped by project. Pinned sessions lead each group, and scheduled sessions are marked by an inline clock icon.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "labeled-new-schedule-customize-rows",
+        "name": "Labeled 'New', 'Schedule', and 'Customize' Rows",
+        "status": "stable",
+        "since": "0.0.17",
+        "description": "The 'New', 'Schedule', and 'Customize' actions now each have their own labeled row below the logo. 'New' starts a fresh task and places the cursor directly in the composer.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "session-search-dialog",
+        "name": "Session Search Dialog",
+        "status": "stable",
+        "since": "0.0.17",
+        "description": "Session search has been moved into a dialog, accessible via the search icon in the logo row. It now searches the full session history instead of only the sessions already loaded in the sidebar.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "suggested-schedule-templates",
+        "name": "Suggested Schedule Templates",
+        "status": "stable",
+        "since": "0.0.17",
+        "description": "Added suggested schedule templates to the Schedule page.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "add-provider-dialog",
+        "name": "Add Provider Dialog",
+        "status": "stable",
+        "since": "0.0.17",
+        "description": "The 'Add Provider' action now opens a dialog instead of swapping out the entire page.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "unified-desktop-notifications-settings",
+        "name": "Unified Desktop Notifications Settings",
+        "status": "stable",
+        "since": "0.0.17",
+        "description": "Desktop notifications are now consolidated into a single section under 'General' settings. The 'Event/Notify/Sound' matrix is no longer a peer of other settings like 'Dark mode'.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "sidebar-project-grouping-toggle",
+        "name": "Sidebar Project Grouping Toggle",
+        "status": "stable",
+        "since": "0.0.18",
+        "description": "A one-click toggle to switch the sidebar from time-sorted to project grouping. The old dropdown for this functionality has been removed.",
+        "key_details": [],
+        "source_url": "https://github.com/cline/cline/compare/desktop-v0.0.17...desktop-v0.0.18"
+      },
+      {
+        "id": "marketplace-page",
+        "name": "Dedicated Marketplace Page",
+        "status": "stable",
+        "since": "0.0.18",
+        "description": "A new dedicated Marketplace page for browsing and installing plugins, MCP servers, and skills. It features a single list with type-filter and tag chips.",
+        "key_details": [
+          "Replaces the browsing functionality previously in 'Customize'.",
+          "Links to and from the 'Customize' page."
+        ],
+        "source_url": "https://github.com/cline/cline/compare/desktop-v0.0.17...desktop-v0.0.18"
+      },
+      {
+        "id": "cline-desktop-on-windows",
+        "name": "Cline Desktop now ships on Windows",
+        "status": "stable",
+        "since": "0.0.20",
+        "description": "Cline Desktop is now available on Windows, with a code-signed x64 installer. Installed apps auto-update on the same feed as macOS.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "inline-image-rendering-from-tools",
+        "name": "Inline Image Rendering from Tool Results",
+        "status": "stable",
+        "since": "0.0.20",
+        "description": "Tool results that return images (e.g., screenshots from browser or MCP tools) now render as inline images. These images can be clicked to expand, and a carousel is provided for stepping through multiple images, replacing raw base64 text output.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "github-integration-onboarding-step",
+        "name": "GitHub Integration Step in Onboarding",
+        "status": "stable",
+        "since": "0.0.20",
+        "description": "Onboarding now includes a new step for GitHub integration.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "agent-created-schedules-centralized",
+        "name": "Centralized Agent-Created Schedules",
+        "status": "stable",
+        "since": "0.0.20",
+        "description": "Agent-created schedules are now stored in a single user-level home directory (`~/.cline/schedules`) instead of being scattered across chat folders. They also now appear on the Schedules page.",
+        "key_details": [
+          "Location: `~/.cline/schedules`"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "finished-scheduled-session-final-answer",
+        "name": "Final Answer Surfacing for Finished Scheduled Sessions",
+        "status": "stable",
+        "since": "0.0.20",
+        "description": "A finished scheduled session now surfaces its final answer. The completing step auto-expands, is labeled 'Scheduled task completed' (or failed), and its summary renders as markdown.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "suggested-routine-templates-final-report",
+        "name": "Suggested Routine Templates Request Final Report",
+        "status": "stable",
+        "since": "0.0.20",
+        "description": "Suggested routine templates now ask for a specific final report, ensuring a scheduled run ends with a readable output.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "settings-about-page",
+        "name": "Settings About Page",
+        "status": "stable",
+        "since": "0.0.37",
+        "description": "A new 'About' page in Settings that displays version and channel information, provides 'Check for updates' and 'Restart to update' buttons, lists release notes for recent versions with links to GitHub releases and the full changelog, and includes a 'Report an issue' option.",
+        "key_details": [],
+        "source_url": "https://github.com/cline/cline/compare/desktop-v0.0.36...desktop-v0.0.37"
+      },
+      {
+        "id": "whats-new-dialog-after-update",
+        "name": "What's New Dialog After Update",
+        "status": "stable",
+        "since": "0.0.37",
+        "description": "A one-time 'What's new' dialog that appears after an update to highlight recent features. The initial dialog covers SSH remotes, worktrees, pull request status in the composer, and parallel sub-agents. This dialog can be re-accessed via 'Highlights' on the About page.",
+        "key_details": [],
+        "source_url": "https://github.com/cline/cline/compare/desktop-v0.0.36...desktop-v0.0.37"
+      },
+      {
+        "id": "bee-heossi-provider",
+        "name": "Bee (by HEOSSI) Provider",
+        "status": "stable",
+        "since": "4.1.22",
+        "description": "Added support for the Bee provider by HEOSSI.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "pareto-inference-provider",
+        "name": "Pareto Inference Provider",
+        "status": "stable",
+        "since": "4.1.22",
+        "description": "Added support for the Pareto Inference provider, requiring `PARETO_API_KEY`.",
+        "key_details": [
+          "Requires `PARETO_API_KEY` environment variable."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "cloud-sessions-model-picker-updates",
+        "name": "Cloud Sessions Model Picker Updates",
+        "status": "stable",
+        "since": "0.0.41",
+        "description": "Cloud sessions can now access the same models as Cline on the web. The model picker now lists 'Cline Usage-Billing', 'ClinePass', and 'ClineFree' models (organization accounts do not get ClinePass), replacing the previous 'Cline only' listing. A new Cloud session will wait for a model to be ready before sending, and users can retry if the model list fails to load.",
+        "key_details": [
+          "Model picker now shows 'Cline Usage-Billing', 'ClinePass', and 'ClineFree' models.",
+          "Organization accounts do not have 'ClinePass' models.",
+          "New Cloud sessions wait for model readiness before sending.",
+          "Option to retry model list loading if it fails."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "unsent-prompt-persistence",
+        "name": "Unsent Prompt Persistence Across Sessions",
+        "status": "stable",
+        "since": "0.0.41",
+        "description": "An unsent prompt is no longer lost when switching between sessions. Using 'New' in the sidebar will return to an unfinished draft, while 'Cmd/Ctrl+N' will still start a fresh session.",
+        "key_details": [
+          "Unsent prompts are preserved when switching sessions.",
+          "'New' in the sidebar reopens the unfinished draft.",
+          "'Cmd/Ctrl+N' starts a fresh session."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "sidebar-highlighting-for-open-sessions",
+        "name": "Sidebar Highlighting for Open Sessions",
+        "status": "stable",
+        "since": "0.0.41",
+        "description": "Sessions started in the app are now highlighted in the sidebar while open, extending this behavior beyond just sessions reopened from history. Additionally, these sessions are no longer marked as unread by their own messages.",
+        "key_details": [
+          "Sessions started in the app are highlighted in the sidebar.",
+          "Highlighting applies to all open sessions, not just those reopened from history.",
+          "Open sessions are no longer marked unread by their own messages."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "customize-connectors-ui-overhaul",
+        "name": "Customize Connectors UI Overhaul",
+        "status": "stable",
+        "since": "0.0.41",
+        "description": "The 'Customize → Connectors' section has been redesigned to match the Skills, Plugins, and MCP tabs. It now includes search functionality, a refresh button, and an 'Installed' section. A new 'Suggested' section offers ready-made connector combinations with example prompts and one-click installation.",
+        "key_details": [
+          "New UI for 'Customize → Connectors' matching other configuration tabs.",
+          "Includes search, refresh button, and 'Installed' section.",
+          "New 'Suggested' section with pre-configured connector combos.",
+          "Suggested combos include example prompts and one-click install."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "marketplace-item-type-display",
+        "name": "Marketplace Item Type Display",
+        "status": "stable",
+        "since": "0.0.41",
+        "description": "Marketplace rows now display the type of each item, making it easier to distinguish between similarly named entries (e.g., Figma MCP server vs. Figma connector). Category filters have been consolidated into a single dropdown.",
+        "key_details": [
+          "Marketplace rows show item types.",
+          "Helps differentiate items with the same name.",
+          "Category filters are now in a single dropdown."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "connector-details-tool-count",
+        "name": "Connector Details Show Tools Added to New Sessions",
+        "status": "stable",
+        "since": "0.0.41",
+        "description": "A connector's details now accurately show the number of tools it adds to new sessions, rather than displaying the catalog's total tool count.",
+        "key_details": [
+          "Connector details now show tools added to new sessions.",
+          "Replaces the previous display of the catalog's total tool count."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "agent-teams-long-session-performance",
+        "name": "Agent Teams Performance in Long Sessions",
+        "status": "stable",
+        "since": "0.0.41",
+        "description": "Agent teams now maintain performance in long sessions and while teammates are streaming. Existing team data is automatically compacted the first time it's opened to improve efficiency.",
+        "key_details": [
+          "Improved agent team performance in long sessions.",
+          "Better performance during teammate streaming.",
+          "Existing team data is automatically compacted upon first opening."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "connector-brand-logos",
+        "name": "Connector Brand Logos",
+        "status": "stable",
+        "since": "0.0.42",
+        "description": "Connectors now display their brand logo in both the Customize section and Marketplace rows.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "connector-availability-messaging",
+        "name": "Connector Availability Messaging",
+        "status": "stable",
+        "since": "0.0.42",
+        "description": "If connectors are not available, the Connectors tab now provides clear messaging explaining why. This includes a sign-in card for signed-out users or a rollout notice with a 'Check again' option for accounts without beta access.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "whats-new-dialog-connectors",
+        "name": "What's new dialog for Connectors",
+        "status": "stable",
+        "since": "0.0.43",
+        "description": "Existing users will receive a one-time 'What's new' dialog introducing Connectors, featuring connector logos, a clickable example prompt, and an 'Open Connectors' button. This dialog can be replayed from 'Settings → About → Show what's new'.",
+        "key_details": [
+          "One-time display for existing users",
+          "Introduces Connectors feature",
+          "Includes connector logos and example prompt",
+          "Provides an 'Open Connectors' button",
+          "Replayable via 'Settings → About → Show what's new'"
+        ],
+        "source_url": "https://github.com/cline/cline/compare/desktop-v0.0.42...desktop-v0.0.43"
+      },
+      {
+        "id": "claude-haiku-5-5-model-support",
+        "name": "Claude Haiku 5.5 Model Support",
+        "status": "stable",
+        "since": "0.0.45",
+        "description": "Added support for the Claude Haiku 5.5 model to the model catalog.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "ai-ml-api-provider",
+        "name": "AI/ML API Provider",
+        "status": "stable",
+        "since": "4.1.24",
+        "description": "New provider added to the model catalog.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "lowrouter-provider",
+        "name": "LowRouter Provider",
+        "status": "stable",
+        "since": "4.1.24",
+        "description": "New provider added to the model catalog.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "prime-inference-provider",
+        "name": "Prime Inference Provider",
+        "status": "stable",
+        "since": "4.1.24",
+        "description": "New provider added to the model catalog.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "step-5-preview-model",
+        "name": "Step 5 Preview Model",
+        "status": "stable",
+        "since": "4.1.24",
+        "description": "Added to the Cline free list of models.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "cline-cloud-sessions",
+        "name": "Cline Cloud sessions",
+        "status": "experimental",
+        "since": "4.1.25",
+        "description": "Run a task in a hosted sandbox on a GitHub repository and branch you pick. Cloud tasks show in Recent and History with their status, notify you when they finish, and keep running after you close your editor.",
+        "key_details": [
+          "Gradual rollout",
+          "Turn on in Settings",
+          "Hosted sandbox environment",
+          "Integrates with GitHub repos and branches",
+          "Tasks persist and run in the background"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "gpt-6-model-support",
+        "name": "GPT-6 Model Support",
+        "status": "stable",
+        "since": "0.0.48",
+        "description": "GPT-6 models, including `gpt-6-sol` and `gpt-6.1-sol`, are now supported on OpenAI and Azure OpenAI-compatible endpoints. Previously, requests for these models were rejected due to incorrect parameter handling (sending `max_tokens` instead of `max_completion_tokens`).",
+        "key_details": [
+          "Supports `gpt-6-sol` and `gpt-6.1-sol` models.",
+          "Works with OpenAI and Azure OpenAI-compatible endpoints.",
+          "Fixes an issue where `max_tokens` was sent instead of `max_completion_tokens`."
+        ],
+        "source_url": "https://github.com/cline/cline/compare/desktop-v0.0.47...desktop-v0.0.48"
+      },
+      {
+        "id": "commandcode-provider",
+        "name": "CommandCode Provider",
+        "status": "stable",
+        "since": "0.0.48",
+        "description": "The CommandCode provider has been added to the refreshed model catalog.",
+        "key_details": [],
+        "source_url": "https://github.com/cline/cline/compare/desktop-v0.0.47...desktop-v0.0.48"
+      },
+      {
+        "id": "reflection-provider",
+        "name": "Reflection Provider",
+        "status": "stable",
+        "since": "0.0.48",
+        "description": "The Reflection provider has been added to the refreshed model catalog.",
+        "key_details": [],
+        "source_url": "https://github.com/cline/cline/compare/desktop-v0.0.47...desktop-v0.0.48"
+      },
+      {
+        "id": "cloud-tasks-local-cloud-toggle",
+        "name": "Cloud Tasks Local | Cloud Toggle",
+        "status": "stable",
+        "since": "4.1.26",
+        "description": "A new toggle in Settings > API Configuration allows switching between Local and Cloud models for new cloud tasks. The Cloud model selection is saved separately from local models. Clicking the model label in a cloud session's composer opens the cloud model selection.",
+        "key_details": [
+          "Location: Settings > API Configuration",
+          "Functionality: Toggles between local and cloud model selection for new cloud tasks.",
+          "Cloud model selection: Saved separately from local models.",
+          "Composer integration: Clicking model label in cloud session composer opens cloud model selection."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "cloud-sandbox-progress-card",
+        "name": "Cloud Sandbox Progress Card",
+        "status": "stable",
+        "since": "4.1.26",
+        "description": "When starting or resuming a cloud sandbox, a progress card is displayed. This card shows the repository, branch, and steps involved (start sandbox, clone repository, start agent). It automatically collapses once the agent has successfully started.",
+        "key_details": [
+          "Visibility: Shown when starting or resuming a cloud sandbox.",
+          "Information displayed: Repository, branch, and steps (start sandbox, clone repository, start agent).",
+          "Behavior: Collapses automatically once the agent starts."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "liquid-inference-provider",
+        "name": "Liquid Inference Provider",
+        "status": "stable",
+        "since": "4.1.26",
+        "description": "Added support for the Liquid Inference provider to the model catalog.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "munito-ai-provider",
+        "name": "Munito AI Provider",
+        "status": "stable",
+        "since": "4.1.26",
+        "description": "Added support for the Munito AI provider to the model catalog.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "reflection-beam-model",
+        "name": "Reflection Beam Model",
+        "status": "stable",
+        "since": "4.1.26",
+        "description": "Added Reflection Beam to the Cline free model list.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "laguna-s-2-1-model",
+        "name": "Laguna S 2.1 Model",
+        "status": "stable",
+        "since": "4.1.26",
+        "description": "Added Laguna S 2.1 to the Cline free model list.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "minimax-m3-1-flash-model",
+        "name": "MiniMax M3.1 Flash Model",
+        "status": "stable",
+        "since": "4.1.26",
+        "description": "Added MiniMax M3.1 Flash to ClinePass.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "deepseek-v4-1-flash-1017-model",
+        "name": "DeepSeek V4.1 Flash 1017 Model",
+        "status": "stable",
+        "since": "4.1.26",
+        "description": "Added DeepSeek V4.1 Flash 1017 to ClinePass.",
+        "key_details": [],
+        "source_url": ""
+      }
+    ],
+    "commands": [
+      {
+        "name": "cline mcp uninstall",
+        "syntax": "cline mcp uninstall",
+        "description": "Removes an installed MCP server.",
+        "since": "3.0.52",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "/compact",
+        "syntax": "/compact",
+        "description": "Summarizes the conversation history to free up context. The summary is generated using the session's provider settings and is not sent to the model as a prompt.",
+        "since": "0.0.42",
+        "status": "stable",
+        "source_url": ""
+      }
+    ],
+    "flags": [],
+    "env_vars": [
+      {
+        "name": "PARETO_API_KEY",
+        "purpose": "API key for the Pareto Inference provider.",
+        "status": "stable",
+        "since": "4.1.22",
+        "source_url": ""
+      }
+    ],
+    "models": [],
+    "breaking_changes": [
+      {
+        "id": "remove-foreground-terminal-mode",
+        "version": "3.80.0",
+        "title": "Remove Foreground Terminal Mode",
+        "description": "Foreground terminal mode has been removed. All task command execution now defaults to background mode, removing the VS Code integrated terminal dependency and related settings UI.",
+        "affected": [
+          "Task command execution",
+          "VS Code integrated terminal dependency",
+          "Related settings UI"
+        ],
+        "migration": "No migration is required. All task commands will now execute in the background.",
+        "source_url": ""
+      },
+      {
+        "id": "model-initiated-plan-to-act-switching-removal",
+        "version": "4.1.4",
+        "title": "Removal of Model-Initiated Plan-to-Act Switching",
+        "description": "The model will no longer automatically switch from plan mode to act mode. Switching out of plan mode is now exclusively user-driven.",
+        "affected": [
+          "Plan/Act mode behavior",
+          "Model autonomy in decision-making"
+        ],
+        "migration": "Users must now explicitly trigger the switch from plan mode to act mode. The model will no longer make this decision mid-turn.",
+        "source_url": ""
+      },
+      {
+        "id": "hard-block-file-editing-shell-commands-in-plan-mode",
+        "version": "4.1.4",
+        "title": "Hard-blocking File-Editing Shell Commands in Plan Mode",
+        "description": "File-editing shell commands are now hard-blocked in plan mode. This includes file manipulation, in-place editors, redirection to files, mutating git subcommands, and package installs. Read-only investigation commands are still permitted.",
+        "affected": [
+          "Shell command execution in plan mode",
+          "File system interactions during planning"
+        ],
+        "migration": "Users must switch out of plan mode to execute any shell commands that modify files or system state. Attempting to run such commands in plan mode will result in refusal.",
+        "source_url": ""
+      },
+      {
+        "id": "remove-model-initiated-plan-to-act-switching",
+        "version": "4.1.4",
+        "title": "Model-initiated plan-to-act switching removed",
+        "description": "Switching out of plan mode is now driven by the user, not by the model deciding mid-turn. This means the model will no longer automatically transition from planning to acting.",
+        "affected": [
+          "Plan mode behavior",
+          "User interaction with plan-to-act transitions"
+        ],
+        "migration": "Users will now need to explicitly drive the transition from plan mode to act mode. The model will no longer initiate this switch.",
+        "source_url": ""
+      },
+      {
+        "id": "yolo-mode-removal",
+        "version": "4.1.8",
+        "title": "Removal of Yolo Mode Toggle",
+        "description": "The 'Yolo Mode' toggle has been removed as it was a cosmetic feature with no functional impact on the approval path. The auto-approve menu is now the sole control for unattended runs.",
+        "affected": [
+          "Users who relied on the 'Yolo Mode' toggle for visual confirmation of unattended runs."
+        ],
+        "migration": "Existing configurations that had 'Yolo Mode' or 'auto-approve-all' turned on will be automatically migrated to auto-approve every action, ensuring continued unattended operation. No manual migration steps are required, but users should now use the auto-approve menu for all unattended run configurations.",
+        "source_url": ""
+      },
+      {
+        "id": "removed-agent-todo-tool-and-agenda-panel",
+        "version": "0.0.17",
+        "title": "Removal of Agent's Todo Tool and Agenda Panel",
+        "description": "The agent's 'todo' tool and the 'Agenda' panel have been removed from cline. Scheduled tasks created previously are unaffected and will continue to function.",
+        "affected": [
+          "Agent's 'todo' tool",
+          "Agenda panel"
+        ],
+        "migration": "Users who relied on the 'todo' tool or 'Agenda' panel will need to find alternative methods for managing tasks. Existing scheduled tasks will continue to run.",
+        "source_url": ""
+      },
+      {
+        "id": "marketplace-page-removed",
+        "version": "0.0.17",
+        "title": "Marketplace Page Removed",
+        "description": "The separate Marketplace page has been removed. Its functionality is now integrated into the new 'Customize' hub, where catalog-backed tabs show installed items and an inline 'Browse' section allows for discovery.",
+        "affected": [
+          "Marketplace page"
+        ],
+        "migration": "Users should now access catalog items and browse for new plugins, MCPs, skills, rules, hooks, and tools directly within the 'Customize' hub.",
+        "source_url": ""
+      },
+      {
+        "id": "vultr-model-id-rename",
+        "version": "4.1.23",
+        "title": "Vultr Model IDs Renamed Upstream",
+        "description": "Vultr's model IDs have been renamed upstream. If you have a Vultr model pinned, you may need to re-select it in Cline's model catalog. If you use Vultr without pinning a model, expect a different default model.",
+        "affected": [
+          "Vultr provider users with pinned models",
+          "Vultr provider users relying on default models"
+        ],
+        "migration": "Users with pinned Vultr models should re-select their desired model from the refreshed model catalog. Users relying on default Vultr models should be aware that the default may have changed.",
+        "source_url": ""
+      },
+      {
+        "id": "default-model-changes",
+        "version": "4.1.24",
+        "title": "Default Model Changes for Various Providers",
+        "description": "The default models for numerous providers have changed. If you are using any of the affected providers (302.AI, Cortecs, CrossModel, DevPass, DigitalOcean, Eden AI, GitHub Copilot, Google Vertex AI, LLM Gateway, Meta, Moark, NanoGPT, NEAR AI Cloud, Neuralwatt, Novita AI, Ofox, OpenCode Go, Requesty, Vivgrid) without explicitly pinning a model, your default model will now be different, often defaulting to Claude Haiku 5.5 or Muse Wonder 1.0. Cline and OpenRouter also now default to Claude Sonnet 5.5 when no model is chosen.",
+        "affected": [
+          "302.AI",
+          "Cortecs",
+          "CrossModel",
+          "DevPass",
+          "DigitalOcean",
+          "Eden AI",
+          "GitHub Copilot",
+          "Google Vertex AI",
+          "LLM Gateway",
+          "Meta",
+          "Moark",
+          "NanoGPT",
+          "NEAR AI Cloud",
+          "Neuralwatt",
+          "Novita AI",
+          "Ofox",
+          "OpenCode Go",
+          "Requesty",
+          "Vivgrid",
+          "Cline (default)",
+          "OpenRouter (default)"
+        ],
+        "migration": "If you rely on a specific model for any of the affected providers, you must explicitly pin that model in your configuration to maintain previous behavior. Otherwise, expect a change in the default model used.",
+        "source_url": ""
+      },
+      {
+        "id": "opencode-go-endpoint-change",
+        "version": "4.1.24",
+        "title": "OpenCode Go Endpoint Update",
+        "description": "The OpenCode Go provider now uses a new endpoint: `https://opencode.ai/inference/go/v1`. This change is internal but may affect network configurations or firewalls if you have specific rules for the old endpoint.",
+        "affected": [
+          "OpenCode Go provider"
+        ],
+        "migration": "No direct user action is required unless your network environment has strict firewall rules or proxy configurations that specifically whitelist the old OpenCode Go endpoint. In such cases, you may need to update your network configuration to allow access to `https://opencode.ai/inference/go/v1`.",
+        "source_url": ""
+      },
+      {
+        "id": "v0-provider-model-restriction",
+        "version": "4.1.24",
+        "title": "v0 Provider Model Restriction",
+        "description": "The v0 provider now exclusively offers its default model, `v0-1.5-md`. Any attempts to use other models with the v0 provider will likely fail.",
+        "affected": [
+          "v0 provider users"
+        ],
+        "migration": "If you were using a model other than `v0-1.5-md` with the v0 provider, you must switch to `v0-1.5-md` or choose a different provider that supports your desired model.",
+        "source_url": ""
+      },
+      {
+        "id": "openai-compatible-base-url-behavior-change",
+        "version": "4.1.25",
+        "title": "OpenAI Compatible base URLs are used exactly as entered",
+        "description": "Previously, a host-only URL like `https://abc.com` for OpenAI Compatible base URLs would silently have `/v1` appended. Now, base URLs are used exactly as entered. Host-only URLs saved by earlier versions will have `/v1` added once to maintain existing setups.",
+        "affected": [
+          "Users configuring OpenAI Compatible providers with host-only base URLs."
+        ],
+        "migration": "If you previously relied on the implicit `/v1` suffix for a host-only URL, you should explicitly add `/v1` to your configuration if you want to maintain that behavior for new configurations. Existing configurations saved by earlier versions will be automatically adjusted once.",
+        "source_url": ""
+      }
+    ],
+    "deprecations": [],
+    "install": {
+      "vscode": "ext install saoudrizwan.claude-dev",
+      "marketplace_url": "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
+    },
+    "support_matrix": {
+      "platforms": [
+        "vscode",
+        "cursor",
+        "windsurf"
+      ]
+    },
+    "settings": []
+  }
+}

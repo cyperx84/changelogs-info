@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "cline",
   "version": "4.1.26",
-  "generated_at": "2026-10-26T09:43:52.835Z",
+  "generated_at": "2026-10-26T16:30:41.651Z",
   "extracted_from_sources": [
     "https://github.com/cline/cline/releases",
     "https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev"
@@ -22,14 +22,8 @@
     "from_version": "4.1.26",
     "to_version": "4.1.26",
     "new_features": [
-      "cloud-tasks-local-cloud-toggle",
-      "cloud-sandbox-progress-card",
-      "liquid-inference-provider",
-      "munito-ai-provider",
-      "reflection-beam-model",
-      "laguna-s-2-1-model",
-      "minimax-m3-1-flash-model",
-      "deepseek-v4-1-flash-1017-model"
+      "cloud-tasks-local-cloud-toggle-in-settings",
+      "cloud-sandbox-progress-card"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -59,7 +53,7 @@
       "status": "active",
       "runtime": "vscode",
       "written_in": "typescript",
-      "tldr": "Cline 4.1.26 introduces significant improvements for cloud sessions and model management. A new 'Local | Cloud' toggle in Settings > API Configuration allows users to select separate models for local and cloud tasks, enhancing flexibility for cloud-based workflows. Additionally, starting or resuming a cloud sandbox now displays a detailed progress card, showing the repository, branch, and agent startup steps, which then collapses once the agent is active, providing better visibility into cloud environment provisioning. Cloud sessions also now hide the Plan/Act toggle and auto-approve bar for a cleaner interface. \n\nModel handling has been refined: the Cline provider now defaults to Claude Sonnet 5.5, and the model catalog has been refreshed, adding Liquid Inference and Munito AI providers while removing CrofAI, iFlow, and Llama. The free model list now includes Reflection Beam, Nemotron 3.5 Lightning, and Laguna S 2.1, with Mimo V2.6 Flash and Muse Spark 1.3 Contributor removed. ClinePass now defaults to Kimi K3.1 Pro and supports MiniMax M3.1 Flash and DeepSeek V4.1 Flash 1017. Model requests now retry a maximum of 3 times instead of 5. \n\nKey fixes include GPT-6 models now working correctly on OpenAI and Azure OpenAI endpoints with `max_completion_tokens`, and Gemini API keys no longer sending native Google Search requests, resolving 429 quota errors and tool dropping issues. Toggling Plan/Act during task startup no longer drops prompts, disabled rules remain disabled, and keyboard focus no longer shifts to the terminal when starting a command. Issues with cancelling tasks during questions, dropped connections after reasoning, and auto-compaction for unknown context limits have also been resolved. The `ask_question` tool now continues after an option is picked and rejects empty answers, while `run_commands` with an empty list returns an error and provides PowerShell quote escaping guidance. Task header badges now wrap, and UI padding for the Local/Cloud toggle is fixed. This update is recommended for all users to benefit from improved cloud session management, enhanced model support, and critical bug fixes."
+      "tldr": "This release of Cline 4.1.26 introduces significant improvements to cloud task management and model integration. A new 'Local | Cloud' toggle in Settings > API Configuration allows users to specify whether new cloud tasks run on local or cloud models, with separate model selections for cloud environments, enhancing flexibility for remote workflows. Additionally, a new progress card now displays the status of cloud sandbox starts or resumes, showing repo, branch, and steps like 'start sandbox' and 'clone repository', which collapses once the agent is active, providing better visibility into cloud operations.\n\nKey changes include a refreshed model catalog, adding CommandCode, Reflection, Liquid Inference, and Munito AI providers while removing CrofAI, iFlow, and Llama. The Cline free list now features Reflection Beam, Nemotron 3.5 Lightning, and Laguna S 2.1, and ClinePass defaults to Kimi K3.1 Pro, adding MiniMax M3.1 Flash and DeepSeek V4.1 Flash 1017. Default models for many providers have been updated, so users not pinning specific models will experience new defaults. Cloud sessions now hide the Plan/Act toggle and auto-approve bar, and the Cline provider defaults to Claude Sonnet 5.5 when no model is chosen. Model requests now retry a maximum of 3 times instead of 5, and Kimi K3 now correctly handles 'max' reasoning for Extra High and Max settings.\n\nSeveral important fixes are included: GPT-6 models now work on OpenAI and Azure OpenAI endpoints with `max_completion_tokens`, resolving SAP AI Core rejections. The Gemini provider no longer sends native Google Search, fixing 429 quota errors and tool dropping issues. Toggling Plan/Act during task startup no longer drops prompts, and disabled rules remain disabled. Keyboard focus no longer shifts to the terminal when starting a command, preventing chat text from landing in the shell. Task cancellation or opening a new task no longer allows subsequent messages to be misinterpreted as answers to old questions. Turns with dropped connections after reasoning streaming are now retried, and auto-compaction is improved for models with unknown context limits. The `ask_question` tool now allows model continuation after option selection and rejects empty answers. The `run_commands` tool now errors on empty command lists and provides PowerShell-specific guidance on quote escaping and recursive deletes. UI fixes include wrapping task header badges, removing a flashing GitHub connection indicator, and correcting Local/Cloud toggle padding.\n\nDevelopers should review the updated model catalog and default model changes, as these may affect existing workflows. The fixes for GPT-6 and Gemini providers are critical for users of those models. Upgrading is recommended to leverage the new cloud task features, improved model support, and numerous stability enhancements."
     },
     "features": [
       {
@@ -1813,6 +1807,20 @@
         "since": "4.1.26",
         "description": "Added DeepSeek V4.1 Flash 1017 to ClinePass.",
         "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "cloud-tasks-local-cloud-toggle-in-settings",
+        "name": "Cloud Tasks: Local | Cloud Toggle in Settings",
+        "status": "stable",
+        "since": "4.1.26",
+        "description": "A new toggle in Settings > API Configuration allows switching between local and cloud models for new cloud tasks. The cloud model selection is saved separately from local models. Clicking the model label in a cloud session's composer opens the cloud model selection.",
+        "key_details": [
+          "Location: Settings > API Configuration",
+          "Functionality: Toggles between local and cloud models for new cloud tasks.",
+          "Cloud model selection: Saved separately from local models.",
+          "Composer integration: Clicking model label in cloud session composer opens cloud model selection."
+        ],
         "source_url": ""
       }
     ],
