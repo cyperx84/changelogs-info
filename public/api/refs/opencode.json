@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
   "version": "2.2.0",
-  "generated_at": "2026-10-27T13:58:48.573Z",
+  "generated_at": "2026-10-27T19:18:44.385Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -14,15 +14,45 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "1.19.4",
-    "to_version": "1.19.4",
-    "new_features": [],
-    "new_commands": [],
+    "from_version": "2.2.0",
+    "to_version": "2.2.0",
+    "new_features": [
+      "desktop-plugins",
+      "image-decision-generation-apis",
+      "plugin-session-instructions",
+      "configurable-prompt-cache-ttls",
+      "session-media-api",
+      "content-addressed-blob-storage",
+      "gpt-6-1-terra-models",
+      "desktop-zoom-setting",
+      "memory-logging-remote-debugging",
+      "experimental-sources-setting",
+      "experimental-console-voice-calls",
+      "timeline-width-setting",
+      "generated-project-avatars",
+      "searchable-prompt-history-picker",
+      "session-details-menu",
+      "background-activity-capsule-position",
+      "text-rendering-controls",
+      "split-side-pane-draggable-bottom-pane",
+      "reduce-motion-setting",
+      "focus-pro-interface-layouts",
+      "sidebar-toggle-vertical-tabs",
+      "commentary-timeline-category",
+      "session-links-in-messages"
+    ],
+    "new_commands": [
+      "/usage"
+    ],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "ai-root-promise-api",
+      "github-action-removed",
+      "tui-plugins-opentui-0-7"
+    ]
   },
   "payload": {
     "meta": {
@@ -46,7 +76,7 @@
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "This opencode 1.19.4 release primarily focuses on a critical security and infrastructure update. The bundled Bun runtime has been upgraded to version 1.4.4, which includes significant security fixes across various network protocols such as Brotli, TLS, HTTP/1.1, HTTP/2, HTTP/3, and WebSocket, as well as the `fetch` API. This update also ensures that root certificates are current, moving to NSS 3.131.1, enhancing the overall security posture and reliability of network communications within opencode. While there are no new features, commands, or breaking changes in this release, the upgrade to Bun 1.4.4 is crucial for maintaining a secure and up-to-date environment. Developers should prioritize this upgrade to benefit from the enhanced security and stability, particularly for applications that rely heavily on network interactions. No specific migration steps or configuration changes are required for this update."
+      "tldr": "OpenCode 2.2.0 introduces experimental Desktop Plugins, allowing developers to create, install, and share GUI extensions directly within the desktop app. This significantly expands customization and integration possibilities, moving beyond TUI-only plugins. The release also adds experimental image and decision generation APIs to plugins and the SDK, enabling new workflows for AI-driven image creation and structured decision models like typesafe or clef. Plugins can now manage keyed session instructions, providing a more efficient way to update system prompts without busting the cache or starting extra model turns. Additionally, configurable prompt cache TTLs per provider/model offer finer control over caching behavior. The desktop app received a comprehensive refresh, including a new model picker, improved search, better session management, and new interface layouts (Focus/Pro). The Todo tool is restored as an opt-in feature, and new models like GPT-6.1 Terra are supported. Breaking changes include `@opencode/ai` now defaulting to the Promise API, requiring updates to imports for Effect API users, and the removal of the OpenCode GitHub Action. TUI plugins must upgrade to OpenTUI 0.7.0, which involves changes to how custom renderable hooks are defined. Developers should review the breaking changes carefully and update their dependencies and code accordingly, especially for `@opencode/ai` imports and TUI plugins. Upgrading is recommended to leverage new plugin capabilities and desktop experience improvements."
     },
     "features": [
       {
@@ -1200,6 +1230,223 @@
         "description": "Added canonical redirects and JSON and Markdown data formats for agent-readable statistics.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "desktop-plugins",
+        "name": "Desktop Plugins",
+        "status": "experimental",
+        "since": "2.2.0",
+        "description": "Create, install, and share GUI plugins for the desktop application.",
+        "key_details": [
+          "Managed from Settings › Extensions › Plugins.",
+          "SDK APIs for toasts, dialogs, notifications, tabs, composer controls, and custom UI."
+        ],
+        "source_url": "https://opencode.ai/v2/docs/build/plugins/gui"
+      },
+      {
+        "id": "image-decision-generation-apis",
+        "name": "Image and Decision Generation APIs",
+        "status": "experimental",
+        "since": "2.2.0",
+        "description": "Add experimental image and decision generation APIs to plugins and SDK, allowing image generation or decision model (typesafe, clef, etc.) workflows.",
+        "key_details": [
+          "Includes OpenAI Decisions, System One, and Cloudflare Run models.",
+          "Image and decision entrypoints for catalog providers."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "plugin-session-instructions",
+        "name": "Plugins Attach and Update Keyed Session Instructions",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Plugins can now attach and update keyed session instructions with `ctx.session.instructions.entry.put/list/remove`. Changes are added as small updates at the next step, survive compaction and reverts, and don't start an extra model turn.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "configurable-prompt-cache-ttls",
+        "name": "Configurable Prompt Cache TTLs",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Add configurable prompt cache TTLs per provider/model.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "session-media-api",
+        "name": "Experimental API for Session Media and Opt-in Media URI Support",
+        "status": "experimental",
+        "since": "2.2.0",
+        "description": "Adds an experimental API for session media and opt-in media URI support.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "content-addressed-blob-storage",
+        "name": "Experimental Content-Addressed Blob Storage for Session Media",
+        "status": "experimental",
+        "since": "2.2.0",
+        "description": "Adds experimental content-addressed blob storage for session media, enabled behind `experimental.media_blob`.",
+        "key_details": [
+          "Configuration: `experimental.media_blob`"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "gpt-6-1-terra-models",
+        "name": "GPT-6.1 Terra and GPT-6.1 Terra Fast",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Add GPT-6.1 Terra and GPT-6.1 Terra Fast to Sign in with ChatGPT.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "desktop-zoom-setting",
+        "name": "Persistent Desktop Zoom Setting",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Add a persistent desktop zoom setting.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "memory-logging-remote-debugging",
+        "name": "Opt-in Memory Logging and Remote Debugging for Desktop Debug Builds",
+        "status": "experimental",
+        "since": "2.2.0",
+        "description": "Add opt-in memory logging and remote debugging for desktop debug builds.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "experimental-sources-setting",
+        "name": "Experimental Sources Setting for Web Sources",
+        "status": "experimental",
+        "since": "2.2.0",
+        "description": "Show web sources for a turn behind the experimental Sources setting.",
+        "key_details": [
+          "Configuration: `experimental.Sources`"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "experimental-console-voice-calls",
+        "name": "Experimental Console Voice Calls in Desktop Beta",
+        "status": "experimental",
+        "since": "2.2.0",
+        "description": "Add experimental Console voice calls in Desktop beta.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "timeline-width-setting",
+        "name": "Timeline Width Setting",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Add a timeline width setting.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "generated-project-avatars",
+        "name": "Generated Project Avatars and Experimental Avatar Style Switcher",
+        "status": "experimental",
+        "since": "2.2.0",
+        "description": "Add generated project avatars and an experimental avatar-style switcher.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "searchable-prompt-history-picker",
+        "name": "Searchable Prompt History Picker",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Add a searchable prompt history picker.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "session-details-menu",
+        "name": "Session Details Menu to Session Header",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Add a session-details menu to the session header.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "background-activity-capsule-position",
+        "name": "Background Activity Capsule Position Setting",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Let you place the background-activity capsule at the left, center, right, or hide it.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "text-rendering-controls",
+        "name": "Text-Rendering Controls to Debug Bar",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Add text-rendering controls to the debug bar.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "split-side-pane-draggable-bottom-pane",
+        "name": "Split Side Pane and Draggable Bottom Pane with Tabs",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Split the side pane and add a draggable bottom pane with tabs.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "reduce-motion-setting",
+        "name": "Reduce Motion Appearance Setting",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Add a Reduce motion appearance setting.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "focus-pro-interface-layouts",
+        "name": "Focus and Pro Interface Layouts",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Choose between Focus and Pro interface layouts in Settings.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "sidebar-toggle-vertical-tabs",
+        "name": "Sidebar Toggle for Vertical Tabs",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Add a sidebar toggle for vertical tabs.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "commentary-timeline-category",
+        "name": "Commentary Timeline Category and Display Setting",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Add a Commentary timeline category and display setting.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "session-links-in-messages",
+        "name": "@ Links to Other Sessions in Messages",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Support `@` links to other sessions in messages.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -1272,6 +1519,14 @@
         "syntax": "opencode upgrade --major",
         "description": "Upgrades OpenCode to a new major version, specifically to OpenCode 2.",
         "since": "1.19.0",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "/usage",
+        "syntax": "/usage",
+        "description": "Displays OpenCode Console budget limits and Go usage.",
+        "since": "2.2.0",
         "status": "stable",
         "source_url": ""
       }
@@ -1590,6 +1845,39 @@
         ],
         "migration": "Users who relied on session sharing will need to find alternative methods for collaborating or sharing session content, such as exporting session transcripts manually.",
         "source_url": ""
+      },
+      {
+        "id": "ai-root-promise-api",
+        "version": "2.2.0",
+        "title": "@opencode/ai root is now the Promise API",
+        "description": "`@opencode/ai` now works like `@opencode/sdk` and `@opencode/client`: the package root exports the Promise API, and the Effect API moved to `@opencode/ai/effect`. `@opencode/ai/promise` is removed, and the wildcard subpath export is replaced with an explicit list of provider and protocol entry points.",
+        "affected": [
+          "TypeScript imports for `@opencode/ai`"
+        ],
+        "migration": "Change `import { AI } from \"@opencode/ai/promise\"` to `import { AI } from \"@opencode/ai\"` and `import { LLM } from \"@opencode/ai\"` to `import { LLM } from \"@opencode/ai/effect\"`.",
+        "source_url": "https://github.com/anomalyco/opencode/pull/58847"
+      },
+      {
+        "id": "github-action-removed",
+        "version": "2.2.0",
+        "title": "The OpenCode GitHub Action is removed",
+        "description": "The OpenCode GitHub Action is no longer published.",
+        "affected": [
+          "GitHub Actions workflows using the OpenCode GitHub Action"
+        ],
+        "migration": "Remove the OpenCode GitHub Action from your workflows.",
+        "source_url": "https://github.com/anomalyco/opencode/pull/59032"
+      },
+      {
+        "id": "tui-plugins-opentui-0-7",
+        "version": "2.2.0",
+        "title": "TUI plugins require OpenTUI 0.7",
+        "description": "`@opencode/plugin` now requires `@opentui/core` and `@opentui/solid` 0.7.0, up from 0.6.8 or later. Plugins that depend on OpenTUI 0.6 fail to install until they upgrade. In OpenTUI 0.7, custom renderables read their hooks from their class at construction: assign `renderBefore`, `renderAfter`, and `onLifecyclePass` in the constructor instead of as class fields, call `refreshHooks()` after adding a hook by reflection, and replace `defineNativeIntegration()` with a `static nativeIntegration` declaration.",
+        "affected": [
+          "TUI plugins depending on `@opentui/core` or `@opentui/solid`"
+        ],
+        "migration": "Upgrade `@opentui/core` and `@opentui/solid` to 0.7.0. Update custom renderables to assign hooks in the constructor, call `refreshHooks()` after adding hooks by reflection, and use `static nativeIntegration` instead of `defineNativeIntegration()`.",
+        "source_url": "https://github.com/anomalyco/opencode/pull/59295"
       }
     ],
     "deprecations": [],
