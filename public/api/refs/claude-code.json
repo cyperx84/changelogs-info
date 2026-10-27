@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.311",
-  "generated_at": "2026-10-27T19:17:10.848Z",
+  "version": "2.1.312",
+  "generated_at": "2026-10-27T23:29:11.216Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,16 +14,19 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.311",
-    "to_version": "2.1.311",
-    "new_features": [],
-    "new_commands": [],
-    "new_flags": [
-      "--hold-idle-file",
-      "--max-hold-min"
+    "from_version": "2.1.312",
+    "to_version": "2.1.312",
+    "new_features": [
+      "oidc-user-id-claim",
+      "click-to-send-fullscreen",
+      "cloud-sessions-effort-level-model-picker",
+      "cloud-sessions-bash-editor"
     ],
+    "new_commands": [],
+    "new_flags": [],
     "new_env_vars": [
-      "CLAUDE_CODE_MODEL_CATALOG"
+      "CLAUDE_CODE_SIMPLE_SYSTEM_PROMPT",
+      "CLAUDE_CODE_DISABLE_REFUSAL_FALLBACK"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -44,12 +47,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.311",
-      "latest_release_date": "2026-10-26",
+      "latest_stable": "2.1.312",
+      "latest_release_date": "2026-10-27",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release of claude-code, version 2.1.311, focuses heavily on stability, reliability, and user experience improvements, particularly for self-hosted runners, cloud sessions, and the VS Code extension. A key enhancement for self-hosted runners is the addition of `--hold-idle-file` and `--max-hold-min` flags, allowing idle sessions to persist while the host reports active processes, preventing premature termination and improving workflow continuity. This is crucial for long-running or intermittent tasks where the host might temporarily report no activity.\n\nNumerous fixes address long-standing issues across the board. Startup freezes, interruptions not taking effect, and 'Usage credits required' errors in standard-context sessions exceeding 200K tokens are now resolved, with Claude Code compacting conversations to continue. Write and Edit operations no longer stall or report incorrect line changes for large file modifications. Subagent and background agent reliability is significantly improved, fixing issues with MCP tool usage, isolated worktree removal, and unnecessary main conversation turns. The `/effort` command now warns about prompt cache misses in plan mode, and `/ide` accurately reports VS Code extension installation status.\n\nFor cloud sessions, issues with routines staying locked, failed API token operations, and duplicate environment names are fixed. WebFetch and WebSearch no longer hang indefinitely, with requests now failing after 300 seconds. The VS Code extension receives syntax coloring for code blocks in Claude's replies, a 'Running UserPromptSubmit hooks' spinner, and fixes for custom skills omitting open file context. Importantly, the VS Code extension now respects the editor's telemetry setting by setting `DISABLE_TELEMETRY` for Claude Code sessions when telemetry is off, enhancing user privacy.\n\nOther notable improvements include better error messages for API connection drops, refined screen reader announcements, and more accurate `/teleport` warnings for compacted cloud sessions. The `ultrathink` command now consistently applies xhigh effort for supported models, and its rainbow indicator is more precise. The `DISABLE_COMPACT` setting can now only turn compaction off, not re-enable it. Claude Code on Bedrock, Mantle, Vertex, and Foundry now loads model settings from a signed file, which can be disabled via the `CLAUDE_CODE_MODEL_CATALOG=off` environment variable. Users should consider upgrading to benefit from these stability and reliability enhancements, especially those using self-hosted runners, cloud sessions, or the VS Code extension."
+      "tldr": "Claude Code 2.1.312 introduces significant improvements to user identification, cloud session management, and overall stability. A key new feature is the `oidc.user_id_claim` for the Claude apps gateway, allowing organizations to use alternative ID token claims like Microsoft Entra ID's `oid` for user identification, enhancing flexibility for enterprise integrations. For cloud sessions, users can now specify an effort level directly in the model picker when creating or editing routines, and a new Bash editor with syntax highlighting, line numbers, and a Copy button has been added for setup scripts, greatly improving the experience of configuring cloud environments. \n\nSeveral critical fixes address issues such as managed settings not loading after VS Code sign-in, Claude overwriting large files, and per-directory skills failing after `cd` commands. The prompt's effort indicator is now more accurate, reflecting the applied effort level, and WebFetch errors in cloud sessions provide clearer explanations for unresolved hosts. Automatic model switches for flagged messages now cover unrecognized model names, with an opt-out `CLAUDE_CODE_DISABLE_REFUSAL_FALLBACK=1` environment variable. The `CLAUDE_CODE_SIMPLE_SYSTEM_PROMPT=0` environment variable allows reverting to the full system prompt for Bedrock, Vertex, Foundry, and Mantle when custom model names are used. \n\nOther notable changes include usage limit messages now consistently referring to the '5-hour limit', improved OpenTelemetry reporting for MCP server names, and prompt/agent hooks now having a maximum concurrent execution limit. The release also fixes issues with Remote Control session status, Claude Tag's retry notices in Slack, and Code Review's handling of outdated GitHub push events. This release is recommended for all users to benefit from enhanced stability, improved cloud session features, and more robust enterprise integration capabilities."
     },
     "features": [
       {
@@ -2870,6 +2873,54 @@
         "description": "A new tip is displayed when Claude is asked for explanations, guiding users towards the 'Explanatory' output style.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "oidc-user-id-claim",
+        "name": "OIDC User ID Claim for Claude Apps Gateway",
+        "status": "stable",
+        "since": "2.1.312",
+        "description": "Added `oidc.user_id_claim` to the Claude apps gateway, allowing identification of users by an id_token claim other than `sub`, such as Microsoft Entra ID's `oid`.",
+        "key_details": [
+          "Configurable claim for user identification.",
+          "Supports Microsoft Entra ID's `oid` claim."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "click-to-send-fullscreen",
+        "name": "Click to Send in Fullscreen",
+        "status": "stable",
+        "since": "2.1.312",
+        "description": "In fullscreen mode, clicking the 'to send now' hint under a queued message sends it immediately, mirroring the behavior of its associated key.",
+        "key_details": [
+          "Enhances interactivity for queued messages in fullscreen.",
+          "Provides an alternative to keyboard shortcuts for sending messages."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "cloud-sessions-effort-level-model-picker",
+        "name": "Effort Level in Cloud Session Routine Model Picker",
+        "status": "stable",
+        "since": "2.1.312",
+        "description": "Added an effort level selection to the model picker when creating or editing a routine that runs in the cloud.",
+        "key_details": [
+          "Allows specifying effort level for cloud-based routines.",
+          "Integrated into the routine creation/edit workflow."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "cloud-sessions-bash-editor",
+        "name": "Bash Editor for Cloud Environment Setup Scripts",
+        "status": "stable",
+        "since": "2.1.312",
+        "description": "Added a Bash editor with colors, line numbers, and a Copy button to the setup script box in cloud environment settings.",
+        "key_details": [
+          "Improved user experience for editing setup scripts.",
+          "Includes syntax highlighting, line numbers, and a copy utility."
+        ],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -3933,10 +3984,7 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": [
-        "--hold-idle-file",
-        "--max-hold-min"
-      ]
+      "new_since_previous": []
     },
     "env_vars": [
       {
@@ -4496,6 +4544,20 @@
         "purpose": "Set to 'off' to disable loading model settings from a signed file on downloads.claude.ai for Bedrock, Mantle, Vertex, and Foundry sessions.",
         "status": "stable",
         "since": "2.1.311",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_SIMPLE_SYSTEM_PROMPT",
+        "purpose": "When set to `0`, it prevents Bedrock, Vertex, Foundry, and Mantle from using the shorter system prompt for unrecognized model names, reverting to the full prompt.",
+        "status": "stable",
+        "since": "2.1.312",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_DISABLE_REFUSAL_FALLBACK",
+        "purpose": "When set to `1`, it disables automatic model switches after a flagged message, including for model names Claude Code doesn't recognize.",
+        "status": "stable",
+        "since": "2.1.312",
         "source_url": ""
       }
     ],

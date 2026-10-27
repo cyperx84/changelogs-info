@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.164.0",
-  "generated_at": "2026-10-23T06:58:11.187Z",
+  "version": "0.165.0",
+  "generated_at": "2026-10-27T23:29:20.912Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,24 +14,21 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.163.0",
-    "to_version": "0.163.0",
+    "from_version": "0.165.0",
+    "to_version": "0.165.0",
     "new_features": [
-      "searchable-config-panel",
-      "instant-interrupts-steered-responses",
-      "configurable-leader-key",
-      "restart-managed-background-server",
-      "parallel-read-only-tool-execution",
-      "daybreak-default-and-exec-selection"
+      "google-cloud-vertex-ai-provider",
+      "gpt-6-1-terra-model",
+      "session-picker-repository-filter-agent-command-center-grouping",
+      "app-server-attached-thread-forks",
+      "experimental-thread-memory-summary-reads"
     ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "removed-patched-zsh-shell"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -48,14 +45,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.164.0",
+      "latest_stable": "0.165.0",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-10-23",
+      "latest_release_date": "2026-10-27",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "Codex-cli v0.163.0 introduces significant usability and performance enhancements, most notably a new searchable `/config` preferences panel in the TUI. This allows developers to quickly find and modify settings, with immediate application for many changes and clear indications for those requiring a restart, streamlining configuration workflows. Another major improvement is the ability to send follow-up prompts while Codex is responding, enabling instant steering of agent behavior and automatically stopping active Code Mode cells and nested tool calls upon interruption, providing more dynamic control over AI interactions. \n\nUsers can now configure a leader key in `/keymap`, defaulting to `Ctrl+X`, with persistent shortcut hints and voice mute moved to `F9`. Managed background servers can be restarted from `/daemon`, with warnings for potential work interruptions and automatic reconnection. Performance is boosted by parallel execution for read-only tools like skill, memory, and conversation history lookups. Daybreak is now enabled by default for eligible accounts, and `codex exec` can select it with an OpenAI API key. \n\nKey bug fixes include restoring permissions and network approvals when resuming saved threads, improved network proxy security with pre-DNS permission checks and duplicate `Host` header rejection, and better handling of side conversations across thread navigation. Windows users benefit from `Ctrl+V` and `Shift+Insert` for pasting text and images, while WSL clipboard operations are more robust. Local commands now finish promptly even with open output pipes, and `codex exec` avoids redundant file diffs. \n\nA breaking change involves the removal of the bundled patched `zsh` shell; users must now use the standard shell executor, with migration notices provided for affected configurations. Overall, this release offers substantial quality-of-life improvements, enhanced control, and critical bug fixes, making an upgrade highly recommended for all users to leverage the new features and stability improvements."
+      "tldr": "Codex CLI v0.165.0 introduces a significant new built-in Google Cloud Vertex AI provider, allowing users to configure it with `model_provider = \"gcp\"` for accessing Google's AI capabilities directly within Codex. This expands the range of available model providers and offers more flexibility for developers leveraging different cloud ecosystems. Additionally, the new GPT-6.1 Terra model has been added to the model catalogs, providing access to a more advanced language model for various tasks.\n\nWorkflow improvements include a new repository filter in the session picker and directory grouping in the agent command center, which greatly enhances navigation for users working with multiple linked worktrees. For developers using the app-server API, experimental attached thread forks are now available, opening up new possibilities for managing conversational flows. Reasoning effort changes are now enabled by default during a conversation for supported models, streamlining the interaction experience. Furthermore, Memory v2 is now the default for fresh profiles and supports importing external-agent memories, improving memory management and integration.\n\nSeveral bug fixes address critical issues, such as ensuring fresh TUI sessions honor the server’s default approval reviewer, preventing remote MCP tool requests from hanging by canceling them when local response futures are dropped, and stopping queued agent messages from restarting work after an interrupt or switch to Plan mode. A crucial security fix closes a marketplace URL validation gap that could allow Git to connect to an unintended host. Other fixes include preserving model-not-found error messages from providers and keeping TUI preferences editable even with invalid execution settings. These updates enhance stability, security, and user experience, making this a recommended upgrade for all users."
     },
     "features": [
       {
@@ -2723,6 +2720,53 @@
           "Stops Code Mode cells and nested tool calls upon interruption."
         ],
         "source_url": "https://github.com/openai/codex/pull/51812"
+      },
+      {
+        "id": "google-cloud-vertex-ai-provider",
+        "name": "Google Cloud Vertex AI Provider",
+        "status": "stable",
+        "since": "0.165.0",
+        "description": "Added a built-in Google Cloud Vertex AI provider.",
+        "key_details": [
+          "Configured with `model_provider = \"gcp\"`."
+        ],
+        "source_url": "#56265"
+      },
+      {
+        "id": "gpt-6-1-terra-model",
+        "name": "GPT-6.1 Terra Model",
+        "status": "stable",
+        "since": "0.165.0",
+        "description": "Added GPT-6.1 Terra to the model catalogs.",
+        "key_details": [],
+        "source_url": "#57337"
+      },
+      {
+        "id": "session-picker-repository-filter-agent-command-center-grouping",
+        "name": "Session Picker Repository Filter and Agent Command Center Directory Grouping",
+        "status": "stable",
+        "since": "0.165.0",
+        "description": "Added a repository filter to the session picker and directory grouping to the agent command center, making it easier to navigate sessions across linked worktrees.",
+        "key_details": [],
+        "source_url": "#56308"
+      },
+      {
+        "id": "app-server-attached-thread-forks",
+        "name": "App-Server Experimental Attached Thread Forks",
+        "status": "experimental",
+        "since": "0.165.0",
+        "description": "Added experimental attached thread forks to the app-server API.",
+        "key_details": [],
+        "source_url": "#56351"
+      },
+      {
+        "id": "experimental-thread-memory-summary-reads",
+        "name": "Experimental Thread Memory Summary Reads",
+        "status": "experimental",
+        "since": "0.165.0",
+        "description": "Added experimental thread memory summary reads.",
+        "key_details": [],
+        "source_url": "#56465"
       }
     ],
     "commands": [
