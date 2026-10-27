@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.10.7",
-  "generated_at": "2026-10-27T01:09:09.140Z",
+  "version": "2026.9.35",
+  "generated_at": "2026-10-27T07:19:13.717Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,9 +14,11 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.10.7",
-    "to_version": "2026.10.7",
-    "new_features": [],
+    "from_version": "2026.9.35",
+    "to_version": "2026.9.35",
+    "new_features": [
+      "kimi-k3-1-pro-model-support"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -40,13 +42,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.10.7",
-      "latest_release_date": "2026-10-24",
+      "latest_stable": "2026.9.35",
+      "latest_release_date": "2026-10-27",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "OpenClaw 2026.10.7 focuses heavily on stability, reliability, and continuity across various core components, with a particular emphasis on replay-safe session recovery and safer update activation. Interrupted sessions now retain recovery provenance and unfinished tool outcomes, and stopped conversations retire terminal recovery residue before accepting new messages, preventing data loss and improving workflow resilience. Update activations are more robust, ensuring successful updates persist through maintenance or ledger errors, and interrupted package updates resume safely, making the upgrade process more reliable.\n\nKey improvements include enhanced database and worker continuity, where maintenance refusals preserve peer readers and borrowers, and worker shutdown completes after inventory retirement. Backup and state durability are strengthened, with snapshots retaining legacy exec-approval policies and Memory Wiki re-imports preserving human-authored notes. Operator control continuity is also improved, as native computer control recovers after session expiry, and cron announcements preserve CLI chats. Provider and plugin continuity see better state retention during model refreshes, OpenRouter onboarding, and incremental plugin loading, ensuring a smoother experience for developers. Managed integration reliability is boosted, with saved Linux Gateway dashboards preserving pairing across restarts and passkey prompts no longer blocking headless browser clicks. Cross-platform app-managed upgrades now converge without losing agent access across macOS and Windows, simplifying multi-OS deployments. A notable change is the addition of Gemini 4 Argon support for Google models. Fixes address irrelevant database-repair advice, allow fresh macOS profiles to start the Gateway, prevent Gateway logging from wedging the CPU, and clear slash-steer chips in the Control UI after command consumption. This release is recommended for all users to benefit from significant stability and reliability enhancements."
+      "tldr": "OpenClaw 2026.9.35 is an `extended-stable` release focused on critical security updates, reliability, performance, and new model support. A major highlight is improved Gateway stability, preventing memory accumulation under service managers by applying worker heap caps, retiring idle Codex app-server clients, and reusing archive workers. This ensures long-running Gateways remain performant and responsive. \n\nKey updates include enhanced reliability for the update process, which now handles unknown config keys, missing legacy OAuth directories, and large session histories more robustly. Gateway responsiveness has been significantly improved, preventing stalls caused by crafted Microsoft Teams HTML, tool-call-shaped replies, and long streamed HTML/JSX answers. Reply delivery is also more reliable, with the message tool remaining visible, model fallback working after unexecuted tool calls and for compaction, and timed-out MCP sessions no longer breaking subsequent turns. \n\nSecurity has been tightened, requiring approval for `test -v` exec operands in allowlist mode, refusing browser proxy commands through generic node invoke, guarding generated-video downloads with SSRF, and redacting credentials from `openclaw mcp list`/`show` output and logs. The release also introduces support for the Kimi K3.1 Pro model, including its Highspeed variants, offering K3 thinking, effort, and video controls. Numerous fixes address issues like SQLite 3.54 tokenizer changes, agent runtime stability, channel connectivity (Slack, Telegram), and plugin migration. Upgrade is recommended for all users to benefit from these stability, security, and performance enhancements."
     },
     "features": [
       {
@@ -3313,6 +3315,20 @@
           "Plugins automatically pick newest official release"
         ],
         "source_url": "#163459, #167485, #166588"
+      },
+      {
+        "id": "kimi-k3-1-pro-model-support",
+        "name": "Kimi K3.1 Pro Model Support",
+        "status": "stable",
+        "since": "2026.9.35",
+        "description": "Added support for the Kimi K3.1 Pro model, including its Highspeed variants. This model provides K3 thinking, effort, and video controls.",
+        "key_details": [
+          "Model identifiers: `moonshot/kimi-k3.1-pro`, `kimi/k3.1-pro`",
+          "Includes Highspeed variants",
+          "Provides K3 thinking, effort, and video controls",
+          "K3.1 rejects 'off' locally instead of returning a provider 400 error."
+        ],
+        "source_url": ""
       }
     ],
     "commands": [

@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.311",
-  "generated_at": "2026-10-27T01:07:57.105Z",
+  "generated_at": "2026-10-27T07:18:04.379Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -17,6 +17,8 @@
     "from_version": "2.1.311",
     "to_version": "2.1.311",
     "new_features": [
+      "self-hosted-runner-hold-idle-file",
+      "explanatory-output-style-tip",
       "claude-tag-skills-view-analytics"
     ],
     "new_commands": [],
@@ -51,7 +53,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release, claude-code 2.1.311, introduces new flags for `self-hosted-runner` to manage idle sessions, `--hold-idle-file` and `--max-hold-min`, allowing hosts to keep sessions active while reporting running processes. This is a significant improvement for self-hosted environments, preventing premature session termination and improving workflow continuity. Additionally, a new environment variable, `CLAUDE_CODE_MODEL_CATALOG`, provides control over model catalog loading for various cloud platforms.\n\nSeveral key features have been improved for a smoother developer experience. The `ultrathink` command now intelligently adjusts effort levels for specific models (Opus 5.5, Sonnet 5.5, Haiku 5.5, Fable 5.1) and its visual indicator is more precise. Code Review has enhanced reliability with automatic retries for transient server faults and improved guidance on effort levels. Compaction logic is smarter, prompting for summaries when missing, and the Artifact tool now better distinguishes between pages and documents for different types of work.\n\nNumerous fixes address critical issues, including long freezes at startup due to large CLAUDE.md files, interruptions not taking effect promptly, and 'Usage credits required' errors in standard-context sessions. Write and Edit operations no longer stall or report incorrect line changes, and subagents can now reliably use MCP tools. Remote Control sessions no longer hang on connection, and messages sent to cloud or Remote Control sessions are correctly attributed. The release also fixes issues with background session restarts, `claude respawn` behavior, and `/effort` warnings. VS Code integration sees fixes for custom skills, extension host freezes, and image handling, alongside new syntax coloring for code blocks and a 'Running UserPromptSubmit hooks' spinner. Cloud sessions benefit from fixes for routine locks and duplicate environment names. Overall, this release focuses on stability, performance, and user experience enhancements across various components, making it a recommended upgrade for all users, especially those in self-hosted or cloud environments."
+      "tldr": "Claude Code 2.1.311 introduces significant stability and usability improvements, alongside new features for self-hosted runners and analytics. A key new feature for self-hosted runners is the `--hold-idle-file` and `--max-hold-min` flags, allowing idle sessions to persist while the host reports ongoing processes, which is crucial for maintaining session continuity in complex environments. Additionally, a new 'Skills' view in Claude Tag analytics provides valuable insights into skill usage in Slack channels, helping administrators identify popular and unused skills. \n\nNumerous fixes address long-standing issues, including freezes at startup due to large CLAUDE.md files, interruptions not taking effect, and 'Usage credits required' errors in standard-context sessions by compacting conversations. Stalling Write and Edit operations, subagents failing to use MCP tools, and stale MEMORY.md/CLAUDE.md content after compaction have also been resolved. The release also fixes out-of-order transcript messages in `claude -p` and SDK sessions, and incorrect `SubagentStop` hook execution. \n\nImprovements include faster startup times for Pro and Max accounts, clearer messages for background session exits, and enhanced artifact handling. The `ultrathink` command now leverages xhigh effort for specific models, and JSON output for `--output-format json` and `stream-json` now properly escapes control characters. The `DISABLE_COMPACT` setting can now only disable compaction, not re-enable it. For cloud sessions, model settings are now loaded from a signed file, configurable via the new `CLAUDE_CODE_MODEL_CATALOG` environment variable. The VS Code extension now respects VS Code's telemetry setting by setting `DISABLE_TELEMETRY` for Claude Code sessions. Developers should consider upgrading to benefit from these stability enhancements and new features, especially those using self-hosted runners or managing skills in Claude Tag."
     },
     "features": [
       {
@@ -2851,6 +2853,26 @@
           "Provides insights into skill usage within Slack channels.",
           "Includes Usage links in admin settings for detailed analytics."
         ],
+        "source_url": ""
+      },
+      {
+        "id": "self-hosted-runner-hold-idle-file",
+        "name": "Self-Hosted Runner Idle File Hold",
+        "status": "stable",
+        "since": "2.1.311",
+        "description": "Allows the self-hosted runner to keep an idle session active while the host reports processes it left running, preventing premature session termination.",
+        "key_details": [
+          "Uses `--hold-idle-file` and `--max-hold-min` flags."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "explanatory-output-style-tip",
+        "name": "Explanatory Output Style Tip",
+        "status": "stable",
+        "since": "2.1.311",
+        "description": "A new tip is displayed when Claude is asked for explanations, guiding users towards the 'Explanatory' output style.",
+        "key_details": [],
         "source_url": ""
       }
     ],
