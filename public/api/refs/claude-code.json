@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.310",
-  "generated_at": "2026-10-26T21:20:53.533Z",
+  "version": "2.1.311",
+  "generated_at": "2026-10-27T01:07:57.105Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,12 +14,19 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.310",
-    "to_version": "2.1.310",
-    "new_features": [],
+    "from_version": "2.1.311",
+    "to_version": "2.1.311",
+    "new_features": [
+      "claude-tag-skills-view-analytics"
+    ],
     "new_commands": [],
-    "new_flags": [],
-    "new_env_vars": [],
+    "new_flags": [
+      "--hold-idle-file",
+      "--max-hold-min"
+    ],
+    "new_env_vars": [
+      "CLAUDE_CODE_MODEL_CATALOG"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -39,12 +46,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.310",
-      "latest_release_date": "2026-10-23",
+      "latest_stable": "2.1.311",
+      "latest_release_date": "2026-10-26",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release of claude-code 2.1.310 introduces significant stability and usability improvements, particularly for cloud sessions and non-interactive workflows. The Monitor tool and plugin monitors are now fully supported across Bedrock, Vertex, and Foundry, even when telemetry is disabled, and long foreground sleeps are now proactively blocked in these environments to prevent hangs. This enhances reliability and performance for users leveraging these platforms.\n\nSeveral critical fixes address issues with gateway compatibility, preventing requests from failing when servers reject specific beta values or mid-conversation system messages by retrying without them. Compaction logic has been improved to better handle dense text after 'Prompt is too long' errors, ensuring subsequent requests don't immediately fail. File read permission prompts now correctly show the target of symbolic links, and a bug causing auto-continue timeouts after long external editor sessions has been resolved. For Windows users, PreToolUse and PermissionRequest hooks now correctly prevent tool calls when Git Bash is missing and the command consists only of quoted strings.\n\nCloud sessions receive substantial enhancements, including the integration of Claude Code cloud sessions and Remote Control permissions into Enterprise custom roles, offering granular access control. Users can now load cloud environment setup scripts directly from files, and the session start checklist provides a scrolling box for setup script output. Admin settings for Cloud sessions and Remote Control now require confirmation and list affected custom roles, while the cloud environment dialog has been streamlined to open network access, setup script, and environment variables from rows. Claude Tag also sees fixes for command parsing in rich text and improved loading of admin pages and spend limits. The Code Review admin section now includes retry logic and better error reporting for repository list failures. These updates collectively improve the robustness, security, and user experience across various aspects of claude-code, making an upgrade highly recommended for all users, especially those utilizing cloud sessions or non-interactive agents."
+      "tldr": "This release, claude-code 2.1.311, introduces new flags for `self-hosted-runner` to manage idle sessions, `--hold-idle-file` and `--max-hold-min`, allowing hosts to keep sessions active while reporting running processes. This is a significant improvement for self-hosted environments, preventing premature session termination and improving workflow continuity. Additionally, a new environment variable, `CLAUDE_CODE_MODEL_CATALOG`, provides control over model catalog loading for various cloud platforms.\n\nSeveral key features have been improved for a smoother developer experience. The `ultrathink` command now intelligently adjusts effort levels for specific models (Opus 5.5, Sonnet 5.5, Haiku 5.5, Fable 5.1) and its visual indicator is more precise. Code Review has enhanced reliability with automatic retries for transient server faults and improved guidance on effort levels. Compaction logic is smarter, prompting for summaries when missing, and the Artifact tool now better distinguishes between pages and documents for different types of work.\n\nNumerous fixes address critical issues, including long freezes at startup due to large CLAUDE.md files, interruptions not taking effect promptly, and 'Usage credits required' errors in standard-context sessions. Write and Edit operations no longer stall or report incorrect line changes, and subagents can now reliably use MCP tools. Remote Control sessions no longer hang on connection, and messages sent to cloud or Remote Control sessions are correctly attributed. The release also fixes issues with background session restarts, `claude respawn` behavior, and `/effort` warnings. VS Code integration sees fixes for custom skills, extension host freezes, and image handling, alongside new syntax coloring for code blocks and a 'Running UserPromptSubmit hooks' spinner. Cloud sessions benefit from fixes for routine locks and duplicate environment names. Overall, this release focuses on stability, performance, and user experience enhancements across various components, making it a recommended upgrade for all users, especially those in self-hosted or cloud environments."
     },
     "features": [
       {
@@ -2833,6 +2840,18 @@
         "description": "Added a 'Choose file' button to load a cloud environment's setup script from a local file.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "claude-tag-skills-view-analytics",
+        "name": "Claude Tag Skills View Analytics",
+        "status": "stable",
+        "since": "2.1.311",
+        "description": "Added a Skills view to Claude Tag analytics showing how often Claude runs each attached skill in Slack channels and which go unused, with Usage links in admin settings.",
+        "key_details": [
+          "Provides insights into skill usage within Slack channels.",
+          "Includes Usage links in admin settings for detailed analytics."
+        ],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -3767,6 +3786,18 @@
           "description": "Required for `claude ultrareview` when run in scripts or non-interactive environments. Takes no value; a PR number or base branch should be placed before it.",
           "since": "2.1.309",
           "source_url": ""
+        },
+        {
+          "flag": "--hold-idle-file",
+          "description": "Used with `self-hosted-runner` to keep an idle session while your host reports processes it left running.",
+          "since": "2.1.311",
+          "source_url": ""
+        },
+        {
+          "flag": "--max-hold-min",
+          "description": "Used with `self-hosted-runner` to specify the maximum minutes to hold an idle session.",
+          "since": "2.1.311",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -3884,7 +3915,10 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--hold-idle-file",
+        "--max-hold-min"
+      ]
     },
     "env_vars": [
       {
@@ -4437,6 +4471,13 @@
         "purpose": "Disables the workspace trust check for the `claude ultrareview` command, allowing it to run in non-trusted environments without prompting or requiring the `--trust-workspace` flag. Set to `1` to enable.",
         "status": "stable",
         "since": "2.1.309",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_MODEL_CATALOG",
+        "purpose": "Set to 'off' to disable loading model settings from a signed file on downloads.claude.ai for Bedrock, Mantle, Vertex, and Foundry sessions.",
+        "status": "stable",
+        "since": "2.1.311",
         "source_url": ""
       }
     ],
