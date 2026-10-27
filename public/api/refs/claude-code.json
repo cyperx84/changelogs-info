@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.311",
-  "generated_at": "2026-10-27T07:18:04.379Z",
+  "generated_at": "2026-10-27T13:57:44.542Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -16,11 +16,7 @@
   "delta": {
     "from_version": "2.1.311",
     "to_version": "2.1.311",
-    "new_features": [
-      "self-hosted-runner-hold-idle-file",
-      "explanatory-output-style-tip",
-      "claude-tag-skills-view-analytics"
-    ],
+    "new_features": [],
     "new_commands": [],
     "new_flags": [
       "--hold-idle-file",
@@ -53,7 +49,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Claude Code 2.1.311 introduces significant stability and usability improvements, alongside new features for self-hosted runners and analytics. A key new feature for self-hosted runners is the `--hold-idle-file` and `--max-hold-min` flags, allowing idle sessions to persist while the host reports ongoing processes, which is crucial for maintaining session continuity in complex environments. Additionally, a new 'Skills' view in Claude Tag analytics provides valuable insights into skill usage in Slack channels, helping administrators identify popular and unused skills. \n\nNumerous fixes address long-standing issues, including freezes at startup due to large CLAUDE.md files, interruptions not taking effect, and 'Usage credits required' errors in standard-context sessions by compacting conversations. Stalling Write and Edit operations, subagents failing to use MCP tools, and stale MEMORY.md/CLAUDE.md content after compaction have also been resolved. The release also fixes out-of-order transcript messages in `claude -p` and SDK sessions, and incorrect `SubagentStop` hook execution. \n\nImprovements include faster startup times for Pro and Max accounts, clearer messages for background session exits, and enhanced artifact handling. The `ultrathink` command now leverages xhigh effort for specific models, and JSON output for `--output-format json` and `stream-json` now properly escapes control characters. The `DISABLE_COMPACT` setting can now only disable compaction, not re-enable it. For cloud sessions, model settings are now loaded from a signed file, configurable via the new `CLAUDE_CODE_MODEL_CATALOG` environment variable. The VS Code extension now respects VS Code's telemetry setting by setting `DISABLE_TELEMETRY` for Claude Code sessions. Developers should consider upgrading to benefit from these stability enhancements and new features, especially those using self-hosted runners or managing skills in Claude Tag."
+      "tldr": "This release of claude-code 2.1.311 focuses heavily on stability, performance, and user experience improvements, particularly for self-hosted runners, cloud sessions, and the VS Code extension. A key enhancement for self-hosted runners is the addition of `--hold-idle-file` and `--max-hold-min` flags, allowing idle sessions to persist while the host reports active processes, which is crucial for maintaining continuity in long-running or background tasks. This prevents sessions from being prematurely terminated, improving the reliability of self-hosted deployments. \n\nNumerous fixes address long-standing issues, including freezes at startup or after file edits caused by large CLAUDE.md files, interruptions not taking effect immediately, and 'Usage credits required' errors in standard-context sessions by compacting conversations. Performance for Write and Edit operations has been significantly improved, eliminating 5-second stalls and incorrect line change reports for large file modifications. Subagent reliability is boosted with fixes for MCP tool usage and isolated worktree removal. The `/mcp` commands now correctly reference project entries in `~/.claude.json` and display clearer error messages. \n\nFor cloud and Remote Control sessions, fixes include resolving 'Connecting' stalls, correct message attribution in mobile apps, and proper error reporting for disk full or attachment limit issues. WebFetch and WebSearch now time out after 300 seconds on stalled responses in Cowork sessions. The VS Code extension receives syntax coloring for code blocks, a 'Running UserPromptSubmit hooks' spinner, and now respects VS Code's telemetry setting by setting `DISABLE_TELEMETRY` for sessions. Claude Tag analytics now includes a Skills view, and Code Review reliability is improved with automatic retries for transient server faults. \n\nOther notable changes include `ultrathink` now running at xhigh effort on newer models, `DISABLE_COMPACT` only allowing compaction to be turned off, and model settings for Bedrock/Mantle/Vertex/Foundry now loading from a signed file (toggleable via `CLAUDE_CODE_MODEL_CATALOG=off`). Users should upgrade to benefit from these stability and performance enhancements, especially those using self-hosted runners, cloud sessions, or the VS Code extension."
     },
     "features": [
       {
