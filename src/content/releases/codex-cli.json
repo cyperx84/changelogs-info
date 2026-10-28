@@ -15,6 +15,46 @@
   },
   "releases": [
     {
+      "version": "rust-v0.166.0-alpha.5",
+      "name": "0.166.0-alpha.5",
+      "body": "Release 0.166.0-alpha.5\n\n",
+      "date": "2026-10-28T04:43:10Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.166.0-alpha.5",
+      "prerelease": true
+    },
+    {
+      "version": "rust-v0.165.0",
+      "name": "0.165.0",
+      "body": "## New Features\n\n- Added a built-in Google Cloud Vertex AI provider, configured with `model_provider = \"gcp\"`. (#56265)\n- Added GPT-6.1 Terra to the model catalogs. (#57337)\n- Added a repository filter to the session picker and directory grouping to the agent command center, making it easier to navigate sessions across linked worktrees. (#56308)\n- Added experimental attached thread forks to the app-server API. (#56351)\n- Enabled reasoning effort changes during a conversation by default for supported models. (#56163)\n- Enabled memory v2 by default for fresh profiles and added support for importing external-agent memories into it. (#56211, #56414)\n\n## Bug Fixes\n\n- Fixed fresh TUI sessions to honor the server’s default approval reviewer when no explicit override is provided. (#56090)\n- Kept TUI preferences editable and immediately applicable when execution settings are invalid. (#56091)\n- Cancelled remote MCP tool requests when their local response futures are dropped. (#56132)\n- Prevented queued agent messages from restarting work after an interrupt or a switch to Plan mode. (#56330)\n- Stopped retrying when a provider reports that a model was not found, preserving its error message. (#56445)\n- Closed a marketplace URL validation gap that could allow Git to connect to a different host than the one checked against allowed patterns. (#56263)\n\n## Changelog\n\nFull Changelog: https://github.com/openai/codex/compare/rust-v0.164.0...rust-v0.165.0\n\n- #56081 Cache decrypted Codex auth and managed secrets @celia-oai\n- #56090 Honor server approval reviewer defaults on fresh TUI startup @etraut-openai\n- #56091 Keep TUI preferences editable when execution settings are invalid @etraut-openai\n- #56097 Prepare TUI startup to accept multiple backend sessions @bc-openai\n- #56124 Forward Guardian reviewer events to parent raw-event subscribers @jif-oai\n- #56127 Avoid blocking EMA auth status checks on account refresh @jif-oai\n- #56132 Cancel MCP tool requests when response futures are dropped @rhan-oai\n- #56133 Defer agent mail after empty final answers @eknight-oai\n- #56139 Fix the MCP auth status test's IdP OAuth configuration @jif-oai\n- #56153 Preserve safe enterprise MCP authentication error details @jif-oai\n- #56154 Add managed network review domains before allow rules @olliem-oai\n- #56163 Enable reasoning effort overrides by default @felixxia-oai\n- #56182 Add AWS SigV4 signing to network proxy MITM hooks @viyatb-oai\n- #56210 Stabilize the marketplace staging cleanup test @felixxia-oai\n- #56211 Default fresh memory profiles to v2 @jif-oai\n- #56214 Remove the `u64` cast from WSL DrvFS detection @felixxia-oai\n- #56220 Use cargo_bin in the Windows sandbox manifest test @felixxia-oai\n- #56222 Consolidate Bazel CI setup into `prepare-bazel-ci` @anp-oai\n- #56224 Reuse current model context across paginated resume config loading @charliemarsh-oai\n- #56233 Make Opus encoder test timestamps follow sample time @goodman-oai\n- #56234 Emit prompt telemetry only after hooks accept input @abhinav-oai\n- #56236 Make the code mode yield/resume test yield explicitly between phases @goodman-oai\n- #56246 Bump Bazelisk to 1.30.0 in the Bazel CI setup action @anp-oai\n- #56247 Consolidate Rust unit tests under dedicated test modules @dkovalenko-oai\n- #56248 Bump uv to 0.13.5 in CI and release workflows @anp-oai\n- #56250 Avoid redundant settings checkpoints when resuming threads @owenlin0\n- #56261 Isolate V8 source dependencies and their C++ runtime settings @seanh-oai\n- #56263 Reject backslashes in HTTP(S) marketplace URL userinfo @willwang-openai\n- #56265 Add a built-in Google Cloud Vertex AI provider @celia-oai\n- #56266 Preserve MCP disable reasons across runtime overlays @mzeng-openai\n- #56272 Upgrade Python SDK model generation to datamodel-code-generator 0.64.0 @anp-oai\n- #56274 Wait for cloud config refresh cancellation in loader lifetime tests @goodman-oai\n- #56277 Support bounded request bodies in AWS SigV4 signing @viyatb-oai\n- #56278 Add negotiated network policy metadata support for MCP calls @viyatb-oai\n- #56280 Group consecutive transcript prompts into one background block @bc-openai\n- #56284 Scope model catalogs and caches by thread originator @kennyyi-oai\n- #56286 Bump `@modelcontextprotocol/sdk` to `1.32.0` @anp-oai\n- #56288 Pin Linux artifact signing to Cosign v3.1.4 @anp-oai\n- #56290 Lock Python release build tools with uv @anp-oai\n- #56292 Fix MCP cancellation tests to use the metadata callback @anp-oai\n- #56293 Use fixed-token auth fixtures in Vertex tests @anp-oai\n- #56295 Decouple managed configuration loading from ChatGPT authentication @smurching-oai\n- #56297 Mark built-in dummy credentials and strengthen collision checks @viyatb-oai\n- #56301 Add TLS forwarding tests for MITM SigV4 requests @viyatb-oai\n- #56302 Add hook configuration to environment attachments @andrewgu-oai\n- #56304 Add support for environment-scoped managed hooks @andrewgu-oai\n- #56308 Separate directory and repository scopes in the TUI @bc-openai\n- #56309 Support model-specific writable-root permission wording @goodman-oai\n- #56312 Track accepted conversation history in rollout traces @cassirer-openai\n- #56313 Apply model catalog overrides to history, notes, and context tools @rhan-oai\n- #56314 Add managed configuration loaders for custom config servers @smurching-oai\n- #56330 Make agent-message wakes respect interrupts and Plan mode @alishobeiri-oai\n- #56342 Match rollout trace image content across request snapshots @cassirer-openai\n- #56343 Run environment hooks on their owning executors @andrewgu-oai\n- #56351 Add experimental attached thread forks @btraut-openai\n- #56364 Allow callers to set the thread source for sampling @keyz\n- #56371 Make the Guardian review timeout configurable @vivi\n- #56414 Support memory v2 in external-agent memory imports @jif-oai\n- #56439 Update `ctutils` from 0.4.2 to 0.4.5 @felixxia-oai\n- #56445 Treat model-not-found provider errors as terminal failures @charliemarsh-oai\n- #56453 Make the Realtime V2 background-agent steering test deterministic @felixxia-oai\n- #56454 Make sandbox mount cleanup tests tolerate file descriptor reuse @felixxia-oai\n- #56459 Add Guardian V3 feature configuration @felixxia-oai\n- #56460 Add Guardian v3 local board helpers @felixxia-oai\n- #56461 Add silent append support to message boards @felixxia-oai\n- #56462 Prevent memory imports from racing with consolidation @jif-oai\n- #56465 Add experimental thread memory summary reads @jif-oai\n- #57337 [0.165.0-alpha.1.2] Backport GPT-6.1 Terra to the model catalogs @shijie-oai\n\n\n",
+      "date": "2026-10-27T20:09:38Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.165.0",
+      "prerelease": false
+    },
+    {
+      "version": "rust-v0.166.0-alpha.4",
+      "name": "0.166.0-alpha.4",
+      "body": "Release 0.166.0-alpha.4\n\n",
+      "date": "2026-10-28T01:22:03Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.166.0-alpha.4",
+      "prerelease": true
+    },
+    {
+      "version": "rust-v0.166.0-alpha.3",
+      "name": "0.166.0-alpha.3",
+      "body": "Release 0.166.0-alpha.3\n\n",
+      "date": "2026-10-27T19:23:16Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.166.0-alpha.3",
+      "prerelease": true
+    },
+    {
+      "version": "rust-v0.166.0-alpha.2",
+      "name": "0.166.0-alpha.2",
+      "body": "Release 0.166.0-alpha.2\n\n",
+      "date": "2026-10-27T11:54:48Z",
+      "url": "https://github.com/openai/codex/releases/tag/rust-v0.166.0-alpha.2",
+      "prerelease": true
+    },
+    {
       "version": "rust-v0.166.0-alpha.1",
       "name": "0.166.0-alpha.1",
       "body": "Release 0.166.0-alpha.1\n\n",
@@ -213,47 +253,7 @@
       "date": "2026-10-14T20:45:55Z",
       "url": "https://github.com/openai/codex/releases/tag/rust-v0.163.0-alpha.10.1",
       "prerelease": true
-    },
-    {
-      "version": "rust-v0.163.0-alpha.9",
-      "name": "0.163.0-alpha.9",
-      "body": "Release 0.163.0-alpha.9\n\n",
-      "date": "2026-10-13T15:47:20Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.163.0-alpha.9",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.163.0-alpha.8",
-      "name": "0.163.0-alpha.8",
-      "body": "Release 0.163.0-alpha.8\n\n",
-      "date": "2026-10-13T13:14:41Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.163.0-alpha.8",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.163.0-alpha.10",
-      "name": "0.163.0-alpha.10",
-      "body": "Release 0.163.0-alpha.10\n\n",
-      "date": "2026-10-13T19:04:12Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.163.0-alpha.10",
-      "prerelease": true
-    },
-    {
-      "version": "rust-v0.162.1",
-      "name": "0.162.1",
-      "body": "## Bug Fixes\n\n- Fixed a TUI crash when asynchronous questions contain multiple lines, preserving line breaks and complete hyperlink destinations. (#51866)\n- Fixed startup failures caused by differences between a running background server's feature settings and CLI defaults. Compatibility checks now apply only to explicit command-line feature overrides. (#52648)\n\nFull Changelog: https://github.com/openai/codex/compare/rust-v0.162.0...rust-v0.162.1\n\n\n",
-      "date": "2026-10-09T19:44:51Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.162.1",
-      "prerelease": false
-    },
-    {
-      "version": "rust-v0.163.0-alpha.5",
-      "name": "0.163.0-alpha.5",
-      "body": "Release 0.163.0-alpha.5\n\n",
-      "date": "2026-10-10T00:26:59Z",
-      "url": "https://github.com/openai/codex/releases/tag/rust-v0.163.0-alpha.5",
-      "prerelease": true
     }
   ],
-  "lastUpdated": "2026-10-27T11:12:27.779Z"
+  "lastUpdated": "2026-10-28T11:46:24.501Z"
 }
