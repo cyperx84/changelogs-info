@@ -1,0 +1,2743 @@
+{
+  "schema": "clwatch.payload.v1",
+  "tool": "gemini-cli",
+  "version": "0.66.0",
+  "generated_at": "2026-10-27T23:29:24.693Z",
+  "extracted_from_sources": [
+    "https://github.com/google-gemini/gemini-cli/releases/tag/v0.33.0",
+    "https://github.com/google-gemini/gemini-cli/releases"
+  ],
+  "verification": {
+    "status": "verified",
+    "confidence": 0.93,
+    "unverified_fields": []
+  },
+  "stale_after": "2026-03-19T04:17:00Z",
+  "delta": {
+    "from_version": "0.66.0",
+    "to_version": "0.66.0",
+    "new_features": [],
+    "new_commands": [],
+    "new_flags": [],
+    "new_env_vars": [],
+    "deprecated_commands": [],
+    "deprecated_flags": [],
+    "breaking_changes": []
+  },
+  "payload": {
+    "meta": {
+      "display_name": "Gemini CLI",
+      "vendor": "Google",
+      "kind": "tool",
+      "tags": [
+        "coding-agent",
+        "cli",
+        "agentic"
+      ],
+      "homepage": "https://github.com/google-gemini/gemini-cli",
+      "docs_url": "https://github.com/google-gemini/gemini-cli/blob/main/docs/",
+      "changelog_url": "https://github.com/google-gemini/gemini-cli/releases",
+      "repo_url": "https://github.com/google-gemini/gemini-cli",
+      "license": "apache-2.0",
+      "latest_stable": "0.66.0",
+      "latest_prerelease": "0.34.0-preview",
+      "latest_release_date": "2026-10-27",
+      "status": "active",
+      "runtime": "node",
+      "written_in": "typescript",
+      "release_cadence": "Stable on Tuesdays. Preview: Tuesdays UTC 23:59. Nightly: daily UTC 00:00.",
+      "tldr": "Gemini CLI v0.66.0 focuses heavily on stability and UI/UX refinements, with significant fixes across core functionalities. A key improvement is the synchronized output and isolated spinner rendering in the UI, which should lead to a much smoother and less distracting user experience during tool execution. Additionally, the debug console's height calculation and terminalBuffer flickering have been resolved, enhancing the overall interactive TUI experience.\n\nSeveral critical fixes address core CLI behavior, including preventing right-hand border bleed in scrollable tool containers and ensuring proper formatting and quoting of Windows diff command arguments. The CLI now also correctly resolves settings placeholders after loading `.env` files, improving configuration reliability. For developers using custom keybindings, the `keybindings.json` now supports a 'keys' array, offering more flexible configuration options. Furthermore, the CLI now forwards termination signals from the bootstrap parent to child processes, ensuring more robust process management.\n\nUnder the hood, the tool call scheduler has been refactored to emit tool call groups, dropping the UI lookahead for potentially more efficient processing. Security and environment handling have also seen improvements, with interactive credential and SSH prompts now disabled in `getSafeGitEnv` and user-level `~/.gitconfig` preserved in shell and Git environments. Authentication error detection has been hardened to prevent false positives, and support for opt-in private network endpoints for MCP OAuth flows has been added. Users should upgrade to benefit from these stability and UI enhancements, especially if experiencing any of the previously mentioned issues."
+    },
+    "features": [
+      {
+        "id": "interactive-tui",
+        "name": "Interactive TUI",
+        "status": "stable",
+        "since": "0.1.0",
+        "description": "Full-screen terminal UI. Launch with gemini or gemini -m <model>. Supports --include-directories for extra context.",
+        "key_details": [
+          "gemini — launch TUI",
+          "gemini -m gemini-2.5-flash — specific model",
+          "gemini --include-directories ../lib,../docs — add context dirs",
+          "@file autocomplete prioritizes filenames (0.33.0)",
+          "Compact header with ASCII icon",
+          "Shell autocomplete improved"
+        ],
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "id": "headless-mode",
+        "name": "Headless / Non-Interactive Mode",
+        "status": "stable",
+        "since": "0.10.0",
+        "description": "One-shot execution via -p flag. Supports structured JSON and streaming output.",
+        "key_details": [
+          "gemini -p \"prompt\" — one-shot text",
+          "gemini -p \"prompt\" --output-format json — structured JSON",
+          "gemini -p \"prompt\" --output-format stream-json — streaming events"
+        ],
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "id": "acp-mode",
+        "name": "ACP Mode",
+        "status": "stable",
+        "since": "0.30.0",
+        "description": "Agent Communication Protocol mode. Renamed from --experimental-acp. AI Gateway auth support added.",
+        "key_details": [
+          "Flag: --acp (renamed from --experimental-acp in 0.32.0)",
+          "AI Gateway auth support",
+          "Full ACP diff payloads use full paths (fixed)"
+        ],
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "id": "agent-skills",
+        "name": "Agent Skills (AgentSkills Standard)",
+        "status": "stable",
+        "since": "0.20.0",
+        "description": "On-demand expertise using the open AgentSkills standard. Skills discovered from workspace and user dirs, injected into context on activation.",
+        "discovery_locations": [
+          ".gemini/skills/ or .agents/skills/ (workspace, highest priority)",
+          "~/.gemini/skills/ or ~/.agents/skills/ (user)",
+          "Extension skills/ (bundled)"
+        ],
+        "activation_flow": [
+          "1. Scan and inject name+description into system prompt (metadata only)",
+          "2. Model calls activate_skill when task matches",
+          "3. User sees confirmation prompt",
+          "4. SKILL.md body + folder structure added to context + file access granted",
+          "5. Skill guidance prioritized for session duration"
+        ],
+        "key_details": [
+          "/skills list — show discovered skills",
+          "/skills link <path> — symlink skills from directory",
+          "/skills disable <name> / enable <name> / reload",
+          "gemini skills install https://github.com/org/skills.git",
+          "gemini skills install /path/local",
+          "gemini skills install https://github.com/org/repo.git --path skills/subfolder",
+          "gemini skills uninstall <name> --scope workspace",
+          "SKILL.md standard format (compatible with Claude Code, Codex, OpenClaw)"
+        ],
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "id": "subagents",
+        "name": "Subagents",
+        "status": "experimental",
+        "since": "0.25.0",
+        "description": "Custom specialized subagents. Operate in YOLO mode — tools execute without individual confirmation.",
+        "enabled_by": {
+          "settings": "~/.gemini/settings.json: { \"experimental\": { \"enableAgents\": true } }"
+        },
+        "built_in_agents": [
+          {
+            "name": "codebase_investigator",
+            "purpose": "Analyze codebase, reverse-engineer, map dependencies",
+            "default": "enabled",
+            "configurable": true
+          },
+          {
+            "name": "cli_help",
+            "purpose": "Expert knowledge about Gemini CLI commands and config",
+            "default": "enabled",
+            "configurable": false
+          },
+          {
+            "name": "generalist_agent",
+            "purpose": "Routes tasks to appropriate specialist",
+            "default": "enabled",
+            "configurable": false
+          },
+          {
+            "name": "browser_agent",
+            "purpose": "Web automation via accessibility tree (Chrome 144+)",
+            "default": "disabled",
+            "configurable": true
+          }
+        ],
+        "key_details": [
+          "WARNING: Subagents operate in YOLO mode — no per-tool confirmation",
+          "Define custom agents in .gemini/agents/*.md (project) or ~/.gemini/agents/*.md (user)",
+          "Frontmatter: name (required), description (required), kind (local/remote), tools, model, temperature, max_turns, timeout_mins",
+          "Browser agent requires Chrome 144+",
+          "A2A (Agent-to-Agent) timeout: 30 minutes (increased in 0.33.0)",
+          "A2A HTTP authentication support for remote agents (0.33.0)"
+        ],
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "id": "browser-agent",
+        "name": "Browser Agent",
+        "status": "experimental",
+        "since": "0.28.0",
+        "description": "Web automation via accessibility tree. Supports persistent, isolated, and existing Chrome session modes. Optional visual model for UI-level tasks.",
+        "enabled_by": {
+          "settings": "~/.gemini/settings.json: { \"agents\": { \"overrides\": { \"browser_agent\": { \"enabled\": true } } } }"
+        },
+        "session_modes": {
+          "persistent": "Chrome with saved profile at ~/.gemini/cli-browser-profile/ (default)",
+          "isolated": "Temp profile, deleted after session",
+          "existing": "Attach to running Chrome with remote debugging"
+        },
+        "visual_model": "gemini-2.5-computer-use-preview-10-2025 — for click/interact UI tasks",
+        "requirements": [
+          "Chrome 144+"
+        ],
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "id": "sandboxing",
+        "name": "Sandboxing",
+        "status": "experimental",
+        "since": "0.30.0",
+        "description": "Multiple OS-level isolation options including LXC and gVisor. Trusted folders control per-directory execution policy.",
+        "sandbox_types": [
+          {
+            "name": "LXC container",
+            "status": "experimental",
+            "since": "0.33.0"
+          },
+          {
+            "name": "gVisor (runsc)",
+            "status": "experimental",
+            "since": "0.33.0"
+          },
+          {
+            "name": "Docker",
+            "status": "stable",
+            "since": "0.28.0",
+            "note": "Multi-arch builds"
+          }
+        ],
+        "key_details": [
+          "Trusted folders: control which directories get auto-trust vs confirmation",
+          "Multi-arch Docker builds (0.33.0)"
+        ],
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "id": "tracker-tools",
+        "name": "Tracker Tools",
+        "status": "stable",
+        "since": "0.33.0",
+        "description": "CRUD tools for project tracking and visualization within sessions.",
+        "source_url": "https://github.com/google-gemini/gemini-cli/releases/tag/v0.33.0"
+      },
+      {
+        "id": "loop-detection",
+        "name": "Loop Detection",
+        "status": "stable",
+        "since": "0.33.0",
+        "description": "Iterative loop detection with model feedback to break out of infinite loops automatically.",
+        "source_url": "https://github.com/google-gemini/gemini-cli/releases/tag/v0.33.0"
+      },
+      {
+        "id": "extensions",
+        "name": "Extensions",
+        "status": "stable",
+        "since": "0.25.0",
+        "description": "Custom extensions bundling skills, subagents, tools, and commands.",
+        "key_details": [
+          "gemini extensions install <url>",
+          "gemini extensions uninstall <name>",
+          "gemini extensions uninstall --all — bulk uninstall (0.33.0)",
+          "Symlink-safe source paths",
+          "Extensions can distribute subagents"
+        ],
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "id": "plan-mode",
+        "name": "Plan Mode",
+        "status": "stable",
+        "since": "0.20.0",
+        "description": "Read-only mode for planning complex changes without executing. Documented Conductor pattern for structured task decomposition.",
+        "key_details": [
+          "/plan — enter plan mode",
+          "Conductor pattern for structured task decomposition",
+          "Integration tests stabilized (0.33.0)"
+        ],
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "id": "checkpointing",
+        "name": "Checkpointing",
+        "status": "stable",
+        "since": "0.20.0",
+        "description": "Automatic session snapshots. /rewind to rewind to earlier point. Persists across sessions.",
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "id": "session-management",
+        "name": "Session Management",
+        "status": "stable",
+        "since": "0.15.0",
+        "description": "Multi-session support with new, resume, and list commands.",
+        "key_details": [
+          "/chat new — new session",
+          "/chat resume — resume previous",
+          "/chat list — list sessions",
+          "Chat resume footer shown on quit with resume instructions (0.33.0)"
+        ],
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "id": "mcp",
+        "name": "MCP (Model Context Protocol)",
+        "status": "stable",
+        "since": "0.15.0",
+        "description": "MCP server integration for custom tool extensions. Notifications/tools/list_changed support fixed (0.33.0).",
+        "key_details": [
+          "MCP tool output truncation for large responses (0.33.0)",
+          "Notifications/tools/list_changed support fixed"
+        ],
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "id": "github-actions",
+        "name": "GitHub Actions Integration",
+        "status": "stable",
+        "since": "0.25.0",
+        "description": "Official GitHub Action for automated PR reviews, issue triage, and @gemini-cli mentions.",
+        "key_details": [
+          "uses: google-github-actions/run-gemini-cli",
+          "Automated PR reviews with contextual feedback",
+          "Issue triage: labeling, prioritization",
+          "@gemini-cli mentions in issues/PRs",
+          "Custom scheduled/on-demand workflows",
+          "Issue assignee workflow + /unassign support added (0.33.0)"
+        ],
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "id": "token-caching",
+        "name": "Token Caching",
+        "status": "stable",
+        "since": "0.20.0",
+        "description": "Caches tokens to reduce costs and latency in long sessions.",
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "id": "google-search-grounding",
+        "name": "Google Search Grounding",
+        "status": "stable",
+        "since": "0.10.0",
+        "description": "Built-in Google Search for real-time information grounding.",
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "id": "policy-engine",
+        "name": "Policy Engine",
+        "status": "stable",
+        "since": "0.25.0",
+        "description": "Fine-grained execution control for enterprise environments.",
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "id": "chat-resume-footer",
+        "name": "Chat Resume Footer",
+        "status": "stable",
+        "since": "0.34.0",
+        "description": "Adds a chat resume footer on session quit.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/20667"
+      },
+      {
+        "id": "tracker-crud-tools-visualization",
+        "name": "Tracker CRUD Tools & Visualization",
+        "status": "stable",
+        "since": "0.34.0",
+        "description": "Adds tracker CRUD tools and visualization.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/19489"
+      },
+      {
+        "id": "file-autocomplete-prioritization",
+        "name": "@file Autocomplete Prioritization",
+        "status": "stable",
+        "since": "0.34.0",
+        "description": "Improves @file autocomplete to prioritize filenames.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21064"
+      },
+      {
+        "id": "lxc-container-sandbox-support",
+        "name": "LXC Container Sandbox Support",
+        "status": "experimental",
+        "since": "0.34.0",
+        "description": "Adds experimental LXC container sandbox support.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/20735"
+      },
+      {
+        "id": "eval-nightly-summary-table",
+        "name": "Eval Nightly Summary Table",
+        "status": "stable",
+        "since": "0.34.0",
+        "description": "Adds an overall pass rate row to the eval nightly summary table.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/20905"
+      },
+      {
+        "id": "issue-assignee-workflow",
+        "name": "Issue Assignee Workflow",
+        "status": "stable",
+        "since": "0.34.0",
+        "description": "Adds issue assignee workflow.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21003"
+      },
+      {
+        "id": "custom-footer-configuration",
+        "name": "Custom Footer Configuration",
+        "status": "stable",
+        "since": "0.34.0",
+        "description": "Adds custom footer configuration via `/footer`.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/19001"
+      },
+      {
+        "id": "native-gvisor-runsc-sandboxing-support",
+        "name": "Native gVisor (runsc) Sandboxing Support",
+        "status": "stable",
+        "since": "0.34.0",
+        "description": "Adds native gVisor (runsc) sandboxing support.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21062"
+      },
+      {
+        "id": "clearcut-logging-for-startup-statistics",
+        "name": "Clearcut Logging for Startup Statistics",
+        "status": "stable",
+        "since": "0.34.0",
+        "description": "Implements Clearcut logging for startup statistics.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21172"
+      },
+      {
+        "id": "issue-triage-area-documentation",
+        "name": "Issue Triage Area Documentation",
+        "status": "stable",
+        "since": "0.34.0",
+        "description": "Adds area/documentation to issue triage.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21222"
+      },
+      {
+        "id": "upgrade-command",
+        "name": "/upgrade Command",
+        "status": "stable",
+        "since": "0.34.0",
+        "description": "Implements /upgrade command.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21511"
+      },
+      {
+        "id": "robust-ip-validation-safe-fetch",
+        "name": "Robust IP Validation and Safe Fetch",
+        "status": "stable",
+        "since": "0.34.0",
+        "description": "Implements robust IP validation and safeFetch foundation.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21401"
+      },
+      {
+        "id": "redesign-header-compact",
+        "name": "Redesign Header Compact",
+        "status": "stable",
+        "since": "0.34.0",
+        "description": "Redesigns the header in compact mode.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/20922"
+      },
+      {
+        "id": "telemetry-github-actions",
+        "name": "Telemetry for GitHub Actions",
+        "status": "stable",
+        "since": "0.34.0",
+        "description": "Adds specific PR, issue, and custom tracking IDs for GitHub Actions.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21129"
+      },
+      {
+        "id": "oauth2-authorization-code-auth-provider",
+        "name": "OAuth2 Authorization Code Auth Provider",
+        "status": "stable",
+        "since": "0.34.0",
+        "description": "Adds OAuth2 Authorization Code auth provider for A2A agents.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21496"
+      },
+      {
+        "id": "skill-activation-via-slash-commands",
+        "name": "Skill Activation via Slash Commands",
+        "status": "stable",
+        "since": "0.34.0",
+        "description": "Enables skill activation via slash commands.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21758"
+      },
+      {
+        "id": "speech-friendly-response-formatter",
+        "name": "Speech-Friendly Response Formatter",
+        "status": "stable",
+        "since": "0.34.0",
+        "description": "Implements speech-friendly response formatter.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/20989"
+      },
+      {
+        "id": "background-process-logging-cleanup",
+        "name": "Background Process Logging and Cleanup",
+        "status": "stable",
+        "since": "0.34.0",
+        "description": "Implements background process logging and cleanup.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21189"
+      },
+      {
+        "id": "per-model-token-usage-stream-json-output",
+        "name": "Per-Model Token Usage in Stream-JSON Output",
+        "status": "stable",
+        "since": "0.34.0",
+        "description": "Adds per-model token usage to stream-json output.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21839"
+      },
+      {
+        "id": "standardized-normalization-streaming-reassembly",
+        "name": "Standardized Normalization and Streaming Reassembly",
+        "status": "stable",
+        "since": "0.34.0",
+        "description": "Implements standardized normalization and streaming reassembly for A2A agents.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21402"
+      },
+      {
+        "id": "event-driven-tool-scheduler",
+        "name": "Event-Driven Tool Scheduler",
+        "status": "stable",
+        "since": "0.34.0",
+        "description": "Switches from callback-based to event-driven tool scheduler for A2A agents.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21467"
+      },
+      {
+        "id": "pulsating-blue-border-automation-overlay",
+        "name": "Pulsating Blue Border Automation Overlay",
+        "status": "stable",
+        "since": "0.34.0",
+        "description": "Adds pulsating blue border automation overlay to browser agent.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21173"
+      },
+      {
+        "id": "extension-details-dialog-install-support",
+        "name": "Extension Details Dialog and Install Support",
+        "status": "stable",
+        "since": "0.34.0",
+        "description": "Adds ExtensionDetails dialog and support install.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/20845"
+      },
+      {
+        "id": "customizable-keyboard-shortcuts",
+        "name": "Customizable Keyboard Shortcuts",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Allows users to customize keyboard shortcuts in the CLI.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21945"
+      },
+      {
+        "id": "vim-mode-motions",
+        "name": "Vim Mode Motions",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Adds missing vim mode motions (X, ~, r, f/F/t/T, df/dt and friends) to the UI.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21932"
+      },
+      {
+        "id": "literal-character-keybindings-and-extended-kitty-protocol-keys",
+        "name": "Literal Character Keybindings and Extended Kitty Protocol Keys",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Supports literal character keybindings and extended Kitty protocol keys.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21972"
+      },
+      {
+        "id": "removing-keybindings-via-prefix",
+        "name": "Removing Keybindings via '-' Prefix",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Supports removing keybindings via '-' prefix.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22042"
+      },
+      {
+        "id": "vim-yank-paste",
+        "name": "Vim Yank/Paste",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Adds vim yank/paste (y/p/P) with unnamed register.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22026"
+      },
+      {
+        "id": "retry-attempt-telemetry-for-network-related-retries",
+        "name": "Retry Attempt Telemetry for Network Related Retries",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Implements retry attempt telemetry for network related retries.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22027"
+      },
+      {
+        "id": "custom-base-url-via-env-vars",
+        "name": "Custom Base URL via Env Vars",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Supports custom base URL via environment variables.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21561"
+      },
+      {
+        "id": "pending-and-confirming-tool-calls",
+        "name": "Display Pending and Confirming Tool Calls",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Displays pending and confirming tool calls in the UI.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22106"
+      },
+      {
+        "id": "input-blocker-overlay-during-automation",
+        "name": "Input Blocker Overlay During Automation",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Implements an input blocker overlay during browser agent automation.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21132"
+      },
+      {
+        "id": "ai-credits-billing-events",
+        "name": "Clearcut Instrumentation for AI Credits Billing Events",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Adds Clearcut instrumentation for AI credits billing events.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22153"
+      },
+      {
+        "id": "google-credentials-provider-for-remote-agents",
+        "name": "Google Credentials Provider for Remote Agents",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Adds a Google credentials provider for remote agents.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21024"
+      },
+      {
+        "id": "safe-tools-execute-concurrently",
+        "name": "Safe Tools Execute Concurrently",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Allows safe tools to execute concurrently while the agent is busy.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21988"
+      },
+      {
+        "id": "model-driven-parallel-tool-scheduler",
+        "name": "Model-Driven Parallel Tool Scheduler",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Implements a model-driven parallel tool scheduler.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21933"
+      },
+      {
+        "id": "webfetch-tool-stage-1-improvements",
+        "name": "Webfetch Tool Stage 1 Improvements",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Implements Stage 1 improvements for the webfetch tool.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21313"
+      },
+      {
+        "id": "native-grpc-support-and-protocol-routing",
+        "name": "Native gRPC Support and Protocol Routing",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Enables native gRPC support and protocol routing.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21403"
+      },
+      {
+        "id": "todolist-display-for-tracker-tools",
+        "name": "TodoList Display for Tracker Tools",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Returns TodoList display for tracker tools.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22060"
+      },
+      {
+        "id": "allowed-domain-restrictions-for-browser-agent",
+        "name": "Allowed Domain Restrictions for Browser Agent",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Adds allowed domain restrictions for the browser agent.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21775"
+      },
+      {
+        "id": "sandboxmanager-integration-for-process-spawning-tools",
+        "name": "SandboxManager Integration for Process-Spawning Tools",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Integrates SandboxManager to sandbox all process-spawning tools.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22231"
+      },
+      {
+        "id": "tracker-policy",
+        "name": "Tracker Policy",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Adds tracker policy.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22379"
+      },
+      {
+        "id": "disablealwaysallow-setting",
+        "name": "Disable Auto-Approvals",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Adds disableAlwaysAllow setting to disable auto-approvals.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21941"
+      },
+      {
+        "id": "topic-action-summary-model-for-verbosity-reduction",
+        "name": "Topic-Action-Summary Model for Verbosity Reduction",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Implements Topic-Action-Summary model for verbosity reduction in prompts.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21503"
+      },
+      {
+        "id": "runtime-npx-replacement-for-browser-agent-chrome-devtool-mcp",
+        "name": "Pre-built Bundle for Browser Agent Chrome Devtool MCP",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Replaces the runtime npx for browser agent chrome devtool mcp with a pre-built bundle.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22213"
+      },
+      {
+        "id": "cryptographic-integrity-verification-for-extension-updates",
+        "name": "Cryptographic Integrity Verification for Extension Updates",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Implements cryptographic integrity verification for extension updates.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21772"
+      },
+      {
+        "id": "web-fetch-stage-2-security-and-consistency-improvements",
+        "name": "Web Fetch Stage 2 Security and Consistency Improvements",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Implements Stage 2 security and consistency improvements for web_fetch.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22217"
+      },
+      {
+        "id": "jit-context-loading-by-default",
+        "name": "JIT Context Loading by Default",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Enables JIT context loading by default.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22736"
+      },
+      {
+        "id": "all-the-above-option-to-multi-select-askuser-questions",
+        "name": "'All the above' Option to Multi-Select AskUser Questions",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Adds an 'All the above' option to multi-select AskUser questions in Plan mode.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22365"
+      },
+      {
+        "id": "linux-sandbox-bubblewrap",
+        "name": "Linux Sandbox Bubblewrap",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Adds Linux sandbox bubblewrap support.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22680"
+      },
+      {
+        "id": "linux-sandbox-seccomp",
+        "name": "Linux Sandbox Seccomp",
+        "status": "stable",
+        "since": "0.35.0",
+        "description": "Adds Linux sandbox seccomp support.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22815"
+      },
+      {
+        "id": "multi-registry-architecture-and-tool-filtering-for-subagents",
+        "name": "Multi-registry architecture and tool filtering for subagents",
+        "status": "experimental",
+        "since": "0.36.0",
+        "description": "Introduces a multi-registry architecture and tool filtering capabilities specifically designed for subagents, enhancing their flexibility and control over tool usage.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22712"
+      },
+      {
+        "id": "dynamic-model-resolution-to-modelconfigservice",
+        "name": "Dynamic Model Resolution",
+        "status": "experimental",
+        "since": "0.36.0",
+        "description": "Adds support for dynamic model resolution to the ModelConfigService, allowing for more flexible model selection and configuration.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22578"
+      },
+      {
+        "id": "agent-acknowledgment-command-and-enhanced-registry-discovery",
+        "name": "Agent Acknowledgment Command and Enhanced Registry Discovery",
+        "status": "experimental",
+        "since": "0.36.0",
+        "description": "Adds an agent acknowledgment command and enhances registry discovery, improving agent interaction and management.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22389"
+      },
+      {
+        "id": "blocked-status-to-tasks-and-todos",
+        "name": "'Blocked' Status for Tasks and Todos",
+        "status": "stable",
+        "since": "0.36.0",
+        "description": "Adds a 'blocked' status to tasks and todos, allowing users to indicate when a task is waiting on an external dependency.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22735"
+      },
+      {
+        "id": "subagent-local-execution-and-tool-isolation",
+        "name": "Subagent Local Execution and Tool Isolation",
+        "status": "experimental",
+        "since": "0.36.0",
+        "description": "Enables local execution of subagents with tool isolation, enhancing security and performance.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22718"
+      },
+      {
+        "id": "plan-mode-in-non-interactive-mode",
+        "name": "Plan Mode in Non-Interactive Mode",
+        "status": "stable",
+        "since": "0.36.0",
+        "description": "Adds support for plan mode in non-interactive mode, allowing users to leverage planning capabilities in automated workflows.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22670"
+      },
+      {
+        "id": "strict-macos-sandboxing-using-seatbelt-allowlist",
+        "name": "Strict macOS Sandboxing",
+        "status": "stable",
+        "since": "0.36.0",
+        "description": "Implements strict macOS sandboxing using a Seatbelt allowlist, enhancing security on macOS systems.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22832"
+      },
+      {
+        "id": "content-utils",
+        "name": "Content Utils",
+        "status": "experimental",
+        "since": "0.36.0",
+        "description": "Adds content-utils to the core system, providing utilities for content manipulation and processing.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22984"
+      },
+      {
+        "id": "partial-threading-of-agentloopcontext",
+        "name": "Partial Threading of AgentLoopContext",
+        "status": "experimental",
+        "since": "0.36.0",
+        "description": "Implements partial threading of the AgentLoopContext, potentially improving performance and responsiveness.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22978"
+      },
+      {
+        "id": "memory-and-jit-context-into-subagents",
+        "name": "Memory and JIT Context Injection into Subagents",
+        "status": "experimental",
+        "since": "0.36.0",
+        "description": "Injects memory and JIT context into subagents, allowing them to leverage existing knowledge and improve performance.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/23032"
+      },
+      {
+        "id": "experimental-memory-manager-agent",
+        "name": "Experimental Memory Manager Agent",
+        "status": "experimental",
+        "since": "0.36.0",
+        "description": "Adds an experimental memory manager agent to replace the save_memory tool, providing a more robust and efficient memory management system.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22726"
+      },
+      {
+        "id": "admin-forced-mcp-server-installations",
+        "name": "Admin-Forced MCP Server Installations",
+        "status": "stable",
+        "since": "0.36.0",
+        "description": "Adds support for admin-forced MCP server installations, ensuring consistent MCP configurations across environments.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/23163"
+      },
+      {
+        "id": "git-worktree-support-for-isolated-parallel-sessions",
+        "name": "Git Worktree Support for Isolated Parallel Sessions",
+        "status": "experimental",
+        "since": "0.36.0",
+        "description": "Adds Git worktree support for isolated parallel sessions, enabling users to work on multiple sessions simultaneously without interference.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22973"
+      },
+      {
+        "id": "linking-in-the-extension-registry",
+        "name": "Extension Registry Linking",
+        "status": "stable",
+        "since": "0.36.0",
+        "description": "Adds support for linking in the extension registry, making it easier to discover and install extensions.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/23153"
+      },
+      {
+        "id": "security-prompt-for-browser-agent",
+        "name": "Browser Agent Security Prompt",
+        "status": "stable",
+        "since": "0.36.0",
+        "description": "Adds a security prompt for the browser agent, alerting users to potential risks before executing browser-based actions.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/23241"
+      },
+      {
+        "id": "sensitive-action-controls-and-read-only-noise-reduction",
+        "name": "Browser Agent Sensitive Action Controls and Read-Only Noise Reduction",
+        "status": "stable",
+        "since": "0.36.0",
+        "description": "Adds sensitive action controls and read-only noise reduction to the browser agent, improving security and usability.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22867"
+      },
+      {
+        "id": "onboarding-telemetry",
+        "name": "Onboarding Telemetry",
+        "status": "experimental",
+        "since": "0.36.0",
+        "description": "Sets up onboarding telemetry to track user adoption and identify areas for improvement.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/23118"
+      },
+      {
+        "id": "stateless-sandboxmanager-architecture-and-explicit-deny-interface",
+        "name": "Stateless SandboxManager Architecture and Explicit Deny Interface",
+        "status": "stable",
+        "since": "0.36.0",
+        "description": "Refactors the SandboxManager to a stateless architecture and introduces an explicit Deny interface, improving security and maintainability.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/23141"
+      },
+      {
+        "id": "event-translator-and-update-agent-types",
+        "name": "Event Translator and Updated Agent Types",
+        "status": "experimental",
+        "since": "0.36.0",
+        "description": "Adds an event-translator and updates agent types, improving event handling and agent architecture.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22985"
+      },
+      {
+        "id": "full-gemini-cli-logo-for-logged-out-state",
+        "name": "Full \"GEMINI CLI\" Logo for Logged-Out State",
+        "status": "stable",
+        "since": "0.36.0",
+        "description": "Implements the full \"GEMINI CLI\" logo for the logged-out state, improving the user experience.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22412"
+      },
+      {
+        "id": "behavioral-evals-skill-with-fixing-and-promoting-guides",
+        "name": "Behavioral Evals Skill",
+        "status": "experimental",
+        "since": "0.36.0",
+        "description": "Adds a behavioral-evals skill with fixing and promoting guides, enabling users to evaluate and improve agent behavior.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/23349"
+      },
+      {
+        "id": "legacyagentsession",
+        "name": "LegacyAgentSession",
+        "status": "experimental",
+        "since": "0.36.0",
+        "description": "Adds LegacyAgentSession to support older agent session formats.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22986"
+      },
+      {
+        "id": "behavioral-evaluations-for-subagent-routing",
+        "name": "Behavioral Evaluations for Subagent Routing",
+        "status": "experimental",
+        "since": "0.36.0",
+        "description": "Adds behavioral evaluations for subagent routing, enabling users to evaluate and improve subagent routing decisions.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/23272"
+      },
+      {
+        "id": "refreshed-ux-for-composer-layout",
+        "name": "Refreshed UX for Composer Layout",
+        "status": "stable",
+        "since": "0.36.0",
+        "description": "Implements a refreshed UX for the Composer layout, improving the user interface and workflow.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21212"
+      },
+      {
+        "id": "write-protected-governance-files",
+        "name": "Write-Protected Governance Files",
+        "status": "stable",
+        "since": "0.36.0",
+        "description": "Implements sandbox \"Write-Protected\" Governance Files, enhancing security and preventing unauthorized modifications.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/23139"
+      },
+      {
+        "id": "dynamic-macos-sandbox-expansion-and-worktree-support",
+        "name": "Dynamic macOS Sandbox Expansion and Worktree Support",
+        "status": "stable",
+        "since": "0.36.0",
+        "description": "Adds dynamic macOS sandbox expansion and worktree support, improving sandbox flexibility and integration with Git worktrees.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/23301"
+      },
+      {
+        "id": "immediate-user-input-during-startup",
+        "name": "Immediate User Input During Startup",
+        "status": "stable",
+        "since": "0.36.0",
+        "description": "Allows immediate user input during startup, improving the responsiveness and user experience of the CLI.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/23661"
+      },
+      {
+        "id": "native-windows-sandboxing",
+        "name": "Native Windows Sandboxing",
+        "status": "stable",
+        "since": "0.36.0",
+        "description": "Implement native Windows sandboxing for enhanced security.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21807"
+      },
+      {
+        "id": "agent-session",
+        "name": "AgentSession",
+        "status": "stable",
+        "since": "0.36.0",
+        "description": "Introduce AgentSession and rename stream events to agent events for better session management.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/23159"
+      },
+      {
+        "id": "background-memory-service-for-skill-extraction",
+        "name": "Background Memory Service for Skill Extraction",
+        "status": "experimental",
+        "since": "0.38.0",
+        "description": "Adds a background memory service for skill extraction.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24274"
+      },
+      {
+        "id": "context-compression-service",
+        "name": "Context Compression Service",
+        "status": "experimental",
+        "since": "0.38.0",
+        "description": "Implements a context compression service.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24483"
+      },
+      {
+        "id": "selective-topic-expansion-and-click-to-expand",
+        "name": "Selective Topic Expansion and Click-to-Expand",
+        "status": "stable",
+        "since": "0.38.0",
+        "description": "Supports selective topic expansion and click-to-expand functionality in the UI.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24793"
+      },
+      {
+        "id": "agent-protocol-ui-types-and-experimental-flag",
+        "name": "Agent Protocol UI Types and Experimental Flag",
+        "status": "experimental",
+        "since": "0.38.0",
+        "description": "Adds agent protocol UI types and an experimental flag.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24275"
+      },
+      {
+        "id": "scrollbar-for-input-prompt",
+        "name": "Scrollbar for Input Prompt",
+        "status": "stable",
+        "since": "0.38.0",
+        "description": "Adds a scrollbar to the input prompt for better navigation.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21992"
+      },
+      {
+        "id": "minimalist-sandbox-status-labels",
+        "name": "Minimalist Sandbox Status Labels",
+        "status": "stable",
+        "since": "0.38.0",
+        "description": "Introduces minimalist sandbox status labels for a cleaner UI.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24582"
+      },
+      {
+        "id": "terminalbuffer-mode",
+        "name": "TerminalBuffer Mode",
+        "status": "stable",
+        "since": "0.38.0",
+        "description": "Enables \"TerminalBuffer\" mode to solve flicker issues in the UI.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24512"
+      },
+      {
+        "id": "support-default-values-for-environment-variables",
+        "name": "Support Default Values for Environment Variables",
+        "status": "stable",
+        "since": "0.38.0",
+        "description": "Adds support for default values for environment variables.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24469"
+      },
+      {
+        "id": "background-process-monitoring-and-inspection-tools",
+        "name": "Background Process Monitoring and Inspection Tools",
+        "status": "stable",
+        "since": "0.38.0",
+        "description": "Implements background process monitoring and inspection tools.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/23799"
+      },
+      {
+        "id": "context-aware-persistent-policy-approvals",
+        "name": "Context-Aware Persistent Policy Approvals",
+        "status": "stable",
+        "since": "0.38.0",
+        "description": "Implements context-aware persistent policy approvals.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/23257"
+      },
+      {
+        "id": "role-specific-metrics-to-stats",
+        "name": "Role Specific Metrics to /stats",
+        "status": "stable",
+        "since": "0.38.0",
+        "description": "Adds role-specific metrics to the `/stats` command.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24659"
+      },
+      {
+        "id": "browser-agent-clearcut-metrics",
+        "name": "Browser Agent Clearcut Metrics",
+        "status": "stable",
+        "since": "0.38.0",
+        "description": "Adds browser agent clearcut metrics for telemetry.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24688"
+      },
+      {
+        "id": "display-hook-system-messages-in-ui",
+        "name": "Display Hook System Messages in UI",
+        "status": "stable",
+        "since": "0.38.0",
+        "description": "Displays hook system messages in the UI.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24616"
+      },
+      {
+        "id": "experimental-adk-agentsessionnoninteractiveenabled-setting",
+        "name": "Experimental ADK AgentSessionNoninteractiveEnabled Setting",
+        "status": "experimental",
+        "since": "0.38.0",
+        "description": "Adds an experimental setting `experimental.adk.agentSessionNoninteractiveEnabled`.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24439"
+      },
+      {
+        "id": "scope-subagent-workspace-directories-via-asynclocalstorage",
+        "name": "Scope Subagent Workspace Directories via AsyncLocalStorage",
+        "status": "stable",
+        "since": "0.38.0",
+        "description": "Scopes subagent workspace directories using AsyncLocalStorage for improved isolation.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24445"
+      },
+      {
+        "id": "high-signal-pr-regression-check-for-evaluations",
+        "name": "High-Signal PR Regression Check for Evaluations",
+        "status": "stable",
+        "since": "0.38.0",
+        "description": "Implements a high-signal PR regression check for evaluations to improve code quality.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/23937"
+      },
+      {
+        "id": "change-default-loadingphrases-to-off-to-hide-tips",
+        "name": "Change Default loadingPhrases to 'off' to Hide Tips",
+        "status": "stable",
+        "since": "0.38.0",
+        "description": "Changes the default value of `loadingPhrases` to 'off' to hide tips during loading.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24342"
+      },
+      {
+        "id": "add-background-memory-service-for-skill-extraction",
+        "name": "Add Background Memory Service for Skill Extraction",
+        "status": "stable",
+        "since": "0.38.0",
+        "description": "Adds a background memory service for skill extraction, improving skill management.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24274"
+      },
+      {
+        "id": "enhance-tool-confirmation-ui-and-selection-layout",
+        "name": "Enhance Tool Confirmation UI and Selection Layout",
+        "status": "stable",
+        "since": "0.38.0",
+        "description": "Enhances the tool confirmation UI and selection layout for a better user experience.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24376"
+      },
+      {
+        "id": "auto-configure-memory",
+        "name": "Auto Configure Memory",
+        "status": "stable",
+        "since": "0.38.0",
+        "description": "Automatically configures memory settings for optimized performance.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24474"
+      },
+      {
+        "id": "compact-tool-output-by-default",
+        "name": "Enable Compact Tool Output by Default",
+        "status": "stable",
+        "since": "0.38.0",
+        "description": "Enables compact tool output by default, reducing verbosity.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24510"
+      },
+      {
+        "id": "add-flag-for-ept-size-and-increased-default-size",
+        "name": "Add Flag for EPT Size and Increased Default Size",
+        "status": "stable",
+        "since": "0.38.0",
+        "description": "Adds a flag for configuring the EPT size and increases the default size for improved performance.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24859"
+      },
+      {
+        "id": "prioritize-summary-for-topics",
+        "name": "Prioritize summary for topics",
+        "status": "stable",
+        "since": "0.38.0",
+        "description": "Prioritize summary for topics.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24609"
+      },
+      {
+        "id": "added-flag-for-ept-size-and-increased-default-size",
+        "name": "Added flag for ept size and increased default size",
+        "status": "stable",
+        "since": "0.38.0",
+        "description": "Added flag for ept size and increased default size.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24859"
+      },
+      {
+        "id": "memory-inbox-command",
+        "name": "/memory inbox command",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Adds a /memory inbox command for reviewing extracted skills.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24544"
+      },
+      {
+        "id": "cpu-performance-integration-test-harness",
+        "name": "CPU performance integration test harness",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Adds a CPU performance integration test harness.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24951"
+      },
+      {
+        "id": "refine-shell-tool-description-display-logic",
+        "name": "Refine shell tool description display logic",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Refines the shell tool description display logic.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24903"
+      },
+      {
+        "id": "generalize-evals-infra",
+        "name": "Generalize evals infra",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Generalizes evals infrastructure to support more types of evals, organization, and queuing of named suites.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24941"
+      },
+      {
+        "id": "use-agent-stream-hook",
+        "name": "useAgentStream hook",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Implements useAgentStream hook and wires it up in AppContainer.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24292"
+      },
+      {
+        "id": "high-volume-shell-test",
+        "name": "High-volume shell test",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Adds a high-volume shell test and refines the perf harness.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24983"
+      },
+      {
+        "id": "debug-rainbow-setting",
+        "name": "debugRainbow setting",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Adds an optional debugRainbow setting.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25088"
+      },
+      {
+        "id": "strategic-re-evaluation-guidance",
+        "name": "Strategic Re-evaluation guidance",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Adds Strategic Re-evaluation guidance to the system prompt.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25062"
+      },
+      {
+        "id": "large-memory-regression-test",
+        "name": "Large memory regression test",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Adds a large memory regression test.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25059"
+      },
+      {
+        "id": "skill-patching-support",
+        "name": "Skill patching support",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Adds skill patching support with /memory inbox integration.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25148"
+      },
+      {
+        "id": "extract-quotacontext",
+        "name": "Extract QuotaContext",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Extracts QuotaContext and resolves infinite render loop.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24959"
+      },
+      {
+        "id": "scroll-momentum-enhancements",
+        "name": "Scroll momentum enhancements",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Adds enhancements to scroll momentum.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24447"
+      },
+      {
+        "id": "tool-controlled-display-protocol",
+        "name": "Tool-controlled display protocol",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Implements tool-controlled display protocol (Steps 2-3).",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25134"
+      },
+      {
+        "id": "auth-block-in-mcp-servers-config",
+        "name": "Auth block in MCP servers config",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Supports auth block in MCP servers config in agents.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24770"
+      },
+      {
+        "id": "silent-fallback-for-plan-mode-model-routing",
+        "name": "Silent fallback for Plan Mode model routing",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Implements silent fallback for Plan Mode model routing.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25317"
+      },
+      {
+        "id": "decoupled-contextmanager-and-sidecar-architecture",
+        "name": "Decoupled ContextManager and Sidecar architecture",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Introduces decoupled ContextManager and Sidecar architecture.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24752"
+      },
+      {
+        "id": "plan-mode-prompt-update",
+        "name": "Plan mode prompt update",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Updates plan mode prompt to allow showing plan content.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25058"
+      },
+      {
+        "id": "asian-language-performance-test",
+        "name": "Asian language performance test",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Adds a performance test in asian language.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25392"
+      },
+      {
+        "id": "mouse-clicking-for-askuser-multi-line-answers",
+        "name": "Mouse clicking for AskUser multi-line answers",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Enables mouse clicking for cursor positioning in AskUser multi-line answers.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24630"
+      },
+      {
+        "id": "memory-usage-integration-test-harness",
+        "name": "Memory Usage Integration Test Harness",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Adds a memory usage integration test harness.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24876"
+      },
+      {
+        "id": "skill-patching-support-with-memory-inbox-integration",
+        "name": "Skill Patching Support with /memory inbox integration",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Adds skill patching support with /memory inbox integration.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25148"
+      },
+      {
+        "id": "activate-skill-confirmation-in-plan-mode",
+        "name": "Activate Skill Confirmation in Plan Mode",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Requires user confirmation for `activate_skill` actions within Plan Mode.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24946"
+      },
+      {
+        "id": "chat-recording-to-jsonl-streaming",
+        "name": "Chat Recording to JSONL Streaming",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Migrates chat recording functionality to use JSONL streaming for more efficient data handling.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/23749"
+      },
+      {
+        "id": "use-agent-stream",
+        "name": "Use Agent Stream Hook",
+        "status": "stable",
+        "since": "0.39.0",
+        "description": "Implements `useAgentStream` hook and wires it up in AppContainer.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24292"
+      },
+      {
+        "id": "bundle-ripgrep-binaries-into-sea-for-offline-support",
+        "name": "Bundle ripgrep binaries into SEA for offline support",
+        "status": "stable",
+        "since": "0.40.0",
+        "description": "Bundles ripgrep binaries into a single executable archive (SEA) to enable offline support.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25342"
+      },
+      {
+        "id": "github-colorblind-themes",
+        "name": "GitHub Colorblind Themes",
+        "status": "stable",
+        "since": "0.40.0",
+        "description": "Adds colorblind themes for GitHub.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/15504"
+      },
+      {
+        "id": "skill-creator-integration-into-skill-extraction-agent",
+        "name": "Skill Creator Integration into Skill Extraction Agent",
+        "status": "stable",
+        "since": "0.40.0",
+        "description": "Integrates the skill-creator into the skill extraction agent.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25421"
+      },
+      {
+        "id": "tools-to-list-and-read-mcp-resources",
+        "name": "Tools to list and read MCP resources",
+        "status": "stable",
+        "since": "0.40.0",
+        "description": "Adds tools to list and read MCP resources.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25395"
+      },
+      {
+        "id": "mdx-support-to-get-internal-docs-tool",
+        "name": ".mdx support to get-internal-docs tool",
+        "status": "stable",
+        "since": "0.40.0",
+        "description": "Adds .mdx support to the get-internal-docs tool.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25090"
+      },
+      {
+        "id": "resolve-custom-seatbelt-profiles-from-home-gemini",
+        "name": "Resolve custom seatbelt profiles from $HOME/.gemini",
+        "status": "stable",
+        "since": "0.40.0",
+        "description": "Resolves custom seatbelt profiles from the `$HOME/.gemini` directory.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25427"
+      },
+      {
+        "id": "streamlined-gemini-gemma-local-model-setup",
+        "name": "Streamlined `gemini gemma` local model setup",
+        "status": "stable",
+        "since": "0.40.0",
+        "description": "Adds a streamlined `gemini gemma` command for local model setup.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25498"
+      },
+      {
+        "id": "flag-for-enabling-traces-specifically",
+        "name": "Flag for enabling traces specifically",
+        "status": "stable",
+        "since": "0.40.0",
+        "description": "Adds a flag for enabling traces specifically.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25343"
+      },
+      {
+        "id": "detect-new-files-in-recommendations-with-watcher-based-updates",
+        "name": "Detect new files in @ recommendations with watcher based updates",
+        "status": "stable",
+        "since": "0.40.0",
+        "description": "Detects new files in @ recommendations with watcher-based updates.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25256"
+      },
+      {
+        "id": "vertex-ai-request-routing-settings",
+        "name": "Vertex AI request routing settings",
+        "status": "stable",
+        "since": "0.40.0",
+        "description": "Adds settings for Vertex AI request routing.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25513"
+      },
+      {
+        "id": "prompt-driven-memory-editing-across-four-tiers",
+        "name": "Prompt-Driven Memory Editing Across Four Tiers",
+        "status": "stable",
+        "since": "0.40.0",
+        "description": "Replaces MemoryManagerAgent with prompt-driven memory editing across four tiers.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25716"
+      },
+      {
+        "id": "real-time-voice-mode",
+        "name": "Real-time Voice Mode",
+        "status": "experimental",
+        "since": "0.41.0",
+        "description": "Implements real-time voice mode with cloud and local backends.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24174"
+      },
+      {
+        "id": "persist-auto-memory-scratchpad-for-skill-extraction",
+        "name": "Persist Auto-Memory Scratchpad for Skill Extraction",
+        "status": "stable",
+        "since": "0.41.0",
+        "description": "Persists the auto-memory scratchpad specifically for skill extraction, improving the agent's ability to learn and retain information about skills.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25873"
+      },
+      {
+        "id": "support-gemma-4-models",
+        "name": "Support for Gemma 4 Models",
+        "status": "experimental",
+        "since": "0.41.0",
+        "description": "Adds support for the Gemma 4 family of models, enabling users to leverage these models within the gemini-cli environment.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25604"
+      },
+      {
+        "id": "secure-env-loading-and-workspace-trust-in-headless-mode",
+        "name": "Secure .env loading and enforce workspace trust in headless mode",
+        "status": "stable",
+        "since": "0.41.0",
+        "description": "The CLI now securely loads .env files and enforces workspace trust when running in headless mode, enhancing security and preventing unauthorized access to sensitive information.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25814"
+      },
+      {
+        "id": "enhanced-shell-command-validation-and-core-tools-allowlist",
+        "name": "Enhanced shell command validation and core tools allowlist",
+        "status": "stable",
+        "since": "0.41.0",
+        "description": "Improved validation for shell commands and the addition of a core tools allowlist provide better control and security over executed commands.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25720"
+      },
+      {
+        "id": "support-for-gemma-4-models",
+        "name": "Support for Gemma 4 models",
+        "status": "experimental",
+        "since": "0.41.0",
+        "description": "The CLI now supports Gemma 4 models, enabling users to leverage the latest advancements in AI for enhanced performance and capabilities.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25604"
+      },
+      {
+        "id": "manual-session-uuid-via-command-line-arg",
+        "name": "Manual session UUID via command line arg",
+        "status": "stable",
+        "since": "0.41.0",
+        "description": "Users can now provide a manual session UUID via a command-line argument, offering greater control over session management.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26060"
+      },
+      {
+        "id": "boolean-and-number-casting-for-env-vars-in-settings-json",
+        "name": "Boolean and number casting for env vars in settings.json",
+        "status": "stable",
+        "since": "0.41.0",
+        "description": "The CLI now supports boolean and number casting for environment variables defined in the settings.json file, providing more flexibility in configuration.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26118"
+      },
+      {
+        "id": "auto-memory-inbox-flow",
+        "name": "Auto Memory Inbox Flow",
+        "status": "experimental",
+        "since": "0.42.0",
+        "description": "Adds an Auto Memory inbox flow with a canonical-patch contract.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26338"
+      },
+      {
+        "id": "v8-heap-snapshot-utility",
+        "name": "V8 Heap Snapshot Utility",
+        "status": "experimental",
+        "since": "0.42.0",
+        "description": "Adds a minimal V8 heap snapshot utility for memory diagnostics.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26440"
+      },
+      {
+        "id": "privacy-and-compliance-ux-warning-for-gemini-live-backend",
+        "name": "Privacy and Compliance UX Warning for Gemini Live Backend",
+        "status": "experimental",
+        "since": "0.42.0",
+        "description": "Adds a privacy and compliance UX warning for the Gemini Live backend in voice mode.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26454"
+      },
+      {
+        "id": "queuing-messages-during-compression",
+        "name": "Queuing Messages During Compression",
+        "status": "experimental",
+        "since": "0.42.0",
+        "description": "Allows queuing messages during compression.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26506"
+      },
+      {
+        "id": "auto-memory-inbox-flow-with-canonical-patch-contract",
+        "name": "Auto Memory inbox flow with canonical-patch contract",
+        "status": "stable",
+        "since": "0.42.0",
+        "description": "Adds an Auto Memory inbox flow with canonical-patch contract.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26338"
+      },
+      {
+        "id": "ignorelocalenv-setting-and-ignore-env-flag",
+        "name": "ignoreLocalEnv setting and --ignore-env flag",
+        "status": "stable",
+        "since": "0.42.0",
+        "description": "Adds an `ignoreLocalEnv` setting and `--ignore-env` flag to ignore local environment variables.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26445"
+      },
+      {
+        "id": "actions-spend-metric-script",
+        "name": "Actions spend metric script",
+        "status": "stable",
+        "since": "0.42.0",
+        "description": "Adds a script to track actions spend metrics.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26463"
+      },
+      {
+        "id": "bug-memory-command-and-auto-capture-heap-snapshot-in-bug",
+        "name": "/bug-memory command and auto-capture heap snapshot in /bug",
+        "status": "stable",
+        "since": "0.42.0",
+        "description": "Adds a `/bug-memory` command and auto-captures a heap snapshot in the `/bug` command.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25639"
+      },
+      {
+        "id": "minimal-v8-heap-snapshot-utility-for-memory-diagnostics",
+        "name": "Minimal V8 heap snapshot utility for memory diagnostics",
+        "status": "stable",
+        "since": "0.42.0",
+        "description": "Adds a minimal V8 heap snapshot utility for memory diagnostics.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26440"
+      },
+      {
+        "id": "voice-mode-updates",
+        "name": "Voice Mode Updates",
+        "status": "experimental",
+        "since": "0.42.0",
+        "description": "Added microphone and updated placeholder for voice mode, including a wave animation during voice input and a privacy/compliance UX warning for the Gemini Live backend.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26270"
+      },
+      {
+        "id": "delete-flag-to-exit-command",
+        "name": "--delete flag for /exit command",
+        "status": "stable",
+        "since": "0.42.0",
+        "description": "Added the `--delete` flag to the `/exit` command to allow for session deletion upon exiting.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/19332"
+      },
+      {
+        "id": "mention-gemini-robot",
+        "name": "@ mention the gemini robot",
+        "status": "stable",
+        "since": "0.42.0",
+        "description": "Added the ability to @ mention the gemini robot.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26207"
+      },
+      {
+        "id": "gemma-4-models-enabled-by-default",
+        "name": "Gemma 4 models enabled by default",
+        "status": "stable",
+        "since": "0.42.0",
+        "description": "Enabled Gemma 4 models by default via Gemini API.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26307"
+      },
+      {
+        "id": "commands-list-subcommand",
+        "name": "List Subcommand for /commands",
+        "status": "stable",
+        "since": "0.42.0",
+        "description": "Added 'list' subcommand to '/commands' to list available commands.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22324"
+      },
+      {
+        "id": "extensions-delete-alias",
+        "name": "Delete Alias for /extensions uninstall",
+        "status": "stable",
+        "since": "0.42.0",
+        "description": "Added 'delete' as an alias for /extensions uninstall.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25660"
+      },
+      {
+        "id": "shell-command-safety-evals",
+        "name": "Shell Command Safety Evals",
+        "status": "experimental",
+        "since": "0.43.0",
+        "description": "Adds shell command safety evaluations.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26528"
+      },
+      {
+        "id": "export-session-to-file-and-import-via-flag",
+        "name": "Export and Import Session",
+        "status": "stable",
+        "since": "0.43.0",
+        "description": "Allows exporting a session to a file and importing it via a flag.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26514"
+      },
+      {
+        "id": "machine-hostname-to-cli-interface",
+        "name": "Machine Hostname in CLI Interface",
+        "status": "stable",
+        "since": "0.43.0",
+        "description": "Adds the machine hostname to the CLI interface.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25637"
+      },
+      {
+        "id": "local-subagent-protocol",
+        "name": "Local Subagent Protocol",
+        "status": "experimental",
+        "since": "0.43.0",
+        "description": "Adds LocalSubagentProtocol behind AgentProtocol.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25302"
+      },
+      {
+        "id": "remote-subagent-protocol",
+        "name": "Remote Subagent Protocol",
+        "status": "experimental",
+        "since": "0.43.0",
+        "description": "Adds RemoteSubagentProtocol behind AgentProtocol.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25303"
+      },
+      {
+        "id": "adaptive-token-calculator",
+        "name": "Adaptive Token Calculator",
+        "status": "stable",
+        "since": "0.43.0",
+        "description": "Introduces an adaptive token calculator to more accurately calculate content sizes.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26888"
+      },
+      {
+        "id": "rag-snippets-in-local-log",
+        "name": "RAG Snippets in Local Log",
+        "status": "experimental",
+        "since": "0.44.0",
+        "description": "Exposes Retrieval-Augmented Generation (RAG) snippets to the local log file for debugging purposes.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/27016"
+      },
+      {
+        "id": "agent-tui-and-tui-tester-skills",
+        "name": "Agent TUI and TUI Tester Skills",
+        "status": "experimental",
+        "since": "0.44.0",
+        "description": "Adds agent-tui and tui-tester skills for improved agent interaction and testing.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/27121"
+      },
+      {
+        "id": "local-session-invocation",
+        "name": "Local Session Invocation",
+        "status": "experimental",
+        "since": "0.44.0",
+        "description": "Introduces LocalSessionInvocation for enhanced session management.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26665"
+      },
+      {
+        "id": "remote-session-invocation",
+        "name": "Remote Session Invocation",
+        "status": "experimental",
+        "since": "0.44.0",
+        "description": "Introduces RemoteSessionInvocation for enhanced remote session management.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26937"
+      },
+      {
+        "id": "sublime-text-and-emacs-client-editors",
+        "name": "Sublime Text and Emacs Client Editors",
+        "status": "stable",
+        "since": "0.44.0",
+        "description": "Adds support for Sublime Text and Emacs Client editors for improved code editing experience.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21090"
+      },
+      {
+        "id": "adk-agent-session-subagent-enabled-flag",
+        "name": "adk.agentSessionSubagentEnabled Flag",
+        "status": "experimental",
+        "since": "0.44.0",
+        "description": "Adds a flag to enable agent session subagents.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26947"
+      },
+      {
+        "id": "llm-triage-orchestrator-and-container-build",
+        "name": "LLM Triage Orchestrator and Container Build",
+        "status": "stable",
+        "since": "0.53.0",
+        "description": "Implements an LLM triage orchestrator and container build for caretaker-triage.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28345"
+      },
+      {
+        "id": "caretaker-triage-post-comment-before-auto-closing-issues",
+        "name": "Caretaker Triage: Post Comment Before Auto-Closing Issues",
+        "status": "stable",
+        "since": "0.54.0",
+        "description": "The caretaker triage system will now post a comment on issues before automatically closing them, providing more context and notification.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28411"
+      },
+      {
+        "id": "firestore-concurrency-dual-locking-and-test-ingestion-utilities",
+        "name": "Firestore Concurrency Dual-Locking and Test Ingestion Utilities for PR Generator DB",
+        "status": "stable",
+        "since": "0.54.0",
+        "description": "Implemented Firestore concurrency dual-locking and test ingestion utilities for the PR generator database, enhancing data integrity and testing capabilities.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28432"
+      },
+      {
+        "id": "antigravity-agent-runner-and-prompt-templates",
+        "name": "Antigravity Agent Runner and Prompt Templates for PR Generator Agent",
+        "status": "stable",
+        "since": "0.54.0",
+        "description": "Implemented the Antigravity agent runner and prompt templates for the PR generator agent, improving its ability to generate pull requests.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28434"
+      },
+      {
+        "id": "tool-registry-discovery",
+        "name": "Tool Registry Discovery",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Introduces enhanced mechanisms for discovering available tools within the Gemini CLI ecosystem.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28113"
+      },
+      {
+        "id": "caretaker-cloud-run-webhook-ingestion",
+        "name": "Caretaker Cloud Run Webhook Ingestion Service",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Implements a Cloud Run webhook ingestion service for the Caretaker system, enabling external systems to trigger Caretaker workflows.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28015"
+      },
+      {
+        "id": "caretaker-egress-cloud-run-service-skeleton",
+        "name": "Caretaker Egress Cloud Run Service Skeleton",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Provides the foundational structure for an egress Cloud Run service within the Caretaker system.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28167"
+      },
+      {
+        "id": "caretaker-triage-worker-foundational-modules",
+        "name": "Caretaker Triage Worker Core Foundational Modules",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Adds core foundational modules for the Caretaker triage worker.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28163"
+      },
+      {
+        "id": "caretaker-egress-octokit-github-action-handler",
+        "name": "Caretaker Egress Octokit GitHub Action Handler",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Implements an Octokit GitHub action handler for the Caretaker egress service, facilitating interactions with GitHub.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28303"
+      },
+      {
+        "id": "caretaker-triage-worker-execution-loop-and-egress-publisher",
+        "name": "Caretaker Triage Worker Execution Loop and Egress Action Publisher",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Implements the main worker execution loop and egress action publisher for the Caretaker triage system.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28306"
+      },
+      {
+        "id": "pr-generator-db-firestore-concurrency-dual-locking",
+        "name": "PR Generator DB Firestore Concurrency Dual-Locking and Test Ingestion Utilities",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Implements Firestore concurrency dual-locking and provides test ingestion utilities for the PR generator database.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28432"
+      },
+      {
+        "id": "pr-generator-agent-antigravity-runner-and-prompt-templates",
+        "name": "PR Generator Agent Antigravity Runner and Prompt Templates",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Implements the Antigravity agent runner and prompt templates for the PR generator agent.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28434"
+      },
+      {
+        "id": "pr-generator-core-environment-config-parser-command-executor-github-r",
+        "name": "PR Generator Core Environment Config Parser, Command Executor, GitHub R",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Adds an environment configuration parser, command executor, and GitHub related functionalities to the PR generator core.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28435"
+      },
+      {
+        "id": "pr-generator-orchestrator-iterative-bug-fixing-state-machine",
+        "name": "PR Generator Orchestrator Iterative Bug-Fixing State Machine and Container Worker Entrypoint",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Implements an iterative bug-fixing state machine and container worker entrypoint for the PR generator orchestrator.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28433"
+      },
+      {
+        "id": "pr-generator-infra-cloud-run-job-workflows-dockerfile",
+        "name": "PR Generator Infra Cloud Run Job, Workflows Definition, and Dockerfile",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Configures Cloud Run jobs, Workflows definitions, and Dockerfiles for the PR generator infrastructure.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28431"
+      },
+      {
+        "id": "caretaker-firestore-schema-update",
+        "name": "Caretaker Firestore Schema Update with Error and PR Number Fields",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Updates the Caretaker Firestore schema to include `error` and `pr_number` fields.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28467"
+      },
+      {
+        "id": "caretaker-triage-prompt-hill-climbing-and-orchestrator-updates",
+        "name": "Caretaker Triage Prompt Hill-Climbing & Orchestrator Updates",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Introduces prompt hill-climbing techniques and updates to the orchestrator for Caretaker triage.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28524"
+      },
+      {
+        "id": "caretaker-triage-cloud-run-job-workflow",
+        "name": "Caretaker Triage Cloud Run Job Workflow",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Adds a Cloud Run job workflow specifically for Caretaker triage.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28468"
+      },
+      {
+        "id": "caretaker-evals-triage-evaluation-framework-and-judge-runner",
+        "name": "Caretaker Evals Triage Evaluation Framework and Judge Runner",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Adds a triage evaluation framework and judge runner for Caretaker evaluations.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28530"
+      },
+      {
+        "id": "caretaker-evals-local-golden-issue-collection-and-firestore-sync-tools",
+        "name": "Caretaker Evals Local Golden Issue Collection and Firestore Sync Tools",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Adds tools for local golden issue collection and Firestore synchronization for Caretaker evaluations.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28532"
+      },
+      {
+        "id": "caretaker-publish-workable-spec-event",
+        "name": "Caretaker Publish Workable Spec Event to Ready-for-Code Pub/Sub Topic",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Enables publishing workable spec events to the 'ready-for-code' Pub/Sub topic within Caretaker.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28588"
+      },
+      {
+        "id": "caretaker-gcp-deployment-script",
+        "name": "Caretaker GCP Deployment Script for Agent Services",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Adds a GCP deployment script for Caretaker agent services.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28529"
+      },
+      {
+        "id": "caretaker-evals-cloud-run-job-entrypoint",
+        "name": "Caretaker Evals Cloud Run Job Entrypoint for Eval Runner",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Adds a Cloud Run job entrypoint for the evaluation runner in Caretaker evaluations.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28727"
+      },
+      {
+        "id": "ingestion-issue-comment-handling-and-re-triage-workflow",
+        "name": "Ingestion Issue Comment Handling and Re-Triage Workflow",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Adds functionality for handling issue comments and a re-triage workflow within the ingestion system.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28690"
+      },
+      {
+        "id": "evals-local-report-command-and-developer-documentation",
+        "name": "Evals Local Report Command and Developer Documentation",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Adds a local report command for evaluations and corresponding developer documentation.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28369"
+      },
+      {
+        "id": "caretaker-cloud-run-webhook-ingestion-service",
+        "name": "Caretaker Cloud Run Webhook Ingestion Service",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Implements a Cloud Run webhook ingestion service for the Caretaker agent.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28015"
+      },
+      {
+        "id": "caretaker-triage-worker-core-foundational-modules",
+        "name": "Caretaker Triage Worker Core Foundational Modules",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Adds core foundational modules for the Caretaker triage worker.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28163"
+      },
+      {
+        "id": "caretaker-triage-main-worker-execution-loop-and-egress-action-publisher",
+        "name": "Caretaker Triage Main Worker Execution Loop and Egress Action Publisher",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Implements the main worker execution loop and egress action publisher for the Caretaker triage agent.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28306"
+      },
+      {
+        "id": "eval-coverage-report-command",
+        "name": "Eval Coverage Report Command",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Adds a command to generate an evaluation coverage report.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28169"
+      },
+      {
+        "id": "pr-generator-db-firestore-concurrency-dual-locking-and-test-ingestion-utilities",
+        "name": "PR Generator DB Firestore Concurrency Dual-Locking and Test Ingestion Utilities",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Implements Firestore concurrency dual-locking and test ingestion utilities for the PR Generator database.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28432"
+      },
+      {
+        "id": "pr-generator-agent-antigravity-agent-runner-and-prompt-templates",
+        "name": "PR Generator Agent Antigravity Agent Runner and Prompt Templates",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Implements the Antigravity agent runner and prompt templates for the PR Generator agent.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28434"
+      },
+      {
+        "id": "pr-generator-orchestrator-iterative-bug-fixing-state-machine-and-container-worker-entrypoint",
+        "name": "PR Generator Orchestrator Iterative Bug-Fixing State Machine and Container Worker Entrypoint",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Implements an iterative bug-fixing state machine and container worker entrypoint for the PR Generator orchestrator.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28433"
+      },
+      {
+        "id": "pr-generator-infra-cloud-run-job-workflows-definition-and-dockerfile",
+        "name": "PR Generator Infra Cloud Run Job, Workflows Definition, and Dockerfile",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Configures the Cloud Run job, Workflows definition, and Dockerfile for the PR Generator infrastructure.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28431"
+      },
+      {
+        "id": "caretaker-firestore-schema-update-with-error-and-pr-number-fields",
+        "name": "Caretaker Firestore Schema Update with Error and PR Number Fields",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Updates the Caretaker Firestore schema to include 'error' and 'pr_number' fields.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28467"
+      },
+      {
+        "id": "caretaker-gcp-deployment-script-for-agent-services",
+        "name": "Caretaker GCP Deployment Script for Agent Services",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Adds a GCP deployment script for Caretaker agent services.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28529"
+      },
+      {
+        "id": "caretaker-evals-cloud-run-job-entrypoint-for-eval-runner",
+        "name": "Caretaker Evals Cloud Run Job Entrypoint for Eval Runner",
+        "status": "stable",
+        "since": "0.55.1",
+        "description": "Adds a Cloud Run job entrypoint for the evaluation runner in Caretaker evaluations.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28727"
+      },
+      {
+        "id": "eval-validate",
+        "name": "Eval Validate",
+        "status": "stable",
+        "since": "0.57.0",
+        "description": "Adds a new feature for evaluating and validating aspects of the CLI.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28344"
+      },
+      {
+        "id": "evals-tool-call-formatter-and-failure-summaries",
+        "name": "Evals Tool Call Formatter and Failure Summaries",
+        "status": "stable",
+        "since": "0.57.0",
+        "description": "Integrates a tool call formatter and failure summaries into the evaluation system.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28305"
+      },
+      {
+        "id": "gemini-3-8-flash-3-5-flash-lite-model-support",
+        "name": "Gemini 3.8 Flash and 3.5 Flash Lite Model Support",
+        "status": "stable",
+        "since": "0.62.0",
+        "description": "Adds support for the new Gemini 3.8 Flash and 3.5 Flash Lite models, expanding the range of available models for various tasks.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/29443"
+      },
+      {
+        "id": "custom-otlp-headers-telemetry",
+        "name": "Custom OTLP Headers in Telemetry Configuration",
+        "status": "stable",
+        "since": "0.65.0",
+        "description": "Adds support for configuring custom OTLP (OpenTelemetry Protocol) headers within the telemetry configuration. This allows for more flexible and secure integration with various telemetry backends that might require specific headers for authentication, routing, or other purposes.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/29641"
+      }
+    ],
+    "commands": [
+      {
+        "name": "/skills",
+        "syntax": "/skills [list|link|disable|enable|reload]",
+        "description": "Manage agent skills. list: show all. link <path>: symlink directory. disable/enable <name>. reload: refresh from all tiers.",
+        "since": "0.20.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "name": "/plan",
+        "syntax": "/plan",
+        "description": "Enter plan mode. Read-only analysis without executing changes.",
+        "since": "0.20.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "name": "/rewind",
+        "syntax": "/rewind",
+        "description": "Rewind session to an earlier checkpoint.",
+        "since": "0.20.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "name": "/chat",
+        "syntax": "/chat [new|resume|list]",
+        "description": "Session management. new, resume, list.",
+        "since": "0.15.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "name": "/model",
+        "syntax": "/model",
+        "description": "Switch model mid-session.",
+        "since": "0.10.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "name": "/footer",
+        "syntax": "/footer",
+        "description": "Configure custom footer. Added in 0.33.0.",
+        "since": "0.33.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "name": "/clear",
+        "syntax": "/clear",
+        "description": "Clear conversation context.",
+        "since": "0.1.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "name": "/bug",
+        "syntax": "/bug",
+        "description": "Report issues.",
+        "since": "0.10.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "name": "/help",
+        "syntax": "/help",
+        "description": "Show help.",
+        "since": "0.1.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "name": "/tools",
+        "syntax": "/tools desc",
+        "description": "Exposes /tools desc as explicit subcommand for discoverability.",
+        "since": "0.34.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21241"
+      },
+      {
+        "name": "/compact",
+        "syntax": "/compact",
+        "description": "Alias for /compress command.",
+        "since": "0.34.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21711"
+      },
+      {
+        "name": "/upgrade",
+        "syntax": "/upgrade",
+        "description": "Upgrades the gemini-cli to the latest version.",
+        "since": "0.34.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/21511"
+      },
+      {
+        "name": "/about",
+        "syntax": "/about",
+        "description": "Adds support for the `/about` command.",
+        "since": "0.38.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24649"
+      },
+      {
+        "name": "/memory",
+        "syntax": "/memory inbox",
+        "description": "Reviews extracted skills.",
+        "since": "0.39.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/24544"
+      },
+      {
+        "name": "/new",
+        "syntax": "/new",
+        "description": "Alias for /clear to start a new session.",
+        "since": "0.40.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/17865"
+      },
+      {
+        "name": "/exit",
+        "syntax": "/exit --delete",
+        "description": "Adds a --delete flag to the /exit command for session deletion.",
+        "since": "0.42.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/19332"
+      },
+      {
+        "name": "/commands",
+        "syntax": "/commands list",
+        "description": "Adds a 'list' subcommand to '/commands'.",
+        "since": "0.42.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22324"
+      },
+      {
+        "name": "/bug-memory",
+        "syntax": "/bug-memory",
+        "description": "Adds /bug-memory command and auto-capture heap snapshot in /bug.",
+        "since": "0.42.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25639"
+      },
+      {
+        "name": "/commands list",
+        "syntax": "/commands list",
+        "description": "Adds 'list' subcommand to '/commands'",
+        "since": "0.42.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/22324"
+      },
+      {
+        "name": "/eval-coverage-report",
+        "syntax": "/eval-coverage-report",
+        "description": "Adds a command to generate an evaluation coverage report.",
+        "since": "0.53.0",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28169"
+      }
+    ],
+    "flags": {
+      "current": [
+        {
+          "flag": "-p",
+          "syntax": "gemini -p \"prompt\"",
+          "description": "Non-interactive one-shot prompt.",
+          "since": "0.10.0",
+          "source_url": "https://github.com/google-gemini/gemini-cli"
+        },
+        {
+          "flag": "-m",
+          "syntax": "gemini -m <model>",
+          "description": "Select model at launch.",
+          "since": "0.1.0",
+          "source_url": "https://github.com/google-gemini/gemini-cli"
+        },
+        {
+          "flag": "--acp",
+          "description": "Agent Communication Protocol mode. Renamed from --experimental-acp in 0.32.0.",
+          "since": "0.32.0",
+          "source_url": "https://github.com/google-gemini/gemini-cli"
+        },
+        {
+          "flag": "--include-directories",
+          "syntax": "--include-directories <dir1,dir2>",
+          "description": "Add additional context directories to the session.",
+          "since": "0.20.0",
+          "source_url": "https://github.com/google-gemini/gemini-cli"
+        },
+        {
+          "flag": "--output-format",
+          "values": [
+            "json",
+            "stream-json"
+          ],
+          "description": "Output format for -p headless mode.",
+          "since": "0.10.0",
+          "source_url": "https://github.com/google-gemini/gemini-cli"
+        },
+        {
+          "flag": "--all",
+          "description": "Flag for extensions uninstall to uninstall all extensions.",
+          "since": "0.34.0",
+          "source_url": "https://github.com/google-gemini/gemini-cli/pull/21319"
+        },
+        {
+          "flag": "--admin-policy",
+          "description": "Adds --admin-policy flag for supplemental admin policies.",
+          "since": "0.35.0",
+          "source_url": "https://github.com/google-gemini/gemini-cli/pull/20360"
+        },
+        {
+          "flag": "--skip-settings",
+          "description": "Skips settings during extension installation.",
+          "since": "0.36.0",
+          "source_url": "https://github.com/google-gemini/gemini-cli/pull/17212"
+        },
+        {
+          "flag": "--ept-size",
+          "description": "Adds a flag for ept size and increased default size.",
+          "since": "0.38.0",
+          "source_url": "https://github.com/google-gemini/gemini-cli/pull/24859"
+        },
+        {
+          "flag": "--traces",
+          "description": "Enables traces specifically.",
+          "since": "0.40.0",
+          "source_url": "https://github.com/google-gemini/gemini-cli/pull/25343"
+        },
+        {
+          "flag": "--session-uuid",
+          "description": "Provides a manual session UUID via command line argument, allowing for more control over session management.",
+          "since": "0.41.0",
+          "source_url": "https://github.com/google-gemini/gemini-cli/pull/26060"
+        },
+        {
+          "flag": "--delete",
+          "description": "Flag for /exit command to delete the current session.",
+          "since": "0.42.0",
+          "source_url": "https://github.com/google-gemini/gemini-cli/pull/19332"
+        },
+        {
+          "flag": "--ignore-env",
+          "description": "Flag to ignore local environment variables.",
+          "since": "0.42.0",
+          "source_url": "https://github.com/google-gemini/gemini-cli/pull/26445"
+        }
+      ],
+      "deprecated": [
+        {
+          "flag": "--experimental-acp",
+          "replaced_by": "--acp",
+          "deprecated_since": "0.32.0",
+          "removed_in": null,
+          "source_url": "https://github.com/google-gemini/gemini-cli"
+        },
+        {
+          "flag": "--experimental-acp",
+          "replaced_by": "--acp",
+          "deprecated_since": "0.34.0",
+          "removed_in": null,
+          "source_url": "https://github.com/google-gemini/gemini-cli/pull/21171"
+        }
+      ],
+      "new_since_previous": []
+    },
+    "env_vars": [
+      {
+        "name": "GEMINI_API_KEY",
+        "purpose": "API Key auth via Google AI Studio.",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "name": "GOOGLE_API_KEY",
+        "purpose": "API Key for Vertex AI backend.",
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "name": "GOOGLE_GENAI_USE_VERTEXAI",
+        "purpose": "Set to true to use Vertex AI backend instead of Google AI Studio.",
+        "values": [
+          "true"
+        ],
+        "status": "stable",
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "name": "extensionRegistryURI",
+        "purpose": "Changes where the extension registry is read from.",
+        "status": "stable",
+        "since": "0.34.0",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/20463"
+      },
+      {
+        "name": "GEMINI_PLANS_DIR",
+        "purpose": "Exposes GEMINI_PLANS_DIR to hook environment.",
+        "status": "stable",
+        "since": "0.39.0",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/25296"
+      },
+      {
+        "name": "NODE_OPTIONS",
+        "purpose": "Pass node arguments during relaunch to support SEA.",
+        "status": "stable",
+        "since": "0.42.0",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/26130"
+      }
+    ],
+    "models": [
+      {
+        "id": "gemini-2.5-pro",
+        "display_name": "Gemini 2.5 Pro",
+        "context_window": 1000000,
+        "status": "stable",
+        "recommended_for": [
+          "complex tasks",
+          "long context work",
+          "codebase investigation"
+        ],
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "id": "gemini-2.5-flash",
+        "display_name": "Gemini 2.5 Flash",
+        "context_window": 1000000,
+        "status": "stable",
+        "recommended_for": [
+          "fast tasks",
+          "interactive use",
+          "default model"
+        ],
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      },
+      {
+        "id": "gemini-2.5-computer-use-preview-10-2025",
+        "display_name": "Gemini 2.5 Computer Use",
+        "context_window": null,
+        "status": "experimental",
+        "recommended_for": [
+          "browser agent visual mode",
+          "UI automation tasks"
+        ],
+        "source_url": "https://github.com/google-gemini/gemini-cli"
+      }
+    ],
+    "auth": {
+      "methods": [
+        {
+          "name": "Google Account",
+          "best_for": "Individual devs, Gemini Code Assist",
+          "free_tier": "60 req/min, 1000 req/day"
+        },
+        {
+          "name": "API Key (AI Studio)",
+          "best_for": "Specific model control",
+          "free_tier": "1000 req/day (mix flash+pro)"
+        },
+        {
+          "name": "Vertex AI",
+          "best_for": "Enterprise/production",
+          "free_tier": "Billing-based, higher limits"
+        }
+      ],
+      "source_url": "https://github.com/google-gemini/gemini-cli"
+    },
+    "breaking_changes": [
+      {
+        "id": "bc-deprecated-settings-0.33.0",
+        "version": "0.33.0",
+        "title": "Deprecated settings removal enabled by default",
+        "description": "Settings marked as deprecated in prior versions are now removed automatically. Old setting keys in ~/.gemini/settings.json may be silently dropped.",
+        "affected": [
+          "config:deprecated_settings"
+        ],
+        "migration": "Review your ~/.gemini/settings.json for deprecated keys and update to current equivalents before upgrading.",
+        "source_url": "https://github.com/google-gemini/gemini-cli/releases/tag/v0.33.0"
+      },
+      {
+        "id": "force-policy-config-to-specify-toolname",
+        "version": "0.36.0",
+        "title": "Policy Configuration Requires Tool Name",
+        "description": "Policy configurations must now explicitly specify the `toolName` field. This change enforces clarity and prevents unintended policy application.",
+        "affected": [
+          "Policy configurations"
+        ],
+        "migration": "Update your policy configurations to include the `toolName` field.",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/23330"
+      },
+      {
+        "id": "explicit-tag-length-and-validation-in-file-keychain",
+        "version": "0.54.0",
+        "title": "Enforced Explicit Tag Length and Validation in File Keychain",
+        "description": "The file keychain now enforces explicit tag length and validation. This change might affect existing keychain entries if they do not conform to the new validation rules, potentially requiring recreation or modification of affected entries.",
+        "affected": [
+          "File Keychain entries"
+        ],
+        "migration": "Review existing file keychain entries and ensure they adhere to explicit tag length and validation requirements. Non-compliant entries may need to be recreated or updated.",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28523"
+      },
+      {
+        "id": "macos-seatbelt-deny-default-model",
+        "version": "0.55.1",
+        "title": "macOS Seatbelt Profiles Aligned with Deny-Default Model",
+        "description": "The macOS permissive Seatbelt profiles have been refactored to align with a deny-default model, enhancing security. This might affect existing custom Seatbelt configurations.",
+        "affected": [
+          "macOS sandbox behavior",
+          "Custom Seatbelt profiles"
+        ],
+        "migration": "Review and update any custom macOS Seatbelt profiles to ensure compatibility with the new deny-default model. The CLI will now fall back to embedded profiles if custom ones are missing.",
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/28424"
+      }
+    ],
+    "deprecations": [],
+    "install": {
+      "methods": [
+        {
+          "name": "npm (stable)",
+          "command": "npm install -g @google/gemini-cli",
+          "update_command": "npm update -g @google/gemini-cli"
+        },
+        {
+          "name": "npm (preview)",
+          "command": "npm install -g @google/gemini-cli@preview"
+        },
+        {
+          "name": "npm (nightly)",
+          "command": "npm install -g @google/gemini-cli@nightly"
+        },
+        {
+          "name": "npx (no install)",
+          "command": "npx @google/gemini-cli"
+        },
+        {
+          "name": "brew",
+          "command": "brew install gemini-cli",
+          "update_command": "brew upgrade gemini-cli"
+        }
+      ],
+      "release_channels": {
+        "latest": "Stable, released Tuesdays",
+        "preview": "Preview, released Tuesdays UTC 23:59",
+        "nightly": "Daily builds, UTC 00:00"
+      },
+      "source_url": "https://github.com/google-gemini/gemini-cli"
+    },
+    "support_matrix": {
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "requires_auth": true,
+      "auth_methods": [
+        "google_account_oauth",
+        "api_key",
+        "vertex_ai"
+      ],
+      "context_file": "GEMINI.md",
+      "agent_def_format": ".gemini/agents/*.md (YAML frontmatter + markdown body)",
+      "source_url": "https://github.com/google-gemini/gemini-cli"
+    },
+    "config": {
+      "file_path": "~/.gemini/settings.json",
+      "notable_keys": {
+        "experimental.enableAgents": "boolean — enable subagents",
+        "experimental.codebaseInvestigatorSettings.model": "string — model for codebase investigator",
+        "experimental.codebaseInvestigatorSettings.maxNumTurns": "integer",
+        "agents.overrides.browser_agent.enabled": "boolean — enable browser agent",
+        "agents.browser.sessionMode": "persistent | isolated | existing",
+        "agents.browser.headless": "boolean",
+        "agents.browser.visualModel": "string — model for visual browser tasks"
+      },
+      "source_url": "https://github.com/google-gemini/gemini-cli"
+    }
+  }
+}
