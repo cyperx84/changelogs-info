@@ -17,6 +17,22 @@
   },
   "releases": [
     {
+      "version": "v7.8.25",
+      "name": "v7.8.25 (pre-release)",
+      "body": "## CLI\n\n### Patch Changes\n\n- [#15274](https://github.com/Kilo-Org/kilocode/pull/15274) [`57d4c30`](https://github.com/Kilo-Org/kilocode/commit/57d4c307253364344157ecbb0f90f157518bd48c) Thanks [@Uddoo](https://github.com/Uddoo)! - Preserve the existing package-manager user-agent when reading npm configuration.",
+      "date": "2026-10-28T20:43:24Z",
+      "url": "https://github.com/Kilo-Org/kilocode/releases/tag/v7.8.25",
+      "prerelease": true
+    },
+    {
+      "version": "v7.8.23",
+      "name": "v7.8.23 (pre-release)",
+      "body": "## VS Code\n\n### Patch Changes\n\n- Updated dependencies [[`0c1d8dd`](https://github.com/Kilo-Org/kilocode/commit/0c1d8dd89ee725e952ad402535c57447e098bb29)]:\n  - @kilocode/kilo-indexing@7.8.23\n  - @opencode-ai/core@7.8.23\n  - @kilocode/kilo-ui@7.8.23\n  - @opencode-ai/ui@7.8.23\n\n## CLI\n\n### Patch Changes\n\n- [#15081](https://github.com/Kilo-Org/kilocode/pull/15081) [`8862849`](https://github.com/Kilo-Org/kilocode/commit/8862849483c1e61e0dce04cdbee106e4986ea313) Thanks [@mardausdennis](https://github.com/mardausdennis)! - Preserve the real exit code or signal of background jobs owned by Kilo instead of recording a failed job as successful.\n\n- [#14976](https://github.com/Kilo-Org/kilocode/pull/14976) [`b209860`](https://github.com/Kilo-Org/kilocode/commit/b209860c3f957332563164efb63052babd7be04e) Thanks [@mardausdennis](https://github.com/mardausdennis)! - Give large-session compaction enough output space for thinking and a complete summary. Reject cut-off summaries without losing conversation history and explain how to retry.\n\n- [#15515](https://github.com/Kilo-Org/kilocode/pull/15515) [`26662b5`](https://github.com/Kilo-Org/kilocode/commit/26662b5edb68f5947b9de7d9d68e7ce0fa387551) - Keep a reply that another Kilo process on the same data directory is still writing, instead of deleting it when a message arrives through a second process.\n\n- [#15516](https://github.com/Kilo-Org/kilocode/pull/15516) [`58a856e`](https://github.com/Kilo-Org/kilocode/commit/58a856ecd40f7ddfb5e4bc6e0cca1c7c4b79cd91) - Fire each scheduled wakeup and cron task once when several Kilo processes open the same workspace, and keep a cancelled task from firing or coming back in another process.\n\n- Updated dependencies [[`0c1d8dd`](https://github.com/Kilo-Org/kilocode/commit/0c1d8dd89ee725e952ad402535c57447e098bb29)]:\n  - @kilocode/kilo-indexing@7.8.23\n  - @opencode-ai/server@7.8.23\n  - @opencode-ai/tui@7.8.23\n  - @opencode-ai/ui@7.8.23",
+      "date": "2026-10-28T15:10:46Z",
+      "url": "https://github.com/Kilo-Org/kilocode/releases/tag/v7.8.23",
+      "prerelease": true
+    },
+    {
       "version": "v7.8.22",
       "name": "v7.8.22 (pre-release)",
       "body": "No notable changes",
@@ -30,6 +46,14 @@
       "body": "## CLI\n\n### Minor Changes\n\n- [#15509](https://github.com/Kilo-Org/kilocode/pull/15509) [`307ff45`](https://github.com/Kilo-Org/kilocode/commit/307ff45f27ec796309ffb4e2f00f8dab85db3838) - Add hosted workspace operations and a Cloud system feed to the local session-host API. List, create, read, check the status of, and delete hosted workspaces, list their sessions, list available workspace profiles, and start another session in a workspace through the local Kilo API, and follow Cloud session preparation and status events through a local system feed route. Hosted operations now exchange the stored user credential for a short-lived Cloud Agent control token before any Worker call, so the original credential is never sent to the Worker. Hosted attachments stop working once their session or workspace is deleted.",
       "date": "2026-10-28T09:55:05Z",
       "url": "https://github.com/Kilo-Org/kilocode/releases/tag/v7.8.21",
+      "prerelease": true
+    },
+    {
+      "version": "jetbrains/v7.2.1-rc.1",
+      "name": "JetBrains 7.2.1-rc.1",
+      "body": "### Added\n\n- Added hosted Kilo Cloud sessions to Agent Manager. Cloud workspaces now share the same editor chrome as local and worktree sessions, including session rows, date groups, badges, busy spinners, and refresh from the row menu.\n- Cloud discovery now pages through every workspace for a repository, reports the canonical status vocabulary instead of showing healthy workspaces as unknown, and shows the hourly compute price in the workspace header.\n- Linked custom router entries to platform benchmarks.\n- Indexing now prunes ignored directories and bounds LanceDB index growth.\n\n### Fixed\n\n- Cloud sessions recover their streams after reconnects without leaving tools running or hiding wake progress, and preparation failures are surfaced with sanitized error details.\n- Kept hosted stream ownership across restarts and retained transcript subscriptions when the first attachment fails transiently.\n- Kept large Cloud repositories from bursting the CLI with concurrent workspace status reads.\n- Aligned hosted prompts with the Cloud input contract.\n- Established a session's event subscription before startup returns so early updates are not missed.\n- Compaction now runs at the configured threshold and stops compaction loops, and chunked compaction gets the normal output budget.\n- Scheduled tasks fire once across processes sharing a data directory.\n- Kept a reply that another Kilo process is still writing, and preserved the real exit code of a failed background job.\n- Restricted browser and MCP OAuth URLs to HTTP(S), and scoped the MCP SSE probe to its own request and redirects.\n- Blocked compromised eMudhra certificates.\n- Preserved the parent user-agent when loading npm config.\n\n### Changed\n\n- Bundled Kilo CLI pin updated to v7.8.22 (via v7.8.20).\n- Updated commonmark to 0.30.1.\n",
+      "date": "2026-10-28T19:50:51Z",
+      "url": "https://github.com/Kilo-Org/kilocode/releases/tag/jetbrains/v7.2.1-rc.1",
       "prerelease": true
     },
     {
@@ -231,31 +255,7 @@
       "date": "2026-09-25T20:18:14Z",
       "url": "https://github.com/Kilo-Org/kilocode/releases/tag/jetbrains/v7.1.8",
       "prerelease": false
-    },
-    {
-      "version": "jetbrains/v7.1.8-rc.2",
-      "name": "JetBrains 7.1.8-rc.2",
-      "body": "### Added\n\n- Add Checkpoints settings for snapshots and automatic session cleanup, including manual cleanup controls and the latest cleanup result.\n- Publish CycloneDX software bills of materials alongside JetBrains release artifacts.\n\n### Fixed\n\n- Show specific revert guidance when snapshots are disabled, a checkpoint is unavailable, or the project is not a Git repository.\n- Make background-agent and todo strip headers expand, collapse, and highlight consistently while keeping expanded agent links actionable.\n",
-      "date": "2026-09-25T19:34:04Z",
-      "url": "https://github.com/Kilo-Org/kilocode/releases/tag/jetbrains/v7.1.8-rc.2",
-      "prerelease": true
-    },
-    {
-      "version": "v7.7.12",
-      "name": "v7.7.12 (pre-release)",
-      "body": "## VS Code\n\n### Minor Changes\n\n- [#14510](https://github.com/Kilo-Org/kilocode/pull/14510) [`c06228d`](https://github.com/Kilo-Org/kilocode/commit/c06228d6a0090307331a572d726348b7ad3df722) - Install MCP servers with companion skills from the marketplace, preview the included skills, and remove owned skills with the server.\n\n- [#14490](https://github.com/Kilo-Org/kilocode/pull/14490) [`bfa384d`](https://github.com/Kilo-Org/kilocode/commit/bfa384dc326ecb1146933f80670755117a048deb) - Animate tool calls in chat more smoothly. New tool rows rise into place, their details reveal as input arrives, the icon shows when a tool is working and when it finishes, and the transcript glides instead of jumping when output or results appear. To-dos tick off as they finish, and write, edit, and patch rows show the file path, command, and a live change count while the model is still writing them. History and session switches stay still. The reasoning headline no longer jumps between a long and a short title while it streams.\n\n- [#14533](https://github.com/Kilo-Org/kilocode/pull/14533) [`3380e16`](https://github.com/Kilo-Org/kilocode/commit/3380e167c2aef2c0232f49cacdc3fe5e1d87f63e) - Enable task subagent model selection by default and remove the `experimental.task_model_selection` flag. You can now request a model, provider, or reasoning effort for an individual subagent task without enabling an experiment.\n\n### Patch Changes\n\n- [#14535](https://github.com/Kilo-Org/kilocode/pull/14535) [`3499a48`](https://github.com/Kilo-Org/kilocode/commit/3499a48d97cc3dd38f14c1432fc63e0d03d591c6) - Preserve the loaded page in the Agent Manager browser panel when switching between worktrees, projects, or sessions.\n\n- [#14531](https://github.com/Kilo-Org/kilocode/pull/14531) [`89f0cba`](https://github.com/Kilo-Org/kilocode/commit/89f0cbad721733723191a436b91c435dfe9de714) - Fix Agent Manager session recovery and model providers when the CLI backend reconnects during startup.\n\n- [#14529](https://github.com/Kilo-Org/kilocode/pull/14529) [`df604a1`](https://github.com/Kilo-Org/kilocode/commit/df604a1710869e29f24fe87e4246cea724b36bb3) - Preserve selected tabs, tab order, and review context when switching between projects and worktrees in Agent Manager.\n\n- [#14532](https://github.com/Kilo-Org/kilocode/pull/14532) [`4e86042`](https://github.com/Kilo-Org/kilocode/commit/4e86042270437c3251250559c67f336b43e7ec89) - Keep Agent Manager session tab titles in sync after renaming a session.\n\n- [#14534](https://github.com/Kilo-Org/kilocode/pull/14534) [`4bbed24`](https://github.com/Kilo-Org/kilocode/commit/4bbed242e2a56476c6e091d689c4163a95032f5f) - Fix the chat transcript getting stuck in a constant re-render after switching to some sessions with expanded edit diffs, which made worktree and session switching slow.\n\n- [#14530](https://github.com/Kilo-Org/kilocode/pull/14530) [`9394c52`](https://github.com/Kilo-Org/kilocode/commit/9394c523380f9b6bbeb887f54f4c394e1ffa1901) - Do not create the `.kilo/worktrees` directory when worktree pre-warming is turned off.\n\n- Updated dependencies [[`c06228d`](https://github.com/Kilo-Org/kilocode/commit/c06228d6a0090307331a572d726348b7ad3df722)]:\n  - @kilocode/sdk@7.8.0\n  - @kilocode/kilo-ui@7.7.10\n  - @kilocode/plugin@7.7.10\n  - @opencode-ai/ui@7.7.10\n  - @opencode-ai/core@7.7.10\n  - @kilocode/kilo-gateway@7.7.10\n  - @kilocode/kilo-indexing@7.7.10\n\n## CLI\n\n### Minor Changes\n\n- [#14508](https://github.com/Kilo-Org/kilocode/pull/14508) [`e09883c`](https://github.com/Kilo-Org/kilocode/commit/e09883c19ac7e1e1ba895b217cbb9f6dcf8aa13d) - Support MCP OAuth client metadata documents while preserving dynamic registration and configured client credentials.\n\n- [#14510](https://github.com/Kilo-Org/kilocode/pull/14510) [`c06228d`](https://github.com/Kilo-Org/kilocode/commit/c06228d6a0090307331a572d726348b7ad3df722) - Install MCP servers with companion skills from the marketplace, preview the included skills, and remove owned skills with the server.\n\n- [#14533](https://github.com/Kilo-Org/kilocode/pull/14533) [`3380e16`](https://github.com/Kilo-Org/kilocode/commit/3380e167c2aef2c0232f49cacdc3fe5e1d87f63e) - Enable task subagent model selection by default and remove the `experimental.task_model_selection` flag. You can now request a model, provider, or reasoning effort for an individual subagent task without enabling an experiment.\n\n### Patch Changes\n\n- [#14480](https://github.com/Kilo-Org/kilocode/pull/14480) [`5e05988`](https://github.com/Kilo-Org/kilocode/commit/5e05988b17ced03fb040476c8748c86eae992e31) - Deliver plan completion questions to directory-scoped clients such as JetBrains without requiring a reconnect.\n\n- Updated dependencies [[`c06228d`](https://github.com/Kilo-Org/kilocode/commit/c06228d6a0090307331a572d726348b7ad3df722)]:\n  - @kilocode/sdk@7.8.0\n  - @kilocode/plugin@7.7.10\n  - @opencode-ai/tui@7.7.10\n  - @opencode-ai/ui@7.7.10\n  - @kilocode/kilo-gateway@7.7.10\n  - @kilocode/kilo-indexing@7.7.10\n  - @kilocode/plugin-atomic-chat@7.7.10\n  - @opencode-ai/server@7.7.10\n  - @kilocode/kilo-telemetry@7.7.10",
-      "date": "2026-09-24T15:38:48Z",
-      "url": "https://github.com/Kilo-Org/kilocode/releases/tag/v7.7.12",
-      "prerelease": true
-    },
-    {
-      "version": "jetbrains/v7.1.8-rc.1",
-      "name": "JetBrains 7.1.8-rc.1",
-      "body": "### Fixed\n\n- Avoid a crash when reloading or unloading the JetBrains plugin while editor history still references Kilo virtual files.\n\n### Changed\n\n- Speed up switching between worktree session editor tabs with long transcripts and reduce unnecessary Agent Manager list repainting.\n- Trim single-line transcript labels more consistently with an ellipsis when they overflow.\n",
-      "date": "2026-09-24T19:38:51Z",
-      "url": "https://github.com/Kilo-Org/kilocode/releases/tag/jetbrains/v7.1.8-rc.1",
-      "prerelease": true
     }
   ],
-  "lastUpdated": "2026-10-28T11:46:33.946Z"
+  "lastUpdated": "2026-10-29T11:54:52.020Z"
 }
