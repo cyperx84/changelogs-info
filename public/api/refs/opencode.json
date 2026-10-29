@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
-  "version": "1.19.5",
-  "generated_at": "2026-10-29T02:05:36.401Z",
+  "version": "2.2.1",
+  "generated_at": "2026-10-29T09:20:51.743Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -14,15 +14,32 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "1.19.5",
-    "to_version": "1.19.5",
-    "new_features": [],
-    "new_commands": [],
+    "from_version": "2.2.1",
+    "to_version": "2.2.1",
+    "new_features": [
+      "keep-working-toward-a-goal",
+      "generate-images",
+      "inspect-background-shells",
+      "new-default-model-picker",
+      "scheduled-prompts",
+      "responses-api-openrouter-digitalocean-venice",
+      "desktop-session-location-menu-actions",
+      "experimental-idle-session-hook",
+      "code-mode-extension-globals-effects-services",
+      "custom-composer-pill-popovers"
+    ],
+    "new_commands": [
+      "/goal",
+      "/schedule",
+      "/reload"
+    ],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "ai-provider-removals-renames"
+    ]
   },
   "payload": {
     "meta": {
@@ -40,13 +57,13 @@
       "changelog_url": "https://github.com/anomalyco/opencode/releases",
       "repo_url": "https://github.com/anomalyco/opencode",
       "license": "mit",
-      "latest_stable": "1.19.5",
-      "latest_release_date": "2026-10-28",
+      "latest_stable": "2.2.1",
+      "latest_release_date": "2026-10-29",
       "status": "active",
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "This opencode 1.19.5 patch release primarily focuses on a critical bugfix related to TUI worker requests. Previously, failed TUI worker requests would cause the caller to hang indefinitely, leading to unresponsive behavior and potential workflow interruptions. With this update, failed requests now correctly return an error, ensuring that the caller is notified of the failure and can handle it gracefully, preventing hangs and improving the overall stability and responsiveness of the TUI. This fix is important for developers relying on TUI interactions within opencode, as it resolves a significant source of frustration and improves the reliability of their development environment. There are no new features, commands, flags, or breaking changes introduced in this release. Users experiencing TUI unresponsiveness should upgrade to 1.19.5 to benefit from this stability improvement."
+      "tldr": "OpenCode 2.2.1 introduces significant enhancements for goal-oriented workflows and agent capabilities. The headline feature is the new `/goal <objective>` command, available in both TUI and Desktop, which allows sessions to work continuously towards a defined objective until a reviewer confirms its completion, with controls to pause, resume, or clear the goal. This fundamentally changes how long-running, complex tasks can be managed and reviewed within OpenCode. \n\nAgents can now generate and edit images with the new `image_generate` tool, enabled by setting `experimental.image_generate` and optionally configuring a default model via `experimental.image_generate.model`. This expands agent functionality into creative and visual tasks. Additionally, a redesigned, searchable model picker is now the default in Desktop, offering dedicated sections for favorites and recent models, improving model discovery and selection. \n\nOther notable improvements include the ability to inspect live output and stop background shells directly from the Desktop activity pill, and the introduction of opt-in scheduled prompts via the `/schedule` command and `experimental.schedules` configuration. The SDK has been updated with new methods for managing scheduled prompts and grouping experimental client methods under `client.experimental`. Desktop users also gain a `/reload` command to apply configuration changes without restarting. \n\nBreaking changes primarily affect developers using the `@opencode/ai` package directly, with the removal of fal, Black Forest Labs, Replicate, and Stability providers, and the renaming of several legacy entry points (e.g., `./providers/amazon-bedrock-mantle` to `./providers/amazon-bedrock/mantle`). Provider `configure()` input types have also been standardized to `Config`. Developers should update their imports and type references accordingly. This release offers substantial new features for both end-users and developers, making an upgrade highly recommended, especially for those leveraging agent capabilities or working with the `@opencode/ai` SDK."
     },
     "features": [
       {
@@ -1417,6 +1434,110 @@
         "description": "Support `@` links to other sessions in messages.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "keep-working-toward-a-goal",
+        "name": "Keep Working Toward a Goal",
+        "status": "stable",
+        "since": "2.2.1",
+        "description": "Allows a session to continue working towards a defined objective until a reviewer confirms it's met. Provides controls to pause, resume, or clear the objective.",
+        "key_details": [
+          "Available in TUI and Desktop.",
+          "Automatic progress review until objective is met."
+        ],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59437"
+      },
+      {
+        "id": "generate-images",
+        "name": "Generate Images",
+        "status": "experimental",
+        "since": "2.2.1",
+        "description": "Enables agents to create or edit images using the new `image_generate` tool. The default model can be configured.",
+        "key_details": [
+          "Requires `experimental.image_generate` to be enabled.",
+          "Default model can be set with `experimental.image_generate.model`.",
+          "Supports GPT Image 2 (after Codex sign-in), MiniMax, and Meta Muse image generation."
+        ],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59939"
+      },
+      {
+        "id": "inspect-background-shells",
+        "name": "Inspect Background Shells",
+        "status": "stable",
+        "since": "2.2.1",
+        "description": "Allows users to view live output and stop running background shells directly from the Desktop activity pill.",
+        "key_details": [],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59496"
+      },
+      {
+        "id": "new-default-model-picker",
+        "name": "New Default Model Picker",
+        "status": "stable",
+        "since": "2.2.1",
+        "description": "A redesigned model picker in Desktop that allows searching favorites, recent models, providers, and variants.",
+        "key_details": [
+          "Now the default model picker in Desktop.",
+          "Includes dedicated Favorites and Recent sections.",
+          "Keyboard-accessible provider controls."
+        ],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59997"
+      },
+      {
+        "id": "scheduled-prompts",
+        "name": "Scheduled Prompts",
+        "status": "experimental",
+        "since": "2.2.1",
+        "description": "Opt-in feature for scheduling prompts through a new command, agent tools, and configuration.",
+        "key_details": [
+          "Enabled via `experimental.schedules`.",
+          "Managed via `/schedule` command and SDK methods."
+        ],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59401"
+      },
+      {
+        "id": "responses-api-openrouter-digitalocean-venice",
+        "name": "Responses API Support for OpenRouter, DigitalOcean, and Venice",
+        "status": "stable",
+        "since": "2.2.1",
+        "description": "Adds support for OpenRouter, DigitalOcean, and Venice providers to the Responses API, including freeform tools.",
+        "key_details": [],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59991"
+      },
+      {
+        "id": "desktop-session-location-menu-actions",
+        "name": "Desktop Session Location Menu Actions",
+        "status": "stable",
+        "since": "2.2.1",
+        "description": "Adds new actions to the session location menu in Desktop, including project, worktree, open-in-app, and terminal actions.",
+        "key_details": [],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59607"
+      },
+      {
+        "id": "experimental-idle-session-hook",
+        "name": "Experimental Idle Session Hook",
+        "status": "experimental",
+        "since": "2.2.1",
+        "description": "A new Session hook for plugins, `experimental.idle`, allowing them to continue work before a session goes idle.",
+        "key_details": [],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59437"
+      },
+      {
+        "id": "code-mode-extension-globals-effects-services",
+        "name": "Code Mode Extension Globals Return Effects and Declare Services",
+        "status": "stable",
+        "since": "2.2.1",
+        "description": "Code Mode extension globals can now return Effects and declare required services.",
+        "key_details": [],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59948"
+      },
+      {
+        "id": "custom-composer-pill-popovers",
+        "name": "Custom Composer-Pill Popovers for GUI Plugins",
+        "status": "stable",
+        "since": "2.2.1",
+        "description": "Adds support for custom popovers on composer pills for GUI plugins.",
+        "key_details": [],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59437"
       }
     ],
     "commands": [
@@ -1499,6 +1620,30 @@
         "since": "2.2.0",
         "status": "stable",
         "source_url": ""
+      },
+      {
+        "name": "/goal",
+        "syntax": "/goal <objective> | pause | resume | clear",
+        "description": "Sets an objective for the session to work towards, pausing, resuming, or clearing it as needed. The session continues until a reviewer confirms the objective is met.",
+        "since": "2.2.1",
+        "status": "stable",
+        "source_url": "https://github.com/anomalyco/opencode/pull/59437"
+      },
+      {
+        "name": "/schedule",
+        "syntax": "/schedule [args]",
+        "description": "Manages opt-in scheduled prompts.",
+        "since": "2.2.1",
+        "status": "experimental",
+        "source_url": "https://github.com/anomalyco/opencode/pull/59401"
+      },
+      {
+        "name": "/reload",
+        "syntax": "/reload",
+        "description": "Reloads configuration without requiring a restart of the Desktop application.",
+        "since": "2.2.1",
+        "status": "stable",
+        "source_url": "https://github.com/anomalyco/opencode/pull/59887"
       }
     ],
     "flags": {
@@ -1848,6 +1993,24 @@
         ],
         "migration": "Upgrade `@opentui/core` and `@opentui/solid` to 0.7.0. Update custom renderables to assign hooks in the constructor, call `refreshHooks()` after adding hooks by reflection, and use `static nativeIntegration` instead of `defineNativeIntegration()`.",
         "source_url": "https://github.com/anomalyco/opencode/pull/59295"
+      },
+      {
+        "id": "ai-provider-removals-renames",
+        "version": "2.2.1",
+        "title": "`@opencode/ai` Provider Removals and Renames",
+        "description": "Several providers and legacy entry points have been removed or renamed within the `@opencode/ai` package. This affects code that directly imports from `@opencode/ai`.",
+        "affected": [
+          "fal provider and `./providers/fal` entry point removed.",
+          "Black Forest Labs provider and `./providers/black-forest-labs` entry point removed.",
+          "Replicate provider and `./providers/replicate` entry point removed.",
+          "Stability provider and `./providers/stability` entry point removed.",
+          "Legacy entry point `./providers/amazon-bedrock-mantle` removed, replaced by `./providers/amazon-bedrock/mantle`.",
+          "Legacy entry points `./providers/google-vertex-chat`, `-interactions`, `-mistral`, and `-responses` removed, replaced by `./providers/google-vertex/chat`, `/interactions`, `/mistral`, and `/responses` respectively.",
+          "Provider `configure()` input types renamed from `Provider.LanguageModelOptions` to `Provider.Config` (e.g., `Groq.LanguageModelOptions` → `Groq.Config`).",
+          "`model()` settings are now optional when every setting is optional."
+        ],
+        "migration": "Update imports for removed providers and legacy entry points to their new, nested paths. Adjust `configure()` input type names to `Config` for affected providers. Review `model()` calls where all settings are optional.",
+        "source_url": "https://github.com/anomalyco/opencode/pull/59977"
       }
     ],
     "deprecations": [],
