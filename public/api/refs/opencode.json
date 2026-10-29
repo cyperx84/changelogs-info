@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
-  "version": "2.2.1",
-  "generated_at": "2026-10-29T16:35:42.891Z",
+  "version": "2.2.2",
+  "generated_at": "2026-10-29T21:31:41.319Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -14,32 +14,27 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "2.2.1",
-    "to_version": "2.2.1",
+    "from_version": "2.2.2",
+    "to_version": "2.2.2",
     "new_features": [
-      "image-generate-tool",
-      "inspect-background-shells",
-      "new-default-model-picker",
-      "gpt-image-2-support",
-      "minimax-image-generation-support",
-      "meta-muse-image-generation-support",
-      "openrouter-digitalocean-venice-responses-api-support",
-      "desktop-session-location-menu-actions",
-      "experimental-idle-session-hook",
-      "code-mode-extension-globals-effects-services",
-      "custom-composer-pill-popovers"
+      "faster-worktree-selection",
+      "unified-quotes-and-annotations",
+      "classic-question-cards-default",
+      "side-panel-tab-menu",
+      "compact-user-message-actions",
+      "redesigned-active-todo-pill",
+      "consistent-styling-searchable-dialogs-composer-pills",
+      "sdk-schedule-create-if-until-inputs",
+      "sdk-sessioninfo-time-busy",
+      "sdk-prompt-file-attachments-source-metadata",
+      "extensions-composer-notes-title-subtitle"
     ],
-    "new_commands": [
-      "/goal",
-      "/reload"
-    ],
+    "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "ai-provider-removals-and-renames"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -57,13 +52,13 @@
       "changelog_url": "https://github.com/anomalyco/opencode/releases",
       "repo_url": "https://github.com/anomalyco/opencode",
       "license": "mit",
-      "latest_stable": "2.2.1",
+      "latest_stable": "2.2.2",
       "latest_release_date": "2026-10-29",
       "status": "active",
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "OpenCode 2.2.1 introduces a significant new feature: the `/goal` command, which allows sessions to continue working towards an objective until a reviewer confirms its completion. This enhances long-running agent workflows by providing explicit control with `/goal pause`, `/goal resume`, and `/goal clear`, and offers automatic progress review. This release also brings the experimental `image_generate` tool, enabling agents to create or edit images, configurable via `experimental.image_generate` and `experimental.image_generate.model`, with support for GPT Image 2, MiniMax, and Meta Muse. Developers can now inspect live output and stop background shells directly from the Desktop activity pill, streamlining debugging and management. The Desktop experience is further improved with a redesigned, searchable model picker that is now the default, featuring dedicated sections for favorites and recent models, and keyboard-accessible provider controls. Breaking changes include the removal of fal, Black Forest Labs, Replicate, and Stability providers from `@opencode/ai`, along with renames for Amazon Bedrock and Google Vertex entry points, and a standardization of provider `configure()` input types to `Config`. Users should update their `@opencode/ai` imports and type definitions accordingly. Other notable improvements include enhanced snapshot performance, better handling of provider throttling, and improved Code Mode diagnostics. The SDK now exposes compaction and new client methods for managing scheduled prompts under `client.experimental`. Desktop users also gain a new `/reload` command to refresh configuration without restarting. This release is recommended for all users to take advantage of the new goal-oriented workflows, improved agent capabilities, and desktop usability enhancements, with attention to the `@opencode/ai` breaking changes for SDK users."
+      "tldr": "OpenCode 2.2.2 introduces significant improvements to image generation, session management, and UI consistency. The `experimental_image_generate` feature is now enabled by default when an image-capable provider is connected, allowing agents to use it without extra configuration, with the preferred model configurable via `experimental.image_generate.model`. This streamlines workflows involving AI-driven image creation. \n\nDevelopers will appreciate the faster worktree selection, which now allows direct access to the project's worktree picker by clicking the Git branch on the new-session screen, speeding up project setup. The UI for quotes and annotations has been unified, with timeline, terminal, and browser annotations sharing a compact optional-comment editor, while source highlights remain attached to local drafts, providing a more consistent user experience. \n\nDesktop users will find the classic question cards restored by default, with an option to switch to the redesigned keyboard-oriented dock via 'Settings → Experimental → New question UI'. The side-panel now includes a tab menu, and close buttons remain visible even when tabs overflow, enhancing navigation. User message actions are now in a compact menu, and the active todo pill has been redesigned for clearer task visibility. \n\nFor SDK users, `client.experimental.schedule.create` now supports `if` and `until` inputs, along with schedule check results and output fields, offering more granular control over scheduled tasks. `SessionInfo.time.busy` is exposed to provide the start time of the latest execution, and prompt file attachments can now include optional source metadata. Extensions can leverage new `title` and `subtitle` fields for composer notes, source-relative quote positioning, and focus options for composer integrations. \n\nBug fixes include rejecting persistent terminal requests with non-existent working directories, preserving media during session forking/importing, and correcting image-generation notice associations. TUI fixes address truncated paths, improved Go usage-limit messages, and correct typing for Go and ChatGPT usage errors. Desktop fixes prevent queued prompts from dropping frames, count queued quotes/annotations as attachments, and ensure Markdown fragment links scroll correctly. Overall, this release focuses on enhancing usability, consistency, and developer control, making it a recommended upgrade for all users."
     },
     "features": [
       {
@@ -1587,6 +1582,134 @@
         "description": "Adds Responses API support for OpenRouter, DigitalOcean, and Venice, including freeform tools.",
         "key_details": [],
         "source_url": "https://github.com/anomalyco/opencode/pull/59991"
+      },
+      {
+        "id": "faster-worktree-selection",
+        "name": "Faster Worktree Selection",
+        "status": "stable",
+        "since": "2.2.2",
+        "description": "On the new-session screen, clicking the current Git branch now directly opens that project’s “Run session in” worktree picker.",
+        "key_details": [
+          "Direct access to worktree picker from new-session screen.",
+          "Activated by clicking the Git branch."
+        ],
+        "source_url": "https://github.com/anomalyco/opencode/pull/60263"
+      },
+      {
+        "id": "unified-quotes-and-annotations",
+        "name": "Unified Quotes and Annotations",
+        "status": "stable",
+        "since": "2.2.2",
+        "description": "Timeline quotes, terminal quotes, and browser annotations now share a compact optional-comment editor. Source highlights remain attached to local drafts.",
+        "key_details": [
+          "Shared compact optional-comment editor for various quote types.",
+          "Source highlights retain local draft attachment."
+        ],
+        "source_url": "https://github.com/anomalyco/opencode/pull/60164"
+      },
+      {
+        "id": "classic-question-cards-default",
+        "name": "Classic Question Cards by Default",
+        "status": "stable",
+        "since": "2.2.2",
+        "description": "The classic question cards are now restored as the default UI. A new setting, 'Settings → Experimental → New question UI', is available to switch to the redesigned keyboard-oriented dock.",
+        "key_details": [
+          "Classic question cards are the default.",
+          "New setting 'Settings → Experimental → New question UI' to enable redesigned UI."
+        ],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59723"
+      },
+      {
+        "id": "side-panel-tab-menu",
+        "name": "Side-Panel Tab Menu and Visible Close Buttons",
+        "status": "stable",
+        "since": "2.2.2",
+        "description": "Added a side-panel tab menu and ensured close buttons remain visible even when tabs overflow.",
+        "key_details": [
+          "Side-panel tab menu for improved navigation.",
+          "Close buttons visible during tab overflow."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "compact-user-message-actions",
+        "name": "Compact User Message Actions",
+        "status": "stable",
+        "since": "2.2.2",
+        "description": "User message actions have been moved into a more compact menu.",
+        "key_details": [
+          "User message actions are now in a compact menu."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "redesigned-active-todo-pill",
+        "name": "Redesigned Active Todo Pill",
+        "status": "stable",
+        "since": "2.2.2",
+        "description": "The active todo pill has been redesigned to more clearly show the current task and concurrent work.",
+        "key_details": [
+          "Improved visibility of current task and concurrent work."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "consistent-styling-searchable-dialogs-composer-pills",
+        "name": "Consistent Styling for Searchable Dialogs and Composer Pills",
+        "status": "stable",
+        "since": "2.2.2",
+        "description": "Added consistent styling for searchable dialogs and composer pills.",
+        "key_details": [
+          "Uniform visual appearance for searchable dialogs and composer pills."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "sdk-schedule-create-if-until-inputs",
+        "name": "SDK `client.experimental.schedule.create` `if` and `until` Inputs",
+        "status": "experimental",
+        "since": "2.2.2",
+        "description": "The `client.experimental.schedule.create` SDK method now supports `if` and `until` inputs, along with schedule check results and output fields.",
+        "key_details": [
+          "New `if` and `until` parameters for scheduling.",
+          "Access to schedule check results and output fields."
+        ],
+        "source_url": "https://github.com/anomalyco/opencode/pull/60137"
+      },
+      {
+        "id": "sdk-sessioninfo-time-busy",
+        "name": "SDK `SessionInfo.time.busy`",
+        "status": "stable",
+        "since": "2.2.2",
+        "description": "Exposed `SessionInfo.time.busy` to indicate the start time of the latest session execution.",
+        "key_details": [
+          "Provides the start time of the most recent session execution."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "sdk-prompt-file-attachments-source-metadata",
+        "name": "SDK Optional Source Metadata for Prompt File Attachments",
+        "status": "stable",
+        "since": "2.2.2",
+        "description": "Added optional source metadata to prompt file attachments in the SDK.",
+        "key_details": [
+          "Allows attaching source metadata to file attachments."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "extensions-composer-notes-title-subtitle",
+        "name": "Extensions Composer Notes `title` and `subtitle` Fields",
+        "status": "stable",
+        "since": "2.2.2",
+        "description": "Added optional `title` and `subtitle` fields to composer notes for extensions, along with source-relative quote positioning and focus options for composer integrations.",
+        "key_details": [
+          "Optional `title` and `subtitle` for composer notes.",
+          "Source-relative quote positioning.",
+          "Focus options for composer integrations."
+        ],
+        "source_url": "https://github.com/anomalyco/opencode/pull/60164"
       }
     ],
     "commands": [

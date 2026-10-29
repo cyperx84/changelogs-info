@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
-  "version": "0.165.0",
-  "generated_at": "2026-10-29T16:35:25.122Z",
+  "version": "0.166.0",
+  "generated_at": "2026-10-29T21:31:27.615Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -14,19 +14,21 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "0.165.0",
-    "to_version": "0.165.0",
+    "from_version": "0.166.0",
+    "to_version": "0.166.0",
     "new_features": [
-      "google-cloud-vertex-ai-provider",
-      "gpt-6-1-terra-model",
-      "session-picker-repository-filter-agent-command-center-grouping",
-      "app-server-attached-thread-forks",
-      "reasoning-effort-changes-during-conversation",
-      "memory-v2-default-and-external-agent-import",
-      "experimental-thread-memory-summary-reads"
+      "keyboard-driven-transcript-selection",
+      "consistent-markdown-rendering",
+      "clearer-safety-block-explanations"
     ],
-    "new_commands": [],
-    "new_flags": [],
+    "new_commands": [
+      "codex queue",
+      "codex doctor"
+    ],
+    "new_flags": [
+      "--resume",
+      "--network-only"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
@@ -47,14 +49,14 @@
       "changelog_url": "https://github.com/openai/codex/releases",
       "repo_url": "https://github.com/openai/codex",
       "license": "apache-2.0",
-      "latest_stable": "0.165.0",
+      "latest_stable": "0.166.0",
       "latest_prerelease": "0.115.0-alpha.6",
-      "latest_release_date": "2026-10-27",
+      "latest_release_date": "2026-10-29",
       "status": "active",
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "Codex CLI v0.165.0 introduces significant enhancements to model provider support, session management, and memory capabilities. The headline change is the addition of a built-in Google Cloud Vertex AI provider, configured via `model_provider = \"gcp\"`, expanding the range of supported AI models for developers. This release also adds GPT-6.1 Terra to the model catalogs, offering more advanced model choices for various tasks. \n\nFor improved navigation and organization, the session picker now includes a repository filter, and the agent command center features directory grouping, which is particularly useful for managing sessions across linked worktrees. Developers can also now leverage experimental attached thread forks through the app-server API, opening up new possibilities for advanced thread management. Reasoning effort changes during a conversation are now enabled by default for supported models, allowing for more dynamic and responsive agent interactions. Furthermore, Memory v2 is now the default for fresh profiles and includes support for importing external-agent memories, streamlining memory management and integration. \n\nSeveral bug fixes improve stability and user experience, such as honoring server's default approval reviewer for fresh TUI sessions, keeping TUI preferences editable even with invalid execution settings, and preventing queued agent messages from restarting work after an interrupt or switch to Plan mode. A critical fix addresses a marketplace URL validation gap that could allow Git to connect to unauthorized hosts. This release is recommended for all users to benefit from the new model integrations, improved session management, and critical bug fixes."
+      "tldr": "Codex CLI v0.166.0 introduces significant usability improvements, most notably keyboard-driven transcript selection in the TUI. This new feature allows for precise text selection using word, line, and page motions, includes integrated search, and offers configurable shortcuts, greatly enhancing navigation and interaction within conversations. Markdown rendering has also been standardized across all async questions, choices, answers, and transcript replies, ensuring a consistent and readable experience.\n\nNew commands include `codex queue --resume` to easily re-engage unloaded threads after sending a message, and `codex doctor --network-only` for targeted diagnostics of network configuration, connectivity, and WebSocket issues. The release also enhances safety-block explanations in the TUI, providing clearer context and offering selectable safer follow-up prompts. GPT-6.1 Terra is now available across bundled, Vertex AI, and Amazon Bedrock model catalogs, expanding model choices.\n\nKey bug fixes address the preservation of acknowledged approval and permission settings when resuming or forking threads, and local image attachments are now correctly restored when composer text is killed. Standalone release cleanup on macOS has been fixed for installations in use or paths with non-ASCII characters, and spawned descendant threads are now restored when their parent is unarchived. Improvements to TUI reconnection recovery, including offline `/quit` and `/exit` handling, enhance stability. Reasoning-token accounting is now preserved across resume and fork operations to prevent premature compaction. Users are encouraged to upgrade to benefit from these stability and usability enhancements."
     },
     "features": [
       {
@@ -2787,6 +2789,43 @@
         "description": "Enabled memory v2 by default for fresh profiles and added support for importing external-agent memories into it.",
         "key_details": [],
         "source_url": "https://github.com/openai/codex/pull/56211"
+      },
+      {
+        "id": "keyboard-driven-transcript-selection",
+        "name": "Keyboard-Driven Transcript Selection",
+        "status": "stable",
+        "since": "0.166.0",
+        "description": "Introduced keyboard-driven transcript selection within the TUI, allowing users to select text with word, line, and page motions. It includes integrated search functionality and configurable shortcuts for enhanced navigation and interaction.",
+        "key_details": [
+          "Word, line, and page motions for selection.",
+          "Integrated search within transcript selection mode.",
+          "Configurable keyboard shortcuts."
+        ],
+        "source_url": "https://github.com/openai/codex/compare/rust-v0.165.0...rust-v0.166.0#57221"
+      },
+      {
+        "id": "consistent-markdown-rendering",
+        "name": "Consistent Markdown Rendering",
+        "status": "stable",
+        "since": "0.166.0",
+        "description": "Markdown is now rendered consistently across async questions, choices, answers, and transcript replies in the TUI, improving readability and user experience.",
+        "key_details": [
+          "Consistent rendering in async questions, choices, answers, and transcript replies."
+        ],
+        "source_url": "https://github.com/openai/codex/compare/rust-v0.165.0...rust-v0.166.0#57259"
+      },
+      {
+        "id": "clearer-safety-block-explanations",
+        "name": "Clearer Safety Block Explanations and Safer Follow-up Prompts",
+        "status": "stable",
+        "since": "0.166.0",
+        "description": "The TUI now provides clearer explanations for safety policy blocks, offering turn-scoped recourse and selectable safer follow-up prompts to guide users.",
+        "key_details": [
+          "Improved explanations for safety policy blocks.",
+          "Turn-scoped recourse options.",
+          "Selectable safer follow-up prompts."
+        ],
+        "source_url": "https://github.com/openai/codex/compare/rust-v0.165.0...rust-v0.166.0#57363"
       }
     ],
     "commands": [
@@ -3220,6 +3259,18 @@
           "description": "Feature flag to enable incremental tool updates.",
           "since": "0.162.0",
           "source_url": "#50464"
+        },
+        {
+          "flag": "--resume",
+          "description": "Used with `codex queue` to resume unloaded threads after queueing a message.",
+          "since": "0.166.0",
+          "source_url": "https://github.com/openai/codex/compare/rust-v0.165.0...rust-v0.166.0#57232"
+        },
+        {
+          "flag": "--network-only",
+          "description": "Used with `codex doctor` to perform focused diagnostics on network configuration, connectivity, and WebSocket issues.",
+          "since": "0.166.0",
+          "source_url": "https://github.com/openai/codex/compare/rust-v0.165.0...rust-v0.166.0#57606"
         }
       ],
       "deprecated": [
@@ -5730,7 +5781,10 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--resume",
+        "--network-only"
+      ]
     },
     "env_vars": [
       {
