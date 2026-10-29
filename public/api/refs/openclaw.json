@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.10.8",
-  "generated_at": "2026-10-29T09:21:05.035Z",
+  "version": "2026.10.9",
+  "generated_at": "2026-10-29T16:35:50.122Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,8 +14,8 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.10.8",
-    "to_version": "2026.10.8",
+    "from_version": "2026.10.9",
+    "to_version": "2026.10.9",
     "new_features": [],
     "new_commands": [],
     "new_flags": [],
@@ -40,13 +40,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.10.8",
-      "latest_release_date": "2026-10-27",
+      "latest_stable": "2026.10.9",
+      "latest_release_date": "2026-10-29",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "OpenClaw 2026.10.8 focuses heavily on stability, resilience, and recovery across the entire platform, ensuring a more robust and reliable developer experience. A major highlight is improved update recovery, where common post-update failures now restart the Gateway instead of leaving it stopped, and updates are more resilient to various filesystem and dependency linking issues. This significantly reduces manual intervention after updates.\n\nGateway service installations are also more robust across macOS and Linux, with macOS recovering deleted launchd plists and Linux handling umask defaults gracefully. Conversations are more resilient to interruptions, with killed runs releasing recovery fences, child sessions recovering after Gateway restarts, and inbound messages no longer retrying indefinitely. Startup and database operations are hardened against SQLite reader scope issues and transient lock contention, ensuring models and chat metadata remain available.\n\nSecurity has been enhanced, with exec allowlist mode requiring approval for `test -v` operand expansion, generic node invokes refusing browser proxy commands, and sandboxed children being restricted from host CLI backends. Windows exec and plugin loading are improved, supporting S4U scheduled tasks and Endpoint DLP. Provider and model continuity is better, with Codex budget preservation, OpenAI OAuth with stale catalogs, and Anthropic PDF analysis with setup-token OAuth. Numerous fixes address channel account stability (Slack, Google Chat, X, Zalo, Telegram, Mattermost), message delivery across Matrix, Twitch, Zalo, iMessage, and Feishu, and agent run reliability, including Claude CLI session stability and subagent turn completion. Voice and meeting features are more reliable, with Discord voice initialization and consistent agent model usage. Doctor repairs are more comprehensive, handling retained transcripts and restoring Gateway configurations. Overall, this release provides a more stable, secure, and self-recovering OpenClaw environment, making upgrades smoother and daily operations more dependable."
+      "tldr": "OpenClaw 2026.10.9 is a maintenance release focused on critical security patches, improved recovery mechanisms, and enhanced data preservation and reliability. A key highlight is the patching of vulnerable runtime dependencies, including `fast-uri` for URI scheme validation, Zod collections in A2UI and Discord SDK, `nodemailer` for IMAP sender parsing, and MSAL Node for Microsoft Teams, significantly bolstering security against various exploits. This release also applies `tools.fs.workspaceOnly` to Gateway-built tools, ensuring that delegate changes require approval and media tools are confined to the workspace, enhancing security and control over tool execution.\n\nSignificant improvements have been made to update rollbacks, with Git-source rollbacks now preserving operator edits and npm rollbacks retrying transient Windows denials, preventing corrupted installations. Agent databases and full-text indexes can now recover gracefully after SQLite tokenizer changes, and large transcript archives can be migrated without hitting Node.js string limits. Agents are also more resilient, able to recover after a full disk once space becomes available without requiring a restart. Other fixes include resolving local media in Codex steering messages from the session's workspace, improved reporting for uncertain process cleanup, and ensuring reapproved node connections remain active. Gateway recovery has been made more robust, and new ACP sessions now correctly start in the requested working directory. Developers should upgrade to this version to benefit from these critical security and stability enhancements, ensuring a more secure and reliable OpenClaw environment."
     },
     "features": [
       {

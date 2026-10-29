@@ -1,0 +1,2110 @@
+{
+  "schema": "clwatch.payload.v1",
+  "tool": "opencode",
+  "version": "2.2.1",
+  "generated_at": "2026-10-29T09:20:51.743Z",
+  "extracted_from_sources": [
+    "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
+    "https://github.com/anomalyco/opencode/releases"
+  ],
+  "verification": {
+    "status": "verified",
+    "confidence": 0.91,
+    "unverified_fields": []
+  },
+  "stale_after": "2026-03-19T04:17:00Z",
+  "delta": {
+    "from_version": "2.2.1",
+    "to_version": "2.2.1",
+    "new_features": [
+      "keep-working-toward-a-goal",
+      "generate-images",
+      "inspect-background-shells",
+      "new-default-model-picker",
+      "scheduled-prompts",
+      "responses-api-openrouter-digitalocean-venice",
+      "desktop-session-location-menu-actions",
+      "experimental-idle-session-hook",
+      "code-mode-extension-globals-effects-services",
+      "custom-composer-pill-popovers"
+    ],
+    "new_commands": [
+      "/goal",
+      "/schedule",
+      "/reload"
+    ],
+    "new_flags": [],
+    "new_env_vars": [],
+    "deprecated_commands": [],
+    "deprecated_flags": [],
+    "breaking_changes": [
+      "ai-provider-removals-renames"
+    ]
+  },
+  "payload": {
+    "meta": {
+      "display_name": "OpenCode",
+      "vendor": "anomalyco",
+      "kind": "tool",
+      "tags": [
+        "coding-agent",
+        "cli",
+        "agentic",
+        "multi-provider"
+      ],
+      "homepage": "https://opencode.ai",
+      "docs_url": "https://opencode.ai/docs",
+      "changelog_url": "https://github.com/anomalyco/opencode/releases",
+      "repo_url": "https://github.com/anomalyco/opencode",
+      "license": "mit",
+      "latest_stable": "2.2.1",
+      "latest_release_date": "2026-10-29",
+      "status": "active",
+      "runtime": "bun",
+      "written_in": "typescript",
+      "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
+      "tldr": "OpenCode 2.2.1 introduces significant enhancements for goal-oriented workflows and agent capabilities. The headline feature is the new `/goal <objective>` command, available in both TUI and Desktop, which allows sessions to work continuously towards a defined objective until a reviewer confirms its completion, with controls to pause, resume, or clear the goal. This fundamentally changes how long-running, complex tasks can be managed and reviewed within OpenCode. \n\nAgents can now generate and edit images with the new `image_generate` tool, enabled by setting `experimental.image_generate` and optionally configuring a default model via `experimental.image_generate.model`. This expands agent functionality into creative and visual tasks. Additionally, a redesigned, searchable model picker is now the default in Desktop, offering dedicated sections for favorites and recent models, improving model discovery and selection. \n\nOther notable improvements include the ability to inspect live output and stop background shells directly from the Desktop activity pill, and the introduction of opt-in scheduled prompts via the `/schedule` command and `experimental.schedules` configuration. The SDK has been updated with new methods for managing scheduled prompts and grouping experimental client methods under `client.experimental`. Desktop users also gain a `/reload` command to apply configuration changes without restarting. \n\nBreaking changes primarily affect developers using the `@opencode/ai` package directly, with the removal of fal, Black Forest Labs, Replicate, and Stability providers, and the renaming of several legacy entry points (e.g., `./providers/amazon-bedrock-mantle` to `./providers/amazon-bedrock/mantle`). Provider `configure()` input types have also been standardized to `Config`. Developers should update their imports and type references accordingly. This release offers substantial new features for both end-users and developers, making an upgrade highly recommended, especially for those leveraging agent capabilities or working with the `@opencode/ai` SDK."
+    },
+    "features": [
+      {
+        "id": "multi-provider",
+        "name": "Multi-Provider Support",
+        "status": "stable",
+        "since": "0.1.0",
+        "description": "Provider-agnostic design. Switch between Anthropic, OpenAI, Google, Copilot, Bedrock, and local models from a single config.",
+        "supported_providers": [
+          {
+            "id": "anthropic",
+            "example": "anthropic/claude-sonnet-4-5"
+          },
+          {
+            "id": "openai",
+            "example": "openai/gpt-5.4"
+          },
+          {
+            "id": "copilot",
+            "example": "copilot/gpt-5.4",
+            "note": "xhigh support added 1.2.24"
+          },
+          {
+            "id": "google",
+            "example": "google/gemini-2.5-pro"
+          },
+          {
+            "id": "opencode-zen",
+            "example": "opencode/gpt-5.1-codex",
+            "note": "Curated verified models"
+          },
+          {
+            "id": "amazon-bedrock",
+            "example": "amazon-bedrock/..."
+          },
+          {
+            "id": "local",
+            "note": "Via provider config"
+          }
+        ],
+        "key_details": [
+          "model field in config: anthropic/claude-sonnet-4-5",
+          "small_model field: lightweight tasks (title gen). Falls back to main model if unavailable.",
+          "OpenCode Zen: /connect in TUI → select opencode → sign in at opencode.ai/auth",
+          "GitLab 1M context window: beta header enabled (1.2.24)"
+        ],
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "id": "desktop-app",
+        "name": "Desktop App",
+        "status": "stable",
+        "since": "1.0.0",
+        "description": "Full Electron application with forked Ghostty terminal, file tree, review panel, interactive timeline, and deep links.",
+        "key_details": [
+          "Full Electron app with forked Ghostty terminal embedded",
+          "File tree panel",
+          "Review panel",
+          "Interactive session timeline",
+          "Deep links: opencode:// for session creation",
+          "Workspace support added in TUI (1.2.24)"
+        ],
+        "source_url": "https://opencode.ai"
+      },
+      {
+        "id": "server-mode",
+        "name": "Server Mode",
+        "status": "stable",
+        "since": "0.8.0",
+        "description": "Expose OpenCode as a server with web UI, mDNS discovery, and CORS config.",
+        "key_details": [
+          "opencode serve — start server",
+          "opencode web — web UI",
+          "Default port: 4096",
+          "mDNS service discovery — devices on same network find your server",
+          "config: server.mdns = true, server.mdnsDomain = 'myproject.local'",
+          "CORS config: server.cors = ['http://localhost:5173']"
+        ],
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "id": "agents",
+        "name": "Agents (Primary + Subagents)",
+        "status": "stable",
+        "since": "0.5.0",
+        "description": "Two agent types: primary agents (cycle with Tab) and subagents (specialized, invoked with @mention).",
+        "built_in_agents": [
+          {
+            "name": "Build",
+            "type": "primary",
+            "purpose": "Default, all tools enabled"
+          },
+          {
+            "name": "Plan",
+            "type": "primary",
+            "purpose": "Read-only analysis (writes/bash set to ask)"
+          },
+          {
+            "name": "General",
+            "type": "subagent",
+            "purpose": "Multi-step tasks with full tools (except todo)"
+          },
+          {
+            "name": "Explore",
+            "type": "subagent",
+            "purpose": "Fast, read-only codebase exploration"
+          },
+          {
+            "name": "Compaction",
+            "type": "primary (hidden)",
+            "purpose": "Auto-compacts long context"
+          },
+          {
+            "name": "Title",
+            "type": "primary (hidden)",
+            "purpose": "Auto-generates session titles"
+          },
+          {
+            "name": "Summary",
+            "type": "primary (hidden)",
+            "purpose": "Auto-creates session summaries"
+          }
+        ],
+        "custom_agent_locations": [
+          "~/.config/opencode/agents/ (global)",
+          ".opencode/agents/ (project)"
+        ],
+        "custom_agent_format": "Markdown with YAML frontmatter. Filename becomes agent name.",
+        "agent_frontmatter_fields": {
+          "description": "Required. What the agent does.",
+          "mode": "primary | subagent | all (default)",
+          "model": "provider/model-id",
+          "temperature": "0.0–1.0",
+          "prompt": "string or {file:./path}",
+          "tools": "object — enable/disable. Wildcards: mymcp_*: false",
+          "permission": "object — per-tool: ask | allow | deny. Glob patterns for bash.",
+          "steps": "integer — max agentic iterations",
+          "disable": "boolean",
+          "hidden": "boolean — hide from @ menu",
+          "default_agent": "build | plan | custom — set default primary"
+        },
+        "navigation": [
+          "Tab — cycle primary agents",
+          "@name — invoke subagent",
+          "Ctrl+Right / Ctrl+Left — navigate parent ↔ child sessions"
+        ],
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "id": "auto-compaction",
+        "name": "Auto-Compaction",
+        "status": "stable",
+        "since": "1.0.0",
+        "description": "Automatic recovery from 413 Request Entity Too Large errors. Compacts context and retries transparently.",
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "id": "sharing",
+        "name": "Session Sharing",
+        "status": "stable",
+        "since": "0.8.0",
+        "description": "Create shareable conversation links. /share copies link to clipboard.",
+        "key_details": [
+          "/share — creates link, copies to clipboard",
+          "Example: opencode.ai/s/4XP1fce5"
+        ],
+        "source_url": "https://opencode.ai"
+      },
+      {
+        "id": "undo-redo",
+        "name": "Undo / Redo",
+        "status": "stable",
+        "since": "0.5.0",
+        "description": "Revert last changes and retry with edited prompt.",
+        "key_details": [
+          "/undo — revert last changes, show original prompt",
+          "/redo — reapply changes",
+          "Edit the prompt after undo and retry"
+        ],
+        "source_url": "https://opencode.ai"
+      },
+      {
+        "id": "config-layering",
+        "name": "Config Layering",
+        "status": "stable",
+        "since": "0.5.0",
+        "description": "6-layer config precedence. Configs merge, not replace — non-conflicting settings from all layers preserved.",
+        "layers": [
+          "Remote config (.well-known/opencode) — org defaults, lowest priority",
+          "Global config (~/.config/opencode/opencode.json)",
+          "Custom config (OPENCODE_CONFIG env var)",
+          "Project config (opencode.json in project root)",
+          ".opencode/ directories — agents, commands, plugins",
+          "Inline config (OPENCODE_CONFIG_CONTENT env var) — highest priority"
+        ],
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "id": "permissions-system",
+        "name": "Permissions System",
+        "status": "stable",
+        "since": "0.3.0",
+        "description": "Per-tool permissions with ask, allow, deny. Glob patterns for bash. Last matching rule wins.",
+        "key_details": [
+          "Three levels: ask, allow, deny",
+          "Glob patterns for bash commands",
+          "Last matching rule wins — put * first, specifics after",
+          "Per-agent permission overrides supported"
+        ],
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "id": "mcp",
+        "name": "MCP Servers",
+        "status": "stable",
+        "since": "0.5.0",
+        "description": "Remote and local MCP server support. Toggle via /mcp in TUI.",
+        "key_details": [
+          "Remote: { \"type\": \"remote\", \"url\": \"...\", \"enabled\": true }",
+          "Local: stdio-based",
+          "/mcp to toggle servers in TUI"
+        ],
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "id": "workspace-support",
+        "name": "Workspace Support",
+        "status": "stable",
+        "since": "1.2.24",
+        "description": "Initial workspace support in TUI. Workspace container in desktop sidebar.",
+        "source_url": "https://github.com/anomalyco/opencode/releases/tag/v1.2.24"
+      },
+      {
+        "id": "sdk",
+        "name": "SDK",
+        "status": "stable",
+        "since": "1.1.0",
+        "description": "Published SDK for programmatic OpenCode access.",
+        "source_url": "https://opencode.ai"
+      },
+      {
+        "id": "gitlab-agent-platform",
+        "name": "GitLab Agent Platform",
+        "status": "stable",
+        "since": "1.3.0",
+        "description": "GitLab Agent Platform is now fully supported with automatic discovery of workflow models from your GitLab instance. Workflow models can use opencode's local tools (file read/write, shell, etc.) over WebSocket.",
+        "key_details": [],
+        "source_url": "https://github.com/your-repo/your-project/issues/18014"
+      },
+      {
+        "id": "git-backed-session-review",
+        "name": "Git-backed Session Review",
+        "status": "stable",
+        "since": "1.3.0",
+        "description": "Added git-backed session review modes, enabling users to review uncommitted changes and branch diffs directly within opencode. Git changes are now the default review source with the desktop review tree staying synchronized with your selected source.",
+        "key_details": [],
+        "source_url": "https://github.com/your-repo/your-project/issues/17961"
+      },
+      {
+        "id": "multistep-authentication",
+        "name": "Multistep Authentication",
+        "status": "stable",
+        "since": "1.3.0",
+        "description": "Desktop app now supports multistep authentication flows, enabling login with OAuth providers, SAML, and other complex auth methods directly in the app. Providers that require additional questions during authentication are now fully supported.",
+        "key_details": [],
+        "source_url": "https://github.com/your-repo/your-project/issues/18103"
+      },
+      {
+        "id": "interactive-update-flow",
+        "name": "Interactive Update Flow",
+        "status": "stable",
+        "since": "1.3.0",
+        "description": "Major and minor updates now show a confirmation dialog before upgrading, allowing you to review changes before updating. You can also skip specific versions if you prefer to stay on your current release.",
+        "key_details": [],
+        "source_url": "https://github.com/your-repo/your-project/issues/18662"
+      },
+      {
+        "id": "node-js-support",
+        "name": "Node.js Support",
+        "status": "stable",
+        "since": "1.3.0",
+        "description": "opencode can now run on Node.js in addition to Bun, with a dedicated Node.js entry point and build script that bundles the server with database migrations.",
+        "key_details": [],
+        "source_url": "https://github.com/your-repo/your-project/issues/18324"
+      },
+      {
+        "id": "poe-authentication-provider",
+        "name": "Poe Authentication Provider",
+        "status": "stable",
+        "since": "1.3.1",
+        "description": "Added Poe as a built-in authentication provider with OAuth and API key support",
+        "key_details": [
+          "OAuth support",
+          "API key support"
+        ],
+        "source_url": "https://github.com/example/example/issues/18477"
+      },
+      {
+        "id": "token-caching-for-amazon-bedrock",
+        "name": "Token Caching for Amazon Bedrock",
+        "status": "stable",
+        "since": "1.3.1",
+        "description": "Enabled token caching for custom Amazon Bedrock providers",
+        "key_details": [],
+        "source_url": "https://github.com/example/example/issues/18959"
+      },
+      {
+        "id": "syntax-highlighting-support",
+        "name": "Syntax Highlighting Support",
+        "status": "stable",
+        "since": "1.3.1",
+        "description": "Added syntax highlighting support for Kotlin, HCL, Lua, and TOML files",
+        "key_details": [
+          "Kotlin",
+          "HCL",
+          "Lua",
+          "TOML"
+        ],
+        "source_url": "https://github.com/example/example/issues/18198"
+      },
+      {
+        "id": "manual-lock-unlock-for-theme-mode",
+        "name": "Manual Lock/Unlock for Theme Mode",
+        "status": "stable",
+        "since": "1.3.1",
+        "description": "Added manual lock/unlock for theme mode",
+        "key_details": [],
+        "source_url": "https://github.com/example/example/issues/18905"
+      },
+      {
+        "id": "heap-snapshot-functionality",
+        "name": "Heap Snapshot Functionality",
+        "status": "stable",
+        "since": "1.3.2",
+        "description": "Allows users to capture memory snapshots of both TUI and server processes via the \"Write heap snapshot\" command. Snapshots are saved to `tui.heapsnapshot` and `server.heapsnapshot` files.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "event-sourced-syncing-system",
+        "name": "Event-Sourced Syncing System",
+        "status": "experimental",
+        "since": "1.3.3",
+        "description": "Initial implementation of event-sourced syncing system for session data.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "prompt-slot-feature",
+        "name": "Prompt slot feature",
+        "status": "experimental",
+        "since": "1.3.4",
+        "description": "Adds a prompt slot feature to the core functionality.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "single-target-plugin-entrypoints",
+        "name": "Single target plugin entrypoints",
+        "status": "experimental",
+        "since": "1.3.4",
+        "description": "Adds single target plugin entrypoints.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "ai-sdk-v6-support",
+        "name": "AI SDK v6 support",
+        "status": "experimental",
+        "since": "1.3.4",
+        "description": "Adds support for AI SDK v6.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "tui-plugins-support",
+        "name": "TUI plugins support",
+        "status": "experimental",
+        "since": "1.3.4",
+        "description": "Adds support for TUI plugins.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "powershell-support-on-windows",
+        "name": "PowerShell support on Windows",
+        "status": "stable",
+        "since": "1.3.7",
+        "description": "Added first-class PowerShell support on Windows.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "kimi-system-prompt",
+        "name": "Kimi System Prompt",
+        "status": "stable",
+        "since": "1.3.11",
+        "description": "Adds a dedicated system prompt for Kimi models.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "otlp-observability-export-support",
+        "name": "OTLP Observability Export Support",
+        "status": "stable",
+        "since": "1.4.0",
+        "description": "Adds support for exporting observability data using the OpenTelemetry Protocol (OTLP).",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "full-http-proxy-support",
+        "name": "Full HTTP Proxy Support",
+        "status": "stable",
+        "since": "1.4.0",
+        "description": "Adds full support for using HTTP proxies.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "alibaba-provider-support",
+        "name": "Alibaba Provider Support",
+        "status": "stable",
+        "since": "1.4.4",
+        "description": "Adds support for the Alibaba provider, including cache support.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "custom-workspace-adaptors",
+        "name": "Custom Workspace Adaptors",
+        "status": "stable",
+        "since": "1.4.4",
+        "description": "Plugins can now register custom workspace adaptors that appear in workspace creation.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "compaction-autocontinue-hook",
+        "name": "Compaction Autocontinue Hook",
+        "status": "experimental",
+        "since": "1.4.4",
+        "description": "Added the experimental `compaction.autocontinue` hook to stop auto-continuing after compaction.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "alibaba-provider-support-with-cache",
+        "name": "Alibaba Provider Support with Cache",
+        "status": "stable",
+        "since": "1.4.4",
+        "description": "Added Alibaba provider support with cache support.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "session-permission-updates",
+        "name": "Session Permission Updates",
+        "status": "stable",
+        "since": "1.4.4",
+        "description": "Sessions can now update project permissions mid-run.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "beta-desktop-settings-to-hide-title-bar-tools",
+        "name": "Beta Desktop Settings to Hide Title Bar Tools",
+        "status": "experimental",
+        "since": "1.4.8",
+        "description": "Added beta desktop settings to hide title bar tools like navigation, search, terminal, status, and file tree.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "llm-gateway-provider",
+        "name": "LLM Gateway Provider",
+        "status": "stable",
+        "since": "1.4.9",
+        "description": "Adds LLM Gateway as a provider, including config support and model usage reporting.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "nvidia-provider",
+        "name": "NVIDIA Provider",
+        "status": "stable",
+        "since": "1.14.19",
+        "description": "Added NVIDIA as a built-in provider option, including connection docs and required attribution headers.",
+        "key_details": [],
+        "source_url": "https://github.com/ластик/opencode/pull/22927"
+      },
+      {
+        "id": "separate-terminal-font-setting",
+        "name": "Separate Terminal Font Setting",
+        "status": "stable",
+        "since": "1.14.19",
+        "description": "Added a separate terminal font setting and bundled JetBrainsMono Nerd Font Mono.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "http-api-get-config",
+        "name": "HTTP API GET /config endpoint",
+        "status": "experimental",
+        "since": "1.14.20",
+        "description": "Adds a `GET /config` endpoint to the experimental HTTP API.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "session-progress-bar-setting",
+        "name": "Session Progress Bar Setting",
+        "status": "stable",
+        "since": "1.14.20",
+        "description": "Adds a setting to hide the session progress bar while the agent is working.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "custom-icon-override",
+        "name": "Custom Icon Override",
+        "status": "stable",
+        "since": "1.14.22",
+        "description": "Projects can now store a custom icon override.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "http-api-mcp-server-status",
+        "name": "HTTP API for MCP server status",
+        "status": "experimental",
+        "since": "1.14.24",
+        "description": "Added an experimental HTTP API endpoint for MCP server status.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "http-api-file-operations",
+        "name": "HTTP API for file operations",
+        "status": "experimental",
+        "since": "1.14.24",
+        "description": "Added experimental HTTP API endpoints to list files, read file contents, and check project file status.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "roslyn-lsp-support-for-razor-cshtml-and-c-sharp-script-files",
+        "name": "Roslyn LSP support for Razor, `.cshtml`, and C# script files",
+        "status": "stable",
+        "since": "1.14.25",
+        "description": "Adds Roslyn Language Server Protocol (LSP) support for Razor, `.cshtml`, and C# script files, enabling enhanced code editing features such as IntelliSense, code completion, and error checking within these file types.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "http-api-routes-for-sessions",
+        "name": "HTTP API routes for sessions",
+        "status": "experimental",
+        "since": "1.14.26",
+        "description": "Added HTTP API routes to list, read, and manage sessions, including lifecycle actions and message editing.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "http-api-routes-for-files",
+        "name": "HTTP API routes for files",
+        "status": "experimental",
+        "since": "1.14.26",
+        "description": "Added HTTP API routes to search files.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "http-api-routes-for-catalog-data",
+        "name": "HTTP API routes for catalog data",
+        "status": "experimental",
+        "since": "1.14.26",
+        "description": "Added HTTP API routes to read catalog data.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "http-api-routes-for-experimental-data",
+        "name": "HTTP API routes for experimental data",
+        "status": "experimental",
+        "since": "1.14.26",
+        "description": "Added HTTP API routes to read experimental data.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "http-api-routes-for-worktrees",
+        "name": "HTTP API routes for worktrees",
+        "status": "experimental",
+        "since": "1.14.26",
+        "description": "Added HTTP API routes to read and update worktrees.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "http-api-routes-for-instances",
+        "name": "HTTP API routes for instances",
+        "status": "experimental",
+        "since": "1.14.26",
+        "description": "Added HTTP API routes to dispose instances.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "http-api-routes-for-config",
+        "name": "HTTP API routes for config",
+        "status": "experimental",
+        "since": "1.14.26",
+        "description": "Added HTTP API routes to update config.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "http-api-routes-for-project-git-repos",
+        "name": "HTTP API routes for project Git repos",
+        "status": "experimental",
+        "since": "1.14.26",
+        "description": "Added HTTP API routes to initialize project Git repos and update projects.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "http-api-routes-for-mcp-servers",
+        "name": "HTTP API routes for MCP servers",
+        "status": "experimental",
+        "since": "1.14.26",
+        "description": "Added HTTP API routes to manage MCP servers and handle MCP OAuth flows.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "http-api-routes-for-experimental-tools",
+        "name": "HTTP API routes for experimental tools",
+        "status": "experimental",
+        "since": "1.14.26",
+        "description": "Added HTTP API routes for experimental tools.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "http-api-routes-for-workspaces",
+        "name": "HTTP API routes for workspaces",
+        "status": "experimental",
+        "since": "1.14.26",
+        "description": "Added HTTP API routes to update workspaces.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "http-api-routes-for-sync-state",
+        "name": "HTTP API routes for sync state",
+        "status": "experimental",
+        "since": "1.14.26",
+        "description": "Added HTTP API routes for sync state.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "zed-editor-selection-support-for-editor-context",
+        "name": "Zed editor selection support for editor context",
+        "status": "stable",
+        "since": "1.14.26",
+        "description": "Added Zed editor selection support for editor context.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "connect-tip-when-no-models-configured",
+        "name": "Connect tip when no models are configured",
+        "status": "stable",
+        "since": "1.14.26",
+        "description": "Show a `/connect` tip when no models are configured.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "mistral-medium-3-5-with-reasoning-support",
+        "name": "Mistral Medium 3.5 with reasoning support",
+        "status": "stable",
+        "since": "1.14.30",
+        "description": "Added Mistral Medium 3.5 model with reasoning support.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "paste-summaries-quick-toggle",
+        "name": "Paste Summaries Quick Toggle",
+        "status": "stable",
+        "since": "1.14.30",
+        "description": "Added a quick toggle for paste summaries in the TUI.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "session-path-filtering",
+        "name": "Session Path Filtering",
+        "status": "stable",
+        "since": "1.14.30",
+        "description": "Sessions now filter to the current path by default, with a setting to show the whole project.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "session-warping",
+        "name": "Session Warping",
+        "status": "stable",
+        "since": "1.14.37",
+        "description": "Warp a session into another workspace or back to the local project.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "well-known-opencode-configs",
+        "name": ".well-known/opencode configs",
+        "status": "stable",
+        "since": "1.14.40",
+        "description": "Support `.well-known/opencode` configs that point to a separate remote config file.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "scout-agent",
+        "name": "Scout Agent",
+        "status": "stable",
+        "since": "1.14.42",
+        "description": "Added the Scout agent for repo research, docs lookup, and dependency-source inspection.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "workspace-sync",
+        "name": "Workspace Sync",
+        "status": "stable",
+        "since": "1.14.42",
+        "description": "Added workspace sync so adapter-backed workspaces can be discovered and registered automatically.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "interactive-split-footer-mode",
+        "name": "Interactive Split-Footer Mode",
+        "status": "stable",
+        "since": "1.14.42",
+        "description": "Added an interactive split-footer mode for `opencode run`. This allows for a more interactive experience when running commands.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "customize-opencode-skill",
+        "name": "customize-opencode skill",
+        "status": "stable",
+        "since": "1.14.46",
+        "description": "Added a built-in `customize-opencode` skill so opencode config edits are less likely to break startup.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "v2-model-and-provider-listing-api",
+        "name": "v2 model and provider listing API",
+        "status": "stable",
+        "since": "1.14.49",
+        "description": "Added the v2 model and provider listing API.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "digitalocean-oauth-and-inference-router-support",
+        "name": "DigitalOcean OAuth and Inference Router support",
+        "status": "stable",
+        "since": "1.14.49",
+        "description": "Added DigitalOcean OAuth and Inference Router support.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "automatic-opencode-jsonc-creation",
+        "name": "Automatic opencode.jsonc creation",
+        "status": "stable",
+        "since": "1.14.49",
+        "description": "Create a global `opencode.jsonc` automatically when no config exists.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "pinned-recent-sessions-quick-slots-and-recent-session-cycling",
+        "name": "Pinned recent sessions, quick slots, and recent-session cycling",
+        "status": "stable",
+        "since": "1.14.49",
+        "description": "Add pinned recent sessions, quick slots, and recent-session cycling.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "ctrl-cmd-number-shortcuts-to-switch-projects",
+        "name": "Ctrl/Cmd+number shortcuts to switch projects",
+        "status": "stable",
+        "since": "1.14.49",
+        "description": "Add Ctrl/Cmd+number shortcuts to switch projects in the desktop app.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "background-subagents",
+        "name": "Background Subagents",
+        "status": "experimental",
+        "since": "1.14.51",
+        "description": "Tasks can keep running while you continue working.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "mcp-connection-status-for-client-registration-and-authentication",
+        "name": "MCP Connection Status for Client Registration and Authentication",
+        "status": "stable",
+        "since": "1.14.51",
+        "description": "Added MCP connection status for client registration and authentication, with direct re-auth flows in the app.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "effect-based-core-event-system",
+        "name": "Effect-based core event system",
+        "status": "stable",
+        "since": "1.15.0",
+        "description": "Added an Effect-based core event system for more complete event delivery across sessions and integrations.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "collapsed-thinking-view",
+        "name": "Collapsed Thinking View",
+        "status": "stable",
+        "since": "1.15.1",
+        "description": "Added a collapsed thinking view that can be expanded inline in the TUI.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "pinned-sessions-with-quick-switch-slots",
+        "name": "Pinned Sessions with Quick-Switch Slots",
+        "status": "stable",
+        "since": "1.15.1",
+        "description": "Added pinned sessions with quick-switch slots in the session picker in the TUI.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "native-openai-runtime-path-preview",
+        "name": "Native OpenAI Runtime Path Preview",
+        "status": "experimental",
+        "since": "1.15.5",
+        "description": "Preview the native OpenAI runtime path behind an experimental flag.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "desktop-notifications-from-renderer",
+        "name": "Desktop Notifications from Renderer",
+        "status": "stable",
+        "since": "1.15.5",
+        "description": "Allow desktop notifications from the renderer.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "diff-viewer-in-tui",
+        "name": "Diff Viewer in TUI",
+        "status": "stable",
+        "since": "1.15.6",
+        "description": "Added a diff viewer in the TUI for reviewing changes.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "shell-mode-in-run-prompt",
+        "name": "Shell Mode in Run Prompt",
+        "status": "stable",
+        "since": "1.15.6",
+        "description": "Added shell mode to the `run` prompt.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "desktop-tabs-support",
+        "name": "Desktop Tabs Support",
+        "status": "stable",
+        "since": "1.15.6",
+        "description": "Added initial desktop tabs support.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "native-app-menu-on-windows",
+        "name": "Native App Menu on Windows",
+        "status": "stable",
+        "since": "1.15.6",
+        "description": "Added a native app menu on Windows.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "ukrainian-locale-support",
+        "name": "Ukrainian Locale Support",
+        "status": "stable",
+        "since": "1.15.6",
+        "description": "Added Ukrainian locale support.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "grok-oauth-sign-in",
+        "name": "Grok OAuth Sign-in",
+        "status": "stable",
+        "since": "1.15.7",
+        "description": "Adds Grok OAuth sign-in, including device-code login.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "pinch-zoom-setting",
+        "name": "Pinch Zoom Setting",
+        "status": "stable",
+        "since": "1.15.7",
+        "description": "Adds a pinch zoom setting for the desktop app.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "desktop-home-view",
+        "name": "Desktop Home View",
+        "status": "stable",
+        "since": "1.15.7",
+        "description": "Adds a new desktop home view, session entry flow, and titlebar.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "desktop-log-export",
+        "name": "Desktop Log Export",
+        "status": "stable",
+        "since": "1.15.7",
+        "description": "Adds desktop log export.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "dispose-hook-for-plugins",
+        "name": "Dispose Hook for Plugins",
+        "status": "stable",
+        "since": "1.15.11",
+        "description": "Added a `dispose` hook for plugins, allowing plugins to clean up resources when they are unloaded.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "header-timeout-config",
+        "name": "Header Timeout Config",
+        "status": "stable",
+        "since": "1.15.11",
+        "description": "Added `headerTimeout` config for provider requests.",
+        "key_details": [
+          "Configures the timeout for provider requests.",
+          "Defaults to 10 seconds for default OpenAI setups."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "background-agent-updates",
+        "name": "Background Agent Updates",
+        "status": "experimental",
+        "since": "1.15.11",
+        "description": "Experimental background agents now push updates without polling.",
+        "key_details": [
+          "Background agents provide real-time updates.",
+          "Polling is no longer required for updates."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "modalities-config",
+        "name": "Modalities Config",
+        "status": "stable",
+        "since": "1.15.11",
+        "description": "You can now set only `modalities.input` or `modalities.output` in config.",
+        "key_details": [
+          "Allows specifying only input or output modalities in the configuration.",
+          "Provides more flexibility in configuring modalities."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "stable-project-identity",
+        "name": "Stable Project Identity",
+        "status": "stable",
+        "since": "1.15.11",
+        "description": "Remote-backed projects now resolve a stable project identity.",
+        "key_details": [
+          "Remote-backed projects have a consistent identity.",
+          "Improves project identification and management."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "prompt-resize-with-terminal-width",
+        "name": "Prompt Resize with Terminal Width",
+        "status": "stable",
+        "since": "1.15.11",
+        "description": "Made the prompt resize with terminal width and added prompt size config.",
+        "key_details": [
+          "The prompt size adjusts dynamically with the terminal width.",
+          "A configuration option is available to control the prompt size."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "workspace-management-dialog",
+        "name": "Workspace Management Dialog",
+        "status": "stable",
+        "since": "1.15.12",
+        "description": "Adds a workspace management dialog to the TUI.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "tab-layout-setting",
+        "name": "Tab Layout Setting",
+        "status": "stable",
+        "since": "1.15.12",
+        "description": "Adds a setting to switch tab layouts in the desktop application.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "session-metadata-support",
+        "name": "Session Metadata Support",
+        "status": "stable",
+        "since": "1.15.13",
+        "description": "Sessions can now store custom metadata through the API and SDK.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "v2-desktop-sidecar",
+        "name": "V2 Desktop Sidecar",
+        "status": "experimental",
+        "since": "1.18.9",
+        "description": "An opt-in V2 desktop sidecar backed by the bundled CLI service.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "collapsible-model-provider-sections",
+        "name": "Collapsible Model Provider Sections in V2 Settings",
+        "status": "stable",
+        "since": "1.18.9",
+        "description": "Model provider sections in V2 settings can now be collapsed.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "discover-modal-models-automatically",
+        "name": "Discover available Modal models automatically",
+        "status": "stable",
+        "since": "1.18.10",
+        "description": "opencode can now automatically discover and list available Modal models, simplifying the process of integrating and using them within your workflows.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "export-full-session-transcripts-as-json",
+        "name": "Export full session transcripts as JSON from the UI",
+        "status": "stable",
+        "since": "1.18.15",
+        "description": "Users can now export complete session transcripts in JSON format directly from the desktop application's user interface.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "tui-cursor-style-configuration",
+        "name": "TUI cursor style configuration",
+        "status": "stable",
+        "since": "1.18.15",
+        "description": "Added configuration options for cursor style within the Terminal User Interface (TUI).",
+        "key_details": [],
+        "source_url": "https://github.com/opencode/opencode/pull/32295"
+      },
+      {
+        "id": "merge-gateway-reasoning-variants",
+        "name": "MERGE Gateway Reasoning Variants",
+        "status": "stable",
+        "since": "1.18.17",
+        "description": "Added MERGE Gateway reasoning variants to ensure these model options function correctly.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "pdf-attachments-for-github-copilot",
+        "name": "PDF Attachments for GitHub Copilot",
+        "status": "stable",
+        "since": "1.18.17",
+        "description": "Enabled PDF attachments for GitHub Copilot models that advertise PDF vision support.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "go-usage-endpoint",
+        "name": "Go Usage Endpoint",
+        "status": "stable",
+        "since": "1.18.17",
+        "description": "Added a Go usage endpoint to the console.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "native-openai-anthropic-cloudflare-ai-gateway-passthroughs",
+        "name": "Native OpenAI and Anthropic Passthroughs for Cloudflare AI Gateway Models",
+        "status": "stable",
+        "since": "1.18.19",
+        "description": "Added native passthrough support for OpenAI and Anthropic models when routed through the Cloudflare AI Gateway.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "deepseek-v4-1-flash-support",
+        "name": "DeepSeek V4.1 Flash Support",
+        "status": "stable",
+        "since": "1.18.32",
+        "description": "Added support for the DeepSeek V4.1 Flash model within OpenCode's Zen and Go components.",
+        "key_details": [],
+        "source_url": "https://github.com/opencode/opencode/pull/49897"
+      },
+      {
+        "id": "grok-4-7-support",
+        "name": "Grok 4.7 Support",
+        "status": "stable",
+        "since": "1.18.32",
+        "description": "Added support for the Grok 4.7 model within OpenCode's Zen and Go components.",
+        "key_details": [],
+        "source_url": "https://github.com/opencode/opencode/pull/50288"
+      },
+      {
+        "id": "agent-readable-stats-formats",
+        "name": "Agent-Readable Stats Formats",
+        "status": "stable",
+        "since": "1.18.35",
+        "description": "Added canonical redirects and JSON and Markdown data formats for agent-readable statistics.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "desktop-plugins",
+        "name": "Desktop Plugins",
+        "status": "experimental",
+        "since": "2.2.0",
+        "description": "Create, install, and share GUI plugins for the desktop application.",
+        "key_details": [
+          "Managed from Settings › Extensions › Plugins.",
+          "SDK APIs for toasts, dialogs, notifications, tabs, composer controls, and custom UI."
+        ],
+        "source_url": "https://opencode.ai/v2/docs/build/plugins/gui"
+      },
+      {
+        "id": "image-decision-generation-apis",
+        "name": "Image and Decision Generation APIs",
+        "status": "experimental",
+        "since": "2.2.0",
+        "description": "Add experimental image and decision generation APIs to plugins and SDK, allowing image generation or decision model (typesafe, clef, etc.) workflows.",
+        "key_details": [
+          "Includes OpenAI Decisions, System One, and Cloudflare Run models.",
+          "Image and decision entrypoints for catalog providers."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "plugin-session-instructions",
+        "name": "Plugins Attach and Update Keyed Session Instructions",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Plugins can now attach and update keyed session instructions with `ctx.session.instructions.entry.put/list/remove`. Changes are added as small updates at the next step, survive compaction and reverts, and don't start an extra model turn.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "configurable-prompt-cache-ttls",
+        "name": "Configurable Prompt Cache TTLs",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Add configurable prompt cache TTLs per provider/model.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "session-media-api",
+        "name": "Experimental API for Session Media and Opt-in Media URI Support",
+        "status": "experimental",
+        "since": "2.2.0",
+        "description": "Adds an experimental API for session media and opt-in media URI support.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "content-addressed-blob-storage",
+        "name": "Experimental Content-Addressed Blob Storage for Session Media",
+        "status": "experimental",
+        "since": "2.2.0",
+        "description": "Adds experimental content-addressed blob storage for session media, enabled behind `experimental.media_blob`.",
+        "key_details": [
+          "Configuration: `experimental.media_blob`"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "gpt-6-1-terra-models",
+        "name": "GPT-6.1 Terra and GPT-6.1 Terra Fast",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Add GPT-6.1 Terra and GPT-6.1 Terra Fast to Sign in with ChatGPT.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "desktop-zoom-setting",
+        "name": "Persistent Desktop Zoom Setting",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Add a persistent desktop zoom setting.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "memory-logging-remote-debugging",
+        "name": "Opt-in Memory Logging and Remote Debugging for Desktop Debug Builds",
+        "status": "experimental",
+        "since": "2.2.0",
+        "description": "Add opt-in memory logging and remote debugging for desktop debug builds.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "experimental-sources-setting",
+        "name": "Experimental Sources Setting for Web Sources",
+        "status": "experimental",
+        "since": "2.2.0",
+        "description": "Show web sources for a turn behind the experimental Sources setting.",
+        "key_details": [
+          "Configuration: `experimental.Sources`"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "experimental-console-voice-calls",
+        "name": "Experimental Console Voice Calls in Desktop Beta",
+        "status": "experimental",
+        "since": "2.2.0",
+        "description": "Add experimental Console voice calls in Desktop beta.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "timeline-width-setting",
+        "name": "Timeline Width Setting",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Add a timeline width setting.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "generated-project-avatars",
+        "name": "Generated Project Avatars and Experimental Avatar Style Switcher",
+        "status": "experimental",
+        "since": "2.2.0",
+        "description": "Add generated project avatars and an experimental avatar-style switcher.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "searchable-prompt-history-picker",
+        "name": "Searchable Prompt History Picker",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Add a searchable prompt history picker.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "session-details-menu",
+        "name": "Session Details Menu to Session Header",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Add a session-details menu to the session header.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "background-activity-capsule-position",
+        "name": "Background Activity Capsule Position Setting",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Let you place the background-activity capsule at the left, center, right, or hide it.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "text-rendering-controls",
+        "name": "Text-Rendering Controls to Debug Bar",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Add text-rendering controls to the debug bar.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "split-side-pane-draggable-bottom-pane",
+        "name": "Split Side Pane and Draggable Bottom Pane with Tabs",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Split the side pane and add a draggable bottom pane with tabs.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "reduce-motion-setting",
+        "name": "Reduce Motion Appearance Setting",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Add a Reduce motion appearance setting.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "focus-pro-interface-layouts",
+        "name": "Focus and Pro Interface Layouts",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Choose between Focus and Pro interface layouts in Settings.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "sidebar-toggle-vertical-tabs",
+        "name": "Sidebar Toggle for Vertical Tabs",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Add a sidebar toggle for vertical tabs.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "commentary-timeline-category",
+        "name": "Commentary Timeline Category and Display Setting",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Add a Commentary timeline category and display setting.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "session-links-in-messages",
+        "name": "@ Links to Other Sessions in Messages",
+        "status": "stable",
+        "since": "2.2.0",
+        "description": "Support `@` links to other sessions in messages.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "keep-working-toward-a-goal",
+        "name": "Keep Working Toward a Goal",
+        "status": "stable",
+        "since": "2.2.1",
+        "description": "Allows a session to continue working towards a defined objective until a reviewer confirms it's met. Provides controls to pause, resume, or clear the objective.",
+        "key_details": [
+          "Available in TUI and Desktop.",
+          "Automatic progress review until objective is met."
+        ],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59437"
+      },
+      {
+        "id": "generate-images",
+        "name": "Generate Images",
+        "status": "experimental",
+        "since": "2.2.1",
+        "description": "Enables agents to create or edit images using the new `image_generate` tool. The default model can be configured.",
+        "key_details": [
+          "Requires `experimental.image_generate` to be enabled.",
+          "Default model can be set with `experimental.image_generate.model`.",
+          "Supports GPT Image 2 (after Codex sign-in), MiniMax, and Meta Muse image generation."
+        ],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59939"
+      },
+      {
+        "id": "inspect-background-shells",
+        "name": "Inspect Background Shells",
+        "status": "stable",
+        "since": "2.2.1",
+        "description": "Allows users to view live output and stop running background shells directly from the Desktop activity pill.",
+        "key_details": [],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59496"
+      },
+      {
+        "id": "new-default-model-picker",
+        "name": "New Default Model Picker",
+        "status": "stable",
+        "since": "2.2.1",
+        "description": "A redesigned model picker in Desktop that allows searching favorites, recent models, providers, and variants.",
+        "key_details": [
+          "Now the default model picker in Desktop.",
+          "Includes dedicated Favorites and Recent sections.",
+          "Keyboard-accessible provider controls."
+        ],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59997"
+      },
+      {
+        "id": "scheduled-prompts",
+        "name": "Scheduled Prompts",
+        "status": "experimental",
+        "since": "2.2.1",
+        "description": "Opt-in feature for scheduling prompts through a new command, agent tools, and configuration.",
+        "key_details": [
+          "Enabled via `experimental.schedules`.",
+          "Managed via `/schedule` command and SDK methods."
+        ],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59401"
+      },
+      {
+        "id": "responses-api-openrouter-digitalocean-venice",
+        "name": "Responses API Support for OpenRouter, DigitalOcean, and Venice",
+        "status": "stable",
+        "since": "2.2.1",
+        "description": "Adds support for OpenRouter, DigitalOcean, and Venice providers to the Responses API, including freeform tools.",
+        "key_details": [],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59991"
+      },
+      {
+        "id": "desktop-session-location-menu-actions",
+        "name": "Desktop Session Location Menu Actions",
+        "status": "stable",
+        "since": "2.2.1",
+        "description": "Adds new actions to the session location menu in Desktop, including project, worktree, open-in-app, and terminal actions.",
+        "key_details": [],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59607"
+      },
+      {
+        "id": "experimental-idle-session-hook",
+        "name": "Experimental Idle Session Hook",
+        "status": "experimental",
+        "since": "2.2.1",
+        "description": "A new Session hook for plugins, `experimental.idle`, allowing them to continue work before a session goes idle.",
+        "key_details": [],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59437"
+      },
+      {
+        "id": "code-mode-extension-globals-effects-services",
+        "name": "Code Mode Extension Globals Return Effects and Declare Services",
+        "status": "stable",
+        "since": "2.2.1",
+        "description": "Code Mode extension globals can now return Effects and declare required services.",
+        "key_details": [],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59948"
+      },
+      {
+        "id": "custom-composer-pill-popovers",
+        "name": "Custom Composer-Pill Popovers for GUI Plugins",
+        "status": "stable",
+        "since": "2.2.1",
+        "description": "Adds support for custom popovers on composer pills for GUI plugins.",
+        "key_details": [],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59437"
+      }
+    ],
+    "commands": [
+      {
+        "name": "/init",
+        "syntax": "/init",
+        "description": "Generate AGENTS.md in project root. Auto-analyzes project structure and coding patterns.",
+        "since": "0.5.0",
+        "status": "stable",
+        "source_url": "https://opencode.ai"
+      },
+      {
+        "name": "/connect",
+        "syntax": "/connect",
+        "description": "Connect to LLM provider. Use for OpenCode Zen (opencode.ai/auth).",
+        "since": "0.5.0",
+        "status": "stable",
+        "source_url": "https://opencode.ai"
+      },
+      {
+        "name": "/undo",
+        "syntax": "/undo",
+        "description": "Revert last changes. Shows original prompt for editing and retry.",
+        "since": "0.5.0",
+        "status": "stable",
+        "source_url": "https://opencode.ai"
+      },
+      {
+        "name": "/redo",
+        "syntax": "/redo",
+        "description": "Reapply undone changes.",
+        "since": "0.5.0",
+        "status": "stable",
+        "source_url": "https://opencode.ai"
+      },
+      {
+        "name": "/share",
+        "syntax": "/share",
+        "description": "Create shareable conversation link, copy to clipboard.",
+        "since": "0.8.0",
+        "status": "stable",
+        "source_url": "https://opencode.ai"
+      },
+      {
+        "name": "/mcp",
+        "syntax": "/mcp",
+        "description": "Toggle MCP servers on/off.",
+        "since": "0.5.0",
+        "status": "stable",
+        "source_url": "https://opencode.ai"
+      },
+      {
+        "name": "/export",
+        "syntax": "opencode export --sanitize",
+        "description": "Redacts PII and confidential transcript data from exported data.",
+        "since": "1.4.4",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "/update",
+        "syntax": "/update",
+        "description": "Installs OpenCode updates or upgrades to OpenCode 2. Updates are no longer installed automatically.",
+        "since": "1.19.0",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "upgrade",
+        "syntax": "opencode upgrade --major",
+        "description": "Upgrades OpenCode to a new major version, specifically to OpenCode 2.",
+        "since": "1.19.0",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "/usage",
+        "syntax": "/usage",
+        "description": "Displays OpenCode Console budget limits and Go usage.",
+        "since": "2.2.0",
+        "status": "stable",
+        "source_url": ""
+      },
+      {
+        "name": "/goal",
+        "syntax": "/goal <objective> | pause | resume | clear",
+        "description": "Sets an objective for the session to work towards, pausing, resuming, or clearing it as needed. The session continues until a reviewer confirms the objective is met.",
+        "since": "2.2.1",
+        "status": "stable",
+        "source_url": "https://github.com/anomalyco/opencode/pull/59437"
+      },
+      {
+        "name": "/schedule",
+        "syntax": "/schedule [args]",
+        "description": "Manages opt-in scheduled prompts.",
+        "since": "2.2.1",
+        "status": "experimental",
+        "source_url": "https://github.com/anomalyco/opencode/pull/59401"
+      },
+      {
+        "name": "/reload",
+        "syntax": "/reload",
+        "description": "Reloads configuration without requiring a restart of the Desktop application.",
+        "since": "2.2.1",
+        "status": "stable",
+        "source_url": "https://github.com/anomalyco/opencode/pull/59887"
+      }
+    ],
+    "flags": {
+      "current": [
+        {
+          "flag": "run",
+          "syntax": "opencode run \"task\"",
+          "description": "One-shot non-interactive execution.",
+          "since": "0.5.0",
+          "source_url": "https://opencode.ai"
+        },
+        {
+          "flag": "--attach",
+          "syntax": "opencode run --attach",
+          "description": "Attach to a running session.",
+          "since": "1.2.20",
+          "source_url": "https://github.com/anomalyco/opencode/releases"
+        },
+        {
+          "flag": "serve",
+          "syntax": "opencode serve",
+          "description": "Start OpenCode server.",
+          "since": "0.8.0",
+          "source_url": "https://opencode.ai"
+        },
+        {
+          "flag": "web",
+          "syntax": "opencode web",
+          "description": "Launch web UI.",
+          "since": "0.8.0",
+          "source_url": "https://opencode.ai"
+        },
+        {
+          "flag": "--dangerously-skip-permissions",
+          "description": "Auto-approves non-denied permission prompts when used with the `opencode run` command.",
+          "since": "1.4.0",
+          "source_url": ""
+        },
+        {
+          "flag": "--sanitize",
+          "description": "Redacts PII and confidential transcript data during export.",
+          "since": "1.4.4",
+          "source_url": ""
+        },
+        {
+          "flag": "--replay",
+          "description": "Show recent history when resuming interactive runs.",
+          "since": "1.15.5",
+          "source_url": ""
+        },
+        {
+          "flag": "--replay-limit",
+          "description": "Show recent history when resuming interactive runs.",
+          "since": "1.15.5",
+          "source_url": ""
+        },
+        {
+          "flag": "--major",
+          "description": "Used with `opencode upgrade` to upgrade to OpenCode 2.",
+          "since": "1.19.0",
+          "source_url": ""
+        }
+      ],
+      "deprecated": [],
+      "new_since_previous": []
+    },
+    "env_vars": [
+      {
+        "name": "OPENCODE_CONFIG",
+        "purpose": "Path to custom config file.",
+        "status": "stable",
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "name": "OPENCODE_CONFIG_DIR",
+        "purpose": "Custom config directory.",
+        "status": "stable",
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "name": "OPENCODE_CONFIG_CONTENT",
+        "purpose": "Inline config as JSON string. Highest priority override.",
+        "status": "stable",
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "name": "OPENCODE_TUI_CONFIG",
+        "purpose": "Custom TUI config file path.",
+        "status": "stable",
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "name": "OPENCODE_SKIP_MIGRATIONS",
+        "purpose": "Bypass database migrations on startup.",
+        "status": "stable",
+        "since": "1.2.20",
+        "source_url": "https://github.com/anomalyco/opencode/releases"
+      },
+      {
+        "name": "OPENCODE_DISABLE_MOUSE",
+        "purpose": "Disables TUI mouse capture.",
+        "status": "stable",
+        "since": "1.3.16",
+        "source_url": ""
+      },
+      {
+        "name": "EXA_API_KEY",
+        "purpose": "Passed to the `websearch` tool to reduce rate limits.",
+        "status": "stable",
+        "since": "1.4.10",
+        "source_url": "https://github.com/lastmile-ai/opencode/pull/16362"
+      },
+      {
+        "name": "OTEL_RESOURCE_ATTRIBUTES",
+        "purpose": "Support for custom telemetry resource tags.",
+        "status": "stable",
+        "since": "1.14.17",
+        "source_url": ""
+      },
+      {
+        "name": "OPENCODE_EXPERIMENTAL_WEBSOCKETS",
+        "purpose": "Enables WebSocket transport for OpenAI responses on supported channels.",
+        "status": "experimental",
+        "since": "1.15.12",
+        "source_url": ""
+      }
+    ],
+    "models": [
+      {
+        "id": "anthropic/claude-sonnet-4-5",
+        "display_name": "Claude Sonnet 4.5 (via Anthropic)",
+        "status": "stable",
+        "recommended_for": [
+          "default",
+          "balanced tasks"
+        ],
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "id": "openai/gpt-5.4",
+        "display_name": "GPT-5.4 (via OpenAI)",
+        "status": "stable",
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "id": "copilot/gpt-5.4",
+        "display_name": "GPT-5.4 xhigh (via Copilot)",
+        "status": "stable",
+        "since": "1.2.24",
+        "note": "xhigh support added 1.2.24",
+        "source_url": "https://github.com/anomalyco/opencode/releases/tag/v1.2.24"
+      },
+      {
+        "id": "google/gemini-2.5-pro",
+        "display_name": "Gemini 2.5 Pro (via Google)",
+        "status": "stable",
+        "source_url": "https://opencode.ai/docs"
+      },
+      {
+        "id": "opencode/gpt-5.1-codex",
+        "display_name": "GPT-5.1 Codex (via OpenCode Zen)",
+        "status": "stable",
+        "note": "Curated and tested by OpenCode team",
+        "source_url": "https://opencode.ai"
+      }
+    ],
+    "breaking_changes": [
+      {
+        "id": "removed-anthropic-oauth-plugin",
+        "version": "1.3.0",
+        "title": "Removed anthropic oauth plugin",
+        "description": "The anthropic oauth plugin has been removed.",
+        "affected": [],
+        "migration": "Users relying on the anthropic oauth plugin will need to find alternative authentication methods.",
+        "source_url": "https://github.com/anomalyco/opencode/pull/18186/changes"
+      },
+      {
+        "id": "remove-workspace-server",
+        "version": "1.3.4",
+        "title": "Remove workspace server and WorkspaceContext",
+        "description": "The workspace server and WorkspaceContext have been removed to improve routing architecture.",
+        "affected": [],
+        "migration": "Update your application to use the new routing architecture.",
+        "source_url": ""
+      },
+      {
+        "id": "plugin-install-scripts-blocked",
+        "version": "1.3.11",
+        "title": "Plugin Install Scripts Blocked",
+        "description": "Package install scripts are now blocked from running during plugin installation.",
+        "affected": [
+          "Plugins",
+          "Extension installation"
+        ],
+        "migration": "Ensure plugins do not rely on package install scripts for proper functionality.",
+        "source_url": ""
+      },
+      {
+        "id": "diff-metadata-format",
+        "version": "1.4.0",
+        "title": "Diff metadata format",
+        "description": "The diffs contained in the metadata for the edit and patch tool will no longer contain a `to` and `from` field with full file contents. they will only contain a `patch` field with the unified diff. Additionally all snapshot diffs contained in user message and session diff will follow this format.",
+        "affected": [
+          "edit tool",
+          "patch tool",
+          "user message",
+          "session diff"
+        ],
+        "migration": "Update code to use the `patch` field instead of `to` and `from` fields when processing diff metadata.",
+        "source_url": ""
+      },
+      {
+        "id": "user-message-variant-field",
+        "version": "1.4.0",
+        "title": "`UserMessage.variant` field location",
+        "description": "The `variant` field in `UserMessage` is now nested under `model`, so it should be accessed as `userMessage.model.variant`.",
+        "affected": [
+          "UserMessage object"
+        ],
+        "migration": "Update code to access the variant field as `userMessage.model.variant` instead of `userMessage.variant`.",
+        "source_url": ""
+      },
+      {
+        "id": "user-message-variant-nesting",
+        "version": "1.4.0",
+        "title": "`UserMessage.variant` field moved",
+        "description": "The `variant` field of the `UserMessage` object is now nested under the `model` field. It is now accessed as `userMessage.model.variant`.",
+        "affected": [
+          "Code using `UserMessage.variant`"
+        ],
+        "migration": "Update code to access the variant field as `userMessage.model.variant`.",
+        "source_url": ""
+      },
+      {
+        "id": "diff-metadata",
+        "version": "1.4.0",
+        "title": "Diff metadata",
+        "description": "The diffs contained in the metadata for the edit and patch tool will no longer contain a `to` and `from` field with full file contents. they will only contain a `patch` field with the unified diff. Additionally all snapshot diffs contained in user message and session diff will follow this format",
+        "affected": [
+          "SDK",
+          "edit tool",
+          "patch tool",
+          "user message",
+          "session diff"
+        ],
+        "migration": "Update code to use the `patch` field instead of `to` and `from` fields for diff metadata.",
+        "source_url": ""
+      },
+      {
+        "id": "user-message-variant",
+        "version": "1.4.0",
+        "title": "`UserMessage.variant`",
+        "description": "The `variant` field of the user message is now nested under `model` so `userMessage.model.variant`",
+        "affected": [
+          "SDK",
+          "UserMessage"
+        ],
+        "migration": "Update code to access the variant field via `userMessage.model.variant` instead of `userMessage.variant`.",
+        "source_url": ""
+      },
+      {
+        "id": "internal-named-defect-details-removal-from-http-api",
+        "version": "1.14.51",
+        "title": "Stopped exposing internal named defect details from the HTTP API",
+        "description": "Internal named defect details are no longer exposed from the HTTP API.",
+        "affected": [
+          "HTTP API users"
+        ],
+        "migration": "Consumers of the HTTP API should no longer rely on internal named defect details.",
+        "source_url": ""
+      },
+      {
+        "id": "litellm-compatibility-update",
+        "version": "1.14.51",
+        "title": "LiteLLM Compatibility Update",
+        "description": "LiteLLM compatibility now requires version `v1.85.0-rc.2+` for current GPT-5 and tool-call behavior.",
+        "affected": [],
+        "migration": "Upgrade LiteLLM to version v1.85.0-rc.2+.",
+        "source_url": ""
+      },
+      {
+        "id": "internal-defect-details-removal",
+        "version": "1.14.51",
+        "title": "Internal Defect Details Removal",
+        "description": "Internal named defect details are no longer exposed from the HTTP API.",
+        "affected": [
+          "HTTP API"
+        ],
+        "migration": "Clients relying on internal defect details from the HTTP API will need to be updated to use supported API endpoints.",
+        "source_url": ""
+      },
+      {
+        "id": "automatic-updates-removed",
+        "version": "1.19.0",
+        "title": "Automatic OpenCode updates removed",
+        "description": "OpenCode updates are no longer installed automatically. Users must now manually trigger updates or upgrades using the new `/update` command in the TUI or `opencode upgrade` CLI command.",
+        "affected": [
+          "OpenCode TUI users",
+          "OpenCode CLI users"
+        ],
+        "migration": "To update OpenCode, use the `/update` command within the TUI. To upgrade to OpenCode 2, use `opencode upgrade --major` from the command line.",
+        "source_url": ""
+      },
+      {
+        "id": "session-sharing-discontinued",
+        "version": "1.19.1",
+        "title": "Session Sharing Discontinued",
+        "description": "Session sharing functionality has been completely removed. This means existing share links are no longer valid, session-sharing commands are unavailable, and importing sessions from share URLs is no longer supported.",
+        "affected": [
+          "Session sharing feature",
+          "Existing session share links",
+          "Commands related to session sharing",
+          "Importing sessions via share URLs"
+        ],
+        "migration": "Users who relied on session sharing will need to find alternative methods for collaborating or sharing session content, such as exporting session transcripts manually.",
+        "source_url": ""
+      },
+      {
+        "id": "ai-root-promise-api",
+        "version": "2.2.0",
+        "title": "@opencode/ai root is now the Promise API",
+        "description": "`@opencode/ai` now works like `@opencode/sdk` and `@opencode/client`: the package root exports the Promise API, and the Effect API moved to `@opencode/ai/effect`. `@opencode/ai/promise` is removed, and the wildcard subpath export is replaced with an explicit list of provider and protocol entry points.",
+        "affected": [
+          "TypeScript imports for `@opencode/ai`"
+        ],
+        "migration": "Change `import { AI } from \"@opencode/ai/promise\"` to `import { AI } from \"@opencode/ai\"` and `import { LLM } from \"@opencode/ai\"` to `import { LLM } from \"@opencode/ai/effect\"`.",
+        "source_url": "https://github.com/anomalyco/opencode/pull/58847"
+      },
+      {
+        "id": "github-action-removed",
+        "version": "2.2.0",
+        "title": "The OpenCode GitHub Action is removed",
+        "description": "The OpenCode GitHub Action is no longer published.",
+        "affected": [
+          "GitHub Actions workflows using the OpenCode GitHub Action"
+        ],
+        "migration": "Remove the OpenCode GitHub Action from your workflows.",
+        "source_url": "https://github.com/anomalyco/opencode/pull/59032"
+      },
+      {
+        "id": "tui-plugins-opentui-0-7",
+        "version": "2.2.0",
+        "title": "TUI plugins require OpenTUI 0.7",
+        "description": "`@opencode/plugin` now requires `@opentui/core` and `@opentui/solid` 0.7.0, up from 0.6.8 or later. Plugins that depend on OpenTUI 0.6 fail to install until they upgrade. In OpenTUI 0.7, custom renderables read their hooks from their class at construction: assign `renderBefore`, `renderAfter`, and `onLifecyclePass` in the constructor instead of as class fields, call `refreshHooks()` after adding a hook by reflection, and replace `defineNativeIntegration()` with a `static nativeIntegration` declaration.",
+        "affected": [
+          "TUI plugins depending on `@opentui/core` or `@opentui/solid`"
+        ],
+        "migration": "Upgrade `@opentui/core` and `@opentui/solid` to 0.7.0. Update custom renderables to assign hooks in the constructor, call `refreshHooks()` after adding hooks by reflection, and use `static nativeIntegration` instead of `defineNativeIntegration()`.",
+        "source_url": "https://github.com/anomalyco/opencode/pull/59295"
+      },
+      {
+        "id": "ai-provider-removals-renames",
+        "version": "2.2.1",
+        "title": "`@opencode/ai` Provider Removals and Renames",
+        "description": "Several providers and legacy entry points have been removed or renamed within the `@opencode/ai` package. This affects code that directly imports from `@opencode/ai`.",
+        "affected": [
+          "fal provider and `./providers/fal` entry point removed.",
+          "Black Forest Labs provider and `./providers/black-forest-labs` entry point removed.",
+          "Replicate provider and `./providers/replicate` entry point removed.",
+          "Stability provider and `./providers/stability` entry point removed.",
+          "Legacy entry point `./providers/amazon-bedrock-mantle` removed, replaced by `./providers/amazon-bedrock/mantle`.",
+          "Legacy entry points `./providers/google-vertex-chat`, `-interactions`, `-mistral`, and `-responses` removed, replaced by `./providers/google-vertex/chat`, `/interactions`, `/mistral`, and `/responses` respectively.",
+          "Provider `configure()` input types renamed from `Provider.LanguageModelOptions` to `Provider.Config` (e.g., `Groq.LanguageModelOptions` → `Groq.Config`).",
+          "`model()` settings are now optional when every setting is optional."
+        ],
+        "migration": "Update imports for removed providers and legacy entry points to their new, nested paths. Adjust `configure()` input type names to `Config` for affected providers. Review `model()` calls where all settings are optional.",
+        "source_url": "https://github.com/anomalyco/opencode/pull/59977"
+      }
+    ],
+    "deprecations": [],
+    "install": {
+      "methods": [
+        {
+          "name": "install script",
+          "command": "curl -fsSL https://opencode.ai/install | bash"
+        },
+        {
+          "name": "npm",
+          "command": "npm install -g opencode-ai",
+          "update_command": "npm update -g opencode-ai"
+        },
+        {
+          "name": "brew",
+          "command": "brew install anomalyco/tap/opencode",
+          "update_command": "brew upgrade opencode"
+        },
+        {
+          "name": "choco",
+          "command": "choco install opencode",
+          "platforms": [
+            "windows"
+          ]
+        },
+        {
+          "name": "scoop",
+          "command": "scoop install opencode",
+          "platforms": [
+            "windows"
+          ]
+        },
+        {
+          "name": "pacman",
+          "command": "sudo pacman -S opencode",
+          "platforms": [
+            "linux-arch"
+          ]
+        },
+        {
+          "name": "docker",
+          "command": "docker run -it --rm ghcr.io/anomalyco/opencode"
+        }
+      ],
+      "requirements": [
+        "Modern terminal recommended: WezTerm, Alacritty, Ghostty, Kitty",
+        "At least one LLM provider API key"
+      ],
+      "source_url": "https://opencode.ai"
+    },
+    "support_matrix": {
+      "platforms": [
+        "macos",
+        "linux",
+        "windows"
+      ],
+      "requires_auth": true,
+      "auth_methods": [
+        "provider_api_key",
+        "opencode_zen_oauth"
+      ],
+      "context_file": "AGENTS.md",
+      "agent_def_locations": [
+        "~/.config/opencode/agents/ (global)",
+        ".opencode/agents/ (project)"
+      ],
+      "agent_def_format": "Markdown with YAML frontmatter OR JSON in config",
+      "source_url": "https://opencode.ai/docs"
+    },
+    "config": {
+      "file_paths": [
+        "~/.config/opencode/opencode.json (global)",
+        "opencode.json (project root)",
+        "~/.config/opencode/tui.json (TUI-specific)"
+      ],
+      "schema_url": "https://opencode.ai/config.json",
+      "tui_schema_url": "https://opencode.ai/tui.json",
+      "notable_keys": {
+        "model": "string — primary provider/model",
+        "small_model": "string — for lightweight tasks",
+        "autoupdate": "boolean",
+        "server.port": "integer — default 4096",
+        "server.mdns": "boolean",
+        "server.mdnsDomain": "string",
+        "server.cors": "string[]",
+        "tools.write / .bash / .edit / .webfetch": "boolean",
+        "permission.edit / .bash / .webfetch": "ask | allow | deny",
+        "agent.<name>.*": "custom agent definition inline",
+        "tui.scroll_speed": "integer",
+        "tui.diff_style": "auto | ...",
+        "tui.theme": "string"
+      },
+      "source_url": "https://opencode.ai/docs"
+    }
+  }
+}

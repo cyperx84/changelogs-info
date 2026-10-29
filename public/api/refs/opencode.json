@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
   "version": "2.2.1",
-  "generated_at": "2026-10-29T09:20:51.743Z",
+  "generated_at": "2026-10-29T16:35:42.891Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -17,12 +17,13 @@
     "from_version": "2.2.1",
     "to_version": "2.2.1",
     "new_features": [
-      "keep-working-toward-a-goal",
-      "generate-images",
+      "image-generate-tool",
       "inspect-background-shells",
       "new-default-model-picker",
-      "scheduled-prompts",
-      "responses-api-openrouter-digitalocean-venice",
+      "gpt-image-2-support",
+      "minimax-image-generation-support",
+      "meta-muse-image-generation-support",
+      "openrouter-digitalocean-venice-responses-api-support",
       "desktop-session-location-menu-actions",
       "experimental-idle-session-hook",
       "code-mode-extension-globals-effects-services",
@@ -30,7 +31,6 @@
     ],
     "new_commands": [
       "/goal",
-      "/schedule",
       "/reload"
     ],
     "new_flags": [],
@@ -38,7 +38,7 @@
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "ai-provider-removals-renames"
+      "ai-provider-removals-and-renames"
     ]
   },
   "payload": {
@@ -63,7 +63,7 @@
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "OpenCode 2.2.1 introduces significant enhancements for goal-oriented workflows and agent capabilities. The headline feature is the new `/goal <objective>` command, available in both TUI and Desktop, which allows sessions to work continuously towards a defined objective until a reviewer confirms its completion, with controls to pause, resume, or clear the goal. This fundamentally changes how long-running, complex tasks can be managed and reviewed within OpenCode. \n\nAgents can now generate and edit images with the new `image_generate` tool, enabled by setting `experimental.image_generate` and optionally configuring a default model via `experimental.image_generate.model`. This expands agent functionality into creative and visual tasks. Additionally, a redesigned, searchable model picker is now the default in Desktop, offering dedicated sections for favorites and recent models, improving model discovery and selection. \n\nOther notable improvements include the ability to inspect live output and stop background shells directly from the Desktop activity pill, and the introduction of opt-in scheduled prompts via the `/schedule` command and `experimental.schedules` configuration. The SDK has been updated with new methods for managing scheduled prompts and grouping experimental client methods under `client.experimental`. Desktop users also gain a `/reload` command to apply configuration changes without restarting. \n\nBreaking changes primarily affect developers using the `@opencode/ai` package directly, with the removal of fal, Black Forest Labs, Replicate, and Stability providers, and the renaming of several legacy entry points (e.g., `./providers/amazon-bedrock-mantle` to `./providers/amazon-bedrock/mantle`). Provider `configure()` input types have also been standardized to `Config`. Developers should update their imports and type references accordingly. This release offers substantial new features for both end-users and developers, making an upgrade highly recommended, especially for those leveraging agent capabilities or working with the `@opencode/ai` SDK."
+      "tldr": "OpenCode 2.2.1 introduces a significant new feature: the `/goal` command, which allows sessions to continue working towards an objective until a reviewer confirms its completion. This enhances long-running agent workflows by providing explicit control with `/goal pause`, `/goal resume`, and `/goal clear`, and offers automatic progress review. This release also brings the experimental `image_generate` tool, enabling agents to create or edit images, configurable via `experimental.image_generate` and `experimental.image_generate.model`, with support for GPT Image 2, MiniMax, and Meta Muse. Developers can now inspect live output and stop background shells directly from the Desktop activity pill, streamlining debugging and management. The Desktop experience is further improved with a redesigned, searchable model picker that is now the default, featuring dedicated sections for favorites and recent models, and keyboard-accessible provider controls. Breaking changes include the removal of fal, Black Forest Labs, Replicate, and Stability providers from `@opencode/ai`, along with renames for Amazon Bedrock and Google Vertex entry points, and a standardization of provider `configure()` input types to `Config`. Users should update their `@opencode/ai` imports and type definitions accordingly. Other notable improvements include enhanced snapshot performance, better handling of provider throttling, and improved Code Mode diagnostics. The SDK now exposes compaction and new client methods for managing scheduled prompts under `client.experimental`. Desktop users also gain a new `/reload` command to refresh configuration without restarting. This release is recommended for all users to take advantage of the new goal-oriented workflows, improved agent capabilities, and desktop usability enhancements, with attention to the `@opencode/ai` breaking changes for SDK users."
     },
     "features": [
       {
@@ -1538,6 +1538,55 @@
         "description": "Adds support for custom popovers on composer pills for GUI plugins.",
         "key_details": [],
         "source_url": "https://github.com/anomalyco/opencode/pull/59437"
+      },
+      {
+        "id": "image-generate-tool",
+        "name": "Image Generate Tool",
+        "status": "experimental",
+        "since": "2.2.1",
+        "description": "Allows agents to create or edit images using the new `image_generate` tool. Its default model can be configured.",
+        "key_details": [
+          "Enabled by `experimental.image_generate` config.",
+          "Default model can be set with `experimental.image_generate.model`.",
+          "Supports GPT Image 2 (after Codex sign-in), MiniMax, and Meta Muse image generation."
+        ],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59939"
+      },
+      {
+        "id": "gpt-image-2-support",
+        "name": "GPT Image 2 Support",
+        "status": "stable",
+        "since": "2.2.1",
+        "description": "Offers GPT Image 2 for image generation after Codex sign-in.",
+        "key_details": [],
+        "source_url": "https://github.com/anomalyco/opencode/pull/60085"
+      },
+      {
+        "id": "minimax-image-generation-support",
+        "name": "MiniMax Image Generation Support",
+        "status": "stable",
+        "since": "2.2.1",
+        "description": "Adds support for MiniMax image generation.",
+        "key_details": [],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59929"
+      },
+      {
+        "id": "meta-muse-image-generation-support",
+        "name": "Meta Muse Image Generation Support",
+        "status": "stable",
+        "since": "2.2.1",
+        "description": "Adds support for Meta Muse image generation.",
+        "key_details": [],
+        "source_url": "https://github.com/anomalyco/opencode/pull/60081"
+      },
+      {
+        "id": "openrouter-digitalocean-venice-responses-api-support",
+        "name": "OpenRouter, DigitalOcean, and Venice Responses API Support",
+        "status": "stable",
+        "since": "2.2.1",
+        "description": "Adds Responses API support for OpenRouter, DigitalOcean, and Venice, including freeform tools.",
+        "key_details": [],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59991"
       }
     ],
     "commands": [
@@ -2010,6 +2059,22 @@
           "`model()` settings are now optional when every setting is optional."
         ],
         "migration": "Update imports for removed providers and legacy entry points to their new, nested paths. Adjust `configure()` input type names to `Config` for affected providers. Review `model()` calls where all settings are optional.",
+        "source_url": "https://github.com/anomalyco/opencode/pull/59977"
+      },
+      {
+        "id": "ai-provider-removals-and-renames",
+        "version": "2.2.1",
+        "title": "`@opencode/ai` Provider Removals and Renames",
+        "description": "These changes affect code that imports `@opencode/ai` directly. They do not change the CLI, Desktop, or the HTTP API.",
+        "affected": [
+          "fal provider",
+          "Black Forest Labs provider",
+          "Replicate provider",
+          "Stability provider",
+          "Legacy entry points for Amazon Bedrock and Google Vertex providers",
+          "Provider `configure()` input types"
+        ],
+        "migration": "Remove imports for fal, Black Forest Labs, Replicate, and Stability providers. Update imports for Amazon Bedrock and Google Vertex providers from `./providers/amazon-bedrock-mantle` to `./providers/amazon-bedrock/mantle`, and from `./providers/google-vertex-chat`, `-interactions`, `-mistral`, and `-responses` to `./providers/google-vertex/chat`, `/interactions`, `/mistral`, and `/responses`. Update `configure()` input types from `Provider.LanguageModelOptions` to `Provider.Config`.",
         "source_url": "https://github.com/anomalyco/opencode/pull/59977"
       }
     ],
