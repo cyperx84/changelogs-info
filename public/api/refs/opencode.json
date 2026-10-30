@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
-  "version": "2.2.3",
-  "generated_at": "2026-10-30T15:31:56.015Z",
+  "version": "2.2.4",
+  "generated_at": "2026-10-30T20:24:40.960Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -14,9 +14,13 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "2.2.2",
-    "to_version": "2.2.2",
-    "new_features": [],
+    "from_version": "2.2.4",
+    "to_version": "2.2.4",
+    "new_features": [
+      "persistent-desktop-terminals",
+      "publish-interactive-artifacts",
+      "guided-claude-agent-setup"
+    ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [],
@@ -40,13 +44,13 @@
       "changelog_url": "https://github.com/anomalyco/opencode/releases",
       "repo_url": "https://github.com/anomalyco/opencode",
       "license": "mit",
-      "latest_stable": "2.2.3",
+      "latest_stable": "2.2.4",
       "latest_release_date": "2026-10-30",
       "status": "active",
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "OpenCode 2.2.2 introduces significant quality-of-life improvements, most notably enabling image generation by default. When a connected provider supports image models, agents can now use `experimental_image_generate` without any extra configuration, with the preferred model configurable via `experimental.image_generate.model`. This streamlines workflows for developers leveraging AI for visual content.\n\nDesktop users will experience faster navigation with direct worktree selection from the new-session screen by clicking the Git branch. The UI for quotes and annotations has been unified across the timeline, terminal, and browser, now sharing a compact optional-comment editor, while source highlights remain local. The classic question cards are now the default, with the redesigned keyboard-oriented dock accessible through **Settings → Experimental → New question UI**. Desktop also sees a new side-panel tab menu with visible close buttons for overflowing tabs, compact user-message actions, and a redesigned active todo pill for clearer task visibility. Consistent styling has been applied to searchable dialogs and composer pills.\n\nCore improvements include recording the start time of each session’s latest execution and better handling of persistent terminal requests and media preservation during session forking or import. TUI bug fixes address truncated paths, improve Go usage-limit messages with reset times and account links, and correctly type and display Go and ChatGPT usage-limit errors. The SDK now offers `if` and `until` inputs for `client.experimental.schedule.create`, exposes `SessionInfo.time.busy` for execution start times, and allows optional source metadata for prompt file attachments. Extensions benefit from optional `title` and `subtitle` fields for composer notes, source-relative quote positioning, and focus options for composer integrations. This release is recommended for all users to benefit from enhanced usability and stability."
+      "tldr": "OpenCode 2.2.4 introduces significant improvements to desktop terminals, making them persistent across server restarts and synchronized with sessions, preserving scrollback and names. This enhances the developer experience by maintaining context and state even after service interruptions. A major new experimental feature allows agents to publish, update, and serve HTML or static artifacts, configurable via `\"experimental\": { \"artifacts\": true }` in `opencode.json`, enabling richer interactive outputs from agents. Setting up the Claude Agent is now streamlined with a guided flow that assists with installation, sign-in, and connection verification, making it easier for new users to get started. Additionally, a new shortcut `⌘⌥.` (macOS) or `Ctrl+Alt+.` (Windows/Linux) has been added to quickly choose a base branch when creating a worktree, also available in the command palette. Core improvements include raised Go limits for DeepSeek V4.1 Flash and ensuring scheduled prompts run reliably under `opencode serve` with proper coordination across multiple server processes. Bug fixes address issues like allowing user/project config to override Console-supplied provider settings, preventing local service requests from using environment proxies, and correcting Claude Code's login instructions. TUI fixes include preserving plugin-applied prompt cursor styles and improving visual consistency for diffs and session tabs. The SDK now exposes new APIs for managing experimental artifacts and extending `client.experimental.persistentPty.update` for terminal renaming and event handling. Extensions gain `ctx.experimental.artifact.transform(...)` for registering artifact providers. Developers should consider upgrading to leverage these new features and stability improvements, especially for those using desktop terminals, Claude Agent, or experimenting with agent-generated artifacts."
     },
     "features": [
       {
@@ -1721,6 +1725,49 @@
           "Added `Settings → Experimental → New question UI` for the redesigned keyboard-oriented dock."
         ],
         "source_url": "https://github.com/anomalyco/opencode/pull/59723"
+      },
+      {
+        "id": "persistent-desktop-terminals",
+        "name": "Persistent Desktop Terminals",
+        "status": "stable",
+        "since": "2.2.4",
+        "description": "Desktop terminals now belong to the session, survive server restarts with their scrollback, and stay synchronized with the TUI and other windows. Renamed terminals also keep their names across restarts.",
+        "key_details": [
+          "Terminals are now session-scoped.",
+          "Scrollback is preserved across server restarts.",
+          "Terminal names are persistent across restarts.",
+          "Synchronized with TUI and other desktop windows."
+        ],
+        "source_url": "https://github.com/anomalyco/opencode/pull/60346"
+      },
+      {
+        "id": "publish-interactive-artifacts",
+        "name": "Publish Interactive Artifacts",
+        "status": "experimental",
+        "since": "2.2.4",
+        "description": "Agents can now publish, update, and serve HTML or static artifacts through a built-in local provider or plugin-provided storage.",
+        "key_details": [
+          "Enabled by setting `\"experimental\": { \"artifacts\": true }` in `opencode.json`.",
+          "Supports HTML and static artifacts.",
+          "Includes a built-in local static-file provider.",
+          "Plugins can provide custom storage for artifacts.",
+          "New SDK methods: `artifact_create`, `artifact_read`, `artifact_update`, `artifact_delete`."
+        ],
+        "source_url": "https://github.com/anomalyco/opencode/pull/60351"
+      },
+      {
+        "id": "guided-claude-agent-setup",
+        "name": "Guided Claude Agent Setup",
+        "status": "stable",
+        "since": "2.2.4",
+        "description": "A new guided flow for setting up the Claude Agent, including copying `claude auth login`, installing Claude Code, and verifying the connection before model selection.",
+        "key_details": [
+          "Accessible from the provider picker.",
+          "Assists with Claude Code installation.",
+          "Verifies connection to Claude.",
+          "Provides recovery from 'Needs sign-in' state."
+        ],
+        "source_url": "https://github.com/anomalyco/opencode/pull/60603"
       }
     ],
     "commands": [
