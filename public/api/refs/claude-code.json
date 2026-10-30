@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.312",
-  "generated_at": "2026-10-29T21:31:16.358Z",
+  "version": "2.1.314",
+  "generated_at": "2026-10-30T01:33:07.725Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,20 +14,19 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.312",
-    "to_version": "2.1.312",
+    "from_version": "2.1.314",
+    "to_version": "2.1.314",
     "new_features": [
-      "oidc-user-id-claim",
-      "click-to-send-fullscreen",
-      "cloud-sessions-effort-level-model-picker",
-      "cloud-sessions-bash-editor"
+      "permissions-block-writes-outside-working-directories",
+      "claude-apps-gateway-upstream-groups",
+      "claude-apps-gateway-bedrock-guardrail-trace",
+      "idle-compaction-vscode-desktop-code-tab",
+      "cloud-sessions-include-completed-scheduled-tasks",
+      "claude-tag-api-docs-link"
     ],
     "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [
-      "CLAUDE_CODE_SIMPLE_SYSTEM_PROMPT",
-      "CLAUDE_CODE_DISABLE_REFUSAL_FALLBACK"
-    ],
+    "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": []
@@ -47,12 +46,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.312",
-      "latest_release_date": "2026-10-27",
+      "latest_stable": "2.1.314",
+      "latest_release_date": "2026-10-30",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces several quality-of-life improvements and critical bug fixes, enhancing user experience across various Claude Code environments. A headline feature is the addition of `oidc.user_id_claim` to the Claude apps gateway, which allows organizations to identify users using alternative OIDC claims like Microsoft Entra ID's `oid` instead of the default `sub`, significantly improving integration flexibility for enterprise identity management. Another notable addition is 'click to send' in fullscreen mode, enabling immediate message dispatch by clicking a hint, streamlining interactive workflows. \n\nKey improvements include a more informative prompt effort indicator that clarifies when changes might take effect, and enhanced WebFetch error messages in cloud sessions that now suggest allowing specific network domains. Cloud sessions also gain an effort level selector in the model picker for routines and a new Bash editor with syntax highlighting and line numbers for setup scripts, making cloud environment configuration more robust. \n\nSeveral critical bugs have been addressed, such as managed settings not being fetched after VS Code sign-in, Claude overwriting large files, and skills not being found after `cd` commands. Issues with session resumption, command loading failures, and Read tool errors on PDF pages have also been resolved. For developers, new environment variables `CLAUDE_CODE_SIMPLE_SYSTEM_PROMPT` and `CLAUDE_CODE_DISABLE_REFUSAL_FALLBACK` offer granular control over system prompts and automatic model switching behavior. The release also refines usage limit messaging, standardizes cloud session naming, and caps concurrent prompt and agent hooks to prevent overload. Overall, this release focuses on stability, usability, and enterprise integration, making it a recommended upgrade for all users, especially those leveraging cloud sessions or OIDC-based authentication."
+      "tldr": "Claude Code 2.1.314 introduces significant improvements in security, reliability, and user experience. A key security enhancement is `permissions.blockWritesOutsideWorkingDirectories`, which prevents write, edit, and notebook edit operations outside designated working directories across all permission modes, bolstering data integrity and preventing accidental modifications. For enterprise users, Claude apps gateway upstreams now support an optional `groups` list, restricting access to specific IdP groups, and Bedrock upstreams include `guardrail_trace` for logging guardrail filter activations without exposing matched text, enhancing compliance and debugging capabilities.\n\nReliability fixes address several critical issues: sessions no longer fail with 'Invalid effort level' when an admin caps a model's effort; Claude Code now gracefully lowers and retries the effort. Bedrock sessions with many images will now compact by removing older images instead of failing with 'Input is too long.' Microsoft Foundry sessions will fall back to older models if the default isn't deployed, preventing failures. Repeated refused requests behind gateways that don't accept `tool_reference` blocks are now retried without tool search, and the session remembers this preference. TLS connections failing due to renewed root certificates are also fixed. Idle compaction has been added to VS Code and Claude Desktop's Code tab, summarizing long conversations (200K+ tokens) when idle and using the summary on the next message if the prompt cache expires, improving performance and context management.\n\nNumerous other fixes enhance stability and usability: `claude -p` now exits with code 1 and prints errors on startup failure. Issues with MCP servers showing 'needs authentication' when signed out, `claude mcp logout` reporting false success, and extra sign-in renewals have been resolved. Workspace trust questions are now skipped in CI jobs for `claude ultrareview` and `claude remote-control`. Managed settings for TLS trust, model pinning, and `forceRemoteSettingsRefresh` are now correctly applied. Background and cloud sessions no longer re-enable Ultracode after it's been switched off. PreCompact hooks with large output are now truncated to 10,000 characters to prevent failures. Git index lock contention during background diff refreshes has been eliminated. Markdown table rendering, `/resume` picker accuracy, `/btw` behavior in subagents, and image pasting over SSH have all been improved. Sandbox protections now correctly apply to worktrees entered via `--resume` or `--continue`, and hooks matching Bash now run on commands started by the Monitor tool. Auto mode now correctly reports blocked calls and `/upgrade` directs App Store/Google Play users to the correct plan change location. Model IDs with dots (e.g., `claude-opus-4.8`) are now correctly parsed by LLM gateways. Cloud sessions now include an 'Include completed' button for scheduled tasks and start even if a setup script exits with an error. Claude Tag includes a dismissible link to API docs and improves `@Claude !restart` behavior and follow-up message progress in Slack. Overall, this release significantly improves the robustness, security, and user experience of Claude Code, making it a recommended upgrade for all users, especially those in enterprise environments or relying on cloud sessions and integrations."
     },
     "features": [
       {
@@ -2920,6 +2919,60 @@
           "Improved user experience for editing setup scripts.",
           "Includes syntax highlighting, line numbers, and a copy utility."
         ],
+        "source_url": ""
+      },
+      {
+        "id": "permissions-block-writes-outside-working-directories",
+        "name": "Block Writes Outside Working Directories",
+        "status": "stable",
+        "since": "2.1.314",
+        "description": "Write, Edit, and NotebookEdit operations now refuse paths outside the working directories in every permission mode.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "claude-apps-gateway-upstream-groups",
+        "name": "Claude Apps Gateway Upstream Groups",
+        "status": "stable",
+        "since": "2.1.314",
+        "description": "Added an optional `groups` list to Claude apps gateway upstreams. Only developers in the listed IdP groups are sent to that upstream, including on failover.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "claude-apps-gateway-bedrock-guardrail-trace",
+        "name": "Claude Apps Gateway Bedrock Guardrail Trace",
+        "status": "stable",
+        "since": "2.1.314",
+        "description": "Added `guardrail_trace` to Claude apps gateway Bedrock upstreams, to log which Amazon Bedrock guardrail filter fired on a request, without the matched text.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "idle-compaction-vscode-desktop-code-tab",
+        "name": "Idle Compaction in VS Code and Claude Desktop Code Tab",
+        "status": "stable",
+        "since": "2.1.314",
+        "description": "A conversation with 200K+ tokens left idle is now summarized. The summary is used on your next message if the prompt cache has expired.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "cloud-sessions-include-completed-scheduled-tasks",
+        "name": "Cloud Sessions: Include Completed Scheduled Tasks Button",
+        "status": "stable",
+        "since": "2.1.314",
+        "description": "Added an 'Include completed' button to the Scheduled tasks page when finished one-off tasks are the only ones hidden, allowing users to show them without opening the Sort menu.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "claude-tag-api-docs-link",
+        "name": "Claude Tag API Docs Link",
+        "status": "stable",
+        "since": "2.1.314",
+        "description": "Added a dismissible link to the Claude Tag API docs on the Bundles and Channels tabs in admin settings, for Enterprise organizations with Slack connected.",
+        "key_details": [],
         "source_url": ""
       }
     ],

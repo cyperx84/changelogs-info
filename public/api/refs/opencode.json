@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
   "version": "2.2.2",
-  "generated_at": "2026-10-29T21:31:41.319Z",
+  "generated_at": "2026-10-30T01:33:31.882Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -17,9 +17,8 @@
     "from_version": "2.2.2",
     "to_version": "2.2.2",
     "new_features": [
-      "faster-worktree-selection",
-      "unified-quotes-and-annotations",
-      "classic-question-cards-default",
+      "image-generation-by-default",
+      "new-question-ui-setting",
       "side-panel-tab-menu",
       "compact-user-message-actions",
       "redesigned-active-todo-pill",
@@ -58,7 +57,7 @@
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "OpenCode 2.2.2 introduces significant improvements to image generation, session management, and UI consistency. The `experimental_image_generate` feature is now enabled by default when an image-capable provider is connected, allowing agents to use it without extra configuration, with the preferred model configurable via `experimental.image_generate.model`. This streamlines workflows involving AI-driven image creation. \n\nDevelopers will appreciate the faster worktree selection, which now allows direct access to the project's worktree picker by clicking the Git branch on the new-session screen, speeding up project setup. The UI for quotes and annotations has been unified, with timeline, terminal, and browser annotations sharing a compact optional-comment editor, while source highlights remain attached to local drafts, providing a more consistent user experience. \n\nDesktop users will find the classic question cards restored by default, with an option to switch to the redesigned keyboard-oriented dock via 'Settings → Experimental → New question UI'. The side-panel now includes a tab menu, and close buttons remain visible even when tabs overflow, enhancing navigation. User message actions are now in a compact menu, and the active todo pill has been redesigned for clearer task visibility. \n\nFor SDK users, `client.experimental.schedule.create` now supports `if` and `until` inputs, along with schedule check results and output fields, offering more granular control over scheduled tasks. `SessionInfo.time.busy` is exposed to provide the start time of the latest execution, and prompt file attachments can now include optional source metadata. Extensions can leverage new `title` and `subtitle` fields for composer notes, source-relative quote positioning, and focus options for composer integrations. \n\nBug fixes include rejecting persistent terminal requests with non-existent working directories, preserving media during session forking/importing, and correcting image-generation notice associations. TUI fixes address truncated paths, improved Go usage-limit messages, and correct typing for Go and ChatGPT usage errors. Desktop fixes prevent queued prompts from dropping frames, count queued quotes/annotations as attachments, and ensure Markdown fragment links scroll correctly. Overall, this release focuses on enhancing usability, consistency, and developer control, making it a recommended upgrade for all users."
+      "tldr": "OpenCode 2.2.2 introduces significant improvements to image generation, UI consistency, and SDK capabilities. The headline change is that `experimental_image_generate` is now enabled by default when an image-capable provider is connected, streamlining workflows for agents that need to generate images. You can configure the preferred model via `experimental.image_generate.model`. \n\nDesktop users will appreciate the faster worktree selection, allowing direct access to the worktree picker by clicking the Git branch on the new-session screen. The UI for quotes and annotations has been unified, with timeline, terminal, and browser annotations now sharing a compact optional-comment editor, while source highlights remain attached to local drafts. Classic question cards are now the default, but a new experimental setting (`Settings → Experimental → New question UI`) is available for those who prefer the redesigned keyboard-oriented dock. \n\nFurther desktop enhancements include a new side-panel tab menu with visible close buttons even when tabs overflow, compact user-message actions, and a redesigned active todo pill for clearer task visibility. Consistent styling has been applied to searchable dialogs and composer pills. \n\nFor SDK developers, `client.experimental.schedule.create` now supports `if` and `until` inputs, along with schedule check results and output fields. `SessionInfo.time.busy` has been exposed to provide the start time of the latest execution, and prompt file attachments can now include optional source metadata. Extensions also benefit from new optional `title` and `subtitle` fields for composer notes, source-relative quote positioning, and focus options for composer integrations. \n\nBug fixes address issues like persistent terminal requests with non-existent working directories, media preservation during session forking, and correct association of image-generation notices. TUI fixes include preserving captured attachments, preventing path overflow in narrow terminals, and improving Go usage-limit messages. Desktop fixes resolve queued prompts dropping frames, incorrect attachment counting, and issues with Markdown fragment links and timeline state. \n\nOverall, this release focuses on enhancing user experience, developer productivity, and stability. Upgrading is recommended to take advantage of these improvements, especially for users leveraging image generation or the SDK."
     },
     "features": [
       {
@@ -1710,6 +1709,29 @@
           "Focus options for composer integrations."
         ],
         "source_url": "https://github.com/anomalyco/opencode/pull/60164"
+      },
+      {
+        "id": "image-generation-by-default",
+        "name": "Image Generation by Default",
+        "status": "experimental",
+        "since": "2.2.2",
+        "description": "Agents can now use `experimental_image_generate` without additional configuration when a connected provider supports image models. The preferred model can be set via `experimental.image_generate.model`.",
+        "key_details": [
+          "Enabled `experimental_image_generate` by default when an image-capable provider is connected."
+        ],
+        "source_url": "https://github.com/anomalyco/opencode/pull/60258"
+      },
+      {
+        "id": "new-question-ui-setting",
+        "name": "New Question UI Setting",
+        "status": "experimental",
+        "since": "2.2.2",
+        "description": "Introduced a new setting, `Settings → Experimental → New question UI`, to enable the redesigned keyboard-oriented dock for questions. Classic question cards are now the default.",
+        "key_details": [
+          "Restored classic question cards by default.",
+          "Added `Settings → Experimental → New question UI` for the redesigned keyboard-oriented dock."
+        ],
+        "source_url": "https://github.com/anomalyco/opencode/pull/59723"
       }
     ],
     "commands": [

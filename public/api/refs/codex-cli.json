@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "codex-cli",
   "version": "0.166.0",
-  "generated_at": "2026-10-29T21:31:27.615Z",
+  "generated_at": "2026-10-30T01:33:18.635Z",
   "extracted_from_sources": [
     "https://github.com/openai/codex/releases/tag/rust-v0.114.0",
     "https://github.com/openai/codex/releases"
@@ -18,13 +18,11 @@
     "to_version": "0.166.0",
     "new_features": [
       "keyboard-driven-transcript-selection",
-      "consistent-markdown-rendering",
+      "consistent-markdown-rendering-async-tui",
+      "gpt-6-1-terra-model-support",
       "clearer-safety-block-explanations"
     ],
-    "new_commands": [
-      "codex queue",
-      "codex doctor"
-    ],
+    "new_commands": [],
     "new_flags": [
       "--resume",
       "--network-only"
@@ -56,7 +54,7 @@
       "runtime": "native",
       "written_in": "rust",
       "notes": "Rust rewrite. Git repo required to run.",
-      "tldr": "Codex CLI v0.166.0 introduces significant usability improvements, most notably keyboard-driven transcript selection in the TUI. This new feature allows for precise text selection using word, line, and page motions, includes integrated search, and offers configurable shortcuts, greatly enhancing navigation and interaction within conversations. Markdown rendering has also been standardized across all async questions, choices, answers, and transcript replies, ensuring a consistent and readable experience.\n\nNew commands include `codex queue --resume` to easily re-engage unloaded threads after sending a message, and `codex doctor --network-only` for targeted diagnostics of network configuration, connectivity, and WebSocket issues. The release also enhances safety-block explanations in the TUI, providing clearer context and offering selectable safer follow-up prompts. GPT-6.1 Terra is now available across bundled, Vertex AI, and Amazon Bedrock model catalogs, expanding model choices.\n\nKey bug fixes address the preservation of acknowledged approval and permission settings when resuming or forking threads, and local image attachments are now correctly restored when composer text is killed. Standalone release cleanup on macOS has been fixed for installations in use or paths with non-ASCII characters, and spawned descendant threads are now restored when their parent is unarchived. Improvements to TUI reconnection recovery, including offline `/quit` and `/exit` handling, enhance stability. Reasoning-token accounting is now preserved across resume and fork operations to prevent premature compaction. Users are encouraged to upgrade to benefit from these stability and usability enhancements."
+      "tldr": "Codex CLI v0.166.0 introduces significant improvements to TUI interaction and model availability. The headline feature is keyboard-driven transcript selection, offering word, line, and page motions, integrated search, and configurable shortcuts, which dramatically enhances navigation and efficiency within the TUI. This release also ensures consistent Markdown rendering across all async TUI elements, providing a more uniform and readable user experience. Developers now have access to the new GPT-6.1 Terra model across bundled, Vertex AI, and Amazon Bedrock catalogs, expanding their choice of powerful language models. For workflow enhancements, `codex queue` gains a `--resume` flag to automatically reload threads after queuing messages, streamlining continuous work. Safety features are improved with clearer safety-block explanations and selectable safer follow-up prompts in the TUI, guiding users through potentially problematic interactions. Additionally, `codex doctor` now includes a `--network-only` flag for targeted network diagnostics. Bug fixes address critical issues such as preserving acknowledged approval and permission settings, local image attachments, and fixing macOS standalone release cleanup. Thread management is more robust with restored spawned descendant threads upon unarchiving parents and improved app-server thread startup/shutdown. Reasoning-token accounting is now preserved across resume and fork operations to prevent premature memory compaction. This update is recommended for all users to benefit from improved usability, expanded model support, and critical stability fixes."
     },
     "features": [
       {
@@ -2826,6 +2824,28 @@
           "Selectable safer follow-up prompts."
         ],
         "source_url": "https://github.com/openai/codex/compare/rust-v0.165.0...rust-v0.166.0#57363"
+      },
+      {
+        "id": "consistent-markdown-rendering-async-tui",
+        "name": "Consistent Markdown Rendering in Async TUI",
+        "status": "stable",
+        "since": "0.166.0",
+        "description": "Ensured consistent Markdown rendering across async questions, choices, answers, and transcript replies within the TUI.",
+        "key_details": [],
+        "source_url": "https://github.com/openai/codex/pull/57259"
+      },
+      {
+        "id": "gpt-6-1-terra-model-support",
+        "name": "GPT-6.1 Terra Model Support",
+        "status": "stable",
+        "since": "0.166.0",
+        "description": "Added GPT-6.1 Terra to the bundled, Vertex AI, and Amazon Bedrock model catalogs, expanding available model options.",
+        "key_details": [
+          "Available in bundled model catalog",
+          "Available in Vertex AI model catalog",
+          "Available in Amazon Bedrock model catalog"
+        ],
+        "source_url": "https://github.com/openai/codex/pull/57293"
       }
     ],
     "commands": [
