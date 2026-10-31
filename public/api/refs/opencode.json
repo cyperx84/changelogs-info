@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "opencode",
-  "version": "2.2.4",
-  "generated_at": "2026-10-30T20:24:40.960Z",
+  "version": "2.2.5",
+  "generated_at": "2026-10-31T00:22:40.332Z",
   "extracted_from_sources": [
     "https://github.com/anomalyco/opencode/releases/tag/v1.2.24",
     "https://github.com/anomalyco/opencode/releases"
@@ -14,12 +14,13 @@
   },
   "stale_after": "2026-03-19T04:17:00Z",
   "delta": {
-    "from_version": "2.2.4",
-    "to_version": "2.2.4",
+    "from_version": "2.2.5",
+    "to_version": "2.2.5",
     "new_features": [
-      "persistent-desktop-terminals",
-      "publish-interactive-artifacts",
-      "guided-claude-agent-setup"
+      "worktree-shell-mode-shortcuts",
+      "send-quotes-from-comment-popup",
+      "percentage-compaction-buffer",
+      "flat-input-surfaces-compact-input-size"
     ],
     "new_commands": [],
     "new_flags": [],
@@ -44,13 +45,13 @@
       "changelog_url": "https://github.com/anomalyco/opencode/releases",
       "repo_url": "https://github.com/anomalyco/opencode",
       "license": "mit",
-      "latest_stable": "2.2.4",
+      "latest_stable": "2.2.5",
       "latest_release_date": "2026-10-30",
       "status": "active",
       "runtime": "bun",
       "written_in": "typescript",
       "notes": "Repo moved from sst/opencode to anomalyco/opencode in early 2026.",
-      "tldr": "OpenCode 2.2.4 introduces significant improvements to desktop terminals, making them persistent across server restarts and synchronized with sessions, preserving scrollback and names. This enhances the developer experience by maintaining context and state even after service interruptions. A major new experimental feature allows agents to publish, update, and serve HTML or static artifacts, configurable via `\"experimental\": { \"artifacts\": true }` in `opencode.json`, enabling richer interactive outputs from agents. Setting up the Claude Agent is now streamlined with a guided flow that assists with installation, sign-in, and connection verification, making it easier for new users to get started. Additionally, a new shortcut `⌘⌥.` (macOS) or `Ctrl+Alt+.` (Windows/Linux) has been added to quickly choose a base branch when creating a worktree, also available in the command palette. Core improvements include raised Go limits for DeepSeek V4.1 Flash and ensuring scheduled prompts run reliably under `opencode serve` with proper coordination across multiple server processes. Bug fixes address issues like allowing user/project config to override Console-supplied provider settings, preventing local service requests from using environment proxies, and correcting Claude Code's login instructions. TUI fixes include preserving plugin-applied prompt cursor styles and improving visual consistency for diffs and session tabs. The SDK now exposes new APIs for managing experimental artifacts and extending `client.experimental.persistentPty.update` for terminal renaming and event handling. Extensions gain `ctx.experimental.artifact.transform(...)` for registering artifact providers. Developers should consider upgrading to leverage these new features and stability improvements, especially for those using desktop terminals, Claude Agent, or experimenting with agent-generated artifacts."
+      "tldr": "OpenCode 2.2.5 introduces significant usability enhancements, particularly around navigation and interaction. A major highlight is the new set of keyboard shortcuts for worktree management and shell mode toggling: `⌘⌥O`/`Ctrl+Alt+O` for worktrees, `⌘⌥B`/`Ctrl+Alt+B` for base branches, and `⌘⇧X`/`Ctrl+Shift+X` to toggle shell mode in the composer, streamlining developer workflows. Another key feature allows users to send specific quotes and comments directly from the quote popup by holding `⌘`/`Ctrl` or pressing `⌘Enter`/`Ctrl+Enter`, improving focused communication. For configuration, the `compaction.buffer` setting in `opencode.json` now supports percentage values like `\"20%\"`, making compaction more adaptable across models with varying context window sizes. Core improvements include more informative error messages for `read` and `edit` commands, and `bash` tool calls now defaulting to `shell` execution. Bug fixes address issues like large MCP server stdio messages causing disconnections, idle locations restarting MCP servers, and LiteLLM context window errors triggering compaction instead of stopping sessions. Desktop users will also notice new flat input surfaces and a compact input size. The connect menu in both TUI and Desktop no longer lists MCP servers, as they are managed separately. This release offers substantial quality-of-life improvements and bug fixes, making it a recommended upgrade for all users to benefit from enhanced navigation, more flexible compaction, and improved stability."
     },
     "features": [
       {
@@ -1768,6 +1769,57 @@
           "Provides recovery from 'Needs sign-in' state."
         ],
         "source_url": "https://github.com/anomalyco/opencode/pull/60603"
+      },
+      {
+        "id": "worktree-shell-mode-shortcuts",
+        "name": "Worktree and Shell Mode Shortcuts",
+        "status": "stable",
+        "since": "2.2.5",
+        "description": "New keyboard shortcuts for choosing a worktree, its base branch, and toggling shell mode in the composer. The worktree path can also be selected to copy the full directory.",
+        "key_details": [
+          "macOS: ⌘⌥O to choose a worktree",
+          "Windows/Linux: Ctrl+Alt+O to choose a worktree",
+          "macOS: ⌘⌥B to choose a worktree's base branch",
+          "Windows/Linux: Ctrl+Alt+B to choose a worktree's base branch",
+          "macOS: ⌘⇧X to toggle shell mode in the composer",
+          "Windows/Linux: Ctrl+Shift+X to toggle shell mode in the composer",
+          "Worktree path can be selected to copy the full directory."
+        ],
+        "source_url": "https://github.com/anomalyco/opencode/pull/60713"
+      },
+      {
+        "id": "send-quotes-from-comment-popup",
+        "name": "Send Quotes From the Comment Popup",
+        "status": "stable",
+        "since": "2.2.5",
+        "description": "Allows users to send a specific quote and its associated comment directly from the quote popup, without affecting the rest of the composer.",
+        "key_details": [
+          "Hold ⌘ (macOS) or Ctrl (Windows/Linux) in the quote popup to change the checkmark to a send button.",
+          "Press ⌘Enter (macOS) or Ctrl+Enter (Windows/Linux) to send the quote and comment."
+        ],
+        "source_url": "https://github.com/anomalyco/opencode/pull/60640"
+      },
+      {
+        "id": "percentage-compaction-buffer",
+        "name": "Percentage Compaction Buffer",
+        "status": "stable",
+        "since": "2.2.5",
+        "description": "Configure compaction buffer as a percentage of the model's context window, allowing a single setting to adapt to models with varying context sizes. Token count configuration is still supported.",
+        "key_details": [
+          "Set `\"compaction\": { \"buffer\": \"20%\" }` in `opencode.json`.",
+          "Keeps a specified percentage of the model's context window free.",
+          "Token count buffer configuration is still supported."
+        ],
+        "source_url": "https://github.com/anomalyco/opencode/pull/60647"
+      },
+      {
+        "id": "flat-input-surfaces-compact-input-size",
+        "name": "Flat Input Surfaces and Compact Input Size (Desktop)",
+        "status": "stable",
+        "since": "2.2.5",
+        "description": "Introduced new UI elements for desktop, including flat input surfaces and a compact input size option.",
+        "key_details": [],
+        "source_url": "https://github.com/anomalyco/opencode/pull/60598"
       }
     ],
     "commands": [
