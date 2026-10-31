@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.314",
-  "generated_at": "2026-10-31T00:22:17.259Z",
+  "version": "2.1.316",
+  "generated_at": "2026-10-31T06:36:57.997Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,22 +14,27 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.314",
-    "to_version": "2.1.314",
+    "from_version": "2.1.316",
+    "to_version": "2.1.316",
     "new_features": [
-      "permissions-block-writes-outside-working-directories",
-      "claude-apps-gateway-upstream-groups",
-      "claude-apps-gateway-bedrock-guardrail-trace",
-      "idle-compaction-vscode-desktop-code-tab",
-      "cloud-sessions-include-completed-scheduled-tasks",
-      "claude-tag-api-docs-link"
+      "pooled-group-budgets",
+      "layered-policy-mode-gateway",
+      "guardrail-input-tagging-bedrock",
+      "form-card-cloud-sessions",
+      "findings-by-severity-code-review-analytics"
     ],
     "new_commands": [],
     "new_flags": [],
-    "new_env_vars": [],
+    "new_env_vars": [
+      "CLAUDE_CODE_DISABLE_ULTRATHINK",
+      "CLAUDE_CODE_DISABLE_LOOPED_CROSS_CERT_DROP",
+      "CLAUDE_CODE_SUBAGENT_EFFORT"
+    ],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "fast-mode-opus-4-8-deprecation"
+    ]
   },
   "payload": {
     "meta": {
@@ -46,12 +51,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.314",
-      "latest_release_date": "2026-10-30",
+      "latest_stable": "2.1.316",
+      "latest_release_date": "2026-10-31",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release of claude-code 2.1.314 introduces several key improvements for security, gateway management, and user experience. A significant new feature is `permissions.blockWritesOutsideWorkingDirectories`, which prevents write operations outside designated working directories across all permission modes, enhancing security. Claude apps gateway upstreams now support an optional `groups` list, allowing administrators to restrict access to specific IdP groups, and Bedrock upstreams include `guardrail_trace` for logging triggered guardrail filters without exposing sensitive text.\n\nFor improved performance and context management, VS Code and Claude Desktop's Code tab now feature idle compaction, summarizing long conversations to optimize prompt cache usage. Cloud sessions gain an 'Include completed' button on the Scheduled tasks page for easier management of finished tasks, and a dismissible link to Claude Tag API docs is now available in admin settings for Enterprise organizations with Slack. Numerous fixes address issues such as 'Invalid effort level' errors, Bedrock image compaction failures, and Microsoft Foundry model fallbacks, ensuring more robust and reliable operation. The `/permissions` review tab is now 'Recently blocked' with clearer footer instructions, and auto mode's blocked calls provide more informative messages. The Bash tool's shell behavior has been refined to prevent inherited `which` aliases, and idle compaction now extends to telemetry-disabled subscribers and various LLM gateways. Cloud sessions are more resilient, starting even if setup scripts exit with errors, and Remote Control permission mode display is now more accurate. Overall, this release focuses on stability, security, and a smoother developer experience, with recommended upgrade urgency for all users to benefit from these enhancements and fixes."
+      "tldr": "This release, claude-code 2.1.316, introduces significant enhancements to resource management, policy enforcement, and AI interaction, alongside crucial bug fixes and quality-of-life improvements. The headline change is the introduction of pooled group budgets for the Claude apps gateway, allowing teams to share a single monthly budget on top of individual limits, which is configured via `pooled_budget` on the spend limits admin API. This provides greater flexibility and control over resource allocation for organizations. \n\nNew features include a 'layered' policy mode for the Claude apps gateway (`managed.policy_mode: layered`), ensuring all matching policies apply and merge hierarchically, rather than just the first. For Bedrock upstreams, `guardrail.input_tagging` now wraps prompts in necessary input tags for guardrail filters, with `all_messages_and_system` also tagging system prompts. Cloud sessions gain a form card for interactive input from MCP servers, preventing silent request cancellations. Code Review analytics now feature a findings-by-severity card, offering a clearer overview of security posture with total counts, daily charts, and severity breakdowns. \n\nKey bug fixes address shell commands lingering on macOS/Linux after Claude Code exits, garbled Bash aliases with line breaks, and Bash scripts stopping after the first command when `SHELLOPTS` is exported. PowerShell hooks now correctly block on exit code 2 even with type casts or `param` statements. Network requests hanging due to truncated compressed responses are resolved, and model switching on Vertex AI/Bedrock now gracefully handles unavailable newer models. The Claude apps gateway now correctly validates all named models against `availableModels`, `deniedModels`, and `models`, returning a 400 for blocked models. Crucially, `claude auth login` now works where managed settings require a gateway, showing the gateway sign-in. \n\nImportant deprecations include fast mode for Opus 4.8, which will be removed on November 30, 2026; users should migrate to Opus 5.5 for continued speedups. New environment variables like `CLAUDE_CODE_DISABLE_ULTRATHINK` and `CLAUDE_CODE_SUBAGENT_EFFORT` offer fine-grained control over agent behavior. VSCode users will find `ultrathink` now runs at `xhigh` effort with rainbow chat box indicators, and sign-in to a Claude apps gateway is now possible directly from the chat panel. Cloud sessions also see improvements in network secret management for Enterprise members and a clearer 'Changes' pane. This release is recommended for all users to benefit from improved stability, new features, and critical bug fixes, especially those using Claude apps gateway or cloud sessions."
     },
     "features": [
       {
@@ -2974,6 +2979,67 @@
         "description": "Added a dismissible link to the Claude Tag API docs on the Bundles and Channels tabs in admin settings, for Enterprise organizations with Slack connected.",
         "key_details": [],
         "source_url": ""
+      },
+      {
+        "id": "pooled-group-budgets",
+        "name": "Pooled Group Budgets for Claude Apps Gateway",
+        "status": "stable",
+        "since": "2.1.316",
+        "description": "Introduced pooled group budgets for the Claude apps gateway. This allows a group's members to share a single monthly budget, in addition to each member's individual limit. Configured using `pooled_budget` on the spend limits admin API.",
+        "key_details": [
+          "One monthly budget shared by group members.",
+          "Configured via `pooled_budget` on the spend limits admin API."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "layered-policy-mode-gateway",
+        "name": "Layered Policy Mode for Claude Apps Gateway",
+        "status": "stable",
+        "since": "2.1.316",
+        "description": "Added `managed.policy_mode: layered` to the Claude apps gateway. With this mode, all policies that match a developer are applied, with each policy merged over the ones listed below it, instead of only the first matching policy.",
+        "key_details": [
+          "All matching policies apply.",
+          "Policies are merged hierarchically."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "guardrail-input-tagging-bedrock",
+        "name": "Guardrail Input Tagging for Bedrock Upstreams",
+        "status": "stable",
+        "since": "2.1.316",
+        "description": "Added `guardrail.input_tagging` on Claude apps gateway Bedrock upstreams. This feature wraps prompts in input tags required by an Amazon Bedrock guardrail's prompt attacks filter. The `all_messages_and_system` option also tags the system prompt.",
+        "key_details": [
+          "Wraps prompts in input tags for Bedrock guardrails.",
+          "`all_messages_and_system` option tags system prompts."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "form-card-cloud-sessions",
+        "name": "Form Card in Cloud Sessions",
+        "status": "stable",
+        "since": "2.1.316",
+        "description": "Added a form card to cloud sessions, allowing users to fill in or decline forms requested by an MCP server. This prevents requests from being canceled without user interaction.",
+        "key_details": [
+          "Interactive forms in cloud sessions.",
+          "Prevents silent request cancellations."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "findings-by-severity-code-review-analytics",
+        "name": "Findings by Severity Card in Code Review Analytics",
+        "status": "stable",
+        "since": "2.1.316",
+        "description": "Added a findings-by-severity card to the Code Review analytics page. This card displays the period's total findings, a daily chart stacked by severity, and each severity's count.",
+        "key_details": [
+          "Total findings count.",
+          "Daily chart stacked by severity.",
+          "Count for each severity level."
+        ],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -4612,6 +4678,27 @@
         "status": "stable",
         "since": "2.1.312",
         "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_DISABLE_ULTRATHINK",
+        "purpose": "Turns off the `ultrathink` keyword.",
+        "status": "stable",
+        "since": "2.1.316",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_DISABLE_LOOPED_CROSS_CERT_DROP",
+        "purpose": "Keeps system cross-certificates that certify each other in a loop, for servers whose private CA needs one.",
+        "status": "stable",
+        "since": "2.1.316",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_SUBAGENT_EFFORT",
+        "purpose": "Sets the effort level subagents run at when no other setting specifies one, overriding the session's inherited effort level.",
+        "status": "stable",
+        "since": "2.1.316",
+        "source_url": ""
       }
     ],
     "models": [
@@ -5211,6 +5298,17 @@
           "Scripts using `claude ultrareview`"
         ],
         "migration": "For scripts using `claude ultrareview`, either pass the `--trust-workspace` flag (without a value, placing PR number or base branch before it) or set the environment variable `CLAUDE_CODE_DISABLE_ULTRAREVIEW_TRUST_CHECK=1`.",
+        "source_url": ""
+      },
+      {
+        "id": "fast-mode-opus-4-8-deprecation",
+        "version": "2.1.316",
+        "title": "Fast Mode Deprecated for Opus 4.8",
+        "description": "Fast mode for Opus 4.8 has been deprecated as of October 30, 2026, and will be removed on November 30, 2026. After removal, fast mode requests on Opus 4.8 will return an error and will not fall back to standard Opus 4.8.",
+        "affected": [
+          "Users relying on fast mode with Opus 4.8."
+        ],
+        "migration": "Migrate to Opus 5.5 to retain the speedup provided by fast mode. No direct replacement for Opus 4.8 fast mode will be available.",
         "source_url": ""
       }
     ],
