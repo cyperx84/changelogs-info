@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.317",
-  "generated_at": "2026-11-03T07:33:55.943Z",
+  "generated_at": "2026-11-03T15:48:55.299Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -18,9 +18,6 @@
     "to_version": "2.1.317",
     "new_features": [
       "agent-sdk-on-failure-block",
-      "otel-anthropic-metrics",
-      "gateway-admin-api-cost-report",
-      "gateway-admin-api-idp-group-retention",
       "cloud-sessions-link-card"
     ],
     "new_commands": [],
@@ -52,7 +49,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Claude Code 2.1.317 introduces significant improvements to reliability, security, and observability, alongside crucial bug fixes across the platform. A key enhancement is the new `onFailure: \"block\"` option for Agent SDK hook callbacks, which prevents actions from proceeding if a callback fails, ensuring more robust agent behavior. For enterprise users, the Claude apps gateway admin API now includes a comprehensive cost report (`GET /v1/organizations/analytics/cost`) that breaks down past spend by developer, day, or IdP group, leveraging new daily records of IdP groups for better analytics. This provides organizations with granular insights into their Claude usage and spending patterns.\n\nOpenTelemetry integration has been expanded to include Anthropic-specific metrics like `anthropic.plan` and `anthropic.provider`, offering deeper observability into model usage. Security is bolstered with a new prompt before web or shell tool calls send your account email address, and cloud sessions now feature a link card to explicitly approve or decline MCP server-requested links. Self-hosted runners and sessions see improved recovery from server errors and connection issues, making them more resilient. A new environment variable, `CLAUDE_CODE_DISABLE_NESTED_SESSION_ID`, allows `claude -p` to reuse the parent session's ID and transcript on self-hosted runners, reverting to previous behavior and preventing unintended nested sessions.\n\nNumerous fixes address critical issues, including project and local MCP server disconnections, auto mode failures with LLM gateways, and `claude auth status` prematurely exiting. Session titles are now more reliably preserved, and auto mode in cloud sessions no longer stops for approval when the Artifact tool interacts with outputs. Performance issues like high memory usage with many plugins and slow startup in headless sessions have been resolved. For VSCode users, fixes include preventing message loss in forked conversations, ensuring the extension starts reliably, and improving the display of UI elements like attachment chips and file links. Overall, this release focuses on stability, security, and providing better control and visibility for both individual developers and enterprise administrators, making it a recommended upgrade for improved operational reliability and cost management."
+      "tldr": "This release, 2.1.317, introduces several key improvements for Claude Code users, focusing on enhanced reliability, better user feedback, and more robust error handling. A significant new feature is the `onFailure: \"block\"` option for Agent SDK hook callbacks, which ensures that a failing callback will block the associated action, preventing unintended operations and improving the stability of custom agent behaviors. Additionally, cloud sessions now feature a link card, allowing users to explicitly open or decline links requested by MCP servers, addressing a previous blind spot in user interaction. \n\nNumerous fixes enhance the overall experience. Scheduled tasks now provide warnings for unexpected connectors and correctly display next run times, while also respecting organization-wide default environments in cloud sessions. Auto mode has been made more transparent with notices for subagent tool calls that lack answers and improved handling of LLM gateway errors. Critical fixes address session title loss in cloud and SDK sessions, prevent project and local MCP server disconnections, and resolve issues with `claude -p` exiting silently on disk errors. \n\nFor self-hosted runners, a new environment variable, `CLAUDE_CODE_DISABLE_NESTED_SESSION_ID`, allows `claude -p` to reuse the parent session's ID, preventing transcript and title generation conflicts in nested sessions. The Claude apps gateway admin API now includes a cost report, offering detailed spend analytics per developer and IdP group. OpenTelemetry exports have been made more reliable with fixes for proxy issues and timeouts. \n\nVSCode users will benefit from fixes preventing message loss in forked conversations, ensuring Claude starts correctly, and improving the display of account information, file links, and UI elements with increased font sizes. Remote Control and Agent Team functionalities have also seen stability improvements, including better handling of 'don't ask again' prompts and more consistent agent behavior. These updates collectively aim to provide a more stable, transparent, and user-friendly development experience, with a strong recommendation to upgrade for improved reliability and new diagnostic capabilities."
     },
     "features": [
       {
