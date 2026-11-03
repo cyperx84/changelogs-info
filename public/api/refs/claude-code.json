@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
-  "version": "2.1.316",
-  "generated_at": "2026-11-03T00:30:43.145Z",
+  "version": "2.1.317",
+  "generated_at": "2026-11-03T07:33:55.943Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,27 +14,23 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.316",
-    "to_version": "2.1.316",
+    "from_version": "2.1.317",
+    "to_version": "2.1.317",
     "new_features": [
-      "pooled-group-budgets",
-      "layered-policy-mode-gateway",
-      "guardrail-input-tagging-bedrock",
-      "form-card-cloud-sessions",
-      "findings-by-severity-code-review-analytics"
+      "agent-sdk-on-failure-block",
+      "otel-anthropic-metrics",
+      "gateway-admin-api-cost-report",
+      "gateway-admin-api-idp-group-retention",
+      "cloud-sessions-link-card"
     ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [
-      "CLAUDE_CODE_DISABLE_ULTRATHINK",
-      "CLAUDE_CODE_DISABLE_LOOPED_CROSS_CERT_DROP",
-      "CLAUDE_CODE_SUBAGENT_EFFORT"
+      "CLAUDE_CODE_DISABLE_NESTED_SESSION_ID"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": [
-      "fast-mode-opus-4-8-deprecation"
-    ]
+    "breaking_changes": []
   },
   "payload": {
     "meta": {
@@ -51,12 +47,12 @@
       "changelog_url": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
       "repo_url": "https://github.com/anthropics/claude-code",
       "license": "proprietary",
-      "latest_stable": "2.1.316",
-      "latest_release_date": "2026-10-31",
+      "latest_stable": "2.1.317",
+      "latest_release_date": "2026-11-03",
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release introduces several significant enhancements and crucial fixes, with a key change being the deprecation of fast mode for Opus 4.8, which will be removed on November 30, 2026. Users of Opus 4.8 relying on fast mode should migrate to Opus 5.5 to maintain performance. New features include pooled group budgets for the Claude apps gateway, allowing teams to share a monthly budget, and a 'layered' policy mode for the gateway where all matching policies apply and merge. For Bedrock users, `guardrail.input_tagging` now wraps prompts with necessary input tags for guardrail filters, including system prompts with `all_messages_and_system`. Cloud sessions now feature a form card for interacting with MCP server requests, and Code Review analytics gain a findings-by-severity card for better insights into security posture. Environment variables like `CLAUDE_CODE_DISABLE_ULTRATHINK` and `CLAUDE_CODE_SUBAGENT_EFFORT` offer more granular control over agent behavior and `ultrathink` functionality. Numerous fixes address issues such as lingering shell commands on exit, garbled Bash aliases, PowerShell hook blocking, and network request hangs. The Claude apps gateway now correctly checks all named models against `availableModels`, `deniedModels`, and `models`, preventing requests for blocked models. VSCode integration sees improvements with direct sign-in to the Claude apps gateway from the chat panel and `ultrathink` now running at `xhigh` effort with visual cues. Enterprise members can now manage network secrets in cloud environments, and the Changes pane in cloud sessions has been refined. This update is recommended for all users, especially those leveraging Claude apps gateway, Bedrock integrations, or cloud sessions, to benefit from enhanced security, control, and stability."
+      "tldr": "Claude Code 2.1.317 introduces significant improvements to reliability, security, and observability, alongside crucial bug fixes across the platform. A key enhancement is the new `onFailure: \"block\"` option for Agent SDK hook callbacks, which prevents actions from proceeding if a callback fails, ensuring more robust agent behavior. For enterprise users, the Claude apps gateway admin API now includes a comprehensive cost report (`GET /v1/organizations/analytics/cost`) that breaks down past spend by developer, day, or IdP group, leveraging new daily records of IdP groups for better analytics. This provides organizations with granular insights into their Claude usage and spending patterns.\n\nOpenTelemetry integration has been expanded to include Anthropic-specific metrics like `anthropic.plan` and `anthropic.provider`, offering deeper observability into model usage. Security is bolstered with a new prompt before web or shell tool calls send your account email address, and cloud sessions now feature a link card to explicitly approve or decline MCP server-requested links. Self-hosted runners and sessions see improved recovery from server errors and connection issues, making them more resilient. A new environment variable, `CLAUDE_CODE_DISABLE_NESTED_SESSION_ID`, allows `claude -p` to reuse the parent session's ID and transcript on self-hosted runners, reverting to previous behavior and preventing unintended nested sessions.\n\nNumerous fixes address critical issues, including project and local MCP server disconnections, auto mode failures with LLM gateways, and `claude auth status` prematurely exiting. Session titles are now more reliably preserved, and auto mode in cloud sessions no longer stops for approval when the Artifact tool interacts with outputs. Performance issues like high memory usage with many plugins and slow startup in headless sessions have been resolved. For VSCode users, fixes include preventing message loss in forked conversations, ensuring the extension starts reliably, and improving the display of UI elements like attachment chips and file links. Overall, this release focuses on stability, security, and providing better control and visibility for both individual developers and enterprise administrators, making it a recommended upgrade for improved operational reliability and cost management."
     },
     "features": [
       {
@@ -3040,6 +3036,62 @@
           "Count for each severity level."
         ],
         "source_url": ""
+      },
+      {
+        "id": "agent-sdk-on-failure-block",
+        "name": "Agent SDK onFailure: \"block\" for Hook Callbacks",
+        "status": "stable",
+        "since": "2.1.317",
+        "description": "Added `onFailure: \"block\"` for Agent SDK hook callbacks, so a callback that fails blocks the action instead of letting it run.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "otel-anthropic-metrics",
+        "name": "OpenTelemetry Anthropic Metrics",
+        "status": "stable",
+        "since": "2.1.317",
+        "description": "Added `anthropic.plan`, `anthropic.seat_type`, `anthropic.provider` and `anthropic.custom_base_url` to OpenTelemetry metrics, events and spans.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "gateway-admin-api-cost-report",
+        "name": "Claude Apps Gateway Admin API Cost Report",
+        "status": "stable",
+        "since": "2.1.317",
+        "description": "Added a cost report to the Claude apps gateway admin API, `GET /v1/organizations/analytics/cost`, for reading past spend over a date range in total, per developer, per day or per IdP group.",
+        "key_details": [
+          "Endpoint: GET /v1/organizations/analytics/cost",
+          "Reports spend over a date range",
+          "Aggregates by total, per developer, per day, or per IdP group"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "gateway-admin-api-idp-group-retention",
+        "name": "Claude Apps Gateway IdP Group Daily Record Retention",
+        "status": "stable",
+        "since": "2.1.317",
+        "description": "Added a daily record of each developer's IdP groups on Claude apps gateways with `admin:` set, kept for `admin.identity_retention_days`, which the cost report groups by.",
+        "key_details": [
+          "Requires `admin:` setting on Claude apps gateways",
+          "Retention period configurable by `admin.identity_retention_days`",
+          "Used for grouping in the cost report"
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "cloud-sessions-link-card",
+        "name": "Cloud Sessions Link Card",
+        "status": "stable",
+        "since": "2.1.317",
+        "description": "Added a link card to cloud sessions, so you can open or decline a link an MCP server asks you to visit instead of the request going unseen.",
+        "key_details": [
+          "Allows users to interact with links requested by MCP servers in cloud sessions",
+          "Options to open or decline links"
+        ],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -4698,6 +4750,13 @@
         "purpose": "Sets the effort level subagents run at when no other setting specifies one, overriding the session's inherited effort level.",
         "status": "stable",
         "since": "2.1.316",
+        "source_url": ""
+      },
+      {
+        "name": "CLAUDE_CODE_DISABLE_NESTED_SESSION_ID",
+        "purpose": "When set to `1` on a self-hosted runner, `claude -p` run inside a session will use that session's ID and transcript, as in earlier versions, preventing the creation of a nested session ID and transcript.",
+        "status": "stable",
+        "since": "2.1.317",
         "source_url": ""
       }
     ],

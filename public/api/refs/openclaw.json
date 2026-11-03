@@ -1,8 +1,8 @@
 {
   "schema": "clwatch.payload.v1",
   "tool": "openclaw",
-  "version": "2026.10.9",
-  "generated_at": "2026-11-03T00:31:09.952Z",
+  "version": "2026.10.10",
+  "generated_at": "2026-11-03T07:34:32.380Z",
   "extracted_from_sources": [
     "https://docs.openclaw.ai",
     "https://github.com/openclaw/openclaw"
@@ -14,15 +14,35 @@
   },
   "stale_after": "2026-03-26T04:17:00Z",
   "delta": {
-    "from_version": "2026.10.9",
-    "to_version": "2026.10.9",
-    "new_features": [],
+    "from_version": "2026.10.10",
+    "to_version": "2026.10.10",
+    "new_features": [
+      "secret-redacted-git-backups",
+      "cloud-desktop-sessions-workflows",
+      "control-ui-new-architecture",
+      "android-system-photos-contacts-calendar-motion-capabilities",
+      "ios-authenticated-background-presence-beacon",
+      "mcp-plugin-apps-cross-conversation-workspace-files",
+      "cloud-environments-streamlined-execution",
+      "postgresql-survive-backups-updates",
+      "local-models-llama-cpp-ocr-vision-embedding-only-setup",
+      "plugin-runtime-control-fork-context-steer-runs-override-fallbacks",
+      "automations-mcp-events-trigger-session-hovercards-schedules",
+      "desktop-onboarding-windows-tauri-macos-guided-setup",
+      "secrets-ux-secure-entry-prompts-setup-grants",
+      "sessions-existing-folders-paired-devices-sessions-send",
+      "diagnostics-message-run-spans-gc-metrics"
+    ],
     "new_commands": [],
-    "new_flags": [],
+    "new_flags": [
+      "--exclude-secrets"
+    ],
     "new_env_vars": [],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "backup-security-git-history-not-rewritten"
+    ]
   },
   "payload": {
     "meta": {
@@ -40,13 +60,13 @@
       "changelog_url": "https://github.com/openclaw/openclaw/releases",
       "repo_url": "https://github.com/openclaw/openclaw",
       "license": "mit",
-      "latest_stable": "2026.10.9",
-      "latest_release_date": "2026-10-29",
+      "latest_stable": "2026.10.10",
+      "latest_release_date": "2026-11-03",
       "status": "active",
       "runtime": "node",
       "version_scheme": "date-based (YYYY.M.D)",
       "notes": "Self-hosted AI agent gateway. Connects messaging channels (WhatsApp, Telegram, Discord, iMessage, Signal) to AI agents. Requires Node 22+.",
-      "tldr": "OpenClaw 2026.10.9 is a maintenance release primarily focused on security, reliability, and data preservation. A critical update patches vulnerable runtime dependencies, including `fast-uri` for MCP schema validation, Zod collections in A2UI and Discord SDK, `nodemailer` for IMAP sender parsing, and MSAL Node for Microsoft Teams, significantly enhancing the security posture against various exploits.\n\nKey improvements include applying `tools.fs.workspaceOnly` to Gateway-built tools, ensuring that delegate changes require explicit approval and media tools are confined to the workspace, which tightens security around agent actions. Live credentials are now kept out of MCP CLI inspection, and Google OAuth client secrets are masked in logs, preventing sensitive information exposure. Failed update rollbacks are made safer by preserving operator edits for Git-source rollbacks and retrying transient Windows denials for npm rollbacks, ensuring a bootable installation is restored. The release also improves agent database recovery and stale full-text indexes after SQLite tokenizer changes, including update snapshots, and allows agents to recover after a full disk without requiring a restart once space becomes available. Additionally, local media in Codex steering messages now resolves from the session's workspace, and uncertain process cleanup from buffered commands is reported more accurately. Gateways can now recover when service activation cannot be verified, and new ACP sessions correctly start in the requested working directory. Overlapping model refreshes are prevented from failing requests, and `openclaw gateway probe --ssh` now correctly honors an explicit SSH port 22. Skill metadata is preserved even with trailing comments in YAML, and `openclaw infer video generate` now displays provider-ignored options. This is a recommended upgrade for all users to benefit from enhanced security, stability, and data integrity."
+      "tldr": "OpenClaw 2026.10.10 introduces significant enhancements to backup security and core platform stability. The headline change is the new secret-redacted Git backups, which now cover PostgreSQL exports and automatically omit sensitive credentials and tokens, ensuring safer data handling while preserving nonsecret plugin state. This is a critical security improvement, though existing Git history is not rewritten, requiring re-authentication for affected integrations after restoring a redacted backup.\n\nMajor new features include first-class workflows for local desktop onboarding, repository-aware cloud environments, and seamless session migration between local and cloud. The Control UI has been modernized with a new architecture, compact navigation, native Solid overlays, wide-chat details, and persistent 'New conversation' access. Mobile nodes gain new capabilities, with Android adding system, photos, contacts, calendar, and motion, and iOS receiving an authenticated background presence beacon. MCP plugin apps can now run across conversations and workspace files via a principal-bound relay, and cloud execution is streamlined with verified Node toolchains, repository recipes, and saved profiles.\n\nUnder the hood, PostgreSQL stores are more robust, surviving backups and updates with schema-drift checks and an experimental Workboard store. Local models benefit from managed llama.cpp OCR, vision, and embedding-only setup, along with automatic first-run inference selection. Plugin developers gain more control, able to fork live context, steer active runs, and override model fallbacks. Automations can now be triggered by MCP events, and session hovercards display attached schedules. The secrets UX is improved with on-demand value revelation and scoped credential egress, and sessions can run in existing folders on paired devices, targeting conversation threads via `sessions_send`. Diagnostics now export prompts and final answers for message and run spans, with GC metrics attributed by kind and worker.\n\nImportant fixes address Gateway stalling on streamed XML/partial HTML, ensure Cron missed slots are no longer dropped, and improve subagent reliability for continuations, restart recovery, and result custody. Node compatibility is restored for versions `>=24.16.0 <25 || >=26.1.0`, with Node 26 workers no longer aborting on file stdin. Security boundaries are tightened across Teams, Control UI auth, symlinked skill roots, and credential handling. Terminal output now escapes control characters across various reports, and replies are more robust, preventing stalls, preserving formatting, and avoiding duplicates. Performance improvements include bounding retained data, reducing dispatch copies, and moving deadlines to monotonic time for better clock stability. Upgrading is highly recommended for security and stability, especially for users leveraging Git backups or cloud/desktop session workflows."
     },
     "features": [
       {
@@ -3327,6 +3347,192 @@
           "K3.1 rejects 'off' locally instead of returning a provider 400 error."
         ],
         "source_url": ""
+      },
+      {
+        "id": "secret-redacted-git-backups",
+        "name": "Secret-redacted Git backups",
+        "status": "stable",
+        "since": "2026.10.10",
+        "description": "Git backups now cover PostgreSQL exports and omit identified bundled-plugin credentials, webhook tokens, and credential blobs while preserving nonsecret plugin state.",
+        "key_details": [
+          "Covers PostgreSQL exports.",
+          "Omits bundled-plugin credentials, webhook tokens, and credential blobs.",
+          "Preserves nonsecret plugin state."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "cloud-desktop-sessions-workflows",
+        "name": "Cloud and Desktop Sessions Workflows",
+        "status": "stable",
+        "since": "2026.10.10",
+        "description": "Local desktop onboarding, repository-aware cloud environments, and moving sessions between local and cloud are now first-class workflows.",
+        "key_details": [
+          "First-class workflows for local desktop onboarding.",
+          "First-class workflows for repository-aware cloud environments.",
+          "First-class workflows for moving sessions between local and cloud."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "control-ui-new-architecture",
+        "name": "Control UI New Architecture",
+        "status": "stable",
+        "since": "2026.10.10",
+        "description": "The Control UI features a new architecture, compact navigation rail, native Solid overlays and tabs, wide-chat details, and persistent New conversation access.",
+        "key_details": [
+          "New architecture.",
+          "Compact navigation rail.",
+          "Native Solid overlays and tabs.",
+          "Wide-chat details.",
+          "Persistent 'New conversation' access."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "android-system-photos-contacts-calendar-motion-capabilities",
+        "name": "Android System, Photos, Contacts, Calendar, and Motion Capabilities",
+        "status": "stable",
+        "since": "2026.10.10",
+        "description": "Android nodes now include system, photos, contacts, calendar, and motion capabilities.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "ios-authenticated-background-presence-beacon",
+        "name": "iOS Authenticated Background Presence Beacon",
+        "status": "stable",
+        "since": "2026.10.10",
+        "description": "iOS gains an authenticated background presence beacon.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "mcp-plugin-apps-cross-conversation-workspace-files",
+        "name": "MCP Plugin Apps Across Conversations and Workspace Files",
+        "status": "stable",
+        "since": "2026.10.10",
+        "description": "Plugin apps can now run across conversations and workspace files through a principal-bound relay.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "cloud-environments-streamlined-execution",
+        "name": "Cloud Environments Streamlined Execution",
+        "status": "stable",
+        "since": "2026.10.10",
+        "description": "Cloud execution is streamlined with verified Node toolchains, repository recipes, saved profiles, startup progress, repository grouping, and local-to-cloud session moves.",
+        "key_details": [
+          "Verified Node toolchains.",
+          "Repository recipes.",
+          "Saved profiles.",
+          "Startup progress.",
+          "Repository grouping.",
+          "Local-to-cloud session moves."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "postgresql-survive-backups-updates",
+        "name": "PostgreSQL Stores Survive Backups and Updates",
+        "status": "stable",
+        "since": "2026.10.10",
+        "description": "PostgreSQL stores can now survive backups and updates, with shared state-engine selection, schema-drift checks, migrations, and an experimental Workboard store.",
+        "key_details": [
+          "Shared state-engine selection.",
+          "Schema-drift checks.",
+          "Migrations.",
+          "Experimental Workboard store."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "local-models-llama-cpp-ocr-vision-embedding-only-setup",
+        "name": "Local Models: Managed llama.cpp OCR, Vision, and Embedding-only Setup",
+        "status": "stable",
+        "since": "2026.10.10",
+        "description": "Managed llama.cpp OCR, vision, and embedding-only setup are now available for local models, alongside automatic first-run inference selection and provider wait-time reporting.",
+        "key_details": [
+          "Managed llama.cpp OCR.",
+          "Managed llama.cpp vision.",
+          "Managed llama.cpp embedding-only setup.",
+          "Automatic first-run inference selection.",
+          "Provider wait-time reporting."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "plugin-runtime-control-fork-context-steer-runs-override-fallbacks",
+        "name": "Plugin Runtime Control: Fork Live Context, Steer Active Runs, Override Model Fallbacks",
+        "status": "stable",
+        "since": "2026.10.10",
+        "description": "Plugins can now fork live context for background side questions, steer active runs, and override model fallbacks per run.",
+        "key_details": [
+          "Plugins can fork live context for background side questions.",
+          "Plugins can steer active runs.",
+          "Plugins can override model fallbacks per run."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "automations-mcp-events-trigger-session-hovercards-schedules",
+        "name": "Automations: MCP Events Trigger, Session Hovercards Expose Schedules",
+        "status": "stable",
+        "since": "2026.10.10",
+        "description": "MCP events can now trigger automations, and session hovercards expose attached schedules.",
+        "key_details": [
+          "MCP events can trigger automations.",
+          "Session hovercards expose attached schedules."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "desktop-onboarding-windows-tauri-macos-guided-setup",
+        "name": "Desktop Onboarding: Windows, Tauri, and macOS Guided Setup",
+        "status": "stable",
+        "since": "2026.10.10",
+        "description": "Windows and Tauri apps can start with local Gateways, while fresh macOS installs enter guided dashboard setup.",
+        "key_details": [
+          "Windows and Tauri apps can start with local Gateways.",
+          "Fresh macOS installs enter guided dashboard setup."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "secrets-ux-secure-entry-prompts-setup-grants",
+        "name": "Secrets UX: Secure-entry Prompts and Setup Grants",
+        "status": "stable",
+        "since": "2026.10.10",
+        "description": "Secure-entry prompts can now reveal values on demand, and setup grants can scope credential egress.",
+        "key_details": [
+          "Secure-entry prompts can reveal values on demand.",
+          "Setup grants can scope credential egress."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "sessions-existing-folders-paired-devices-sessions-send",
+        "name": "Sessions: Existing Folders on Paired Devices and sessions_send",
+        "status": "stable",
+        "since": "2026.10.10",
+        "description": "Sessions can run in existing folders on paired devices and optionally target conversation threads through `sessions_send`.",
+        "key_details": [
+          "Sessions can run in existing folders on paired devices.",
+          "Sessions can optionally target conversation threads through `sessions_send`."
+        ],
+        "source_url": ""
+      },
+      {
+        "id": "diagnostics-message-run-spans-gc-metrics",
+        "name": "Diagnostics: Message and Run Spans, GC Metrics",
+        "status": "stable",
+        "since": "2026.10.10",
+        "description": "Message and run spans can now export prompts and final answers, with GC metrics attributed by kind and worker.",
+        "key_details": [
+          "Message and run spans can export prompts and final answers.",
+          "GC metrics attributed by kind and worker."
+        ],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -4038,6 +4244,12 @@
           "description": "Used with the `openclaw join` command to install a background node service capable of hosting agent sessions.",
           "since": "2026.10.5",
           "source_url": "#168623"
+        },
+        {
+          "flag": "--exclude-secrets",
+          "description": "Applies to PostgreSQL Git exports to redact identified bundled-plugin tokens, OAuth credentials, signing keys, webhook tokens, hosted-media bearer records, and credential blobs.",
+          "since": "2026.10.10",
+          "source_url": ""
         }
       ],
       "deprecated": [
@@ -4168,7 +4380,9 @@
           "source_url": ""
         }
       ],
-      "new_since_previous": []
+      "new_since_previous": [
+        "--exclude-secrets"
+      ]
     },
     "env_vars": [
       {
@@ -5709,6 +5923,17 @@
         ],
         "migration": "Ensure your Node.js environment is updated to at least 24.22.1 or 26.12.1. Docker images ship with Node 24.22.1, and installers will select patched runtimes. Source builds now pin pnpm 12.15.0.",
         "source_url": "https://github.com/openclaw/openclaw/pull/179992"
+      },
+      {
+        "id": "backup-security-git-history-not-rewritten",
+        "version": "2026.10.10",
+        "title": "Backup Security: Existing Git History Not Rewritten",
+        "description": "Applying `--exclude-secrets` to PostgreSQL Git exports redacts identified bundled-plugin tokens, OAuth credentials, signing keys, webhook tokens, hosted-media bearer records, and credential blobs. Existing Git history is NOT rewritten.",
+        "affected": [
+          "Existing Git history for backups."
+        ],
+        "migration": "Affected integrations must sign in or register again after restoring a redacted backup.",
+        "source_url": ""
       }
     ],
     "deprecations": [
