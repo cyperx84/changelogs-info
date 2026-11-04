@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.318",
-  "generated_at": "2026-11-04T16:50:09.134Z",
+  "generated_at": "2026-11-04T22:24:31.943Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -34,7 +34,7 @@
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "self-hosted-runner-orchestrator-log-format-change"
+      "self-hosted-runner-log-line-format-change"
     ]
   },
   "payload": {
@@ -57,7 +57,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release of claude-code 2.1.318 introduces several new features and crucial fixes, enhancing user experience, security, and stability. A significant new feature is the ability to record your answer when Claude Code asks to enable mods, providing better transparency and control over AI-generated modifications. Additionally, `mantle` upstreams of the Claude apps gateway now support `assume_role` for AWS cost attribution across different AWS accounts, which is vital for organizations managing per-developer AWS costs. Mods can now specify an `effort` option for `$.model.fork`, allowing quick side jobs to run at a `low` effort level regardless of the session's overall effort, with the result reporting the effort used.\n\nKey improvements include enhanced sign-in management, with `claude auth status` and `claude -p` now displaying `loginExpiresAt` and `credential_expires_at` respectively, along with a 10-day warning for expiring claude.ai sign-ins. Cloud sessions gain new flexibility, allowing users to start without picking a repository, and now recognize standard Chrome names like `google-chrome` and `CHROME_PATH` for built-in Chromium access. A 'New session' button has been added for deleted cloud session environments. Numerous fixes address critical issues such as `--continue` losing conversation history after malformed tool calls, macOS sessions stalling with many Bash commands, and permission prompts being answered by mistyped keys. Stability on network file systems has been improved, reducing instances of configuration file loss or corruption, and `~/.claude.json` handling is more robust, preventing silent overwrites of invalid files.\n\nFor self-hosted runners, a breaking change alters the orchestrator's log format for `ok session=…` and `nack session=…` messages, requiring updates to any parsing scripts. A new environment variable, `CLAUDE_RUNNER_SPAWN_REASON`, is now available to the orchestrator's spawn-runner hook, indicating why a runner was spawned. Subagent behavior has been refined, with changes to model switching when messages are flagged and improved handling of background shell commands to prevent prompt cache expiration. The `/permissions` command now uses a standard dialog, and `/claude-api managed-agents-onboard` defaults to `auto` permission policy for new agents. This release is recommended for all users to benefit from the stability improvements, new features, and critical bug fixes, especially those using cloud sessions, self-hosted runners, or managing AWS costs with `mantle`."
+      "tldr": "This release introduces several key improvements and fixes across Claude Code, focusing on enhanced developer experience, stability, and self-hosted runner capabilities. A major new feature is the ability to record answers when Claude Code asks to enable mods, providing better transparency and control over AI-driven modifications. Additionally, `mantle` upstreams in the Claude apps gateway now support `assume_role` for cross-account AWS cost attribution, and mods can specify an `effort` option for `$.model.fork` to run quick side jobs at `low` effort, improving resource management for complex tasks.\n\nSignificant fixes address issues like `--continue` losing conversation history after malformed tool calls, macOS sessions stalling with many Bash commands, and permission prompts being answered by accidental key presses. Configuration file handling on shared network home directories is more robust, preventing data loss or corruption for `~/.claude.json`, settings, and stored logins. Cloud sessions now offer a 'No repository' option and correctly expose Chrome names for broader tool compatibility, alongside a 'New session' button for deleted environments. The self-hosted runner orchestrator's log line format has changed, requiring updates to parsing scripts that match `retryable=true:` or `retryable=false:`.\n\nOther notable changes include improved MCP tool error reporting, better `claude -p` and SDK session output for failing custom slash commands, and more reliable auto-updates. The `/permissions` rule details and `/claude-api managed-agents-onboard` now default to `auto` permission policy for new agents and their tools, aligning with Claude Console. Developers should review the self-hosted runner log format change for potential script updates. This release enhances stability and control, making an upgrade recommended for all users."
     },
     "features": [
       {
@@ -5474,6 +5474,17 @@
           "Self-hosted runner orchestrator log parsing scripts"
         ],
         "migration": "Update scripts that parse self-hosted runner orchestrator logs to account for the new field order and location of `reason=…` and `retryable=…`.",
+        "source_url": ""
+      },
+      {
+        "id": "self-hosted-runner-log-line-format-change",
+        "version": "2.1.318",
+        "title": "Self-hosted Runner Log Line Format Change",
+        "description": "The orchestrator's log lines have changed. `ok session=…` now prints at every log level on stdout (was debug only, stderr) with `reason=…` after `jti=…`, and `nack session=…` ends its fields with `reason=…` after `retryable=…`. This change requires updating scripts that match `retryable=true:` or `retryable=false:`.",
+        "affected": [
+          "Self-hosted runner orchestrator log parsing scripts"
+        ],
+        "migration": "Update any scripts that parse self-hosted runner orchestrator logs, specifically those matching `retryable=true:` or `retryable=false:`, to account for the new `reason=…` field placement and `ok session=…` output changes.",
         "source_url": ""
       }
     ],
