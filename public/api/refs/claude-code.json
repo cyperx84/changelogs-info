@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.318",
-  "generated_at": "2026-11-04T08:37:07.654Z",
+  "generated_at": "2026-11-04T16:50:09.134Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -34,7 +34,7 @@
     "deprecated_commands": [],
     "deprecated_flags": [],
     "breaking_changes": [
-      "self-hosted-runner-orchestrator-log-lines-change"
+      "self-hosted-runner-orchestrator-log-format-change"
     ]
   },
   "payload": {
@@ -57,7 +57,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "Claude Code 2.1.318 introduces several key improvements focusing on developer experience, security, and reliability. A significant new feature is the recording of your answers when Claude Code asks to enable mods it writes, providing better transparency and auditability for AI-driven modifications. For enterprise users, the Claude apps gateway now supports `assume_role` on `mantle` upstreams, enabling cross-account AWS cost attribution and improved security posture. Additionally, mods can now specify an `effort` option for `$.model.fork`, allowing quick side jobs to run at a `low` effort level regardless of the main session's setting, which is useful for optimizing resource usage and cost. \n\nReliability fixes address critical issues such as `--continue` sometimes losing conversation history after malformed tool calls, macOS sessions stalling with high Bash command usage, and permission prompts being answered by accidental key presses. Configuration file handling on shared network home directories has been significantly improved, preventing data loss or corruption for `~/.claude.json` and stored logins. Cloud sessions now offer a 'No repository' option for Anthropic-hosted environments and expose standard Chrome names for broader tool compatibility. A breaking change for self-hosted runner orchestrator log parsing requires updating scripts due to changes in the `ok session=…` and `nack session=…` log line formats. Overall, this release enhances stability, provides more control over AI behavior, and improves the developer experience, particularly for users in enterprise and cloud environments."
+      "tldr": "This release of claude-code 2.1.318 introduces several new features and crucial fixes, enhancing user experience, security, and stability. A significant new feature is the ability to record your answer when Claude Code asks to enable mods, providing better transparency and control over AI-generated modifications. Additionally, `mantle` upstreams of the Claude apps gateway now support `assume_role` for AWS cost attribution across different AWS accounts, which is vital for organizations managing per-developer AWS costs. Mods can now specify an `effort` option for `$.model.fork`, allowing quick side jobs to run at a `low` effort level regardless of the session's overall effort, with the result reporting the effort used.\n\nKey improvements include enhanced sign-in management, with `claude auth status` and `claude -p` now displaying `loginExpiresAt` and `credential_expires_at` respectively, along with a 10-day warning for expiring claude.ai sign-ins. Cloud sessions gain new flexibility, allowing users to start without picking a repository, and now recognize standard Chrome names like `google-chrome` and `CHROME_PATH` for built-in Chromium access. A 'New session' button has been added for deleted cloud session environments. Numerous fixes address critical issues such as `--continue` losing conversation history after malformed tool calls, macOS sessions stalling with many Bash commands, and permission prompts being answered by mistyped keys. Stability on network file systems has been improved, reducing instances of configuration file loss or corruption, and `~/.claude.json` handling is more robust, preventing silent overwrites of invalid files.\n\nFor self-hosted runners, a breaking change alters the orchestrator's log format for `ok session=…` and `nack session=…` messages, requiring updates to any parsing scripts. A new environment variable, `CLAUDE_RUNNER_SPAWN_REASON`, is now available to the orchestrator's spawn-runner hook, indicating why a runner was spawned. Subagent behavior has been refined, with changes to model switching when messages are flagged and improved handling of background shell commands to prevent prompt cache expiration. The `/permissions` command now uses a standard dialog, and `/claude-api managed-agents-onboard` defaults to `auto` permission policy for new agents. This release is recommended for all users to benefit from the stability improvements, new features, and critical bug fixes, especially those using cloud sessions, self-hosted runners, or managing AWS costs with `mantle`."
     },
     "features": [
       {
@@ -5463,6 +5463,17 @@
           "Self-hosted runner orchestrator log parsing scripts"
         ],
         "migration": "Update any scripts that parse self-hosted runner orchestrator logs to account for the new format of `ok session=…` and `nack session=…` lines, specifically the placement of `reason=…` and `retryable=…` fields.",
+        "source_url": ""
+      },
+      {
+        "id": "self-hosted-runner-orchestrator-log-format-change",
+        "version": "2.1.318",
+        "title": "Self-hosted Runner Orchestrator Log Format Change",
+        "description": "The orchestrator's log lines for `ok session=…` and `nack session=…` have changed their format. `ok session=…` now prints at every log level on stdout (was debug only, stderr) with `reason=…` after `jti=…`. `nack session=…` ends its fields with `reason=…` after `retryable=…`. Scripts that match `retryable=true:` or `retryable=false:` will need to be updated.",
+        "affected": [
+          "Self-hosted runner orchestrator log parsing scripts"
+        ],
+        "migration": "Update scripts that parse self-hosted runner orchestrator logs to account for the new field order and location of `reason=…` and `retryable=…`.",
         "source_url": ""
       }
     ],
