@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "claude-code",
   "version": "2.1.318",
-  "generated_at": "2026-11-04T01:53:11.335Z",
+  "generated_at": "2026-11-04T08:37:07.654Z",
   "extracted_from_sources": [
     "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md",
     "https://docs.anthropic.com/en/docs/claude-code"
@@ -14,20 +14,28 @@
   },
   "stale_after": "2026-03-19T04:10:00Z",
   "delta": {
-    "from_version": "2.1.317",
-    "to_version": "2.1.317",
+    "from_version": "2.1.318",
+    "to_version": "2.1.318",
     "new_features": [
-      "agent-sdk-on-failure-block",
-      "cloud-sessions-link-card"
+      "mod-answer-record",
+      "mantle-assume-role",
+      "mod-model-fork-effort-option",
+      "claude-ai-signin-expiration-status",
+      "claude-ai-signin-expiration-warning",
+      "cloud-sessions-no-repository-option",
+      "cloud-sessions-chrome-names",
+      "cloud-sessions-new-session-button"
     ],
     "new_commands": [],
     "new_flags": [],
     "new_env_vars": [
-      "CLAUDE_CODE_DISABLE_NESTED_SESSION_ID"
+      "CLAUDE_RUNNER_SPAWN_REASON"
     ],
     "deprecated_commands": [],
     "deprecated_flags": [],
-    "breaking_changes": []
+    "breaking_changes": [
+      "self-hosted-runner-orchestrator-log-lines-change"
+    ]
   },
   "payload": {
     "meta": {
@@ -49,7 +57,7 @@
       "status": "active",
       "runtime": "node",
       "written_in": "typescript",
-      "tldr": "This release, 2.1.317, introduces several key improvements for Claude Code users, focusing on enhanced reliability, better user feedback, and more robust error handling. A significant new feature is the `onFailure: \"block\"` option for Agent SDK hook callbacks, which ensures that a failing callback will block the associated action, preventing unintended operations and improving the stability of custom agent behaviors. Additionally, cloud sessions now feature a link card, allowing users to explicitly open or decline links requested by MCP servers, addressing a previous blind spot in user interaction. \n\nNumerous fixes enhance the overall experience. Scheduled tasks now provide warnings for unexpected connectors and correctly display next run times, while also respecting organization-wide default environments in cloud sessions. Auto mode has been made more transparent with notices for subagent tool calls that lack answers and improved handling of LLM gateway errors. Critical fixes address session title loss in cloud and SDK sessions, prevent project and local MCP server disconnections, and resolve issues with `claude -p` exiting silently on disk errors. \n\nFor self-hosted runners, a new environment variable, `CLAUDE_CODE_DISABLE_NESTED_SESSION_ID`, allows `claude -p` to reuse the parent session's ID, preventing transcript and title generation conflicts in nested sessions. The Claude apps gateway admin API now includes a cost report, offering detailed spend analytics per developer and IdP group. OpenTelemetry exports have been made more reliable with fixes for proxy issues and timeouts. \n\nVSCode users will benefit from fixes preventing message loss in forked conversations, ensuring Claude starts correctly, and improving the display of account information, file links, and UI elements with increased font sizes. Remote Control and Agent Team functionalities have also seen stability improvements, including better handling of 'don't ask again' prompts and more consistent agent behavior. These updates collectively aim to provide a more stable, transparent, and user-friendly development experience, with a strong recommendation to upgrade for improved reliability and new diagnostic capabilities."
+      "tldr": "Claude Code 2.1.318 introduces several key improvements focusing on developer experience, security, and reliability. A significant new feature is the recording of your answers when Claude Code asks to enable mods it writes, providing better transparency and auditability for AI-driven modifications. For enterprise users, the Claude apps gateway now supports `assume_role` on `mantle` upstreams, enabling cross-account AWS cost attribution and improved security posture. Additionally, mods can now specify an `effort` option for `$.model.fork`, allowing quick side jobs to run at a `low` effort level regardless of the main session's setting, which is useful for optimizing resource usage and cost. \n\nReliability fixes address critical issues such as `--continue` sometimes losing conversation history after malformed tool calls, macOS sessions stalling with high Bash command usage, and permission prompts being answered by accidental key presses. Configuration file handling on shared network home directories has been significantly improved, preventing data loss or corruption for `~/.claude.json` and stored logins. Cloud sessions now offer a 'No repository' option for Anthropic-hosted environments and expose standard Chrome names for broader tool compatibility. A breaking change for self-hosted runner orchestrator log parsing requires updating scripts due to changes in the `ok session=…` and `nack session=…` log line formats. Overall, this release enhances stability, provides more control over AI behavior, and improves the developer experience, particularly for users in enterprise and cloud environments."
     },
     "features": [
       {
@@ -3089,6 +3097,78 @@
           "Options to open or decline links"
         ],
         "source_url": ""
+      },
+      {
+        "id": "mod-answer-record",
+        "name": "Record of Mod Answer",
+        "status": "stable",
+        "since": "2.1.318",
+        "description": "Claude Code now records your answer when it asks to turn on mods it writes in a session.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "mantle-assume-role",
+        "name": "Mantle Assume Role for AWS Cost Attribution",
+        "status": "stable",
+        "since": "2.1.318",
+        "description": "Added `assume_role` on `mantle` upstreams of the Claude apps gateway, allowing for a role in another AWS account and per-developer AWS cost attribution.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "mod-model-fork-effort-option",
+        "name": "Effort Option for Mod Model Fork",
+        "status": "stable",
+        "since": "2.1.318",
+        "description": "Added an `effort` option to a mod's `$.model.fork`, enabling quick side jobs to run at `low` effort regardless of the session's default effort. The result reports the effort sent.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "claude-ai-signin-expiration-status",
+        "name": "Claude.ai Sign-in Expiration Status",
+        "status": "stable",
+        "since": "2.1.318",
+        "description": "Added the date a stored claude.ai sign-in ends to `claude auth status` (as `loginExpiresAt`) and to `claude -p` JSON results (as `credential_expires_at`).",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "claude-ai-signin-expiration-warning",
+        "name": "Claude.ai Sign-in Expiration Warning",
+        "status": "stable",
+        "since": "2.1.318",
+        "description": "Added a one-line stderr warning to `claude -p` text output, starting 10 days before a stored claude.ai sign-in ends.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "cloud-sessions-no-repository-option",
+        "name": "Cloud Sessions No Repository Option",
+        "status": "stable",
+        "since": "2.1.318",
+        "description": "A cloud session on an Anthropic-hosted environment can now start without picking a repository.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "cloud-sessions-chrome-names",
+        "name": "Cloud Sessions Chrome Names",
+        "status": "stable",
+        "since": "2.1.318",
+        "description": "Added the usual Chrome names to cloud sessions, allowing tools other than Playwright to find the built-in Chromium through `google-chrome` and `CHROME_PATH`.",
+        "key_details": [],
+        "source_url": ""
+      },
+      {
+        "id": "cloud-sessions-new-session-button",
+        "name": "Cloud Sessions New Session Button",
+        "status": "stable",
+        "since": "2.1.318",
+        "description": "Added a 'New session' button to the card shown when a cloud session's environment was deleted, where the message box is hidden.",
+        "key_details": [],
+        "source_url": ""
       }
     ],
     "commands": [
@@ -4755,6 +4835,13 @@
         "status": "stable",
         "since": "2.1.317",
         "source_url": ""
+      },
+      {
+        "name": "CLAUDE_RUNNER_SPAWN_REASON",
+        "purpose": "Provides the reason why Anthropic sent the request to the orchestrator's spawn-runner hook environment (e.g., `runner_lost`, `resumed`). It is unset when no reason was sent.",
+        "status": "stable",
+        "since": "2.1.318",
+        "source_url": ""
       }
     ],
     "models": [
@@ -5365,6 +5452,17 @@
           "Users relying on fast mode with Opus 4.8."
         ],
         "migration": "Migrate to Opus 5.5 to retain the speedup provided by fast mode. No direct replacement for Opus 4.8 fast mode will be available.",
+        "source_url": ""
+      },
+      {
+        "id": "self-hosted-runner-orchestrator-log-lines-change",
+        "version": "2.1.318",
+        "title": "Self-hosted Runner Orchestrator Log Line Format Change",
+        "description": "The orchestrator's log lines for `ok session=…` now print at every log level on stdout (previously debug only, stderr) with `reason=…` after `jti=…`. `nack session=…` now ends its fields with `reason=…` after `retryable=…`. This change requires updating scripts that match `retryable=true:` or `retryable=false:`.",
+        "affected": [
+          "Self-hosted runner orchestrator log parsing scripts"
+        ],
+        "migration": "Update any scripts that parse self-hosted runner orchestrator logs to account for the new format of `ok session=…` and `nack session=…` lines, specifically the placement of `reason=…` and `retryable=…` fields.",
         "source_url": ""
       }
     ],
