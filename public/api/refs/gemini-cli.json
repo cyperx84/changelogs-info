@@ -2,7 +2,7 @@
   "schema": "clwatch.payload.v1",
   "tool": "gemini-cli",
   "version": "0.67.0",
-  "generated_at": "2026-11-04T22:24:49.746Z",
+  "generated_at": "2026-11-05T03:08:44.411Z",
   "extracted_from_sources": [
     "https://github.com/google-gemini/gemini-cli/releases/tag/v0.33.0",
     "https://github.com/google-gemini/gemini-cli/releases"
@@ -17,7 +17,7 @@
     "from_version": "0.67.0",
     "to_version": "0.67.0",
     "new_features": [
-      "ide-companion-container-sandbox-bridge"
+      "ide-companion-container-sandbox-bridge-exec-stdio"
     ],
     "new_commands": [
       "/models"
@@ -52,7 +52,7 @@
       "runtime": "node",
       "written_in": "typescript",
       "release_cadence": "Stable on Tuesdays. Preview: Tuesdays UTC 23:59. Nightly: daily UTC 00:00.",
-      "tldr": "Gemini CLI v0.67.0 introduces a significant enhancement by bridging the IDE companion directly into container sandboxes over exec stdio. This allows for a more seamless and integrated development experience when working within sandboxed environments, improving productivity and reducing context switching for developers. A new `/models` command and `--list-models` flag have been added, providing a straightforward way to discover and list available models directly from the CLI, which is useful for understanding model capabilities and configurations. Several critical fixes are included in this release, such as preventing duplicate agent loading when the workspace is the home directory and excluding IDE settings and `GEMINI.md` files from open file context, which streamlines agent behavior and reduces irrelevant context. The release also addresses issues with untrusted flag checks, ensuring they are scoped to external output and remembering approved flags for enhanced security. Important fixes for A2A server include mounting `express.json()` correctly and preserving extended token usage metadata, which improves the accuracy of per-turn reporting. Core fixes ensure adherence to RFC 9110 token rules for custom headers, respect read-only files and hard links in atomic `writeTextFile` operations, and guarantee that all model turns with function calls receive thought signatures. Non-interactive mode stability is improved by handling termination signals and preventing tool execution after cancellation. Additionally, the CLI now correctly preserves `${VAR}` placeholders during deprecated settings migration, stops continuation stream processing and auto-nudge after request cancellation, and corrects display widths for Thai and Lao SARA AM characters. Project spending cap errors are now classified as terminal quota errors, and MCP server and tool metadata are included in permission requests for ACP. Autocomplete for `/chat list` no longer inserts parent command names, and numeric settings editor now validates finite numbers. Trusted system paths on Android (Termux) are now allowed for ripgrep resolution, and CRLF line endings are normalized before diffing in `getDiffContextSnippet`. Terminals rendering ambiguous-width characters are now handled correctly, and duplicate history and double telemetry in `confirm_action` flow are prevented. Developers should upgrade to benefit from improved sandbox integration, better model discovery, and numerous stability and security fixes."
+      "tldr": "Gemini CLI v0.67.0 introduces a significant enhancement for developers working with containerized environments: the IDE companion can now bridge into container sandboxes using exec stdio. This new feature, `ide-companion-container-sandbox-bridge-exec-stdio`, streamlines the integration between your IDE and sandboxed development environments, making it easier to debug and interact with code running in isolation. This is a crucial step towards a more seamless developer experience when using sandboxed tools.\n\nBeyond this, the release includes a new `/models` command and `--list-models` flag, providing a direct way to discover and list available models within the CLI. This improves model visibility and simplifies model selection workflows. Several important fixes are also part of this release, including preventing duplicate agent loading when the workspace is the home directory, ensuring that IDE settings and `GEMINI.md` files are excluded from open file context, and scoping untrusted flag checks to external output while remembering approved flags. These fixes enhance stability, security, and user experience.\n\nFurther improvements include adhering to RFC 9110 token rules for custom headers, respecting read-only files and hard links in atomic `writeTextFile` operations, and preserving extended token usage metadata for per-turn reporting. The CLI now also correctly handles termination signals and prevents tool execution after cancellation in non-interactive mode, improving robustness. Display issues with ambiguous-width characters in terminals, such as Thai and Lao SARA AM, have been corrected, and `project spending cap` errors are now classified as terminal quota errors. For users on Android (Termux), trusted system paths are now allowed for ripgrep resolution. It is recommended to upgrade to this version to benefit from the enhanced IDE integration, improved model discovery, and numerous stability and security fixes."
     },
     "features": [
       {
@@ -2272,6 +2272,15 @@
         "status": "stable",
         "since": "0.67.0",
         "description": "The IDE companion can now bridge into container sandboxes using exec stdio, enabling more integrated development workflows within sandboxed environments.",
+        "key_details": [],
+        "source_url": "https://github.com/google-gemini/gemini-cli/pull/29858"
+      },
+      {
+        "id": "ide-companion-container-sandbox-bridge-exec-stdio",
+        "name": "IDE Companion Container Sandbox Bridge over Exec Stdio",
+        "status": "stable",
+        "since": "0.67.0",
+        "description": "The IDE companion can now bridge into container sandboxes using exec stdio, enhancing integration and communication between the IDE and sandboxed environments.",
         "key_details": [],
         "source_url": "https://github.com/google-gemini/gemini-cli/pull/29858"
       }
